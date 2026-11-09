@@ -49,8 +49,269 @@ def main():
         print("split_disasm: BLOCKED — rop-original.gen not present; incbin "
               "slices must be copied verbatim from the ROM, never hand-typed.")
         return 1
-    print("split_disasm: prerequisites present — emission step is the next "
-          "#012 work item (not yet implemented).")
+    if "--emit" in sys.argv:
+        return emit(ROOT / "rop-original.gen", ROOT / "disasm" / "src")
+    print("split_disasm: prerequisites present — run with --emit to "
+          "generate disasm/src/ (issue #012).")
+    return 0
+
+
+
+# --- appended to tools/split_disasm.py: --emit implementation (issue #012) ---
+import csv as _csv
+import json as _json
+
+REG_RE = re.compile(r"\b(d[0-7]|a[0-7]|sp|pc|sr|ccr|usp)\b")
+
+def _gas_op(op_str, insn, labels):
+    """Convert Capstone m68k op_str to GNU-as syntax."""
+    from capstone.m68k import M68K_OP_BR_DISP as _BR
+    if insn.id == 0:
+        return None
+    s = op_str
+    for _m in re.finditer(r"\$([0-9a-fA-F]+)\(pc", op_str):
+        _t = int(_m.group(1), 16)
+        if _t in labels:
+            s = s.replace("$%s" % _m.group(1), labels[_t], 1)
+    for op in insn.operands:
+        if op.type == _BR:
+            tgt = insn.address + 2 + op.br_disp.disp
+            if tgt in labels:
+                s = s.replace("$%x" % tgt, labels[tgt])
+    s = re.sub(r"\$-([0-9a-fA-F]+)", r"-0x\1", s)
+    s = re.sub(r"\$([0-9a-fA-F]+)\.([wl])\b", r"0x\1.\2", s)  # keep abs .w/.l: GAS honours forced width
+    s = re.sub(r"\$([0-9a-fA-F]+)", r"0x\1", s)
+    s = s.replace(" * 1", "")
+    s = REG_RE.sub(r"%\1", s)
+    if insn.mnemonic.startswith("moveq"):
+        def _mq(m):
+            v = int(m.group(1), 16)
+            return "#-%d" % (256 - v) if v > 0x7F else m.group(0)
+        s = re.sub(r"#0x([0-9a-fA-F]+)", _mq, s)
+    return s
+
+# --- round-trip verification block, inserted into split_disasm.py ---
+import subprocess as _sp
+import tempfile as _tf
+
+def _check_span(lo, hi, items, labels, rom):
+    """items: list of dicts {addr, text, bytes}. Assemble the span at its
+    true VMA with all out-of-span labels stubbed as absolute symbols;
+    return the set of instruction addresses whose bytes mismatch."""
+    own = {labels[a] for a in labels if lo <= a < hi}
+    # Branches to out-of-block labels cannot be validated standalone:
+    # GAS sees stub absolute symbols and rejects the displacement.
+    # In the check copy only, represent them by their original bytes
+    # (length-preserving) and exclude them from the verdict.
+    trusted = set()
+    label_names = set(labels.values())
+    for it in items:
+        head = it["text"].strip().split(" ")[0].split(".")[0]
+        if head.startswith("b") or head.startswith("db"):
+            refs = [n for n in label_names if n not in own and n in it["text"]]
+            if refs:
+                trusted.add(it["addr"])
+    with _tf.TemporaryDirectory() as td:
+        td = Path(td)
+        src_lines = []
+        line_addr = []  # parallel: item addr per source line (None for labels)
+        for it in items:
+            if it["addr"] in labels:
+                src_lines.append("%s:" % labels[it["addr"]])
+                line_addr.append(None)
+            if it["addr"] in trusted:
+                src_lines.append("    .dc.b " + ",".join("0x%02X" % b for b in it["bytes"]))
+            else:
+                src_lines.append(it["text"])
+            line_addr.append(it["addr"])
+        (td / "span.s").write_text("\n".join(src_lines) + "\n")
+        stubs = ["    .globl %s\n    .set %s, 0x%X" % (n, n, a)
+                 for a, n in labels.items() if n not in own]
+        (td / "stubs.s").write_text("\n".join(stubs) + "\n")
+        r = _sp.run(["m68k-linux-gnu-as", "-m68000", "-o", str(td / "s.o"),
+                     str(td / "span.s"), str(td / "stubs.s")],
+                    capture_output=True, text=True)
+        if r.returncode != 0:
+            bad_lines = set()
+            for _m in re.finditer(r"span\.s:(\d+): Error", r.stderr):
+                _ln = int(_m.group(1)) - 1
+                if 0 <= _ln < len(line_addr) and line_addr[_ln] is not None:
+                    bad_lines.add(line_addr[_ln])
+            if bad_lines:
+                return bad_lines - trusted, r.stderr
+            return {it["addr"] for it in items if it["addr"] not in trusted}, r.stderr
+        r = _sp.run(["m68k-linux-gnu-ld", "-Ttext=0x%X" % lo, "-o", str(td / "s.elf"),
+                     str(td / "s.o")], capture_output=True, text=True)
+        if r.returncode != 0:
+            return {it["addr"] for it in items if it["addr"] not in trusted}, r.stderr
+        _sp.run(["m68k-linux-gnu-objcopy", "-O", "binary", str(td / "s.elf"),
+                 str(td / "s.bin")], capture_output=True)
+        built = (td / "s.bin").read_bytes()
+    orig = rom[lo:hi]
+    if len(built) != len(orig):
+        # length drift: find first diverging instruction, mark it + resync crudely
+        bad = set()
+        i = 0
+        for it in items:
+            n = len(it["bytes"])
+            if built[i:i + n] != it["bytes"]:
+                bad.add(it["addr"])
+                return bad, "length drift %d vs %d" % (len(built), len(orig))
+            i += n
+        return bad, "length drift"
+    bad = set()
+    i = 0
+    for it in items:
+        n = len(it["bytes"])
+        if built[i:i + n] != it["bytes"] and it["addr"] not in trusted:
+            bad.add(it["addr"])
+        i += n
+    return bad, ""
+
+
+def emit(rom_path, src_dir):
+    from capstone import Cs, CS_ARCH_M68K, CS_MODE_BIG_ENDIAN
+    from capstone.m68k import M68K_OP_BR_DISP as BR
+    rom = rom_path.read_bytes()
+    funcs = {}
+    with open(FUNC_MAP) as fh:
+        for row in _csv.DictReader(fh):
+            a = int(row["address"], 16)
+            funcs[a] = (row["name"], int(row["size_bytes"]))
+    spans = sorted((a, a + sz) for a, (n, sz) in funcs.items())
+    # union blocks of code coverage
+    blocks = []
+    for lo, hi in spans:
+        if blocks and lo <= blocks[-1][1]:
+            blocks[-1][1] = max(blocks[-1][1], hi)
+        else:
+            blocks.append([lo, hi])
+    def in_code(addr):
+        import bisect
+        starts = [b[0] for b in blocks]
+        i = bisect.bisect_right(starts, addr) - 1
+        return i >= 0 and addr < blocks[i][1]
+    labels = {a: re.sub(r"[^A-Za-z0-9_]", "_", n) for a, (n, _) in funcs.items()}
+    md = Cs(CS_ARCH_M68K, CS_MODE_BIG_ENDIAN); md.detail = True; md.skipdata = True
+    # pass 1: labels for branch targets + pc-relative targets
+    for lo, hi in blocks:
+        for insn in md.disasm(rom[lo:hi], lo):
+            if insn.id == 0:
+                continue
+            for _m in re.finditer(r"\$([0-9a-fA-F]+)\(pc", insn.op_str):
+                _t = int(_m.group(1), 16)
+                if 0 <= _t < len(rom) and _t not in labels:
+                    labels[_t] = "L_%06X" % _t
+            for op in insn.operands:
+                if op.type == BR:
+                    tgt = insn.address + 2 + op.br_disp.disp
+                    if 0 <= tgt < len(rom) and in_code(tgt) and tgt not in labels:
+                        labels[tgt] = "L_%06X" % tgt
+    # pass 2: decode blocks into items; round-trip check each block and
+    # fall back to .dc.b for any instruction that does not reassemble
+    # to the original bytes (see _check_span).
+    dc_count = 0
+    all_items = {}   # addr -> item dict {addr, text, bytes}
+    for lo, hi in blocks:
+        items = []
+        for insn in md.disasm(rom[lo:hi + 16], lo):
+            if insn.address >= hi or insn.address + insn.size > hi:
+                break  # instruction straddling the block end: with a
+                       # padded buffer Capstone reports its true size;
+                       # unpadded it truncates and invents placeholder
+                       # operands (0xAAAAAAAA). Tail bytes go raw via
+                       # the hole mechanism instead.
+            gas = _gas_op(insn.op_str, insn, labels)
+            if gas is None:
+                text = "    .dc.b " + ",".join("0x%02X" % b for b in insn.bytes)
+            elif gas:
+                text = "    %s %s" % (insn.mnemonic, gas)
+            else:
+                text = "    %s" % insn.mnemonic
+            items.append({"addr": insn.address, "text": text.rstrip(),
+                          "bytes": bytes(insn.bytes)})
+        for _round in range(60):
+            bad, _err = _check_span(lo, hi, items, labels, rom)
+            if not bad:
+                break
+            progressed = False
+            for it in items:
+                if it["addr"] in bad and not it["text"].strip().startswith(".dc.b"):
+                    it["text"] = "    .dc.b " + ",".join("0x%02X" % b for b in it["bytes"])
+                    dc_count += 1
+                    progressed = True
+            if not progressed:
+                print(f"split_disasm: WARNING block 0x{lo:06X}-0x{hi:06X} not converging")
+                break
+        for it in items:
+            # overlapping blocks: first decode wins — a later block
+            # re-decoding the same bytes from a different alignment
+            # must not undo an earlier block's .dc.b fallback
+            if it["addr"] not in all_items:
+                all_items[it["addr"]] = it
+    # sanitise map.md ranges (inclusive ends; can overlap) to a cover
+    ranges = []
+    _cur = 0
+    for _lo, _hi, _what, _conf in sorted(parse_map(MAP.read_text())):
+        _hi += 1
+        _lo = max(_lo, _cur)
+        if _hi > _lo:
+            ranges.append((_lo, _hi, _what, _conf)); _cur = _hi
+    src = Path(src_dir); (src / "data").mkdir(parents=True, exist_ok=True)
+    manifest = {}; files = []
+    sorted_addrs = sorted(all_items)
+    import bisect as _bis
+    for lo, hi, what, conf in ranges:
+        fname = "r_%06X.s" % lo
+        files.append(fname)
+        lines = ["/* 0x%06X-0x%06X  %s [%s] — generated by tools/split_disasm.py --emit; do not hand-edit */" % (lo, hi - 1, what, conf)]
+        addr = lo
+        while addr < hi:
+            if addr in all_items:
+                it = all_items[addr]
+                if addr in labels:
+                    lines.append("%s:" % labels[addr])
+                lines.append(it["text"])
+                manifest["%d" % addr] = [fname, len(lines), it["text"], it["bytes"].hex()]
+                addr += len(it["bytes"])
+            elif in_code(addr):
+                # coverage hole inside a block (decode stall): raw bytes
+                j = _bis.bisect_right(sorted_addrs, addr)
+                nxt = sorted_addrs[j] if j < len(sorted_addrs) else hi
+                nxt = min(nxt, hi)
+                raw = rom[addr:nxt]
+                if addr in labels:
+                    lines.append("%s:" % labels[addr])
+                lines.append("    .dc.b " + ",".join("0x%02X" % b for b in raw))
+                manifest["%d" % addr] = [fname, len(lines), lines[-1], raw.hex()]
+                addr = nxt
+            else:
+                nxt = hi
+                j = _bis.bisect_right(sorted_addrs, addr)
+                if j < len(sorted_addrs):
+                    nxt = min(nxt, sorted_addrs[j])
+                for s, e in blocks:
+                    if addr < s < nxt: nxt = s
+                cuts = sorted(a for a in labels if addr < a < nxt)
+                bounds = [addr] + cuts + [nxt]
+                for bi in range(len(bounds) - 1):
+                    seg_lo, seg_hi = bounds[bi], bounds[bi + 1]
+                    if seg_lo in labels:
+                        lines.append("%s:" % labels[seg_lo])
+                    raw = rom[seg_lo:seg_hi]
+                    bname = "%06X.bin" % seg_lo
+                    (src / "data" / bname).write_bytes(raw)
+                    lines.append('    .incbin "data/%s"  /* 0x%06X-0x%06X (%d bytes) */' % (bname, seg_lo, seg_hi - 1, len(raw)))
+                addr = nxt
+        (src / fname).write_text("\n".join(lines) + "\n")
+    main = ["/* main.s — full-ROM include chain in address order (issue #012).",
+            "   Generated by tools/split_disasm.py --emit. Origin 0; the chain",
+            "   covers 0x000000-0x100000 contiguously. */"]
+    main += ['    .include "%s"' % f for f in files]
+    (src / "main.s").write_text("\n".join(main) + "\n")
+    (src / "manifest.json").write_text(_json.dumps(manifest))
+    print(f"split_disasm --emit: {len(files)} region files, {len(all_items)} instructions, "
+          f"{len(labels)} labels, {dc_count} instructions fell back to .dc.b -> {src}")
     return 0
 
 

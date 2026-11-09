@@ -2,7 +2,7 @@
 
 **Milestone:** M5  
 **Epic 1**  
-**Status:** open
+**Status:** done (2026-11-09)
 
 ## Goal
 The disassembly reassembles to a byte-identical ROM (checksum aside).
@@ -31,3 +31,13 @@ render_tiles/extract_assets all pass against the real ROM
 (disassembly regenerates with exactly the #002 counts; text
 outputs byte-identical to committed). #009 itself remains
 blocked on #012 emission (disasm/src/), not on tooling.
+
+## Update 2026-11-09 (continuation) — M5 REACHED
+
+With the ROM in the VM and #011/#012 done: tools/build.sh
+assembles disasm/src/ → build/rop-rebuilt.gen (1,048,576 bytes)
+and tools/verify_rebuild.py **PASSES** — and `cmp` against
+rop-original.gen shows the rebuild is byte-identical across the
+whole ROM, checksum fields included. Boot-tested in BlastEm:
+address log reaches 0x200 → FD07C → 4323C → D28E, never FD0CA.
+**Status: done.**
