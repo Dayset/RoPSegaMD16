@@ -18,3 +18,11 @@ validates a save.
 ## Notes
 - Depends on #003. Header SRAM field is blank — do not assume SRAM exists.
 
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/save-validation.md — consolidates the #003 call-graph evidence: $42FC8/$43012 traced, $DCE2 shown to be joypad-2 (not save code), $E0/$B0 decoded as pad-2 combos (B+C+Start / A+C+Start), and the save medium DECIDED: serial EEPROM, Microwire-style via $200000 (header declares no SRAM; BlastEm auto-detected a 128-byte EEPROM).
+- **Acceptance:** MET: acceptance items 1 (call-graph level) and 2 (medium decided, with evidence). PARTIAL: buffer layout + exact sum-variant arithmetic (item 3) and the $FF0168 0/1/-1 state mapping (item 4; only '=1 on the $E0 clear-save path' is proven) — BLOCKED on a real save dump + corruption experiments with the ROM/BlastEm on the owner's machine. Chip identity (93C46?) unconfirmed.
+
+**Status after this session:** in progress — partial (see below). Not marked done.
