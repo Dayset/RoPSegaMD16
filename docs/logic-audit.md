@@ -488,3 +488,173 @@ docs/save-validation.md; the claim stops at validation.)
   main-loop-called), not on a forced runtime screenshot.
   Driving the real menu with pad input remains the other
   route and needs an input driver.
+
+## 9. Session #4 — LIVE GAMEPLAY (input driver built; combat, Camp, Diags, Void all observed)
+
+Sessions #2/#3 ended at the same wall: no input driver, so no
+menus, no combat, no driven gameplay. That wall is down.
+
+### 9.0 The input driver (route (a) worked; route (b) not needed)
+
+- **Stack:** BlastEm 0.6.3.4 windowed (`-g -l`) under Xvfb
+  (own display :77 — the VM's pre-existing :99 Xvfb has an
+  Xauthority file this session cannot read; that was the only
+  launch failure), driven by **xdotool** (3.20160805.1, from
+  Ubuntu pool .debs: xdotool + libxdo3 + libxtst6) sending
+  XTest keystrokes to the focused window, all orchestrated by
+  a small command-file driver (Python, BlastEm on a PTY so
+  the debugger stays reachable on the same stdin). Screenshots
+  are BlastEm's own `ui.screenshot` key — the frames in
+  `docs/logic-audit-evidence/` are the emulator's PNG output,
+  not composites.
+- **Bindings:** /etc/blastem/default.cfg gives pad 1 to the
+  keyboard (arrows = D-pad, a/s/d = A/B/C, enter = Start,
+  u = enter debugger, p = screenshot). A scratch-HOME config
+  copy added pad-2 keys (i/k/j/l, g/y/t, h = A/B/C/Start).
+- **Full path driven, twice:** logos → title → menu
+  (CONTINUE/START/INTRO/CITIZENS/CREDITS) → START → Book of
+  Nexus intro → overworld (Buc, $1000, F/W display) → town,
+  menus, NPC dialogue, four Camps, two battles.
+- **Control map (empirical):** Start opens the MAIN verb
+  menu; **B confirms** in verb/answer menus; **A advances**
+  message pages; **C cancels/closes**. A does nothing in the
+  MAIN menu (an early false lead — the run-1 title-menu start
+  was B-equivalent behaviour on that screen's own handler).
+- **Q3 live colour:** in-game menus consume the $FF001C
+  queue, and the 3-frame debounce is *felt*: holds of
+  ~110 ms step the cursor 1–3 times (re-queued held bytes
+  each count as a step); ~70 ms presses step exactly once;
+  sub-40 ms presses are eaten entirely. The "eaten press"
+  case of §2 Q3 is a real, reproducible behaviour of the
+  shipped input path, not just a mechanism on paper.
+
+### 9.1 Debug mode — runtime corroboration (§8.2's missing half, supplied)
+
+Driven through the real menu (Start → MAIN → SYSTEM), the
+options panel draws live: `HELP: ON / DIRECT: RIGHTY /
+DIAGS: ON / COMBAT: AUTO` (evidence: diags-panel-on.png).
+Selecting DIAGS toggled it: panel redraws `DIAGS: OFF`
+(diags-panel-off.png) and the debugger then read
+**$FF0134 = 0**; toggling back read **$FF0134 = 1** — the
+exact `set 1` of the $205BC executor case (§8.2), against
+the $FFFF RAM-init default read in session #3. HELP was
+also toggled ON→OFF live the same way ($FF0132). The
+address log for the session contains 0x205BC and 0x26E44.
+**Debug-mode reachability is now closed at runtime, not
+just statically: the setting is reachable, drawn, and
+functional; the $023934 overlay string remains unreferenced
+(§8.2's verdict stands for the overlay only).**
+
+### 9.2 Camp — live measurements (§8.1 confirmed, plus one new unknown)
+
+Four Camps driven from the MAIN menu:
+- Camp #1 (clock 674): message "You make camp until dusk";
+  clock read 8 afterwards (674 > 540 → set 0, +ticks). The
+  clock-set half of $3019A is live-exact.
+- Camp #2 (clock 95, night): **Food $FFC364 1729 → 1629,
+  Water $FFC366 1859 → 1759 — exactly −100 each**, clock
+  95 → 547 (set 540, +ticks). §8.1's consumption numbers
+  are live-confirmed.
+- Camps #3/#4 repeated the dusk/dawn messages with the same
+  clock behaviour.
+- **New unknown:** provisions also drain *outside* Camp.
+  Across the baseline→Camp #1 interval (walking + town,
+  one Camp) Food fell 268 and Water 140 in total; across
+  Camp #2→post-battle (two Camps + walking + a battle)
+  Food fell 350 and Water 251. Camp accounts for exactly
+  100/100 per use in the controlled measurement, so a
+  second drain tied to travel/time exists that the static
+  traces (§7.2, §8.1) did not attribute. Recorded as an
+  open sub-item; no mechanism is guessed here.
+
+### 9.3 Q5 — the Void message trigger: CAMPING (observed once)
+
+Camp #2 — the first sleep-until-dawn rest — interrupted
+the rest with the dream (evidence: void-dream.png): the
+grey demon portrait and **"You DREAM OF THE DEMON VOID:
+'BETRAYER, DECEIVER, YOUR DEATH SHALL MEAN INFINITE PAIN
+FOR MY CONSUMPTION!'"**, MORE prompt, then the normal
+"make camp until dawn" message. Camps #1/#3 (until dusk)
+and #4 (until dawn) showed no dream. Verdict: **the Void
+message is a rest event attached to Camp**, fired once in
+four camps (the first dawn rest); it is not a per-camp
+fixture. Whether it is one-time-scripted or rare-random
+is not decided by four samples. The "N seconds" timer
+half of Q5 saw no timer in the live flow (pages advance
+by button); a static xref for the string's message id is
+still owed — the trigger question itself is answered.
+
+### 9.4 Live combat — the damage path (F9's dispatch half: ANSWERED)
+
+Two battles driven:
+1. **Walking encounter (run 1):** a Wyvern fight reached
+   by overworld movement: "WYVERN casts SPARK. Buc TOOK 6
+   HIT PTS" (evidence: combat-wyvern.png). Run 1's address
+   log contains 3B1EE, 3A62E, 3C2C0, 37D0E (the spell-cost
+   path for Spark) — and no 35600 (battle not finished).
+2. **The beggar Evin (run 2):** wandering/town NPC event —
+   "WILL YOU GIVE ME 50 GOLD?" Answering YES cost exactly
+   50 gold (twice observed: $FF02DE 1000 → 900 across two
+   gifts; HUD agreed). Answering NO turned him hostile:
+   "EVIN ADVANCES" → battle. With the $3B1EE breakpoint
+   armed, three consecutive damage stops all read, off the
+   stack, **return address 0x3A846 — the call site at
+   $3A842 inside $3A62E** (bsr.w form) — with a0 = $FF03B8
+   (entity slot 5) and pushed arg words 3, 1, 0xB, $FFFF
+   at the first stop. The $3B094 site never fired; $40880
+   never fired (third session in a row). On screen: "EVIN
+   TOOK 5 HIT PTS" (Buc's hit, through the same path) and
+   a mid-fight "Buc RETREATS" (Combat: AUTO AI), ending
+   **"BATTLE SUCCESSFUL. You earned 6 experience per
+   person. You also captured 20 gold pieces."** (evidence:
+   battle-victory.png). Gold after: $FF02DE = 0x398 = 920
+   (900 + 20), HUD $920. Run 2's address log contains
+   2C4E2 (the XP grant ran), 3019A, 205BC, 26E44, 12FE8.
+   **So the live physical-damage path is $3A62E → $3A842
+   → $3B1EE for both combatants in this fight.** What
+   $3B094 serves (spell damage via $37D0E is the standing
+   candidate — Spark's damage in run 1 could not be
+   breakpoint-isolated) stays open, as does F9's deeper
+   half: whether combat writes the +0x1E/+0x22 fields as
+   indices before the call was not isolated — the args
+   observed are recorded above and the claim stops there.
+
+### 9.5 F5 — live test: NO heal on a plain XP grant
+
+After the Evin victory (+6 XP per person; the grant
+routine in the address log), Buc's struct read in the
+debugger: **slot 1 — XP $FF0302 = 6, HP $FF0304 = 7,
+max HP $FF0308 = 20.** Buc ended the fight at 7/20 HP
+and the XP grant did **not** restore him, contradicting
+the strong reading of §2.3/F5 ("every XP grant heals the
+party to full"). The escape hatch is real: XP 6 < 100 =
+no level-up occurred, and the heal may live in the
+level-up branch only. Verdict: **F5 refuted for grants
+without level-up; level-up half still untested** (needs
+100 XP ≈ many more battles). Side confirmation: Buc is
+slot 1 and his XP landed exactly at $FF0302 — the fan
+PAR layout of §6, verified from the live side this time.
+
+### 9.6 Pad-2 teleport — inconclusive
+
+The #033 combo (pad 2 A+C+Start) was sent via the scratch
+config's pad-2 bindings on a clean overworld. Observed:
+no relocation; between screenshots 2 s apart the clock
+advanced ~3 game hours with a slight camera shift. The
+pad-2 bindings themselves have no independent proof (no
+pad-2 feedback channel was observed), so this is recorded
+as **inconclusive** — neither "cheat works" nor "cheat
+false" is claimed.
+
+### 9.7 Still open after session #4
+
+F2 (needs a gem in a SELL list), F7 (a caller passing
+$FFFF to $2EA92), Doggonia's 1000-gold fee (town not
+reached), $FF012C live mapping (needs the flat-70 /
+flat-5 spell codes cast), Bribe live (statically complete
+in §7.1; the one merchant conversation found was exited
+before its TALK submenus), F5's level-up half, the extra
+provision drain (§9.2), Q5's static message-id xref,
+party-name writes, the (A,B,grp) dispatch half, and the
+post-harness PC=0 fault. §5 item 1 (live combat) is
+**closed** by §9.4.
