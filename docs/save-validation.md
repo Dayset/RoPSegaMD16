@@ -116,3 +116,14 @@ post-validation buffer contents and the new-game save flow
 were not captured headless; they need input injection or a
 human at the emulator. That is the precise reachability limit
 of this session, not a gap in the static analysis.
+
+## Erratum (2026-11-09, session #5)
+
+§2's combo labels are swapped against the $DCE2 bit
+layout (bit7 = Start, bit6 = A, bit5 = C, bit4 = B,
+1 = pressed; derived instruction-by-instruction and
+runtime-confirmed — docs/logic-audit.md §10.3):
+**$E0 is A+C+Start and $B0 is B+C+Start.** $4323C's
+first read (0x4324A) tests $E0 (A+C+Start); holding
+that combo from power-on was verified live to take
+the clear-save branch ($FF0168 = 1 after boot).

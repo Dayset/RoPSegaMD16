@@ -161,3 +161,46 @@ docs/toolchain-vm.md (BlastEm input-driver section).
 Doggonia fee, $FF012C live, Bribe live, F5 level-up half,
 extra provision drain, Q5 xref, party-name writes,
 (A,B,grp) dispatch, post-harness PC=0.
+
+## Update 2026-11-09 (session #5, LIVE GAMEPLAY II) — drain solved, F5 closed, pad-2/teleport proven in code
+
+Full write-up: docs/logic-audit.md §10; evidence:
+docs/logic-audit-evidence/s5-*.png.
+
+- **Extra provision drain (§9.2 unknown): SOLVED.** It is a
+  per-step movement cost in the entity step handler
+  FUN_00024984 (store at 0x24F78, gated $FF00AE==1):
+  measured Food −3 / Water −1 per step on grassland
+  (breakpoint-caught, amounts = the step record's
+  +0x26/+0x28 locals exactly, clamps [1, 30000]); 60 s
+  idle moved the clock +300 ticks with zero drain — not
+  clock-driven, not per-member.
+- **F5 level-up half: DECIDED — refuted.** A real Evin
+  victory (6 XP) with the stored total raised to 101 at
+  the $2C4E2 store (one register edit, method stated in
+  §10.2): max HP recomputed 20 → 35, current HP 4 → 4.
+  No grant of either kind heals current HP/Power; F5 is
+  closed as refuted, maxima-recompute is the true half.
+- **Pad-2 teleport: mechanism proven, bindings proven,
+  execution conditions not met.** Bit encoding derived
+  from $DCE2 (bit7 Start, bit6 A, bit5 C, bit4 B — the
+  save-validation.md §2 A/B labels are swapped; erratum
+  in §10.3). Bindings runtime-proven three ways ($FF8646
+  latched $E0; boot hold → $FF0168=1 clear-save path;
+  over-long hold → 0x4333A blackout). The cheat itself
+  is code-located: Map verb → FUN_0002DCCE (gate: Map
+  item + outside — refusal message observed live) →
+  map screen FUN_0001664E cmp $FF8646 #$E0 at 0x16C72 →
+  $3081A with the highlight's coordinates. No Map item
+  was obtained in-session (Mind reached, no shop
+  transaction completed), so the final keypress is
+  still unexecuted — "conditions not met", not false.
+  Bonus code finds: map-screen $A5 combo (Start+C+Left+
+  Up → leader HP/Power maxima 140/9000) and the intro
+  $FA combo (Down+Right+A+B+C+Start, FUN_000123B0) =
+  the fan "Topples Lady" cheat.
+
+**Status stays in progress.** Remaining: F2, F7 caller,
+Doggonia fee, $FF012C live, Bribe live, Q5 xref,
+party-name writes, (A,B,grp) dispatch, post-harness
+PC=0, teleport/$A5 live execution.

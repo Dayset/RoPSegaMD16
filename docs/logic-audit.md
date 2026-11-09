@@ -658,3 +658,158 @@ provision drain (§9.2), Q5's static message-id xref,
 party-name writes, the (A,B,grp) dispatch half, and the
 post-harness PC=0 fault. §5 item 1 (live combat) is
 **closed** by §9.4.
+
+## 10. Session #5 — LIVE GAMEPLAY II (travel drain solved; F5 level-up half decided; pad-2/teleport mechanism proven)
+
+Driver: same stack as §9 (BlastEm 0.6.3.4 reinstalled from
+pool .debs on this VM instance; own Xvfb :77; scratch HOME
+with pad-2 bindings added — this session's pad-2 keys:
+i/k/j/l directions, **g = A, y = B, t = C, h = Start**).
+Evidence screenshots: docs/logic-audit-evidence/s5-*.png.
+All sessions on scratch EEPROM/ROM copies.
+
+### 10.1 The extra provision drain (§9.2's unknown) — SOLVED: per-step movement cost in FUN_00024984
+
+**Static census first.** Every writer of the Food/Water
+stores in the ROM (linear sweep for $FFC364/$FFC366 stores):
+new-game init ($2CE60, sets both to 2000), the save/load
+copies ($2FB08/$2FB2E), the goods add path ($2C1C0/$2C208,
+inside $2BBD2), Camp ($3037A/$303B4, §8.1), and one
+parameterised subtract at **0x24F44 in FUN_00024984**:
+`Food -= local[-8]`, `Water -= local[-6]`, each clamped to
+[1, 30000], gated on `$FF00AE == 1`. world_tick ($2155E)
+only *reads* the stores (the ≤500/≤1 warning messages at
+0x21714–0x2183E) — it never decrements them.
+
+**Live measurement (breakpoint at the Food store 0x24F78).**
+Fresh game (Food 1978 / Water 1988 at first read — the
+new-game sequence itself has already charged ~7 steps'
+worth), then controlled single steps on the spawn-area
+grassland, catching every store:
+
+| Step | Food before→after | cost local [a6−8] | Water cost [a6−6] | Δpos |
+|---|---|---|---|---|
+| E ×3 | 1978→1975→1972→1969 | 3, 3, 3 | 1 | +1 X each |
+| W ×2 | 1968→1965→1962 | 3, 3 | 1 | −1 X each |
+| S (no displacement) | 1969→1968 | 1 | 1 | none |
+
+Every delta equals the locals exactly; the d0 chain across
+stops has **no unaccounted drops** (no NPC/other drain
+fired). **Idle control:** 60 s standing still — clock
+$FF0E16 advanced +300 ticks (5 ticks/s) while Food/Water
+did not move at all. **Verdict: the travel drain is a
+per-step movement cost charged by the entity step handler
+FUN_00024984 when the party steps on the overworld
+($FF00AE == 1): Food −3 / Water −1 per step on plain
+grassland, the amounts taken from fields +0x26/+0x28 of
+the step's local record (terrain-dependent in principle —
+one no-displacement step charged (1,1)); not per clock
+tick and not per party member (party of one throughout).**
+This reconciles §9.2's long-interval excesses (e.g. −268
+Food over one Camp + travel ≈ −100 Camp + ~56 steps × 3).
+The guide's per-step rates (logic.md §3.7) are superseded
+by these measured ones for grassland.
+
+### 10.2 F5 level-up half — DECIDED: maxima recompute, current HP/Power NOT healed
+
+Method (stated plainly): a genuine battle victory — the
+beggar Evin refused, AUTO combat, won (evidence:
+s5-evin-battle.png, s5-evin-victory-6xp.png; the victory
+text confirms the real grant, 6 XP / 20 gold). At the XP
+store instruction (breakpoint 0x2C566 in $2C4E2) the
+about-to-be-stored total was raised from 6 to 101 with one
+register edit (`se d0 101`) so the level crossing happened
+on this real grant instead of after ~17 identical battles;
+the heal question is independent of the amount. Buc's
+state at the stop (all debugger-read): slot 1 (d1 = 0x34),
+HP **4/20**, Power 1000/1000, XP 0 → 101 stored.
+
+After the grant completed: **XP 101, max HP 20 → 35**
+(the $31958 level-1 value), **current HP 4 → 4 —
+unchanged**; the game's own announcement (evidence:
+s5-levelup-message.png) says "MAXIMUM HEALTH IS NOW 35
+POINTS AND MAXIMUM POWER IS 2000 POINTS" — maxima only.
+
+**Verdict: F5 is refuted in both halves.** No XP grant —
+plain (§9.5) or level-up (here) — restores current HP or
+Power. The true behaviour inside $2C4E2's path is narrower:
+on a level crossing the *maxima* are recomputed from the
+level formulae; current values are left exactly where the
+battle put them (here, 4/35 HP).
+
+### 10.3 Pad-2 — bit encoding derived; bindings runtime-proven; the teleport mechanism found in code
+
+**Encoding (from $DCE2's two-phase read + NOT):** the
+pad-2 byte has **bit7 = Start, bit6 = A, bit5 = C,
+bit4 = B, bit3 = Right, bit2 = Left, bit1 = Down,
+bit0 = Up; 1 = pressed**. *Erratum to docs/save-validation.md
+§2:* its "$E0 = B+C+Start / $B0 = A+C+Start" assignment is
+swapped against this bit layout — **$E0 is A+C+Start and
+$B0 is B+C+Start** ($4323C's first read at 0x4324A tests
+$E0; the later reads at 0x432FE/0x43316 test both).
+
+**Bindings verified live (this session's open question in
+§9.6).** Three independent runtime proofs that pad-2
+input via the scratch bindings reaches the game as the
+exact bytes:
+1. Holding g+t+h latched **$FF8646 = $E0** (the per-frame
+   pad-2 byte refreshed by FUN_00011BB8 via $DCE2).
+2. Holding g+t+h **from power-on** made $4323C take its
+   combo branch: after boot, **$FF0168 = 1** — the
+   clear-save path at 0x432B6 (buffer zeroed) ran on the
+   scratch EEPROM, exactly the documented combo effect.
+3. Holding the same keys *through* the later boot reads
+   drove $4323C to its $F0 return and the 0x4333A
+   blackout (solid backdrop screen, evidence:
+   s5-pad2-boot-blackout.png; reset required) — the combo
+   is timing-sensitive: it must be present at the first
+   read and gone by the later ones.
+
+**The teleport itself — mechanism PROVEN in code.** The
+Map verb (record C=0x11) dispatches in the verb executor
+to **FUN_0002DCCE**, which gates on owning a Map item and
+being outside (the game's own refusal, observed live this
+session: "YOU MUST HAVE A MAP AND BE OUTSIDE." —
+evidence: s5-map-gate-message.png) and calls the map
+screen **FUN_0001664E**. In that screen's loop, at
+**0x16C72**: `move.b $FF8646, d0; cmp.w #$E0, d0` — on
+pad-2 **A+C+Start** it converts the highlight cursor's
+coordinates (d6/d7, remainders mod the map dimensions at
+$FFA7FC) and calls **$3081A**, the relocate routine
+(3 callers). The fan cheat is a faithful description of
+this code path.
+
+**Live execution: NOT performed — conditions not met.**
+Buc owns no Map (INVEN checked: only "So Sym"); the item
+is shop goods (price record 159, §3 tables: 415 gold —
+affordable at 1020). Mind town was reached and explored
+(Academy district + harbour district) but no shop
+transaction was completed in the session, so the map
+screen never opened with its conditions satisfied.
+**Verdict: cheat mechanism proven in code, pad-2 delivery
+proven live, execution outstanding — this is "conditions
+not met", not "cheat false".** Session #4's inconclusive
+is superseded on every point except the final keypress.
+
+**Two more pad-2 combos found in code while tracing
+(not in the fan lists consulted):**
+- Map screen, 0x16CB2: `cmp #$A5` (**Start+C+Left+Up**)
+  → the leader's struct gets HP/maxHP = 140 and
+  Power/maxPower = 9000 written, plus a flags nibble
+  edit at +0x18 — a god-mode cheat on the same screen.
+- Intro story (FUN_000123B0, called by intro_story_driver):
+  reads pad 2 at 0x12420, `cmp #$FA` (**Down+Right+A+B+C+
+  Start**) sets a flag — the fan "Topples Lady" / intro
+  cheat (docs/research/sources.md), matching byte $FA
+  exactly under the encoding above.
+
+### 10.4 Still open after session #5
+
+F2, F7's caller, Doggonia fee, $FF012C live, Bribe live,
+Q5's message-id xref, party-name writes, (A,B,grp)
+dispatch, post-harness PC=0 — and now the pad-2
+teleport's final execution (needs: buy Map in a shop,
+step outside, MAIN → MAP, highlight, pad-2 A+C+Start;
+the $A5 god-mode combo can be verified on the same
+screen visit). §5 item 4's guide-rate question is closed
+by §10.1; F5 is closed by §9.5 + §10.2.
