@@ -1432,6 +1432,192 @@ selects the 0x1215A Void death string, and **2(b)** a
 genuine Map purchase (enter a Mind shop building; read
 $FF02A8 in conversation; BUY → Items → Map). #021 stays
 **in progress** on those two sub-items alone.
+
+## 13. Session #8 — (g) SOLVED; 2(b) attempted again, break narrowed further (2026-11-09)
+
+### 13.1 (g) The death string's caller — SOLVED: it is the fatal-error screen; there is no index and no Void timer
+
+The §12.7 premise was wrong in two particulars, and both
+errors are instructive:
+
+1. **The string starts at 0x1215E, not 0x1215A.** The
+   four bytes at 0x1215A are `4E 5E 4E 75` — FUN_00012072's
+   own `unlk a6; rts` epilogue. They are all printable
+   ASCII (`N^Nt`), which is why the spaced-string scan
+   reported a string start four bytes early. The Russian
+   patch note's 0x1215E (§12.7's aside) was correct. The
+   message is two strings: part 1 at 0x1215E ("By a cruel
+   twist of fate, Void has found your party and
+   exterminated you in a mere "), part 2 at 0x121B2
+   (" seconds. There was nothing you could do. Please
+   try again with a saved game.").
+2. **There is no index table and no selecting index.**
+   The string's only reference is a direct PC-relative
+   `pea $1215E(pc)` at **0x120F2**, inside FUN_00012072
+   itself; part 2 is likewise referenced by
+   `pea $121B2(pc)` at 0x12122. Every earlier census was
+   negative because it searched for an absolute longword
+   or `lea` to 0x1215A: wrong address, and PC-relative
+   `pea` embeds no absolute address at all. (Census
+   re-run this session over the raw ROM: exactly one
+   `pea` — absolute or PC-relative — targets 0x1215E,
+   and exactly one targets 0x121B2.)
+
+**FUN_00012072 is the fatal-error ("Void") screen.**
+`link a6,#-0xF0`; `clr.w $FF0114`; `jsr $138A8`; window /
+plane setup ($11820/$11A1A/$11AE4); the message is
+composed in the frame buffer — part 1 copied via $DE30
+(0x120FA), the decimal of the function's own word
+argument appended via $11F3A (itoa) + $DE3E, part 2
+appended via $DE3E — drawn via $11624 at
+(0x44,0x92,0x136,0xC7); a busy wait in $12FB4 (~40,000
+iterations) follows, then a soft reset via $179B6.
+Ghidra's body size for the function (236) ends exactly
+at 0x1215E, which is why the "string" begins on its
+boundary.
+
+**Entry points — exactly two `jsr` sites to $12072 in
+the whole ROM** (census re-run this session):
+
+- The pass-through trampoline **$12FA0** (`link`;
+  `move.w 8(a6),-(sp)`; `jsr $12072`; unlk/rts). It has
+  **36 call sites**, and every single one pushes a
+  compile-time constant (`move.w #imm,-(sp)`;
+  verified site-by-site this session). Observed codes:
+  0x15–0x1E, 0x32, 0x3C, 0x46, 0x6D–0x71, 0xC8,
+  0xE6–0xEA, 0x190–0x192. Every site is an internal
+  invariant/cap check — 9999 and 200 caps, −1 sentinel
+  checks, and $25456's empty-slot check (code 0x1C).
+- The **stack guard at 0x1224C**, reached from the
+  MANX-magic + stack-range check at 0x12200
+  (`cmpi.l #$4D414E58,4(a0)` against $FF000C): on
+  failure it resets SP to $FFEC1E−$10, prints the
+  "STACK" string at 0x12256, and calls $12072 with
+  code 0x64 (100).
+
+**Verdict.** The number displayed between "a mere" and
+"seconds" is a decimal **error code**, not a duration;
+there is no Void timer and no in-fiction trigger. The
+screen fires only when an internal consistency check
+fails and should never appear in correct play. This
+also retro-explains #008's harness freeze ($25456's
+empty-slot fatal path — its $138A8 VBlank wait hung
+with interrupts masked) and kills the main-line §7/§21
+lead ("search the 0x23000-area encounter tables and
+any timer that wipes the party"): the 0x23xxx sites in
+the census are invariant checks, not encounters.
+(Conversely, the main line's own §8 correctly solved
+the related $12072 spin loop as a harness artifact.)
+
+**Live corroboration (negative, stated as such).** Buc
+died in battle repeatedly across sessions #7–#8
+(knights, the post garrison + caster, bears); every
+death showed the ordinary "YOU HAVE BEEN KILLED IN
+BATTLE. YOUR QUEST IS OVER. PRESS ANY BUTTON TO RESET
+THE GAME." screen and never the Void text (session #8
+example: docs/logic-audit-evidence/s8-deadscreen.png).
+Ordinary party death therefore does not route through
+$12072, consistent with the static verdict. A positive
+live trigger would require corrupting internal state,
+which this toolchain cannot do (the debugger cannot
+write RAM, §8.4); no live confirmation is claimed.
+
+**(g) is CLOSED.**
+
+### 13.2 2(b) Genuine Map purchase — attempted again; still open, break narrowed to survival + one unisolated NPC
+
+Session #7's EEPROM was recovered (BlastEm writes the
+file only when the process exits; the surviving copy
+materialised at that session's end — MD5
+c1899430aabb015afbb79268d734b915). Title CONTINUE
+restored it exactly: **970 gold, (109,130),
+COMBAT = MANUAL** (evidence:
+s8-restored2.png). What session #8 established live:
+
+- **Tax paid again, and the repeat demand does not
+  re-charge.** Beggar −50 (970 → 920), then the Doggon
+  captain's demand paid: **970 → 820 across the two
+  events** (the captain's 150 taken once; walking back
+  into him re-displays the demand text but the gold
+  word does not move — the per-post paid flag holds,
+  refining §12.13's "repeats at each post").
+- **The post captain is not a shopkeeper — the §12.12
+  decisive test executed on him.** In his TALK menu
+  after paying (evidence: s8-taxdone.png), the debugger
+  read **$FF02A8 = 0x7530** (the sentinel; his live
+  entity slot this run was 4). His BUY verb is inert.
+- **Banked-save mechanics.** An in-game SAVE on the
+  overworld at (111,128) (gold 870 after a third beggar
+  payment, Food 1312 / Water 1728) survived a full
+  emulator restart and two deaths: CONTINUE restores
+  the last save exactly. BlastEm flushes the EEPROM
+  file only at process exit — a SIGTERM flush preserved
+  the banked save (MD5 bb04de37dac23f11be78ff213544028c);
+  backups of both EEPROM states are kept with the
+  session scratch.
+- **Travel economy — why the road must be walked in
+  close view.** Overworld (zoomed-view) travel drained
+  Food 1312 → 472 over ~10 coarse cells while Water
+  fell 1728 → 1458: a 3:1 ratio, i.e. each coarse cell
+  costs ≈40–90 of §10.1's per-step units (−3 Food /
+  −1 Water). Close-view steps cost exactly one unit.
+  Also: $FF02C0/$FF02C2 read the location anchor
+  (111,128) throughout overworld travel — they track
+  the leader in location mode only.
+- **Deaths this session (all on the road, none in
+  Mind):** a knight pair at night on the y=128 road
+  (knight ≈8/hit, §12.12 confirmed); the post's
+  garrison (3 knights + a caster whose leader name read
+  "Evin" — enemy leader names come from the shared
+  name table; not the beggar) after re-approaching the
+  captain post-payment; a bear pair on the east road
+  (**bear hit = 12**, confirming §12.12) at HP 15 — the
+  restore's stored HP. One further attempt was lost to
+  a driver fault: X keyboard input to the emulator
+  window died mid-battle (a Cockatrice encounter) while
+  the CPU kept running (world clock advanced under the
+  debugger); the instance was restarted cleanly from
+  the banked EEPROM.
+- **The seller is still unisolated.** Session #6's Mind
+  sweep (§11.1) opened no BUY conversation in the
+  Academy, harbour, warehouse or residential districts
+  or "Someone's Home"; session #7 read the sentinel on
+  a plaza field NPC (slot 2) and a captain (slot 6);
+  session #8 adds the field-post captain (slot 4).
+  Every conversation actually opened in eight sessions
+  has read 0x7530.
+
+**Where the chain breaks now, exactly:** no longer at
+the building-entry test in the abstract — Buc has still
+not survived the road to Mind in this session's runs
+(three fatal random encounters; solo Buc at 15–20 HP vs
+8–12 damage/hit pairs is the binding constraint), and
+conditional on arrival, the one conversation in Mind
+whose $FF02A8 ≠ 0x7530 has not been found among those
+opened so far. **Exact resume recipe:** CONTINUE the
+970-gold save (or the banked 870 save); Camp at spawn
+until dawn first (heals toward full, skips the night
+encounter table); walk the road in close view in short
+hops, saving on every overworld tile; in Mind, open the
+conversations sessions #6–#8 did not (roaming/plaza
+NPCs rather than building banners), reading $FF02A8 in
+each; the first ≠ 0x7530 is the seller — BUY →
+Items (C=13) → Map at 415 base.
+
+**Verdict: 2(b) remains OPEN** — shop rule, price,
+gold, and the decisive test are all pinned and twice
+executed on non-sellers; the purchase itself awaits a
+survived trip and the seller's identity.
+
+### 13.3 #021 session-line status after session #8
+
+Closed this session: (g) — the death string's caller
+(§13.1). Still open: **2(b) alone** — the genuine Map
+purchase (§13.2). The session-line list is therefore
+not yet empty. (The main line marked #021 done on its
+own acceptance; the two lines' status/claim differences
+are reconciled, with verdicts and evidence, in
+docs/reconciliation-2026-11-09.md.)
 # Rings of Power — logic-flaw audit (issue #021)
 
 **Date:** 2026-11-09. **Status:** done. **Scope:** consolidate and audit

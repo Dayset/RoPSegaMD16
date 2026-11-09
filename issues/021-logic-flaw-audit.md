@@ -340,6 +340,66 @@ as such in the doc.
 sub-items: (g)'s death-string index/caller, and the
 genuine Map purchase (2b). Everything else on the
 §11.3 list is closed.
+
+## Update 2026-11-09 (session #8) — (g) SOLVED; 2(b) attempted again, still open
+
+Full write-up: docs/logic-audit.md §13; evidence:
+docs/logic-audit-evidence/s8-*.png.
+
+- **(g) Q5 death string: SOLVED — there is no index
+  and no caller in the expected sense.** The string
+  starts at **0x1215E**, not 0x1215A (the four bytes at
+  0x1215A are FUN_00012072's own `unlk a6; rts`,
+  4E 5E 4E 75 — printable ASCII that fooled the string
+  scan). Its only reference is a PC-relative
+  `pea $1215E(pc)` at 0x120F2 inside FUN_00012072
+  itself (part 2 at 0x121B2 via `pea` at 0x12122) —
+  which is why every longword/lea census was negative.
+  FUN_00012072 is the **fatal-error screen**: it
+  composes part 1 + the decimal of its word argument +
+  part 2, draws it, busy-waits, soft-resets. Entry
+  points: exactly two `jsr` sites — the pass-through
+  trampoline $12FA0 (36 call sites, **every one pushing
+  a compile-time constant**: invariant/cap checks,
+  codes 0x15–0x1E, 0x32, 0x3C, 0x46, 0x6D–0x71, 0xC8,
+  0xE6–0xEA, 0x190–0x192) and the MANX stack guard at
+  0x1224C (code 100). **The displayed "seconds" number
+  is a decimal error code; there is no Void timer and
+  no in-fiction trigger** — the screen fires only on
+  internal consistency-check failure. Live-negative
+  corroboration: Buc's many battle deaths (sessions
+  #7–#8) always showed the ordinary "YOU HAVE BEEN
+  KILLED IN BATTLE" screen, never this text. Census
+  re-verified byte-for-byte this session.
+- **2(b) genuine Map purchase: STILL OPEN — narrowed
+  again.** Session #7's EEPROM recovered (970 gold
+  save; CONTINUE verified). New live results: tax paid
+  (beggar −50, captain −150 → 820) and the captain's
+  re-demand does not re-charge; **the §12.12 decisive
+  test was executed on the post captain: $FF02A8 =
+  0x7530 in his TALK menu (slot 4) — not a shopkeeper**
+  (s8-taxdone.png). A banked overworld save (870 gold,
+  (111,128), Food 1312/Water 1728) survived restarts
+  and deaths. Travel economy measured: an overworld
+  coarse cell costs ≈40–90 per-step units (Food
+  1312→472 over ~10 cells) vs 1 unit per close-view
+  step — the road must be walked in close view.
+  Session #8's runs ended in three fatal road
+  encounters (knight pair; post garrison + caster;
+  bear pair, bear hit = 12) and one driver input
+  freeze (recovered); Mind was not reached this
+  session, and the seller NPC remains unisolated among
+  all conversations opened in sessions #6–#8. Exact
+  resume recipe in §13.2 (Camp to dawn first; close-view
+  road in short hops; sweep unopened Mind conversations
+  reading $FF02A8).
+
+**Status stays in progress** — on exactly one
+sub-item: the genuine Map purchase (2b). (g) is closed;
+everything else on the §11.3 list was already closed.
+The main line's "done" status for this issue vs this
+line's "in progress" is reconciled in
+docs/reconciliation-2026-11-09.md.
 ## Result (2026-11-09)
 - `docs/logic-audit.md` written. Verdicts: gold overflow PROVEN +
   reproduced (15000+17768 -> 0, boundary at 32768); negative damage
