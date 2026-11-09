@@ -1,0 +1,58 @@
+address,name,evidence_source,confidence,notes
+0x000200,reset_entry,docs/architecture.md 'Entry / reset path',verified,TMSS check + table-driven init; calls $FD07C $119E $4323C $3AA $A14 $4E6 per Ghidra graph
+0x00028E,vdp_boot_table_data,docs/architecture.md 0x200 section,verified,DATA not code - 108 bytes / 24 VDP register bytes; linear sweep mis-decodes it
+0x0002FA,boot_stage2,docs/architecture.md 0x2FA section,verified,checksum jsr $FD07C; jsr $4323C; display-on sequence $8134 then $8174
+0x00035C,attract_loop,docs/architecture.md 0x2FA section,verified,title/attract loop 0x35C-0x390; harness hook site for #007/#008
+0x0003AA,joypad_read_both,docs/architecture.md 'Joypad read',verified,ports 1+2 two-phase read -> $FFC00E/$FFC010
+0x000A14,ram_clear_vdp_set2,docs/architecture.md 0x119E/0x2FA sections,verified,second VDP register set; Plane A $A000 Window $C000 Plane B $A000 sprite $DC00 H-scroll $2000
+0x001270,hblank_handler,docs/architecture.md 'HBlank',verified,single rte; never fires (R0=$04 H-int disabled); 0 hits in BlastEm log; Ghidra did NOT auto-create
+0x001272,vblank_handler,docs/architecture.md 'VBlank',verified,frame counter $FF0010; joypad port1; jsr $EB772; 3-frame debounce; 16-entry ring $FF001C; Ghidra did NOT auto-create
+0x001350,joypad_queue_pop,docs/architecture.md VBlank step 5,verified,polled pop; 16 call sites mapped in #020 section
+0x0119E,main_init,docs/architecture.md 0x119E section,verified,clears RAM; writes MANX at $FFC422; jsr $EB806; jmp $D25C
+0x0D25C,game_dispatcher,docs/architecture.md 0xD25C section,verified,50-byte routine; calls $11E06 $14FB6 $1B5D6 $32D0E $173BC $D28E $179B6
+0x0D28E,main_loop,docs/architecture.md #020 section,verified,0xD28E-0xD9DE 1876 bytes; loop-back tst $FF00BE beq $D2BE; exit only via $FF00BE=-1 at 0x20188
+0x179B6,soft_reset,docs/architecture.md #020 section,verified,restores SSP $FFEC1E; jmp $200
+0x11E06,vdp_setup_game,docs/architecture.md #020 callees,verified,$D25C callee 1
+0x14FB6,intro_story_driver,docs/architecture.md #020 callees,verified,$D25C callee 2; sets $FF0128=-1 at 0x15512
+0x1B5D6,new_game_init,docs/architecture.md #020 section,verified,$D25C callee 3; $1E390($FF0E18,8) at 0x1B5DA confirms queue capacity 8; leader spawn (111,125) or random
+0x32D0E,song_picker,docs/architecture.md #020 callees,verified,$D25C callee 4; returns 0x11 or 2 -> $173BC
+0x173BC,request_song,docs/architecture.md + patches/music-off/README.md,verified,$D25C callee 5; 15 location call sites; hook A of music-off patch at 0x173C0
+0x173EC,song_dispatch,docs/architecture.md + patches/music-off/README.md,verified,indices <21 via table 0x17546; index 18 Quiet = no-op 0x17582; hook B at 0x173F4
+0x4323C,save_validation,docs/architecture.md $4323C section,verified,386 bytes; only call site 0x30C; calls $42FC8 $DCE2 $43012 $430F4
+0x42FC8,eeprom_enable_init,docs/architecture.md $4323C section,verified,retry limit $FF014C=10; 8x $80 writes to $200000
+0x42E34,eeprom_clock_seq_a,docs/architecture.md $4323C section,verified,writes $C0/$40/$00 to $200000
+0x42E76,eeprom_clock_seq_b,docs/architecture.md $4323C section,verified,writes $00/$40/$C0/$80 to $200000
+0x42EBA,eeprom_shift_bit_out,docs/architecture.md $4323C section,verified,DI=D0 CLK=D6 on $200000 word
+0x42F96,eeprom_shift_bit_in,docs/architecture.md $4323C section,verified,DO=D7
+0x43012,eeprom_write,docs/architecture.md $4323C section,verified,command out $42EBA x8; ACK via $42F96; retries to 10
+0x430F4,eeprom_read,docs/architecture.md $4323C section,verified,same bit-bang pattern
+0x0DCE2,joypad2_read,docs/architecture.md $4323C section,verified,shared utility NOT save-specific; 8 call sites; $A10005 two-phase
+0xEB772,sound_tick,docs/architecture.md $EB772 section,verified,per-frame sound ONLY (corrects overview); tempo tick to Z80 $A000E6; Ghidra did NOT auto-create
+0xEB806,sound_driver_upload,docs/architecture.md sound routines,verified,0x1576 bytes ROM $EBB6E -> Z80 RAM $A00000; sets PAL flag $FF0222
+0xEB88A,start_song,docs/architecture.md sound routines,verified,sets $FF021E=1; writes $0D/$00 to Z80 $A0000B/$A0000A
+0xEB7C8,stop_sound,docs/architecture.md + patches/music-off/README.md,verified,DEAD CODE in original (0 callers); revived by music-off patch
+0xEBA00,music_streamer,docs/architecture.md $EB772 section,verified,every 16 frames via $EB772; copies $FF bytes $FF0224 -> Z80 $A01600
+0xEBAC6,sound_command_queue,docs/architecture.md $EB772 section,verified,two slots $FF0236/$FF023A; handlers $EBB04/$EBBFE not yet traced
+0xEBA7E,load_song_data,docs/architecture.md sound routines,verified,copies $3FF bytes to Z80 $A000DA region
+0xEB92A,z80_access_prologue,docs/architecture.md sound routines,verified,SR=$2700 + bus request + a0=$A00000
+0xFD07C,runtime_checksum,disasm/map.md checksum section,verified,sums words 0x000000-0xFD07B skipping 0x18C; expects 0x8F33608C; hang at 0xFD0CA
+0x136FC,dictionary_lookup,PROGRESS.md #004 entry,verified,3,466-word dictionary; blob 0x0D6EBA-0x0DC0C0 + offset table 0x0DC0C2
+0x0DD5C,lzss_decompress,PROGRESS.md #004/#005 entries,verified,$DD5C LZSS; all text + graphics streams; re-implemented in tools/extract_text.py
+0x11082,palette_load,disasm/graphics/README.md via tools/render_tiles.py docstring,verified,(table_ptr, slot) -> CRAM via $D9E2/$D9EE
+0x1383C,record_load_96120,docs/maps.md loader chain,verified,loads one $96120 record; returns decompressed pointer in d0
+0x1194A,tilemap_blitter,docs/maps.md blitter section,verified,VRAM word = map word + base; stride in WORDS
+0x11ABC,tile_upload,docs/maps.md loader chain,verified,(count, base, src) -> VRAM
+0x11A7C,tile_upload_dma_a,disasm/graphics/README.md via render_tiles docstring,verified,$1383C -> $11A7C -> $DA04 DMA verbatim
+0x11AE4,sprite_record_load,disasm/graphics/README.md via render_tiles docstring,verified,$B86AE loader; -> $11B2E -> $DA04 DMA
+0x12B82,rng,docs/logic.md 2.5,verified,glibc LCG; $12B82(n) = rand() % n; ~100 call sites; harness-proven
+0x2F030,level_from_xp,docs/logic.md 2.1,verified,smallest L with XP < 100*2^L; max level 8; harness-proven
+0x31958,max_hp,docs/logic.md 2.2,verified,min(20+15*level, 140); harness-proven
+0x31946,max_power,docs/logic.md 2.2,verified,(level+1)*1000; harness-proven
+0x2EA92,price_function,docs/logic.md 3.4,verified,attitude x0.64-x1.36; x2 at location 367; /2 goods special; harness-proven
+0x3B1EE,damage_melee,docs/logic.md 5.1,verified,dead distance term (inverted divs, always 0); harness-proven
+0x3A62E,combat_dispatch,docs/logic.md 4 + docs/spells.md 4,verified,+0x24 selects melee $3B1EE vs giant spell machine 0x3E2D4; harness 44/44
+0x3C2C0,spell_cost,docs/spells.md 3.1,verified,w4 * (modifier+1) * 3; harness-proven
+0x37D0E,power_deduct,docs/spells.md 3.2,verified,clamp; out-of-power HP -5 drain; harness-proven
+0x2155E,world_tick,docs/architecture.md #020 section,verified,step counter $FF0E16 mod 2400; palette fades $170DA; merchant attitude drift +5/-4
+0x1F296,verb_executor,docs/architecture.md #020 section,partial,0x1F296-~0x2077A; $FF00BE=-1 site at 0x20188; full case map is #021 work
+0x0E3B4,terrain_bitmap_decoder,docs/architecture.md #020 terrain section,partial,threaded decoder via $DF58 table; output bitmap $FF1EC0; NO direct callers; entry/stream source unknown

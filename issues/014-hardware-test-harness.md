@@ -20,3 +20,11 @@ A check every build and every mod must pass: it fits the hardware.
 ## Notes
 - Depends on #013. A mod that only works in an emulator is a failed mod.
 
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/hardware-limits.md — full checklist (ROM/RAM/VRAM/CRAM/sprite/CPU/DMA/Z80-bus/no-fault-handler/TMSS budgets from docs/overview.md) + emulator-vs-hardware gap list + tools/test_harness.sh scaffold (build -> gate -> fix-all -> BlastEm headless -> address-log grep for $4323C/$D28E).
+- **Acceptance:** MET: checklist doc; gaps written down. PARTIAL: harness script exists but has never run — BLOCKED on #013 + BlastEm + ROM in this VM. 'Every mod ticks the checklist' is process, adopted via docs/first-mod-proposal.md referencing it.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

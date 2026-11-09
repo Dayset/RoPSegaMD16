@@ -18,3 +18,11 @@ Turn the disassembly into a rebuildable source tree: labelled code in
 ## Notes
 - Depends on #011. This is the file layout #009 assembles.
 
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** Split plan decided and written in disasm/src/README.md (file-per-range table, incbin rules, labels.s) + tools/split_disasm.py — parses disasm/map.md (16 ranges), prints the split, and refuses to emit files until the #011 map + ROM exist (ran this session: dry-run output correct, exit with blocker).
+- **Acceptance:** MET: layout decided. BLOCKED: incbin slices must be copied verbatim from the ROM (absent) and labelled code needs #011 boundaries; no disasm/src/*.s files exist yet, so the 'no linear-sweep files' item is vacuously true, not achieved.
+
+**Status after this session:** in progress — partial (see below). Not marked done.
