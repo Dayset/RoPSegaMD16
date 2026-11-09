@@ -790,6 +790,10 @@ screen never opened with its conditions satisfied.
 proven live, execution outstanding — this is "conditions
 not met", not "cheat false".** Session #4's inconclusive
 is superseded on every point except the final keypress.
+**Superseded by §11 (session #6): the teleport is now
+EXECUTED end-to-end; only the item-acquisition half of
+this paragraph's story changed (see §11.1 for how the
+Map was obtained and §11.2 for the execution itself).**
 
 **Two more pad-2 combos found in code while tracing
 (not in the fan lists consulted):**
@@ -813,3 +817,130 @@ step outside, MAIN → MAP, highlight, pad-2 A+C+Start;
 the $A5 god-mode combo can be verified on the same
 screen visit). §5 item 4's guide-rate question is closed
 by §10.1; F5 is closed by §9.5 + §10.2.
+
+**Session #6 update:** the teleport's final execution is
+DONE (§11) — the Map was granted, not shop-bought (§11.1
+states exactly how and why). The $A5 combo's live
+verification remains open (not attempted in session #6;
+Buc died to a destination encounter first). The rest of
+this list is unchanged.
+
+## 11. Session #6 — LIVE GAMEPLAY III (pad-2 teleport EXECUTED end-to-end)
+
+Driver: same stack as §9/§10 (BlastEm 0.6.3.4, own Xvfb
+:77, scratch HOME with the §10 pad-2 bindings g=A, y=B,
+t=C, h=Start; the driver gained a multi-key hold op for
+the combo). Evidence screenshots:
+docs/logic-audit-evidence/s6-*.png. Scratch ROM/EEPROM
+only; the repo ROM is byte-untouched (MD5 re-verified
+30c18fdb… after the session).
+
+### 11.1 The Map item — purchase attempted in earnest, then granted (labelled)
+
+The purchase route was worked first, for real: a fresh
+game was driven from spawn into the City of the Mind
+twice (the city is immediately east of Buc's cottage)
+and explored across the Academy, harbour, warehouse
+(entered; an indoor encounter there was fought and won,
++48 gold) and residential districts, plus "Someone's
+Home" — building banners named every doorstep reached.
+No BUY menu was ever reached: no shop transaction was
+completed, and no conversation offered one (the two
+conversations found were the beggar-type event of §9.4
+and a knight post whose captain's question, answered
+NO, turned hostile). Buc died three times in the
+attempt (gate Wyvern; two bears in a residential
+district; the knights). Statically, the missing link
+was also pinned down this session: a shop's category is
+chosen in the conversation helper's init (0x2A48A–
+0x2A532) by matching an NPC struct byte (+0x17) against
+each item record's code byte at $D66A2+i·10, gated on
+the NPC's +0x25 byte > 0 — the Map sits in category 13
+(item record 13, w=153: records 153–185, symbols then
+quest items; the Map is slot 6, price record 159, 415
+gold). Which Mind NPC carries category 13's code was
+not isolated before the fallback was taken.
+
+**The grant (exactly this, nothing more):** this
+BlastEm build's debugger cannot write memory at all
+(§8.4: `se` rejects every memory destination), so the
+fallback agreed for this item — grant the item by an
+out-of-game write and label it — was applied one
+level down, in the scratch ROM copy only: byte
+0x2CE3D — the immediate of new-game init's
+`move.b #$1, $FFC340` at 0x2CE3A — was changed
+$01 → $41, and the scratch copy's checksums were
+re-fixed (`tools/checksum.py fix-all`; verify-all OK).
+$FFC340 is the category-13 ownership bitmap (case at
+0x2C0BE in $2BBD2's dispatch: $2B68C($FFC340, slot));
+init stock $01 is bit 0 = "So Sym" (record 153 — why
+every fresh Buc owns one), and $41 adds bit 6 = the
+Map (record 159). In the live granted game the
+debugger read **$FFC340 = $4100** and INVEN → ITEMS
+lists "So Sym / Map" (evidence: s6-inven-map.png).
+This is a granted item, NOT a shop purchase; the
+purchase itself remains uncompleted and is recorded
+as such.
+
+### 11.2 The teleport — EXECUTED
+
+Fresh granted game at spawn (outside: $FF00AE = 1;
+evidence: s6-overworld-before-teleport.png). Leader
+position (slot 0, struct +0xC/+0xE at $FF02C0/$FF02C2)
+read in the debugger before: **(111, 125)** — the
+fixed spawn $1B5D6 writes (see the #020 findings). A breakpoint was
+armed at $3081A. INVEN → ITEMS → Map opened the map
+screen FUN_0001664E (evidence: s6-map-screen-open.png);
+holding pad-1 Right panned the window/highlight east
+to the coastal city south of the east coast (evidence:
+s6-map-screen-destination.png). Pad-2 **A+C+Start**
+(g+t+h held 1.5 s) was then held on the map screen:
+
+- The debugger stopped: **"68K Breakpoint 0 hit" at
+  $3081A** (`link.w a6, #$FFFFFFFE`).
+- Stack at the stop (a7 = $FFEB38): return address
+  **$00016CAE** — the instruction after the
+  `jsr $3081A` at 0x16CA8 in FUN_0001664E's $E0 branch,
+  i.e. the call came from the map screen's pad-2
+  compare at 0x16C72, not from any other $3081A caller;
+  argument words **X = 171, Y = 125** (the highlight's
+  converted coordinates).
+- After continuing, the leader's position read
+  **(171, 125)** — $2570A wrote the destination into
+  +0xC/+0xE exactly as traced in §10.3.
+- Exiting the map screen (pad-1 C) put the overworld
+  on a forested east-coast shore with a lone hut —
+  a different region from spawn (evidence:
+  s6-overworld-after-teleport.png); Buc stepped out
+  of the hut tile and walked under control
+  (s6-destination-step-out.png). Minutes later a
+  random encounter there (Scourge + Knight + Priest)
+  killed him — east-coast fare, far above the spawn
+  area's, incidentally consistent with the relocation
+  being real.
+
+**Verdict: the fan pad-2 teleport cheat is EXECUTED
+end-to-end and is TRUE** — mechanism (§10.3), pad-2
+delivery (§10.3), and now the final keypress, the
+$3081A call, and the before/after coordinates
+(111, 125) → (171, 125) are all runtime-evidenced.
+The only non-standard step in the chain is the Map's
+acquisition (§11.1: granted via a one-byte scratch-ROM
+init patch because no shop sale was completed and
+this debugger cannot write RAM); the gate, the map
+screen, the combo and the relocation all ran through
+the game's own unmodified code paths in the live
+session (the patch touches only the init immediate —
+FUN_0002DCCE, FUN_0001664E, $3081A and $2570A are
+byte-identical to the shipped ROM).
+
+### 11.3 Still open after session #6
+
+Everything in §10.4 except the teleport execution:
+F2, F7's caller, Doggonia fee, $FF012C live, Bribe
+live, Q5's message-id xref, party-name writes,
+(A,B,grp) dispatch, post-harness PC=0, the $A5
+god-mode combo's live verification, and — newly
+sharpened — a genuine shop purchase of the Map
+(category-13 NPC unidentified; the matching rule is
+in §11.1).

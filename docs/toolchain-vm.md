@@ -125,3 +125,8 @@ concluded otherwise — superseded). Recipe:
 - The debugger's `p/x $addr` reads a WORD at even
   addresses (byte at odd results are garbage); return
   addresses come from two word reads at (a7), (a7)+2.
+- Session #6 added a **multi-key hold** step to the
+  driver (`["keys", ["g","t","h"], ms]` — keydown all,
+  hold, keyup all) for pad-2 combos: the map screen
+  polls $FF8646 every loop iteration, so A+C+Start must
+  be *held* (~1.5 s), not tapped.

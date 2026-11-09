@@ -204,3 +204,47 @@ docs/logic-audit-evidence/s5-*.png.
 Doggonia fee, $FF012C live, Bribe live, Q5 xref,
 party-name writes, (A,B,grp) dispatch, post-harness
 PC=0, teleport/$A5 live execution.
+
+## Update 2026-11-09 (session #6, LIVE GAMEPLAY III) — PAD-2 TELEPORT EXECUTED
+
+Full write-up: docs/logic-audit.md §11; evidence:
+docs/logic-audit-evidence/s6-*.png.
+
+- **Pad-2 teleport: EXECUTED end-to-end — the fan
+  cheat is TRUE.** Map screen (FUN_0001664E) open with
+  its conditions satisfied, highlight panned to the
+  east coast, pad-2 A+C+Start held: the debugger
+  stopped at the armed **$3081A breakpoint** with
+  return address **$16CAE** (the map screen's own
+  `jsr $3081A` at 0x16CA8) and stack arguments
+  **X=171, Y=125**; the leader's position moved
+  **(111, 125) → (171, 125)** via $2570A, and exiting
+  the map screen showed the east-coast shore in the
+  overworld. §10.3's "execution outstanding" is
+  closed.
+- **The Map was GRANTED, not shop-bought — labelled
+  plainly.** The purchase was attempted in earnest
+  first (two fresh drives into Mind; Academy, harbour,
+  warehouse and residential districts explored; no
+  BUY menu ever reached; three deaths). The shop
+  category rule was pinned statically meanwhile (NPC
+  +0x17 byte vs item-record code at $D66A2+i·10, gated
+  on +0x25 > 0, init at 0x2A48A; Map = category 13,
+  slot 6). Because this BlastEm build's debugger
+  cannot write RAM at all (§8.4), the grant was made
+  in the scratch ROM copy only: init immediate at
+  0x2CE3D $01 → $41 (`move.b #$41, $FFC340` — bit 6 =
+  Map, alongside the stock bit 0 = So Sym), checksums
+  re-fixed on the scratch copy; live RAM read back
+  $FFC340 = $4100 and INVEN lists the Map. The repo
+  ROM is byte-untouched. A genuine shop purchase of
+  the Map remains uncompleted and is recorded as an
+  open sub-item, not smoothed over.
+- **$A5 god-mode combo: still not live-verified**
+  (Buc died to a destination encounter — Scourge +
+  Knight + Priest — before a second map-screen visit).
+
+**Status stays in progress.** Remaining: F2, F7 caller,
+Doggonia fee, $FF012C live, Bribe live, Q5 xref,
+party-name writes, (A,B,grp) dispatch, post-harness
+PC=0, $A5 live, a genuine Map shop purchase.
