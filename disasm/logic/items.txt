@@ -1,0 +1,28 @@
+Rings of Power — item categories, table $D66A6 (10-byte records, 20 items)
+Record: +0 word name_idx ($CD431, 16-byte entries, CATEGORY word)
+        +2 word w (base index into price table $D6768)
+        +4..+9 bytes (undecoded: see docs/logic.md)
+Item 0 is a dummy (name 'Nobody', w=0). Table ends at $D6768.
+
+ item | name_idx | category   | w   | raw +4..+9
+------+----------+------------+-----+----------------
+   0  |     0    | Nobody     |   0 | 074808140001
+   1  |   146    | spells     |   1 | 074809140001
+   2  |   146    | spells     |  21 | 07480a140001
+   3  |   146    | spells     |  41 | 07480b140001
+   4  |   146    | spells     |  61 | 07480c140001
+   5  |   146    | spells     |  81 | 07480d140001
+   6  |   146    | spells     | 101 | 074800010001
+   7  |   146    | spells     | 121 | 074800010001
+   8  |   146    | spells     | 122 | 074800010001
+   9  |   146    | spells     | 123 | 0243000b0001
+  10  |   147    | rings      | 125 | 06441a020001
+  11  |   148    | services   | 136 | 0357000f0001
+  12  |   150    | keys       | 138 | 045600210001
+  13  |   151    | items      | 153 | 06441b190063
+  14  |   152    | goods      | 186 | 06161c040001
+  15  |   153    | crafts     | 211 | 05561405270f
+  16  |   155    | healing    | 215 | 070d00210001
+  17  |   154    | papers     | 220 | 002f00010001
+  18  |   152    | goods      | 253 | 064419030001
+  19  |   149    | drinks     | 254 | 00000000009d

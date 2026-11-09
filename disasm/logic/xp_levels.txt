@@ -1,0 +1,27 @@
+Rings of Power — XP / level tables (derived from code, harness-verified)
+Level function $2F030 (0x2F030): level = smallest L with XP < 100*2^L
+  thresholds: 100, 200, 400, 800, 1600, 3200, 6400, 12800
+  (there is NO XP table in the ROM — the thresholds are a formula,
+  $2F05A(level, 100) = 100*2^level, recursive.)
+Max HP $31958 (0x31958): min(20+15*level, 140)
+Max Power $31946 (0x31946): (level+1)*1000
+XP cap 13000 (XP handler 0x2C4E2); gold cap 15000 (0x2C474).
+
+ level | XP range        | max HP | max Power
+-------+-----------------+--------+----------
+   0   |     0..   99     |   20   |  1000
+   1   |   100..  199     |   35   |  2000
+   2   |   200..  399     |   50   |  3000
+   3   |   400..  799     |   65   |  4000
+   4   |   800.. 1599     |   80   |  5000
+   5   |   1600.. 3199     |   95   |  6000
+   6   |   3200.. 6399     |  110   |  7000
+   7   |   6400..12799     |  125   |  8000
+   8   | 12800..13000     |  140   |  9000
+
+Note: level 8 needs XP >= 12800 (100*2^7 = 12800 is NOT > 12800,
+so $2F030(12800) = 8). Max level is 8, not 7 (harness-proven).
+Corrected 2026-11-09 during verification: the first version of this
+table listed the ranges one level too high (level 0 as 0..199 etc.),
+contradicting both the formula and the harness's own expected values
+(XP 100 -> 1, XP 200 -> 2, XP 12800 -> 8).

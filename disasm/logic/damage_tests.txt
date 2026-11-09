@@ -1,0 +1,26 @@
+Rings of Power — $3B1EE damage test vectors (harness, all PASS)
+Setup: $3B1EE(attacker=0, target=1, base=60). Attacker slot 0:
+  +0x28=0x0500 (atk stat 20), +0x2C=0x0200 (bits8-9=2), pos (0,0).
+Target slot 1: +0x28=0x5000 (def stat 10), +0x2C=0x0100 (bits8-9=1),
+  pos (3,4) (distance 5), HP 100. Each case resets target HP=100,
+  $FFC37C=-1, $FFC380=0; stores d0, target HP, $FFC380.
+Formula (verified): d0 = atk*base>>5 + base - def*base>>5
+  + base/(dist+2) [DEAD TERM: always 0, see docs/logic.md]
+  + ((att+0x2C>>8)&3)*base>>4 - ((tgt+0x2C>>8)&3)*base>>4
+  then order switch on attacker +0x18 low nibble:
+  rank 7/8: dmg=(order_high+1)*2; rank 9: dmg=order_high+1;
+  else: dmg=dmg/3+1. Special $FF012C: 0x8E-0x92 -> 70; 0x97 -> 5.
+  Immunity: struct[+0x27].+0x02 == 0x4D skips HP subtraction.
+
+ case | condition            | d0 | tgt HP | $FFC380
+------+----------------------+------+--------+--------
+  D1  | order 0x00           | 28 |   72   |   28
+  D2  | order 0x27           |  6 |   94   |    6
+  D3  | order 0x38           |  8 |   92   |    8
+  D4  | order 0x49           |  5 |   95   |    5
+  D5  | $FF012C=0x8E         | 70 |   30   |   70
+  D6  | $FF012C=0x97         |  5 |   95   |    5
+  D7  | immunity +0x02=0x4D  | 28 |  100   |   28
+
+D1 arithmetic: 20*60>>5=37, +60, -10*60>>5=18 -> 79; +0 dead term;
++2*60>>4=7, -1*60>>4=3 -> 83; 83/3+1 = 28 (divs truncates).
