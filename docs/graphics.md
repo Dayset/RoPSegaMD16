@@ -128,3 +128,87 @@ packed→planar conversion and the game displays correctly on
 hardware/emulator. Unresolved here; it constrains #016 and the
 #024 exporter (reproduce what the game displays). See
 `docs/tiles-sprites-palettes.md`.
+
+## 5. Runtime VDP capture (2026-11-09, session #3 — BlastEm debugger, ORIGINAL ROM)
+
+Method: BlastEm 0.6.3.4 under Xvfb, debugger driven over a PTY
+(`blastem -d` on a scratch copy of the verified ROM). Register
+state read with the debugger's `vr` at breakpoints on the setup
+routines; screens stepped deterministically with `a 1272`
+(advance to next VBlank handler). Frame counts below are
+$FF0010 VBlank counts relative to $14FB6 entry where noted.
+Everything in this section was observed, not inferred.
+
+### 5a. Per-screen register sets — captured
+
+| # | Screen state (breakpoint) | R1 | A | Win | B | SAT | HScr | R11 | Size |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Boot table just written (0x242) | $14 off | $C000 | $F000 | $E000 | $D800 | $DC00 | 0 | 64×32 |
+| 2 | After $A14 set (0x334) | $34 off | $A000 | $C000 | $A000 | $DC00 | $2000 | **3 line** | 128×32 |
+| 3 | Boot animation, display on (0x388) | $74 on | $A000 | $C000 | $A000 | $DC00 | $2000 | 3 line | 128×32 |
+| 4 | $11E06 entry (pre-setup) | $34 off | $A000 | $C000 | $A000 | $DC00 | $2000 | 3 line | 128×32 |
+| 5 | $14FB6 entry (post-$11E06) | $74 on | $0000 | $1000 | $0000 | $2400 | $2000 | 0 full | 128×32 |
+| 6 | Intro screen A (+600 VBlanks) | $74 on | $2000 | $F000 | $0000 | $4400 | $4000 | 0 full | 128×32 |
+| 7 | Intro screen B (+1800 VBlanks) | $74 on | $2000 | $F000 | $0000 | $4400 | $4000 | **3 line** | 128×32 |
+| 8 | Main loop $D28E entry, +600, +2400 | $74 on | $0000 | $1000 | $0000 | $2400 | $2000 | 0 full | **64×32** |
+
+Confirmations/corrections against §1–§2:
+- §1a boot table and §1c $A14 set are **confirmed value-for-value
+  at runtime**, including R10 ($FF boot / $01 in $A14), R15
+  (1 → 2), and the DMA fill setup (length $FFFF, type Copy).
+- $A14's R11 = $03 (**per-line H-scroll**) is now explicit —
+  the boot animation (state 3) runs in line-scroll mode, with
+  $4E6 writing the $2000 H-scroll table.
+- State 4 = state 2 with R10 back to $FF: $119E writes
+  $8AFF after the animation, before $D25C.
+- State 5 confirms the $11E06 static decode exactly ($8512 →
+  SAT $2400; R17=$80; display turned ON at $11E06's exit).
+- The **intro driver reconfigures the VDP per screen** (states
+  6–7 are neither the boot nor the $11E06 set): planes move to
+  $2000/$F000/$0000, SAT to $4400, H-scroll table to $4000,
+  and R11 flips between full (screen A) and line (screen B)
+  scroll on the same bases.
+- By main-loop entry (state 8) the $11E06 bases are back, but
+  **R16 is $01 (64×32), not $11E06's $03** — a later setup
+  pass in the intro-exit/new-game-init path shrinks the
+  planes (the single write was not isolated in this trace).
+
+### 5b. Draw trace — the $11E06 → intro-screen transition
+
+Breakpoint/backtrace trace across the transition (window:
+$11E06 entry → intro screen build), all observed:
+
+- **$11E06 itself issues no DMA.** Registers go through
+  $D9E2; the VRAM clear is CPU work: $DC60(0) + a $D9EE
+  data-port loop ($8000 words), then $DC60 again; palettes
+  via $11082 → CRAM.
+- **Tile uploads are DMA via $11A7C → $DA04:** 13 consecutive
+  sampled $DA04 hits in the window *all* return to 0x11A98
+  (inside $11A7C) — the decompressed-graphics path of §2,
+  driven by the intro code after $14FB6 entry.
+- **Nametables are built by the $1194A blitter** from the
+  intro draw cluster at $15ECE–$15FA0 (4 sampled hits, all
+  from that cluster, inside $14FB6's screen builders).
+- **Window/text rows** are written via $DC60 with addresses
+  $F000, $F080, $F100, … (step $80 = one 64-cell row) in the
+  intro configuration (Window base $F000).
+- **The sprite table is written entry-by-entry by CPU**
+  ($DC60(SAT base) observed live, caller $11B84 in $11B76):
+  see docs/tiles-sprites-palettes.md §6 for the writer
+  routine ($11BD8) and the base variable ($FF8644).
+- Per-frame in the main loop, $1B918 remains the only redraw
+  dispatcher (flags $FF0098/$FF009A/$FF009C — §3), and the
+  tile re-upload it performs when $FF0098 is set is a single
+  $DA04 DMA of $33C0 words from the $FF1EC0 scratch buffer
+  to VRAM $FF8674<<5 (read from the code at 0x1B9D0–0x1B9E8).
+  Sprites are **not** re-uploaded per frame; SAT entries
+  persist in VRAM until a draw routine rewrites them.
+
+### 5c. The packed/planar paradox — runtime note
+
+No packed→planar conversion step appears in any traced draw
+path this session (uploads are the verbatim $11A7C/$11AE4
+DMAs; sprite pattern words reference the uploaded tile
+indices directly). The paradox of §4 stands unresolved, but
+the runtime evidence narrows it: whatever the VDP is fed, it
+is fed unconverted on every path traced.
