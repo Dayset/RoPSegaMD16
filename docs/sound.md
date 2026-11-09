@@ -88,3 +88,33 @@ machine): extract ROM `$EBB6E–$EC1E4` (1,576 bytes) and disassemble
 as Z80 (Ghidra `z80:BE:16:default` or equivalent), identify the
 YM2612/PSG register-write loops, and locate the SFX table the
 `$EBB04`/`$EBBFE` handlers consume. **Blocked in this VM: no ROM.**
+
+## Z80 driver map — first pass (issue #018, 2026-11-09)
+
+The blob the 68K uploads at `$EB806` (ROM `$EBB6E`, **0x1576
+bytes** — the map's hex figure; it loads at Z80 address 0x0000)
+was disassembled with `tools/disasm_z80.py` (z80dis). First-pass
+structure:
+
+| Z80 addr | Content |
+|---|---|
+| 0x0000 | Reset: `LD HL,0x1FFF; LD SP,HL; JP 0x017D` — stack at top of the 8 KB Z80 RAM window |
+| 0x0008–0x003F | RST/interrupt vectors: all `RETI` + NOP padding (interrupts acknowledged, unused) |
+| 0x000A, 0x000B | **Command mailbox bytes** inside the vector page — the main loop polls them; the 68K writes commands here through the bus |
+| 0x0040–0x00A5 | NOP padding |
+| 0x00A6–0x00D9 | Zero-filled data/variables (52 bytes) |
+| 0x00E0 | Song-data pointer variable (read by the command handlers) |
+| 0x00F1–0x014C | 92 bytes of 0xFF — a data table (or filler), NOT code (it decodes as `RST 0x38` runs) |
+| 0x0174/0x0176/0x017C | Driver state variables (pointers + a mode flag read by both command handlers) |
+| **0x017D** | **Main entry**: `DI`, programs YM timer register 0x27 via the write helper, then the poll loop at **0x0188**: reads mailbox 0x000A — nonzero & ≠0xFF → call 0x01C0; 0xFF → call 0x01E1; then mailbox 0x000B == 13 → call 0x08F8; clears 0x000B and loops |
+| 0x01B4 / 0x01BA | YM2612 part-1 write helpers: store A to 0x4000 (register select) / 0x4001 (data) |
+| 0x01C0 / 0x01E1 | The two mailbox command handlers: both consult the 0x017C mode flag and the 0x00E0 pointer, call 0x0498, then walk (command, parameter) pairs from a table at 0x02CB |
+| 0x0498 | Called by both handlers: writes the ROM bank switch (0x6000) twice, then YM part-2 helpers at 0x04B9/0x04BF (0x4002/0x4003) — the "point at song data in the right bank" step |
+| 0x08F8 | Mailbox-0x000B command-13 handler |
+| 0x0972+ | PSG writer: stores to 0x7F11 (8 write sites in its block) |
+
+Caveats: this is a linear-sweep first pass — data tables inside
+the blob (beyond the two identified above) decode as nonsense
+instructions, and routine boundaries beyond the entry points
+named here are not yet verified. The full listing regenerates
+with `tools/.venv/bin/python tools/disasm_z80.py`.
