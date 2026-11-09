@@ -1618,6 +1618,203 @@ not yet empty. (The main line marked #021 done on its
 own acceptance; the two lines' status/claim differences
 are reconciled, with verdicts and evidence, in
 docs/reconciliation-2026-11-09.md.)
+
+## 14. Session #9 — seller isolated STATICALLY to a 44-template set; purchase attempted a third time, blocked at the spawn diamond's east corridor (2026-11-09)
+
+### 14.1 The seller, statically: the blind sweep now has a target set
+
+The $2A454 conversation scan (session #6, §12.12) keys on two
+entity-struct bytes: **+0x17** must equal a category record's
+shop code ($D66A2+i·10) and **+0x25** must be > 0. This session
+read the whole category table's +2 bytes and the spawner's two
+template paths:
+
+- **Shop codes by category** ($D66A0, 20 records × 10 B, the +2
+  byte): cat 0=0, 1=8, 2=9, 3=10, 4=11, 5=12, 6=13, 7=0, 8=0,
+  9=0, 10=0, 11=26, 12=0, **13=0**, 14=27, 15=28, 16=20, 17=0,
+  18=0, 19=25. **The Map's category (13) has shop code 0** — the
+  Map is vended by the code-0 generalist shopkeepers, the most
+  common kind, through any real shopkeeper conversation's BUY
+  menu (categories are menu-side, §12.12). The live test stays
+  $FF02A8 ≠ 0x7530.
+- **Only type-1 spawns can be shopkeepers.** The $23B84 spawner's
+  type-1 path copies template $CF1AC byte+0xF → struct +0x25;
+  the type-4 path ($CECF0 6-byte records) executes
+  `clr.b` on +0x25 at 0x2410C — type-4 entities can never pass
+  the $2A454 test, whatever their +0x17.
+- **44 candidate templates.** Scanning all 200 type-1 templates
+  ($CF1AC, 24 B each; struct +0x17 = template byte+3, struct
+  +0x25 = template byte+0xF): exactly **44** have byte+3 in the
+  shop-code set AND byte+0xF > 0 — template IDs 13, 14, 15, 16,
+  17, 18, 79, 80, 81, 82, 83, 84, 88, 89, 90, 93, 95, 97, 99,
+  116, 125, 131, 134, 135, 136, 140, 141, 144, 151, 152, 157,
+  161, 168, 169, 173, 174, 177, 178, 179, 180, 181, 182, 183,
+  185 — and **all 44 have byte+3 = 0** (code-0 generalists, as
+  the category-13 code predicts). Eight further templates have
+  byte+0xF > 0 with byte+3 ∈ {39, 70, 72} — not shop codes
+  (guild/teacher-like records; they can never sell).
+- **Placement is still not in the template data.** Which of the
+  44 spawn in Mind is decided by location records whose loader
+  was not isolated this session (the routine at $2595A first
+  suspected is the party-recruit routine, not the loader). The
+  decisive in-Mind identification therefore remains live, but
+  it no longer needs conversations: **the slot census** — for
+  each occupied slot k (struct at $FF02B4+0x34k), read the word
+  at +0x16 (low byte = +0x17) and the word at +0x24 (low byte =
+  +0x25); a slot with +0x17 ∈ {0,8,9,10,11,12,13,20,25,26,27,28}
+  ∧ +0x25 > 0 is a shopkeeper, and its +0xC/+0xE give its
+  position to walk to. One debugger pass over ~10 occupied
+  slots replaces the conversation sweep.
+
+### 14.2 The live run (third attempt)
+
+**Environment.** The VM was replaced mid-session (~22:03 CST):
+/tmp was wiped (session #8's /tmp/rop8 EEPROM backups and this
+session's pre-wipe evidence PNGs are lost) and BlastEm/xdotool/
+Xvfb were uninstalled; all were reinstalled from Ubuntu pool
+debs. **The 970-gold EEPROM survived** in session #7's scratch
+HOME under ~/workspace (MD5 c1899430aabb015afbb79268d734b915)
+and the live rig was rebuilt persistently at
+`~/workspace/agents/1c7ce071-c3e7-419e-8505-0c033eecfe46/rop9live/`
+(driver + clean ROM + home + `save-970.eeprom` backup +
+`evidence/`).
+
+**Pre-wipe run** *(numbers transcribed in-session; the PNGs are
+lost — the session-#7 labelling precedent)*: restore verified
+(gold 970, (109,130), HP 15, Food 1472 / Water 1792, clock
+2068); post 1 tax paid 970→820 (third live confirmation of the
+150-per-post rule, §12.13); post 2 tax paid 820→670; the wipe
+hit on the valley road north of post 2.
+
+**Post-recovery run 1.** Restore identical. **Camp ×2 executed
+properly** (B-pick): Food −100/−100 (1472→1272), Water
+−100/−100 (1792→1692), HP 15→20, second camp landing past the
+540 dawn boundary (clock read 560 after a third camp in run 3)
+— §8's Camp accounting confirmed again, no encounter on either
+camp. Travel east stalled at the mountain-band foot (§14.3).
+Walking north from the tower forecourt entered the pond-village
+location (anchor (109,124)) where the **beggar event** fired:
+refusal → fight vs the pair (combat names **BARNE** and
+**OPUL**; the field examine names the standing man **OGNON, a
+townsman, mood hostile**; the beggar is Evin, §9). Won by STUN
+rounds: **+6 XP / +20 gold (970→990), Buc HP 20→6**. Walking
+south, a **bear** random encounter killed Buc at HP 6 (the bear
+survived 15 STUN damage; its hits read 8 and 2) → game reset.
+
+**Run 2.** A **wyvern** encounter fired at the restore point
+itself, before any menu opened (menu-navigation direction taps
+became world steps once the encounter pre-empted the menu —
+§14.4's Return lesson was learned here). The wyvern's spells
+are **Spark** (≈13 damage) and **Earth**; Buc went 15→2→0 →
+reset. A solo level-1 Buc cannot field enough HP for this
+region's high-tier encounter table; survival is save-anchoring
+plus luck, exactly as in sessions #4–#8.
+
+**Run 3.** Camps ×3 (dawn, clock 560; Food 1172; HP 20) and an
+in-game **SAVE banked** ("GAME SAVED."; 970 gold). Then:
+
+- A field conversation with the beggar pair (entity slot 3;
+  **$FF02A8 = 0x7530 sentinel** — the pair are not shopkeepers,
+  again) charged **−50 gold by an unidentified conversation
+  option** (970→920; the beggar's "OH THANK YOU SIR" text
+  followed). This was **not** the §9 event — the event's
+  YES/No prompt fired separately, minutes later, on the same
+  plateau. Best hypothesis: a 50-gold purchase inside the
+  conversation's BUY menu by a stray pick; INVEN was never
+  inspected afterwards. **OPEN micro-question** (one INVEN
+  screenshot next session settles it — if a 50-gold item is
+  there, the mystery is a purchase, not a gift).
+- The **beggar event** fired on the plateau and was refused;
+  the fight was won a second time (both enemies down —
+  "To DED / To DED"; **+6 XP / +20 gold → 940; Buc HP 14**).
+- **Save zoning is finer than inside/outside**: SAVE was
+  refused on the pair's battleground and again at the
+  stump-arch tiles ("YOU CAN ONLY SAVE THE GAME WHILE
+  OUTSIDE.") and accepted after a short walk west — the
+  banked anchor was 940 gold / HP 14 / Food ≈1100 at the
+  plateau. When a save refuses, walk a few tiles and retry.
+- The **MAP verb was tested without the item**:
+  "YOU MUST HAVE A MAP AND BE OUTSIDE." — definitive. There
+  is no map screen (and no §11 pad-2 teleport) before owning
+  the Map; the purchase is gated on walking, as designed.
+
+The run ended at the spawn diamond (§14.3). The in-RAM 940
+save was then **lost** when the emulator had to be SIGKILLed
+to clear a stuck debugger state (no exit flush — §14.4); the
+on-disk resume anchor is again the **970-gold EEPROM**
+(rop9live `save-970.eeprom`, MD5 c1899430…), on which the
+beggar is alive and the pair's conversation has not been
+opened. **Mind was not reached; no Mind conversation was
+opened; the purchase was not completed. Verdict: 2(b)
+remains OPEN** — but the seller question is now a 44-template
+set plus a one-pass census recipe (§14.1), and the blocker
+is one ridge (§14.3), not the search space.
+
+### 14.3 The east corridor out of the spawn diamond — the exact blocker
+
+Buc's repeated tile at the mountain band's **west foot** (north
+of the inlet, south of the tower) was probed with single
+1.3 s holds + provision deltas + zoomed screenshots
+(evidence `s9-zoom-foot.png`):
+
+- **NE is the ridge** and **SE is the inlet corner** — both
+  blocked (facing turns only). Exits from the foot tile are
+  NW/SW only. Blocked attempts are **not** free: the step
+  handler still charged provisions (Food fell steadily across
+  the probing; ≈1070 remained of 1472 — never the binding
+  constraint; Water ≈1692).
+- The **tower forecourt** (reached from the foot by NW×2 +
+  NE×2, re-proven this session) does not step east either —
+  the tower's collision extends east of its door tile (two
+  1.4 s Right holds: charges, no step).
+- The road visible **east of the ridge** (tower → inlet
+  bridge → north-east, out of the diamond) was never entered
+  from the west side. Two micro-routes remain untested, each
+  a short test next session: **(a)** the pond village's
+  **east edge** (the (109,124) location; its only visit ended
+  in the beggar fight and the bear death before any eastward
+  exit was tried), and **(b)** the lake's **south shore**
+  (around the lake's east end through the south neighbour
+  diamond). The §13.2 recipe otherwise stands.
+
+### 14.4 Driver/rig lessons (for the next session)
+
+- **Start is xdotool `Return`, not `enter`.** Run 2's menu
+  failures (and the stray steps that fed the wyvern) trace to
+  this. The bindings in the rig's blastem.cfg: `enter
+  gamepads.1.start` names the SDL key *Return*.
+- The MAIN menu **remembers its position** (opens on INVEN
+  after first use); CAMP = INVEN + 5×Down, SYSTEM = + 6×Down;
+  screenshot-verify the highlight before picking — menu
+  navigation occasionally double-steps. (Both attempts to
+  pick MOVE landed on INVEN; MOVE's own behaviour is still
+  unobserved.)
+- Conversations: A does not execute menu picks; **B = PICK,
+  C = OUT**; message pages advance on B (the dpad overlay's
+  ACT), not A.
+- BlastEm's debugger can fall into an **instant re-halt on
+  every continue** (PC displayed 0x12D0, the Z80 bus-wait
+  `dbra`) after breakpoints are armed; `db` did not clear it;
+  a full emulator restart did (at the cost of the unflushed
+  in-RAM EEPROM — bank a copy of the live home's save file
+  before restarting a rig mid-run). On a fresh instance the
+  debugger is entered reliably with a plain `key u` hold,
+  then `dbgc` commands.
+- Mid-combat reads of $FF0304 (leader HP cur) **rose twice**
+  (6→12 across a fight boundary; 10→14 mid-fight) — treat
+  single mid-combat HP reads as unreliable (damage appears
+  staged before it lands); death-at-0 and post-fight reads
+  were consistent throughout.
+
+### 14.5 #037 (session #9)
+
+The cutscene trace advanced statically and by two live
+breakpoint tests; both candidates collapse into the shared
+movement/compositing stack and the patch gate remains unmet
+— **no patch built**. Full log in
+issues/037-original-engine-rendering-fix.md (session #9
+entry).
+
 # Rings of Power — logic-flaw audit (issue #021)
 
 **Date:** 2026-11-09. **Status:** done. **Scope:** consolidate and audit
