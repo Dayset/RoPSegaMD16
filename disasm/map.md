@@ -148,7 +148,7 @@ of the loop reproduces the constant exactly):
 | `0x010000–0x043FFF` | 208 KB | Code + embedded strings/tables | verified | Ghidra 11.4.2 (#011): 368 functions covering 192,300 B (90.3%); rest is embedded data/strings; `jsr $4323C` target lives here; 100+ spaced strings per 64 KB; entropy ~6.0 |
 | `0x044000–0x05FFFF` | 112 KB | NOT code; codec unidentified (see #017) | verified (not code) | Ghidra (#011): 0 functions in range. #017 tests: full $DD5C scan = only false positives on structured records; Nemesis header doesn't parse (tile count 1); 55×10-byte records at head (0x044000–0x044226). Entropy 7.0–7.24; threaded-decoder stream hypothesis (#020) stands |
 | `0x060000–0x093FFF` | 208 KB | Compressed data (NOT raw tiles — see #005) | verified (not tiles) | Noise in every tile layout (packed/planar); this range is the start of the `$96120` compressed streams (`0x09638C–0x0B86AE`); the "tile graphics" label was wrong — corrected in #005 |
-| `0x094000–0x0CBFFF` | 224 KB | Compressed data | provisional | Entropy 7.2–7.57 (highest in ROM); few strings |
+| `0x094000–0x0CBFFF` | 224 KB | Compressed data — `$DD5C` LZSS record tables (`$96120` + `$B86AE`) | verified | 62/62 + 90/90 records decompress cleanly (#005/#006); see `docs/compression-audit.md` |
 | `0x0CC000–0x0D7FFF` | 48 KB | Sparse tables (map data?) | provisional | Entropy 4.6–5.3, 28–44% zero bytes |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |
 | `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | likely | ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
