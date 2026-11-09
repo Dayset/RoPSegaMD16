@@ -114,3 +114,50 @@ either/or, F7's caller proof, Doggonia fee, item-record
 the (A,B,grp) executor-dispatch half, post-harness PC=0.
 All need driven gameplay or deeper static work — itemised
 in docs/logic-audit.md §5.
+
+## Update 2026-11-09 (session #4, LIVE GAMEPLAY — input driver built)
+
+Full write-up: docs/logic-audit.md §9; screenshots in
+docs/logic-audit-evidence/; driver recipe in
+docs/toolchain-vm.md (BlastEm input-driver section).
+
+- **Input driver: BUILT (route (a)).** xdotool under Xvfb
+  drove the full game twice (title → new game → overworld →
+  town/menus/dialogue → Camps → two battles). Route (b)
+  (RAM pad injection) was not needed; the debugger was used
+  alongside via the `u` key on the same PTY.
+- **Live combat: CLOSED (§5 item 1).** Breakpoint stops at
+  $3B1EE in the Evin fight read return address 0x3A846
+  three times running — **the live caller is $3A842 in
+  $3A62E**; $3B094 and $40880 never fired. Battle won:
+  +6 XP, +20 gold (all values debugger/HUD-verified).
+- **F5: REFUTED for non-level-up grants** — Buc ended at
+  HP 7/20 after the +6 XP grant. Level-up half untested.
+- **F9: dispatch half answered** (path above; args
+  3, 1, 0xB, $FFFF, a0 = slot 5 recorded). Field-writing
+  half still open.
+- **Debug mode: runtime-closed** — SYSTEM panel drawn
+  live ("DIAGS: ON"), toggled OFF/ON via the menu with
+  $FF0134 reading 0 then 1 in the debugger (the §8.2
+  set-1), HELP toggled too.
+- **Camp: live-confirmed §8.1** — controlled Camp measured
+  Food/Water at exactly −100 each; clock set to the 0/540
+  boundaries exactly. NEW sub-item: provisions also drain
+  outside Camp over travel/time (totals exceed Camp's
+  accounting in both long intervals); mechanism unfound.
+- **Q5: trigger ANSWERED** — the Void dream ("You DREAM
+  OF THE DEMON VOID…") is a Camp rest event; fired once
+  (first sleep-until-dawn camp), absent in 3 other camps.
+  The message-id xref / timer half remains static work.
+- **Beggar event (incidental):** YES = −50 gold exactly
+  (observed twice, 1000→900); NO = the beggar (Evin)
+  attacks. Buc = slot 1 verified from the live side
+  (XP landed at $FF0302 — §6's fan-PAR slot).
+- **Pad-2 teleport: inconclusive** (combo sent via
+  config bindings; no relocation observed; bindings
+  themselves unverified).
+
+**Status stays in progress.** Remaining: F2, F7 caller,
+Doggonia fee, $FF012C live, Bribe live, F5 level-up half,
+extra provision drain, Q5 xref, party-name writes,
+(A,B,grp) dispatch, post-harness PC=0.

@@ -89,3 +89,39 @@ GNU as 2.42, BlastEm 0.6.3.4) — deliberate, so results transfer.
   target when it lands.
 - A full #013 rebuild gate run — still blocked on #012 emission
   (disasm/src/ doesn't exist), not on tooling any more.
+
+## BlastEm input driver (added 2026-11-09, session #4)
+
+Driven gameplay IS possible in this VM (sessions #2/#3
+concluded otherwise — superseded). Recipe:
+
+- Install **xdotool** from the Ubuntu pool (xdotool +
+  libxdo3 3.20160805.1-5.1build1, plus libxtst6 from
+  pool/main/libx/libxtst). `apt-get install` cannot find
+  it (partial lists), fetch the .debs directly as usual.
+- Use a **fresh Xvfb display** (e.g. :77, no -auth). The
+  pre-existing xvfb-run displays (:99+) carry an
+  Xauthority file that makes SDL fail with "x11 not
+  available" for any other process.
+- Run BlastEm **windowed** (`-g -l rop.gen`, SDL dummy
+  audio) with HOME pointed at a scratch dir holding
+  `.config/blastem/blastem.cfg` = /etc/blastem/default.cfg
+  + pad-2 keyboard bindings (default.cfg binds only pad 1:
+  arrows/A/S/D/enter; `u` = debugger, `p` = screenshot,
+  backtick = save state). Launch it on a **PTY** so the
+  debugger (`u` key, then typed commands) shares stdin.
+- Focus with `xdotool windowfocus` (no WM needed);
+  `xdotool keydown/keyup` with controlled hold times.
+- **Hold-time rules learned:** walking/menus differ.
+  In queue-driven menus ~70 ms presses step once; ~110 ms
+  can double-step (the 3-frame debounce re-queues held
+  buttons, #021 Q3); <40 ms presses are eaten. Confirm =
+  B, message advance = A, cancel = C, Start = MAIN menu.
+- **PTY pitfall:** debugger commands typed while the game
+  is running stay buffered in the PTY and are consumed by
+  the NEXT debugger entry (a buffered `c` makes later
+  entries auto-continue). Drain by re-entering until an
+  entry holds at the prompt; never queue spare `c`s.
+- The debugger's `p/x $addr` reads a WORD at even
+  addresses (byte at odd results are garbage); return
+  addresses come from two word reads at (a7), (a7)+2.
