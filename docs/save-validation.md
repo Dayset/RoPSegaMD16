@@ -82,3 +82,37 @@ Recorded as an open sub-item, not filled in by guessing.
 3. Trace `$FF0168` readers → state mapping (item 4 above).
 4. Byte-corruption matrix on the sum check → forgeability verdict
    for the #021 audit question 1.
+
+## BlastEm EEPROM experiments (issue #019, 2026-11-09)
+
+Run in the VM against both the original ROM and the M5 rebuild
+(identical behaviour, as expected — the rebuild is byte-equal).
+
+**Save file.** Booting creates
+`~/.local/share/blastem/<rom-name>/save.eeprom`, exactly
+**128 bytes** — matching the serial-EEPROM size the code
+expects. After attract-mode-only boots its contents are
+**all 0xFF** (erased EEPROM; no save is written without
+gameplay input). On later boots BlastEm logs
+`Loaded EEPROM from …/save.eeprom`.
+
+**Bus activity at boot.** BlastEm's log line
+`EEPROM address 200000: sda read: 7, sda write: 80, scl: 40`
+shows the game's init/validation bit-banging the $200000 bus
+during boot even with an erased EEPROM — consistent with the
+$42FC8 enable/init + $4323C validation path running on every
+boot, not only when a save exists.
+
+**Debugger inspection (PTY, BlastEm -d).** A breakpoint at
+$4323C (save validation) hits during boot. At that first hit,
+`p/x $ff0168` (the save-present flag) reads **0** and the
+buffer at $FF016A+ reads **0** — i.e. at validation entry the
+RAM buffer is still in its cleared state; the EEPROM read
+($430F4) that fills it happens inside the routine, as the
+static trace said. A breakpoint at $D28E did **not** hit
+within 20–30 s in debugger mode (the main loop IS reached in
+plain headless runs — see the #014 address log), so
+post-validation buffer contents and the new-game save flow
+were not captured headless; they need input injection or a
+human at the emulator. That is the precise reachability limit
+of this session, not a gap in the static analysis.
