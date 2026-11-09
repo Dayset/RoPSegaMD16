@@ -10,7 +10,7 @@ __pycache__/
 *.pyc
 build/
 *.ips
-!patches/*.ips
+!patches/**/*.ips
 # Ghidra
 *.gpr
 *.rep/
