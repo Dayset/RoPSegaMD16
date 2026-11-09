@@ -1,6 +1,7 @@
 # Issue #009 — Rebuildable byte-identical disassembly
 
 **Milestone:** M5  
+**Epic 1**  
 **Status:** open
 
 ## Goal

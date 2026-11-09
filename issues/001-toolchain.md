@@ -1,6 +1,7 @@
 # Issue #001 — Toolchain: Ghidra + Capstone + assembler + emulator
 
 **Milestone:** M1
+**Epic 1**  
 **Status:** done (2026-11-09)
 
 ## Goal

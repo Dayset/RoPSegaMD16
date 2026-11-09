@@ -1,6 +1,7 @@
 # Issue #006 — Maps / world data
 
 **Milestone:** M3  
+**Epic 3**  
 **Status:** open
 
 ## Goal

@@ -1,6 +1,7 @@
 # Issue #002 — First linear disassembly + code/data map
 
 **Milestone:** M1
+**Epic 1**  
 **Status:** done (2026-11-09)
 
 ## Goal

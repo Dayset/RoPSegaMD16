@@ -1,6 +1,7 @@
 # Issue #003 — Entry point, vectors, VBlank/HBlank interrupts
 
 **Milestone:** M2  
+**Epic 2**  
 **Status:** open
 
 ## Goal

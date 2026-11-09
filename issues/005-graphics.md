@@ -1,6 +1,7 @@
 # Issue #005 — Graphics: tiles, sprites, palettes, compression
 
 **Milestone:** M3  
+**Epic 3**  
 **Status:** open
 
 ## Goal

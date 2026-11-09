@@ -1,6 +1,7 @@
 # Issue #007 — Game logic: stats, XP, gold, combat
 
 **Milestone:** M4  
+**Epic 2**  
 **Status:** open
 
 ## Goal

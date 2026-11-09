@@ -10,7 +10,9 @@ reassembles byte-identical to the original ROM — plus a patch workflow so
 changes (text, stats, spells, balance, fixes) can be made, verified, and
 tested in an emulator.
 
-Status: **just started, 2026-11-09.** Toolchain + first disassembly in progress.
+Status: **M1 done 2026-11-09** (toolchain + first disassembly).
+Project overview — epics, rebuild contract, hardware limits, structure,
+graphics pipeline: [docs/overview.md](docs/overview.md).
 See [PROGRESS.md](PROGRESS.md) and [issues/](issues/).
 
 ## The ROM (you supply your own dump)

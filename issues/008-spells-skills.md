@@ -1,6 +1,7 @@
 # Issue #008 — Spells / skills system
 
 **Milestone:** M4  
+**Epic 2**  
 **Status:** open
 
 ## Goal

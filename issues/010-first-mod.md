@@ -1,6 +1,7 @@
 # Issue #010 — Patch workflow + first mod (target TBD)
 
 **Milestone:** M6  
+**Epic 4**  
 **Status:** open
 
 ## Goal

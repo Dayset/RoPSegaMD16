@@ -1,7 +1,10 @@
 # Issues
 
-Local issue tracker until this is a GitHub repo — then these become GitHub
-issues with the same numbers and titles.
+Local issue tracker — these mirror as GitHub issues with the same numbers
+and titles when filed. Issues are grouped into 4 epics (see
+`docs/overview.md`): Epic 1 Rebuildable ROM (#001, #002, #009, #011–#014),
+Epic 2 Game structure & logic (#003, #007, #008, #019–#021), Epic 3
+Graphics & audio pipeline (#004–#006, #015–#018), Epic 4 Mods (#010, #022).
 
 - One file per issue: `NNN-title.md`.
 - Each issue has: Goal, Acceptance (what "done" means, checkable), Notes,

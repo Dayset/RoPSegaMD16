@@ -1,6 +1,7 @@
 # Issue #004 — Text / dialogue extraction + tables
 
 **Milestone:** M3  
+**Epic 3**  
 **Status:** open
 
 ## Goal
