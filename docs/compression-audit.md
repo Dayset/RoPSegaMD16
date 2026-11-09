@@ -193,3 +193,81 @@ format proof.
 - Graphics-vs-maps for the decoder streams: they are **map
   data** — the $1BCxx caller renders map bands into $FF1EC0
   (the "MM map" bitmap of #006/docs/maps.md).
+
+## Update 2026-11-09 (session #5) — 0x044000 BULK SOLVED: it IS $DD5C (earlier verdict corrected)
+
+The block's last open question is closed, and the answer
+overturns this audit's continuation-session verdict. The
+earlier "not $DD5C — every scan hit is an all-space false
+positive" conclusion was **wrong**: it came from a scan whose
+success criterion discarded the real streams. Re-run with the
+output examined, the bulk is full of genuine $DD5C streams
+whose outputs are structured data (~0-2% spaces). The
+correction is recorded here in full because the method, not
+just the answer, matters:
+
+**The layout.** The block is three things, none of them a new
+codec:
+
+1. **Descriptor tail (0x044000–0x044227).** The "55-entry
+   10-byte index table" at the block head is the tail of a
+   252-record descriptor table that starts at **0x043850**
+   (just before the block). Read at the correct alignment the
+   records are the standard $13654 dispatcher format —
+   **u32 BE offset, u32 BE decompressed size, u16 type** —
+   and every one of the 252 records has type 1 ($DD5C). The
+   head records were misread for two sessions because the
+   table was assumed to start at the block boundary 0x044000;
+   at that misalignment the fields present as
+   (1, 1, off16, 0, size), with off16 the low half of the
+   real u32 offset. Record 196 spans 0x043FF8–0x044001: the
+   two bytes at 0x044000 are its type word.
+2. **The archive (0x044228–0x05EDC3).** 252 $DD5C streams
+   packed back to back in descriptor order: 77 records of
+   2048 bytes, then 153 of 242 bytes, then 22 of 2048 bytes.
+   A sequential walk from 0x044228 consumes exactly the
+   descriptor offsets/sizes and ends exactly at 0x05EDC4.
+   **252/252 records decompress to exactly their descriptor
+   size** (tools/decode_44000.py reproduces this).
+3. **The $E358 pointer table (0x05F524–0x0603E3)** — as
+   established in session #4. (Between the archive and the
+   table, 0x05EDC4–0x05F523 is 1,888 bytes of neighbouring
+   data opening with u16s 0x1401/0x1901×13/0x1C01…; not part
+   of this archive and not pursued here.)
+
+**The consumer (the question the issue actually posed).**
+Code references the archive base 0x044228 as a longword at
+0x019774 — `pea $43850; pea $44228; jsr $13654` inside
+**FUN_00019692**, a loader reached via the 7-caller thunk
+FUN_0001C802. The dispatcher $13654's type-1 path is the
+ROM's `jsr $DD5C` at 0x0136BA: stream address = base +
+record.offset, decompressed into the caller's buffer.
+FUN_00019692 keeps a **4-slot rotating cache of 2048-byte
+buffers at $FF868C** (slot counter $FFA894 mod 4, stride
+0x800, pointer cache $FFA896) — a map-page cache. This is
+why "no longword references to $044000 exist": the code
+references the *table* (0x043850) and the *archive base*
+(0x044228), never the arbitrary 64 KB block boundary.
+
+**Content.** Decompressed records are **VDP nametable map
+data**: the 2048-byte records are 32×32 u16 tilemap words
+and the 242-byte records are 11×11 u16 tilemap words (tile
+index in bits 0–10, max observed 2027; palette/flip bits in
+bits 11–15; e.g. record 100 is an 11×11 patch with floor
+tile 16 and wall/detail tiles 96–121 + flipped variants).
+So the block is **maps**, in the same $DD5C record system as
+the $96120/$B86AE tables — a third table the earlier
+inventory had not separated from its neighbours.
+
+**Why the standard codecs failed at the head (acceptance
+item, as literally written):** the block does not begin
+with a stream at all — it begins mid-descriptor-table, so
+Nemesis/Kosinski/Enigma header parses at 0x044000 were
+parsing a type word. The negative results stand for the
+head; they never applied to the archive behind it.
+
+**#017 verdict: DONE.** Every region is now accounted for:
+$DD5C everywhere (text, $96120/$B86AE graphics+maps, and
+this 252-record map archive), the $E358 threaded codec for
+the $0603E4 bitmap streams, and no Nemesis/Kosinski/Enigma
+anywhere in the ROM.

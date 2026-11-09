@@ -2,7 +2,7 @@
 
 **Epic 3**  
 **Milestone:** M3  
-**Status:** open
+**Status:** done (2026-11-09, session #5)
 
 ## Goal
 Identify the codec(s) in the high-entropy blocks `0x044000–0x05FFFF`
@@ -71,3 +71,28 @@ to the $E3B4 trace.
 
 **Status: in progress** — codec/decoders done; 0x044000 bulk
 consumer unidentified.
+
+## Update 2026-11-09 (session #5) — SOLVED: archive + consumer identified. ISSUE DONE
+
+Full write-up: docs/compression-audit.md (session #5 section);
+decoder: tools/decode_44000.py (252/252 byte-exact).
+
+- **The bulk is a $DD5C record archive**, like $96120/$B86AE:
+  252 streams packed at 0x044228–0x05EDC3 (99×2048 B + 153×242 B
+  decompressed), described by a 252×10-byte descriptor table at
+  0x043850–0x044227 in $13654 format (u32 offset, u32 size,
+  u16 type=1). The block-head "55×10 index" was records
+  197–251 of that table, read 2 bytes misaligned — the
+  continuation session's "not $DD5C" verdict is CORRECTED
+  (its scan discarded the real streams as false positives).
+- **Consumer identified:** FUN_00019692 (via thunk
+  FUN_0001C802) → $13654 (pea $43850 / pea $44228 at
+  0x01976C/0x019772) → type-1 path → $DD5C (jsr at 0x0136BA);
+  4-slot rotating 2048-byte cache at $FF868C.
+- **Content:** VDP nametable map data — 32×32 u16 grids
+  (2048 B records) and 11×11 u16 grids (242 B records).
+  Graphics-vs-maps is decided: maps.
+- disasm/map.md row for 0x044000–0x05FFFF rewritten.
+
+**Status: DONE** — all acceptance items met (codec tests,
+decoder in tools/, graphics-vs-maps decided, map.md updated).
