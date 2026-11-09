@@ -12,8 +12,8 @@ Issues live in `issues/` — one file each. Update both together.
 |---|---|---|---|
 | 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1, M2, M5 done) |
 | 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003, #007, #008, #019, #020 done; #021 in progress) |
-| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005, #006, #018 done; #017 in progress; #015/#016 open) |
-| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (music-off + #022 distance-fix shipped 2026-11-09; #010 still open) |
+| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005, #006, #015, #016, #018 done; #017 in progress) |
+| 4 | Mods | A few chosen changes, each as a tested patch | ✅ done (music-off + #022 distance-fix shipped 2026-11-09; #010 done) |
 | 5 | Tribute remake (Esenthel/Titan) | Recreate the same environment in a modern 3D engine — RE docs as spec, classic-isometric vs modern-3D, old vs new combat | 🟡 in progress (goal set 2026-11-09, issues #023–#031 open; #023/#024/#025/#029 ready to start) |
 | 6 | Research & history | Fansites, translations, interviews, reception — the reference database | 🟡 in progress (#033 substantially complete; #032/#034/#035/#036 partial) |
 
@@ -23,10 +23,10 @@ Issues live in `issues/` — one file each. Update both together.
 |---|---|---|
 | M1 | Repo + toolchain + first disassembly | ✅ done 2026-11-09 |
 | M2 | Code/data map + labelled entry/interrupts | ✅ done 2026-11-09 (#003, #011, #019) |
-| M3 | Text + graphics + maps identified | 🟡 in progress (#004, #005, #006, #018 done; #017 in progress; #015/#016 open) |
+| M3 | Text + graphics + maps identified | 🟡 in progress (#004, #005, #006, #015, #016, #018 done; #017 in progress) |
 | M4 | Game logic mapped (stats/XP/gold/combat/spells) | 🟡 in progress (#007, #008, #020 done 2026-11-09; #021 remains) |
 | M5 | Rebuildable, byte-identical disassembly | ✅ done 2026-11-09 (build.sh → verify_rebuild PASS; `cmp` byte-identical on all 1,048,576 bytes) |
-| M6 | First real mod, shipped as a patch | 🟡 in progress (#022 distance-fix shipped + verified 2026-11-09; #010 still open) |
+| M6 | First real mod, shipped as a patch | ✅ done 2026-11-09 (#022 distance-fix shipped + verified; #010 closed out) |
 | M7 | Tribute remake in Esenthel/Titan (classic + modern, old + new combat) | 🟡 in progress (design `docs/tribute-remake.md`, issues #023–#031 open) |
 
 ## Issue board
@@ -42,18 +42,18 @@ Issues live in `issues/` — one file each. Update both together.
 | #007 | 2 | Game logic: stats, XP, gold, combat | ✅ done 2026-11-09 | M4 |
 | #008 | 2 | Spells / skills system | ✅ done 2026-11-09 | M4 |
 | #009 | 1 | Rebuildable byte-identical disassembly | ✅ done 2026-11-09 | M5 |
-| #010 | 4 | Patch workflow + first mod (target TBD) | 🟡 in progress (target picked, #022 shipped) | M6 |
+| #010 | 4 | Patch workflow + first mod (target TBD) | ✅ done 2026-11-09 | M6 |
 | #011 | 1 | Ghidra recursive analysis + function map | ✅ done 2026-11-09 | M2 |
 | #012 | 1 | Split rebuildable asm: code vs incbin data | ✅ done 2026-11-09 | M2 |
 | #013 | 1 | Assembler verification: byte-identical rebuild gate | ✅ done 2026-11-09 | M5 |
 | #014 | 1 | Hardware-limits checklist + emulator/hardware test harness | ✅ done 2026-11-09 | M5 |
-| #015 | 3 | VDP register + VRAM layout map | ⬜ not started | M3 |
-| #016 | 3 | Tile/sprite/palette decoding + first rendered tileset | ⬜ not started | M3 |
+| #015 | 3 | VDP register + VRAM layout map | ✅ done 2026-11-09 | M3 |
+| #016 | 3 | Tile/sprite/palette decoding + first rendered tileset | ✅ done 2026-11-09 | M3 |
 | #017 | 3 | Compression identification: Nemesis / Kosinski / Enigma | 🟡 in progress (0x044000–0x05FFFF tested) | M3 |
 | #018 | 3 | Sound: Z80 driver + music/SFX map | ✅ done 2026-11-09 | M3 |
 | #019 | 2 | Save/SRAM validation + $DCE2 / $42FC8 / $43012 | ✅ done 2026-11-09 | M2 |
 | #020 | 2 | Main loop + game state machine | ✅ done 2026-11-09 | M4 |
-| #021 | 2 | Combat / XP / gold / spell tables + logic-flaw audit | 🟡 in progress (Bribe + food/water traced) | M4 |
+| #021 | 2 | Combat / XP / gold / spell tables + logic-flaw audit | 🟡 in progress (Bribe, Camp + food/water, debug mode, save matrix closed in session #3) | M4 |
 | #022 | 4 | First mod: pick target + patch + verify | ✅ done 2026-11-09 (shipped + verified) | M6 |
 | #023 | 5 | Esenthel engine setup & project skeleton | ⬜ not started | M7 |
 | #024 | 5 | Asset extraction pipeline (ROM → engine assets) | ⬜ not started | M7 |
@@ -148,15 +148,14 @@ per-acceptance-item met/partial/blocked status. Summary:
 
 ## Next
 
-1. Push `agent/all-open-issues` (now 11 commits ahead incl. this board sync) and update PR #1 — its head is still `b81e88a`, before M5.
-2. #015/#016 (VDP/VRAM + tiles/sprites) — now unblocked by the #011 function map, the M5 rebuild and BlastEm live-VRAM traces; #015's `$4323C` premise and #016's `0x060000` premise are both already disproven in their docs, so the work is the live trace, not the old wording.
-3. #021 remainder — debug-mode (`Diags On/Off`, `0x023934`) reachability, the Camp verb case in `$1F296` as the last named food/water candidate, live combat / save-corruption items from `docs/logic-audit.md` §5.
-4. #010 close-out — its acceptance is now met via the shipped #022 patch workflow; the issue file itself is still marked open.
-5. #017 remainder — trace `$E3B4` (threaded decoder) for the `0x044000–0x05FFFF` index table.
-6. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 for #018, #031 for #019. Research (Epic 6) — #033's maze GIF, #034's HG101/Pixelation thread, #035's release page and the 1991 vs 1992 date remain the honest dead-ends.
+1. Push `agent/all-open-issues` and update PR #1 (parent handles pushes; session #3 added #015/#016 done, the #021 Camp/debug/save-matrix work and the #010 close-out on top of the M5 head).
+2. #021 remainder — Q5 (Void-message trigger), the live-combat halves of F5/F9, F2/F7 either/ors, Doggonia fee, item-record +4..+9 bytes, `$FF012C` live mapping, party-name writes, the (A,B,grp) executor-dispatch half, post-harness PC=0. Nearly all need driven gameplay (an input driver for BlastEm) — the attract runs in sessions #2/#3 prove no combat/menus are reachable without one.
+3. #017 remainder — trace `$E3B4` (threaded decoder) for the `0x044000–0x05FFFF` index table.
+4. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 for #018, #031 for #019. Research (Epic 6) — #033's maze GIF, #034's HG101/Pixelation thread, #035's release page and the 1991 vs 1992 date remain the honest dead-ends.
 
 - [x] **#022 target picked 2026-11-09** — Dayset chose Candidate A: fix the dead distance term in `$3B1EE`. Spec + evidence-first builder in `patches/distance-fix/` (harness expectation: D1/D7 28→31, dist sweep 38/31/30; other D-cases unchanged). Prior art checked: 2008 *Hand of Nexus* v2.0 hack is a cheat set, no damage-formula fix in its description. Patch bytes NOT yet generated — locate/apply/harness need `rop-original.gen` + Capstone/BlastEm on Dayset's machine; rebuild gate (#009/#013) still owed. #010's target is the same pick.
 
 - [x] **Continuation session 2026-11-09 (agent VM, ROM supplied)** — Toolchain reproduced in the VM matching #001 exactly (Capstone 5.0.9 venv, GNU as 2.42, BlastEm 0.6.3.4; docs/toolchain-vm.md); every repo tool tested against the real ROM: disassembly regenerates with the exact #002 counts (273,209 insn), text outputs byte-identical, world-map render pixel-identical, both harness .s files assemble cleanly, original ROM boots headless; test_harness.sh fix-all bug found+fixed. #021 advanced: fan PAR RAM codes cross-verified against the character struct (all six blocks on-grid; Mortimer/Obliky assignment unresolved, hypothesis recorded), and the fan Game Genie table decoded with new tools/decode_gamegenie.py — master code proven to be the runtime-checksum bypass (0xFD09C: bne→RTS). PR opened for agent/all-open-issues. Still blocked: #011 Ghidra recursive analysis (not installed in VM; first target 0x9C00–0xA500), #012 emission, #013 gate run.
 - [x] **#022 SHIPPED 2026-11-09** — distance-fix patch built + verified after Dayset supplied the ROM: bug at 0x3B2B2, trampoline at 0xFD138, IPS in `patches/distance-fix/`, checksums 0x4F95/0x46818AFC, BlastEm boot + hook trace OK, #007 harness D1–D7 read back exactly as pre-registered (D1/D7 28→31). See issues/022 update + patches/distance-fix/README.md §6.
 - [x] **Continuation session 2026-11-09 #2 (agent VM) — M5 REACHED.** Ghidra 11.4.2 + Temurin JDK 21 installed in the VM; #011 done: headless recursive analysis reproduces #003 (438 functions; 1,434 unique-callee edges — exactly #003's edge count), full function_map.csv exported, map.md boundaries verified (0x010000–0x043FFF = 368 functions/90.3% code; 0x0E0000–0x0FBFFF mostly data; 0x044000–0x05FFFF zero functions). #012 done: split_disasm.py --emit generates disasm/src/ (GAS code with per-block round-trip verification and .dc.b fallback, data as regenerated incbin slices). **#009/#013 done — MILESTONE M5: tools/build.sh assembles a ROM that verify_rebuild.py passes and `cmp` proves byte-identical to the original on all 1,048,576 bytes; BlastEm boot test reaches FD07C/4323C/D28E with no FD0CA.** #014 done: test_harness.sh runs green end-to-end (its address.log path bug fixed). Epic 3 closed out: #017 range tested (not code, not $DD5C, no standard codec — index table at head; threaded-decoder hypothesis stands), #018 Z80 driver disassembled (tools/disasm_z80.py; mailbox/poll-loop map in docs/sound.md), #019 EEPROM experiments done (128-byte save.eeprom, debugger trace at $4323C; reachability limits documented). #021 advanced: Bribe verb located (executor case 0x20466, exactly −10 gold), food/water sites resolved ($FF0E16 = world clock, no consumption routine there). All committed on agent/all-open-issues (not pushed).
+- [x] **Continuation session 2026-11-09 #3 (agent VM) — #015/#016 DONE, #021's Camp/debug/save items closed, #010 DONE.** Toolchain note: this VM instance was missing BlastEm + m68k binutils; both were reinstalled from the Ubuntu pool .debs (BlastEm 0.6.3.4-1build1 + libglew2.2; binutils-m68k 2.42-4ubuntu2.10), matching #001 versions. **#015 done:** live VDP capture in the BlastEm debugger on the original ROM — per-screen register sets for boot table, $A14 set, boot animation, $11E06, two intro configurations (SAT $4400; R11 full vs line scroll), and the main loop (R16 back to 64×32); boot/$A14 sets confirmed value-for-value; draw trace for the setup transition ($11E06 = CPU clear, no DMA; tiles via $11A7C→$DA04, 13/13 hits to 0x11A98; nametables via $1194A from $15ECE–$15FA0; SAT by CPU entry writes). docs/graphics.md §5. **#016 done:** the runtime sprite mechanism — **no RAM buffer, no SAT DMA**: $11BD8 writes each SAT entry directly to VRAM at $FF8644+index×8 ($FF8644 = SAT base variable, $4400 intro / $2400 game, both read live); live lists captured (boot anim 2 sprites; intro A 30; intro B 45; main loop 0→22–25→67, static — no demo play). docs/tiles-sprites-palettes.md §6. **#021 (docs/logic-audit.md §8):** the $2068E C-code dispatch fully enumerated; **Camp traced** (C=$1C → $3019A: 1/3 encounter roll, clock to next 540/0, **Food/Water −100 per Camp from $FFC364/$FFC366** — the long-missing consumption routine, confirming the fan PAR addresses; $2BBD2 calls the arg-1 variant: ½ heal, no provisions); **debug mode decided** (Diags toggle = executor case C=$37 at 0x205BC; panel $26E44 draws it; input-decoder effect in $12FE8; persists in saves; default ON ($FFFF) from the RAM-init image; the $023934 format string has NO reference anywhere — overlay inert); **save corruption matrix run** (forged EEPROM validates d1=0, compensating pair undetected — Q1 closed, checksum proven forgeable); combat breakpoints ($3A842/$3B094/$3B1EE/$40880) silent through boot+intro+attract (no combat without input). **#010 done** — close-out decision recorded in the issue file (all acceptance met via the shipped #022 patch). #021 stays in progress for Q5 + the live-gameplay items. Debugger caveats found: `p/x` needs `$`-prefixed addresses (bare tokens misparse), and `se` rejects memory destinations in this build (register-only, decimal values) — the state-8 Diags page could not be force-drawn; its evidence is the static chain + live flag value.
