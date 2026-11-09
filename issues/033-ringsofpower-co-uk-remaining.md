@@ -56,3 +56,21 @@ open
 - **Acceptance:** PARTIAL — most acceptance items NOT met: walkthrough/speedguide/hints/cheats/secrets/map/pics/etc. still need Wayback reads through the live browser (direct fetch is 403 for this site; this agent session has no live-browser control) with per-page snapshot dates. Maze images not fetched. The deliverable is the honest checklist + blocker, not summaries.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (live-browser Wayback session)
+
+- **Deliverable updated:** docs/research/ringsofpower-co-uk-remaining.md
+  rewritten with full per-page summaries + snapshot timestamps.
+  29 of 31 HTML pages read in full; tradinginv.htm unrecoverable
+  (302 → 110mb 404, no 200 capture); invertedmap/pics image-only.
+- **Acceptance:** mostly met — walkthrough, speedguide (never
+  published), spells per character, hints/cheats/secrets, and the
+  map/pics/sounds/loony/city/what/story pages are all summarised.
+  Cheats include the pad-2 teleport, Gens/PAR + Game Genie codes,
+  Xavier Whipon's EEPROM claim (consistent with #019) and his IPS
+  link (romhacking.net/hacks/354, not hosted on the site).
+- **Still open:** maze GIF transcription (archived GIF did not
+  render; URL recorded in the doc), Mortimer/Obliki Gens-code
+  assignment ambiguity, full Game Genie table transcription.
+
+**Status after this update:** in progress — substantially complete, maze-image item remains.

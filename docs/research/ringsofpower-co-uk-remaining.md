@@ -1,35 +1,159 @@
 # ringsofpower.co.uk — remaining pages (issue #033)
 
-Status 2026-11-09 (agent session): **PARTIAL — structured from the
-repo's existing inventory; the page-by-page Wayback reads are
-still owed.** What exists in repo: the six In-Depth guides are
-done (`docs/research/ringsofpower-co-uk-guides.md`: sextant,
-stones, transport, maze, trading, locations — incl. the 20-city
-coordinate table and the 21-good trading table that #007 verified
-20/21) and the hub summary (`ringsofpower-co-uk-depth.md`,
-snapshot 2008-04-09). This file records, per acceptance item, what
-is already extractable from those files and what is not — no
-Wayback page was fetched in this session, and none is summarised
-here as if it had been.
+Status 2026-11-09: **READ via Wayback Machine (live-browser session).**
+All 31 HTML pages in the 59-URL inventory are now accounted for.
+29 read in full, 1 unrecoverable, image-only pages noted.
+Summaries below are in our own words; only data (codes, coordinates,
+spell names, track lists) is reproduced as data. Fan-site content is
+player-observed — hypotheses for RE work, never evidence on its own.
 
-## Per acceptance item
+Correction to earlier draft: this file did not exist on `main`; the
+59-URL inventory lives in `ringsofpower-co-uk-guides.md`.
 
-| Page | Status from repo evidence |
-|---|---|
-| walkthrough.htm | **NOT READ.** Inventory only: full walkthrough, first capture 5 Oct 2008 (guides.md site inventory). Quest order / ring locations still owed. |
-| speedguide.htm | **NOT READ.** Inventory only: "fastest route to assemble the rod". |
-| spells.htm | **PARTIALLY covered:** the six-character structure (Buc sorcerer, Slash knight, "Arrow" archer, Alexi conjuror, Mortimer necromancer, Obliky enchanter) is recorded in guides.md + spells.md §Background — and #020 corrected the archer's ROM name to **Feather**. The per-character spell lists themselves are **NOT extracted**. Snapshot baseline: first capture 20 Sep 2008, 4 captures to 14 Jun 2012. |
-| hints.htm / cheats.htm / secrets.htm | **NOT READ.** Known from inventory: cheats.htm holds Game Genie codes + an IPS patch note; home-page news (4 Mar 2008) credits **Xavier Whipon** for the Game Genie codes, an IPS patch and "information on the workings of the game"; the CDX inventory has **no downloadable file URL** for that patch (guides.md). Who Whipon is: not stated in any repo file — OPEN. secrets.htm topics per inventory: sunken treasure, empty caves, Void as a vehicle. |
-| map.htm / pics.htm / sounds.htm / loony.htm / commerce.htm / division.htm / what.htm / story.htm | **NOT READ.** Inventory descriptions exist in guides.md (interactive map; screenshots; city profiles for Commerce/Division; what/story intro pages). Nothing usable extracted yet beyond the descriptions. |
-| maze.htm images | **NOT FETCHED.** The maze guide's text is in guides.md; its map images did not load as text and no image file exists in the repo. |
+## Coverage
 
-## Exact blocker / next step
+| Page | Snapshot | Status |
+|---|---|---|
+| index.htm / home | 20071228222249, 20080923231811 | Read |
+| intro.htm | 20080409192152 | Read — index only |
+| what.htm | 20080409223904 | Read |
+| story.htm | 20080409223850 | Read |
+| walkthroughs.htm | 20080410150728 | Read — index only |
+| walkthrough.htm | 20081005202627 | Read in full |
+| speedguide.htm | 20081005202622 | Read — "Coming soon", never published |
+| help.htm | 20080410150637 | Read — index only |
+| hints.htm | 20081005052958 | Read |
+| cheats.htm | 20081005202612 | Read — high value, see below |
+| secrets.htm | 20081005202617 | Read |
+| spells.htm | 20080920151205, verified vs 20120614131003 | Read in full |
+| uskabau.htm | 20080410150722 | Read — index only |
+| map.htm | 20090204065753 | Read — image hotspots not recoverable in this view |
+| invertedmap.htm | 20090206175938 | Image-only, no text |
+| pics.htm | 20090204072833 | Image-only |
+| sounds.htm | 20090717044508 | Read |
+| loony.htm | 20090208114332 | Read |
+| commerce.htm | 20090204072507 | Read — heading + city-plan image only |
+| division.htm | 20120513115634 | Read — only full city profile |
+| places.htm | 20080410150655 | Read — index only |
+| links.htm | 20090209220731 | Read |
+| tradinginv.htm | 20080410160717 | **NOT READABLE** — 302 to 110mb.com 404, no 200 capture; printer-friendly trading guide is lost |
+| maze.htm (+ images) | 20080410150650; GIF 20131214200129 | Text read; maze GIF did not render — route not transcribed, archived GIF URL recorded for follow-up |
 
-Each remaining page needs a Wayback fetch **through the live
-browser** (direct fetch was 403 for this site — see
-`ringsofpower-co-uk-depth.md`) with the snapshot date recorded
-per page (baseline: guides at 10 Apr 2008; later pages first
-appear Sep 2008–May 2012). That is browser work on the owner's
-session; this agent session has no live-browser control. The
-inventory above is the checklist to work through — 25 non-guide
-pages total, 0 fully read, 1 (spells.htm) partially covered.
+## Home / news diary — key findings
+
+- Site by Y8C, tagline "The complete Rings of Power experience".
+- 1 Apr 2007: relaunched at ringsofpower.co.uk after the original
+  ringsofpower.8m.com was lost.
+- 4 Mar 2008: Xavier Whipon emailed Game Genie codes + IPS patch +
+  a glitch (now on secrets page).
+- 12 May 2008: author says he removed the character/spell pages
+  without realising — explains why no character pages are in the
+  inventory. Guestbook gone; speed guide promised, never appeared
+  (speedguide.htm is only "Coming soon...").
+
+## Story / what
+
+Buc must find the 11 rings to restore the Rod of Creation. Backstory
+per story.htm: Void summoned, 66-year cataclysm 500 years ago, rod
+split in two, each half split into 11 rings hidden across Uska Bau
+(site spelling; ROM/docs use Ushka Bau). Buc, top student at the
+Academy of Sorcery in Mind, is sent with the six arts.
+
+## Walkthrough (walkthrough.htm) — summary
+
+Three parts. Part 1: recruitment — Thalmus (spells.htm: Thalamus)
+gives map + Warn; Slash in Division, Arrow/Feather in the Mines of
+Mysery, Alexi in Perfection, Obliky in Kaos, Mortimer last (corpse
+taken to Old Tsalmi's grave at night). Part 2: the 11 rings with the
+page's difficulty table (Thought Easy/first, Will Medium, Intuition
+Hard, Division Medium, Advancing Medium, Perfection Hard, Calling
+Medium, Bile Hard/late, Blood Hard/late, Variation Easy, Mutation
+Easy) and sextant coordinates for most rings (e.g. Intuition
+11'-18', Division 8'-8', Perfection 3'-18', Calling 1'-18',
+Bile 23'-26', Blood 9'-14', Variation 29'-12'). Part 3: Holy Seal,
+Bandit HQ 30'-18', final battle vs Darius/Derek, also called Void;
+ending appears scripted. Name inconsistencies flagged for
+transcription: Feather/Arrow, Obliky/Oblisky, Thalmus/Thalamus.
+
+## Spells (spells.htm) — per character, author's claims only
+
+No mana costs or systematic damage values are given on the page.
+
+- Buc (Sorcerer): Warn, Raise, Random, Light, Search, Mind, Seize, Port.
+- Mortimer (Necromancer): heal series Comfort, Relief, Solace, Cure,
+  Health, Restore, Perfect; Pain is his super (author claims it kills
+  weak enemies and halves stronger/immune ones — verify vs #008).
+- Slash (Knight): Hack (super), Divide (~100 pts, "best for bosses").
+- Feather (headed "Arrow", Archer): Hawk (author calls it hardest-
+  hitting in the game), Force, Twister (super).
+- Alexi (Conjuror): Stones (~80 pts — author also calls this the
+  hardest single-target spell, contradicting the Hawk claim), Djinn
+  (super, ~50), Fire, Ice, Tremor (~30), Sight/Turn, Shade, Talk.
+- Obliky (Enchanter): Seduce, Dazzle, Mirage, Flames, Mix, Scatter,
+  Wyrm (super), Insane.
+
+## Hints (hints.htm) — summary
+
+Manual-derived + author/TerraBreaks tips: save before healing,
+inns cheaper than temples, daylight travel, pay tax collectors,
+bribe merchants, keep wealth in trade goods to cut resurrection
+donation, buy gems at Mind / sell at Commerce, Frenzy in Wary then
+pause-switch to Berserk, holding HELP screen reduces encounters.
+
+## Cheats (cheats.htm) — high value for RE
+
+- Teleport: highlight map position, A+C+Start on joypad 2.
+  Cross-check with #019's pad-2 combo decoding ($E0/$B0).
+- XP: Cave of Thought, repeat the same question, ~200 XP each.
+- Gens/PAR codes (Spiridakis): stable addresses for Food
+  (FFC364), Water (FFC366), Money (FF02DE), and per-character
+  Exp/HP/MP blocks for Buc, Slash, Feather, Alexi — plus two
+  further blocks at FF05DA… and FF04A2… where the two extractions
+  disagree on Mortimer vs Obliki assignment. **Verify against page
+  source / ROM RAM map before using.**
+- Game Genie codes (Xavier Whipon): master code R1JA-86Y6 required
+  to boot, plus unlimited money/water/food and per-character
+  health/power/exp codes (full list in the browser report on file
+  with this session; transcribe into a codes table on verification).
+- Xavier's technical claims — **hypotheses, not facts**: saves are
+  serial EEPROM not SRAM (consistent with #019's EEPROM finding);
+  non-Buc character stats move in RAM between new games, which is
+  why PAR codes can trigger a Void kill; Food/Water/Gold addresses
+  are stable.
+- His IPS patch is **not** hosted on this site; the download link
+  points to romhacking.net/hacks/354.
+
+## Secrets (secrets.htm) — summary
+
+Sunken-treasure coordinate list carved at the Rich Man's Tichhead
+(7 entries, sextant coords → values), an infinite-goods Desire
+glitch (stack to 255), an empty cave NE of Sunrise at 8'8"-11'2",
+vehicle/invisible-party glitches, and a pad-2 boot combo
+(Right+A+B+C on pad 2 at power-on, "Topples Lady").
+
+## Other pages
+
+- sounds.htm: 17 MP3 tracks (Title, Sorcerer, Knight, Archer,
+  Conjuror, Necromancer, Enchanter/map, Battle, Castle, Death,
+  Nexus, Quest, Seas, Someone's home, Tavern, Victory, Wilds),
+  hosted by Rob Groove, converted by ZedPower.
+- loony.htm: long dialogue corpus, useful for #004 text decoding;
+  includes the known dev in-jokes (combat redone a fifth time,
+  interface reprogramming, a `buc1.bc` source filename) and a
+  Black Sabbath "Paranoid" quotation. Lyrics not reproduced here.
+- division.htm: only full city profile — second city, knights'
+  largest guild, blades sell well in Sparta, Division pays well
+  for Weapons.
+- map.htm: author-made map, "first map of Uska Bau in existence",
+  hotspots for 14 named places + 3 unnamed.
+- links.htm: outbound to Rob Groove, GameFAQs, Honest Gamers,
+  Naughty Dog.
+
+## Still open
+
+- tradinginv.htm is unrecoverable from Wayback (no 200 capture).
+- Maze route: archived GIF at
+  https://web.archive.org/web/20131214200129im_/http://www.ringsofpower.co.uk/pics/mazemap.gif
+  did not render in the browser view; transcription still owed.
+- Mortimer/Obliki Gens-code assignment ambiguity (above).
+- Game Genie full table transcription on verification.
