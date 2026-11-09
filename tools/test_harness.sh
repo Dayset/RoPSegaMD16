@@ -17,9 +17,11 @@ python3 tools/verify_rebuild.py build/rop-rebuilt.gen rop-original.gen
 python3 tools/checksum.py fix-all build/rop-rebuilt.gen build/rop-test.gen
 
 [ -x "$BLASTEM" ] || { echo "test_harness: BlastEm not at $BLASTEM" >&2; exit 1; }
-rm -f "$HOME/address.log" /tmp/address.log
+rm -f "$HOME/address.log" /tmp/address.log ./address.log
 SDL_AUDIODRIVER=dummy timeout 8 xvfb-run -a "$BLASTEM" -l build/rop-test.gen || true
-LOG=$(ls "$HOME/address.log" /tmp/address.log 2>/dev/null | head -1)
+# BlastEm 0.6.3.4 writes address.log into the CWD (repo root),
+# not $HOME or /tmp — checked 2026-11-09 in the VM.
+LOG=$(ls ./address.log "$HOME/address.log" /tmp/address.log 2>/dev/null | head -1)
 [ -n "$LOG" ] || { echo "test_harness: no address log produced" >&2; exit 1; }
 # Runtime checksum passed iff execution reached save validation and beyond
 # (a checksum failure hangs forever at 0xFD0CA — see disasm/map.md).
