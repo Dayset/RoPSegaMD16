@@ -38,3 +38,11 @@ sources (Genesis Temple, MobyGames, Sega-16).
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/research/reception.md — contemporary reviews table (GamePro Feb 1992, MegaTech 49% Jun 1992, VG&CE Mar 1992, Mean Machines) with the GamePro 21/25-vs-5/5 score conflict flagged for magazine-scan verification; per-region dates with sources; sales/publishing facts with the 'best-selling used game' claim recorded as single-source (Rubin) and the ~50,000-units figure flagged unverified; §4 is a DRAFT reception section for docs/overview.md.
+- **Acceptance:** PARTIAL: reviews/dates/sales assembled from web sources searched this session; overview.md was NOT edited (the acceptance asks for a proposal — §4 is that proposal). Scores should be verified against magazine scans (Internet Archive/RetroMags) before the proposal is applied.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

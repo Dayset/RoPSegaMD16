@@ -41,3 +41,11 @@ Start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/research/russian-translation-2012.md — technical notes from the patch-diff evidence recorded in #004 (PROGRESS.md): repoint $DC0C2->$D6F30, new table $D7030 + compressed blocks + reader $D6F50, font uploads $FD0D0/$1AA70/$E8C70, checksum NOP at 0xFD09C, and why that cracked the dictionary reading; the change list summarised from the issue; both user comments (music-off bug, EEPROM->SRAM) recorded with their repo cross-refs.
+- **Acceptance:** MET: technical approach (diff-verified in #004) + the dictionary hint + comments. PARTIAL: only one of the '3 mods' is identifiable from repo evidence (archer-randomness removal); the other mods' one-liners need the romhacking.ru release page read — owed, not guessed. The patch was not re-downloaded this session (by design it stays out of the repo).
+
+**Status after this session:** in progress — partial (see below). Not marked done.

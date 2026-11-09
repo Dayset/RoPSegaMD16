@@ -42,3 +42,11 @@ Nothing. Start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/research/sources.md — source map with URL/date/contents/verdict per source (repo files, Wikipedia, MobyGames ID 15080, We Play Retro, DualShockers, Vimm's Lair, Internet Archive), the 1991-vs-1992.JAN release-date table recorded WITHOUT picking a winner, and leads passed on (the 2008 'Hand of Nexus' hack -> #022; the intro cheat -> #021; the ~50,000-units figure flagged unverified). Web searches were run this session.
+- **Acceptance:** PARTIAL: source list + release-date item met; Sega-16, Hardcore Gaming 101, the Pixelation (Helm) thread, YouTube longplays and an IA manual scan were NOT surfaced/fetched this session and are recorded as OPEN in sources.md rather than claimed checked-and-empty.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

@@ -48,3 +48,11 @@ Nothing (the guides file is the starting point). Start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/research/ringsofpower-co-uk-remaining.md — per-page status table built from the repo's existing site inventory (59 URLs / 31 pages in ringsofpower-co-uk-guides.md): spells.htm partially covered (six-character structure; per-character lists not extracted; #020's Feather correction noted); Xavier Whipon credit + the missing IPS file URL recorded; every other listed page marked NOT READ rather than summarised from nothing.
+- **Acceptance:** PARTIAL — most acceptance items NOT met: walkthrough/speedguide/hints/cheats/secrets/map/pics/etc. still need Wayback reads through the live browser (direct fetch is 403 for this site; this agent session has no live-browser control) with per-page snapshot dates. Maze images not fetched. The deliverable is the honest checklist + blocker, not summaries.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

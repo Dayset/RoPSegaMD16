@@ -43,3 +43,11 @@ Nothing. Start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/research/rings-of-power-ru-catalog.md — catalogue from the existing scrape (no re-download): full in-repo file inventory with sizes + what remains only on the site; walkthrough mined for mechanics leads (Bribe 10 gold to WORSHIPFUL, VIOLENT = merchant attacks, Bribe as a general NPC verb) written as hypotheses with txt line refs; 17 soundtrack tracks listed; 4translate glossary summarised; gaps recorded (2010 datacenter fire losses, insertion never solved, contradictory progress claims).
+- **Acceptance:** MET (from repo evidence): inventory, track list, glossary summary, gaps. The walkthrough-mining item is met at hypothesis level as the acceptance words it ('written up as a hypothesis'); ROM verification of the Bribe lead stays with #021.
+
+**Status after this session:** in progress — partial (see below). Not marked done.
