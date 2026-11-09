@@ -90,6 +90,62 @@ Issues live in `issues/` — one file each. Update both together.
 - [x] **#008 done 2026-11-09** — spells/skills mapped (`docs/spells.md`, `disasm/spells/` tables, `tools/test_spells_harness.s`): spell list = price records 1–120 (6 blocks × 20, names `$CD431`; discipline↔block mapping NOT proven); rank tables at `$D6B6C`…`$D6DE2` via new-game pointer table `$FFA7CC` (6-byte records: `w0` damage base/effect class/bit 11, `w1` param + `$FF012C` code, `w4` Power cost base); cost `$3C2C0` = `w4 × (modifier+1) × 3`; deduction `$37D0E` (clamp + out-of-power HP −5 drain); `$3A62E` dispatch answers #007 Q1 at the dispatch level (both damage paths run, `+0x24` selects; `$FFC418`/`$FFC41A` = target/caster indices); `$FF012C` codes + `$3B51E`/`$3B6C0`/`$3B988`/`$3B748`/`$3BA4C` status routines + `$36E2E` sequencer + `$398E0` applier traced. Harness: **44/44 PASS** (S1 dispatch ×4, S2 costs, S3 deduction ×3, S4a/b/c; `/tmp/ropre/run008.json`). Unblocking: harness stalled inside `$37D0E` because S1 leaves `slot0.+0x00 = 0xA0` and `$25456` takes its `$12FA0` → `$12072` sound branch when `+0x00 & 0xF == 0` (`$12072` never returns in the cold attract context) — fixed by resetting the slot in `setup_spell`; S4 needed `slot5.+0x29 = 5` (group self-link, rec bit 11 clear). Open: giant-function block selection, `$12072` spin loop, live-combat half of Q1 → #020/#021.
 - [x] **#020 done 2026-11-09** — main loop + state machine (`docs/architecture.md` new section, `disasm/main-loop/` tables): `$D28E` (0xD28E–0xD9DE) is the eternal main loop, loop-back `tst $FF00BE; beq $D2BE`, exit only via `$FF00BE=-1` (one site, 0x20188, inside the `$1F296` verb executor) → `$179B6` soft reset → `$200`. The seven `$D25C` callees identified (`$11E06` VDP setup, `$14FB6` intro/story driver, `$1B5D6` new-game init, `$32D0E` song picker, `$173BC` song player, `$D28E`, `$179B6`). `$1B5D6` **confirms the `$FF0E18[2]` capacity-8 initialiser** (`$1E390($FF0E18, 8)` at 0x1B5DA) and the leader spawn (fixed (111, 125) when `$FF0128==0`, random otherwise; `$FF0128` written only at 0x15512 in the intro). `$23B84` entity spawner + 24-byte templates at `$CF1AC` traced — **the new-game leader is created as template 0, name "Man"**, not Buc; Slash/Mortimer/Obliky/Feather templates don't exist in 0–199, so the party names must be set after creation (open, #021). Settled: the six disciplines **are** named in ROM (PARTY menu: Sorc/Knight/Archer/Necro/Enchnt/Conjur); the ROM calls the archer **Feather** (name 61), "Arrow" is name 80 — the fan guide conflated discipline with character. `$D28E` command switch at `$D740` re-verified (15 cases, 0/10/20/21/22/23/24/25/30/35/37/40/45/50/55); `$12FE8` menu/verb input decoder traced (D-pad nibble → d6 0–4, command 0 or 37 into `$FF0240`); `$1350` joypad-pop call sites mapped (16: `$D28E` ×2, menu-input block, intro/story block); `$2155E` world tick traced (step counter `$FF0E16` mod 2400, palette fades via `$170DA`, merchant attitude drift +5/−4). Verb table at 0xCCDB8 re-parsed (14-byte items, 12-byte headers). Terrain grid still not located, but the threaded decoder 0xE3B4/0xE412 is now understood (bitmap decoder into `$FF1EC0` via the `$DF58` table, no direct callers). Food/water consumption still not located (`$170DA` is a palette routine, not consumption). Live combat not driven headlessly — no credible path without a save-state/input driver; #008's dispatch-level answer stands. M4 now "#007, #008, #020 done 2026-11-09; #021 remains".
 
+## Agent session 2026-11-09 (all open issues, no ROM in VM)
+
+A no-ROM agent session worked every open issue in numerical order.
+Environment limits (verified): no `rop-original.gen`, no Ghidra, no
+BlastEm, no m68k assembler in the VM; Python 3.12 + web search only.
+**No issue is marked done by this session** — every issue file gained
+a "Work done 2026-11-09 (agent session, no ROM in VM)" section with
+per-acceptance-item met/partial/blocked status. Summary:
+
+- **Epic 1:** #009 `tools/build.sh` scaffold (fails loudly until
+  `disasm/src/` exists); #011 `disasm/ghidra/` seed function map
+  (57 rows, all cited to repo docs; full Ghidra re-export blocked);
+  #012 split plan in `disasm/src/README.md` + `tools/split_disasm.py`
+  dry-run; #013 `tools/verify_rebuild.py` gate — **self-test PASS**,
+  vasm settled (GNU as); #014 `docs/hardware-limits.md` checklist +
+  `tools/test_harness.sh` scaffold (never run — blocked on #013).
+- **Epic 3:** #015 `docs/graphics.md` (VDP sets + VRAM layout;
+  `$EB772` draw-dispatch premise corrected — it is sound-only;
+  `$4323C` VDP sub-item recorded as not evidenced); #016
+  `docs/tiles-sprites-palettes.md` (issue premise corrected: tiles
+  are in the `$DD5C` tables, not raw at `0x060000`); #017
+  `docs/compression-audit.md` (`$DD5C` proven everywhere tested;
+  `0x094000+` accounted for; `0x044000` block untested — blocked);
+  #018 `docs/sound.md` (68000-side driver map complete; Z80 code
+  itself never disassembled — blocked).
+- **Epic 2:** #019 `docs/save-validation.md` (medium **decided:
+  serial EEPROM**; `$E0`/`$B0` = pad-2 combos; buffer layout +
+  `$FF0168` mapping partial — blocked on a real save dump); #021
+  `docs/logic-audit.md` (tables + most overview questions answered
+  from #007/#008/#020 evidence; flaws F1–F10; debug-mode
+  reachability, live combat, food/water routine still open).
+- **Epic 4:** #010/#022 `docs/first-mod-proposal.md` — five
+  candidates analysed, dead-distance fix recommended; **this is a
+  proposal, Dayset still has to pick** (unchanged from before).
+- **Epic 5:** specs for all of #023–#031 in `docs/tribute/` +
+  `tools/extract_assets.py` scaffold (palettes exporter real;
+  runtime-ROM question answered: export at build time) +
+  `tribute/README.md` skeleton. All implementation blocked on the
+  Esenthel build (owner's machine).
+- **Epic 6:** #032 catalogue **substantially complete** from the
+  existing scrape (`docs/research/rings-of-power-ru-catalog.md`);
+  #034 source map + release-date tension recorded
+  (`docs/research/sources.md`; Sega-16/HG101/Pixelation still
+  open); #035 technical notes from the #004 patch diff
+  (other two mods still owed); #036 reviews/dates/sales assembled
+  with a **draft** overview section, not applied
+  (`docs/research/reception.md`); #033 mostly **blocked** — the
+  remaining co.uk pages need live-browser Wayback reads (403 on
+  direct fetch), status table in
+  `docs/research/ringsofpower-co-uk-remaining.md`.
+- New lead from #034: a pre-existing 2008 ROM hack, "Rings of
+  Power — The Hand of Nexus" v2.0 (Vimm's Lair), predates our mod
+  work — check it before the #022 pick.
+- Universal blocker for the ROM-dependent remainder:
+  `rop-original.gen` + Ghidra/BlastEm/GNU-as on the owner's machine.
+
 ## Next
 
 1. #011 (Ghidra recursive analysis) + #019 (save validation) — the remaining M2 cluster.
