@@ -1,0 +1,15 @@
+Changed bytes: original (MD5 30c18fdbe2183f64702ae9f1a45d63f9) -> distance-fix patched ROM
+All addresses are 68000 ROM offsets (= file offsets). Values are hex bytes.
+
+0x0018E-0x0018F (2 bytes):
+  8b 9f  ->  4f 95
+
+0x3B2B2-0x3B2B7 (6 bytes):
+  72 01 48 c1 83 c0  ->  4e f9 00 0f d1 38
+
+0xFD098-0xFD09B (4 bytes):
+  8f 33 60 8c  ->  46 81 8a fc
+
+0xFD138-0xFD145 (14 bytes):
+  ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  32 2e 00 0c 48 c1 83 c0 4e f9 00 03 b2 bc
+

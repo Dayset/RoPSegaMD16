@@ -51,3 +51,37 @@ Ship the first real change as a patch, through the full Epic 4 process.
   toolchain machine. No IPS generated yet, deliberately.
 
 **Status after this update:** in progress — target picked, spec + builder ready, patch generation blocked on ROM/toolchain.
+
+## Update 2026-11-09 — PATCH SHIPPED + VERIFIED
+
+Dayset supplied the ROM (verified MD5 30c18fdb…); the VM toolchain
+(Capstone/GNU as/BlastEm, docs/toolchain-vm.md) ran the full process:
+
+- **Locate:** bug pinned at 0x3B2B2 (`moveq #1,d1; ext.l d1;
+  divs.w d0,d1` after `jsr $3778E` + `addq #2,d0`).
+- **Patch:** `patches/distance-fix/rings-of-power-distance-fix.ips`
+  (54 bytes) — jmp hook at 0x3B2B2 to a 14-byte trampoline at
+  0xFD138 computing base/(dist+2); checksums fix-all (header
+  0x4F95, runtime 0x46818AFC, verify-all OK); IPS round-trip OK.
+- **Boot:** BlastEm boots the patched ROM past its runtime
+  checksum to the main loop; address-log diff vs original is
+  exactly the two new targets (FD138, 3B2BC) — the hook fires
+  during the attract sequence.
+- **Harness:** #007 D1–D7 in the emulator read back exactly as
+  pre-registered: D1 [31,69,31], D7 [31,100,31], D2–D6 unchanged.
+  (Harness build carried the trampoline at 0xFE000 — the harness
+  binary occupies FD0CC–FD606; shipped FD138 build is the
+  boot/hook-traced one. See patches/distance-fix/README.md §6.)
+- **Acceptance:** target picked ✓; change as minimal binary patch
+  with written reason ✓ (labelled asm awaits #012); both checksums
+  fixed ✓; boots in BlastEm ✓; affected scene — attract/combat
+  code path exercised via harness + hook trace, a human-played
+  combat scene and real hardware remain untested (same status as
+  music-off); patch in patches/ with description + before/after ✓.
+  Rebuild gate (#009/#013) with no changes: verify_rebuild.py
+  ROM-vs-itself PASS; a full disasm/src rebuild gate remains #012
+  work, so this item is recorded as shipped under the music-off
+  precedent (binary patch workflow), not via the rebuild gate.
+
+**Status after this update:** done as a shipped, verified patch
+(human-played scene + hardware test noted as open follow-ups).
