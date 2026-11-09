@@ -26,22 +26,29 @@ the same data on the live logo screen. Byte statistics confirm it:
 62.6% of $B86AE rec 0 tile bytes have hi==lo nibble (solid 2-pixel
 runs), vs ~6% expected for bitplane data.
 
-PARADOX (open, for #015/#016): the textbook Mega Drive VDP pattern
-format is bitplanar, and the upload path ($1383C -> $11A7C -> $DA04 DMA,
-$11AE4 -> $11B2E -> $DA04 DMA) shows NO packed->planar conversion in
-the disassembly, yet the game displays correctly. Either a conversion
-routine is not yet located, or the game's tile format is genuinely
-packed. --layout planar / planar-seq are kept for comparison; they
-render the same data as vertical bars / noise.
+PARADOX (RESOLVED in #016, see docs/graphics.md §7): the textbook Mega
+Drive VDP pattern format is bitplanar, and the upload path ($1383C ->
+$11A7C -> $DA04 DMA, $11AE4 -> $11B2E -> $DA04 DMA) shows NO
+packed->planar conversion -- because there is none to find. Live
+BlastEm VRAM snapshots (harness 2) show the decompressed tile bytes
+arrive in VRAM byte-identical, and a minimal VDP test ROM proves the
+VDP consumes them as packed (2 px/byte, hi nibble first): a packed
+tile displays as the intended glyph, an interleaved planar copy of the
+same tile displays as its packed reading. The game's tile format IS
+packed; the textbook "bitplanar" description is the thing that needs
+re-verification, not the data. --layout planar / planar-seq are kept
+for comparison; they render the same data as vertical bars / noise.
 
 Palettes come from the master table at ROM 0x0CC9D8 (31 palettes x 16
 colours, 9-bit BGR words: 0BBB0GGG0RRR0). --palette N selects table entry
 N (default 1). --palette raw:R,G,B,... uses explicit RGB triples.
 --palette grey uses a greyscale ramp (pixel value -> brightness).
 
-Palette word -> RGB: r = (w >> 9) & 7, g = (w >> 5) & 7, b = (w >> 1) & 7,
-each channel scaled x * 255 // 7. Colour 0 is drawn as-is (no forced
-transparency); use --transparent to render colour 0 as checkerboard.
+Palette word -> RGB: r = (w >> 1) & 7, g = (w >> 5) & 7, b = (w >> 9) & 7,
+each channel scaled x * 255 // 7. (Corrected in #016: the old order had
+r and b swapped; proven by the minimal VDP test ROM, which writes
+CRAM[1] = 0x0E00 and shows it as pure blue, and by the $B86AE rec 0
+embedded palette decoding to warm skin tones only under this order.)
 
 Palette loading is $11082(table_ptr, slot) -> 16 words into CRAM; the
 title screen ($11E06) loads table pal 10 -> slot 0 and pal 0 -> slot 1.
@@ -68,10 +75,21 @@ def load_rom(path=ROM_PATH):
 
 
 def md_word_to_rgb(w):
-    """Mega Drive CRAM word (0BBB0GGG0RRR0) -> (R, G, B) 0-255."""
-    r = (w >> 9) & 7
+    """Mega Drive CRAM word -> (R, G, B) 0-255.
+
+    CORRECTED in #016 (was r=(w>>9)&7, b=(w>>1)&7 -- R and B swapped).
+    Proof: the minimal VDP test ROM (.scratch016/vdp_test.s) writes
+    CRAM[1] = 0x0E00 and CRAM[7] = 0x000E; on screen, pixel value 1
+    displays as pure BLUE (0,0,255) and pixel value 5 (word 0x00E0)
+    as pure GREEN. So bits 9-11 are BLUE and bits 1-3 are RED:
+    R = bits 1-3, G = bits 5-7, B = bits 9-11. Corroborated by the
+    $B86AE rec 0 embedded palette, which decodes to warm browns/reds
+    (skin tones) only under this order; under the old order it is all
+    blues/greens. NOTE: PNGs rendered by #005 with the old order have
+    red and blue swapped (shapes are correct; colours are not)."""
+    r = (w >> 1) & 7
     g = (w >> 5) & 7
-    b = (w >> 1) & 7
+    b = (w >> 9) & 7
     return (r * 255 // 7, g * 255 // 7, b * 255 // 7)
 
 

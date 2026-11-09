@@ -165,25 +165,49 @@ and `0x94000–0xCBFFF` and tile data `0x60000–0x93FFF` are provisional.
   and story text are strided/interleaved. Dialogue edits are not
   a search-and-replace job — #004 has to crack the encoding first.
 
-## Logic flaws — audit list (unknown until #021 proves or kills each)
+## Logic flaws — audit list (answered in #021, see `docs/logic-audit.md`)
 
-These are questions, not findings. Each needs an address, a trace,
-and a reproduction before it goes in the audit as real:
+These were questions, not findings. #021 answered each with an address,
+a trace, and (where claimed) a harness reproduction:
 
 1. Does the save checksum actually catch a corrupted save, or does
-   it accept predictable byte patterns?
+   it accept predictable byte patterns? — **WEAK, and the result is
+   never used.** `$4323C`: 1-byte sum + complement over 126 bytes;
+   any 126 payload bytes + 2 recomputed check bytes pass. `$FF0168`
+   (the validation result) is never read by any code.
 2. Is there an overflow in XP/gold/stats arithmetic (8/16-bit
-   counters wrapping at level or money caps)?
+   counters wrapping at level or money caps)? — **YES, gold.**
+   `$2C474` clamps with signed compares: any gold+amount in
+   (32767, 65535] wraps negative and zeroes gold (reproduced:
+   15000+17768 → 0; boundary 15000+17767 → 15000). Likely
+   unreachable in normal play (max realistic single add ~4500).
+   XP cannot overflow (cap 13000, small adds). **Negative damage
+   heals:** `$3B1EE` has no damage clamp; atk 0 / def 31 / base 140 /
+   mods 0/3 → −6 damage → target HP 100 → 106 (reproduced).
 3. Does the 16-entry joypad queue drop inputs under fast mashing,
-   and does the 3-frame debounce eat legitimate presses?
+   and does the 3-frame debounce eat legitimate presses? — **Queue
+   semantics proven** (`$1350`: FIFO, tail==head = empty → returns
+   last value, wrap-around verified by harness). Whether mashing
+   overflows the 16 entries is unmeasured in live play — open.
 4. Combat/spell formulas: any divide-by-zero, unsigned underflow,
-   or enemy-stat edge case (0 HP, 0 defence)?
+   or enemy-stat edge case (0 HP, 0 defence)? — **Divide-by-zero
+   hazard proven** (`$1E3B0` divides by `$FF0E18[2]`, 0 in cold RAM;
+   the queue capacity is initialised by `$1B5D6` in the live new-game
+   flow, so it is safe in real play but fatal in a cold harness).
+   No other divide-by-zero found in the combat/spell paths traced.
 5. The Void death message ("a cruel twist of fate… exterminated
    you in a mere N seconds") — what triggers it, and is the timer
-   reachable in normal play or only by a bug?
+   reachable in normal play or only by a bug? — **Text located
+   (0x1215A); trigger and timer NOT located** (no pointer to 0x1215A
+   in ROM; reference mechanism unknown). Open.
 6. Any unreachable code / dead routines left from development
    (the debug format string at `0x023934` and `Diags On/Off`
-   at `0x02752A` suggest a debug mode — is it still reachable?).
+   at `0x02752A` suggest a debug mode — is it still reachable?). —
+   **Debug mode IS reachable** (SYSTEM menu → Diags toggles `$FF0134`,
+   persisted in the save; affects the D-pad decoder mapping).
+   The debug format string at 0x23934 is **dead data** (no references
+   in ROM). `$EB7C8` (stop-sound) is dead code (zero callers); the
+   `$3A84C` damage-apply block is dead (only if max HP < 0).
 
 ## Graphics rendering pipeline — current description
 
@@ -236,6 +260,10 @@ marked unknown are the #015–#017 work.
   identity (93C46 family suspected, unconfirmed) and 128-byte buffer layout
   still #019.
 - What is the main loop / state machine past the `$D25C` dispatcher? (#020)
-- `$42FC8` = EEPROM enable/init, `$43012` = EEPROM write, `$DCE2` = joypad
-  port 2 read (#003) — remaining save details still #019.
-- Is the debug mode (`Diags On/Off`) still reachable? (#021)
+- `$42FC8` = EEPROM enable/init, `$43012` = EEPROM **read** (block),
+  `$430F4` = EEPROM **write** (one byte), `$DCE2` = joypad port 2 read
+  (#003, labels corrected #021 — they were swapped) — remaining save
+  details still #019.
+- Debug mode (`Diags On/Off`) **is** reachable (#021): SYSTEM menu →
+  Diags toggles `$FF0134`, persisted in the save. The format string at
+  `0x023934` is dead data (no references).

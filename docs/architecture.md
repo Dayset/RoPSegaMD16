@@ -40,7 +40,7 @@ runtime checksum sum).
 BlastEm address log (10 s run, 2,487 unique addresses, first-hit
 order) confirms the runtime flow: `200 → 2FA → 119E → D25C`, then
 `D28E` and the sound upload `EB806`. Ghidra headless call graph
-(436 functions, 1,434 edges) agrees: entry `FUN_00000200` calls
+(446 functions, 1,449 edges, after #011) agrees: entry `FUN_00000200` calls
 `$FD07C`, `$119E`, `$4323C`, `$3AA`, `$A14`, `$4E6`.
 
 ### 0x200 — TMSS check + table-driven hardware init
@@ -351,30 +351,47 @@ papered over.
   `$1664E` (`0x166D8`, `0x169C6`, `0x16ACA`, `0x16B04`); and
   sites at `0x12AC8`, `0x14E54`, `0x14F2C`, `0x1591E`,
   `0x161AA` inside large routines of the same blocks.
-- `$12FE8` (`0x12FE8–0x1316E`) is the **menu/verb input
+- `$12FE8` (`0x12FE8–0x13650`) is the **menu/verb input
   decoder**: pops `$1350`, takes the low nibble of the
   button byte (the D-pad), maps it through jump tables (at
   `0x13052`, `0x13078`, `0x130D8`, `0x130FE`) gated by
   `$FF0116` and `$FF0134` mode flags, producing d6 = 0–4
-  (direction/selection index). Returns a pointer to a 4-byte
-  command record at `$FF0240`: [byte0 = command (0, or
-  `0x25`=37 when a face button A/B/C/Start bit 4/5/6/7 is
-  newly pressed vs previous state `$FF0244`, in the
-  `$FF0110` path), byte1 = d6, word = -1]. Writes `$FF0136`
-  = d6 (current menu selection index) when `$FF00AC == 0`
-  and `$FF010E` bit 0 == 0, else `$FF0136` = 4. If `$FF0112
-  != 0` it copies the record to `$FF0240` and returns
-  `$FF0240`.
+  (direction/selection index). It writes the `$FF0240`
+  command byte from the **button pressed + mode flags**
+  (0x12FE8–0x13650, full map in #021): D-pad only → 10
+  (when the selection returns to 4 / `$FF0086==4`) or 0;
+  A (bit 4) → 21 (if `$FF00AC`) / 30 (if `$FF00AE==1`) / 35
+  (otherwise), plus 40/0 variants; B (bit 5) → 22 (if
+  `$FF00AC`) / 50 (if `$FF00AE==1`) / 55 (otherwise); C
+  (bit 6) → 37 (if `$FF00AC`) / 45 (if `$FF010E` bit 0) / 40
+  (selection changed) / 0; Start (bit 7) → 20, and combos 24
+  (Start+C, selection byte 6) / 25 (Start+A or Start+B).
+  `$FF00AE` (1/2) is the input mode flag (set 1 at `$D29E`
+  each `$D28E` iteration; set 2 at `0x1DC1C`, back to 1 at
+  `0x1DE6A`). The record at `$FF0240` is [byte0 = command,
+  byte1 = d6, word = -1]. Writes `$FF0136` = d6 (current menu
+  selection index) when `$FF00AC == 0` and `$FF010E` bit 0
+  == 0, else `$FF0136` = 4. If `$FF0112 != 0` it copies the
+  record to `$FF0240` and returns `$FF0240`.
+  **CORRECTED in #021 — this was described as producing only
+  command 0 or 37; it produces 0, 10, 20, 21, 22, 24, 25,
+  30, 35, 37, 40, 45, 50, 55.**
 - `$FF0136` (menu selection index) is read at `0x138D2`
   (inside a routine at `0x138A8` that indexes a 6-byte
   table at `$1B446` by `$FF0136*6` and formats a display
   value).
-- Note: `$12FE8` only produces command 0 or 37, yet the
-  `$D28E` switch has 15 cases — the other command values
-  (10, 20, 21…) are written into the command slot by other
-  paths (e.g. `$D328` writes 10 literally in the `$FF0128`
-  branch; `$D43E` special-cases `0x25` and `0x28`=40). The
-  full command-source mapping is open for #021.
+- Note: `$12FE8` produces 0, 10, 20, 21, 22, 24, 25, 30,
+  35, 37, 40, 45, 50, 55 (see above) — the `$D28E` switch's
+  15 cases are all reachable from it. The remaining command
+  value, 23, has **no writer found** in the ROM (no literal
+  `move.b #$17` into the command slot) — open. Other writers:
+  `$D328` writes 10 literally in the `$FF0128` branch;
+  `$D43E` clears the command to 0 when a message is pending
+  (unless the command is 0/37/40) and calls `$17586(-1, 0x14`).
+  The `$D28E` switch is on the `$FF0240` command byte; the
+  verb C codes are NOT `$D28E` codes — the bridge is `$D28E`
+  case 21 → `$1F296`, which dispatches on the selected
+  record's C byte (full `$1F296` case map in #021).
 
 ### Per-frame world tick $2155E (partially traced)
 
@@ -576,7 +593,7 @@ VBlank handler; the VBlank handler does frame counter + joypad +
 sound tick only. (Overview fix itself is a one-line edit, left for
 review — this file records the correction.)
 
-## $4323C and its helpers — call-graph level (full analysis is #019)
+## $4323C and its helpers — call-graph level (full analysis is #019, see `docs/save.md`)
 
 `$4323C` (386 bytes) is called once from entry (`0x30C`; its only
 call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
@@ -589,26 +606,47 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
   (resp. `$00`/`$40`/`$C0`/`$80`) to `$200000` with NOP delays.
 - `$42EBA` — shift **one bit out**: `lsl d0` → `roxr d1`, bit 6 of
   the `$200000` word is the clock (clear → write → set → write →
-  clear → write). Data bit on D0, clock on D6.
-- `$42F96` — shift **one bit in**: write `$80`, write `$C0`, read
+  clear → write). **Data bit on D7, clock on D6** (corrected in
+  #019 — the old text said "DI = D0", which misread CPU register d0
+  as data-bus bit D0; see `docs/save.md` §2).
+- `$42EEE` — shift **one bit in**: write `$80`, write `$C0`, read
   `$200000` → d1, write `$80`; the read bit comes back on D7
-  (`asl.b d1` / `roxl d0`).
-- `$43012` — EEPROM **write**: takes address/buffer args off the
-  stack, stores them at `$FF0150–$FF015C`, clocks the command out via
-  `$42EBA` ×8, reads an ACK bit via `$42F96`; on error `$FF014E++`
-  and retries up to `$FF014C` (10).
-- `$430F4` — EEPROM **read**: same bit-bang pattern (command out,
-  ACK in), then reads bytes back through `$42EBA`/`$3DC2A`.
+  (`asl.b d1` / `roxl d0`). (Corrected in #019 — the old text
+  labelled this routine `$42F96`.)
+- `$42F96` — **ACK read**: write `$80`, write `$C0`, read `$200000`
+  → d1, write `$80`; the caller does `tst.b d1; bpl` — ACK = DO bit
+  7 LOW (0); bit 7 = 1 means no-ACK/error.
+- `$43012` — EEPROM **read** (block): takes a buffer pointer, address
+  and count off the stack, stores them at `$FF0150–$FF015C`, clocks the
+  command out via `$42EBA` ×8 (with `or.w #1` in the command word — the
+  read bit), reads an ACK bit via `$42F96`, then reads bytes back through
+  the `$42EEE` bit-in loop (`move.b d0, (a0)+`), looping `$FF015C` times.
+  On error `$FF014E++` and retries up to `$FF014C` (10).
+  **CORRECTED in #021 — this was labelled "write" in #003; the call-site
+  proof is decisive: boot validation calls `$43012(d1=$80, a0=$FF016A)`
+  and then validates the buffer, so it must be the read.**
+- `$430F4` — EEPROM **write** (one byte): same bit-bang pattern
+  (command out via `$42EBA` ×8 **without** the `or #1`, ACK in via
+  `$42F96`), then sends the byte (`move.b (a0), d0; lsl #8; $42EBA` ×8)
+  and waits out the write cycle (`move.w #$1518, d0; dbra`).
+  **CORRECTED in #021 — this was labelled "read" in #003; the clear-save
+  loop calls `$430F4` 128× with a0 advancing through the zeroed buffer,
+  so it must be the write.**
 - So the save hardware is a **Microwire-style serial EEPROM**
   bit-banged through the cartridge `$200000` window (separate DI/DO/
-  CLK lines: DI = D0, CLK = D6, DO = D7). Chip identity (93C46 family
-  is the usual suspect) is **unknown** — #019 must confirm it.
-  Corroboration: BlastEm auto-detected an EEPROM from the
-  `$200000` access pattern and saved a **128-byte** `save.eeprom`
-  (all `$FF` — erased state, the game read it at boot and found it
-  blank), matching the 128-byte buffer at `$FF016A`. Note the ROM
-  header declares **no backup RAM** (bytes `0x1B0–0x1BF` are spaces)
-  — the EEPROM is only discoverable from the code, not the header.
+  CLK lines: **DI = D7, CLK = D6, DO = D7** — corrected in #019;
+  DI and DO share data-bus bit D7). Chip identity (93C46 family
+  is the usual suspect) is **unknown** — #019 did not confirm it.
+  Corroboration: BlastEm's `rom.db` lists this ROM (`T-50176`) as
+  `EEPROM { type i2c, size 128 }` with `bits_read { 7 sda }` and
+  `bits_write { 6 scl, 7 sda }` — an independent match for the
+  wiring. BlastEm auto-detected the EEPROM from the `$200000`
+  access pattern and saved a **128-byte** `save.eeprom`, matching
+  the 128-byte buffer at `$FF016A`. Note the ROM header declares
+  **no backup RAM** (bytes `0x1B0–0x1BF` are spaces) — the EEPROM
+  is only discoverable from the code, not the header. (Also #019:
+  BlastEm's fresh EEPROM reads as `0x00`, not `0xFF` — a real
+  erased 93C46 reads `0xFF`.)
 - `$DCE2` — **joypad port 2 read** (shared utility, not
   save-specific): same two-phase pattern as `$3AA` on `$A10005`,
   returns the inverted button byte in d0. Ghidra xrefs: 8 call sites
@@ -628,8 +666,10 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
   `$F0` if either combo is held, else the raw pad-2 byte. BlastEm
   log shows the validation branches (`0x43316`, `0x4333A`,
   `0x4332E`, `0x432F6`, `0x432B6`) all execute on a clean boot.
-  What the buffer holds (character data? which slots?) and what the
-  return value means to callers is #019's work.
+  Full analysis is #019 (`docs/save.md`): the buffer holds the
+  EEPROM image (magic `0x2A` + parity + 1001-bit packed game state
+  in `$FFA800`); the byte-sum check is vestigial — a valid save
+  fails it 3/3 — and `$FF0168` is never read by any code.
 
 ## Joypad read — $3AA (0x3AA–0x44A) — verified
 
@@ -650,22 +690,39 @@ call sets above. It did **not** auto-create functions at the
 interrupt entry points `0x1270` / `0x1272` or at `$EB772` — vector
 targets have no call sites, so the analyser never discovered them;
 the `jsr $EB772` at `0x12F2` is visible only in the Capstone linear
-disassembly. Any future Ghidra work on interrupts must create those
-functions manually. The call-graph dump is at `/tmp/ghidra_calls.txt`
-(scratch, not in the repo).
+disassembly. Those three (plus 8 more the analyser missed —
+`$EBA00`, `$EB7C8`, `$EB8E0`, `$2B2B2`, `$2B502`, `$2988E`,
+`$3536C`, `$3539A`) were created manually in **#011**, bringing the
+graph to 446 functions / 1,449 edges; exports are under
+`disasm/ghidra/` (see `disasm/ghidra/README.md`).
 
 ## What remains unknown (for #011 / #019 / #020)
 
-- **#011 (Ghidra recursive analysis):** function boundaries in
-  `0x010000–0x043FFF` and `0x0E0000–0x0FBFFF` are still provisional;
-  the linear sweep mis-decodes data as code. The 436-function graph
-  is a start, not a map — and the interrupt handlers need manual
-  function creation (see above).
-- **#019 (save validation):** EEPROM chip identity; the `$FF016A`
-  128-byte buffer's layout (what is stored where); the exact ACK/
-  error semantics of `$43012`/`$430F4`; what `$4323C`'s return value
-  means; whether the pad-2 `$E0`/`$B0` combos are a deliberate
-  "clear save" feature or a side effect of the validation path.
+- **#011 (Ghidra recursive analysis): DONE 2026-11-09** — 446
+  functions / 1,449 edges; boundaries for `0x010000–0x043FFF`
+  (90.7% code, every gap ≥64 B classified) and `0x0E0000–0x0FBFFF`
+  (0.9% code, sound cluster only, both gaps classified as data)
+  decided per function; entry, VBlank, `$4323C`, and `$EB772` call
+  trees mapped. Exports under `disasm/ghidra/`; `disasm/map.md`
+  updated.
+- **#019 (save validation): DONE 2026-11-09** — see `docs/save.md`
+  (new doc). Medium decided: **128-byte serial EEPROM**, Microwire
+  bit-bang via `$200000`, **DI = D7, CLK = D6, DO = D7** (corrects
+  the "DI = D0" line above); `$DCE2`/`$42FC8`/`$43012`/`$430F4` fully
+  traced; `$E0` = B+C+Start, `$B0` = A+C+Start on pad 2; `$FF0168`
+  mapped (0/1/−1) and re-verified never read; the real format is
+  magic `0x2A` + `$176A0` parity + 1001-bit packed `$FFA800`, and a
+  valid save **fails** `$4323C`'s byte-sum check 3/3 (harness-proven)
+  — the check is vestigial. Save/load round-trip proven end to end
+  (`$2F11A` → `0x48`, `$2F896` → `0x49`, magic `0x2A`, parity
+  `0x1B` verified by independent recomputation). Real Load/Save are
+  `$2068E` cases **81/82** (corrects the #021 "C=14" label — case 14
+  is the 'Goods' shop verb). Open: chip identity (93C46 family
+  unproven), `$FF00C0` table meaning, `$FFBB6C` setter, `$2F896`'s
+  `0x4E` acceptance. BlastEm notes: fresh EEPROM reads as `0x00`
+  (not `0xFF`); it writes `save.eeprom` on exit but does not reload
+  it, so a live boot-from-save was not observed — persistence is
+  proven at the file level + via `$43012`. M2 is now COMPLETE.
 - **#020 (main loop / state machine): DONE 2026-11-09** — see the
   "Main loop + game state machine" section above. What it left
   open for #021: the exact mapping from the `0xCCDB8` verb-table

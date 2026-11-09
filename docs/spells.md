@@ -461,7 +461,8 @@ harness edit, the label moves when code above it grows** — a stale
 Build: assemble, `objcopy -O binary`, copy `rop-original.gen`
 to `/tmp/test008.gen`, write the harness at `0xFD0CC`, write the
 hook at `0x35C`, `python3 tools/checksum.py fix-all` (header
-`0xE136`, runtime `0x7C7B5FDB` — same runtime value as #007's run,
+`0xD948` after the #021 `rts` fix — `0xE136` before it — runtime
+`0x7C7B5FDB` — same runtime value as #007's run,
 expected: identical hook bytes and harness outside the summed
 range), `verify-all` passes. The original ROM is never modified
 (MD5 re-verified after every build:
