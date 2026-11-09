@@ -50,3 +50,12 @@ open
 - **Acceptance:** PARTIAL: source list + release-date item met; Sega-16, Hardcore Gaming 101, the Pixelation (Helm) thread, YouTube longplays and an IA manual scan were NOT surfaced/fetched this session and are recorded as OPEN in sources.md rather than claimed checked-and-empty.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation session)
+
+- **Sega-16 FOUND:** review dated 2011-04-25 at https://www.sega-16.com/2011/04/rings-of-power/comment-page-1/ — score **4/10**, header lists "Released: 1991". Substance (own words): deep/challenging Genesis RPG, but useless in-game map (no marked locations), very slow movement, aged graphics, unremarkable music; notes the intro Easter egg with a controller-2 variant combo. Recorded in sources.md as usable; the 4/10 also feeds #036 as a retrospective score.
+- **Manual scan FOUND (item can close):** Internet Archive collection SEGAGenesisMegaDriveManuals (https://archive.org/details/SEGAGenesisMegaDriveManuals) file list contains "Rings of Power (USA, Europe).pdf" (2.9M), verified by opening the collection 2026-11-09. Corroboration: RetroMania lists a Genesis manual PDF for the game.
+- **Longplays:** a World of Longplays (longplays.org) entry did NOT surface — recorded as not surfaced, still open for that source. Found instead: YouTube playlist "Best Video Games of 1991" (entries: Rings of Power Tutorial; RPG Quest #62 Part 1 — a beat-every-English-console-RPG series) and an embedded playthrough via segagames.online. Background/visual reference only.
+- **Pixelation (Helm):** the thread itself still NOT located after targeted searches. Its existence/subject are now verified via the Genesis Temple article's thanks section ("the great people on the Pixelation forum (Helm above all) for the awesome work on the world map") — the article's world-map image is that work. Original thread URL remains OPEN.
+- **Hardcore Gaming 101: NOT found.** Three searches run (site name + game, quoted domain, podcast/ranking angle); only a tangential NeoGAF remark about an HG101 book's nudity-in-games feature. Recorded honestly; remains OPEN.
+- **Release-date re-check:** no decisive new source; tension stands, no winner picked. New data points: gamecompanies.com and VGFacts both say December 31, 1991; RAWG-derived listings say January 1, 1991. Noted (hedged) that Jan 1 / Dec 31 are the conventional placeholder dates in game databases, weakening them as evidence of a 1991 street date; Sega-16 also gives only the year 1991.
