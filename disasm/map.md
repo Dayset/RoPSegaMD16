@@ -147,7 +147,7 @@ of the loop reproduces the constant exactly):
 | `0x001300–0x00FFFF` | ~60 KB | Code (handlers, subroutines, tables) | likely | Called from entry (`$3AA`, `$A14`); entropy 5.4–6.8, ASCII 0.24–0.28 |
 | `0x010000–0x043FFF` | 208 KB | Code + embedded strings/tables | likely | `jsr $4323C` target lives here; 100+ spaced strings per 64 KB; entropy ~6.0 |
 | `0x044000–0x05FFFF` | 112 KB | Compressed data (probably graphics) | provisional | Entropy 7.0–7.24, the highest outside the other compressed block; few strings |
-| `0x060000–0x093FFF` | 208 KB | Tile graphics / pattern data | provisional | Repeating 4-bpp-style byte patterns (`U5UU…`, `B$BD…`); strings found here are tile bytes, not text |
+| `0x060000–0x093FFF` | 208 KB | Compressed data (NOT raw tiles — see #005) | verified (not tiles) | Noise in every tile layout (packed/planar); this range is the start of the `$96120` compressed streams (`0x09638C–0x0B86AE`); the "tile graphics" label was wrong — corrected in #005 |
 | `0x094000–0x0CBFFF` | 224 KB | Compressed data | provisional | Entropy 7.2–7.57 (highest in ROM); few strings |
 | `0x0CC000–0x0D7FFF` | 48 KB | Sparse tables (map data?) | provisional | Entropy 4.6–5.3, 28–44% zero bytes |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |

@@ -32,11 +32,12 @@ Proven by (see disasm/text/README.md):
     plain copy).
   - $DD5C decompressor re-implemented and verified: the streams at
     0x0A66E6 (Book of Nexus, 2105 bytes), 0x0B3D40 (Book of Buc,
-    1810 bytes) and 0x0B6221 (title credits, 1590 bytes) decompress to
-    clean readable English.
+    1810 bytes), 0x0B6221 (title credits, 1590 bytes) and 0x0B83A1
+    (bestiary/class text, 1188 bytes; $96120 rec 61, found in #005)
+    decompress to clean readable English.
   - Ground-truth validation: docs/research/rings-of-power-ru/
     english-and-russian.txt (fan-site transcription, 2009-2010) --
-    648/650 of its English sentences (99.7%) appear verbatim in the
+    647/649 of its English sentences (99.7%) appear verbatim in the
     rendered $DDBD8 records. The 2 misses: record 0 drops its 'An'
     ($136FC skips array[0] -- likely a real display quirk, needs live
     observation), and one NPC line ("I regret that Thalmus' death...")
@@ -253,9 +254,12 @@ def main():
         (n,) = struct.unpack_from("<I", data, start)
         if n < 100 or n > 20000:
             continue
-        # quick filter: first mask byte + first items mostly printable
-        if not all(0x20 <= b <= 0x7E or b in (9, 10, 13)
-                   for b in data[start + 5:start + 13]):
+        # quick filter: first literals mostly printable (allow up to 2
+        # control bytes — real text streams embed control sequences,
+        # e.g. $96120 rec 61 has 0xF1 among its first 8 literals)
+        window = data[start + 5:start + 13]
+        if sum(1 for b in window
+               if 0x20 <= b <= 0x7E or b in (9, 10, 13)) < 6:
             continue
         res = dd5c_decompress(data, start)
         if res is None:

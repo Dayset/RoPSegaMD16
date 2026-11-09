@@ -125,13 +125,14 @@ tile/map data (the `$96120` type-1 records). Format, re-implemented in
 - 4 KB ring buffer at `$FF0EAC`, **pre-filled with spaces (0x20)**;
   write position starts at `0xFEE`.
 
-Three text streams found by scanning (all decode to clean English):
+Four text streams found by scanning (all decode to clean English):
 
 | Offset | Decompressed | Contents |
 |---|---|---|
 | `0x0A66E6` | 2,105 bytes | "From the Book of Nexus: Before Nexus, we lived in darkness. The sun shone as brightly as ever…" (story intro) |
 | `0x0B3D40` | 1,810 bytes | "From the Book of Buc: So it was that the victorious Sorcerer Buc, of the Academy of the Mind, did defeat the evil Void…" |
 | `0x0B6221` | 1,590 bytes | Title screen: "Rings of Power / A Fantasy Adventure by / Naughty Dog, Inc. / Published by / Electronic Arts / Produced by / Christopher Erhardt / Naughty Dog Team: Jason Rubin, Andy Gavin, Vijay Pande, Alexander Hinds…" |
+| `0x0B83A1` | 1,188 bytes | Bestiary/class text ("Here are but some of the beings you will encounter: The Red Priests are the servants of Nexus…") — `$96120` rec 61, found in #005 (the original scan missed it: its first literals include a 0xF1 control byte, which the old all-printable quick filter rejected; fixed 2026-11-09) |
 
 The decompressed streams contain embedded non-text bytes: `\x00` separators
 and sequences like `( (( #$%&(()*+((/<=>` (probably icon/formatting

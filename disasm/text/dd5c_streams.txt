@@ -153,3 +153,17 @@ Special Thanks:
 
 ~~
 
+=== stream at 0x0B83A1, decompressed 1188 bytes, compressed 781 bytes ===
+	Here are but some of the beings you will encounter:
+	�The Red Priests are the servants of Nexus. They can be found in most cities.
+   ( (( #$%&(()*+((/<=> (( (�	Likewise VOID also had its own minions, the horrible Black Priests of Void! Fear them, for they delight in destruction, chaos, and pain. They lead the Cult of Void in its terrible mission to terrorize the people of our world.
+   ( (( #$%&(()*+((/<=> (( (�Knights have the power to rend objects asunder. This is their symbol [.
+   ( (( #$%&(()*+((/<=> (( (�Archers are gifted with the ability to impart motion upon objects. Their symbol is \.
+   ( (( #$%&(()*+((/<=> (( (�Necromancers possess a knowledge of the body that lets them heal or cause wounds, and in rare cases, to raise the dead. { is their symbol.
+   ( (( #$%&(()*+((/<=> (( (�Enchanters can transform or alter the very nature of objects. They take _ as their symbol.
+   ( (( #$%&(()*+((/<=> (( (�Conjurers use their powers to call perfect images from other worlds. Their symbol is `.
+   ( (( #$%&(()*+((/<=> (( (�Sorcerers, the wisest and most powerful of those who practice the Arts, are able to control the minds of others. They have the ] as their symbol.
+
+
+~~
+

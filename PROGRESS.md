@@ -12,8 +12,8 @@ Issues live in `issues/` — one file each. Update both together.
 |---|---|---|---|
 | 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1 done) |
 | 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003 done, #019 open) |
-| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | ⬜ not started |
-| 4 | Mods | A few chosen changes, each as a tested patch | ⬜ not started (target TBD) |
+| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005 done) |
+| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (first patch shipped: music-off 2026-11-09; #022 target still TBD) |
 
 ## Milestones
 
@@ -21,10 +21,10 @@ Issues live in `issues/` — one file each. Update both together.
 |---|---|---|
 | M1 | Repo + toolchain + first disassembly | ✅ done 2026-11-09 |
 | M2 | Code/data map + labelled entry/interrupts | 🟡 in progress |
-| M3 | Text + graphics + maps identified | 🟡 in progress (#004 done) |
+| M3 | Text + graphics + maps identified | 🟡 in progress (#004, #005 done) |
 | M4 | Game logic mapped (stats/XP/gold/combat/spells) | ⬜ not started |
 | M5 | Rebuildable, byte-identical disassembly | ⬜ not started |
-| M6 | First real mod, shipped as a patch | ⬜ not started |
+| M6 | First real mod, shipped as a patch | 🟡 in progress (first patch shipped separately as music-off 2026-11-09; #022 target still TBD) |
 
 ## Issue board
 
@@ -34,7 +34,7 @@ Issues live in `issues/` — one file each. Update both together.
 | #002 | 1 | First linear disassembly + code/data map | ✅ done | M1 |
 | #003 | 2 | Entry point, vectors, VBlank/HBlank interrupts | ✅ done 2026-11-09 | M2 |
 | #004 | 3 | Text / dialogue extraction + tables | ✅ done 2026-11-09 | M3 |
-| #005 | 3 | Graphics: tiles, sprites, palettes, compression | ⬜ not started | M3 |
+| #005 | 3 | Graphics: tiles, sprites, palettes, compression | ✅ done 2026-11-09 | M3 |
 | #006 | 3 | Maps / world data | ⬜ not started | M3 |
 | #007 | 2 | Game logic: stats, XP, gold, combat | ⬜ not started | M4 |
 | #008 | 2 | Spells / skills system | ⬜ not started | M4 |
@@ -66,9 +66,11 @@ Issues live in `issues/` — one file each. Update both together.
 - [x] Project overview written (`docs/overview.md`): 4 epics, rebuild contract, hardware limits, verified structure, strong/weak points, graphics pipeline, logic-flaw audit list. Issues restructured into epics + smaller tasks #011–#022.
 - [x] **#004 done 2026-11-09** — text/dialogue fully decoded (`disasm/text/README.md`): dictionary system proven — 3,466 words, 1-based indices, blob `0x0D6EBA–0x0DC0C0` + offset table `0x0DC0C2`; `$136FC` exact semantics (skip array[0], read one past, separator top-2-bits); `$DDBD8` 1,184 records (0–1180 real, 1181–82 `<NA>`, 1183 malformed); `$DD5C` LZSS re-implemented and verified (3 text streams: Book of Nexus `0x0A66E6`, Book of Buc `0x0B3D40`, title credits `0x0B6221`); ground-truth validation vs fan-site corpus **647/649 (99.7%)**; Russian fan translation (bybyc9lc9l, 2012) independently confirms dictionary-based original — its IPS patch diffed (new `$D7030` pointer table + compressed blocks, `$D6F50` reader, font uploads `$FD0D0`/`$1AA70`/`$E8C70`, runtime checksum NOP'd at `0xFD09C`); same-length replacement proven (`Continue` → `Resumed ` at `0x15BE1`, fix-all, verify-all, BlastEm boot to Naughty Dog logo). Open: record-0 dropped `An` (likely real 1992 bug, needs live check), `&` separator source, `$B8A32` layout, `$DD5C` control codes. M3 in progress.
 - [x] **#003 done 2026-11-09** — reset vector traced `0x200 → $FD07C → $4323C → $119E → $D25C` (TMSS/SEGA init, VDP table `0x28E`, display on `$8174`, attract loop, `"MANX"` init); VBlank `0x1272` fully traced (frame counter `$FF0010`, 3-frame debounce, 16-entry joypad ring `$FF001C`); HBlank `0x1270` is a single `rte` that never fires (R0=`$04`); `$EB772` is the per-frame **sound** tick (not a draw dispatch — corrects an `overview.md` line, fix left for review); `$4323C` helpers mapped at call-graph level (Microwire-style serial EEPROM via `$200000`, `$DCE2` = joypad port 2, `$E0`/`$B0` = pad-2 button combos). Verified by Capstone range dumps + Ghidra headless call graph (436 functions, 1,434 edges) + BlastEm address log (2,487 unique addresses; `1272` hit, `1270` 0 hits; BlastEm auto-detected a 128-byte EEPROM). Written up in `docs/architecture.md`; `disasm/map.md` updated; open questions 1–2 answered/partially answered. M2 stays in progress (#011, #019 remain).
+- [x] **#005 done 2026-11-09** — graphics fully identified (`disasm/graphics/README.md` + `inventory.md`): tile/sprite graphics live in two `$DD5C`-compressed tables, not raw ROM — `$96120` (62 records, sources `0x09638C–0x0B86AE`) and `$B86AE` (90 records, each `[32-byte palette][36 tiles]`, sources `0x0B8A32–~0x0CC761`); decompressed tile bytes are **packed, 2 pixels/byte, high nibble first** (proven by the $B86AE rec 0 portrait and the $96120 rec 0 ASCII font rendering coherently only in packed layout, cross-checked against BlastEm's VRAM debugger; byte stats 62.6% hi==lo nibble); palette format Mega Drive 9-bit BGR `0BBB0GGG0RRR0`, master table ROM `0x0CC9D8` (31 palettes), loader `$11082(table_ptr, slot)` → CRAM via `$D9E2`/`$D9EE`, `$B86AE` records embed their own palette; compression is `$DD5C` LZSS for all graphics in both tables (62/62 + 90/90 clean, no Nemesis/Kosinski/Enigma there); upload `$1383C` → `$11A7C` → `$DA04` VDP DMA and `$11AE4` → `$11B2E` → `$DA04` DMA, both verbatim. Rendered: full ASCII font + "MORE" (`font_rec00_pal10.png`), terrain rec 6, logo rec 12, two character portraits + one textured graphic (`portrait_b86ae_rec00/01/05.png`); renderer `tools/render_tiles.py` (record/sprite/raw modes, `--layout`). Side finding: `$96120` rec 61 is a 4th `$DD5C` text stream (bestiary/class text) — fold into #004. Open paradox for #015/#016: textbook VDP format is bitplanar yet the DMA path shows no packed→planar conversion and the game displays correctly. Raw ROM `0x060000–0x093FFF` is NOT raw tiles (noise in every layout) — `disasm/map.md`'s label there is wrong. M3 stays in progress (#006, #015–#018 remain).
+- [x] **Music-off patch shipped 2026-11-09** (`patches/music-off/`): makes the Music menu's Quiet choice actually silence the music and keep it off across location changes — Quiet was song index 18, a no-op dispatch entry, and `$EB7C8` stop-sound was dead code; two hooks (`0x173C0`, `0x173F4`) + trampolines in the `0xFF` padding at `0xFD0CC+`; IPS round-trip verified, checksums fixed; limit: one-way off switch, reset restores music. Pushed separately (remote main `9d0fe38`, commits `1484062` + `c7f22ec`) — a user-requested fix, NOT the #022 first-mod pick; the #022 target is still TBD.
 
 ## Next
 
 1. #011 (Ghidra recursive analysis) + #019 (save validation) — the remaining M2 cluster.
-2. #017 (compression — `$DD5C` LZSS now identified + re-implemented in #004; remaining: check whether Nemesis/Kosinski/Enigma appear elsewhere) and #005/#006 (graphics/maps) — the rest of Epic 3.
+2. #017 (compression — `$DD5C` LZSS now identified + re-implemented in #004 and proven for all graphics in #005; remaining: check whether Nemesis/Kosinski/Enigma appear elsewhere) and #006 (maps) — the rest of Epic 3.
 3. Dayset picks the first mod target for #022 — difficulty, a spell, dialogue, or a fix.

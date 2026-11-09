@@ -17,11 +17,12 @@
   ],
   "dialogue_record_table": "0x0DDBD8-0x0E0A18",
   "dialogue_word_arrays": "0x0E0A18-0x0EB772",
-  "dd5c_streams_found": 3,
+  "dd5c_streams_found": 4,
   "dd5c_stream_offsets": [
     "0x0A66E6",
     "0x0B3D40",
-    "0x0B6221"
+    "0x0B6221",
+    "0x0B83A1"
   ],
   "decoder_routine": "0x136FC (word expander, 1-based indices), 0x13654 (record dispatcher)",
   "decompressor_routine": "0xDD5C",

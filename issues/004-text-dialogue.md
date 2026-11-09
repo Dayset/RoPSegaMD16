@@ -40,9 +40,11 @@ Full write-up: `disasm/text/README.md`. Inventory: `disasm/text/inventory.json`.
 
 LE32 length, mask bytes (1 = literal, 0 = 2-byte backref: 12-bit offset,
 length = low nibble + 3), 4 KB space-prefilled ring `$FF0EAC`, write pos
-starts `0xFEE`. Three text streams decode to clean English:
+starts `0xFEE`. Four text streams decode to clean English:
 `0x0A66E6` Book of Nexus (2,105 B), `0x0B3D40` Book of Buc (1,810 B),
-`0x0B6221` title credits (1,590 B). The "strided" look is `0xFF` mask
+`0x0B6221` title credits (1,590 B), `0x0B83A1` bestiary/class text
+(1,188 B; `$96120` rec 61 — found in #005, scanner quick-filter fix
+2026-11-09). The "strided" look is `0xFF` mask
 bytes (8 literals) — not a separate scheme.
 
 ### Ground-truth validation
