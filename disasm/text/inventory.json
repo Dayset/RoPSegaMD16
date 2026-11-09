@@ -1,0 +1,37 @@
+{
+  "rom": "rop-original.gen",
+  "rom_size": 1048576,
+  "spaced_strings_ge4": 14133,
+  "spaced_strings_ge8": 1807,
+  "dictionary_words": 3466,
+  "dictionary_blob": "0x0D6EBA-0x0DC0C0",
+  "dictionary_offset_table": "0x0DC0C2",
+  "dialogue_records": 1184,
+  "dialogue_real_records": 1181,
+  "dialogue_placeholders": [
+    1181,
+    1182
+  ],
+  "dialogue_malformed": [
+    1183
+  ],
+  "dialogue_record_table": "0x0DDBD8-0x0E0A18",
+  "dialogue_word_arrays": "0x0E0A18-0x0EB772",
+  "dd5c_streams_found": 3,
+  "dd5c_stream_offsets": [
+    "0x0A66E6",
+    "0x0B3D40",
+    "0x0B6221"
+  ],
+  "decoder_routine": "0x136FC (word expander, 1-based indices), 0x13654 (record dispatcher)",
+  "decompressor_routine": "0xDD5C",
+  "corpus_validation": {
+    "corpus": "docs/research/rings-of-power-ru/txt/english-and-russian.txt",
+    "sentences_checked": 649,
+    "sentences_found": 647,
+    "sentences_missing": [
+      "An unknown building.",
+      "--- I regret that Thalmus' death has thrown us into such disarray."
+    ]
+  }
+}

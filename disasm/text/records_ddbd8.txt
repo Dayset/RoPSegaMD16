@@ -1,0 +1,2367 @@
+rec    0 ptr=0x00000 len=  6 type=5 words=4
+  unknown building. 
+rec    1 ptr=0x00006 len= 20 type=5 words=11
+  A Sorcerer's Guild. You feel eyes watching you. 
+rec    2 ptr=0x0001A len= 38 type=5 words=20
+  A Guild of the Knights of the Holy Order of Separation. Clanks and bangs emerge from within. 
+rec    3 ptr=0x00040 len=  8 type=5 words=5
+  An Archer's Guild. 
+rec    4 ptr=0x00048 len= 10 type=5 words=6
+  A creepy Necromancer's Guild. 
+rec    5 ptr=0x00052 len=  8 type=5 words=5
+  An Enchanter's Guild. 
+rec    6 ptr=0x0005A len=  8 type=5 words=5
+  A Conjurer's Guild. 
+rec    7 ptr=0x00062 len= 10 type=5 words=6
+  A cute little inn. 
+rec    8 ptr=0x0006C len= 10 type=5 words=6
+  A small general store. 
+rec    9 ptr=0x00076 len= 12 type=5 words=7
+  A tavern full of people. 
+rec   10 ptr=0x00082 len= 16 type=5 words=9
+  An impressive castle with a menacing portculis. 
+rec   11 ptr=0x00092 len= 12 type=5 words=7
+  The local Temple of Nexus. 
+rec   12 ptr=0x0009E len=  6 type=5 words=4
+  Someone's home. 
+rec   13 ptr=0x000A4 len=  8 type=5 words=5
+  A vehicle master. 
+rec   14 ptr=0x000AC len=  8 type=5 words=5
+  A dark cave. 
+rec   15 ptr=0x000B4 len= 14 type=5 words=8
+  Behind the waterfall is a hidden cave! 
+rec   16 ptr=0x000C2 len= 16 type=5 words=9
+  A tall lighthouse guards the harbor entrance. 
+rec   17 ptr=0x000D2 len= 22 type=5 words=12
+  The endless desert is broken here by a small oasis. 
+rec   18 ptr=0x000E8 len= 12 type=5 words=7
+  A center of civic government. 
+rec   19 ptr=0x000F4 len= 16 type=5 words=9
+  A secret temple hidden in the jungle. 
+rec   20 ptr=0x00104 len= 10 type=5 words=6
+  The fabled Sorcerer's Academy. 
+rec   21 ptr=0x0010E len= 16 type=5 words=9
+  A ratty little shack on a hill. 
+rec   22 ptr=0x0011E len= 40 type=5 words=21
+  This huge building is the largest and most powerful Knight's Guild in the world, the Guild of Pieces. 
+rec   23 ptr=0x00146 len= 32 type=5 words=17
+  You stand in front of the largest and most prestegious Archers' Guild in the world. 
+rec   24 ptr=0x00166 len= 26 type=5 words=14
+  This is the Necromantic Academy -- a chill creeps up your spine. 
+rec   25 ptr=0x00180 len= 38 type=5 words=20
+  The center entrance to this huge building leads to the Conjurors' Guild hall and the Library of Perfection. 
+rec   26 ptr=0x001A6 len= 18 type=5 words=10
+  This impressive structure is the Tower of Kaos. 
+rec   27 ptr=0x001B8 len= 26 type=5 words=14
+  This Temple is unqiue; it supports both Red Priests and Black Priests. 
+rec   28 ptr=0x001D2 len= 16 type=5 words=9
+  This is the world famous Drunken Dragon. 
+rec   29 ptr=0x001E2 len= 38 type=5 words=20
+  The Lobotomy Club sits atop Cogito Falls. The sign reads: "Come on in and lose your mind." 
+rec   30 ptr=0x00208 len= 12 type=5 words=7
+  The dreaded Mines of Misery. 
+rec   31 ptr=0x00214 len= 10 type=5 words=6
+  A nice little restaraunt. 
+rec   32 ptr=0x0021E len= 50 type=5 words=26
+  The Great Cathedral of Nexus is the largest Temple in the world. It was built  on the spot where Nexus first appeared. 
+rec   33 ptr=0x00250 len= 28 type=5 words=15
+  This Citadel is the home of the Holy Order of Paladins of Nexus. 
+rec   34 ptr=0x0026C len= 54 type=5 words=28
+  You stand before the seat of Doggon power. For more than 500 years the Doggon Kings have ruled over Doggania, the city they founded. 
+rec   35 ptr=0x002A2 len= 56 type=5 words=29
+  This lovely castle is the citadel of the Richi Dynasty. The Richis have ruled there with a strong but benevolent hand since just after the Cataclysm. 
+rec   36 ptr=0x002DA len= 30 type=5 words=16
+  The Richi Dynasty have constructed this large observatory building for the study of science. 
+rec   37 ptr=0x002F8 len= 20 type=5 words=11
+  You stand amazed in front of this monstrous edifice. 
+rec   38 ptr=0x0030C len= 22 type=5 words=12
+  It is from this building that the Protectors come.  
+rec   39 ptr=0x00322 len= 50 type=5 words=26
+  The huge complex of buildings before you is the University of Oxbridge, renowned for its academics, its library, and its attitude. 
+rec   40 ptr=0x00354 len= 34 type=5 words=18
+  This is the Great Ampitheatre, where the finest theatrical performances in the world are held. 
+rec   41 ptr=0x00376 len= 60 type=5 words=31
+  This is the home of the wealthy and eccentric Mr. Belmont. Little is known about the reclusive Mr. Belmont, except that he is VERY rich. 
+rec   42 ptr=0x003B2 len= 46 type=5 words=24
+  This is the Thieves' Guild, led by the mysterious Keef the Thief. It is said he came from another world. 
+rec   43 ptr=0x003E0 len= 50 type=5 words=26
+  Nowhere else in the world have you felt the presense of such an evil.  This place reeks of Void and his servants. 
+rec   44 ptr=0x00412 len= 10 type=5 words=6
+  A huge golden temple. 
+rec   45 ptr=0x0041C len= 10 type=5 words=6
+  A huge grey temple. 
+rec   46 ptr=0x00426 len= 56 type=5 words=29
+  Nasty things slither through the swamp. Large fires burn out of control on the greasy water. A putrid smell emerges from the hut before you. 
+rec   47 ptr=0x0045E len= 30 type=5 words=16
+  This is the huge Citadel of Sparta, home of the twin warrior kings. 
+rec   48 ptr=0x0047C len= 24 type=5 words=13
+  This crystal tower is the home of the great Glass Works. 
+rec   49 ptr=0x00494 len= 38 type=5 words=20
+  The desert fortress of Mesa is built directly into the sand and rock formation that is its namesake. 
+rec   50 ptr=0x004BA len= 28 type=5 words=15
+  Underneath the desert is the Great Tomb. This area reeks of Necromancy. 
+rec   51 ptr=0x004D6 len= 38 type=5 words=20
+  You stand before Magic B Us, the largest center for magic development and distribution in the world. 
+rec   52 ptr=0x004FC len= 18 type=5 words=10
+  A sign hangs above the door: "Sunnyville Loony Bin" 
+rec   53 ptr=0x0050E len= 20 type=5 words=11
+  A brightly lit magic neon sign says: "Lucky Luke's Casino!" 
+rec   54 ptr=0x00522 len= 42 type=5 words=22
+  This lone tower is the only thing for miles. The bizarre look of it immediately makes you suspect Enchantment. 
+rec   55 ptr=0x0054C len= 26 type=5 words=14
+  This huge fortress is built on the ruins of a destroyed city. 
+rec   56 ptr=0x00566 len= 44 type=5 words=23
+  You stand before the mystic Fount of Heaven, the seat of Nexus' power. Inside is the divine Nexus himself. 
+rec   57 ptr=0x00592 len= 16 type=5 words=9
+  The sign says: "Shady Rest Funeral Home." 
+rec   58 ptr=0x005A2 len= 36 type=5 words=19
+  Welcome to the city of the Mind, home of the world famous Academy of Sorcery.  
+rec   59 ptr=0x005C6 len=  8 type=5 words=5
+  Keep out! Private drive! 
+rec   60 ptr=0x005CE len= 32 type=5 words=17
+  Welcome to Division, home of the divided Knights of the Holy Order of Separation. 
+rec   61 ptr=0x005EE len= 14 type=5 words=8
+  Welcome to the City of Speed. 
+rec   62 ptr=0x005FC len= 30 type=5 words=16
+  Welcome to the City of Blood -- the city people are dying to come to! 
+rec   63 ptr=0x0061A len= 24 type=5 words=13
+  Welcome to Kaos, population 50 (subject to change without notice). 
+rec   64 ptr=0x00632 len= 62 type=5 words=32
+  Welcome to the City of Perfection. No Littering. No Loud Noise. No Shirt, No Shoes, No Cape, No Conjuring. No Fun. No Kidding! 
+rec   65 ptr=0x00670 len=  8 type=5 words=5
+  Welcome to Cathedral. 
+rec   66 ptr=0x00678 len= 28 type=5 words=15
+  City of Doggan, capitol of Doggania, citadel of the Doggon Kings. 
+rec   67 ptr=0x00694 len= 34 type=5 words=18
+  Welcome to the City of Commerce, our fingers extend into every purse in the world. 
+rec   68 ptr=0x006B6 len= 20 type=5 words=11
+  Welcome to Sunrise / Sunset - Orphanage / Retirement Home 
+rec   69 ptr=0x006CA len= 32 type=5 words=17
+  Welcome to Richi, capitol of the Richi Empire. All hail Queen Richileu IXX. 
+rec   70 ptr=0x006EA len= 24 type=5 words=13
+  Welcome to Oxbridge - center of learning for all the world. 
+rec   71 ptr=0x00702 len= 14 type=5 words=8
+  Keep out, Belmont Residence: Private!  
+rec   72 ptr=0x00710 len= 12 type=5 words=7
+  Entering the Celestial City area. 
+rec   73 ptr=0x0071C len= 14 type=5 words=8
+  New Sparta - no one is welcome 
+rec   74 ptr=0x0072A len= 24 type=5 words=13
+  Welcome to Shard -- home of the Great Glass Works.  
+rec   75 ptr=0x00742 len=  2 type=5 words=2
+  Mesa 
+rec   76 ptr=0x00744 len= 12 type=5 words=7
+  The Necropolis. No living allowed! 
+rec   77 ptr=0x00750 len=  8 type=5 words=5
+  Welcome to Magicnia. 
+rec   78 ptr=0x00758 len= 26 type=5 words=14
+  Welcome to Thieves Haven. Decent people should just keep on walking. 
+rec   79 ptr=0x00772 len= 50 type=5 words=26
+  Passage through here will be found among the ugly who create great beauty, where admidst cowards, is one whose courage is legendary. 
+rec   80 ptr=0x007A4 len= 10 type=5 words=6
+  Shady Rest Funeral Home. 
+rec   81 ptr=0x007AE len=  4 type=5 words=3
+  Road closed! 
+rec   82 ptr=0x007B2 len= 10 type=5 words=6
+  Cathedral - 127 klicks east 
+rec   83 ptr=0x007BC len= 18 type=5 words=10
+  Speed - 72 klicks south ^Cathedral - 55 north 
+rec   84 ptr=0x007CE len= 24 type=5 words=13
+  Welcome to Cathedral ^Speed - 72 klicks north ^Kaos - 99 south 
+rec   85 ptr=0x007E6 len= 18 type=5 words=10
+  Cathedral - 64 klicks west ^Perfection - 243 east 
+rec   86 ptr=0x007F8 len= 22 type=5 words=12
+  Kaos - 235 klicks east^Perfection - 12 west^Fenopolis - 80 south 
+rec   87 ptr=0x0080E len= 18 type=5 words=10
+  Welcome to the great Fen ^Perfection - 90 west 
+rec   88 ptr=0x00820 len= 16 type=5 words=9
+  Private graveyard, residents and plot owners only! 
+rec   89 ptr=0x00830 len=  8 type=5 words=5
+  Fenopolis - 105 north 
+rec   90 ptr=0x00838 len= 14 type=5 words=8
+  Fenopolis - 172 west^Division - 100 east 
+rec   91 ptr=0x00846 len= 14 type=5 words=8
+  Blood - 20 south^Division - 80 north 
+rec   92 ptr=0x00854 len= 24 type=5 words=13
+  Division - 4 east ^Blood - 100 west ^Cathedral - 662 west 
+rec   93 ptr=0x0086C len= 20 type=5 words=11
+  Save often and you will often be saved.  
+rec   94 ptr=0x00880 len= 22 type=5 words=12
+  Search and you will find it, but not here. 
+rec   95 ptr=0x00896 len= 12 type=5 words=7
+  All roads lead to Nexus. 
+rec   96 ptr=0x008A2 len=  4 type=5 words=3
+  Greetings. 
+rec   97 ptr=0x008A6 len=  4 type=5 words=3
+  Hello. 
+rec   98 ptr=0x008AA len=  4 type=5 words=3
+  Welcome. 
+rec   99 ptr=0x008AE len=  4 type=5 words=3
+  Welcome. 
+rec  100 ptr=0x008B2 len= 18 type=5 words=10
+  Is there something I can do for you? 
+rec  101 ptr=0x008C4 len=  4 type=5 words=3
+  Goodbye. 
+rec  102 ptr=0x008C8 len=  2 type=5 words=2
+  <NA> 
+rec  103 ptr=0x008CA len= 18 type=5 words=10
+  You must TALK to someone before attacking them. 
+rec  104 ptr=0x008DC len= 20 type=5 words=11
+  I'm sorry, I don't have anything to sell. 
+rec  105 ptr=0x008F0 len= 24 type=5 words=13
+  I'm sorry, you don't have anything I want to buy. 
+rec  106 ptr=0x00908 len= 46 type=5 words=24
+  Sorry, that is the wrong answer. I'll just take 25 gold from you for wasting my time. Good bye. 
+rec  107 ptr=0x00936 len= 10 type=5 words=6
+  Right, good job. 
+rec  108 ptr=0x00940 len= 14 type=5 words=8
+  Okay, I pick this one. 
+rec  109 ptr=0x0094E len= 22 type=5 words=12
+  You can not attack me, I am magically protected. 
+rec  110 ptr=0x00964 len=  2 type=5 words=2
+  Bye! 
+rec  111 ptr=0x00966 len=  4 type=5 words=3
+  See ya! 
+rec  112 ptr=0x0096A len=  2 type=5 words=2
+  <NA> 
+rec  113 ptr=0x0096C len=  2 type=5 words=2
+  <NA> 
+rec  114 ptr=0x0096E len= 12 type=5 words=7
+  Pssst! How about 10 gold? 
+rec  115 ptr=0x0097A len= 20 type=5 words=11
+  Would you do me a favor for 10 gold? 
+rec  116 ptr=0x0098E len=  4 type=5 words=3
+  Thanks. 
+rec  117 ptr=0x00992 len= 12 type=5 words=7
+  Take a look at this. 
+rec  118 ptr=0x0099E len= 14 type=5 words=8
+  You have nothing that interests me. 
+rec  119 ptr=0x009AC len= 10 type=5 words=6
+  Please answer the question. 
+rec  120 ptr=0x009B6 len= 20 type=5 words=11
+  I have nothing more to say on that topic. 
+rec  121 ptr=0x009CA len= 10 type=5 words=6
+  Yes, of course. 
+rec  122 ptr=0x009D4 len= 12 type=5 words=7
+  No, not at all. 
+rec  123 ptr=0x009E0 len= 14 type=5 words=8
+  I haven't asked you a question. 
+rec  124 ptr=0x009EE len= 24 type=5 words=13
+  Life is pain and anyone telling you differently is selling something. 
+rec  125 ptr=0x00A06 len= 42 type=5 words=22
+  Things were better before the Cataclysm. Void -- may he be cursed forever -- brought evil into the world. 
+rec  126 ptr=0x00A30 len= 42 type=5 words=22
+  Nexus has forsaken us. Evil dwells again in the world as it never did before the coming of Void. 
+rec  127 ptr=0x00A5A len= 14 type=5 words=8
+  I'm having a really bad day. 
+rec  128 ptr=0x00A68 len= 38 type=5 words=20
+  Its always nice to meet a Sorcerer -- you folks really have good heads on your shoulders.  
+rec  129 ptr=0x00A8E len= 44 type=5 words=23
+  Sorcerers have meddled enough in my affairs.  I wish Nexus had never given the Power to any of you. 
+rec  130 ptr=0x00ABA len= 20 type=5 words=11
+  I can't talk for long, I'm very busy. 
+rec  131 ptr=0x00ACE len=  2 type=5 words=2
+  <NA> 
+rec  132 ptr=0x00AD0 len= 22 type=5 words=12
+  We've had a nice stretch of sunny days of late. 
+rec  133 ptr=0x00AE6 len= 10 type=5 words=6
+  Halt! Who goes there? 
+rec  134 ptr=0x00AF0 len= 20 type=5 words=11
+  I really can't stand around here gabbing with you. 
+rec  135 ptr=0x00B04 len= 48 type=5 words=25
+  We guards are an honorable lot. To become a guard you have to have special training and take an oath of loyalty. 
+rec  136 ptr=0x00B34 len= 12 type=5 words=7
+  Let us do our job. 
+rec  137 ptr=0x00B40 len= 28 type=5 words=15
+  There is nothing I like better than pacing the street late at night. 
+rec  138 ptr=0x00B5C len= 10 type=5 words=6
+  I am a guard. 
+rec  139 ptr=0x00B66 len= 28 type=5 words=15
+  Violence has been on the rise lately. Guards are in high demand. 
+rec  140 ptr=0x00B82 len= 24 type=5 words=13
+  How dare you insult my honor by trying to bribe me. 
+rec  141 ptr=0x00B9A len= 26 type=5 words=14
+  I'm the town jailer. Don't try to help the prisoner escape. 
+rec  142 ptr=0x00BB4 len= 34 type=5 words=18
+  No one has ever escaped my jail -- I'm always on the lookout for those blasted Flipstones! 
+rec  143 ptr=0x00BD6 len= 42 type=5 words=22
+  Hey there traveler, welcome to the best tavern in town. Let me know if you want a drink. 
+rec  144 ptr=0x00C00 len= 42 type=5 words=22
+  Stop me if you've heard this one: A Red Priest and a Black Priest walk into a tavern... 
+rec  145 ptr=0x00C2A len= 56 type=5 words=29
+  I am a tavern keeper -- I serve, I listen to the woes of my patrons, and  I tell bad jokes to cheer them up! 
+rec  146 ptr=0x00C62 len= 58 type=5 words=30
+  I am doing well. These are trying times we live in. People need a place where they can relax and meditate while drinking a cool drink. 
+rec  147 ptr=0x00C9C len= 24 type=5 words=13
+  Welcome to my store. What can I do for you? 
+rec  148 ptr=0x00CB4 len= 18 type=5 words=10
+  I sell food, water and trade goods. 
+rec  149 ptr=0x00CC6 len= 36 type=5 words=19
+  Trade makes the world go round. One can always earn a living trading goods between cities. 
+rec  150 ptr=0x00CEA len= 42 type=5 words=22
+  The Fount of Heaven is the spiritual center of the world. The City of Commerce is the financial center. 
+rec  151 ptr=0x00D14 len= 42 type=5 words=22
+  Welcome, young Sorcerer, you look tired. We rent the softest beds on this side of the continent. 
+rec  152 ptr=0x00D3E len= 36 type=5 words=19
+  I run an inn. You can stay the night here, or get a good meal. 
+rec  153 ptr=0x00D62 len= 36 type=5 words=19
+  I like to believe that my inn offers a little island of security for the weary traveler. 
+rec  154 ptr=0x00D86 len= 50 type=5 words=26
+  We get a lively night crowd at this inn. Not so rowdy as the local bar, but  fun just the same. 
+rec  155 ptr=0x00DB8 len= 18 type=5 words=10
+  Hello, Sir! Welcome to the Vehicle Depot. 
+rec  156 ptr=0x00DCA len= 30 type=5 words=16
+  I manage the depot here. I deal in boats, ships and beasts. 
+rec  157 ptr=0x00DE8 len= 10 type=5 words=6
+  Everyone needs good transportation. 
+rec  158 ptr=0x00DF2 len= 56 type=5 words=29
+  There are several ways to get from place to place. You can go on foot, by beast, or you can get a sea-going vessel. 
+rec  159 ptr=0x00E2A len= 42 type=5 words=22
+  There are two types of beasts: the large land beasts called Dinos, and the winged beasts called Dragons.  
+rec  160 ptr=0x00E54 len= 58 type=5 words=30
+  Dinos are good for open terrain, but can't handle forests or mountains. Dragons can fly over any terrain, but can only land in a clearing. 
+rec  161 ptr=0x00E8E len= 44 type=5 words=23
+  Finally, there are two types of water craft: small boats for rivers and shallows, and ships for deep water. 
+rec  162 ptr=0x00EBA len= 14 type=5 words=8
+  Hello. I'm the lighthouse keeper. 
+rec  163 ptr=0x00EC8 len= 26 type=5 words=14
+  I maintain the lighthouse and make sure that the light stays lit. 
+rec  164 ptr=0x00EE2 len= 38 type=5 words=20
+  It's important that the lighthouse light never goes out, so passing ships won't wreck upon the rocks. 
+rec  165 ptr=0x00F08 len= 60 type=5 words=31
+  This lighthouse was built after the terrible disaster of 422, when a storm drove three City of Commerce trade ships onto the rocks, killing scores of men. 
+rec  166 ptr=0x00F44 len= 22 type=5 words=12
+  Greetings Sorcerer, I am the Mayor of this town. 
+rec  167 ptr=0x00F5A len= 34 type=5 words=18
+  I handle all sorts of civic duties; saftey, trade, and taxation, among others. 
+rec  168 ptr=0x00F7C len= 48 type=5 words=25
+  Most towns, including ours, have adopted a standard form of civic government. They elect a mayor to monitor town institutions. 
+rec  169 ptr=0x00FAC len= 32 type=5 words=17
+  Running this town is pretty easy -- Sorcerers are an orderly and peaceful lot.  
+rec  170 ptr=0x00FCC len= 30 type=5 words=16
+  Knights pretty much run their own town. They follow the rules of Separation. 
+rec  171 ptr=0x00FEA len= 16 type=5 words=9
+  Thanks, the town appreciates your support. 
+rec  172 ptr=0x00FFA len= 20 type=5 words=11
+  Hello Buc. How'd you do on the examination? 
+rec  173 ptr=0x0100E len= 16 type=5 words=9
+  Have you heard about the Master's discovery? 
+rec  174 ptr=0x0101E len= 22 type=5 words=12
+  Master Thalmus was on sabbatical for the last several months. 
+rec  175 ptr=0x01034 len= 36 type=5 words=19
+  He was working with a team of researchers on the legend of the lost Rings of Power. 
+rec  176 ptr=0x01058 len= 26 type=5 words=14
+  He is going to call a meeting soon to announce their findings. 
+rec  177 ptr=0x01072 len= 32 type=5 words=17
+  I study Sorcery at the Academy of the Mind, Buc. Just like you. 
+rec  178 ptr=0x01092 len= 14 type=5 words=8
+  I will become a powerful Mindist. 
+rec  179 ptr=0x010A0 len= 56 type=5 words=29
+  It is exciting to be at the greatest center of Sorcery in the world. Some of history's most powerful Sorcerers have been graduates of the Academy. 
+rec  180 ptr=0x010D8 len= 38 type=5 words=20
+  Balfour Big-Brain who lived in the second century was an Academy grad, and he invented the MIRAGE skill! 
+rec  181 ptr=0x010FE len= 20 type=5 words=11
+  What's up, friend? Buy us a round? 
+rec  182 ptr=0x01112 len= 10 type=5 words=6
+  Get outta here Sorcerer!  
+rec  183 ptr=0x0111C len=  2 type=5 words=2
+  <Hic> 
+rec  184 ptr=0x0111E len= 42 type=5 words=22
+  Go away! I didn't build a house in the middle of nowhere to be bothered by the likes of you. 
+rec  185 ptr=0x01148 len= 24 type=5 words=13
+  I have not spoken in years. Now I remember why. 
+rec  186 ptr=0x01160 len= 10 type=5 words=6
+  Are you still here? 
+rec  187 ptr=0x0116A len= 46 type=5 words=24
+  Do you know what I do? I sit here in the wilderness and contemplate the things I hate most in life. 
+rec  188 ptr=0x01198 len= 50 type=5 words=26
+  There will always be some of us who just don't fit into normal society. Don't mind me, I like it out here. 
+rec  189 ptr=0x011CA len= 20 type=5 words=11
+  Good bye, traveler. Please don't come back. 
+rec  190 ptr=0x011DE len= 34 type=5 words=18
+  You're one of those Sorcerers aren't you? I HATE Sorcerers! Why are you bothering me? 
+rec  191 ptr=0x01200 len= 38 type=5 words=20
+  I used to be a mighty Sorcerer, but Thalmus gave me the boot -- now I do nothing! 
+rec  192 ptr=0x01226 len= 10 type=5 words=6
+  Stop meddling with my life! 
+rec  193 ptr=0x01230 len= 36 type=5 words=19
+  Out! I said get out! Are you deaf or something? I don't want to talk to you! 
+rec  194 ptr=0x01254 len= 10 type=5 words=6
+  Time to die, Sorcerer! 
+rec  195 ptr=0x0125E len= 22 type=5 words=12
+  Why hello Buc, what can I do for you? 
+rec  196 ptr=0x01274 len= 54 type=5 words=28
+  You show great promise, Buc. Nexus has graced you with great discipline. Mind your studies and you'll be a great Sorcerer some day. 
+rec  197 ptr=0x012AA len= 16 type=5 words=9
+  Goodbye Buc. We'll talk again soon. 
+rec  198 ptr=0x012BA len= 56 type=5 words=29
+  I spend my days teaching students like yourself the Art and Discipline of Sorcery so that one day they may use their talents to better the world. 
+rec  199 ptr=0x012F2 len= 34 type=5 words=18
+  Buc -- you got my note. I hope the other students come as promptly.  
+rec  200 ptr=0x01314 len= 34 type=5 words=18
+  Let's go to the practice room. I'd like to demonstrate the first Sorcerer's spell: STUN. 
+rec  201 ptr=0x01336 len= 30 type=5 words=16
+  Come and see me after you have talked to Ak Thul at the Temple. 
+rec  202 ptr=0x01354 len= 32 type=5 words=17
+  Heed the words of the priest, Buc. He is wiser than you know. 
+rec  203 ptr=0x01374 len= 58 type=5 words=30
+  You'll find a key on the floor of my room, Buc. Use it to open the chest nearby. Inside is a map of Ushka Bau. 
+rec  204 ptr=0x013AE len= 62 type=5 words=32
+  Use the map to find the hermit who lives in the hills to the south. Last night he was seen stealing the Eye symbol from the Academy door.  
+rec  205 ptr=0x013EC len= 64 type=5 words=33
+  You can try talking to him, but I'm afraid he's not very reasonable.  If he won't give the Eye to you, practice your STUN spell on him. 
+rec  206 ptr=0x0142C len= 44 type=5 words=23
+  When you have the Eye, bring it to me. I'll have the groundskeeper nail it to the door again. 
+rec  207 ptr=0x01458 len= 58 type=5 words=30
+  You've done well, Buc. This is the second spell of Sorcery, CLUE. Check with the Guildmasters in the guildhalls to obtain your other spells. 
+rec  208 ptr=0x01492 len= 34 type=5 words=18
+  Come with me to the practice room. I have a very important announcement to make. 
+rec  209 ptr=0x014B4 len= 54 type=5 words=28
+  Buc, you are the most promising of my students. If anything happens to me, seek my friend Hack in the City of Division. 
+rec  210 ptr=0x014EA len= 66 type=5 words=34
+  Ah, Imino and Roakus are early, as usual, and Father Yoppa is here as well. But where are Darius and Fezzik? Will they keep us waiting again? 
+rec  211 ptr=0x0152C len= 40 type=5 words=21
+  Ahem -- thank you all for coming. The things I must tell you are of the utmost urgency. 
+rec  212 ptr=0x01554 len= 76 type=5 words=39
+  As you may know, I have recently been researching the origins of the Six Arts.  You are familiar with the stories of the Rings of Power, and of the Rod of Creation.  
+rec  213 ptr=0x015A0 len= 54 type=5 words=28
+  Until now these stories have been dismissed as legends, but the Six Guildmasters have uncovered evidence that the Rings of Power do indeed exist.  
+rec  214 ptr=0x015D6 len= 48 type=5 words=25
+  There are eleven Rings; they are the foundation of Nexus' power, and  the power of the Six Arts.    
+rec  215 ptr=0x01606 len= 58 type=5 words=30
+  This has frightening implications, for when the Rings are together, they form  the Rod of Creation, the most powerful object known to us.  
+rec  216 ptr=0x01640 len= 66 type=5 words=34
+  Void and his minions seek the Rings even as we speak. You must each form parties and find them before Void can reassemble the Rod. The locations are... 
+rec  217 ptr=0x01682 len= 34 type=5 words=18
+  DARIUS YOU ATTACK ME! I feared that Void's influence reached this far... Students DISPERSE! 
+rec  218 ptr=0x016A4 len= 38 type=5 words=20
+  Your master's dying word forces itself into the mind of all present, scattering them across the globe. 
+rec  219 ptr=0x016CA len= 52 type=5 words=27
+  You find yourself outside a strange city. "Seek my friend Hack..." was Thalmus' last request. Might you find him here? 
+rec  220 ptr=0x016FE len=  6 type=5 words=4
+  Die, Thalmus! 
+rec  221 ptr=0x01704 len= 40 type=5 words=21
+  I see we are all here, even Darius and Fezzik. Thank you for joining us, gentlemen. 
+rec  222 ptr=0x0172C len= 64 type=5 words=33
+  Today's topic is STUN. It takes very little energy to cast, and does little damage. As you gain experience, it will become your spell of last resort. 
+rec  223 ptr=0x0176C len= 46 type=5 words=24
+  STUN has a range of about ten feet, and gives your enemy a painful jolt. I will demonstrate... 
+rec  224 ptr=0x0179A len= 42 type=5 words=22
+  Students, you are ready to use the STUN spell. I have a task for each of you.  
+rec  225 ptr=0x017C4 len= 58 type=5 words=30
+  Buc, Ak Thul at the Temple of Nexus has asked to see you. When you're finished there, come back and I'll give you your assignment. 
+rec  226 ptr=0x017FE len=  6 type=5 words=4
+  Lesson over. 
+rec  227 ptr=0x01804 len= 28 type=5 words=15
+  Greetings young Sorcerer. The passing of your master has touched me deeply. 
+rec  228 ptr=0x01820 len= 26 type=5 words=14
+  Hello Buc. Is there something I can do to help you? 
+rec  229 ptr=0x0183A len= 50 type=5 words=26
+  Thank you for freeing my people from the mines. I assume that Quill told you to look up our friends Xylotyl and Flemm. 
+rec  230 ptr=0x0186C len= 62 type=5 words=32
+  I must find out where the Bandits have taken my people. Can you help? Ask around  at the Guilds -- they may have some information for you. 
+rec  231 ptr=0x018AA len= 36 type=5 words=19
+  If you can bring me a map to the Mines of Misery, you will be rewarded. 
+rec  232 ptr=0x018CE len= 44 type=5 words=23
+  Talk to Carp, the town gossip. He can usually be found on the docks in front of the cathedral. 
+rec  233 ptr=0x018FA len= 28 type=5 words=15
+  Thank you for your help -- this map will help us greatly.  
+rec  234 ptr=0x01916 len= 74 type=5 words=38
+  I know you need an Archer for your party, but my best student, Feather, is a prisoner in the Mines -- I need help in rescuing her and the others who are there. 
+rec  235 ptr=0x01960 len= 60 type=5 words=31
+  Go to the Mines of Misery and do away with the bandits, then give this Symbol to Quill, my lieutenant. She'll allow Feather to join you. 
+rec  236 ptr=0x0199C len= 62 type=5 words=32
+  Take that symbol to the Archer Quill in the Mines of Misery. Acording to the map they are in the hills above the falls to the east of here. 
+rec  237 ptr=0x019DA len= 22 type=5 words=12
+  Sorry, I can't let you into the upper chambers. 
+rec  238 ptr=0x019F0 len= 60 type=5 words=31
+  You are a handsome young Sorcerer. If you bring me a bouquet of the flowers they sell in the city of Perfection, I might let you in. 
+rec  239 ptr=0x01A2C len= 52 type=5 words=27
+  You're an honorable fellow, so I'll tell you something:  there's a sextant hidden in a cave behind the falls just to the east. 
+rec  240 ptr=0x01A60 len= 20 type=5 words=11
+  Go on in -- Guildmistress Arrow is upstairs.  
+rec  241 ptr=0x01A74 len= 70 type=5 words=36
+  Pssst! Hey, get me a Flip Stone so I can get out of here and I'll tell you where the Mines of Misery are. You'd like to know that, wouldn't you? 
+rec  242 ptr=0x01ABA len= 60 type=5 words=31
+  You kept your end of the bargain, I'll keep mine: the Mines of Misery are just to the east -- here, I'll make a map for you. 
+rec  243 ptr=0x01AF6 len= 56 type=5 words=29
+  By the way, when you get there check out the Archer Feather, she is good with the bow, and one hot cookie to boot. 
+rec  244 ptr=0x01B2E len= 16 type=5 words=9
+  Thanks buddy! Lenny never forgets a favor. 
+rec  245 ptr=0x01B3E len=  6 type=5 words=4
+  <Lenny Flips Out> 
+rec  246 ptr=0x01B44 len= 32 type=5 words=17
+  Hello Sorcerer. I have heard of your quest and I'm anxious to join you. 
+rec  247 ptr=0x01B64 len= 34 type=5 words=18
+  I am Quill, and you must be the Sorcerer that Thalmus told mistress Arrow about. 
+rec  248 ptr=0x01B86 len= 50 type=5 words=26
+  However, you might also be an imposter.  To prove that you were sent by Arrow, show me the Archers' symbol. 
+rec  249 ptr=0x01BB8 len= 36 type=5 words=19
+  I'm pleased to present Feather, Arrow's best student. She'll be an asset to you.  
+rec  250 ptr=0x01BDC len= 58 type=5 words=30
+  It would be useful to have one member of every Discipline in your party. Their individual skills will come in handy. Talk to Flemm and Xylotyl. 
+rec  251 ptr=0x01C16 len= 54 type=5 words=28
+  You should seek the Necromancer Flemm in the city of Blood and the Enchanter Xylotyl in the city of Kaos -- they will be expecting you. 
+rec  252 ptr=0x01C4C len= 42 type=5 words=22
+  Feather has only learned the basic spells so you should take her to an Archer's guild for some new ones. 
+rec  253 ptr=0x01C76 len= 46 type=5 words=24
+  Let's get out of here. The door above has probably been sealed by now -- we'll go out the back way. 
+rec  254 ptr=0x01CA4 len= 18 type=5 words=10
+  Care to hear some of the lastest gossip? 
+rec  255 ptr=0x01CB6 len= 60 type=5 words=31
+  We make Flip Stones in Speed. -- they're used to "flip" you to the nearest Gateway. The old factory was in the south east corner of town. 
+rec  256 ptr=0x01CF2 len= 52 type=5 words=27
+  The mayor has caught one of the bandits who raided us a couple of nights ago and has him in jail at the civic center. 
+rec  257 ptr=0x01D26 len= 58 type=5 words=30
+  Looking for gold and glory? You could kill the old witch in the fire swamp.  Better talk to the people in the Lobotomy Club first. 
+rec  258 ptr=0x01D60 len= 46 type=5 words=24
+  The Gateways will take you anywhere in the world you want to go, if you know  how to use them. 
+rec  259 ptr=0x01D8E len= 32 type=5 words=17
+  If you have enough money, you can buy Flip Stones at the General Store. 
+rec  260 ptr=0x01DAE len= 22 type=5 words=12
+  Help us please. The bandits are holding us captive. 
+rec  261 ptr=0x01DC4 len= 52 type=5 words=27
+  It's nice to meet you Buc. I look forward to joining you on the Quest for the Rings. Together we shall divide the earth! 
+rec  262 ptr=0x01DF8 len= 26 type=5 words=14
+  Hello Buc. Is there something more I can do for you? 
+rec  263 ptr=0x01E12 len= 48 type=5 words=25
+  So you're the young Sorcerer Thalmus was telling me about. His death only proves the urgency of your quest for the Rings. 
+rec  264 ptr=0x01E42 len= 48 type=5 words=25
+  I'll give you an opportunity to prove yourself to me: the Black Priest Scourge stole the key the chest which holds our symbol. 
+rec  265 ptr=0x01E72 len= 68 type=5 words=35
+  If you get the key from him and bring the symbol to me, I will help you. Ask about your QUEST at the Knight Guilds in town to learn Scourge's whereabouts. 
+rec  266 ptr=0x01EB6 len= 62 type=5 words=32
+  Find the key, then go to our treasury and get the symbol. When you have it bring it to me and I will let Slash join your quest. 
+rec  267 ptr=0x01EF4 len= 26 type=5 words=14
+  Good job, Buc. Young Slash would like to join you. 
+rec  268 ptr=0x01F0E len= 38 type=5 words=20
+  Although your party is now larger you'll need a few more to make a good, strong team. 
+rec  269 ptr=0x01F34 len= 30 type=5 words=16
+  Seek recruits among the Archers in Speed, many swords to the west.  
+rec  270 ptr=0x01F52 len= 52 type=5 words=27
+  Also, go to the Temple and ask the priests about your quest -- they'll give you some guidance. Goodbye, and good luck. 
+rec  271 ptr=0x01F86 len= 56 type=5 words=29
+  My apologies, Sorcerer. Please go in -- the gold in these chests is yours. Hack will be relieved to have the symbol once again. 
+rec  272 ptr=0x01FBE len= 46 type=5 words=24
+  Well ... I doubt if anyone will miss a few gold pieces ... go on in. 
+rec  273 ptr=0x01FEC len= 56 type=5 words=29
+  There is a scholar at the Great Cathedral who is an expert on the Ring of Division. He can tell you a great deal about it. 
+rec  274 ptr=0x02024 len= 64 type=5 words=33
+  Hello Sorcerer. I am reading up on the ancient litany of Division. My hobby is the legends of the Ring of Division -- I am something of an expert. 
+rec  275 ptr=0x02064 len= 48 type=5 words=25
+  So you seek the Ring of Division? Oh what I wouldn't give to be 50 years younger and join you... 
+rec  276 ptr=0x02094 len= 60 type=5 words=31
+  According to legend the Ring of Division was given by Nexus to a young Knight named Doggon. He used it's power to found Doggania and the Doggon dynasty. 
+rec  277 ptr=0x020D0 len= 66 type=5 words=34
+  Although it is possible his descendants still have it, I don't think so. Now we will look at the Litany. In the year 7 a mad prophet spoke the following: 
+rec  278 ptr=0x02112 len= 58 type=5 words=30
+  "Division shall be found in the form of a Division of Age and a Division of Power." This is cryptic but I have been thinking... 
+rec  279 ptr=0x0214C len= 66 type=5 words=34
+  Doggon XXIV has been Divided from his power, the second half of this prophecy has been fulfilled. The first half has not, however, so start your quest with this: 
+rec  280 ptr=0x0218E len= 62 type=5 words=32
+  There is a town in the far south on the polar plains where old and young live Divided. It can be found at about 3' 22'. Good luck. 
+rec  281 ptr=0x021CC len= 40 type=5 words=21
+  I don't know where Scourge is hiding, but Rashiid the wandering merchant may be able to help you. 
+rec  282 ptr=0x021F4 len= 40 type=5 words=21
+  He mentioned that he saw a Black Priest slithering away from the Guild of Pieces just the other night. 
+rec  283 ptr=0x0221C len= 58 type=5 words=30
+  I don't know where Rashiid is, but he leaves his whereabouts with friends the lighthouse keepers. A boat from the Vehicle Master can take you there. 
+rec  284 ptr=0x02256 len= 70 type=5 words=36
+  Rashiid is away at his favorite oasis, restocking his fresh water supply. I'm not at liberty to tell you where it is, though... not for free, anyway. 
+rec  285 ptr=0x0229C len= 52 type=5 words=27
+  The oasis is to the west of Division. Take your boat and hug the north wall of the city heading west to the corner. 
+rec  286 ptr=0x022D0 len= 60 type=5 words=31
+  Work your way south, and then west into the islands. His oasis is on the big island. Use your map if you get into any trouble. 
+rec  287 ptr=0x0230C len= 50 type=5 words=26
+  When you find him, ask him about your QUEST. Make sure to question him a couple a times -- he holds out. 
+rec  288 ptr=0x0233E len= 56 type=5 words=29
+  I know how to get into the Guild of Pieces treasury; the same way you get my fellow lighthouse keeper across the harbor to talk -- coins. 
+rec  289 ptr=0x02376 len= 64 type=5 words=33
+  Hi, I'm the Combat Master here. Welcome to my drill room. You can fight me without either of us getting hurt. Just Flee when you are done. 
+rec  290 ptr=0x023B6 len= 64 type=5 words=33
+  How did you get in here? This is a closed service. Although I am pleased that Thalmus has gone on to greener pastures, his work must go on. 
+rec  291 ptr=0x023F6 len= 24 type=5 words=13
+  How is the quest going? Did you dig anything up? 
+rec  292 ptr=0x0240E len= 42 type=5 words=22
+  I will allow a young Necromancer to join you if I can be certain that the Enchanters are with us. 
+rec  293 ptr=0x02438 len= 38 type=5 words=20
+  If Enchanter Master Xylotyl is party to our plans, he will give you his symbol as proof. 
+rec  294 ptr=0x0245E len= 52 type=5 words=27
+  Likewise, the Conjurers might suspect us Necromancers of some nasty undertaking. Take my symbol to mistress Haze in Perfection to show my dedication. 
+rec  295 ptr=0x02492 len= 46 type=5 words=24
+  Blood and bile! You managed to get the Enchanter symbol from Xylotyl. I feel secure in letting young Mortimer join you. 
+rec  296 ptr=0x024C0 len= 38 type=5 words=20
+  You can probably find Mortimer in the Guild Hall on the hill to the north of the city. 
+rec  297 ptr=0x024E6 len= 60 type=5 words=31
+  I am pleased that my master has given me permission to join you. I have been dying to get out of this dead town and see the world. 
+rec  298 ptr=0x02522 len= 36 type=5 words=19
+  I am considered unusually pleasant for a Necromancer, so we should have no trouble getting along. 
+rec  299 ptr=0x02546 len= 38 type=5 words=20
+  Hello Sorcerer. Master Flemm has told me of your quest. You might need my particular talents. 
+rec  300 ptr=0x0256C len= 32 type=5 words=17
+  I can't let you in there. Flemm is conducting a very important private burial. 
+rec  301 ptr=0x0258C len= 64 type=5 words=33
+  No, but if you will fill in for me tonight on courier duty I will let you in to talk to Flemm. He might be able to help you. 
+rec  302 ptr=0x025CC len= 68 type=5 words=35
+  I have a hot date for tonight's seance, so if you could get the corpse out of the lab upstairs and bring it to old Tsalami's grave, I'd really appreciate it. 
+rec  303 ptr=0x02610 len= 58 type=5 words=30
+  If the lab door is locked, ask around upstairs for the key. If you need directions to the grave, ask around town about the CITY. 
+rec  304 ptr=0x0264A len= 28 type=5 words=15
+  Remember, you have to take the body to the grave at night!  
+rec  305 ptr=0x02666 len= 42 type=5 words=22
+  Shhhh, have respect for the recently departed. Can't you see this is a private burial? Go away. 
+rec  306 ptr=0x02690 len= 74 type=5 words=38
+  I'm the custodian around here... and let me tell you something bub. These Necromancers say they ain't evil... but for my money... they sure ain't good. 
+rec  307 ptr=0x026DA len= 22 type=5 words=12
+  Welcome to HEC... Headquarters for Embalming Corpses. 
+rec  308 ptr=0x026F0 len= 42 type=5 words=22
+  You shouldn't be snooping around here Sorcerer. This place is not healthy for those who aren't fond of death. 
+rec  309 ptr=0x0271A len= 48 type=5 words=25
+  You really shouldn't be here, but I see that our mutual friend at HEC has convinced you to take his courier duty. 
+rec  310 ptr=0x0274A len= 34 type=5 words=18
+  That's fine by me, but just don't go poking your nose into Necromancer business.  
+rec  311 ptr=0x0276C len= 24 type=5 words=13
+  Remember, a body is just a shell for the soul. 
+rec  312 ptr=0x02784 len= 24 type=5 words=13
+  I'm second in charge here at the Headquarters for Embalming Corpses. 
+rec  313 ptr=0x0279C len= 46 type=5 words=24
+  I last saw the key to the lab while searching for my copy of "The Fine Art of Mummification" in the bookshelves. 
+rec  314 ptr=0x027CA len= 22 type=5 words=12
+  Hey Sorcerer... join me for a drink? 
+rec  315 ptr=0x027E0 len= 64 type=5 words=33
+  No one around here likes to talk about Old Tsalami's grave, but I have no problem talking. Its up on the big hill to the south around 15'6" 18'3". 
+rec  316 ptr=0x02820 len= 66 type=5 words=34
+  Welcome to my Temple. Over on the far side of the Temple souls have been converted to evil. However, there is a way to save them -- a QUEST. 
+rec  317 ptr=0x02862 len= 56 type=5 words=29
+  It is said that there is a way to save those who have gone over to Void. Religious research is best begun at the Great Cathedral. 
+rec  318 ptr=0x0289A len= 44 type=5 words=23
+  Consult the confessional at the Great Cathedral. He stands on the symbol of Nexus. Ask them about this quest. 
+rec  319 ptr=0x028C6 len= 58 type=5 words=30
+  Sssorcerer! Your mind has been filled with lies about my order. Void wantsss the bessst for man. Pay him in pain and eternal pleassure ssshall be yoursss! 
+rec  320 ptr=0x02900 len= 54 type=5 words=28
+  If you are like looking for master Xylotyl, you'll have a hard time finding him without his secretary. Check the cell in the Temple. 
+rec  321 ptr=0x02936 len= 44 type=5 words=23
+  Pain is the true way. Pain! PAIN!! I used to slave for Xylotyl, but now I live for Void. 
+rec  322 ptr=0x02962 len= 56 type=5 words=29
+  Where am I? Hey, get me out of this cage! Get me a Bingo card from the Tower of Kaos, I'm going into withdrawl. 
+rec  323 ptr=0x0299A len= 34 type=5 words=18
+  That's me? I look terrible. Quick, bring me a bingo card from the Tower! 
+rec  324 ptr=0x029BC len= 54 type=5 words=28
+  I gotta have that mirror. As long as I can see my image, the head Void priest can't convince me that I like pain. 
+rec  325 ptr=0x029F2 len= 22 type=5 words=12
+  Look, I REALLY need a bingo card, okay? 
+rec  326 ptr=0x02A08 len=  2 type=5 words=2
+  Rauchous! 
+rec  327 ptr=0x02A0A len= 40 type=5 words=21
+  Go and tell Xylotyl I'm back to normal. He's on top of the Tower of Kaos every night. 
+rec  328 ptr=0x02A32 len= 20 type=5 words=11
+  Xylotyl said I should join you for a while. 
+rec  329 ptr=0x02A46 len= 24 type=5 words=13
+  Xylotyl may change his mind any second -- we'd better scram. 
+rec  330 ptr=0x02A5E len= 12 type=5 words=7
+  Hey Sorcerer! Let's party sometime. 
+rec  331 ptr=0x02A6A len= 70 type=5 words=36
+  In order to be saved, a soul lost to Void must reflect upon his sins in a holy mirror. Check the library upstairs for a reference, west wall, south end. 
+rec  332 ptr=0x02AB0 len= 42 type=5 words=22
+  Greetings, Sorcerer. Thalmus' death was most unfortunate, but he was wise to entrust his work to you. 
+rec  333 ptr=0x02ADA len= 34 type=5 words=18
+  Take my Symbol to Flemm in the City of Blood and tell him I'm with him. 
+rec  334 ptr=0x02AFC len= 34 type=5 words=18
+  Also, get the symbol of the Conjurers from Mistress Haze in the City of Perfection. 
+rec  335 ptr=0x02B1E len= 66 type=5 words=34
+  If the Conjurers give you their symbol, and you show it to me, then I can trust that they support this quest as well. We will need their help. 
+rec  336 ptr=0x02B60 len= 34 type=5 words=18
+  Support for the quest is strong indeed. Take one of my young Enchanters with you. 
+rec  337 ptr=0x02B82 len= 58 type=5 words=30
+  You'll find him "studying" at the Drunken Dragon to the south of Blood. He calls himself Obliky. Go on now, before I change my mind. 
+rec  338 ptr=0x02BBC len= 40 type=5 words=21
+  Master Xylotyl has changed his mind -- Obliky is no longer yours to take. Will you challenge us? 
+rec  339 ptr=0x02BE4 len= 40 type=5 words=21
+  Well I don't care, I don't like you anyway. I think its time for you to die. 
+rec  340 ptr=0x02C0C len=  4 type=5 words=3
+  Bye Bye! 
+rec  341 ptr=0x02C10 len= 12 type=5 words=7
+  Next number... 59 
+rec  342 ptr=0x02C1C len= 20 type=5 words=11
+  then we have, lets see... 32 
+rec  343 ptr=0x02C30 len= 12 type=5 words=7
+  ...and 42. 
+rec  344 ptr=0x02C3C len= 26 type=5 words=14
+  I'm the Bingoteer, do you want a card for 10 gold? 
+rec  345 ptr=0x02C56 len= 18 type=5 words=10
+  Hmmm, its on me somewhere... 
+rec  346 ptr=0x02C68 len= 16 type=5 words=9
+  Here you go, one Bingo card. 
+rec  347 ptr=0x02C78 len= 42 type=5 words=22
+  I can't talk! Can't you see I'm trying to play Bingo! If you want a Bingo card press the Bingoteer. 
+rec  348 ptr=0x02CA2 len= 40 type=5 words=21
+  I'm sorry, you must have reservations to eat here. Come back some other time, we're full. 
+rec  349 ptr=0x02CCA len= 44 type=5 words=23
+  Sorry, I can't help you, I have six orders to get in the kitchen. Talk to the Maitre'Di. 
+rec  350 ptr=0x02CF6 len= 24 type=5 words=13
+  Isn't this place great? I come here all the time. 
+rec  351 ptr=0x02D0E len= 24 type=5 words=13
+  Welcome to the Perfect Library. Please don't rumple the books. 
+rec  352 ptr=0x02D26 len= 36 type=5 words=19
+  Please do not disturb me, I am contemplating the fountains. They have a lovely sound. 
+rec  353 ptr=0x02D4A len= 48 type=5 words=25
+  The flames tell me that I shall join you on your quest. It may be that you will have need of me. 
+rec  354 ptr=0x02D7A len= 48 type=5 words=25
+  My mistress says that I have great potential but little skill yet. I see that we will be tested on this journey. 
+rec  355 ptr=0x02DAA len= 44 type=5 words=23
+  Haze has given me a great ruby to aid you in your quest. It is called the "Eye of Nexus." 
+rec  356 ptr=0x02DD6 len= 60 type=5 words=31
+  Hello there Sorcerer. My name is Alexi, I'm an initiate here at the Guild. A vision has shown me that you are on an important mission. 
+rec  357 ptr=0x02E12 len= 24 type=5 words=13
+  I regret that Thalmus' death has thrown us into such disarray. 
+rec  358 ptr=0x02E2A len= 18 type=5 words=10
+  Hello Buc, is your quest going well? 
+rec  359 ptr=0x02E3C len= 30 type=5 words=16
+  Like my brethren at the other guilds I must be assured of guild loyalty. 
+rec  360 ptr=0x02E5A len= 28 type=5 words=15
+  Here is my symbol as a token of Conjurer commitment to the plan. 
+rec  361 ptr=0x02E76 len= 34 type=5 words=18
+  Show me the Necromancer symbol and I shall allow a young Conjurer to join your quest. 
+rec  362 ptr=0x02E98 len= 14 type=5 words=8
+  Perfect! The symbol of the Necromancers. 
+rec  363 ptr=0x02EA6 len= 34 type=5 words=18
+  Downstairs is a young Conjurer named Alexi. Talk to her and she will join you. 
+rec  364 ptr=0x02EC8 len= 62 type=5 words=32
+  Hello. I see you are from the Academy and that your quest has lead you to Haze. She is upstairs, but she doesn't want to be disturbed. 
+rec  365 ptr=0x02F06 len= 44 type=5 words=23
+  Haze is meditating. Most of the staff has gone to the restaurant. You really ought to go there sometime. 
+rec  366 ptr=0x02F32 len= 70 type=5 words=36
+  Haze has told me that Thalmus of the Academy -- may his soul rest in peace -- was working with her. She would probably like to see you, but not right now. 
+rec  367 ptr=0x02F78 len= 40 type=5 words=21
+  The door over there is an Ideal Door; it is soundproofed, and cannot be opened without the key. 
+rec  368 ptr=0x02FA0 len= 68 type=5 words=35
+  You will want to get in and see Mistress Haze, but you need the key to the Ideal Door. I know where it is, but I want something in return. 
+rec  369 ptr=0x02FE4 len= 66 type=5 words=34
+  I am working on a new spell and I need some flame wood. You can find out about flame wood at the Perfect Library. Come back when you have some. 
+rec  370 ptr=0x03026 len= 52 type=5 words=27
+  Oh, the wood! Finally I will be able to test my new spell. For this I will risk the displeasure of my Guildmistress. 
+rec  371 ptr=0x0305A len= 26 type=5 words=14
+  Take the Conjurer Key -- it opens the door to the Guild. 
+rec  372 ptr=0x03074 len= 42 type=5 words=22
+  I have been working on an interesting water spell here at the oasis. It involves the rare Flame Wood. 
+rec  373 ptr=0x0309E len= 50 type=5 words=26
+  Flame wood can only be found in the Fire Cave. The cave is south of Cathedral and can only be approached by boat. 
+rec  374 ptr=0x030D0 len= 66 type=5 words=34
+  There's a chest in the cave, but it is magically sealed. I spoke once with a man who knew this; his name is Larry and he frequents the Lobotomy Club. 
+rec  375 ptr=0x03112 len= 78 type=5 words=40
+  So you are looking to find some Flame Wood, eh? You will need the Fire Key to open the magic chest in the cave. I had it for a while, but I sold it. 
+rec  376 ptr=0x03160 len= 18 type=5 words=10
+  Would you like to buy me a drink? 
+rec  377 ptr=0x03172 len= 68 type=5 words=35
+  Thanks. Anyway, I sold the key to this funny old Conjurer. He said he was from the far north, lives on a little island there, around 8' 5'. 
+rec  378 ptr=0x031B6 len= 54 type=5 words=28
+  Hi fellow, you look like you've traveled some. Stay away from the Fire Swamp to the south of here! There's a nasty witch there. 
+rec  379 ptr=0x031EC len= 58 type=5 words=30
+  Her name is Hideous, but her name doesn't fit her anymore. If a Witch has a lock of your hair, she can steal your face. 
+rec  380 ptr=0x03226 len= 48 type=5 words=25
+  She stole the good looks from some poor lass. Then Hideous cut off her own finger and put her life in it. 
+rec  381 ptr=0x03256 len= 42 type=5 words=22
+  Until the finger is broken, she's almost immortal. But break that little bone and her life is over. 
+rec  382 ptr=0x03280 len= 64 type=5 words=33
+  Just before dying, a witchhunter I met told me that she hid her finger bone somewhere in the swamp in front of, and very close to, her home. 
+rec  383 ptr=0x032C0 len= 64 type=5 words=33
+  Someone stole my precious. My little Ogre's Egg. The nasty Conjurers of the South Ice Cave stole my Perfect egg. I'll trade you the key for my egg. 
+rec  384 ptr=0x03300 len= 52 type=5 words=27
+  Those nasty Conjurers live in a cave shaped like a giant skull. It can be found around 6' 21' on the south ice plane. 
+rec  385 ptr=0x03334 len= 82 type=5 words=42
+  Oh, my precious, my lovely Egg. All mine! All mine! Deal's off Sorcerer, but I keep the Egg, hee hee... Come and get the key if you want it...  
+rec  386 ptr=0x03386 len= 42 type=5 words=22
+  Hello lost soul, I am the Great Confessional. Confess your sins to me and you shall be forgiven. 
+rec  387 ptr=0x033B0 len= 64 type=5 words=33
+  Sorry, you can't go in there, King's orders. But if you donate all your money to the Doggon Throne I'll let you in. What do you say? 
+rec  388 ptr=0x033F0 len= 10 type=5 words=6
+  Thank you very much. 
+rec  389 ptr=0x033FA len= 28 type=5 words=15
+  Do you want a receipt? Ha ha ha ha ha... 
+rec  390 ptr=0x03416 len= 14 type=5 words=8
+  No entrance without the Regent's express permission! 
+rec  391 ptr=0x03424 len= 52 type=5 words=27
+  I don't talk to plebs like you. If you have completed a quest for me I might give you a momment of my time. 
+rec  392 ptr=0x03458 len= 60 type=5 words=31
+  Welcome to my city pleb. I am the appointed Regent of King Doggon XXIV of Doggania. I will bless you with but a moment of my time. 
+rec  393 ptr=0x03494 len= 58 type=5 words=30
+  A quest Pleb, for the throne. Our Great King is sick, and I seek a champion. However I am still in the screening process. 
+rec  394 ptr=0x034CE len= 66 type=5 words=34
+  Those who wish to be candidates shall consult my judge, in this building, about the quest. Begone now pest. Talk to me again if you have completed it. 
+rec  395 ptr=0x03510 len= 60 type=5 words=31
+  According to my jailer you got Fiver. You are now eligible for the main quest. Our king is sick and only the Milk of Youth can help. 
+rec  396 ptr=0x0354C len= 38 type=5 words=20
+  No one knows much about the milk, but the priests in town might know something... 
+rec  397 ptr=0x03572 len= 38 type=5 words=20
+  So, you found the Milk of Youth. How nice. I'll see the king gets it. 
+rec  398 ptr=0x03598 len= 50 type=5 words=26
+  By the way, Fiver didn't cheat at poker. But I hate to lose, so I had you kill him for me. 
+rec  399 ptr=0x035CA len= 36 type=5 words=19
+  As a reward, I'll give you the run of the palace. Now run along boy. 
+rec  400 ptr=0x035EE len= 12 type=5 words=7
+  This is my town now. 
+rec  401 ptr=0x035FA len=  4 type=5 words=3
+  All mine! 
+rec  402 ptr=0x035FE len= 36 type=5 words=19
+  Sorry sonny, I don't talk through closed doors. Come in and pull up a chair. 
+rec  403 ptr=0x03622 len= 32 type=5 words=17
+  I fell very strange. Am I the King? What do I do?  
+rec  404 ptr=0x03642 len= 28 type=5 words=15
+  Hi Boy, its good to be cured. How goes your quest? 
+rec  405 ptr=0x0365E len= 62 type=5 words=32
+  I'm the King, but I'm under some sort of spell that the evil Regent put on me. Now where was I? I need the Milk of Youth. 
+rec  406 ptr=0x0369C len= 62 type=5 words=32
+  Can you get me some... what did I ask you for? Oh yes, break the spell, kill the Regent, get me some milk. 
+rec  407 ptr=0x036DA len= 18 type=5 words=10
+  I feel much better now -- I can remember! 
+rec  408 ptr=0x036EC len= 56 type=5 words=29
+  You got me the Milk of Youth, that must mean that the Regent is dead. He put me under a spell. I thank you. 
+rec  409 ptr=0x03724 len= 32 type=5 words=17
+  Here take this old ring. My father's father owned it and it's very valuable. 
+rec  410 ptr=0x03744 len= 28 type=5 words=15
+  I think it's called Division -- I'm still a little foggy... 
+rec  411 ptr=0x03760 len= 36 type=5 words=19
+  Hello friend. I am the local Magistrate. I can only talk for a short while. 
+rec  412 ptr=0x03784 len= 72 type=5 words=37
+  So, you quest for the King? The quest of the day is to eradicate an enemy of the state, the evil merchant Fiver. Consult the jailer about the QUEST for details. 
+rec  413 ptr=0x037CC len= 70 type=5 words=36
+  Fiver is a merchant from the City of Commerce, and he's wanted for cheating  the Regent at poker. He is rumored to be hiding at a friends house in his city. 
+rec  414 ptr=0x03812 len= 52 type=5 words=27
+  Find him, kill him, and then come back and talk to me. I will certify you if my agents confirm he's gone. 
+rec  415 ptr=0x03846 len= 46 type=5 words=24
+  Good, you took care of that menace Fiver. My agents say he is reported missing. I'll tell the Regent. 
+rec  416 ptr=0x03874 len= 60 type=5 words=31
+  Fiver is a nice guy. You don't need to kill him. When you find him ask him to leave the city and the jailer will never know. 
+rec  417 ptr=0x038B0 len= 62 type=5 words=32
+  Doggon's slime bucket Regent sent you, right? I swear I never cheated in poker. I won fare and square and now he wants to kill me.  
+rec  418 ptr=0x038EE len= 50 type=5 words=26
+  I'll leave town, I'm outta here, just say the word. They'll never see me again. Do we have a deal? 
+rec  419 ptr=0x03920 len= 40 type=5 words=21
+  Thanks. I owe you a million and Fiver never forgets his debts. I'll pay you back someday. 
+rec  420 ptr=0x03948 len= 10 type=5 words=6
+  <Fiver darts out the door> 
+rec  421 ptr=0x03952 len= 44 type=5 words=23
+  Please no, don't kill me over a card game. Just ask me to leave the city and I'll go. 
+rec  422 ptr=0x0397E len= 66 type=5 words=34
+  Hello friend, I am the castle maid. Our poor king is sick and the city is in grave peril. I don't think the Regent is a very nice man. 
+rec  423 ptr=0x039C0 len= 68 type=5 words=35
+  The King stays in his room now and only the Iron key will open it. His nanny had the key. She lives in this city right next to the town sign. 
+rec  424 ptr=0x03A04 len= 60 type=5 words=31
+  You quest for the Regent. Do it not for him, but for the King. Your quest will be a quest of Division. Consult the lore. 
+rec  425 ptr=0x03A40 len= 40 type=5 words=21
+  We know Division involves a Division of Age and a Division of power. Seek wisdom in Cathedral.  
+rec  426 ptr=0x03A68 len= 62 type=5 words=32
+  Hello. Our daughter, Sarah, was once the nanny to the King, but she grew prematurely old and moved to the Sunset Retirement Home in the south. 
+rec  427 ptr=0x03AA6 len= 52 type=5 words=27
+  I lost the Key! Now we can't go downstairs and play! Wait, maybe I left it on the dresser by the bed down the street! 
+rec  428 ptr=0x03ADA len= 74 type=5 words=38
+  Help me! I am really from Doggania, but an evil witch named Hideous stole my beauty. She took a lock of my hair for her spell -- can you help me get it back? 
+rec  429 ptr=0x03B24 len= 22 type=5 words=12
+  Thank you so much, I can never repay you. 
+rec  430 ptr=0x03B3A len= 48 type=5 words=25
+  Take this key from me, it will let you into the King's chambers in the Doggon Castle. The king needs help. 
+rec  431 ptr=0x03B6A len= 20 type=5 words=11
+  I must be off to return to my family. 
+rec  432 ptr=0x03B7E len= 32 type=5 words=17
+  Don't hurt me master, please don't hurt me! Are you going to kill me? 
+rec  433 ptr=0x03B9E len=  6 type=5 words=4
+  Aaarararrahahhhah! Please don't! 
+rec  434 ptr=0x03BA4 len= 64 type=5 words=33
+  Thank you master! I'll tell you where the witch's bone is. Search in the muck at the south east corner here. I saw her hide it in the muck. 
+rec  435 ptr=0x03BE4 len= 14 type=5 words=8
+  Trespasser, prepare to become my slave! 
+rec  436 ptr=0x03BF2 len= 44 type=5 words=23
+  You snap the bone in two. The witch shimmers and becomes ugly. Then she collapses into a pile of goo! 
+rec  437 ptr=0x03C1E len= 58 type=5 words=30
+  Hello young Sorcerer. Welcome to my city. Imino has told me much about you and the Academy. I was sorry to hear about your master. 
+rec  438 ptr=0x03C58 len= 24 type=5 words=13
+  I am the Queen. I control all that you see. 
+rec  439 ptr=0x03C70 len= 18 type=5 words=10
+  I have brought enlightenment back to the world. 
+rec  440 ptr=0x03C82 len= 56 type=5 words=29
+  Thanks for your help with the lens, Buc. If I can do anything for you just ask -- and keep me updated on your quest. 
+rec  441 ptr=0x03CBA len= 64 type=5 words=33
+  We are doing such interesting things in Richi. I have built a new observatory to the west. Unfortuantly we have yet to get a lens for the big telescope. 
+rec  442 ptr=0x03CFA len= 32 type=5 words=17
+  The telescope in our new observatory is all up and running, thanks to you. 
+rec  443 ptr=0x03D1A len= 64 type=5 words=33
+  I think I might be able to help you get the Ring of Advancing, but first you must do me a favor and get me a lens for the observatory. 
+rec  444 ptr=0x03D5A len= 54 type=5 words=28
+  My ancestor, the first Richi King, was said to have had the Ring of Advancing. His crypt is below the south east tower. 
+rec  445 ptr=0x03D90 len= 62 type=5 words=32
+  No one has been able to get into the crypt in years because its lock is enchanted and needs a special key. You might look into it at Cathedral. 
+rec  446 ptr=0x03DCE len= 60 type=5 words=31
+  Hello Buc, good to see you. After Thalmus was killed I found myself outside this town. The Queen has taken me on as her personal Sorcerer. 
+rec  447 ptr=0x03E0A len= 70 type=5 words=36
+  It is Dreadful what happened to the Master, he was such a good man. A waste of a great talent too! I have tried to look into the mystery of the Rings. 
+rec  448 ptr=0x03E50 len= 54 type=5 words=28
+  The Queen says she knows where the Ring of Advancing is, but I think she is just humoring me. Ask her about our QUEST. 
+rec  449 ptr=0x03E86 len= 58 type=5 words=30
+  I am the science master here at the castle. Under the Queen's enlightened rule we are investigating the real nature of the universe. Observe our "machine." 
+rec  450 ptr=0x03EC0 len= 42 type=5 words=22
+  Hello sir, welcome to the Observatory. Unfortunately bandits have prevented us from getting a lens for the telescope. 
+rec  451 ptr=0x03EEA len= 50 type=5 words=26
+  Here are the plans for the lens. Take them to Shard in the south and have them make it at the Great Glassworks. 
+rec  452 ptr=0x03F1C len= 46 type=5 words=24
+  Welcome to the Great Observatory sir. Thanks to you we will now be able to study the stars in the finest detail! 
+rec  453 ptr=0x03F4A len= 44 type=5 words=23
+  Thanks so much. You have worked a miracle -- we've been trying to get this lens for over a year. 
+rec  454 ptr=0x03F76 len= 38 type=5 words=20
+  When I get this lens fitted into the telescope we shall have a wonderous view of the heavens. 
+rec  455 ptr=0x03F9C len= 34 type=5 words=18
+  I will tell the Queen of your great favor. I'm sure she will be pleased. 
+rec  456 ptr=0x03FBE len= 62 type=5 words=32
+  Why Hello. I am a humble monk here. Like my colleague to the left I study the Rings of Power. My specialty is the Ring of Advancement. 
+rec  457 ptr=0x03FFC len= 32 type=5 words=17
+  The litany of Advancement reads: "The Test of Advancement is overcome by thoroughness of motion." 
+rec  458 ptr=0x0401C len= 50 type=5 words=26
+  I am sure that means that there is a trick to it. The straightforward approach will not work. Try covering all bases. 
+rec  459 ptr=0x0404E len= 30 type=5 words=16
+  Please don't disturb me. I am reading up on the nature of Force. 
+rec  460 ptr=0x0406C len= 54 type=5 words=28
+  Listen to this: It says here that an object repelled by force from a surface can have its polarity reversed by touching all points on the surface! 
+rec  461 ptr=0x040A2 len= 14 type=5 words=8
+  Hello Buc. Fancy meeting you here! 
+rec  462 ptr=0x040B0 len= 38 type=5 words=20
+  It seems that the Ring was real after all. Old Richi had it on him all the time! 
+rec  463 ptr=0x040D6 len= 46 type=5 words=24
+  I hate to do this Buc, but if you want this Ring you're going to have to take it from me. 
+rec  464 ptr=0x04104 len= 50 type=5 words=26
+  I am the master glass blower -- I supervise all the work that goes on here. We make the finest crystal in the world! 
+rec  465 ptr=0x04136 len= 50 type=5 words=26
+  I am the master blower here. I supervise all the work that goes on here. We make the finest crystal in the world! 
+rec  466 ptr=0x04168 len= 42 type=5 words=22
+  I see you want a great lens. Hmmm, this is a tricky job. I will require two things: 
+rec  467 ptr=0x04192 len= 54 type=5 words=28
+  First, as payment I would like a bundle of tomes from Cathedral. Second, I'll  need something to make the lens out of. 
+rec  468 ptr=0x041C8 len= 52 type=5 words=27
+  To make the lens you want I'll need magic sand. You can find it only in the city of Mesa in the Great Desert. 
+rec  469 ptr=0x041FC len= 36 type=5 words=19
+  Thanks for the tomes -- I've been trying to get ahold of these for a while now. 
+rec  470 ptr=0x04220 len= 58 type=5 words=30
+  If you have the magic sand show it to the glass blower up stairs. He'll make the lens for you -- I gave him the specs already. 
+rec  471 ptr=0x0425A len= 34 type=5 words=18
+  I am the assistant glass blower. I do all the work while the Master supervises. 
+rec  472 ptr=0x0427C len= 36 type=5 words=19
+  Yes, this is the magic sand from Mesa -- you don't see stuff like this every day! 
+rec  473 ptr=0x042A0 len= 28 type=5 words=15
+  Here's your lens -- a fine piece if I do say so myself. 
+rec  474 ptr=0x042BC len= 28 type=5 words=15
+  Hello friend. I am just reading up on the Ring of Bile. 
+rec  475 ptr=0x042D8 len= 72 type=5 words=37
+  The Book of Bile says - "Where Dead and Living meet, where those who go are quick on their feet, Bile will be there to Greet." Don't ask ME what it means. 
+rec  476 ptr=0x04320 len= 64 type=5 words=33
+  If you are interested in the Rings of Power be sure to talk to Curtis out in the grave yard (16'7" 16'4") -- he's an expert on the Ring of Bile. 
+rec  477 ptr=0x04360 len= 40 type=5 words=21
+  Well you've tracked me down. I was hoping to avoid you -- I don't like live people much. 
+rec  478 ptr=0x04388 len= 68 type=5 words=35
+  Of course. Void gave the Ring of Bile to a Black Priest named Pain, who later died and was buried in a great tomb. The Ring is on his body. 
+rec  479 ptr=0x043CC len= 52 type=5 words=27
+  Unfortuantly the location of the tomb is not known to me. There are two ways in which you might be able to find it. 
+rec  480 ptr=0x04400 len= 66 type=5 words=34
+  First: The Ring of Bile is a powerful gate to the Dead Lands and has been in one place for a long time -- the dimensional boundaries around it may have ripped. 
+rec  481 ptr=0x04442 len= 54 type=5 words=28
+  The result of that would be an area in which the dead can walk easily on earth and the living suffer the fate of the dead. 
+rec  482 ptr=0x04478 len= 68 type=5 words=35
+  Second: The Black Priests have records as to the location of the Tomb. Show one of them the symbol of Void (the whip), and he may tell you where it is. 
+rec  483 ptr=0x044BC len= 38 type=5 words=20
+  Greetings wayfarer. I am the keeper of the Great Tomb. Abandon Hope All Ye Who Enter Here! 
+rec  484 ptr=0x044E2 len= 54 type=5 words=28
+  I guard the entrance to the Great Tomb. I might allow you to enter if you would end this mockery of a life I lead. 
+rec  485 ptr=0x04518 len= 72 type=5 words=37
+  Alas, I can not be killed -- I am cursed with Protection. However, if you show me the words of a powerful spell it may be strong enough to break the protection. 
+rec  486 ptr=0x04560 len= 52 type=5 words=27
+  Consult with the most powerful Necromancers in the world to find a spell to loosen the bonds of a dead man's grip on this world. 
+rec  487 ptr=0x04594 len= 32 type=5 words=17
+  Could this be it? Yes, praise be the forces that created the planes. 
+rec  488 ptr=0x045B4 len= 52 type=5 words=27
+  Thank you kind sir... Enter the Tomb, but do not tarry, the Tomb holds only death for mortals... 
+rec  489 ptr=0x045E8 len=  4 type=5 words=3
+  <He disapears> 
+rec  490 ptr=0x045EC len= 24 type=5 words=13
+  I am Lucius, the greatest Necromancer in the world.  
+rec  491 ptr=0x04604 len= 58 type=5 words=30
+  I have created a brilliant new spell called RAISE which allows the soul of a corpse to be bound to the body, bringing it back to life. 
+rec  492 ptr=0x0463E len= 42 type=5 words=22
+  Perhaps it could also dispel the undead. Unfortunately I am missing the primary ingredient: the mustache of a thespian. 
+rec  493 ptr=0x04668 len= 26 type=5 words=14
+  Aha! The false mustache of a thespian! Just a moment... 
+rec  494 ptr=0x04682 len= 58 type=5 words=30
+  Here you go! One super powerful Necromancer spell. Make sure you tell everyone that you have the latest from Lucius -- it pays to advertise, you know! 
+rec  495 ptr=0x046BC len= 32 type=5 words=17
+  Welcome to our humble theatre. I hope you will stay for our little show. 
+rec  496 ptr=0x046DC len= 18 type=5 words=10
+  I am a performing artist in the theatre. 
+rec  497 ptr=0x046EE len= 66 type=5 words=34
+  So you want to see our show? Please, sit down! Wait a sec, hold on to this false mustache of mine. I don't need it for this play. 
+rec  498 ptr=0x04730 len= 56 type=5 words=29
+  No, I have no information for you. However, the Master Enchanter Tutu might. He lives in a tower in the eastern Great Desert. 
+rec  499 ptr=0x04768 len= 28 type=5 words=15
+  Hello friend. I am just reading up on the Ring of Variation. 
+rec  500 ptr=0x04784 len= 54 type=5 words=28
+  The Book of Variation says - "Life and Death shift in eternal Variation, however the test is passed by the scholar, not the athlete." 
+rec  501 ptr=0x047BA len= 50 type=5 words=26
+  The "Key to Variation" is merely this: "Start on the third square from the south wall and proceed according to the Order of Variation." 
+rec  502 ptr=0x047EC len= 22 type=5 words=12
+  Stop Invader! I didn't invite you into my tower. FREEZE! 
+rec  503 ptr=0x04802 len= 42 type=5 words=22
+  That will teach you not to trespass in the tower of the Great Enchanter Tutu! Now rot forever in my cell! 
+rec  504 ptr=0x0482C len= 74 type=5 words=38
+  Why hello Buc, fancy meeting you here. It's Fiver. I'm doing some work for Tutu, but since you helped me out when I was in need, I'll give you a hand. 
+rec  505 ptr=0x04876 len= 50 type=5 words=26
+  I have something that might help you on your quest. Our order has an ancient document pertaining the the Rings in our vault. 
+rec  506 ptr=0x048A8 len= 64 type=5 words=33
+  Unfortunately the key to the chest was lost in a raid by warriors of the the city of Sparta. If you can recover it you are welcome to the document. 
+rec  507 ptr=0x048E8 len= 18 type=5 words=10
+  MUTATION is "WWWSSWW, NNNNEEE, N to wall" 
+rec  508 ptr=0x048FA len= 18 type=5 words=10
+  ALTERATION is "WWSWWN, W to wall, SSEEE" 
+rec  509 ptr=0x0490C len= 22 type=5 words=12
+  RANDOMNESS is "S to wall, W to wall, NNENNNWW" 
+rec  510 ptr=0x04922 len=  4 type=5 words=3
+  Die thief! 
+rec  511 ptr=0x04926 len= 16 type=5 words=9
+  Halt intruder, you are not welcome here! 
+rec  512 ptr=0x04936 len= 64 type=5 words=33
+  I have nothing to tell you now. However if you prove your dedication to the Art of Sorcery by learning the MIRAGE spell, I will tell you something useful. 
+rec  513 ptr=0x04976 len= 28 type=5 words=15
+  The best place to look for the spell would be Magic B Us. 
+rec  514 ptr=0x04992 len= 58 type=5 words=30
+  Years ago the Ring of Intuition was kept here, but the great dragon  Flamory attacked the Academy, killed many Sorcerers, and stole the Ring. 
+rec  515 ptr=0x049CC len= 52 type=5 words=27
+  The survivors were driven insane by the fury of Flamory's attack and sent to Oxbridge to recover. Some of them might still be there. 
+rec  516 ptr=0x04A00 len= 56 type=5 words=29
+  Many people come to our city to rest. The Sorcerers came here after the dragon Flamory raided their city, and sought refuge in their guild. 
+rec  517 ptr=0x04A38 len= 30 type=5 words=16
+  Those that did not stay within the guild settled in town or eventually left. 
+rec  518 ptr=0x04A56 len= 60 type=5 words=31
+  Greetings, Buc. I too hail from the City of the Mind. I and my comrades fled here after a dragon pillaged our home many years ago. 
+rec  519 ptr=0x04A92 len= 36 type=5 words=19
+  Only one who can unlock my thoughts can ever hope to find the missing Ring of Intuition. 
+rec  520 ptr=0x04AB6 len= 66 type=5 words=34
+  I don't remember what I do. I wrote it down on a scrap of paper but I seem to have lost it. Look around for the scrap, will you? 
+rec  521 ptr=0x04AF8 len= 46 type=5 words=24
+  I am a Sorcerer. I came to town with two of my fellow guildsmen after the dragon Flamory attacked our city. 
+rec  522 ptr=0x04B26 len= 68 type=5 words=35
+  My friends and I had a treasure map, but it was lost. If you find it and give it to me I'll tell you where the lost Sorcerer can be found. 
+rec  523 ptr=0x04B6A len= 52 type=5 words=27
+  Visit the man on the Island of light at night. The way is open only when the world is asleep. Try 13'6" 4'7". 
+rec  524 ptr=0x04B9E len= 50 type=5 words=26
+  There is a thief upstairs who just came back from Oxbridge. No thief ever returns from a city without some of its treasures. 
+rec  525 ptr=0x04BD0 len= 24 type=5 words=13
+  So you think I stole something in Oxbridge. Well you're right! 
+rec  526 ptr=0x04BE8 len=  4 type=5 words=3
+  Open Sesame! 
+rec  527 ptr=0x04BEC len= 68 type=5 words=35
+  My friend in Oxbridge lost my Orb. If you return it to me I'll give you the Intuition Key. This will aide you on your quest for the Ring of Intuition. 
+rec  528 ptr=0x04C30 len= 28 type=5 words=15
+  Thank you for my lost orb. Here, take the Intuition key. 
+rec  529 ptr=0x04C4C len= 52 type=5 words=27
+  The key should open the dragon Flamory's cave. Show it to my comrades in Oxbridge, they might remember where the beast's lair is. 
+rec  530 ptr=0x04C80 len= 34 type=5 words=18
+  I see you got the key to the dragon's cave. I will tell you a story: 
+rec  531 ptr=0x04CA2 len= 54 type=5 words=28
+  "Over rolling seas of sand shall the hero go with key in hand, search neither high nor low to discover the path aglow..." 
+rec  532 ptr=0x04CD8 len= 54 type=5 words=28
+  "Near where the world of the life, meets the world of death, In the Fire Dragon's Tower, You'll find a Ring of Power." 
+rec  533 ptr=0x04D0E len= 44 type=5 words=23
+  By the way, if you are interested. You can give me a little money for my nice plump dove. 
+rec  534 ptr=0x04D3A len= 18 type=5 words=10
+  Here you go, one nice plump dove. 
+rec  535 ptr=0x04D4C len= 28 type=5 words=15
+  Growwlll! I'm hungry. A little white bird might be nice... 
+rec  536 ptr=0x04D68 len= 38 type=5 words=20
+  Ah, a dove. Delicious, thank you. Here take your pick from my treasure horde. 
+rec  537 ptr=0x04D8E len= 28 type=5 words=15
+  A nice shiny Ring of Power. Doesn't fit on my claw anyway. 
+rec  538 ptr=0x04DAA len= 16 type=5 words=9
+  Go away, before I get hungry again! 
+rec  539 ptr=0x04DBA len= 70 type=5 words=36
+  This might help you. A conjurer in here last week told me that an old woman who lives behind the water fall at 30'1" 5'4" is an expert on the Ring of Calling. 
+rec  540 ptr=0x04E00 len= 62 type=5 words=32
+  So, you're looking for the Rings. I know where the Ring of Calling is, but I will only tell you if you find my lost crystal ball. 
+rec  541 ptr=0x04E3E len= 56 type=5 words=29
+  The ball was stolen by the crew of the pirate ship Ahab. Find her and you will find it. Start first at the Bandit Hole. 
+rec  542 ptr=0x04E76 len= 22 type=5 words=12
+  You can find that Bandit cess pool at 30' 18'. 
+rec  543 ptr=0x04E8C len= 44 type=5 words=23
+  Thank you for recovering my crystal ball. It's irreplacable for my visions. Let's take a look now... 
+rec  544 ptr=0x04EB8 len= 58 type=5 words=30
+  I see great forces aligned against each other. I see choices that must be made, sides that must be taken. Here, take the Ring. 
+rec  545 ptr=0x04EF2 len= 58 type=5 words=30
+  Magicnia has been cut off by a terrible band of pirates, terrible. I'll tell you what. I have a treasure map that might interest you. 
+rec  546 ptr=0x04F2C len= 76 type=5 words=39
+  Kill 5 bands of pirates and take their flags. Bring them to me and USE them. Then, I will give you the map. You'll find pirates in the waters just off our coast. 
+rec  547 ptr=0x04F78 len= 36 type=5 words=19
+  Ahoy there matey! Here for a pull of grog? Join old Red Beard for a drink. 
+rec  548 ptr=0x04F9C len= 26 type=5 words=14
+  So matey, you got the other half of me treasure map. 
+rec  549 ptr=0x04FB6 len= 38 type=5 words=20
+  I'll tell you what, I'll give you my half for 100 gold. Is it a deal? 
+rec  550 ptr=0x04FDC len= 46 type=5 words=24
+  Well then, you'll just have to kill me for it. But I warn ya, I'm mighty nasty with the cutlas! 
+rec  551 ptr=0x0500A len= 22 type=5 words=12
+  Good, I like a man who makes a deal. 
+rec  552 ptr=0x05020 len= 38 type=5 words=20
+  This map will lead you right to the Ahab. Blimey, was I sorry when she sank. 
+rec  553 ptr=0x05046 len= 32 type=5 words=17
+  I am the Keef, the King of Thieves. Have you heard my story? 
+rec  554 ptr=0x05066 len= 62 type=5 words=32
+  I was born an abused child on another world. I was turned out into the jungle, But by great personal strength I became emperor of my whole world. 
+rec  555 ptr=0x050A4 len= 66 type=5 words=34
+  I was a master warrior, a master thief, and a master mage. Unfortunately I was out fishing in a dingy when I rowed off the edge of that world. 
+rec  556 ptr=0x050E6 len= 64 type=5 words=33
+  I fell through space for weeks, eating only shoe leather, and landed here on this world. I used my considerable skills and charisma to achieve my present position. 
+rec  557 ptr=0x05126 len= 60 type=5 words=31
+  I found the Ring of Will in a bagel I was eating one day. You can't take it from me, but I'll make a deal with you. 
+rec  558 ptr=0x05162 len= 52 type=5 words=27
+  Bring me the leaf from the Fluffi tree of Gomez. It is said to make any true thief the best thief in the universe. 
+rec  559 ptr=0x05196 len= 58 type=5 words=30
+  I have no idea where you can find the Fluffi Tree of Gomez, but I heard that a lunatic held at the Asylum went questing for it. 
+rec  560 ptr=0x051D0 len= 60 type=5 words=31
+  You actually found the leaf -- amazing. Well, I'm really sorry, but I traded my Ring to a priest named Yoppa for a good luck charm. 
+rec  561 ptr=0x0520C len= 40 type=5 words=21
+  He said he was going to the Great Cathedral with his prize. You can look for him there. 
+rec  562 ptr=0x05234 len= 40 type=5 words=21
+  It's nice to see someone else questing. I used to do a lot of that in my youth. 
+rec  563 ptr=0x0525C len= 52 type=5 words=27
+  When I came to this town they were nothings. I had to show them how to take candy from babies. Pathetic... 
+rec  564 ptr=0x05290 len= 38 type=5 words=20
+  So Buc, you have tracked me here. I assume you are after the Ring of Will. 
+rec  565 ptr=0x052B6 len= 34 type=5 words=18
+  I am afraid so Yoppa. Give it to me and we will avoid a fight. 
+rec  566 ptr=0x052D8 len= 44 type=5 words=23
+  I wish I could, but I am under orders from the High Priest to deliver the Ring to the Temple. 
+rec  567 ptr=0x05304 len= 46 type=5 words=24
+  The Temple is not all powerful, Yoppa. There are other forces in the universe. I must have that Ring. 
+rec  568 ptr=0x05332 len= 26 type=5 words=14
+  Then I am afraid you must fight me for it... 
+rec  569 ptr=0x0534C len= 36 type=5 words=19
+  Did you know that there is a Fluffi Tree of Gomez in a cave at 0'7" 19'2"? 
+rec  570 ptr=0x05370 len= 48 type=5 words=25
+  Hello friend. I am not your average bear. I have worked hard at my studies to elevate my station in life. 
+rec  571 ptr=0x053A0 len= 40 type=5 words=21
+  I run a sucessful honey business -- the finest honey in the world. Here, have a sample. 
+rec  572 ptr=0x053C8 len= 42 type=5 words=22
+  I'm sorry, but only a true hero may gain entrance to the throne room of the great Fen Ho. 
+rec  573 ptr=0x053F2 len= 46 type=5 words=24
+  Welcome hero, vanquisher of our foul creator the evil witch Hideous. The mighty Fen Ho looks forward to meeting you. 
+rec  574 ptr=0x05420 len= 34 type=5 words=18
+  Welcome, slayer of witches. I, the mighty Fen Ho am at your service. 
+rec  575 ptr=0x05442 len= 68 type=5 words=35
+  I don't know much about the Rings of Power, but I am willing to send my scouts out to find the location of a Ring for such a mighty personage as you. 
+rec  576 ptr=0x05486 len= 56 type=5 words=29
+  I will, of course, expect you to do me a favor in return. I am seeking a means of protecting my people against danger. 
+rec  577 ptr=0x054BE len= 36 type=5 words=19
+  If you could secure a contract for us from the Protector's guild I would be much obliged. 
+rec  578 ptr=0x054E2 len= 22 type=5 words=12
+  I see you have gotten us a contract for protection. 
+rec  579 ptr=0x054F8 len= 76 type=5 words=39
+  I have fulfilled my end of the bargin and located the key to the Ring of Will. It is held by Keef the Thief, King of the Thieves, who demands in return a leaf. 
+rec  580 ptr=0x05544 len= 56 type=5 words=29
+  This leaf is from the Fluffi tree of Gomez located in the center of a puzzle protected cave. This paper contains the solution to the puzzle. 
+rec  581 ptr=0x0557C len= 20 type=5 words=11
+  I am the Lord Mistress of the Protectors' Citadel. 
+rec  582 ptr=0x05590 len= 64 type=5 words=33
+  We protect people who hold contracts with us. We have a honey shortage of late. If you've got a honey comb, I'll gladly give you a contract.  
+rec  583 ptr=0x055D0 len= 54 type=5 words=28
+  The best honey in the world is made by a talking bear who lives in the great forest on the eastern coast of the east continent. 
+rec  584 ptr=0x05606 len= 26 type=5 words=14
+  You are wise to take advantage of such a good deal.  
+rec  585 ptr=0x05620 len= 44 type=5 words=23
+  Now, who is to be Protected? Ah, King Fen Ho of Fenopolis. It will be an honor. 
+rec  586 ptr=0x0564C len= 20 type=5 words=11
+  Hello friend. I am a student of Mutation. 
+rec  587 ptr=0x05660 len= 62 type=5 words=32
+  The Litany of Mutation says - "Fair is the Ring of Mutation, but its likeness is now only as thick as a hair. Expect the unexpected, and beware!" 
+rec  588 ptr=0x0569E len= 48 type=5 words=25
+  I've heard that a mutated object or person must be shown the image of its  original form in order to be restored. 
+rec  589 ptr=0x056CE len= 50 type=5 words=26
+  The Ring of Mutation mutated into the form of a human being to hide itself. Talk to other Enchanter Guildmasters for more information. 
+rec  590 ptr=0x05700 len= 50 type=5 words=26
+  A wandering Conjuror told me that she had met a woman in an inn somewhere who's aura was that of the Ring of Mutation. 
+rec  591 ptr=0x05732 len= 48 type=5 words=25
+  I'm not what I seem, Sorcerer. I am power incarnate, bound to this weak form for eternity, it seems. 
+rec  592 ptr=0x05762 len= 20 type=5 words=11
+  Hey, that picture is of my real shape. 
+rec  593 ptr=0x05776 len= 16 type=5 words=9
+  I am returned unto my orginal form. 
+rec  594 ptr=0x05786 len= 42 type=5 words=22
+  It is a statue of Nexus. You can see that it is missing one of its two ruby eyes. 
+rec  595 ptr=0x057B0 len= 34 type=5 words=18
+  You insert the Eye of Nexus into the empty socket and the statue begins to speak. 
+rec  596 ptr=0x057D2 len= 64 type=5 words=33
+  "Congratulations hero, but rest not -- your trials have just begun. Take this scroll to the house of Bob in Sunrise." The eye falls out of the socket. 
+rec  597 ptr=0x05812 len= 46 type=5 words=24
+  My family has been waiting here for generations to fulfil the prophecy of Nexus. He has a great task for us. 
+rec  598 ptr=0x05840 len= 82 type=5 words=42
+  The time has come. My lot in life, so I thought, was to pass the message to my own son, but alas, I don't have one. You can imagine my relief at your arrival. 
+rec  599 ptr=0x05892 len= 36 type=5 words=19
+  You have given me the command of Nexus, and so I will give you his message. 
+rec  600 ptr=0x058B6 len= 16 type=5 words=9
+  Show me that with which you began. 
+rec  601 ptr=0x058C6 len= 12 type=5 words=7
+  Good you may go on. 
+rec  602 ptr=0x058D2 len= 14 type=5 words=8
+  Show me the symbol of despair. 
+rec  603 ptr=0x058E0 len= 12 type=5 words=7
+  Good you may go on. 
+rec  604 ptr=0x058EC len= 30 type=5 words=16
+  Tough as armor, found inside, bring me protection that is not hide. 
+rec  605 ptr=0x0590A len= 12 type=5 words=7
+  Good you may go on. 
+rec  606 ptr=0x05916 len= 16 type=5 words=9
+  Show me a vessle of fluid containment. 
+rec  607 ptr=0x05926 len= 12 type=5 words=7
+  Good you may go on. 
+rec  608 ptr=0x05932 len= 16 type=5 words=9
+  Show me that which came from Nexus. 
+rec  609 ptr=0x05942 len= 12 type=5 words=7
+  Good you may go on. 
+rec  610 ptr=0x0594E len= 44 type=5 words=23
+  Welcome to the Shady Rest Funeral Home! Take home a nice body for loved ones today! Can I make YOU a DEAL! 
+rec  611 ptr=0x0597A len= 18 type=5 words=10
+  Hello. I'm researching the nature of Perfection. 
+rec  612 ptr=0x0598C len= 54 type=5 words=28
+  Here is a bit from the literature: "Satisfy both those who dwell in the light and those dwell in the dark and Perfection shall be yours." 
+rec  613 ptr=0x059C2 len= 58 type=5 words=30
+  Necromancer's are great embalmers. They have a secret lab. I visited once and they gave me a pass. I still have it around here somewhere. 
+rec  614 ptr=0x059FC len= 18 type=5 words=10
+  Hello Sorcerer. I'm an expert on Perfection. 
+rec  615 ptr=0x05A0E len= 54 type=5 words=28
+  Years ago the Temple kept the Ring of Perfection here. However, that was deemed too dangerous so it was moved to a secret location. 
+rec  616 ptr=0x05A44 len= 32 type=5 words=17
+  If you look around here on the shelves you might find some record of it. 
+rec  617 ptr=0x05A64 len= 60 type=5 words=31
+  I'm one of the guardians of the Ring of Perfection. It is sealed away safely. I might help your quest along if you did me a favor. 
+rec  618 ptr=0x05AA0 len= 56 type=5 words=29
+  I have an especially important funeral coming up soon and I need some special embalming fluids for the body. I don't know exactly who makes them. 
+rec  619 ptr=0x05AD8 len= 36 type=5 words=19
+  Try looking it up at the university library and see if you can get some for me. 
+rec  620 ptr=0x05AFC len= 30 type=5 words=16
+  Thank you for the embalming supplies. They are very useful for a funeral. 
+rec  621 ptr=0x05B1A len= 64 type=5 words=33
+  I shouldn't do this but you can have my key. Don't tell the boss back at the Great Cathedral. The sun gem opens half of the way to Perfection. 
+rec  622 ptr=0x05B5A len= 24 type=5 words=13
+  No one enters here without a pass. Prepare to die. 
+rec  623 ptr=0x05B72 len= 22 type=5 words=12
+  I see you have a pass. Go on in. 
+rec  624 ptr=0x05B88 len= 40 type=5 words=21
+  Greetings. I'm busy working on an experiment right now. I take it you want some embalming fluids. 
+rec  625 ptr=0x05BB0 len= 44 type=5 words=23
+  There will be no charge for the fluids. A Necromancer never gets in the way of a good embalming job. 
+rec  626 ptr=0x05BDC len= 24 type=5 words=13
+  I am the head researcher into the chemical side of Necromancy. 
+rec  627 ptr=0x05BF4 len= 52 type=5 words=27
+  Like my brother the Sun Priest I am a guardian of the Ring of Perfection. Temple policy dictates that I should not help you. 
+rec  628 ptr=0x05C28 len= 58 type=5 words=30
+  However I sense that you are a good man and the plight of my people is desperate. Warriors of Sparta attack us frequently and have killed many. 
+rec  629 ptr=0x05C62 len= 48 type=5 words=25
+  Take my message to the Spartan king and get his agreement to stop this slaughter and I will help you find the Ring. 
+rec  630 ptr=0x05C92 len= 68 type=5 words=35
+  Thank you for negotiating on the behalf of my people. You can find the Moon gem hidden in the center of our pool of foam on the top floor of the temple. 
+rec  631 ptr=0x05CD6 len= 22 type=5 words=12
+  I am the King of Sparta. May the strongest survive! 
+rec  632 ptr=0x05CEC len= 62 type=5 words=32
+  So, those pathetic fools want mercy. Well, only the strong survive! Why should I honor the request of a weakling like you? Prove yourself in my arena! 
+rec  633 ptr=0x05D2A len= 52 type=5 words=27
+  Your triumph in the arena entitles you to a favor. If you choose to waste it on the Moon people then so be it. 
+rec  634 ptr=0x05D5E len= 26 type=5 words=14
+  You can't enter the arena until the King has given you permission. 
+rec  635 ptr=0x05D78 len= 60 type=5 words=31
+  Very well, you may enter. To be victorious, you must kill both the bears and the dragons. Talk to the King when you are done. 
+rec  636 ptr=0x05DB4 len= 60 type=5 words=31
+  So we meet again, Buc. I have been waiting here for someone to show up and help me open the trap and get the Ring of Perfection. 
+rec  637 ptr=0x05DF0 len= 32 type=5 words=17
+  Unfortunately, both the Sun and the Moon gems are needed to free the Ring. 
+rec  638 ptr=0x05E10 len= 16 type=5 words=9
+  I have both of the gems Fezzik. 
+rec  639 ptr=0x05E20 len= 22 type=5 words=12
+  Good, then let me help you get the Ring. 
+rec  640 ptr=0x05E36 len= 64 type=5 words=33
+  The two of you each take a gem and fit it into the slots at opposite ends of the room. Suddenly a Ring materializes in the center of the chamber. 
+rec  641 ptr=0x05E76 len= 38 type=5 words=20
+  The Ring of Perfection. I'm afraid you're out of luck, Buc. This Ring is mine. 
+rec  642 ptr=0x05E9C len= 66 type=5 words=34
+  The Ring of Blood has been found by an evil Necromancer. His men are said to be gamblers. Check out the casino on the artic coast, around 24' 21'. 
+rec  643 ptr=0x05EDE len= 74 type=5 words=38
+  A group of Knights came in here a while back for a big game. They lost a lot of money, so they trashed the place. Speaking of money could you loan me some? 
+rec  644 ptr=0x05F28 len= 66 type=5 words=34
+  Thanks. The Knights told me that if I needed to get in touch with them I should meet their contact person, the tall one named Carl. Here's his card. 
+rec  645 ptr=0x05F6A len= 56 type=5 words=29
+  I am an agent for the mighty Power Lord. I can set up a meeting with his main man, but I need my finders fee. 
+rec  646 ptr=0x05FA2 len= 46 type=5 words=24
+  Talk to Mean Dean at the Lobotomy Club. He can tell you the location of the Power Lord's base of operations. 
+rec  647 ptr=0x05FD0 len= 78 type=5 words=40
+  Are you setting me up for a hit? I work for the Power Lord, so don't get any ideas. I got my Power Lord ID on me, and that's worth its weight in gold. 
+rec  648 ptr=0x0601E len= 26 type=5 words=14
+  Hello Sorcerer. I study the history of the Rod of Creation. 
+rec  649 ptr=0x06038 len= 68 type=5 words=35
+  The Rings of Power are made out of pieces of the Rod of Creation. It is said that the Rod could be reassembled if all of the pieces were brought to Nexus. 
+rec  650 ptr=0x0607C len= 54 type=5 words=28
+  Nexus has not left his sanctuary on the Fount of Heaven since the Cataclysm. It's a huge building atop the tallest mountain in the world. 
+rec  651 ptr=0x060B2 len= 68 type=5 words=35
+  The only way to get there is to fly. It is also said that man will not be able to enter until he possesses all eleven Rings and uses the Holy Seal. 
+rec  652 ptr=0x060F6 len= 56 type=5 words=29
+  The Holy Seal was once kept here in the Cathedral, but it was stolen by bandits years ago and no one knows where they took it. 
+rec  653 ptr=0x0612E len= 52 type=5 words=27
+  Why, hello Sorcerer, welcome to my manor. Enjoy yourself. Let no one say that Mr. Belmont is a poor host. 
+rec  654 ptr=0x06162 len= 56 type=5 words=29
+  I am a business man. I run a business. This makes me an expert dealer. I offer people a deal they can not refuse. 
+rec  655 ptr=0x0619A len= 74 type=5 words=38
+  So you're looking for the Rings of Power. That is a Quest for a man with a lot of time on his hands, and a lot of courage. Me, I prefer business. 
+rec  656 ptr=0x061E4 len= 56 type=5 words=29
+  Well, as long as you're questing, you might do me a favor. There's only one town whose citizens have not yet joined my organization. 
+rec  657 ptr=0x0621C len= 60 type=5 words=31
+  That town is Mesa. I'm curious about it, as you might have guessed. If you learn anything, let me know. I'll owe you one. 
+rec  658 ptr=0x06258 len= 34 type=5 words=18
+  So you found out why those folks at Mesa are not interested in me. Facinating. 
+rec  659 ptr=0x0627A len= 54 type=5 words=28
+  You've done me a service. I'll give you the run of my house. If you're interested in joining up, just let me know. 
+rec  660 ptr=0x062B0 len= 64 type=5 words=33
+  Sand is the source of our power here; it flows up from the Mesa. You can find some of our special sand in the north west corner of the Mesa. 
+rec  661 ptr=0x062F0 len= 48 type=5 words=25
+  I watch the magic sand well up from the center of the earth. It is strongest over there on that little hill. 
+rec  662 ptr=0x06320 len= 12 type=5 words=7
+  No admittance without Bandit ID. 
+rec  663 ptr=0x0632C len= 24 type=5 words=13
+  Very well, your ID looks okay, go on in. 
+rec  664 ptr=0x06344 len= 72 type=5 words=37
+  Hello again, Buc. Good to see you. I know I shouldn't do this, but since you saved old Lenny's life, I'll let you into the treasury. Don't tell anybody. 
+rec  665 ptr=0x0638C len= 38 type=5 words=20
+  Hey Buc -- thanks again for letting me out of that smelly cell in the City of Speed. 
+rec  666 ptr=0x063B2 len= 66 type=5 words=34
+  Why hello there Buc, I've been waiting for you. You see, It all came to me just after our master zapped me to some random location in the artic. 
+rec  667 ptr=0x063F4 len= 66 type=5 words=34
+  The best way to get the Rings of Power was to sit back and let everyone else do all the work. Then when you showed up here I would retreive them. 
+rec  668 ptr=0x06436 len= 64 type=5 words=33
+  So I have been living it up at Kaos for past few months, while you, and the four other suckers ran around the world finding my Rings for me. 
+rec  669 ptr=0x06476 len= 40 type=5 words=21
+  Imino managed to find the Ring of Advancing, but of course you took that from him in Richi. 
+rec  670 ptr=0x0649E len= 58 type=5 words=30
+  Poor old Yoppa went to all that trouble to find the Ring of Will and bring it back to the Cathedral. But you also took his Ring. 
+rec  671 ptr=0x064D8 len= 68 type=5 words=35
+  Now my friend Fezzik, I told him to wait in the Chamber of Perfection, and sure enough you came along with the gems. Too bad you had to kill him. 
+rec  672 ptr=0x0651C len= 68 type=5 words=35
+  Roakus, on the other hand, was a surprise failure. He didn't manage to get a single Ring. But instead, he spent his time lounging in the Lobotomy Club. 
+rec  673 ptr=0x06560 len= 20 type=5 words=11
+  I don't know what Master Thalmus saw in him. 
+rec  674 ptr=0x06574 len= 68 type=5 words=35
+  You on the other hand, were an unprecedented success. You managed to secure all eleven of the Rings. And now... you have brought them here to me. 
+rec  675 ptr=0x065B8 len=  6 type=5 words=4
+  Thank you. 
+rec  676 ptr=0x065BE len= 62 type=5 words=32
+  But Darius, you have made one fatal mistake. For I, in obtaining the Rings, also learned of their powers and can now use them against you. 
+rec  677 ptr=0x065FC len= 30 type=5 words=16
+  Allied with Nexus, this is not a power that even you can overcome. 
+rec  678 ptr=0x0661A len= 68 type=5 words=35
+  No, Buc, it is you who have made the tactical blunder. For I have a secret up my sleave, which I shall be happy to tell you... 
+rec  679 ptr=0x0665E len= 62 type=5 words=32
+  VOID! And the spells he has crafted for your destruction. Give my regards to the rest of the gang when you meet them: In the dead lands... 
+rec  680 ptr=0x0669C len=  6 type=5 words=4
+  Die Sssorcerer sscum! 
+rec  681 ptr=0x066A2 len= 40 type=5 words=21
+  What do you want, Filth? Have you come to bow down before my massster VOID the Dessstroyer? 
+rec  682 ptr=0x066CA len= 34 type=5 words=18
+  Pain formsss the junction between worldsss. Pain will bring Void the Dessstroyer to sssave us. 
+rec  683 ptr=0x066EC len= 10 type=5 words=6
+  Pain! Pain! Sssuffering! Misery! Pain! 
+rec  684 ptr=0x066F6 len= 48 type=5 words=25
+  Void is my masster. Join him or die. Your pain sshall add to the magnitude of his entrance into thiss world. 
+rec  685 ptr=0x06726 len=  6 type=5 words=4
+  Reap the whirlwind! 
+rec  686 ptr=0x0672C len= 18 type=5 words=10
+  Void created uss long ago to ssserve him. 
+rec  687 ptr=0x0673E len= 56 type=5 words=29
+  Our reward sshall be great when he triumphsss. If you lend your pain and the pain of othersss to him he will reward you as well. 
+rec  688 ptr=0x06776 len= 22 type=5 words=12
+  Who caresss, citiesss are but pathetic consstructions of mortalss. 
+rec  689 ptr=0x0678C len= 10 type=5 words=6
+  Void caresss only for pain! 
+rec  690 ptr=0x06796 len= 36 type=5 words=19
+  Bring the Ringss of Power to usss, and we will give them to their rightful owner: Void! 
+rec  691 ptr=0x067BA len= 56 type=5 words=29
+  With the Ringsss, Void shall make Nexuss ssuffer for eternity. The magnitude of hiss pain sshall bring the universse to the feet of our masster. 
+rec  692 ptr=0x067F2 len= 50 type=5 words=26
+  I have given myself over to the pain. Void shall come into this universe by way of my agony. Suffer with me. 
+rec  693 ptr=0x06824 len= 14 type=5 words=8
+  Ssstop bothering me about that, wretch! 
+rec  694 ptr=0x06832 len= 72 type=5 words=37
+  Ah the ssign of Void, The Whip. It reminds me of my youth in the Pit of Dessspair -- a lovely crag of ssstone and lava in the center of the Great Ocean. 
+rec  695 ptr=0x0687A len= 50 type=5 words=26
+  You ssshould visit there sssome day. You can find it at 21'8", 8'7". I ssshould go back and visit my nessst. 
+rec  696 ptr=0x068AC len=  4 type=5 words=3
+  Pain! Pain! 
+rec  697 ptr=0x068B0 len= 36 type=5 words=19
+  Greetings, Sorcerer. What brings you to me on this fine day Nexus has given us? 
+rec  698 ptr=0x068D4 len= 10 type=5 words=6
+  Good bye, Sorcerer. 
+rec  699 ptr=0x068DE len= 18 type=5 words=10
+  Thank you for the donation of 10 gold. 
+rec  700 ptr=0x068F0 len= 50 type=5 words=26
+  Thalmus has told me that you are reaching some skill with your early training. He has instructed you on the first combat spell. 
+rec  701 ptr=0x06922 len= 62 type=5 words=32
+  This is a dangerous time for a young Sorcerer.  You must chose the path of truth. The quick and easy path of Void is all too temping. 
+rec  702 ptr=0x06960 len= 16 type=5 words=9
+  May Nexus' eternal strength be with you. 
+rec  703 ptr=0x06970 len= 72 type=5 words=37
+  Following the Age of Sorrow, Nexus came to Ushka Bau. Verily did He solve all of mankind's problems, and bring to us the most holy of ages, the Golden Age.  
+rec  704 ptr=0x069B8 len= 50 type=5 words=26
+  But a serpent came to Eden, and its name was VOID; its face grey and terrible, in its heart only Death.  
+rec  705 ptr=0x069EA len= 42 type=5 words=22
+  This demon VOID did steal from NEXUS that which was most holy in the world, the Rod of Creation. 
+rec  706 ptr=0x06A14 len= 62 type=5 words=32
+  For 66 years, Chaos ruled the world. We now call this period the Cataclysm. It has been 500 years since, and Man has rebuilt the world. 
+rec  707 ptr=0x06A52 len= 62 type=5 words=32
+  Nexus has instructed us, His priests, to tell you that He is testing mankind. To be restored to grace man must restore the Nexus to Him.  
+rec  708 ptr=0x06A90 len=  8 type=5 words=5
+  Very well then. 
+rec  709 ptr=0x06A98 len= 36 type=5 words=19
+  Often I despair that the mighty presense of Nexus shall allow me to stand before it again. 
+rec  710 ptr=0x06ABC len= 20 type=5 words=11
+  Piety before the almighty is to be much admired. 
+rec  711 ptr=0x06AD0 len= 22 type=5 words=12
+  Do you consider yourself a servant to the almighty Nexus? 
+rec  712 ptr=0x06AE6 len= 20 type=5 words=11
+  My veins flow with the power of Nexus today. 
+rec  713 ptr=0x06AFA len= 36 type=5 words=19
+  That is good, my child. Humility is the first step on the road to divinity. 
+rec  714 ptr=0x06B1E len= 22 type=5 words=12
+  You have much to learn. May Nexus guide you. 
+rec  715 ptr=0x06B34 len= 18 type=5 words=10
+  It serves Nexus that you answer my question. 
+rec  716 ptr=0x06B46 len= 32 type=5 words=17
+  Well, as should be obvious, I am in the service of Nexus.  
+rec  717 ptr=0x06B66 len= 42 type=5 words=22
+  It is the responsibility of our lord's shepards to communicate the wishes of the great master to His flock.  
+rec  718 ptr=0x06B90 len= 50 type=5 words=26
+  We were created by Nexus at the dawn of time for this duty. It would be unthinkable for us to forsake it.  
+rec  719 ptr=0x06BC2 len= 46 type=5 words=24
+  We Priests have no Discipline, for that was given by Nexus to His mortal followers, and mortal are we not. 
+rec  720 ptr=0x06BF0 len= 54 type=5 words=28
+  There are six Arts that Nexus gave man when He came to this place: Sorcery, Separation, Force, Necromancy, Enchantment, and Conjuration. 
+rec  721 ptr=0x06C26 len= 30 type=5 words=16
+  We follow Nexus. our faith is complete for we recieve His orders directly. 
+rec  722 ptr=0x06C44 len= 52 type=5 words=27
+  Nexus created our order in the age of Order to serve him forever. Now that His eye is away, we are His toungue. 
+rec  723 ptr=0x06C78 len= 14 type=5 words=8
+  Trade does not often concern us. 
+rec  724 ptr=0x06C86 len= 40 type=5 words=21
+  As I have said, we priests have no need to trade, Nexus provides for all our needs. 
+rec  725 ptr=0x06CAE len= 22 type=5 words=12
+  There is a hierarchy in the priesthood that none question. 
+rec  726 ptr=0x06CC4 len= 34 type=5 words=18
+  There is usually a high priest in each Temple, he is the closest to Nexus. 
+rec  727 ptr=0x06CE6 len= 28 type=5 words=15
+  Our skills are not born of Discipline, but given directly by Nexus. 
+rec  728 ptr=0x06D02 len= 42 type=5 words=22
+  Where His mortal followers must strive to learn their Arts, His priests are already endowed with all they need. 
+rec  729 ptr=0x06D2C len= 56 type=5 words=29
+  The Temple is the center of all life. Beware the Black Priests of Void, for it is only pain and terror that they preach.  
+rec  730 ptr=0x06D64 len= 32 type=5 words=17
+  Would you like me to tell you the story of Nexus' creation of the world? 
+rec  731 ptr=0x06D84 len= 18 type=5 words=10
+  Devote your life to Nexus, my son. 
+rec  732 ptr=0x06D96 len= 20 type=5 words=11
+  Nexus is the Rings, and they are Nexus. 
+rec  733 ptr=0x06DAA len= 36 type=5 words=19
+  He focuses the power of the Arts, and is in turn the focus of all things. 
+rec  734 ptr=0x06DCE len= 22 type=5 words=12
+  I am done now. Read your tomes for more. 
+rec  735 ptr=0x06DE4 len= 30 type=5 words=16
+  The Academy of the Mind represents the greatest center for Sorcery in the world. 
+rec  736 ptr=0x06E02 len= 34 type=5 words=18
+  I'm a Sorcerer of course. Not an enormously powerful one, but a Sorcerer nonetheless. 
+rec  737 ptr=0x06E24 len= 32 type=5 words=17
+  Like all guards I'm a Knight, and I believe in the philosophies of Separation. 
+rec  738 ptr=0x06E44 len= 38 type=5 words=20
+  We of the Art of the Mind believe that Will, Thought, and Intuition govern all things. 
+rec  739 ptr=0x06E6A len= 48 type=5 words=25
+  "Where there is Will, there is a way. The Mind will rule the day." -From the Littany of the Mind. 
+rec  740 ptr=0x06E9A len= 40 type=5 words=21
+  I, like most people in town, am loyal to the principles of the Art of the Mind. 
+rec  741 ptr=0x06EC2 len= 42 type=5 words=22
+  We believe that Nexus created Sorcerers first, and that it is our responsibility to maintain order in the world. 
+rec  742 ptr=0x06EEC len= 48 type=5 words=25
+  Unfortuantly the world is such a mess now that we have trouble even training new Sorcerers. Even Nexus' priests have their problems. 
+rec  743 ptr=0x06F1C len= 58 type=5 words=30
+  In the City of the Mind we market our fine gems. However, they are very expensive. We also give a good price for magic Mana. 
+rec  744 ptr=0x06F56 len= 52 type=5 words=27
+  Government in thw City of the Mind is very weak. We have a mayor, but he consults with the Academy before he acts. 
+rec  745 ptr=0x06F8A len= 64 type=5 words=33
+  The town is so small we barely need the government we have. Other than the students and staff at the Academy, there are but a few farmers and merchants. 
+rec  746 ptr=0x06FCA len= 16 type=5 words=9
+  My skills in the discipline of Sorcery. 
+rec  747 ptr=0x06FDA len= 16 type=5 words=9
+  My Art allows me to cleave objects. 
+rec  748 ptr=0x06FEA len= 24 type=5 words=13
+  The Art allows me to alter the way others see reality. 
+rec  749 ptr=0x07002 len= 32 type=5 words=17
+  The Mind itself is the center of all power; through its use nothing is impossible. 
+rec  750 ptr=0x07022 len= 54 type=5 words=28
+  The church is comparativly weak in Mind City, but we Sorcerers are loyal to Nexus and so there is little need for an extensive clergy. 
+rec  751 ptr=0x07058 len= 46 type=5 words=24
+  The church of Nexus can be found on the north side of the main plaza. It is small but well attended. 
+rec  752 ptr=0x07086 len= 46 type=5 words=24
+  The priests say that the Rings are the center of Nexus' power -- that they represent the very essence of his divinity. 
+rec  753 ptr=0x070B4 len= 48 type=5 words=25
+  Most people, myself included, don't really believe the Rings exist. The legends grew over time as all legends do.  
+rec  754 ptr=0x070E4 len= 24 type=5 words=13
+  The Rings of Sorcery are Thought, Will, and Intuition. 
+rec  755 ptr=0x070FC len= 52 type=5 words=27
+  Remember young Sorcerer, Thought is a formalization of Mind, like philosophy or logic. However the Key to Intuition is unstructured problem solving. 
+rec  756 ptr=0x07130 len= 30 type=5 words=16
+  Will can accomplish amazing things and can be found in the most unlikely places. 
+rec  757 ptr=0x0714E len= 34 type=5 words=18
+  The Guild of Pieces is the real force around here. Most people work for them. 
+rec  758 ptr=0x07170 len= 42 type=5 words=22
+  I have a little talent in Separation, but not much; I can split the firewood and use a sword. 
+rec  759 ptr=0x0719A len= 22 type=5 words=12
+  Separation involves the division of things into their component parts. 
+rec  760 ptr=0x071B0 len= 58 type=5 words=30
+  "A head separated from the shoulders that spawned it shall require by the will of Nexus the death of its owner." - The First Law of Separation. 
+rec  761 ptr=0x071EA len= 46 type=5 words=24
+  We of the City of Division live to comply with the Laws of Separation; to divide and conquer, so to speak. 
+rec  762 ptr=0x07218 len= 48 type=5 words=25
+  When Nexus created us He saw that the world was too much like a whole carrot. He created us to dice it. 
+rec  763 ptr=0x07248 len= 60 type=5 words=31
+  The trade opportunities are good in Division. Our products are our trained guards and our fine blades. If you have weapons to sell we will buy them. 
+rec  764 ptr=0x07284 len= 20 type=5 words=11
+  The guards are trained in the Guild of Pieces. 
+rec  765 ptr=0x07298 len= 36 type=5 words=19
+  The Guild of Pieces runs Division. There is a mayor, but he doesn't do much. 
+rec  766 ptr=0x072BC len= 30 type=5 words=16
+  I can chop things into little tiny bits with my mind or my sword. 
+rec  767 ptr=0x072DA len= 66 type=5 words=34
+  As easily as an apple can be stripped of its seeds, people can be separated; skills, money -- everything can be stripped from them by the power of the Knight. 
+rec  768 ptr=0x0731C len= 64 type=5 words=33
+  We're not much on the Temple, but never say that any man, woman, or child from the City of Division was not loyal to Nexus, no sir. 
+rec  769 ptr=0x0735C len= 44 type=5 words=23
+  There is a small church in the east corner of the town proper, south of the Guild of Pieces entrance. 
+rec  770 ptr=0x07388 len= 34 type=5 words=18
+  It was a Knight who divided Void's half of the Rod of Creation into 6 Rings. 
+rec  771 ptr=0x073AA len= 60 type=5 words=31
+  One of Void's lackeys came to a Knight and told him the Rod was a piece of jewelry for his mom -- Knights don't have a reputation for smarts. 
+rec  772 ptr=0x073E6 len= 28 type=5 words=15
+  I work locally, odd jobs mainly, sometimes for the Archer's Guild. 
+rec  773 ptr=0x07402 len= 34 type=5 words=18
+  I'm not much at magic, but I can usually hit a target with an arrow. 
+rec  774 ptr=0x07424 len= 24 type=5 words=13
+  The Art of Force involves the tension between movement and stasis. 
+rec  775 ptr=0x0743C len= 44 type=5 words=23
+  "Movement is the essense of all things. To stand still is to stagnate." - The Third Law of Force. 
+rec  776 ptr=0x07468 len= 20 type=5 words=11
+  In Speed we live by the tenets of Force. 
+rec  777 ptr=0x0747C len= 42 type=5 words=22
+  It is our mission to set the world in motion. We serve to propel the present into the future. 
+rec  778 ptr=0x074A6 len= 40 type=5 words=21
+  We do a brisk trade by river. You can reach most of the western continent by our waterways. 
+rec  779 ptr=0x074CE len= 68 type=5 words=35
+  We make Flip Stones in Speed. They can be used to teleport to a Gateway if you are in a sticky situation. We also buy wood for our bows and arrows. 
+rec  780 ptr=0x07512 len= 42 type=5 words=22
+  We have caught one of those horrible bandits that invaded our city, and are keeping him in prison in Speed! 
+rec  781 ptr=0x0753C len= 46 type=5 words=24
+  Force propels all things. In moving, all things are. Because movement is being. Therefore, Force causes Force. 
+rec  782 ptr=0x0756A len= 48 type=5 words=25
+  Force can hurt people, but it can also help people. It moves them along the earth, and it deflects harm. 
+rec  783 ptr=0x0759A len= 48 type=5 words=25
+  The heretical Order of Protectors uses Force to keep people from being  transported to the combat plane in order to prevent violence. 
+rec  784 ptr=0x075CA len= 46 type=5 words=24
+  Speed is loyal to Nexus. The minions of Void steal our citizens away to work in the horrible Mines of Misery. 
+rec  785 ptr=0x075F8 len= 52 type=5 words=27
+  There is a quaint little cathedral on the north side of town. The first Archer, Advancer, is buried in the crypt there. 
+rec  786 ptr=0x0762C len= 18 type=5 words=10
+  Have you heard about the Mines of Misery? 
+rec  787 ptr=0x0763E len= 26 type=5 words=14
+  We can never thank you enough for rescuing our lost citizens.  
+rec  788 ptr=0x07658 len= 60 type=5 words=31
+  It all started about six months ago when a group of bandits raided Speed. They took not our money, but our people. Few are left here. 
+rec  789 ptr=0x07694 len= 64 type=5 words=33
+  They were taken to the Mines of Misery where they are used as slave labor by the bandits and the Black Priests. No one knows the location of the mines. 
+rec  790 ptr=0x076D4 len= 40 type=5 words=21
+  We intend to learn of the location of the mines from the bandit were holding at the civic center. 
+rec  791 ptr=0x076FC len= 32 type=5 words=17
+  The Ring of Advancing is ours, but it was lost just after the cataclysm. 
+rec  792 ptr=0x0771C len= 36 type=5 words=19
+  We Archers may have only one Ring, but it is very powerful. Very powerful indeed. 
+rec  793 ptr=0x07740 len= 26 type=5 words=14
+  Perfection is eternal, and we are its instruments in this life. 
+rec  794 ptr=0x0775A len= 10 type=5 words=6
+  Are you truly perfect? 
+rec  795 ptr=0x07764 len= 20 type=5 words=11
+  I don't believe you. Perfect people don't lie. 
+rec  796 ptr=0x07778 len= 28 type=5 words=15
+  Then what are you talking to me for? You have work to do! 
+rec  797 ptr=0x07794 len= 22 type=5 words=12
+  I spend most of my time meditating and picking flowers. 
+rec  798 ptr=0x077AA len= 54 type=5 words=28
+  Conjuring is the greatest of all the Arts. We open the gate to the other world and bring through the Perfect images that reside there. 
+rec  799 ptr=0x077E0 len= 54 type=5 words=28
+  Unfortunately, the things we bring into this world rarely last long. They grow tired of this pathetic existence and return to their own plane. 
+rec  800 ptr=0x07816 len= 50 type=5 words=26
+  When Nexus created us he made our eyes blind, but our Perfect vision can see the Ideal Plane as well as this one. 
+rec  801 ptr=0x07848 len= 16 type=5 words=9
+  Do you know about the Ideal Plane? 
+rec  802 ptr=0x07858 len= 54 type=5 words=28
+  The Ideal Plane is the transcendental land that exists parallel to our own. The Necromancers call it the Dead Lands, but they are mistaken. 
+rec  803 ptr=0x0788E len= 30 type=5 words=16
+  It is the objects there, not the souls of people that are important. 
+rec  804 ptr=0x078AC len= 56 type=5 words=29
+  We are transported by Nexus to the Combat Plane when combat begins. The power of Nexus and Void comes from their use of the planes.  
+rec  805 ptr=0x078E4 len= 48 type=5 words=25
+  In the City of Perfection we devote our lives to the ideals of Perfection. We study in the library and pick flowers. 
+rec  806 ptr=0x07914 len= 50 type=5 words=26
+  We sell our Flower Bouquets; they are treasured around the world for their Perfect forms. Perfect Crystal fetches a good price in Perfection. 
+rec  807 ptr=0x07946 len= 24 type=5 words=13
+  Stay away from Void, for he represents disorder and imperfection. 
+rec  808 ptr=0x0795E len= 26 type=5 words=14
+  The Rings of Evocation and Perfection are the essence of our discipline. 
+rec  809 ptr=0x07978 len= 46 type=5 words=24
+  Only the purest of souls could hope to find the Rings of our order, for they were lost in the Cataclysm. 
+rec  810 ptr=0x079A6 len= 42 type=5 words=22
+  What are you doing on my plot? I pay good money to be out here alone with the graves. 
+rec  811 ptr=0x079D0 len= 34 type=5 words=18
+  Remember, death is not the end of life, life is the beginning of death. 
+rec  812 ptr=0x079F2 len= 36 type=5 words=19
+  Sometimes I dig graves for the Necromancer guild in Blood. It's a very big industry here. 
+rec  813 ptr=0x07A16 len= 58 type=5 words=30
+  I am but a humble Necromancer; we are the most misunderstood of the Arts. People think that we are evil fiends, but it just isn't true. 
+rec  814 ptr=0x07A50 len= 58 type=5 words=30
+  If there were no Necromancers, who would heal the sick? Who would bury the dead? Who would talk with the dead? Corpses are people too! 
+rec  815 ptr=0x07A8A len= 38 type=5 words=20
+  There is another world that exists all around us: the Dead Lands. Do you know of them? 
+rec  816 ptr=0x07AB0 len= 54 type=5 words=28
+  I speak of another plane of existance -- it is here, and yet it is not. We Necromancers call it the Dead Lands.  
+rec  817 ptr=0x07AE6 len= 54 type=5 words=28
+  When we are born into this world, our souls leave the Dead Lands and come here, and when we die, they return there. 
+rec  818 ptr=0x07B1C len= 48 type=5 words=25
+  The powerful Necromancer can use his art to transport himself to the Dead Lands and speak with the dead, or the unborn. 
+rec  819 ptr=0x07B4C len= 70 type=5 words=36
+  Most men fear death, but this is folly. In death we become what we truly are, residents of the Dead Lands. A Necromancer doesn't fear death, he welcomes it. 
+rec  820 ptr=0x07B92 len= 44 type=5 words=23
+  It is this familiarity with the Dead Lands that makes the Necromancer seem strange to others. We treat death lightly. 
+rec  821 ptr=0x07BBE len= 38 type=5 words=20
+  Blood is the most important city in the world. Here lies the gateway to the Dead Lands. 
+rec  822 ptr=0x07BE4 len= 64 type=5 words=33
+  We follow the laws of Body in Blood. The priciple product of our city is the fine wooden caskets we make. We also pay good money for corpses here. 
+rec  823 ptr=0x07C24 len= 46 type=5 words=24
+  We Necromancers are not much for Nexus, instead we worship the soul that carries us from this world to the next. 
+rec  824 ptr=0x07C52 len= 18 type=5 words=10
+  We follow the laws of Body in Blood. 
+rec  825 ptr=0x07C64 len= 66 type=5 words=34
+  Nexus and Void are but souls like us. They are bigger souls, dwelling on six planes at once while we live only in four, this gives them great power. 
+rec  826 ptr=0x07CA6 len= 40 type=5 words=21
+  The more things stay the same, the more they change. That is the true way of things. 
+rec  827 ptr=0x07CCE len= 56 type=5 words=29
+  I do whatever strikes me at any given moment. I don't understood how anyone could do the same job for more than a day or two. 
+rec  828 ptr=0x07D06 len= 28 type=5 words=15
+  We Enchanters have a mission in life: to disrupt the order of things. 
+rec  829 ptr=0x07D22 len= 22 type=5 words=12
+  Why am I talking to you? I won't any more! 
+rec  830 ptr=0x07D38 len= 36 type=5 words=19
+  Everything is in a continual state of Change. With our powers we merely help it along. 
+rec  831 ptr=0x07D5C len= 62 type=5 words=32
+  Kaos is the place where people have the most fun -- we don't suffer from a lack of excitement, that's for sure. It's always one thing after another. 
+rec  832 ptr=0x07D9A len= 72 type=5 words=37
+  Since we are always having so much fun we don't make too much. But we do run a wicked Lottery and a great Bingo game. You can get tickets at the General Store. 
+rec  833 ptr=0x07DE2 len= 70 type=5 words=36
+  We run a great lottery, you could even make money by using it, but then again maybe you won't. We also pay a lot for Flip Stones, they are so random! 
+rec  834 ptr=0x07E28 len= 42 type=5 words=22
+  The Rings of Enchantment are the most fun: Alteration and Variation. Too bad no one knows where they are. 
+rec  835 ptr=0x07E52 len= 68 type=5 words=35
+  Nexus came and changed the world, but then he let things stay the same for too long, so Void came and made him change it. That's why we recognize both. 
+rec  836 ptr=0x07E96 len= 22 type=5 words=12
+  Our church is unique because it has both types of priests! 
+rec  837 ptr=0x07EAC len= 18 type=5 words=10
+  Loyalty to Nexus is the most important thing. 
+rec  838 ptr=0x07EBE len= 18 type=5 words=10
+  My job is with the Temple of Nexus. 
+rec  839 ptr=0x07ED0 len= 36 type=5 words=19
+  I am a Paladin of the Holy Order of Silicon Knights of Nexus. HOOSKON for short. 
+rec  840 ptr=0x07EF4 len= 14 type=5 words=8
+  We Paladins serve the Temple faithfully. 
+rec  841 ptr=0x07F02 len= 26 type=5 words=14
+  We Paladins are Knights of Separation that have sworn ourselves to Nexus. 
+rec  842 ptr=0x07F1C len= 20 type=5 words=11
+  We use our magic in the service of Nexus. 
+rec  843 ptr=0x07F30 len= 32 type=5 words=17
+  I have set aside the ways of discipline and instead devote my life to Nexus. 
+rec  844 ptr=0x07F50 len= 40 type=5 words=21
+  The guilds owe their creation to Nexus as do all things. He gave the Six Arts to mankind. 
+rec  845 ptr=0x07F78 len= 24 type=5 words=13
+  Cathedral is the greatest and most holy city in the world. 
+rec  846 ptr=0x07F90 len= 62 type=5 words=32
+  Cathedral is the site of The Great Cathedral, the largest and most important Temple in the world. It is said that one can sometimes talk to Nexus there. 
+rec  847 ptr=0x07FCE len= 46 type=5 words=24
+  Cathedral is also home of the Citadel of the Paladins. These holy Knights are Separatists that have dedicated themselves to Nexus. 
+rec  848 ptr=0x07FFC len= 56 type=5 words=29
+  Cathedral is the center of the faith. They produce the Tomes that serve the faithful as bibles. The demand for gems is very high there. 
+rec  849 ptr=0x08034 len= 46 type=5 words=24
+  The Temple is the most important thing in the world. It is the conduit through which man can talk to Nexus. 
+rec  850 ptr=0x08062 len= 52 type=5 words=27
+  If you find any Rings of Power you must surrender them to the Temple. Nexus is testing man to see if we'll return them. 
+rec  851 ptr=0x08096 len= 40 type=5 words=21
+  The Great Cathedral is also a center of learning. Much lore and many books can be found there. 
+rec  852 ptr=0x080BE len= 34 type=5 words=18
+  Sir, if you have nothing more interesting to talk about I should be moving on. 
+rec  853 ptr=0x080E0 len= 28 type=5 words=15
+  We are all gainfully employed here. No slackers in the King's city. 
+rec  854 ptr=0x080FC len= 46 type=5 words=24
+  Magic? Not much time for magic in Doggania. We have work to do, the regent isn't much for magic. 
+rec  855 ptr=0x0812A len= 32 type=5 words=17
+  We do have guilds in town, but only because they represent strong political forces. 
+rec  856 ptr=0x0814A len= 50 type=5 words=26
+  Doggania is a city on the move. Under the Doggon dynasty we have come to be one of the strongest poltical cities around. 
+rec  857 ptr=0x0817C len= 46 type=5 words=24
+  The heart of Doggania is the King. Unfortunately he has taken sick recently but he has appointed Duke Shmup as regent. 
+rec  858 ptr=0x081AA len= 58 type=5 words=30
+  I hope the King recovers, there is a nasty air in the city since Shmup came to power. The palace guard is getting bolder and bolder. 
+rec  859 ptr=0x081E4 len= 60 type=5 words=31
+  We sell wood in Doggania. Our forests provide the materials for half the buildings in the world. We also give a good price for weapons from Sparta. 
+rec  860 ptr=0x08220 len= 22 type=5 words=12
+  We Doggans don't care much for Nexus and his Temple. 
+rec  861 ptr=0x08236 len= 58 type=5 words=30
+  That stuff about Nexus and magic is all hogwash. The guilds just practice slight of hand. It was all set up by those powermongers in Cathedral. 
+rec  862 ptr=0x08270 len= 62 type=5 words=32
+  Rumor has it that King Doggon I was the first man to wear the Ring of Division. It's all nonsense, though; Doggon XXIV certainly has no god-like powers. 
+rec  863 ptr=0x082AE len= 14 type=5 words=8
+  I just like to have fun. 
+rec  864 ptr=0x082BC len= 22 type=5 words=12
+  Work? Work is no fun. I hate school. 
+rec  865 ptr=0x082D2 len= 16 type=5 words=9
+  I don't care what class I am. 
+rec  866 ptr=0x082E2 len= 22 type=5 words=12
+  When I grow up I want to be a powerful Guildsmaster! 
+rec  867 ptr=0x082F8 len= 12 type=5 words=7
+  We are all young here. 
+rec  868 ptr=0x08304 len= 22 type=5 words=12
+  There are old fogies on the other side of town. 
+rec  869 ptr=0x0831A len= 14 type=5 words=8
+  I don't care about your quest. 
+rec  870 ptr=0x08328 len= 42 type=5 words=22
+  Look, mister -- talking about this stuff is really boring. Wanna play Rings of Power on my computer? 
+rec  871 ptr=0x08352 len= 20 type=5 words=11
+  Sit and talk with me a while, youngster. 
+rec  872 ptr=0x08366 len= 18 type=5 words=10
+  I don't have enough energy to do much. 
+rec  873 ptr=0x08378 len= 54 type=5 words=28
+  When you get to be as old as I am you don't think much about powers and magic, sonny. You think about your rheumatism. 
+rec  874 ptr=0x083AE len= 34 type=5 words=18
+  I used to know a lot about that, but I've forgotten it all by now. 
+rec  875 ptr=0x083D0 len= 78 type=5 words=40
+  It doesn't make much sense, does it? I was a useful member of society once, and now I just sit here doing nothing. It's a dull life, young man -- dull indeed.  
+rec  876 ptr=0x0841E len= 32 type=5 words=17
+  It's nice to hear the children playing. It reminds me of something... 
+rec  877 ptr=0x0843E len= 80 type=5 words=41
+  Quest? I wish I was still young enough for a good quest. Now what was I going to tell you? It was about your quest -- oh, I can't remember. Ask me again later. 
+rec  878 ptr=0x0848E len= 48 type=5 words=25
+  There was another young man who came here just a while ago on a quest, but he settled down and retired here. 
+rec  879 ptr=0x084BE len= 42 type=5 words=22
+  Money makes the world go round. Those who say that money can't buy happiness don't know where to shop. 
+rec  880 ptr=0x084E8 len= 18 type=5 words=10
+  I work in the merchant and shipping industry. 
+rec  881 ptr=0x084FA len= 24 type=5 words=13
+  We in the City of Commerce trade with all the guilds. 
+rec  882 ptr=0x08512 len= 62 type=5 words=32
+  The City of Commerce is the trading capitol of the world. At our famous store nearly every good in the world can be purchased, but for a price. 
+rec  883 ptr=0x08550 len= 18 type=5 words=10
+  Our ships journey outward to cover the world. 
+rec  884 ptr=0x08562 len= 36 type=5 words=19
+  In all our trading expeditions we have never come across concrete evidence of the Rings of Power. 
+rec  885 ptr=0x08586 len= 22 type=5 words=12
+  Just the same all cultures today know of the legend. 
+rec  886 ptr=0x0859C len= 38 type=5 words=20
+  I can't stand here shooting the breeze all day, let me know if I can help you. 
+rec  887 ptr=0x085C2 len= 32 type=5 words=17
+  I sometimes work for the Queen's factories. There are many new machines in there. 
+rec  888 ptr=0x085E2 len= 60 type=5 words=31
+  Magic? You don't believe in that nonsense, do you? You ought to pick up a science book, pal -- that's where the real magic is. 
+rec  889 ptr=0x0861E len= 30 type=5 words=16
+  We honor the guilds, but only because of their traditional status in society. 
+rec  890 ptr=0x0863C len= 56 type=5 words=29
+  Queen Richi is an enlightned woman; she's using her power to promote science. A rebirth of knowledge is taking place in Richi -- you're just in time! 
+rec  891 ptr=0x08674 len= 30 type=5 words=16
+  Recently someone even managed to paint a person in perspective! You wouldn't believe it. 
+rec  892 ptr=0x08692 len= 26 type=5 words=14
+  The Queen has built a new observatory to the west of Richi. 
+rec  893 ptr=0x086AC len= 58 type=5 words=30
+  Our new science has alowed us to construct the Gate Stones. They are more precise than the Flip Stones. They allow travel from Gateway to Gateway. 
+rec  894 ptr=0x086E6 len= 58 type=5 words=30
+  If you have a crystal to sell we will give you a good price. Crystal is needed to make the new Gate Stones we sell in Richi. 
+rec  895 ptr=0x08720 len= 44 type=5 words=23
+  What is the Temple compared to faith in the human mind? You Sorcerers should know that, of all people. 
+rec  896 ptr=0x0874C len= 42 type=5 words=22
+  Those Rings of Power are probably just some tarnished old relics. Interesting for historical value, but nothing more. 
+rec  897 ptr=0x08776 len= 48 type=5 words=25
+  The legend holds that the first King Richi was given the Ring of Advancement by Nexus himself, but I don't believe it. 
+rec  898 ptr=0x087A6 len= 28 type=5 words=15
+  If you want a contract for protection, go to the Protector's Guild. 
+rec  899 ptr=0x087C2 len= 30 type=5 words=16
+  We are Protectors. We swear to Protect those whom we choose to Protect. 
+rec  900 ptr=0x087E0 len= 14 type=5 words=8
+  We serve the Guild of Protectors. 
+rec  901 ptr=0x087EE len= 28 type=5 words=15
+  We Protectors have a different interpretation of Force than the Archers of Speed. 
+rec  902 ptr=0x0880A len= 14 type=5 words=8
+  We use Force to prevent conflict. 
+rec  903 ptr=0x08818 len= 24 type=5 words=13
+  The city is the Guild and the Guild is the City. 
+rec  904 ptr=0x08830 len= 22 type=5 words=12
+  Protectors are the Guild and the Guild is the Protectors. 
+rec  905 ptr=0x08846 len= 58 type=5 words=30
+  We sell Balm in the Protector's City which can be used to heal your party. We are also interested in buying those new Gate Stones from Richi. 
+rec  906 ptr=0x08880 len= 22 type=5 words=12
+  We are loyal to the concept of Protection through Force. 
+rec  907 ptr=0x08896 len= 44 type=5 words=23
+  The ceasation of conflict, the stability, that balancing of Force to hold all in place, that is Divine. 
+rec  908 ptr=0x088C2 len= 42 type=5 words=22
+  If you hear of the Ring of Advancing let us know, it is the only Ring that interests us. 
+rec  909 ptr=0x088EC len= 18 type=5 words=10
+  Excuse me, I have research to do. 
+rec  910 ptr=0x088FE len= 28 type=5 words=15
+  I do research on the side for the rest of the University staff. 
+rec  911 ptr=0x0891A len= 48 type=5 words=25
+  Hmmm, magic is an interesting thing. I have studied it and come to several conclusions: most importantly there are Six types. 
+rec  912 ptr=0x0894A len= 32 type=5 words=17
+  There are similarities between the Arts -- they each get thier power from alternate worlds. 
+rec  913 ptr=0x0896A len= 56 type=5 words=29
+  The University is a fabulous place. All the great scholars in the world are here, except for a couple of monks who live in Cathedral. 
+rec  914 ptr=0x089A2 len= 18 type=5 words=10
+  We study everything. We think about everything. 
+rec  915 ptr=0x089B4 len= 24 type=5 words=13
+  We have the biggest library in the world, thousands of books! 
+rec  916 ptr=0x089CC len= 24 type=5 words=13
+  The Conjurer Aristotle is the archivist in charge of the library. 
+rec  917 ptr=0x089E4 len= 68 type=5 words=35
+  We sell books in Oxbridge, since we are the only ones who take the time to copy them. We also give good money for those rare yellow and red Finini carpets. 
+rec  918 ptr=0x08A28 len= 66 type=5 words=34
+  Ah, the Rings of Power. Now there's a great mystery for you! How can it be that those eleven Rings can hold the power of Nexus and the Six Arts? 
+rec  919 ptr=0x08A6A len= 42 type=5 words=22
+  I've studied the legends of the Rings, but there are experts on each one here and in Cathedral City. 
+rec  920 ptr=0x08A94 len= 60 type=5 words=31
+  The Rings are so shrouded in legend that it is difficult to tell myth from fact. I have my doubts as to the accuracy of some Temple records. 
+rec  921 ptr=0x08AD0 len=  6 type=5 words=4
+  Hello traveler. 
+rec  922 ptr=0x08AD6 len=  4 type=5 words=3
+  Thanks again! 
+rec  923 ptr=0x08ADA len= 18 type=5 words=10
+  You're very funny -- I steal, of course! 
+rec  924 ptr=0x08AEC len= 54 type=5 words=28
+  Thieves from the Guild are not ordinary thieves; we don't bother normal citizens. Regular Robin Hood types we are, except we keep the money. 
+rec  925 ptr=0x08B22 len= 54 type=5 words=28
+  We're usually Knights to begin with. The Art of Separation comes in handy when you're picking locks. Some of us are Enchanters, though. 
+rec  926 ptr=0x08B58 len= 52 type=5 words=27
+  I use my Art in my work. Knock out a trap here, a lock there, a guard from behind a hanging Finini. 
+rec  927 ptr=0x08B8C len= 46 type=5 words=24
+  A lot of fun to be had in this town. Its almost as fun as Kaos, only not as honest. 
+rec  928 ptr=0x08BBA len= 26 type=5 words=14
+  The Guild strictly regulates its members, according to the Guildmaster's decree. 
+rec  929 ptr=0x08BD4 len= 46 type=5 words=24
+  Keef the Thief is the Guildsmaster. He's an awesome thief, and that sword of his -- don't mess with it. 
+rec  930 ptr=0x08C02 len= 56 type=5 words=29
+  We sell jewlery at Thieves Haven, stolen of course. We are in need of hard curency so you can get a good price on gems. 
+rec  931 ptr=0x08C3A len= 24 type=5 words=13
+  If you need a job you can contract with the Guild. 
+rec  932 ptr=0x08C52 len= 50 type=5 words=26
+  I don't really believe in all that hocus pocus. If you want to know about that, you should talk to the Guildmaster. 
+rec  933 ptr=0x08C84 len= 54 type=5 words=28
+  Hmmm, I remember Keef saying something about a ring  the other day -- can't remember what. He believes in magic, you see. 
+rec  934 ptr=0x08CBA len=  8 type=5 words=5
+  Don't hurt me master! 
+rec  935 ptr=0x08CC2 len= 34 type=5 words=18
+  I did nothing, please don't hurt me. I am nothing but a little Fen. 
+rec  936 ptr=0x08CE4 len= 40 type=5 words=21
+  We Fen are but dung -- please don't hurt us. We make our humble carpets from marsh grasses. 
+rec  937 ptr=0x08D0C len= 28 type=5 words=15
+  Oh, we have little Magic, some enchantment, but not much. 
+rec  938 ptr=0x08D28 len= 34 type=5 words=18
+  We are swamp spawn, the lowly creations of our foul mistress, the witch Hideous. 
+rec  939 ptr=0x08D4A len= 40 type=5 words=21
+  The great Fen Ho rules our humble hut. It was his courage that lead us out of bondage. 
+rec  940 ptr=0x08D72 len= 62 type=5 words=32
+  Fen Ho is magnificent, for a mud dweller. He lead our escape from the witch who spawned us. He started the trade that sustains us: our carpets. 
+rec  941 ptr=0x08DB0 len= 50 type=5 words=26
+  Besides selling our carpets of red and yellow marsh grass we Fen people can always use some more Flip Stones in case of danger. 
+rec  942 ptr=0x08DE2 len= 62 type=5 words=32
+  The mighty Fen Ho is a Socialist, and so we all live in this great hut. Blessed be Fen Ho, and please do not hurt wretched me. 
+rec  943 ptr=0x08E20 len= 40 type=5 words=21
+  We are not blessed by Nexus. Our god is a living god, the slightly powerful Fen Ho. 
+rec  944 ptr=0x08E48 len= 32 type=5 words=17
+  Fen Ho is our salvation, our leader, our father, and our brother. 
+rec  945 ptr=0x08E68 len= 34 type=5 words=18
+  You might want to put some meat on you, boy. You look awfully skinny. 
+rec  946 ptr=0x08E8A len= 30 type=5 words=16
+  What does if feel like to be a mortal in this city of gods? 
+rec  947 ptr=0x08EA8 len= 42 type=5 words=22
+  I spend my time preparing for the next great battle -- it can happen at any time, you know. 
+rec  948 ptr=0x08ED2 len= 42 type=5 words=22
+  Arts of the mind are not important, you poor weak fool! Strength and skill in battle are all that matters! 
+rec  949 ptr=0x08EFC len= 34 type=5 words=18
+  Arts of the mind are not important to me. Only skill in battle concerns me. 
+rec  950 ptr=0x08F1E len= 18 type=5 words=10
+  The Six Arts are the folly of weaklings. 
+rec  951 ptr=0x08F30 len= 40 type=5 words=21
+  I come from Sparta, the City of Warriors. We make the finest weapons in the world.  
+rec  952 ptr=0x08F58 len= 20 type=5 words=11
+  Our king is the greatest warriors who ever lived. 
+rec  953 ptr=0x08F6C len= 38 type=5 words=20
+  We make fine weapons In Sparta and we are always on the lookout for good blades from Division. 
+rec  954 ptr=0x08F92 len= 46 type=5 words=24
+  Other cities are weak because their rulers are elected or born to the post. In Sparta, only the strongest rules. 
+rec  955 ptr=0x08FC0 len= 32 type=5 words=17
+  I do not waste my time wondering about legends. Go and ask someone else. 
+rec  956 ptr=0x08FE0 len= 42 type=5 words=22
+  Whatever your quest may be, it is only through physical strength that you will find meaning in your life. 
+rec  957 ptr=0x0900A len=  6 type=5 words=4
+  Seek purity. 
+rec  958 ptr=0x09010 len= 18 type=5 words=10
+  Visit our fine Crystal Works in the tower. 
+rec  959 ptr=0x09022 len= 22 type=5 words=12
+  I am a glass blower in the great Crystal Works. 
+rec  960 ptr=0x09038 len= 48 type=5 words=25
+  My job is very important to me. My inner purity is reflected in the flawlessness of the glass and crystal I make. 
+rec  961 ptr=0x09068 len= 26 type=5 words=14
+  In general we are Conjurers in Shard. Perfection is our goal. 
+rec  962 ptr=0x09082 len= 36 type=5 words=19
+  We use our magic to help make our glass and crystal the most Perfect in the world. 
+rec  963 ptr=0x090A6 len= 54 type=5 words=28
+  Shard exports crystal. Unfortunately, our crystal can only be made of Silicon Dust from the deserts to the north, so it is expensive. 
+rec  964 ptr=0x090DC len= 18 type=5 words=10
+  We turn plain sand into works of art. 
+rec  965 ptr=0x090EE len= 36 type=5 words=19
+  We are governed by the Red Priests of Nexus. We follow their teachings to the letter. 
+rec  966 ptr=0x09112 len= 30 type=5 words=16
+  Anyone who tells you that you get used to the winters at Shard is lying! 
+rec  967 ptr=0x09130 len= 46 type=5 words=24
+  We sell fine crystal from our glass works. We will also give you a good price for any flowers from Perfection. 
+rec  968 ptr=0x0915E len= 48 type=5 words=25
+  We are very loyal to Nexus here. We have a huge cathedral in his honor -- the second largest in the world. 
+rec  969 ptr=0x0918E len= 42 type=5 words=22
+  If you quest for the Rings of Power, then make sure that you quest in the name of Nexus. 
+rec  970 ptr=0x091B8 len= 32 type=5 words=17
+  The wind at Mesa does not blow, it sucks the meat off your bones. 
+rec  971 ptr=0x091D8 len= 36 type=5 words=19
+  Do your business at Mesa, then leave. We don't enjoy the presense of outsiders here. 
+rec  972 ptr=0x091FC len= 12 type=5 words=7
+  I sort grains of sand. 
+rec  973 ptr=0x09208 len= 46 type=5 words=24
+  It may seem trivial, but up here on the Mesa one finds that even the smallest task is of great importance. 
+rec  974 ptr=0x09236 len= 58 type=5 words=30
+  You lowlanders give magic all sorts of names, but really it is one thing. Nexus himself does not understand it, he merely directs its power. 
+rec  975 ptr=0x09270 len= 54 type=5 words=28
+  Magic comes from the intersection of planes. This is the source of all power. Walking across the room is a simple form of power. 
+rec  976 ptr=0x092A6 len= 44 type=5 words=23
+  Power is the translation across a plane. Magic is merely movement beyond the four planes in which man normally dwells. 
+rec  977 ptr=0x092D2 len= 54 type=5 words=28
+  The city of Mesa is filled with a proud and simple people. Our forefathers came to Mesa to escape the meaningless life of the lowlands. 
+rec  978 ptr=0x09308 len= 50 type=5 words=26
+  We study the nature of things; what we have learned would amaze you, but  it's a highland thing -- you wouldn't understand. 
+rec  979 ptr=0x0933A len= 70 type=5 words=36
+  Many things are available in Mesa. We use our magic sand to make a number of magic stones. These are the Dragon Stone, the Boat Stone, and the Bridge Stone. 
+rec  980 ptr=0x09380 len= 54 type=5 words=28
+  They can be used to magically summon Dragons, Boats, and Bridges. Always carry a few so that you are not trapped without transportation. 
+rec  981 ptr=0x093B6 len= 32 type=5 words=17
+  The weather is harsh up here. The desert breeds an understanding of greater things. 
+rec  982 ptr=0x093D6 len= 56 type=5 words=29
+  The only help I can offer on your quest for the Rings is to tell you that they are tools by which other worlds can be accessed. 
+rec  983 ptr=0x0940E len= 58 type=5 words=30
+  We have no time for Nexus and his Temple. He is a sniveling child with a toy that his parents should have kept out of his reach. 
+rec  984 ptr=0x09448 len= 32 type=5 words=17
+  What are you doing here? Get out before you join us in our death. 
+rec  985 ptr=0x09468 len= 34 type=5 words=18
+  The wind is dry in the great desert, but not as dry as our breath. 
+rec  986 ptr=0x0948A len= 36 type=5 words=19
+  Ha! Job. What job need the dead have? We certainly don't need to make a living! 
+rec  987 ptr=0x094AE len= 44 type=5 words=23
+  We spend eternity wandering the graves and tombs of the Necropolis; half in this world, and half in the next. 
+rec  988 ptr=0x094DA len= 28 type=5 words=15
+  Magic? What magic have those who have been to the Dead Lands? 
+rec  989 ptr=0x094F6 len= 28 type=5 words=15
+  We live on the border between this world and the Dead Lands.  
+rec  990 ptr=0x09512 len= 66 type=5 words=34
+  The Necropolis is not a city. We do not live, we do not trade, we have no government. We merely are. Look closely -- this is your future! 
+rec  991 ptr=0x09554 len= 46 type=5 words=24
+  We are here because of the Great Tomb, the place where the world of death and the world of living intersect. 
+rec  992 ptr=0x09582 len= 48 type=5 words=25
+  This place is unnatural. Long ago a great evil occured here, something happened that bridged your world and the Dead Lands. 
+rec  993 ptr=0x095B2 len= 64 type=5 words=33
+  We have an excess of corpses here and will be more than happy to unload some on you. But if you have any caskets we could use those for burials. 
+rec  994 ptr=0x095F2 len= 70 type=5 words=36
+  You quest for the Rings of Power, do you not? Well, look no further for the Ring of Bile. It came here long ago, and here it will stay. 
+rec  995 ptr=0x09638 len= 62 type=5 words=32
+  Why would the dead care for religion? We could not crave the promise of an afterlife. We already have that, and it is not worth living for. 
+rec  996 ptr=0x09676 len= 32 type=5 words=17
+  Hello. Did you say something or was it that brocolli stalk on your shoulder? 
+rec  997 ptr=0x09696 len= 32 type=5 words=17
+  Roses are red, violets are blue, I'm a loony and so am I. 
+rec  998 ptr=0x096B6 len=  2 type=5 words=2
+  Spam! 
+rec  999 ptr=0x096B8 len= 44 type=5 words=23
+  Pixels! Pixels and more pixels! I'm sick of pixels. Not an extra still, not an extra animated character type! Arrarraragh! 
+rec 1000 ptr=0x096E4 len= 12 type=5 words=7
+  I spend, therefore I am! 
+rec 1001 ptr=0x096F0 len= 22 type=5 words=12
+  I hate censorship! I'll say %#*(% if I D*#$+ well please! 
+rec 1002 ptr=0x09706 len= 50 type=5 words=26
+  Please don't make me reprogram the interface again. Not the blitter code, and never ever let me see the buc1.bc file again! 
+rec 1003 ptr=0x09738 len= 64 type=5 words=33
+  Make a joke and I will sigh, and you will laugh, and I will cry. Happiness I can not feel, and love to me is so unreal. 
+rec 1004 ptr=0x09778 len= 30 type=5 words=16
+  Did someone say redo the combat a fifth time? I need a haircut. 
+rec 1005 ptr=0x09796 len= 24 type=5 words=13
+  There once was a rich man: 178 131 17 108 304 150! 
+rec 1006 ptr=0x097AE len= 26 type=5 words=14
+  I'm a loony, what kind of job would they give me? 
+rec 1007 ptr=0x097C8 len= 26 type=5 words=14
+  I ought to be locked away. In fact, I am. 
+rec 1008 ptr=0x097E2 len= 22 type=5 words=12
+  If I was a magician you WOULD be in trouble. 
+rec 1009 ptr=0x097F8 len= 26 type=5 words=14
+  Magic? Hey, watch me pull a rabbit out of my hat! 
+rec 1010 ptr=0x09812 len=  8 type=5 words=5
+  What's a city? 
+rec 1011 ptr=0x0981A len= 26 type=5 words=14
+  This is the only place I know. Pleasant, isn't it? 
+rec 1012 ptr=0x09834 len= 28 type=5 words=15
+  Why should I help you? In fact, why do pigs fly? 
+rec 1013 ptr=0x09850 len=  2 type=5 words=2
+  <Drool> 
+rec 1014 ptr=0x09852 len= 14 type=5 words=8
+  Hello fellow, welcome to Magicnia. 
+rec 1015 ptr=0x09860 len= 26 type=5 words=14
+  Magic is a part of the world, a part of life. 
+rec 1016 ptr=0x0987A len= 22 type=5 words=12
+  I do a lot of work for Magic B Us. 
+rec 1017 ptr=0x09890 len= 40 type=5 words=21
+  We honor all of the disciplines in Magicnia. We have some of the greatest mages in the world. 
+rec 1018 ptr=0x098B8 len= 38 type=5 words=20
+  The town fathers were very talented at the Arts. Our village has a reputation for magical prowess. 
+rec 1019 ptr=0x098DE len= 54 type=5 words=28
+  The city of Magicnia sprung up to serve the ever growing staff of Magic B Us, the greatest center of magic learning in the world. 
+rec 1020 ptr=0x09914 len= 56 type=5 words=29
+  You can find Magic B Us just a little to the west of the town proper. It's the huge domed building -- you can't miss it. 
+rec 1021 ptr=0x0994C len= 28 type=5 words=15
+  Magic B Us has a section devoted to each of the Six Arts. 
+rec 1022 ptr=0x09968 len= 66 type=5 words=34
+  We sell magic Mana which can be used to replace your Power in a crisis. If you have any books from the University you can get a good price as well. 
+rec 1023 ptr=0x099AA len= 14 type=5 words=8
+  Welcome to the Celestial City area. 
+rec 1024 ptr=0x099B8 len= 12 type=5 words=7
+  Time is very important here. 
+rec 1025 ptr=0x099C4 len= 26 type=5 words=14
+  Our job is to be, to serve, and to protect. 
+rec 1026 ptr=0x099DE len= 12 type=5 words=7
+  We work at the temple. 
+rec 1027 ptr=0x099EA len= 26 type=5 words=14
+  I am of the Sun People. We worship the Solar Body. 
+rec 1028 ptr=0x09A04 len= 26 type=5 words=14
+  We are very hot tempered, unlike our neighbors the Moon People. 
+rec 1029 ptr=0x09A1E len= 26 type=5 words=14
+  I am of the Moon People. We are very peaceful here. 
+rec 1030 ptr=0x09A38 len= 26 type=5 words=14
+  Are not the stars beautiful? Have you ever seen the sun? 
+rec 1031 ptr=0x09A52 len= 20 type=5 words=11
+  We are the keepers of the Ring of Perfection. 
+rec 1032 ptr=0x09A66 len= 28 type=5 words=15
+  The perfect Ring was placed in our hands by the Temple long ago. 
+rec 1033 ptr=0x09A82 len= 40 type=5 words=21
+  We are the center for more than one Ring. The spirits of both Perfection and Thought dwells here. 
+rec 1034 ptr=0x09AAA len=  4 type=5 words=3
+  Die Sorcerer! 
+rec 1035 ptr=0x09AAE len= 26 type=5 words=14
+  What do you want Sorcerer, I shouldn't be talking to you. 
+rec 1036 ptr=0x09AC8 len= 42 type=5 words=22
+  We bandits have hollowed out a great volcano to built a monstrous fortress. You can smell it for miles. 
+rec 1037 ptr=0x09AF2 len= 68 type=5 words=35
+  Our leader is the mysterious MR. B. The most brilliant villain the world has ever known. Except for Void of course. MR. B and Void are very close. 
+rec 1038 ptr=0x09B36 len= 22 type=5 words=12
+  The world is a horrible place, isn't that nice? 
+rec 1039 ptr=0x09B4C len= 30 type=5 words=16
+  What do I do? I torment helpless people and steal candy from babies. 
+rec 1040 ptr=0x09B6A len= 30 type=5 words=16
+  The world is full of evil. I might as well help it along. 
+rec 1041 ptr=0x09B88 len= 26 type=5 words=14
+  Why should I help you? You're the enemy! Get out of here! 
+rec 1042 ptr=0x09BA2 len= 48 type=5 words=25
+  I don't care what happens to the world, as long as we don't have a Golden Age. I hate to bathe. 
+rec 1043 ptr=0x09BD2 len= 10 type=5 words=6
+  I am a scholar. 
+rec 1044 ptr=0x09BDC len= 30 type=5 words=16
+  Halt sir! King Doggon demands a tax of 150 gold. Will you pay? 
+rec 1045 ptr=0x09BFA len= 18 type=5 words=10
+  Very good sir. Have a nice day. 
+rec 1046 ptr=0x09C0C len= 14 type=5 words=8
+  That was a very poor decision. 
+rec 1047 ptr=0x09C1A len= 32 type=5 words=17
+  You leave me with no choice but to take it for you the hard way. 
+rec 1048 ptr=0x09C3A len= 50 type=5 words=26
+  Please sir, alms for a humble beggar. Will you give me 50 gold? My family will starve this winter without it. 
+rec 1049 ptr=0x09C6C len= 16 type=5 words=9
+  Oh thank you sir, oh thank you! 
+rec 1050 ptr=0x09C7C len= 22 type=5 words=12
+  You are a nasty man! No compassion for the poor. 
+rec 1051 ptr=0x09C92 len= 60 type=5 words=31
+  Greetings traveler, my name is Rashiid, and I am a merchant from the City of Commerce. I come to this lovely Oasis to get fresh water. 
+rec 1052 ptr=0x09CCE len= 44 type=5 words=23
+  I sell food and water. The Oasis where you find me is sure to be the freshest in the desert. 
+rec 1053 ptr=0x09CFA len= 50 type=5 words=26
+  I trade desert supplies. Once I was a normal City merchant, but I became lost in a desert far Southeast of here. 
+rec 1054 ptr=0x09D2C len= 66 type=5 words=34
+  Just before I was to die of thirst I found a great city atop a giant mesa. The Sultan of that city - may he live forever - took me in. 
+rec 1055 ptr=0x09D6E len= 46 type=5 words=24
+  They are very Advanced there, things move swiftly and with great Force in the desert. My guards come from there. 
+rec 1056 ptr=0x09D9C len= 70 type=5 words=36
+  I see you tipped our mutual friend the lighthouse keeper. Yes, I know where the Black Priest went. I'm no friend of the dark god, so I'll tell you for free! 
+rec 1057 ptr=0x09DE2 len= 68 type=5 words=35
+  The Black one went "underground" as they say, down into the sewer. There's a ladder in front of the Temple in Division. You just came from there, didn't you? 
+rec 1058 ptr=0x09E26 len= 62 type=5 words=32
+  I don't know about any rings, but I heard about this pirate who hid a magic sextant in a cave behind a waterfall. It's just west of Cathedral. 
+rec 1059 ptr=0x09E64 len= 52 type=5 words=27
+  The dry wind of Void blows strong out here in the desert. If you die of thirst only the sand will eat your bones. 
+rec 1060 ptr=0x09E98 len=  2 type=5 words=2
+  GRRRRRrrrrowl! 
+rec 1061 ptr=0x09E9A len=  2 type=5 words=2
+  Roooaaaaarrr! 
+rec 1062 ptr=0x09E9C len=  4 type=5 words=3
+  Die Matey! 
+rec 1063 ptr=0x09EA0 len= 16 type=5 words=9
+  What do you spend your time doing? 
+rec 1064 ptr=0x09EB0 len= 16 type=5 words=9
+  I do whatever needs to be done. 
+rec 1065 ptr=0x09EC0 len= 16 type=5 words=9
+  My work is very interesting to me. 
+rec 1066 ptr=0x09ED0 len= 18 type=5 words=10
+  What do you know of the Six Arts? 
+rec 1067 ptr=0x09EE2 len= 18 type=5 words=10
+  I don't have much skill in my discipline. 
+rec 1068 ptr=0x09EF4 len= 34 type=5 words=18
+  I was unable to study at an Academy, so I never really developed any skill. 
+rec 1069 ptr=0x09F16 len= 14 type=5 words=8
+  I am but an insignificant nothing. 
+rec 1070 ptr=0x09F24 len= 32 type=5 words=17
+  Do you have any information about local cities, their trade, or their government? 
+rec 1071 ptr=0x09F44 len= 16 type=5 words=9
+  There isn't much of a government here. 
+rec 1072 ptr=0x09F54 len= 12 type=5 words=7
+  This area is economically depressed. 
+rec 1073 ptr=0x09F60 len= 18 type=5 words=10
+  There is not much of a government here. 
+rec 1074 ptr=0x09F72 len= 20 type=5 words=11
+  The Temple is the only significant organization around here. 
+rec 1075 ptr=0x09F86 len= 22 type=5 words=12
+  No, I am not much of a skilled individual. 
+rec 1076 ptr=0x09F9C len= 22 type=5 words=12
+  No one around here is good at much of anything. 
+rec 1077 ptr=0x09FB2 len= 44 type=5 words=23
+  Can you give me information that will aid me with my quest or in my dealings with the Temple of Nexus? 
+rec 1078 ptr=0x09FDE len= 22 type=5 words=12
+  I'm sorry, I don't have any information for you. 
+rec 1079 ptr=0x09FF4 len= 14 type=5 words=8
+  I don't know anything about that. 
+rec 1080 ptr=0x0A002 len= 30 type=5 words=16
+  Do you know anything of the Rings of Power or the Temple of Nexus? 
+rec 1081 ptr=0x0A020 len= 26 type=5 words=14
+  Do you have any information that can help me on my quest? 
+rec 1082 ptr=0x0A03A len= 16 type=5 words=9
+  I know nothing that can help you. 
+rec 1083 ptr=0x0A04A len= 16 type=5 words=9
+  I'm not much for legends, myself. 
+rec 1084 ptr=0x0A05A len= 40 type=5 words=21
+  You dream of your master: "Buc you must find the Rings of Power and bring justice back to the world!" 
+rec 1085 ptr=0x0A082 len= 30 type=5 words=16
+  You dream of your master: "Do not abuse your power by terriorizing the populace." 
+rec 1086 ptr=0x0A0A0 len= 36 type=5 words=19
+  You dream of your master: "Remember, those from whom you steal will bear you ill will." 
+rec 1087 ptr=0x0A0C4 len= 52 type=5 words=27
+  You dream of your master: "You are the most gifted of my students, but time spent increasing your experience and power is not wasted." 
+rec 1088 ptr=0x0A0F8 len= 38 type=5 words=20
+  You dream of your master: "Trust only yourself. Measure the words of others by this constant ruler." 
+rec 1089 ptr=0x0A11E len= 32 type=5 words=17
+  You dream of your master: "Do not let others disuade you from your holy quest." 
+rec 1090 ptr=0x0A13E len= 38 type=5 words=20
+  You dream of the demon Void: "Betrayer, deceiver, your death shall mean infinite pain for my consumption!" 
+rec 1091 ptr=0x0A164 len= 38 type=5 words=20
+  You dream of the demon Void: "In the end, time spent on your quest will be wasted." 
+rec 1092 ptr=0x0A18A len= 18 type=5 words=10
+  You dream of the demon Void: "Pain awaits you!" 
+rec 1093 ptr=0x0A19C len= 40 type=5 words=21
+  You dream of the demon Void: "Come over to the dark side, Buc, it is your destiny." 
+rec 1094 ptr=0x0A1C4 len= 34 type=5 words=18
+  You dream of the demon Void: "I shall crush Nexus as you would crush a bug." 
+rec 1095 ptr=0x0A1E6 len= 50 type=5 words=26
+  You dream of Nexus: "Restore the Rings of Power to me and I shall reform the Rod of Creation and return my grace to mankind!" 
+rec 1096 ptr=0x0A218 len= 40 type=5 words=21
+  You dream of Nexus: "Give the Rings only to me, even my own priests are not always trustworthy." 
+rec 1097 ptr=0x0A240 len= 26 type=5 words=14
+  You dream of Nexus: "Save often and you will often be saved." 
+rec 1098 ptr=0x0A25A len= 16 type=5 words=9
+  You dream of Nexus: "Void is evil." 
+rec 1099 ptr=0x0A26A len= 28 type=5 words=15
+  You dream of Nexus: "Great reward awaits those who fulfil the holy quest." 
+rec 1100 ptr=0x0A286 len= 22 type=5 words=12
+  You dream of a beautiful woman: "What's cookin', good lookin'" 
+rec 1101 ptr=0x0A29C len= 10 type=5 words=6
+  That is your craft. 
+rec 1102 ptr=0x0A2A6 len=  6 type=5 words=4
+  Another party. 
+rec 1103 ptr=0x0A2AC len= 26 type=5 words=14
+  Check your supplies! Your party is suffering from food and/or water loss. 
+rec 1104 ptr=0x0A2C6 len= 40 type=5 words=21
+  You have run out of funds, and have been cast adrift in a dingy by the ship's crew. 
+rec 1105 ptr=0x0A2EE len= 30 type=5 words=16
+  Your Dino is hungry and thirsty, so he's run away to forage.  
+rec 1106 ptr=0x0A30C len= 18 type=5 words=10
+  Somewhere, one of your craft is lost. 
+rec 1107 ptr=0x0A31E len= 14 type=5 words=8
+  You manage to flee your enemy. 
+rec 1108 ptr=0x0A32C len= 34 type=5 words=18
+  You have died, but your friends survive and have you resurected at the Great Cathedral. 
+rec 1109 ptr=0x0A34E len=  8 type=5 words=5
+  You win 100 gold! 
+rec 1110 ptr=0x0A356 len= 30 type=5 words=16
+  You hit the Jackpot! 5000 Gold! Congratulations! Don't spend it all in one place. 
+rec 1111 ptr=0x0A374 len= 44 type=5 words=23
+  You lose! (The odds are 1 in 15 of a 100 gold win and 1 in 1000 of a 5000 gold jackpot) 
+rec 1112 ptr=0x0A3A0 len= 10 type=5 words=6
+  You can't camp here. 
+rec 1113 ptr=0x0A3AA len= 12 type=5 words=7
+  You make camp until dawn. 
+rec 1114 ptr=0x0A3B6 len= 12 type=5 words=7
+  You make camp until dusk. 
+rec 1115 ptr=0x0A3C2 len= 28 type=5 words=15
+  You had a nice rest, and your party is at full strength. 
+rec 1116 ptr=0x0A3DE len= 14 type=5 words=8
+  You can only use that inside. 
+rec 1117 ptr=0x0A3EC len= 14 type=5 words=8
+  You can only use that outside. 
+rec 1118 ptr=0x0A3FA len= 12 type=5 words=7
+  You can't use that now. 
+rec 1119 ptr=0x0A406 len= 48 type=5 words=25
+  You hold up the Holy Seal. A bright light is emmited from it and the entrance to the Fount of Heaven opens. 
+rec 1120 ptr=0x0A436 len= 48 type=5 words=25
+  You hold up the Holy Seal. Nothing happens. Something tells you that you need all eleven Rings and a closed door. 
+rec 1121 ptr=0x0A466 len= 32 type=5 words=17
+  You have the run of the world. All that you see is your responsibility. 
+rec 1122 ptr=0x0A486 len= 30 type=5 words=16
+  An aura permeates this place, you can not use magic or attack anyone. 
+rec 1123 ptr=0x0A4A4 len= 16 type=5 words=9
+  There is nothing interesting in that chest. 
+rec 1124 ptr=0x0A4B4 len= 14 type=5 words=8
+  There is nothing of interest there. 
+rec 1125 ptr=0x0A4C2 len= 16 type=5 words=9
+  You misused that item and wasted one. 
+rec 1126 ptr=0x0A4D2 len= 16 type=5 words=9
+  You can't budge that without a key. 
+rec 1127 ptr=0x0A4E2 len= 16 type=5 words=9
+  It is locked and will not budge. 
+rec 1128 ptr=0x0A4F2 len=  8 type=5 words=5
+  The lock opens. 
+rec 1129 ptr=0x0A4FA len= 54 type=5 words=28
+  As usual, dawn finds you on the path heading into town. Time to go to the Academy -- Master Thalmus wants to see you. 
+rec 1130 ptr=0x0A530 len= 18 type=5 words=10
+  You must have a map and be outside. 
+rec 1131 ptr=0x0A542 len= 44 type=5 words=23
+  You can't get that spell right now -- come back later when you have a party member who can use it. 
+rec 1132 ptr=0x0A56E len= 48 type=5 words=25
+  In order to talk to someone you must D-Pad toward the person and press the C button. See your manual for help. 
+rec 1133 ptr=0x0A59E len= 40 type=5 words=21
+  You have been killed in battle. Your quest is over. Press any button to reset the game. 
+rec 1134 ptr=0x0A5C6 len= 46 type=5 words=24
+  You have been killed by a magic trap. Be more careful next time. Maybe you need to quest for clues. 
+rec 1135 ptr=0x0A5F4 len= 16 type=5 words=9
+  You have been destroyed by another party. 
+rec 1136 ptr=0x0A604 len= 30 type=5 words=16
+  You die of hunger and thirst. Purchase more food and water next time. 
+rec 1137 ptr=0x0A622 len= 34 type=5 words=18
+  You are running low on food and water. Better stock up as soon as possible. 
+rec 1138 ptr=0x0A644 len= 48 type=5 words=25
+  You rot forever in the jail cell. You should have helped more people out when they were in trouble with the law. 
+rec 1139 ptr=0x0A674 len= 30 type=5 words=16
+  You give the merchant the flags and he gives you the map. Fair trade! 
+rec 1140 ptr=0x0A692 len= 62 type=5 words=32
+  Buc, I need to speak to you as soon as possible. I will be in the lecture hall at the back end of the Academy. - Master Thalmus 
+rec 1141 ptr=0x0A6D0 len= 54 type=5 words=28
+  Go east from Speed into the hills. There is a hidden cave there above the falls -- it's the entrance to the Mines of Misery. 
+rec 1142 ptr=0x0A706 len= 56 type=5 words=29
+  Year 64 - hid one magic mirror in a brazier in the Perfection crypt, was the rage in Kaos society and had to get rid of it 
+rec 1143 ptr=0x0A73E len= 28 type=5 words=15
+  Year 111 - Magic Mirror was moved to the Speed crypt -- better climate 
+rec 1144 ptr=0x0A75A len= 54 type=5 words=28
+  Certain exotic spells involving water summoning can be aided by the rare flame wood found only in the Cave of Fire, found around 5' 10'. 
+rec 1145 ptr=0x0A790 len= 62 type=5 words=32
+  Cave of Fire - contains valuable reagents, but location of cave is a closely guarded secret of a hermit named Dry who lives in an oasis outside of Kaos. 
+rec 1146 ptr=0x0A7CE len= 76 type=5 words=39
+  "...and lo, a beam of pure white light did appear, and within it, the pure and holy form of Nexus. And he said unto us, 'This is holy ground.'" 
+rec 1147 ptr=0x0A81A len= 62 type=5 words=32
+  At the command of Lord Void the disciple Pain did take a great prize into his keeping. He then went into the Great Desert and built great defenses there. 
+rec 1148 ptr=0x0A858 len= 64 type=5 words=33
+  In defense of his treasure Pain did summon many dead, he also made the very stone serve the master, saping the life of the living every step they take. 
+rec 1149 ptr=0x0A898 len= 50 type=5 words=26
+  The Ring of Variation is hidden in the Chamber of Variation, a golden temple just to the northwest of the City of Speed. 
+rec 1150 ptr=0x0A8CA len= 30 type=5 words=16
+  The secret of Variation is known to sober warriors of Nexus and to lunatics. 
+rec 1151 ptr=0x0A8E8 len= 40 type=5 words=21
+  The Key to Variation is held by a hermit who lives in the desert to the southeast of Cathedral. 
+rec 1152 ptr=0x0A910 len= 40 type=5 words=21
+  Order of Variation: "MUTATION leads one to ALTERATION which ends in RANDOMNESS. In this way is Variation vanquished." 
+rec 1153 ptr=0x0A938 len= 44 type=5 words=23
+  Map stolen by thieves in Thieves Haven. Lost Orb in artic snow bank. Gave key to friend who vanished. 
+rec 1154 ptr=0x0A964 len= 38 type=5 words=20
+  The snow bank is at long 26'2", lat 0'6". Search in the center for the orb. 
+rec 1155 ptr=0x0A98A len= 68 type=5 words=35
+  When the Ahab was sunk the location was recorded on a map ripped in two. One piece was taken by Red Beard to Division, the other by the merchant in Magicnia. 
+rec 1156 ptr=0x0A9CE len= 30 type=5 words=16
+  The Ahab was shipping great treasure when she sunk at long 18'5"... 
+rec 1157 ptr=0x0A9EC len= 34 type=5 words=18
+  ...lat 4'0". Take a little boat out and look for her there. 
+rec 1158 ptr=0x0AA0E len= 62 type=5 words=32
+  A very realistic painting of a Ring of Power. The picture is so detailed you can read the runes on the Ring marking it as the Ring of Mutation. 
+rec 1159 ptr=0x0AA4C len= 50 type=5 words=26
+  Eight stumps that disapear is how the Fluffi Tree is kept. Eight mounds of grass remove eight stumps when upon they are stepped. 
+rec 1160 ptr=0x0AA7E len= 52 type=5 words=27
+  This document certifies that the undersigned, King Fen Ho of Fenopolis, is entitled to the protection services of the Infailable Guild of Protectors. 
+rec 1161 ptr=0x0AAB2 len= 54 type=5 words=28
+  During the dark years the Ring of Perfection was sealed away. The keys to its retreival are among those who never walk the earth simutaneously. 
+rec 1162 ptr=0x0AAE8 len= 22 type=5 words=12
+  The chamber of Perfection can be found at 32'9" 18'4". 
+rec 1163 ptr=0x0AAFE len= 32 type=5 words=17
+  The bearer is authorized to witness the proceedings at the secret Necromancy lab in Blood. 
+rec 1164 ptr=0x0AB1E len= 42 type=5 words=22
+  The High Priest of the Moon people humbley requests that the people of Sparta cease ambushing and killing his citizens. 
+rec 1165 ptr=0x0AB48 len= 36 type=5 words=19
+  The bearer of this card is certified by MR. B as a genuine 100% nasty bandit. 
+rec 1166 ptr=0x0AB6C len= 60 type=5 words=31
+  There is great strength here in the sand of Mesa, strength enough to resist the call of greed that dominates men such as the evil Mr. Belmont. 
+rec 1167 ptr=0x0ABA8 len= 38 type=5 words=20
+  The time has come, Bob -- your purpose is fulfilled. You can die now -- Nexus. 
+rec 1168 ptr=0x0ABCE len= 66 type=5 words=34
+  To find the Ring of Holy Light, Seek a place between both dark and bright, Look closely neither left nor right, Where Sun meets Moon and Day meets Night. 
+rec 1169 ptr=0x0AC10 len= 46 type=5 words=24
+  Carl "The Tall One" - official agent for the Power Lord, military might extroidinare. City of Division, 16'3" 11'4". 
+rec 1170 ptr=0x0AC3E len= 40 type=5 words=21
+  Official Member of the Power Lord Strike Team. If lost, please return to POBOPS at 28'0" 18'2". 
+rec 1171 ptr=0x0AC66 len= 50 type=5 words=26
+  Next Strike Team job: Flush out evil Necromancer Motarin from his crypt at 13'2" 1'7". Power Lord has the key to the crypt. 
+rec 1172 ptr=0x0AC98 len= 36 type=5 words=19
+  Things that will help you ponder: skull at Shady Rest Funeral Home and goblet at 5'5" 6'0". 
+rec 1173 ptr=0x0ACBC len=  6 type=5 words=4
+  Game saved. 
+rec 1174 ptr=0x0ACC2 len=  6 type=5 words=4
+  Game restored. 
+rec 1175 ptr=0x0ACC8 len= 30 type=5 words=16
+  Sorry! I couldn't save the game because of media error. Consult your manual. 
+rec 1176 ptr=0x0ACE6 len= 30 type=5 words=16
+  Sorry! I couldn't restore the game because of media error. Consult your manual. 
+rec 1177 ptr=0x0AD04 len= 18 type=5 words=10
+  You can only save the game while outside. 
+rec 1178 ptr=0x0AD16 len= 18 type=5 words=10
+  You can only load the game while outside. 
+rec 1179 ptr=0x0AD28 len= 22 type=5 words=12
+  Game restored, but there may be minor version errors. 
+rec 1180 ptr=0x0AD3E len= 18 type=5 words=10
+  Game cannot be restored because of version differences. 
+rec 1181 ptr=0x0AD50 len=  2 type=5 words=2
+  <NA> 
+rec 1182 ptr=0x0AD52 len=  2 type=5 words=2
+  <NA> 
+rec 1183 ptr=0x0AD54 len=  6 type=5 MALFORMED (array overruns into $EB772 code; not rendered)

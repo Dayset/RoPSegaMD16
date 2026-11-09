@@ -1,0 +1,155 @@
+=== stream at 0x0A66E6, decompressed 2105 bytes, compressed 1328 bytes ===
+	From the Book of Nexus:
+
+	"Before Nexus, we lived in darkness. The sun shone as brightly as ever, but ours was a darkness of the soul. It was during this bleak time that a terrible plague swept our world leaving only the strongest of us to carry on. Even these survivors were weakened and for many years the darkness continued. At last, in a flash of holy light, Nexus appeared.  With his arrival came the Golden Age.� 	Nexus used his mighty hand and all powerful Rod of Creation to restore the world. He bestowed upon each man, woman and child the gift of one of the six Arts. Through his chosen ones, the Red Priests, he ordered us to form the six Guilds. For many years we prospered.
+   ( (( #$%&(()*+((/<=> (( (�	The demon Void brought an end to the Golden Age:
+	The new world Nexus had created was one of great beauty, the love we felt for him was powerful. Seeing this, the demon's foul heart was filled with envy, and he stole the precious Rod of Creation. Using the Rod's power, he created an age of chaos. Thus began the Cataclysm; a reign of terror lasting 66 years. 
+
+	At last, Nexus appeared, and ordered us to assemble an army and attack Void and his cult of followers. During the clash Nexus confronted Void and the two fought a titanic battle for the Rod of Creation. In the end their might split the Rod in two, and each fled with half. The halves were then divided into eleven rings, known to us as the Rings of Power, and dispersed. Many have quested to recover the Rings and restore the Rod of Creation to Nexus. All have failed."�   ( (( #$%&(()*+((/<=> (( (
+	You are Buc, a young Sorcerer and a student of Master Thalmus, headmaster of the famous Sorcery Academy, and the most powerful Sorcerer in the world. In the 500 years since the Cataclysm, the Rings of Power have become but a legend. Yet all have read the Book of Nexus, and know of the Sacred Quest to find the Rings and restore the Rod of Power to Nexus. At the behest of Thalmus, you will be the next to undertake the Sacred Quest.
+   ( (( #$%&(()*+((/<=> (( (
+
+Good luck on your journey, and may Nexus walk with you!
+
+
+~~
+
+=== stream at 0x0B3D40, decompressed 1810 bytes, compressed 1178 bytes ===
+	From the Book of Buc:
+
+	So it was that the victorious Sorcerer Buc, of the Academy of the Mind, did defeat the evil Void.�With Void's vessel on this world destroyed, the Deceiver did flee forever. Buc then passed through the Fount of Heaven bearing the holy seal of Nexus.
+   ( (( #$%&(()*+((/<=> (( (
+	The mighty Nexus looked down upon his home and saw that Buc had brought all eleven Rings of Power into his presence. The prophecy fulfilled Nexus did transport Buc and the Rings to his realm.�   ( (( #$%&(()*+((/<=> (( (
+	Once in the majestic realm of Nexus Buc willingly gave all eleven Rings of Power to the great being. In response to this gesture Nexus restored the Rings to their original form as the Rod of Creation and returned it to Buc. And then a great voice filled Buc's head:
+	"Welcome to my realm Buc. You alone of your race have shown the purity and courage to reclaim all the Rings of Power and return them to me. My brother Void has fled this world and I must follow. He and I are but two sides of the same coin, as much as he hates me he can not destroy me. I will insure that Void does not return here. Someday it may be that we will join again and become that which we once were, greater and at peace. You have proved your worthiness, and I shall leave the Rod of Creation in your trust. Use it wisely to rule your people. It upsets the balance between my brother and I and we are better off without it. Good luck to you and your world."
+	With this the being Nexus departed this dimension in pursuit of his brother.
+   ( (( #$%&(()*+((/<=> (( (
+	And so Buc too left the realm of Nexus and returned to his world. There he used the power of the Rod of Creation to build a mighty palace where the Fount of Heaven once stood. From that palace he would direct the destiny of his world.� 
+
+
+~~
+
+=== stream at 0x0B6221, decompressed 1590 bytes, compressed 1099 bytes ===
+Rings of Power
+
+A Fantasy Adventure by
+	Naughty Dog, Inc.
+
+Published by
+	Electronic Arts
+
+Produced by
+	Christopher Erhardt
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Naughty Dog Team:
+	Jason Rubin
+	Andy Gavin
+	Vijay Pande
+	Alexander Hinds
+
+Game Design:
+	Andy Gavin
+	Jason Rubin
+	Vijay Pande
+
+Programming (What you feel(
+	Andy Gavin
+		System
+		Sega
+		Plot
+	Vijay Pande
+		System
+		Combat
+
+Art (What you see(
+	Jason Rubin
+
+Music (What you hear(
+	Alexander Hinds
+
+Legal Crew:
+	Donald Gavin
+	Stephen Rubin
+
+Naughty Dog Bark:
+	Casey Williams
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Electronic Arts:
+
+Associate Producer:
+	Chris Wilson
+
+Assistant Producer:
+	Mike Meischeid
+
+Tech Directors:
+	Jesse Taylor
+	Carl Mey
+
+Text Editing and Manual:
+	Marti McKenna
+
+Plot Help:
+	Mike Meischeid
+	Mike Wallis
+	Chip Lange
+	Marti McKenna
+
+Extra Music and Sound:
+	Jon Medek
+
+QA Testing:
+	Kevin Hogan
+
+Additional Thanks:
+	Roland Kippenhan
+	James Bailey
+	Dave Albert
+	Steve Hayes
+	Kevin McGrath
+
+Australian Team:
+	Chris Wilson
+
+Thanx to those who believed in this project during two and half long years of development.
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Andy would like to thank the following for their help and support:
+	Auren Weinberg
+	Owen Rescher
+	Greg Cooper
+	Brant Haas
+	Ed Bartlett
+	Eric Wunderlich
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Jason thanks:
+	Morgan ( Caren ( Aimee
+	T. Mike ( Paul ( Greg
+	Marty ( Levin
+	FIJI Michigan
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Vijay Thanks:
+     Ann, Brian, Ron,
+   Michael, Claudio, TY,
+   Mel, Dan, Geoff, Mike
+
+   ( (( #$%&(()*+((/<=> (( (
+
+Special Thanks:
+	Zeke
+	Jesse
+	Juggling
+	DC 101 FM Washington
+
+
+~~
+

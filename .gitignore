@@ -21,3 +21,9 @@ build/
 tools/ghidra/
 # Generated disassembly (20 MB, reproducible — see disasm/README.md)
 disasm/rop.s
+
+# Fan-site research kept local-only (ripped audio, redundant large files)
+docs/research/rings-of-power-ru/*.mp3
+docs/research/rings-of-power-ru/*.gif
+docs/research/rings-of-power-ru/*.rar
+docs/research/rings-of-power-ru/map-thumb.jpg

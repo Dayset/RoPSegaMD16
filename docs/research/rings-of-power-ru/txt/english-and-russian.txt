@@ -1,0 +1,816 @@
+﻿An unknown building.  
+A Sorcerer's Guild.  You feel eyes watching you.  
+A Guild of the Knights of the Holy Order of Separation.  Clanks and bangs emerge from within.  
+An Archer's Guild.  
+A creepy Necromancer's Guild.  
+An Enchanter's Guild.  
+A Conjurer's Guild.  
+A cute little inn.  
+A small general store.  
+A tavern full of people.  
+An impressive castle with a menacing portculis.  
+The local Temple of Nexus.  
+Someone's home.  
+A vehicle master.  
+A dark cave.  
+Behind the waterfall is a hidden cave! 
+A tall lighthouse guards the harbor entrance.  
+The endless desert is broken here by a small oasis.  
+A center of civic government.  
+A secret temple hidden in the jungle.  
+The fabled Sorcerer's Academy.  
+A ratty little shack on a hill.  
+This huge building is the largest and most powerful Knight's Guild in the world,  the Guild of Pieces.  
+You stand in front of the largest and most prestegious Archers' Guild in the world.  
+This is the Necromantic Academy - a chill creeps up your spine.  
+The center entrance to this huge building leads to the Conjurors' Guild hall and the Library of Perfection.  
+This impressive structure is the Tower of Kaos.  
+This Temple is unqiue; it supports both Red Priests and Black Priests.  
+This is the world famous Drunken Dragon.  
+The Lobotomy Club sits atop Cogito Falls.  The sign reads: "Come on in and lose your mind." 
+The dreaded Mines of Misery.  
+A nice little restaraunt.  
+The Great Cathedral of Nexus is the largest Temple in the world.  It was built   on the spot where Nexus first appeared.  
+This Citadel is the home of the Holy Order of Paladins of Nexus.  
+You stand before the seat of Doggon power.  For more than 500 years the Doggon Kings have ruled over Doggania,  the city they founded.  
+This lovely castle is the citadel of the Richi Dynasty.  The Richis have ruled there with a strong but benevolent hand since just after the Cataclysm.  
+The Richi Dynasty have constructed this large observatory building for the study of science.  
+You stand amazed in front of this monstrous edifice.  
+It is from this building that the Protectors come.    
+The huge complex of buildings before you is the University of Oxbridge,  renowned for its academics,  its library,  and its attitude.  
+This is the Great Ampitheatre,  where the finest theatrical performances in the world are held.  
+This is the home of the wealthy and eccentric Mr.  Belmont.  Little is known about the reclusive Mr.  Belmont,  except that he is VERY rich.  
+This is the Thieves' Guild,  led by the mysterious Keef the Thief.  It is said he came from another world.  
+Nowhere else in the world have you felt the presense of such an evil.    This place reeks of Void and his servants.  
+A huge golden temple.  
+A huge grey temple.  
+Nasty things slither through the swamp.  Large fires burn out of control on the greasy water.  A putrid smell emerges from the hut before you.  
+This is the huge Citadel of Sparta,  home of the twin warrior kings.  
+This crystal tower is the home of the great Glass Works.  
+The desert fortress of Mesa is built directly into the sand and rock formation that is its namesake.  
+Underneath the desert is the Great Tomb.  This area reeks of Necromancy.  
+Неизвестное строение.
+Гильдия Волшебников. Вы чувствуете, как за вами наблюдают.
+Гильдия Рыцарей Святого Ордена Разделения. Звук стали и громкие удары раздаются изнутри.
+Гильдия Лучниц.
+Вызывающая страх - Гильдия Некромантов.
+Гильдия Чародеев.
+Гильдия Колдунов.
+Милая маленькая гостиница.
+Небольшой магазин.
+Таверна, полная народа.
+Впечатляющий замок с крепкой решеткой. 
+Местный храм Нексуса.
+Жилой дом.
+Продавец транспортных средств.
+Тёмная пещера.
+За водопадом, оказывается, скрыта пещера!
+Высокий маяк защищает вход в гавань.
+Бесконечность пустыни  нарушает этот маленький оазис.
+Центр городского правительства.
+Секретный храм, спрятан в джунглях.
+Легендарная Академия Волшебства.
+Жалкая маленькая лачуга на горе.
+Это огромное здание принадлежит самой могущественной гильдии Рыцарей в мире - гильдии Обломков.
+Ты стоишь перед самой большой и престижной гильдией в этом мире -  гильдией Лучниц. 
+Это Академия Некромантов - неприятный холодок пробежал по твоей спине.
+Центральный вход гильдии Колдуний ведёт в Библиотеку Совершенства.
+Эта впечатляющая строение и есть Башня Каос.
+Это уникальный храм, он поддерживает, как и Красных Жрецов, так и Чёрных Жрецов.
+А это известный на весь мир "Пьяный Дракон".
+Клуб Лоботомии расположен сверху водопада Когито. Надпись на знаке гласит: "Зайди и потеряй память."
+Ужасающие Рудники Страдания.
+Славный маленький трактир.
+Великий Собор Нексуса - самый большой храм. Он был построен на месте, где Нексус вошел в этот мир.
+Это цитадель Святой Орден Паладинов Нексуса.
+Ты стоишь перед колыбелью могучего Доггона. Более 500 лет короли Доггона управляют Доггонией.
+Это прекрасная цитадель принадлежит династии Ричи. Ричи правят строго, но справедливо с тех самых пор, как случилась Катастрофа.
+Лорды династии Ричи построили эту обсерваторию, чтобы повысить научный уровень своей страны.
+Поражённый, ты стоишь напротив величественного строения.
+Именно из этого здания прибыли Защитники.
+Университет Оксбридж - громадный комплекс зданий, известен своими учёными, библиотекой и своей позицией.
+Это Великий Амфитеатр, здесь проводят самые лучшие театральные постановки. 
+Это дом состоятельного и эксцентрического мистера Бельмонта. Мало что известно о Бельмонте, поскольку он ведет затворническую жизнь, Говорят, что он ОЧЕНЬ богат. 
+Это гильдия Воров, возглавляемая таинственным королём воров Киифом. Говорят, он прибыл из другого мира.
+Нигде в мире ты не встречал такой ауры зла. Ты ощущаешь Войда и его приспешников.
+Огромный золотой храм.
+Огромный серый храм.
+Что-то скользкое движется в болте.  Горящие торфяники порождают смог.  Запах гнили исходит из лачуги перед тобой.  
+Это великая цитадель Спарты, родины двух королей-воинов. 
+В этой кристальной башне и находится Мастерская Стеклодувов.  
+Форт Меса выстроен на гранитной площадке в песке.  
+Под песками пустыни находится Великая Гробница.  Вы чувствуете Некромантию.
+You stand before Magic B Us,  the largest center for magic development and distribution in the world.  
+A sign hangs above the door: "Sunnyville Loony Bin" 
+A brightly lit magic neon sign says: "Lucky Luke's Casino!" 
+This lone tower is the only thing for miles.  The bizarre look of it immediately makes you suspect Enchantment.  
+This huge fortress is built on the ruins of a destroyed city.  
+You stand before the mystic Fount of Heaven,  the seat of Nexus' power.  Inside is the divine Nexus himself.  
+The sign says: "Shady Rest Funeral Home." 
+Welcome to the city of the Mind,  home of the world famous Academy of Sorcery.    
+Keep out! Private drive! 
+Welcome to Division,  home of the divided Knights of the Holy Order of Separation.  
+Welcome to the City of Speed.  
+Welcome to the City of Blood - the city people are dying to come to! 
+Welcome to Kaos,  population 50 (subject to change without notice).  
+Welcome to the City of Perfection.  No Littering.  No Loud Noise.  No Shirt,  No Shoes,  No Cape,  No Conjuring.  No Fun.  No Kidding! 
+Welcome to Cathedral.  
+City of Doggan,  capitol of Doggania,  citadel of the Doggon Kings.  
+Welcome to the City of Commerce,  our fingers extend into every purse in the world.  
+Welcome to Sunrise / Sunset - Orphanage / Retirement Home 
+Welcome to Richi,  capitol of the Richi Empire.  All hail Queen Richileu IXX.  
+Welcome to Oxbridge - center of learning for all the world.  
+Keep out,  Belmont Residence: Private!   
+Entering the Celestial City area.  
+New Sparta - no one is welcome 
+Welcome to Shard - home of the Great Glass Works.    
+Mesa 
+The Necropolis.  No living allowed! 
+Welcome to Magicnia.  
+Welcome to Thieves Haven.  Decent people should just keep on walking.  
+Passage through here will be found among the ugly who create great beauty,  where admidst cowards,  is one whose courage is legendary.  
+Shady Rest Funeral Home.  
+Road closed! 
+Cathedral - 127 klicks east 
+Speed - 72 klicks south ^Cathedral - 55 north 
+Welcome to Cathedral ^Speed - 72 klicks north ^Kaos - 99 south 
+Cathedral - 64 klicks west ^Perfection - 243 east 
+Kaos - 235 klicks east^Perfection - 12 west^Fenopolis - 80 south 
+Welcome to the great Fen ^Perfection - 90 west 
+Private graveyard,  residents and plot owners only! 
+Fenopolis - 105 north 
+Fenopolis - 172 west^Division - 100 east 
+Blood - 20 south^Division - 80 north 
+Division - 4 east ^Blood - 100 west ^Cathedral - 662 west 
+Save often and you will often be saved.    
+Search and you will find it,  but not here.  
+All roads lead to Nexus.  
+Greetings.  
+Hello.  
+Welcome.  
+Welcome.  
+Is there something I can do for you?  
+Goodbye.  
+Вы стоите перед Магическим Центром,  самым большим в мире центром составления и выдачи магических заклинаний.  
+Вывеска над дверью: "Психиатрическая лечебница Санвилл".
+Ярко горящая волшебным светом вывеска казино гласит:  "Счастливчик Люк!"
+Эта одинокая башня - единственное строение на многие мили вокруг. Ее причудливый вид сразу же заставляет вас заподозрить Чародеев.  
+Эта огромная крепость построена на руинах разрушенного города.  
+Вы стоите перед таинственным Небесным Источником, средоточием силы Нексуса. Внутри святыни находится сам божественный Нексус.  
+Вывеска гласит: "Тенистое Кладбище".  
+Добро пожаловать в город Мысли,  родину известной на весь мир Академии Волшебства.    
+Внимание! Частные владения!
+Добро пожаловать в город Разделения,  родину рыцарей Святого Ордена Разделения.  
+Добро пожаловать в город Скорости.  
+Добро пожаловать в город Крови - место, в которое люди умирают от желания попасть!
+Добро пожаловать в Каос.  Население: 50 человек  (обновляется магическим образом без постороннего вмешательства).  
+Добро пожаловать в город Совершенства.  Не мусорить. Не шуметь. Не колдовать. Одеваться, как подобает. Никаких развлечений. Серьезно! 
+Добро пожаловать в Великий Собор.  
+Город Доггон, столица Доггонии, цитадель королей Доггона.  
+Добро пожаловать в город Торговли, наши товары продаются по всему миру.  
+Добро пожаловать в город Восхода и Заката - дом для беспризорников и престарелых.
+Добро пожаловать в город Ричи,  столицу империи Ричи.  Да здравствует Королева Ричилью IXX!
+Добро пожаловать в университет Оксбридж - крупнейшие центр обучения во всем мире.
+Частная собственность, резиденция Бельмонта. Вход воспрещен!   
+Вы входите в район Астрономического Города.  
+Спрата - чужаков здесь не любят!
+Добро пожаловать в Осколок - родину самых лучших стекольщиков.    
+Меса 
+Некрополис.  Живым вход воспрещен! 
+Добро пожаловать в Магиканию. 
+Добро пожаловать в Воровскую гавань. Порядочным людям идти мимо.  
+Проход будет найден среди чудовищ, породивших великую красоту, среди трусов,  чья храбрость поистине легендарна.  
+Тенистое Кладбище.
+Дорога закрыта! 
+Великий Собор - 127 миль на восток 
+Город Скорости - 72 мили на юг ^Великий Собор - 55 миль на север 
+Добро пожаловать в Великий Собор ^ город Скорости - 72 мили на север ^Каос - 99 миль на юг 
+Великий Собор - 64 мили на запад ^город Совершенства - 243 мили на восток 
+Каос - 235 миль на восток ^ город Совершенства - 12 миль на запад ^Фенополис - 80 миль на юг 
+Добро пожаловать на Великое Болото ^город Совершенства - 90 миль на запад 
+Частное кладбище, только для постояльцев!
+Фенополис - 105 миль на север 
+Фенополис - 172 мили на запад ^город Разделения - 100 миль на восток 
+Город Крови - 20 миль на юг ^город Разделения - 80 миль на север 
+Город Разделения - 4 мили на восток ^Город Крови - 100 миль на запад ^ Великий Собор - 662 мили на запад 
+Береженого - Нексус бережет.
+Ищи, и ты найдешь, но не здесь.  
+Все пути ведут к Нексусу.  
+Приветствую.  
+Здравствуй.  
+Добро пожаловать.  
+Добро пожаловать.  
+Могу я для тебя что-нибудь сделать?  
+До свидания.  
+<NA> 
+You must TALK to someone before attacking them.  
+I'm sorry,  I don't have anything to sell.  
+I'm sorry,  you don't have anything I want to buy.  
+Sorry,  that is the wrong answer.  I'll just take 25 gold from you for wasting my time.  Good bye.  
+Right,  good job.  
+Okay,  I pick this one.  
+You can not attack me,  I am magically protected.  
+Bye! 
+See ya! 
+<NA> 
+<NA> 
+Pssst! How about 10 gold?  
+Would you do me a favor for 10 gold?  
+Thanks.  
+Take a look at this.  
+You have nothing that interests me.  
+Please answer the question.  
+I have nothing more to say on that topic.  
+Yes,  of course.  
+No,  not at all.  
+I haven't asked you a question.  
+Life is pain and anyone telling you differently is selling something.  
+Things were better before the Cataclysm.  Void - may he be cursed forever - brought evil into the world.  
+Nexus has forsaken us.  Evil dwells again in the world as it never did before the coming of Void.  
+I'm having a really bad day.  
+Its always nice to meet a Sorcerer - you folks really have good heads on your shoulders.    
+Sorcerers have meddled enough in my affairs.    I wish Nexus had never given the Power to any of you.  
+I can't talk for long,  I'm very busy.  
+<NA> 
+We've had a nice stretch of sunny days of late.  
+Halt! Who goes there?  
+I really can't stand around here gabbing with you.  
+We guards are an honorable lot.  To become a guard you have to have special training and take an oath of loyalty.  
+Let us do our job.  
+There is nothing I like better than pacing the street late at night.  
+I am a guard.  
+Violence has been on the rise lately.  Guards are in high demand.  
+How dare you insult my honor by trying to bribe me.  
+I'm the town jailer.  Don't try to help the prisoner escape.  
+No one has ever escaped my jail - I'm always on the lookout for those blasted Flipstones! 
+Hey there traveler,  welcome to the best tavern in town.  Let me know if you want a drink.  
+Stop me if you've heard this one: A Red Priest and a Black Priest walk into a tavern.....  
+I am a tavern keeper - I serve,  I listen to the woes of my patrons,  and   I tell bad jokes to cheer them up! 
+I am doing well.  These are trying times we live in.  People need a place where they can relax and meditate while drinking a cool drink.  
+Welcome to my store.  What can I do for you?  
+I sell food,  water and trade goods.  
+Trade makes the world go round.  One can always earn a living trading goods between cities.  
+The Fount of Heaven is the spiritual center of the world.  The City of Commerce is the financial center.  
+Welcome,  young Sorcerer,  you look tired.  We rent the softest beds on this side of the continent.  
+I run an inn.  You can stay the night here,  or get a good meal.  
+<NA> 
+Вы обязаны ПОГОВОРИТЬ с кем-нибудь прежде, чем атаковать.  
+Извините, у меня нет ничего на продажу.  
+Извините, у тебя нет ничего такого, что я бы хотел купить.  
+Ваш ответ ошибочен...  С Вас 25 золотых за беспокойство.  До свидания.  
+Верно,  вы молодец!  
+Ладно,  я возьму это.  
+Ты не сможешь атаковать меня!  Я под магической защитой.  
+Увидимся! 
+До скорого! 
+<NA> 
+<NA> 
+Шшшш! Как насчет 10 золотых?  
+Не откажите в любезности за 10 золотых?  
+Спасибо.  
+Посмотрите на это.  
+У вас нет ничего, что меня заинтересовало бы.  
+Пожалуйста, ответьте на вопрос.  
+Мне больше нечего сказать по этому вопросу.  
+Да,  конечно.  
+Нет-нет.  
+Я не задавал тебе вопросов.  
+Жизнь - это страдание. А кто говорит иначе - лицемерный лжец!  
+До Катастрофы все было гораздо лучше.  Войд - да будет он проклят навечно – принес Зло в этот мир.  
+Нексус оставил нас.  С приходом Войда, Зло проникает в этот мир.  
+У меня был ОЧЕНЬ тяжелый день.  
+Всегда замечательно встретить Волшебника - видно, что у Ваших родителей была голова на плечах.    
+Волшебники достаточно совали нос в мои дела.    Пусть Нексус никогда не дарует Власть никому из вас!  
+Я не могу говорить долго - у меня много дел.  
+<NA> 
+Недавно мы провели приятные солнечные дни.  
+Стой! Кто идет?  
+Мне, в самом деле, надоело болтать с тобой.  
+Быть стражниками - честь для нас.  Чтобы стать стражником, приходится много тренироваться и принять присягу.  
+Позволь сделать нашу работу.  
+Нет ничего, что бы я любил больше, чем бродить по улице ночью.  
+Я стражник.  
+Неспокойно стало тут в последнее время.  Стражники - на вес золота.  
+Как ты посмел оскорбить меня, попытавшись дать взятку?  
+Я тюремный надзиратель.  Даже и не пытайтесь помочь заключенным бежать.  
+Еще никто не пытался сбежать из моей тюрьмы. Все потому, что я тщательно досматриваю каждого на предмет камней Телепорта! 
+Привет тебе, путник! Добро пожаловать в самую лучшую в мире таверну. Скажи, если захотите выпить.  
+Я слышал, что Красный и Черный Жрецы заходили в таверну.....  
+Я хозяин этого заведения. Могу обслужить, выслушать рассказ о твоих злоключениях и подбодрить хорошей шуткой! 
+Я в порядке.  В тяжелые времена мы живем.  Людям нужно место, где они могли бы расслабиться, посидеть за кружечкой доброго эля в дивной компании.  
+Добро пожаловать в мой магазин.  Что я могу для вас сделать?  
+Я продаю провиант: еду и воду, а также у меня есть другие товары на продажу.  
+Торговцы путешествуют по всему свету. Есть такие, кто делает состояние на выгодной продаже товаров.  
+Небесный Источник - духовный центр мира.  Город Торговли - финансовый центр.  
+Здравствуй, юный Волшебник. Ты выглядишь усталым. Приляг, отдохни - у нас самые мягкие кровати в мире!  
+Я управляющий гостиницей.  Вы можете отдохнуть здесь или прикажете подать сытный обед?  
+I like to believe that my inn offers a little island of security for the weary traveler.  
+We get a lively night crowd at this inn.  Not so rowdy as the local bar,  but   fun just the same.  
+Hello,  Sir! Welcome to the Vehicle Depot.  
+I manage the depot here.  I deal in boats,  ships and beasts.  
+Everyone needs good transportation.  
+There are several ways to get from place to place.  You can go on foot,  by beast,  or you can get a sea-going vessel.  
+There are two types of beasts: the large land beasts called Dinos,  and the winged beasts called Dragons.    
+Dinos are good for open terrain,  but can't handle forests or mountains.  Dragons can fly over any terrain,  but can only land in a clearing.  
+Finally,  there are two types of water craft: small boats for rivers and shallows,  and ships for deep water.  
+Hello.  I'm the lighthouse keeper.  
+I maintain the lighthouse and make sure that the light stays lit.  
+It's important that the lighthouse light never goes out,  so passing ships won't wreck upon the rocks.  
+This lighthouse was built after the terrible disaster of 422,  when a storm drove three City of Commerce trade ships onto the rocks,  killing scores of men.  
+Greetings Sorcerer,  I am the Mayor of this town.  
+I handle all sorts of civic duties; saftey,  trade,  and taxation,  among others.  
+Most towns,  including ours,  have adopted a standard form of civic government.  They elect a mayor to monitor town institutions.  
+Running this town is pretty easy - Sorcerers are an orderly and peaceful lot.    
+Knights pretty much run their own town.  They follow the rules of Separation.  
+Thanks,  the town appreciates your support.  
+Hello Buc.  How'd you do on the examination?  
+Have you heard about the Master's discovery?  
+Master Thalmus was on sabbatical for the last several months.  
+He was working with a team of researchers on the legend of the lost Rings of Power.  
+He is going to call a meeting soon to announce their findings.  
+I study Sorcery at the Academy of the Mind,  Buc.  Just like you.  
+I will become a powerful Mindist.  
+It is exciting to be at the greatest center of Sorcery in the world.  Some of history's most powerful Sorcerers have been graduates of the Academy.  
+Balfour Big-Brain who lived in the second century was an Academy grad,  and he invented the MIRAGE skill! 
+What's up,  friend?  Buy us a round?  
+Get outta here Sorcerer!   
+<Hic> 
+Go away! I didn't build a house in the middle of nowhere to be bothered by the likes of you.  
+I have not spoken in years.  Now I remember why.  
+Are you still here?  
+Do you know what I do?  I sit here in the wilderness and contemplate the things I hate most in life.  
+There will always be some of us who just don't fit into normal society.  Don't mind me,  I like it out here.  
+Good bye,  traveler.  Please don't come back.  
+You're one of those Sorcerers aren't you?  I HATE Sorcerers! Why are you bothering me?  
+I used to be a mighty Sorcerer,  but Thalmus gave me the boot - now I do nothing! 
+Stop meddling with my life! 
+Out! I said get out! Are you deaf or something?  I don't want to talk to you! 
+Time to die,  Sorcerer! 
+Why hello Buc,  what can I do for you?  
+You show great promise,  Buc.  Nexus has graced you with great discipline.  Mind your studies and you'll be a great Sorcerer some day.  
+Goodbye Buc.  We'll talk again soon.  
+I spend my days teaching students like yourself the Art and Discipline of Sorcery so that one day they may use their talents to better the world.  
+Buc - you got my note.  I hope the other students come as promptly.    
+Let's go to the practice room.  I'd like to demonstrate the first Sorcerer's spell: STUN.  
+Come and see me after you have talked to Ak Thul at the Temple.  
+Heed the words of the priest,  Buc.  He is wiser than you know.  
+You'll find a key on the floor of my room,  Buc.  Use it to open the chest nearby.  Inside is a map of Ushka Bau.  
+Я думаю, что моя гостиница станет безопасным островком для усталого путешественника.
+Вечером в этой гостинице собирается шумная компания. Не столь шумная как в местном баре, но такая же весёлая.
+Здравствуйте, Сэр! Добро пожаловать в Магазин средств передвижения.
+Я здесь заведую магазином. Могу продать разные средства передвижения: лодку, корабль или интересует ездовое животное?
+Все нуждаются в хорошем транспорте.
+Есть несколько способов добраться из одного места в другое. Вы можете идти пешком, взять животное, или нанять морское судно.
+Есть два типа животных: большие сухопутные животные, названные Динозаврами, и крылатые животные, зовущиеся Драконы.
+Динозавры хороши на открытой местности, но не могут справиться с лесами и горами. Драконы же могут летать над любой местностью, но приземлиться можно только на открытом плато.
+Наконец, есть два типа плавсредств: маленькие лодки для путешествия по рекам и мелководью, и корабли для плавания по большим глубинам.
+Здравствуйте. Я смотритель маяка.
+Я заведую маяком и слежу за тем, чтобы он исправно работал.
+Очень важно, чтобы свет маяка никогда не гас, иначе проходящие корабли разобьются о скалы.
+Этот маяк был построен после ужасной катастрофы 422 года, когда буря разбила об острые скалы три корабля города Торговли, в результате чего погибли десятки людей.
+Приветствую, Волшебник, я Мэр этого города.
+Я регулирую все виды гражданских обязанностей: безопасность, торговля, налогообложение и другие.
+Большинство городов, в том числе и наш, приняли стандартную форму гражданского правительства. Мэр города избирается для контроля над ведомствами.
+Управлять этим городом довольно легко: Волшебники - дисциплинированы и миролюбивы.
+Рыцари обожают свой город. А ещё они следуют правилу Разделения.
+Спасибо, город ценит вашу поддержку.
+Здравствуй, Бак. Ты идешь на экзамен?
+Вы слышали, что обнаружил Мастера?
+Мастер Талмус вел научную работу в течение прошлых нескольких месяцев.
+Он работал с командой исследователей над легендой о потерянных Кольцах Силы.
+В скором времени, он планирует созвать собрание и объявить о добытых сведениях.
+Бак, я изучаю искусство Волшебства в Академия Волшебства. Точно так же как и ты.
+Я стану сильнейшим Волшебником!
+Удивительно быть в великом центре Волшебства. Многие из сильнейших Волшебников были выпускниками Академии.
+Балфур Биг-Брейн, живший во втором веке, был выпускником Академии, он первым овладел искусством МИРАЖА!
+Что случилось, друг? Выпить не найдётся?
+Убирайся отсюда, Волшебник!
+<Ик> 
+Убирайся! Я не для того поселился на отшибе, чтобы меня беспокоили такие как ты.  
+Я хранил молчание годы. Теперь я вспомнил, почему. 
+Ты все еще здесь?
+Вы знаете что я делаю? Я сижу здесь в дикой местности и созерцаю вещи, которые ненавижу больше всего в жизни.
+Всегда найдётся тот, кто не вписывается в нормальное общество. Не пытайтесь меня переубедить, мне нравится так думать.
+Прощай, путешественник. Пожалуйста, не возвращайся.
+Вы один из тех, Волшебников не так ли? Я НЕНАВИЖУ Волшебников! Почему ты беспокоишь меня?
+Я когда-то был могущественным Волшебником, но Талмус изгнал меня - теперь я никто!
+Прекрати вмешиваться  мою жизнь!
+ВОН! Я сказал УЙДИТЕ! Вы что оглохли? Я не хочу больше разговаривать с вами!
+Время умирать, Волшебник!
+Здравствуйте, Бак, что я могу тебе предложить?
+У тебя неплохие задатки, Бак.  Нексус благословил тебя на изучение великого Таинства.  Учись прилежно, и в один прекрасный день ты станешь Великим Волшебником.  
+До свидания, Бак. Надеюсь, мы скоро увидимся.
+Я провожу своё время обучая студентов Таинству и Дисциплине Волшебства, чтобы однажды они могли использовать свои знания на благо мира.
+Бак, ты получил мою записку. Я надеюсь, что другие студенты, скоро прибудут.
+Давайте пройдем в комнату для практических занятий.  Я хотел бы обучить вас первому заклинанию Волшебников: ОГЛУШЕНИЕ.  
+Зайди ко мне после разговора с Ак Тулом в Храме.
+Прислушайся к словам священника, Бак. Он мудрее, чем ты думаешь.  
+Возьми ключ в моей комнате, Бак. Открой с его помощью сундук поблизости. Внутри ты найдешь карту Ушка Бау - нашего мира.
+Use the map to find the hermit who lives in the hills to the south.  Last night he was seen stealing the Eye symbol from the Academy door.    
+You can try talking to him,  but I'm afraid he's not very reasonable.    If he won't give the Eye to you,  practice your STUN spell on him.  
+When you have the Eye,  bring it to me.  I'll have the groundskeeper nail it to the door again.  
+You've done well,  Buc.  This is the second spell of Sorcery,  CLUE.  Check with the Guildmasters in the guildhalls to obtain your other spells.  
+Come with me to the practice room.  I have a very important announcement to make.  
+Buc,  you are the most promising of my students.  If anything happens to me,  seek my friend Hack in the City of Division.  
+Ah,  Imino and Roakus are early,  as usual,  and Father Yoppa is here as well.  But where are Darius and Fezzik?  Will they keep us waiting again?  
+Ahem - thank you all for coming.  The things I must tell you are of the utmost urgency.  
+As you may know,  I have recently been researching the origins of the Six Arts.    You are familiar with the stories of the Rings of Power,  and of the Rod of Creation.    
+Until now these stories have been dismissed as legends,  but the Six Guildmasters have uncovered evidence that the Rings of Power do indeed exist.    
+There are eleven Rings; they are the foundation of Nexus' power,  and   the power of the Six Arts.        
+This has frightening implications,  for when the Rings are together,  they form   the Rod of Creation,  the most powerful object known to us.    
+Void and his minions seek the Rings even as we speak.  You must each form parties and find them before Void can reassemble the Rod.  The locations are.....  
+DARIUS YOU ATTACK ME! I feared that Void's influence reached this far.....  Students DISPERSE! 
+Your master's dying word forces itself into the mind of all present,  scattering them across the globe.  
+You find yourself outside a strange city.  "Seek my friend Hack....." was Thalmus' last request.  Might you find him here?  
+Die,  Thalmus! 
+I see we are all here,  even Darius and Fezzik.  Thank you for joining us,  gentlemen.  
+Today's topic is STUN.  It takes very little energy to cast,  and does little damage.  As you gain experience,  it will become your spell of last resort.  
+STUN has a range of about ten feet,  and gives your enemy a painful jolt.  I will demonstrate.....  
+Students,  you are ready to use the STUN spell.  I have a task for each of you.    
+Buc,  Ak Thul at the Temple of Nexus has asked to see you.  When you're finished there,  come back and I'll give you your assignment.  
+Lesson over.  
+Greetings young Sorcerer.  The passing of your master has touched me deeply.  
+Hello Buc.  Is there something I can do to help you?  
+Thank you for freeing my people from the mines.  I assume that Quill told you to look up our friends Xylotyl and Flemm.  
+I must find out where the Bandits have taken my people.  Can you help?  Ask around   at the Guilds - they may have some information for you.  
+If you can bring me a map to the Mines of Misery,  you will be rewarded.  
+Talk to Carp,  the town gossip.  He can usually be found on the docks in front of the cathedral.  
+Thank you for your help - this map will help us greatly.    
+I know you need an Archer for your party,  but my best student,  Feather,  is a prisoner in the Mines - I need help in rescuing her and the others who are there.  
+Go to the Mines of Misery and do away with the bandits,  then give this Symbol to Quill,  my lieutenant.  She'll allow Feather to join you.  
+Take that symbol to the Archer Quill in the Mines of Misery.  Acording to the map they are in the hills above the falls to the east of here.  
+Sorry,  I can't let you into the upper chambers.  
+You are a handsome young Sorcerer.  If you bring me a bouquet of the flowers they sell in the city of Perfection,  I might let you in.  
+You're an honorable fellow,  so I'll tell you something:   there's a sextant hidden in a cave behind the falls just to the east.  
+Go on in - Guildmistress Arrow is upstairs.    
+Pssst! Hey,  get me a Flip Stone so I can get out of here and I'll tell you where the Mines of Misery are.  You'd like to know that,  wouldn't you?  
+You kept your end of the bargain,  I'll keep mine: the Mines of Misery are just to the east - here,  I'll make a map for you.  
+By the way,  when you get there check out the Archer Feather,  she is good with the bow,  and one hot cookie to boot.  
+Thanks buddy! Lenny never forgets a favor.  
+<Lenny Flips Out> 
+Hello Sorcerer.  I have heard of your quest and I'm anxious to join you.  
+I am Quill,  and you must be the Sorcerer that Thalmus told mistress Arrow about.  
+However,  you might also be an imposter.    To prove that you were sent by Arrow,  show me the Archers' symbol.  
+I'm pleased to present Feather,  Arrow's best student.  She'll be an asset to you.    
+It would be useful to have one member of every Discipline in your party.  Their individual skills will come in handy.  Talk to Flemm and Xylotyl.  
+You should seek the Necromancer Flemm in the city of Blood and the Enchanter Xylotyl in the city of Kaos - they will be expecting you.  
+Feather has only learned the basic spells so you should take her to an Archer's guild for some new ones.  
+Let's get out of here.  The door above has probably been sealed by now - we'll go out the back way.  
+Care to hear some of the lastest gossip?  
+Используй карту, чтобы найти отшельника, который живет в горах на юге. Прошлой ночью его заметили крадущим Всевидящее Око с дверей Академии. 
+Ты можешь попробовать поговорить с ним, но я боюсь, что он не станет тебя слушать. Если он не захочет отдавать тебе Всевидящее Око, попрактикуйся на нем в заклинании ОГЛУШЕНИЯ. 
+Когда получишь Всевидящее Око, принеси его мне. Я попрошу садовника прикрепить его обратно к двери.
+Ты хорошо поработал, Бак. Вот второе заклинание Волшебства, АНТИБЛОК. Новые заклинания ты можешь получить у Глав Гильдий.  
+Идем в комнату для практических занятий. У меня есть очень важное объявление.
+Бак, ты лучший мой ученик. Если со мной что-нибудь случится, найди Хака в городе Разделения.
+О, Имино и Роакус, вы как всегда рано. Отец Йоппа тоже здесь. А где Дариус и Феззик? Они снова заставят нас ждать?
+Гмм - спасибо всем за то, что пришли. То, что я собираюсь вам сообщить, не терпит отлагательств.
+Как вам известно, я недавно занимался вопросом Шести Таинств. Вы, разумеется, знакомы с историей Колец Силы и Жезла Мироздания.
+До сих пор эта история считалась легендой, но шестеро Глав Гильдий нашли доказательство того, что Кольца Силы существуют на самом деле.
+Всего существует одиннадцать Колец, которые являются основой силы Нексуса и власти Шести Таинств.
+Я очень обеспокоен, поскольку, если собрать Кольца вместе, они образуют Жезл Мироздания, самый мощный предмет, известный нам. 
+Войд и его слуги ищут Кольца уже сейчас, пока мы говорим. Вы должны сформировать поисковые группы и найти Кольца до того, как Войд воссоздаст Жезл. Местоположение....
+ДАРИУС, ТЫ НАПАЛ НА МЕНЯ!! Я боялся, что влияние Войда зайдет так далеко... Студенты РАССЕЯТЬСЯ!
+Предсмертные слова Учителя проникают в сознание каждого из присутствующих, рассеивая вас по земному шару....
+Ты приходишь в себя рядом со странным городом. "Найди моего друга Хака..." было последней просьбой Талмуса. Может ли он быть здесь? 
+Умри, Талмус!
+Я вижу, что все в сборе, даже Дариус и Феззик. Спасибо за то, что присоединились к нам, господа.
+Поговорим о заклинании ОГЛУШЕНИЕ. Оно потребляет очень мало магической энергии и наносит небольшое повреждение. Когда вы станете опытнее, оно будет вашей последней надеждой в бою.
+Дальность заклинания около трех метров, противник получает болезненный толчок. Смотрите....
+Студенты, вы готовы к использованию заклинания ОГЛУШЕНИЯ. У меня есть задание для каждого из вас.
+Бак, Ак Тул в Храме Нексуса хотел тебя видеть. Возвращайся после разговора с ним, и я выдам твое задание.
+Урок окончен.
+Приветствую, молодой Волшебник. Гибель твоего учителя глубоко опечалила меня.
+Здравствуй, Бак. Я могу тебе чем-нибудь помочь?
+Спасибо за освобождение моих людей из рудников. Я полагаю, Квилл уже сказала тебе обратиться к нашим друзьям Ксилотилу и Флемму.
+Я должна найти место, куда бандиты увели моих людей. Ты можешь помочь? Поспрашивай в местных Гильдиях - у них может быть полезная информация.
+Если ты принесешь мне карту Рудников Страдания, я тебя вознагражу.
+Поговори с Карпом, городским сплетником. Обычно он ошивается в доках перед собором.
+Спасибо за помощь - эта карта нам очень поможет.
+Я знаю, что тебе нужна в группу лучница, но мою лучшую студентку, Фезар, держат в плену в Рудниках - мне нужна помощь в спасении ее и других пленных оттуда.
+Отправляйся в Рудники Страдания и разберись с бандитами, затем покажи этот Символ лейтенанту Квилл. Она позволит Фезар присоединиться к тебе.
+Отнеси этот Символ Лучнице Квилл в Шахты Страдания. Следуя карте, они в холмах над водопадами к востоку отсюда.
+Извините, я не могу впустить вас в верхние палаты.
+Привлекательный молодой Волшебник, если ты принесешь мне букетик цветов из города Совершенства, я могу тебя пропустить.
+Ты благородный парень, поэтому я скажу тебе кое-что: секстант спрятан в пещере за водопадом к востоку.
+Заходите - Глава Гильдии Эрроу наверху.
+Тссссс! Эй, достань мне камень Телепорта, чтобы я смог выбраться отсюда, и я расскажу тебе, где находятся Рудники Страдания. Ты ведь хочешь это знать, не так ли?
+Ты исполнил свою часть сделки, я выполню свою: Рудники Страдания к востоку отсюда - держи, я сделал для тебя карту.
+Кстати, когда ты там будешь, найди лучницу Фезар, она неплохо управляется с луком и горячая штучка в придачу...
+Спасибо, приятель! Ленни никогда не забывает услуг.
+<Ленни исчезает в Телепорте>
+Здравствуй, Волшебник. Многие говорят о твоих поисках и хочу присоединиться к тебе.
+Я Квилл, а ты, должно быть, Волшебник о котором Талмус говорил мастеру Эрроу.
+Тем не менее, ты можешь оказаться самозванцем. Чтобы доказать, что ты послан Эрроу, покажи мне Символ Лучниц.
+Я рада представить Фезар, лучшую ученицу Эрроу. Она очень поможет твоей команде.
+Будет полезно иметь одного представителя каждого Таинства в группе. Их индивидуальные умения могут быть полезны. Поговори с Флеммом и Ксилотилом.
+Ты должен найти Некроманта Флемма в городе Крови и Чародея Ксилотила в городе Каос - они будут ждать тебя.
+Фезар пока изучила только простые заклинания, поэтому сходи с ней в гильдию Лучниц и приобрети новые.
+Пора выбираться отсюда. Дверь выше вероятно уже блокирована - уйдем другим путем.
+Хочешь услышать свежие сплетни?
+We make Flip Stones in Speed.  - they're used to "flip" you to the nearest Gateway.  The old factory was in the south east corner of town.  
+The mayor has caught one of the bandits who raided us a couple of nights ago and has him in jail at the civic center.  
+Looking for gold and glory?  You could kill the old witch in the fire swamp.    Better talk to the people in the Lobotomy Club first.  
+The Gateways will take you anywhere in the world you want to go,  if you know   how to use them.  
+If you have enough money,  you can buy Flip Stones at the General Store.  
+Help us please.  The bandits are holding us captive.  
+It's nice to meet you Buc.  I look forward to joining you on the Quest for the Rings.  Together we shall divide the earth! 
+Hello Buc.  Is there something more I can do for you?  
+So you're the young Sorcerer Thalmus was telling me about.  His death only proves the urgency of your quest for the Rings.  
+I'll give you an opportunity to prove yourself to me: the Black Priest Scourge stole the key the chest which holds our symbol.  
+If you get the key from him and bring the symbol to me,  I will help you.  Ask about your QUEST at the Knight Guilds in town to learn Scourge's whereabouts.  
+Find the key,  then go to our treasury and get the symbol.  When you have it bring it to me and I will let Slash join your quest.  
+Good job,  Buc.  Young Slash would like to join you.  
+Although your party is now larger you'll need a few more to make a good,  strong team.  
+Seek recruits among the Archers in Speed,  many swords to the west.    
+Also,  go to the Temple and ask the priests about your quest - they'll give you some guidance.  Goodbye,  and good luck.  
+My apologies,  Sorcerer.  Please go in - the gold in these chests is yours.  Hack will be relieved to have the symbol once again.  
+Well ......  I doubt if anyone will miss a few gold pieces ......  go on in.  
+There is a scholar at the Great Cathedral who is an expert on the Ring of Division.  He can tell you a great deal about it.  
+Hello Sorcerer.  I am reading up on the ancient litany of Division.  My hobby is the legends of the Ring of Division - I am something of an expert.  
+So you seek the Ring of Division?  Oh what I wouldn't give to be 50 years younger and join you.....  
+According to legend the Ring of Division was given by Nexus to a young Knight named Doggon.  He used it's power to found Doggania and the Doggon dynasty.  
+Although it is possible his descendants still have it,  I don't think so.  Now we will look at the Litany.  In the year 7 a mad prophet spoke the following: 
+"Division shall be found in the form of a Division of Age and a Division of Power." This is cryptic but I have been thinking.....  
+Doggon XXIV has been Divided from his power,  the second half of this prophecy has been fulfilled.  The first half has not,  however,  so start your quest with this: 
+There is a town in the far south on the polar plains where old and young live Divided.  It can be found at about 3' 22'.  Good luck.  
+I don't know where Scourge is hiding,  but Rashiid the wandering merchant may be able to help you.  
+He mentioned that he saw a Black Priest slithering away from the Guild of Pieces just the other night.  
+I don't know where Rashiid is,  but he leaves his whereabouts with friends the lighthouse keepers.  A boat from the Vehicle Master can take you there.  
+Rashiid is away at his favorite oasis,  restocking his fresh water supply.  I'm not at liberty to tell you where it is,  though.....  not for free,  anyway.  
+The oasis is to the west of Division.  Take your boat and hug the north wall of the city heading west to the corner.  
+Work your way south,  and then west into the islands.  His oasis is on the big island.  Use your map if you get into any trouble.  
+When you find him,  ask him about your QUEST.  Make sure to question him a couple a times - he holds out.  
+I know how to get into the Guild of Pieces treasury; the same way you get my fellow lighthouse keeper across the harbor to talk - coins.  
+Hi,  I'm the Combat Master here.  Welcome to my drill room.  You can fight me without either of us getting hurt.  Just Flee when you are done.  
+How did you get in here?  This is a closed service.  Although I am pleased that Thalmus has gone on to greener pastures,  his work must go on.  
+How is the quest going?  Did you dig anything up?  
+I will allow a young Necromancer to join you if I can be certain that the Enchanters are with us.  
+If Enchanter Master Xylotyl is party to our plans,  he will give you his symbol as proof.  
+Likewise,  the Conjurers might suspect us Necromancers of some nasty undertaking.  Take my symbol to mistress Haze in Perfection to show my dedication.  
+Blood and bile! You managed to get the Enchanter symbol from Xylotyl.  I feel secure in letting young Mortimer join you.  
+You can probably find Mortimer in the Guild Hall on the hill to the north of the city.  
+I am pleased that my master has given me permission to join you.  I have been dying to get out of this dead town and see the world.  
+I am considered unusually pleasant for a Necromancer,  so we should have no trouble getting along.  
+Hello Sorcerer.  Master Flemm has told me of your quest.  You might need my particular talents.  
+I can't let you in there.  Flemm is conducting a very important private burial.  
+No,  but if you will fill in for me tonight on courier duty I will let you in to talk to Flemm.  He might be able to help you.  
+I have a hot date for tonight's seance,  so if you could get the corpse out of the lab upstairs and bring it to old Tsalami's grave,  I'd really appreciate it.  
+If the lab door is locked,  ask around upstairs for the key.  If you need directions to the grave,  ask around town about the CITY.  
+Remember,  you have to take the body to the grave at night!   
+Shhhh,  have respect for the recently departed.  Can't you see this is a private burial?  Go away.  
+Мы изготавливаем камни Телепорта в городе Скорости - их используют для того, чтобы перемещаться тебя к ближайшим Вратам. Старая фабрика находилась на юго-восточной окраине города.
+Мэр был похищен разбойниками, напавшими на нас несколько ночей назад. Они держат его в заключении в здании городской администрации.
+Ищешь славы и денег? Тогда ты можешь убить старую ведьму на огненном болоте. Но сперва, лучше поговори с кем-нибудь из Клуб Лоботомии.  
+Врата могут перенести тебя в любое место в мире, конечно, если ты умеешь ими пользоваться.  
+Если у тебя хватит денег, то можешь купить камни Телепортации в магазине.  
+Пожалуйста, помогите нам. Разбойники держат нас в плену.  
+Приятно встретить тебя, Бак. Я хочу присоединиться к твоим поискам Колец Силы. Весь мир будет наш! 
+Здравствуй, Бак. Могу я что-нибудь еще для тебя сделать?  
+Так ты тот юный Волшебник, о котором мне рассказывал Талмус. Его смерть только подтвердила безотлагательность поиска Колец.  
+Я дам тебе шанс доказать верность: Черный Жрец Скордж украл ключ от сундука, в котором хранится наш Символ.  
+Если ты отберешь у него ключ и принесешь Символ мне, я помогу тебе. Расспроси о своем КВЕСТЕ рыцарей в гильдии. Узнай у них о Скордже.  
+Найди ключ, затем иди в нашу сокровищницу и возьми Символ. Когда ты принесешь его мне, я позволю Слэшу присоединиться к тебе.  
+Хорошая работа, Бак. Теперь Слэш будет тебе помогать.  
+Хотя твой отряд сейчас больше, тебе все равно нужны еще несколько человек для действительно сильной команды.  
+Поищи компаньонов среди лучниц в городе Скорости,  который далеко на западе.    
+Также зайди в Храм и расспроси жрецов о своих поисках - они дадут тебе несколько наставлений. Прощай, удачи тебе.  
+Извини, Волшебник. Проходи, золото в этих сундуках теперь твое. Хаку повезло, что ты вернул Символ назад.  
+Ну... Я сомневаюсь, что кто-нибудь откажется от пары лишних монет ... прохди.  
+В Великом Соборе есть ученый, очень много знающий о Кольце Разделения. Он сможет рассказать тебе о нем.  
+Здравствуй, Волшебник. Я сейчас читаю древний Трактат Разделения. Мое увлечение - легенды о Кольце Разделения, я  своего рода специалист в этой области.  
+Так ты ищешь Кольцо Разделения?  Эх, чего бы я только ни отдал, чтобы помолодеть лет эдак на 50 и присоединиться к твоему поиску...
+Согласно легенде, Нексус отдал Кольцо Разделения молодому рыцарю, по имени Доггон. Он использовал силу кольца, чтобы создать город Доггония и основать династию Доггонов.  
+Возможно оно все еще у его потомков, но я так не думаю. Давай посмотрим, что говорится в Трактате. В 7 год безумный пророк предрек следующее: 
+"Разделение будет найдено через Разделение Возраста  и Разделение Власти." Предсказание туманно, но я думаю, что… 
+Доггон XXIV был Отстранен от своей Власти, вторая часть этого пророчества была исполнена. А вот первая часть – нет, однако начни свои поиски отсюда: 
+Далеко на юге стоит город, в котором молодые и старые живут Раздельно. Его можно найти примерно в 3' 22'. Удачи.  
+Я не знаю, где скрывается Черный Жрец Скордж, но может быть Рашид, странствующий торговец, сможет помочь тебе.  
+Он упомянул, что недавно ночью видел Черного Жреца, бродящего недалеко от гильдии Обломков.  
+Я не знаю где Рашид сейчас, но когда он уходит в странствие, обычно прощается со своими друзьями - хранителями маяка. До маяка ты сможешь добраться на лодке. 
+Рашид сейчас далеко, в своем любимом оазисе, пополняет запасы питьевой воды. Я бы мог рассказать тебе, где находится оазис, но... не за просто так.  
+Оазис расположен к западу от города Разделения.  Возьми лодку и обогни северную стену города, затем плыви на запад. 
+Двигайся на юг, а затем на запад до островов. Оазис находится на большом острове. Чтобы не потеряться - сверяйся с картой.   
+Когда разыщешь его, спроси его о своем КВЕСТЕ. Продолжай расспрашивать его до тех пор, пока он все тебе не расскажет.  
+Я знаю, как попасть в сокровищницу гильдии Обломков; ты же понимаешь, что несколько монет помогут разговорить любого человека...  
+Привет, я Мастер боевых искусств. Добро пожаловать в мой тренировочный зал. Ты можешь сразиться со мной не опасаясь, что мы причиним друг другу вред. Просто СБЕГИ, когда устанешь.
+Как ты сюда попал? Посторонним сюда нельзя. Думаю, что Талмус отправился в Рай. Его дело должно жить.  
+Как продвигаются поиски? Разузнал что-нибудь?  
+Я позволю молодому Некроманту присоединиться к тебе, если буду уверен, что Чародеи на нашей стороне.  
+Если глава чародеев Ксилотил поддержит нас, он даст тебе их Символ, как доказательство.  
+Более того, Колдуньи считают нас, Некромантов,  кучкой мерзких гробовщиков. В знак моей преданности передай мой Символ госпоже Хейз в городе Совершенства.
+Кровь и желчь! Ты сумел получить от Ксилотила Символ Чародеев. Теперь молодой Мортимер может идти с вами.
+Возможно, Мортимер сейчас в Гильд-Зале, который на холме к северу от города.
+Я рад что мой наставник разрешил мне примкнуть к тебе. Я просто умираю от желания покинуть этот мертвый город и посмотреть мир.  
+Меня считаю необычайно милым Некромантом. Думаю, мы поладим.  
+Здравствуй, Волшебник. Мастер Флемм рассказал мне о тебе и твоём путешествии. Думаю, тебе пригодятся мои особенные способности.  
+Я не могу пропустить тебя. Флемм проводит очень важный ритуал.  
+Нет, но если ты сегодня ночью поработаешь вместо меня посыльным, я позволю поговорить тебе с Флеммом. Может быть, он сможет тебе помочь.
+Сегодня ночью у меня назначено важное исследование,  так что если ты сможешь вытащить из лаборатории наверху тело и принести его на старое кладбище Цалами,  я буду очень признателен.  
+Если дверь в лабораторию заперта, узнай там у кого-нибудь о ключе. Если не знаешь, как пройти на кладбище, расспроси людей о ГОРОДЕ.  
+Запомни, ты должен положить тело в могилу ночью!  
+Тсссс, уважай недавно усопших. Разве ты не видишь что это закрытые похороны? Уходи.
+I'm the custodian around here.....  and let me tell you something bub.  These Necromancers say they ain't evil.....  but for my money.....  they sure ain't good.  
+Welcome to HEC.....  Headquarters for Embalming Corpses.  
+You shouldn't be snooping around here Sorcerer.  This place is not healthy for those who aren't fond of death.  
+You really shouldn't be here,  but I see that our mutual friend at HEC has convinced you to take his courier duty.  
+That's fine by me,  but just don't go poking your nose into Necromancer business.    
+Remember,  a body is just a shell for the soul.  
+I'm second in charge here at the Headquarters for Embalming Corpses.  
+I last saw the key to the lab while searching for my copy of "The Fine Art of Mummification" in the bookshelves.  
+Hey Sorcerer.....  join me for a drink?  
+No one around here likes to talk about Old Tsalami's grave,  but I have no problem talking.  Its up on the big hill to the south around 15'6" 18'3".  
+Welcome to my Temple.  Over on the far side of the Temple souls have been converted to evil.  However,  there is a way to save them - a QUEST.  
+It is said that there is a way to save those who have gone over to Void.  Religious research is best begun at the Great Cathedral.  
+Consult the confessional at the Great Cathedral.  He stands on the symbol of Nexus.  Ask them about this quest.  
+Sssorcerer! Your mind has been filled with lies about my order.  Void wantsss the bessst for man.  Pay him in pain and eternal pleassure ssshall be yoursss! 
+If you are like looking for master Xylotyl,  you'll have a hard time finding him without his secretary.  Check the cell in the Temple.  
+Pain is the true way.  Pain! PAIN!! I used to slave for Xylotyl,  but now I live for Void.  
+Where am I?  Hey,  get me out of this cage! Get me a Bingo card from the Tower of Kaos,  I'm going into withdrawl.  
+That's me?  I look terrible.  Quick,  bring me a bingo card from the Tower! 
+I gotta have that mirror.  As long as I can see my image,  the head Void priest can't convince me that I like pain.  
+Look,  I REALLY need a bingo card,  okay?  
+Rauchous! 
+Go and tell Xylotyl I'm back to normal.  He's on top of the Tower of Kaos every night.  
+Xylotyl said I should join you for a while.  
+Xylotyl may change his mind any second - we'd better scram.  
+Hey Sorcerer! Let's party sometime.  
+In order to be saved,  a soul lost to Void must reflect upon his sins in a holy mirror.  Check the library upstairs for a reference,  west wall,  south end.  
+Greetings,  Sorcerer.  Thalmus' death was most unfortunate,  but he was wise to entrust his work to you.  
+Take my Symbol to Flemm in the City of Blood and tell him I'm with him.  
+Also,  get the symbol of the Conjurers from Mistress Haze in the City of Perfection.  
+If the Conjurers give you their symbol,  and you show it to me,  then I can trust that they support this quest as well.  We will need their help.  
+Support for the quest is strong indeed.  Take one of my young Enchanters with you.  
+You'll find him "studying" at the Drunken Dragon to the south of Blood.  He calls himself Obliky.  Go on now,  before I change my mind.  
+Master Xylotyl has changed his mind - Obliky is no longer yours to take.  Will you challenge us?  
+Well I don't care,  I don't like you anyway.  I think its time for you to die.  
+Bye Bye! 
+Next number.....  59 
+then we have,  lets see.....  32 
+......and 42.  
+I'm the Bingoteer,  do you want a card for 10 gold?  
+Hmmm,  its on me somewhere.....  
+Here you go,  one Bingo card.  
+I can't talk! Can't you see I'm trying to play Bingo! If you want a Bingo card press the Bingoteer.  
+I'm sorry,  you must have reservations to eat here.  Come back some other time,  we're full.  
+Sorry,  I can't help you,  I have six orders to get in the kitchen.  Talk to the Maitre'Di.  
+Isn't this place great?  I come here all the time.  
+Welcome to the Perfect Library.  Please don't rumple the books.  
+Please do not disturb me,  I am contemplating the fountains.  They have a lovely sound.  
+The flames tell me that I shall join you on your quest.  It may be that you will have need of me.  
+My mistress says that I have great potential but little skill yet.  I see that we will be tested on this journey.  
+Haze has given me a great ruby to aid you in your quest.  It is called the "Eye of Nexus." 
+Hello there Sorcerer.  My name is Alexi,  I'm an initiate here at the Guild.  A vision has shown me that you are on an important mission.  
+Я местный смотритель.....  и я тебе вот, что скажу, приятель:  эти Некроманты говорят, что они не злые.....  но, на мой взгляд.....  они никак не добрые.  
+Добро пожаловать в ЦБТ..... Центр Бальзамирования Трупов. 
+Вы суёте нос в не своё дело, Волшебник. Это место не безопасно для тех, кто не любит смерть.
+Вы действительно не должны быть здесь, но я вижу, что наш общий друг в ЦБТ убедил тебя взять на себя обязанность курьера.
+Ладно, но только не пытайтесь совать свой нос в бизнес Некромантов.
+Помните, что тело это только оболочка для души.
+Я второе ответственное лицо в Центре Бальзамирования Трупов.
+В последний раз я видел ключ от лаборатории, когда искал свою копию "Чудесные искусства мумификации" на книжных полках.
+Эй, Волшебник..... давай с тобой выпьем?
+Никому здесь не нравится говорить о старое кладбище Цалами, но тебе я скажу. Она находится на большом холме к югу отсюда, приблизительно 15 '6" 18' 3".
+Добро пожаловать на мой Храм. Души находящиеся на противоположной стороне Храма обращены к злу. Тем не менее, есть способ их спасти - КВЕСТ.
+Говорят, что есть способ спасти тех, кто последовал за Войдом. Религиозные исследования лучше начать с посещения Великого Собора.
+Обратитесь с исповедью в Великий Собор. Он стоит на Символе Нексуса. Спроси там о своих поисках. 
+Волшшшебник! Вашш разум был заполнен ложжью. Войд хочет лучшшего для людей. Отдай ему свою боль, и получишшь бесконечное удовольствие!
+Если Вы ищете господина Ксилотила, то вам сначала необходимо поговорить с его секретарем. Проверьте его келью в Храме. 
+Боль - вот истинна. Боль! БОЛЬ!! Я был рабом Ксилотила, но теперь я служу Войду.
+Где я? Эй, вытащите меня из этой клетки! Достаньте для меня карточку Бинго-Лотереи из Kаоса. А теперь я собираюсь выбираться отсюда.
+Это - я? Выгляжу ужасно. Скорее, принеси мне карточку Бинго-Лотереи из Kаоса!
+Мне необходимо зеркало. Пока я буду видеть свое отражение, главный священник Войда не сможет убедить меня в том, что мне нравится боль.
+Слушай, мне ДЕЙСТВИТЕЛЬНО нужна карточка Бинго-Лотереи, хорошо?
+-----
+Пойди скажи Ксилотилу, что со мной все в порядке. Каждую ночь он бывает на вершине башни Kаоса.
+Ксилотил сказал, что я должен присоединиться к вам на какое-то время.
+Ксилотил может изменить свое мнение в любую секунду - нам лучше валить отсюда
+Эй, Волшебник! Давай повеселимся.
+Для того, чтобы быть спасённой, душа, обратившаяся к Войду, должна увидеть свои грехи в священном зеркале. Посмотри в библиотеке: западная стена, южный ее край.
+Здравствуй, Волшебник. Смерть Талмуса - это большое несчастье. Но он был достаточно мудр, чтобы довериться тебе.
+Возьми этот Символ и отнеси его Флемму в город Крови. Скажи, что я поддержу его.
+Кроме того, получите Символ Колдуний у госпожи Хейз в городе Совершенства.
+Если Колдуньи дадут вам свой символ, и вы принесёте его мне, тогда я смогу надеяться, что они поддержат наши поиски. Нам понадобится их помощь.
+Тебе понадобится помощь во время твоих путешествий. Возьми с собой одного из моих молодых Чародеев.
+Он проходит свое "обучение"  в Пьяном Драконе на юге города Крови. Его зовут Облики. Идите, пока я не передумал.
+Мастер Ксилотил передумал: Облики не пойдет с вами. Вы что бросаете нам вызов?
+Это не важно, ты мне не нравишься все равно. Время умирать!
+Пока-пока!
+Следующий номер..... 59
+так, затем.....  32
+......и 42.  
+Я продавец Бинго-Лотереи, вы хотите карточку за 10 золотых?
+Хмм, это где-же он.....
+Ага, вот держити: одна карточка Бинго-Лотереи.
+Я не могу сейчас говорить! Ты что не видишь? Я играю в Бинго-Лотерею! Если тебе нужна карточка - спроси у продавца Бинго-Лотереи.
+Я сожалею, но вы должны были  заранее заказать место, чтобы поесть здесь. Зайдите в другое время, у нас нет больше свободных мест.
+К сожалению, я не могу вам помочь, у меня ещё шесть заказов на кухне. Поговорите с Майтре'Ди.
+Разве это место не великолепно? Я приезжаю сюда все время.
+Добро пожаловать в Библиотеку Совершенства. Пожалуйста, с книгами обращайтесь аккуратно.
+Пожалуйста, не беспокой меня, я созерцаю фонтаны. Они так мелодичны.
+Пламя сказало мне, что я должен присоединиться к твоим поискам. Может случиться так, что тебе понадобится моя помощь.
+Госпожа говорит, что у меня огромный потенциал, но пока мало мастерства. Я думаю, это путешествие станет хорошей проверкой.
+Хейз дала мне большой рубин, чтобы помочь нам в поисках. Его называют "Глазом Нексуса".
+Здравствуй  Волшебник. Меня зовут Алекси,  я новичок здесь в Гильдии. Видение показало мне, что у тебя важная миссия.
+I regret that Thalmus' death has thrown us into such disarray.  
+Hello Buc,  is your quest going well?  
+Like my brethren at the other guilds I must be assured of guild loyalty.  
+Here is my symbol as a token of Conjurer commitment to the plan.  
+Show me the Necromancer symbol and I shall allow a young Conjurer to join your quest.  
+Perfect! The symbol of the Necromancers.  
+Downstairs is a young Conjurer named Alexi.  Talk to her and she will join you.  
+Hello.  I see you are from the Academy and that your quest has lead you to Haze.  She is upstairs,  but she doesn't want to be disturbed.  
+Haze is meditating.  Most of the staff has gone to the restaurant.  You really ought to go there sometime.  
+Haze has told me that Thalmus of the Academy - may his soul rest in peace - was working with her.  She would probably like to see you,  but not right now.  
+The door over there is an Ideal Door; it is soundproofed,  and cannot be opened without the key.  
+You will want to get in and see Mistress Haze,  but you need the key to the Ideal Door.  I know where it is,  but I want something in return.  
+I am working on a new spell and I need some flame wood.  You can find out about flame wood at the Perfect Library.  Come back when you have some.  
+Oh,  the wood! Finally I will be able to test my new spell.  For this I will risk the displeasure of my Guildmistress.  
+Take the Conjurer Key - it opens the door to the Guild.  
+I have been working on an interesting water spell here at the oasis.  It involves the rare Flame Wood.  
+Flame wood can only be found in the Fire Cave.  The cave is south of Cathedral and can only be approached by boat.  
+There's a chest in the cave,  but it is magically sealed.  I spoke once with a man who knew this; his name is Larry and he frequents the Lobotomy Club.  
+So you are looking to find some Flame Wood,  eh?  You will need the Fire Key to open the magic chest in the cave.  I had it for a while,  but I sold it.  
+Would you like to buy me a drink?  
+Thanks.  Anyway,  I sold the key to this funny old Conjurer.  He said he was from the far north,  lives on a little island there,  around 8' 5'.  
+Hi fellow,  you look like you've traveled some.  Stay away from the Fire Swamp to the south of here! There's a nasty witch there.  
+Her name is Hideous,  but her name doesn't fit her anymore.  If a Witch has a lock of your hair,  she can steal your face.  
+She stole the good looks from some poor lass.  Then Hideous cut off her own finger and put her life in it.  
+Until the finger is broken,  she's almost immortal.  But break that little bone and her life is over.  
+Just before dying,  a witchhunter I met told me that she hid her finger bone somewhere in the swamp in front of,  and very close to,  her home.  
+Someone stole my precious.  My little Ogre's Egg.  The nasty Conjurers of the South Ice Cave stole my Perfect egg.  I'll trade you the key for my egg.  
+Those nasty Conjurers live in a cave shaped like a giant skull.  It can be found around 6' 21' on the south ice plane.  
+Oh,  my precious,  my lovely Egg.  All mine! All mine! Deal's off Sorcerer,  but I keep the Egg,  hee hee.....  Come and get the key if you want it.....    
+Hello lost soul,  I am the Great Confessional.  Confess your sins to me and you shall be forgiven.  
+Sorry,  you can't go in there,  King's orders.  But if you donate all your money to the Doggon Throne I'll let you in.  What do you say?  
+Thank you very much.  
+Do you want a receipt?  Ha ha ha ha ha.....  
+No entrance without the Regent's express permission! 
+I don't talk to plebs like you.  If you have completed a quest for me I might give you a momment of my time.  
+Welcome to my city pleb.  I am the appointed Regent of King Doggon XXIV of Doggania.  I will bless you with but a moment of my time.  
+A quest Pleb,  for the throne.  Our Great King is sick,  and I seek a champion.  However I am still in the screening process.  
+Those who wish to be candidates shall consult my judge,  in this building,  about the quest.  Begone now pest.  Talk to me again if you have completed it.  
+According to my jailer you got Fiver.  You are now eligible for the main quest.  Our king is sick and only the Milk of Youth can help.  
+No one knows much about the milk,  but the priests in town might know something.....  
+So,  you found the Milk of Youth.  How nice.  I'll see the king gets it.  
+By the way,  Fiver didn't cheat at poker.  But I hate to lose,  so I had you kill him for me.  
+As a reward,  I'll give you the run of the palace.  Now run along boy.  
+This is my town now.  
+All mine! 
+Sorry sonny,  I don't talk through closed doors.  Come in and pull up a chair.  
+I fell very strange.  Am I the King?  What do I do?    
+Hi Boy,  its good to be cured.  How goes your quest?  
+I'm the King,  but I'm under some sort of spell that the evil Regent put on me.  Now where was I?  I need the Milk of Youth.  
+Can you get me some.....  what did I ask you for?  Oh yes,  break the spell,  kill the Regent,  get me some milk.  
+I feel much better now - I can remember! 
+Я сожалею, что смерть Талмуса стала причиной таких беспорядков.
+Здравствуй, Бак, как продвигаются твои поиски?
+Как и мои собратья по гильдии, я хочу быть уверенным в лояльности.
+Возьми символ Колдуний как доказательство преданности нашему плану.
+Покажи мне Символ Некромантов, и я позволю молодой колдунье помогать тебе в твоих поисках.
+Прекрасно! Это и есть Символ Некромантов.
+Внизу стоит молодая колдунья Алекси. Поговори с ней, и она присоединится к тебе.
+Здравствуй. Я смотрю ты из Академии. Ищешь Хейз? Она наверху, но она не хочет, чтобы ее беспокоили.
+Хейз медитирует. Почти вся прислуга ушла в трактир. Вам действительно стоит сходить туда когда-нибудь.
+Хейз рассказала мне что Талмус - пусть земля ему будет пухом - работал вместе с ней. Возможно, она и хотела бы встретиться с вами, но не сейчас.
+Дверь там - идеальная; она звуконепроницаема и может быть открыта только специальным ключом.
+Чтобы попасть к госпоже Хейз тебе понадобится ключ от Идеальной Двери. Я знаю, где его достать, но я хочу кое-что взамен.
+Я работаю над новым заклинанием и мне нужно немного Пламенной Древесины. Ты можешь узнать о ней в Библиотеке Совершенства. Возвращайся, когда достанешь этой древесины.
+О, Пламенная Древесина! Наконец-то я смогу проверить мое новое заклинание. Но этим я могу рассердить Главу Гильдии.
+Возьми Ключ Колдуний - он открывает Идеальную Дверь.
+Здесь в оазисе я работаю над интересным водным заклинанием. Для заклинания необходима редкая Пламенная Древесина.
+Пламенную Древесину можно найти только в Огненной Пещере. Она находится к югу от Собора, и добраться туда можно только на лодке.
+В пещере находится сундук, запечатанный магией. Однажды я разговаривал с человеком, знавшим об этом. Его зовут Ларри, он завсегдатай Клуба Лоботомии.
+Так ты ищешь Пламенную Древесину? Чтобы открыть волшебный сундук в пещере тебе понадобится Ключ Огня. Когда-то он был у меня, но я его продал.
+Не хочешь угостить меня выпивкой?  
+Спасибо. Так или иначе, я продал ключ одному странному старому Колдуну. Он рассказывал, что пришел далеко с севера. Живет он там на маленьком острове. Это около 8' 5'.  
+Привет, приятель! Ты похож на путешественника. Держись подальше от Огненного Болота на юге! Там живет злобная ведьма.
+Ее зовут Хидиэс, но ее имя больше не подходит ей. Если у ведьмы будет локон твоих волос, то она сможет украсть твою внешность.
+Она украла милую внешность у одной бедной девушки. Затем Хидиэс отрезала себе палец и поместила в него свою жизнь.
+Пока цел палец, она почти бессмертна. Но стоит сломать эту маленькую косточку, и ведьме настанет конец.
+Перед самой смертью знакомый ведьмак рассказал мне, что она спрятала свой палец где-то на болоте рядом со своим домом.
+Кое-кто украл мою прелесть. Мое маленькое Яйцо Огра. Гадкие колдуны из Южной Ледяной Пещеры украли мое прекрасное яйцо. Я отдам тебе ключ в обмен на него.
+Эти мерзкие колдуны живут в пещере, похожей на огромный череп. Ее можно найти на южной ледяной равнине, примерно 6' 21'.
+Ох, моя прелесть, мое восхитительное Яйцо. Мое! Мое! Сделка отменяется, Волшебник, но яйцо я оставлю себе, хехе... Давай, отбери ключ, если он тебе действительно нужен!
+Здравствуй, заблудшая душа, я  - Главный Исповедник. Покайся в своих грехах, и ты будешь прощен.
+Извини, но ты не сможешь пройти, приказ короля. Но если ты пожертвуешь все свои деньги Трону Доггона, то я пропущу тебя. Что скажешь?
+Большое спасибо.
+Ты хочешь расписку? Хахахахаха!
+Без особого позволения Регента вход запрещен!
+Я не разговариваю с простолюдинами вроде тебя. Но если ты выполнил мое поручение, возможно, я уделю тебе минутку своего времени.
+Добро пожаловать в мой город, простолюдин. Я назначенный Регент Короля Доггона XXIV.  Так и быть, я уделю тебе немного времени.
+Наш Великий Король болен, поэтому нам нужен Чемпион. Отбор все еще идет. Вот тебе задание. 
+Все желающие должны советоваться с моим судьей. Он в этом здании. А сейчас убирайся с глаз моих. Поговори со мной, когда выполнишь задание.
+Как сказал тюремщик, вы разобрались с Файвером.  Теперь вы выбраны для главного задания. Наш король болен, и только Молоко Юности может ему помочь.
+Никто ничего не знает о молоке, но возможно городские жрецы смогут тебе помочь...
+Значит, ты достал Молоко Юности.  Как славно. Я передам его королю.
+Кстати, Файвер не жульничал при игре в покер. Но я ненавижу проигрывать, поэтому я хотел, чтобы ты убил его.
+В качестве награды я позволю тебе пройтись по дворцу. А теперь иди.
+Теперь это мой город.
+Мой!
+Извини сынок, не строй на пороге. Проходи и присаживайся.
+Я себя очень странно чувствую. Я король? Что мне делать?
+Здравствуй, парень. Как же хорошо чувствовать себя свободным! Как продвигаются твои поиски?
+Я король, но злой Регент наложил на меня какие-то чары. На чем я остановился? Ах да, мне нужно Молоко Юности.
+Не мог бы ты достать его для меня..... Что я только что спросил? А, ну да, разрушь чары, убей наместника и дай мне немного молока.
+Я чувствую себя намного лучше - теперь я начинаю вспоминать!
