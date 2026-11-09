@@ -11,6 +11,23 @@ Confidence key used everywhere here: **verified** = checked against the
 ROM/code with a tool run; **hardware** = a fact about the Mega Drive
 itself, not about this game; **unknown** = not yet proven, filed as a task.
 
+## The bigger goal — tribute remake (Epic 5, milestone M7)
+
+The disassembly is not the end point. The project's goal (Dayset,
+2026-11-09) is to **recreate the same environment with an open-source
+custom 3D engine — a tribute project** — in the **Esenthel C++
+Titan Engine** (full source: https://github.com/Esenthel/EsenthelEngine).
+The RE work in this repo is the spec the remake implements: all the
+routines and game logic, reimplemented in C++.
+
+Two switches define the tribute: **classic (isometric) vs modern (3D)**
+presentation of the same world and logic, and **old vs new combat** —
+the broken/crutched original combat preserved as "classic", a fixed
+combat as "new", switchable. Full design: `docs/tribute-remake.md`,
+issues #023–#031. The ROM-rebuild contract below still stands: it is
+how the RE is proven right, and the mod workflow (Epic 4) continues
+in parallel — the remake does not replace it.
+
 ## The rebuild contract (Epic 1 — the spine)
 
 Nothing counts as "decompiled" until this holds:
@@ -73,6 +90,17 @@ tileset, palette list, map sketch).
 ### Epic 4 — Mods
 A few chosen changes, each as a patch + test. Issue #010 (milestone),
 #022 (first mod). Target still TBD — Dayset picks.
+
+### Epic 5 — Tribute remake (Esenthel / Titan Engine)
+Recreate the same environment in a modern 3D engine: the RE docs as
+spec, classic-isometric vs modern-3D presentation, old vs new combat,
+switchable. Issues #023–#031, milestone M7. Design:
+`docs/tribute-remake.md`.
+
+### Epic 6 — Research & history
+Fansites, translations, interviews, reception — the history chapter
+and the reference database the RE work checks itself against. Issues
+#032–#036. Junior-agent work: searching, scraping, summarising.
 
 ## Game structure — what is verified so far
 

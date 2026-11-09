@@ -10,6 +10,13 @@ reassembles byte-identical to the original ROM — plus a patch workflow so
 changes (text, stats, spells, balance, fixes) can be made, verified, and
 tested in an emulator.
 
+Bigger goal (Dayset, 2026-11-09): the disassembly is the spec for a
+**tribute remake** — recreate the same environment in the open-source
+Esenthel C++ Titan Engine, playable in classic (isometric) and modern
+(3D) style, with the broken original combat switchable against a fixed
+one. Design: [docs/tribute-remake.md](docs/tribute-remake.md), issues
+#023–#031.
+
 Status: **M1 done 2026-11-09** (toolchain + first disassembly).
 Project overview — epics, rebuild contract, hardware limits, structure,
 graphics pipeline: [docs/overview.md](docs/overview.md).
