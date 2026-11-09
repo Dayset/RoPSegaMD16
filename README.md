@@ -3,6 +3,8 @@
 Disassembly and modding project for **Rings of Power** (Sega Mega Drive / Genesis,
 USA/Europe, 1992, Naughty Dog — GM T-50176).
 
+Repo: https://github.com/Dayset/RoPSegaMD16
+
 Goal: a **rebuildable disassembly** of the game — labelled 68000 assembly that
 reassembles byte-identical to the original ROM — plus a patch workflow so
 changes (text, stats, spells, balance, fixes) can be made, verified, and

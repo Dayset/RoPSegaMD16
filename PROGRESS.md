@@ -1,6 +1,7 @@
 # Progress — Rings of Power disassembly
 
 Started 2026-11-09. Owner: Dayset. This file is the status board.
+GitHub: https://github.com/Dayset/RoPSegaMD16
 Issues live in `issues/` — one file each. Update both together.
 
 ## Milestones
