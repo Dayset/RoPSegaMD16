@@ -157,3 +157,18 @@ vehicle/invisible-party glitches, and a pad-2 boot combo
   did not render in the browser view; transcription still owed.
 - Mortimer/Obliki Gens-code assignment ambiguity (above).
 - Game Genie full table transcription on verification.
+
+## Maze GIF — further attempts 2026-11-09 (continuation)
+
+Three independent retrieval routes now tried and failed:
+(1) live-browser Wayback view — GIF did not render;
+(2) direct download from this VM — Wayback blocks the VM's
+traffic as suspected bot traffic;
+(3) archive.org availability API for mazemap.gif / mazepic.gif
+(both host variants) — returns **no archived snapshots**, which
+contradicts the earlier CDX listing and suggests the capture may
+not be served at that URL at all.
+Verdict: maze route transcription is a genuine dead end with
+current access; it needs a human browser download of the GIF
+file itself. The maze *text* guide remains covered in
+ringsofpower-co-uk-guides.md.
