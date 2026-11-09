@@ -145,14 +145,14 @@ of the loop reproduces the constant exactly):
 | `0x000200–0x000FFF` | ~3.5 KB | Entry, VDP table, init code | verified | Vector-reached; decodes as textbook Sega startup |
 | `0x001000–0x0012FF` | ~768 B | Interrupt handlers + joypad code | verified | L4/L6 vector targets; VBlank handler reads `$A10003`, bumps `$FF0010` |
 | `0x001300–0x00FFFF` | ~60 KB | Code (handlers, subroutines, tables) | likely | Called from entry (`$3AA`, `$A14`); entropy 5.4–6.8, ASCII 0.24–0.28 |
-| `0x010000–0x043FFF` | 208 KB | Code + embedded strings/tables | likely | `jsr $4323C` target lives here; 100+ spaced strings per 64 KB; entropy ~6.0 |
-| `0x044000–0x05FFFF` | 112 KB | Compressed data (probably graphics) | provisional | Entropy 7.0–7.24, the highest outside the other compressed block; few strings |
+| `0x010000–0x043FFF` | 208 KB | Code + embedded strings/tables | verified | Ghidra 11.4.2 (#011): 368 functions covering 192,300 B (90.3%); rest is embedded data/strings; `jsr $4323C` target lives here; 100+ spaced strings per 64 KB; entropy ~6.0 |
+| `0x044000–0x05FFFF` | 112 KB | NOT code; codec unidentified (see #017) | verified (not code) | Ghidra (#011): 0 functions in range. #017 tests: full $DD5C scan = only false positives on structured records; Nemesis header doesn't parse (tile count 1); 55×10-byte records at head (0x044000–0x044226). Entropy 7.0–7.24; threaded-decoder stream hypothesis (#020) stands |
 | `0x060000–0x093FFF` | 208 KB | Compressed data (NOT raw tiles — see #005) | verified (not tiles) | Noise in every tile layout (packed/planar); this range is the start of the `$96120` compressed streams (`0x09638C–0x0B86AE`); the "tile graphics" label was wrong — corrected in #005 |
 | `0x094000–0x0CBFFF` | 224 KB | Compressed data | provisional | Entropy 7.2–7.57 (highest in ROM); few strings |
 | `0x0CC000–0x0D7FFF` | 48 KB | Sparse tables (map data?) | provisional | Entropy 4.6–5.3, 28–44% zero bytes |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |
 | `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | likely | ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
-| `0x0E0000–0x0FBFFF` | 112 KB | Mixed code/data — sound cluster verified | verified (sound) / provisional (rest) | `jsr $EB772`/`$EB806` targets; sound routines `$EB772`/`$EB806`/`$EB88A`/`$EB7C8`/`$EBA00`/`$EBAC6`/`$EBA7E` traced (issue #003); Ghidra found 436 functions overall; rest needs #011 |
+| `0x0E0000–0x0FBFFF` | 112 KB | Mostly data; sound cluster + tail code verified | verified (per #011 census) | Ghidra (#011): only 18 functions / 692 B in range, concentrated at the sound cluster `$EB772`+ and the tail; bulk is records/tables data (#004/#006). Sound routines `$EB772`/`$EB806`/`$EB88A`/`$EB7C8`/`$EBA00`/`$EBAC6`/`$EBA7E` traced (#003) |
 | `0x0FC000–0x0FD07B` | ~4 KB | Code (checksum routine + tail code) | verified | `jsr $FD07C` target; decodes cleanly |
 | `0x0FD07C–0x0FD0CB` | 80 B | Runtime checksum + fail path | verified | Simulated sum matches `0x8F33608C` |
 | `0x0FD0CC–0x0FFFFF` | 12,084 B | `0xFF` padding | verified | One unbroken `0xFF` run, 12,084 bytes; last real byte at `0x0FD0CB` |

@@ -1,58 +1,439 @@
-address,name,evidence_source,confidence,notes
-0x000200,reset_entry,docs/architecture.md 'Entry / reset path',verified,TMSS check + table-driven init; calls $FD07C $119E $4323C $3AA $A14 $4E6 per Ghidra graph
-0x00028E,vdp_boot_table_data,docs/architecture.md 0x200 section,verified,DATA not code - 108 bytes / 24 VDP register bytes; linear sweep mis-decodes it
-0x0002FA,boot_stage2,docs/architecture.md 0x2FA section,verified,checksum jsr $FD07C; jsr $4323C; display-on sequence $8134 then $8174
-0x00035C,attract_loop,docs/architecture.md 0x2FA section,verified,title/attract loop 0x35C-0x390; harness hook site for #007/#008
-0x0003AA,joypad_read_both,docs/architecture.md 'Joypad read',verified,ports 1+2 two-phase read -> $FFC00E/$FFC010
-0x000A14,ram_clear_vdp_set2,docs/architecture.md 0x119E/0x2FA sections,verified,second VDP register set; Plane A $A000 Window $C000 Plane B $A000 sprite $DC00 H-scroll $2000
-0x001270,hblank_handler,docs/architecture.md 'HBlank',verified,single rte; never fires (R0=$04 H-int disabled); 0 hits in BlastEm log; Ghidra did NOT auto-create
-0x001272,vblank_handler,docs/architecture.md 'VBlank',verified,frame counter $FF0010; joypad port1; jsr $EB772; 3-frame debounce; 16-entry ring $FF001C; Ghidra did NOT auto-create
-0x001350,joypad_queue_pop,docs/architecture.md VBlank step 5,verified,polled pop; 16 call sites mapped in #020 section
-0x0119E,main_init,docs/architecture.md 0x119E section,verified,clears RAM; writes MANX at $FFC422; jsr $EB806; jmp $D25C
-0x0D25C,game_dispatcher,docs/architecture.md 0xD25C section,verified,50-byte routine; calls $11E06 $14FB6 $1B5D6 $32D0E $173BC $D28E $179B6
-0x0D28E,main_loop,docs/architecture.md #020 section,verified,0xD28E-0xD9DE 1876 bytes; loop-back tst $FF00BE beq $D2BE; exit only via $FF00BE=-1 at 0x20188
-0x179B6,soft_reset,docs/architecture.md #020 section,verified,restores SSP $FFEC1E; jmp $200
-0x11E06,vdp_setup_game,docs/architecture.md #020 callees,verified,$D25C callee 1
-0x14FB6,intro_story_driver,docs/architecture.md #020 callees,verified,$D25C callee 2; sets $FF0128=-1 at 0x15512
-0x1B5D6,new_game_init,docs/architecture.md #020 section,verified,$D25C callee 3; $1E390($FF0E18,8) at 0x1B5DA confirms queue capacity 8; leader spawn (111,125) or random
-0x32D0E,song_picker,docs/architecture.md #020 callees,verified,$D25C callee 4; returns 0x11 or 2 -> $173BC
-0x173BC,request_song,docs/architecture.md + patches/music-off/README.md,verified,$D25C callee 5; 15 location call sites; hook A of music-off patch at 0x173C0
-0x173EC,song_dispatch,docs/architecture.md + patches/music-off/README.md,verified,indices <21 via table 0x17546; index 18 Quiet = no-op 0x17582; hook B at 0x173F4
-0x4323C,save_validation,docs/architecture.md $4323C section,verified,386 bytes; only call site 0x30C; calls $42FC8 $DCE2 $43012 $430F4
-0x42FC8,eeprom_enable_init,docs/architecture.md $4323C section,verified,retry limit $FF014C=10; 8x $80 writes to $200000
-0x42E34,eeprom_clock_seq_a,docs/architecture.md $4323C section,verified,writes $C0/$40/$00 to $200000
-0x42E76,eeprom_clock_seq_b,docs/architecture.md $4323C section,verified,writes $00/$40/$C0/$80 to $200000
-0x42EBA,eeprom_shift_bit_out,docs/architecture.md $4323C section,verified,DI=D0 CLK=D6 on $200000 word
-0x42F96,eeprom_shift_bit_in,docs/architecture.md $4323C section,verified,DO=D7
-0x43012,eeprom_write,docs/architecture.md $4323C section,verified,command out $42EBA x8; ACK via $42F96; retries to 10
-0x430F4,eeprom_read,docs/architecture.md $4323C section,verified,same bit-bang pattern
-0x0DCE2,joypad2_read,docs/architecture.md $4323C section,verified,shared utility NOT save-specific; 8 call sites; $A10005 two-phase
-0xEB772,sound_tick,docs/architecture.md $EB772 section,verified,per-frame sound ONLY (corrects overview); tempo tick to Z80 $A000E6; Ghidra did NOT auto-create
-0xEB806,sound_driver_upload,docs/architecture.md sound routines,verified,0x1576 bytes ROM $EBB6E -> Z80 RAM $A00000; sets PAL flag $FF0222
-0xEB88A,start_song,docs/architecture.md sound routines,verified,sets $FF021E=1; writes $0D/$00 to Z80 $A0000B/$A0000A
-0xEB7C8,stop_sound,docs/architecture.md + patches/music-off/README.md,verified,DEAD CODE in original (0 callers); revived by music-off patch
-0xEBA00,music_streamer,docs/architecture.md $EB772 section,verified,every 16 frames via $EB772; copies $FF bytes $FF0224 -> Z80 $A01600
-0xEBAC6,sound_command_queue,docs/architecture.md $EB772 section,verified,two slots $FF0236/$FF023A; handlers $EBB04/$EBBFE not yet traced
-0xEBA7E,load_song_data,docs/architecture.md sound routines,verified,copies $3FF bytes to Z80 $A000DA region
-0xEB92A,z80_access_prologue,docs/architecture.md sound routines,verified,SR=$2700 + bus request + a0=$A00000
-0xFD07C,runtime_checksum,disasm/map.md checksum section,verified,sums words 0x000000-0xFD07B skipping 0x18C; expects 0x8F33608C; hang at 0xFD0CA
-0x136FC,dictionary_lookup,PROGRESS.md #004 entry,verified,3,466-word dictionary; blob 0x0D6EBA-0x0DC0C0 + offset table 0x0DC0C2
-0x0DD5C,lzss_decompress,PROGRESS.md #004/#005 entries,verified,$DD5C LZSS; all text + graphics streams; re-implemented in tools/extract_text.py
-0x11082,palette_load,disasm/graphics/README.md via tools/render_tiles.py docstring,verified,(table_ptr, slot) -> CRAM via $D9E2/$D9EE
-0x1383C,record_load_96120,docs/maps.md loader chain,verified,loads one $96120 record; returns decompressed pointer in d0
-0x1194A,tilemap_blitter,docs/maps.md blitter section,verified,VRAM word = map word + base; stride in WORDS
-0x11ABC,tile_upload,docs/maps.md loader chain,verified,(count, base, src) -> VRAM
-0x11A7C,tile_upload_dma_a,disasm/graphics/README.md via render_tiles docstring,verified,$1383C -> $11A7C -> $DA04 DMA verbatim
-0x11AE4,sprite_record_load,disasm/graphics/README.md via render_tiles docstring,verified,$B86AE loader; -> $11B2E -> $DA04 DMA
-0x12B82,rng,docs/logic.md 2.5,verified,glibc LCG; $12B82(n) = rand() % n; ~100 call sites; harness-proven
-0x2F030,level_from_xp,docs/logic.md 2.1,verified,smallest L with XP < 100*2^L; max level 8; harness-proven
-0x31958,max_hp,docs/logic.md 2.2,verified,min(20+15*level, 140); harness-proven
-0x31946,max_power,docs/logic.md 2.2,verified,(level+1)*1000; harness-proven
-0x2EA92,price_function,docs/logic.md 3.4,verified,attitude x0.64-x1.36; x2 at location 367; /2 goods special; harness-proven
-0x3B1EE,damage_melee,docs/logic.md 5.1,verified,dead distance term (inverted divs, always 0); harness-proven
-0x3A62E,combat_dispatch,docs/logic.md 4 + docs/spells.md 4,verified,+0x24 selects melee $3B1EE vs giant spell machine 0x3E2D4; harness 44/44
-0x3C2C0,spell_cost,docs/spells.md 3.1,verified,w4 * (modifier+1) * 3; harness-proven
-0x37D0E,power_deduct,docs/spells.md 3.2,verified,clamp; out-of-power HP -5 drain; harness-proven
-0x2155E,world_tick,docs/architecture.md #020 section,verified,step counter $FF0E16 mod 2400; palette fades $170DA; merchant attitude drift +5/-4
-0x1F296,verb_executor,docs/architecture.md #020 section,partial,0x1F296-~0x2077A; $FF00BE=-1 site at 0x20188; full case map is #021 work
-0x0E3B4,terrain_bitmap_decoder,docs/architecture.md #020 terrain section,partial,threaded decoder via $DF58 table; output bitmap $FF1EC0; NO direct callers; entry/stream source unknown
+address,name,size_bytes,caller_count,callee_count,callees,source
+0x000200,reset_entry,318,1,6,"0x0003AA,0x0004E6,0x000A14,0x00119E,0x04323C,0x0FD07C",repo docs + ghidra export
+0x0003AA,joypad_read_both,162,1,0,,repo docs + ghidra export
+0x00044C,FUN_0000044c,22,1,0,,ghidra 11.4.2 auto-analysis
+0x000462,FUN_00000462,18,1,0,,ghidra 11.4.2 auto-analysis
+0x000474,FUN_00000474,44,1,0,,ghidra 11.4.2 auto-analysis
+0x0004A0,FUN_000004a0,34,1,0,,ghidra 11.4.2 auto-analysis
+0x0004C2,FUN_000004c2,36,1,0,,ghidra 11.4.2 auto-analysis
+0x0004E6,FUN_000004e6,932,1,7,"0x00044C,0x000462,0x000474,0x0004A0,0x0004C2,0x00093E,0x00096C",ghidra 11.4.2 auto-analysis
+0x00088A,FUN_0000088a,36,1,0,,ghidra 11.4.2 auto-analysis
+0x0008AE,FUN_000008ae,36,1,1,0x00088A,ghidra 11.4.2 auto-analysis
+0x0008D2,FUN_000008d2,10,1,0,,ghidra 11.4.2 auto-analysis
+0x0008DC,FUN_000008dc,24,1,0,,ghidra 11.4.2 auto-analysis
+0x0008F4,FUN_000008f4,74,2,1,0x0008DC,ghidra 11.4.2 auto-analysis
+0x00093E,FUN_0000093e,46,1,0,,ghidra 11.4.2 auto-analysis
+0x00096C,FUN_0000096c,168,1,1,0x0008F4,ghidra 11.4.2 auto-analysis
+0x000A14,ram_clear_vdp_set2,158,1,1,0x000AB2,repo docs + ghidra export
+0x000AB2,FUN_00000ab2,584,1,5,"0x0008AE,0x0008D2,0x0008F4,0x000CFA,0x000D04",ghidra 11.4.2 auto-analysis
+0x000CFA,FUN_00000cfa,10,1,0,,ghidra 11.4.2 auto-analysis
+0x000D04,FUN_00000d04,142,1,0,,ghidra 11.4.2 auto-analysis
+0x00119E,main_init,210,1,2,"0x00D25C,0x0EB806",repo docs + ghidra export
+0x001270,hblank_handler,2,0,0,,repo docs + ghidra export
+0x001272,vblank_handler,216,0,1,0x0EB772,repo docs + ghidra export
+0x001350,joypad_queue_pop,68,9,0,,repo docs + ghidra export
+0x00D25C,game_dispatcher,50,1,7,"0x00D28E,0x011E06,0x014FB6,0x0173BC,0x0179B6,0x01B5D6,0x032D0E",repo docs + ghidra export
+0x00D28E,main_loop,1876,2,30,"0x001350,0x012B82,0x012FE8,0x017586,0x0179B6,0x01B918,0x01BA26,0x01E3B0,0x01E49A,0x01E5A0,0x01EEEE,0x01F296,0x0207D8,0x020884,0x020A36,0x020A88,0x02155E,0x0226BC,0x02619C,0x0265BE,0x026A8C,0x026CCA,0x02A2CA,0x02A562,0x02AD64,0x02AFF2,0x032284,0x032922,0x032C18,0x036A00",repo docs + ghidra export
+0x00D9E2,FUN_0000d9e2,12,11,0,,ghidra 11.4.2 auto-analysis
+0x00D9EE,FUN_0000d9ee,12,21,0,,ghidra 11.4.2 auto-analysis
+0x00D9FA,FUN_0000d9fa,10,1,0,,ghidra 11.4.2 auto-analysis
+0x00DA04,FUN_0000da04,142,5,0,,ghidra 11.4.2 auto-analysis
+0x00DA92,FUN_0000da92,158,0,0,,ghidra 11.4.2 auto-analysis
+0x00DB30,FUN_0000db30,156,0,0,,ghidra 11.4.2 auto-analysis
+0x00DBCC,FUN_0000dbcc,74,5,0,,ghidra 11.4.2 auto-analysis
+0x00DC16,FUN_0000dc16,74,3,0,,ghidra 11.4.2 auto-analysis
+0x00DC60,FUN_0000dc60,34,19,0,,ghidra 11.4.2 auto-analysis
+0x00DC82,FUN_0000dc82,72,1,1,0x00DCCA,ghidra 11.4.2 auto-analysis
+0x00DCCA,FUN_0000dcca,24,2,0,,ghidra 11.4.2 auto-analysis
+0x00DCE2,joypad2_read,56,5,2,"0x00DC82,0x00DCCA",repo docs + ghidra export
+0x00DD5C,lzss_decompress,166,1,0,,repo docs + ghidra export
+0x00DE02,FUN_0000de02,24,0,0,,ghidra 11.4.2 auto-analysis
+0x00DE1A,FUN_0000de1a,22,1,0,,ghidra 11.4.2 auto-analysis
+0x00DE30,FUN_0000de30,14,8,0,,ghidra 11.4.2 auto-analysis
+0x00DE3E,FUN_0000de3e,20,4,0,,ghidra 11.4.2 auto-analysis
+0x00DE52,FUN_0000de52,42,1,0,,ghidra 11.4.2 auto-analysis
+0x00DE7C,FUN_0000de7c,18,3,0,,ghidra 11.4.2 auto-analysis
+0x00DE8E,FUN_0000de8e,36,34,0,,ghidra 11.4.2 auto-analysis
+0x00DEB2,FUN_0000deb2,40,4,1,0x00DF0A,ghidra 11.4.2 auto-analysis
+0x00DEDA,FUN_0000deda,26,2,2,"0x00DEB2,0x00DF0A",ghidra 11.4.2 auto-analysis
+0x00DEF4,FUN_0000def4,12,3,1,0x00DF0A,ghidra 11.4.2 auto-analysis
+0x00DF0A,FUN_0000df0a,78,3,0,,ghidra 11.4.2 auto-analysis
+0x00E358,FUN_0000e358,298,15,0,,ghidra 11.4.2 auto-analysis
+0x01107A,FUN_0001107a,8,1,0,,ghidra 11.4.2 auto-analysis
+0x011082,palette_load,78,19,2,"0x00D9E2,0x00D9EE",repo docs + ghidra export
+0x0110D0,FUN_000110d0,58,0,2,"0x00D9E2,0x00D9EE",ghidra 11.4.2 auto-analysis
+0x01110A,FUN_0001110a,50,0,2,"0x00D9E2,0x00D9FA",ghidra 11.4.2 auto-analysis
+0x01113C,FUN_0001113c,98,12,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x01119E,FUN_0001119e,288,1,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x0112BE,FUN_000112be,344,1,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011416,FUN_00011416,248,3,4,"0x00D9EE,0x00DC60,0x00DEB2,0x01113C",ghidra 11.4.2 auto-analysis
+0x011514,FUN_00011514,116,3,3,"0x00D9EE,0x00DC60,0x011F3A",ghidra 11.4.2 auto-analysis
+0x011588,FUN_00011588,58,0,2,"0x01113C,0x011FAE",ghidra 11.4.2 auto-analysis
+0x0115C2,FUN_000115c2,98,0,2,"0x00DE7C,0x01113C",ghidra 11.4.2 auto-analysis
+0x011624,FUN_00011624,508,2,2,"0x00DE7C,0x01113C",ghidra 11.4.2 auto-analysis
+0x011820,FUN_00011820,168,10,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x0118C8,FUN_000118c8,130,3,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x01194A,tilemap_blitter,208,7,2,"0x00D9EE,0x00DC60",repo docs + ghidra export
+0x011A1A,FUN_00011a1a,98,12,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011A7C,tile_upload_dma_a,64,6,1,0x00DA04,repo docs + ghidra export
+0x011ABC,tile_upload,40,2,1,0x00DA04,repo docs + ghidra export
+0x011AE4,sprite_record_load,74,5,3,"0x011082,0x011B2E,0x013654",repo docs + ghidra export
+0x011B2E,FUN_00011b2e,42,1,1,0x00DA04,ghidra 11.4.2 auto-analysis
+0x011B58,FUN_00011b58,30,2,0,,ghidra 11.4.2 auto-analysis
+0x011B76,FUN_00011b76,66,8,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011BB8,FUN_00011bb8,32,0,2,"0x00DC82,0x00DCE2",ghidra 11.4.2 auto-analysis
+0x011BD8,FUN_00011bd8,114,7,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011C4A,FUN_00011c4a,80,2,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011C9A,FUN_00011c9a,334,5,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x011DE8,FUN_00011de8,30,2,0,,ghidra 11.4.2 auto-analysis
+0x011E06,vdp_setup_game,308,1,7,"0x00D9E2,0x00D9EE,0x00DC16,0x00DC60,0x011082,0x011B76,0x0173BC",repo docs + ghidra export
+0x011F3A,FUN_00011f3a,116,5,1,0x012024,ghidra 11.4.2 auto-analysis
+0x011FAE,FUN_00011fae,118,1,3,"0x00DEB2,0x00DEDA,0x012024",ghidra 11.4.2 auto-analysis
+0x012024,FUN_00012024,78,2,1,0x00DE7C,ghidra 11.4.2 auto-analysis
+0x012072,FUN_00012072,236,1,10,"0x00DE30,0x00DE3E,0x011624,0x011820,0x011A1A,0x011AE4,0x011F3A,0x012FB4,0x0138A8,0x0179B6",ghidra 11.4.2 auto-analysis
+0x01225C,FUN_0001225c,340,5,1,0x011082,ghidra 11.4.2 auto-analysis
+0x0123B0,FUN_000123b0,2002,1,14,"0x001350,0x00D9E2,0x00DBCC,0x00DCE2,0x011082,0x011820,0x011A1A,0x011A7C,0x011B76,0x011C9A,0x01225C,0x01383C,0x01386A,0x017586",ghidra 11.4.2 auto-analysis
+0x012B82,rng,122,38,2,"0x00DE8E,0x00DEF4",repo docs + ghidra export
+0x012BFC,FUN_00012bfc,36,2,1,0x00DEF4,ghidra 11.4.2 auto-analysis
+0x012C20,FUN_00012c20,808,3,16,"0x00D9E2,0x00DA04,0x00DC16,0x011082,0x011820,0x01194A,0x011A1A,0x011A7C,0x011AE4,0x011B58,0x011B76,0x011DE8,0x012BFC,0x01383C,0x013D84,0x01BA26",ghidra 11.4.2 auto-analysis
+0x012F48,FUN_00012f48,56,0,2,"0x001350,0x00DCE2",ghidra 11.4.2 auto-analysis
+0x012F80,FUN_00012f80,32,0,0,,ghidra 11.4.2 auto-analysis
+0x012FA0,FUN_00012fa0,20,23,1,0x012072,ghidra 11.4.2 auto-analysis
+0x012FB4,FUN_00012fb4,52,1,1,0x001350,ghidra 11.4.2 auto-analysis
+0x012FE8,FUN_00012fe8,1584,1,1,0x001350,ghidra 11.4.2 auto-analysis
+0x013654,FUN_00013654,168,5,3,"0x00DD5C,0x00DE1A,0x0136FC",ghidra 11.4.2 auto-analysis
+0x0136FC,dictionary_lookup,320,1,0,,repo docs + ghidra export
+0x01383C,record_load_96120,46,9,1,0x013654,repo docs + ghidra export
+0x01386A,FUN_0001386a,24,14,0,,ghidra 11.4.2 auto-analysis
+0x013882,FUN_00013882,38,1,0,,ghidra 11.4.2 auto-analysis
+0x0138A8,FUN_000138a8,1244,9,6,"0x011BD8,0x011C4A,0x011C9A,0x01386A,0x01E49A,0x032C18",ghidra 11.4.2 auto-analysis
+0x013D84,FUN_00013d84,2636,3,3,"0x011B76,0x011BD8,0x011C9A",ghidra 11.4.2 auto-analysis
+0x0147D0,FUN_000147d0,2020,3,17,"0x001350,0x00D9E2,0x00DBCC,0x00DE30,0x011082,0x0112BE,0x011820,0x01194A,0x011A1A,0x011A7C,0x011AE4,0x011B58,0x011B76,0x01225C,0x013654,0x01383C,0x01386A",ghidra 11.4.2 auto-analysis
+0x014FB6,intro_story_driver,92,1,4,"0x0123B0,0x012C20,0x0147D0,0x015012",repo docs + ghidra export
+0x015012,FUN_00015012,2982,1,27,"0x001350,0x00D28E,0x00D9E2,0x00DBCC,0x00DEF4,0x011082,0x01113C,0x01119E,0x011820,0x01194A,0x011A1A,0x011A7C,0x011B76,0x011BD8,0x011C9A,0x01225C,0x012BFC,0x012C20,0x01383C,0x01386A,0x0147D0,0x015C08,0x0171D6,0x0173BC,0x017586,0x0179B6,0x01B5D6",ghidra 11.4.2 auto-analysis
+0x015C08,FUN_00015c08,1782,2,12,"0x001350,0x00D9E2,0x00DBCC,0x011082,0x011820,0x01194A,0x011A1A,0x011A7C,0x011B76,0x01383C,0x01386A,0x0171D6",ghidra 11.4.2 auto-analysis
+0x0162FE,FUN_000162fe,240,1,6,"0x011820,0x01194A,0x01383C,0x01386A,0x0138A8,0x01BA26",ghidra 11.4.2 auto-analysis
+0x0163EE,FUN_000163ee,292,1,3,"0x00D9EE,0x00DC60,0x01C176",ghidra 11.4.2 auto-analysis
+0x016512,FUN_00016512,316,1,4,"0x00D9E2,0x00D9EE,0x00DC60,0x01C176",ghidra 11.4.2 auto-analysis
+0x01664E,FUN_0001664e,2686,1,27,"0x001350,0x00D9EE,0x00DC16,0x00DC60,0x00DCE2,0x00DE30,0x00DE3E,0x011082,0x01113C,0x011820,0x011A1A,0x011ABC,0x011BD8,0x011C4A,0x011F3A,0x01383C,0x01386A,0x013D84,0x0162FE,0x0163EE,0x016512,0x0170DA,0x0173BC,0x01C176,0x02C8F2,0x03081A,0x032D0E",ghidra 11.4.2 auto-analysis
+0x0170DA,FUN_000170da,252,3,2,"0x011082,0x01225C",ghidra 11.4.2 auto-analysis
+0x0171D6,FUN_000171d6,462,3,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x0173BC,request_song,48,10,2,"0x0173EC,0x0EB9C4",repo docs + ghidra export
+0x0173EC,song_dispatch,368,11,1,0x0EB88A,repo docs + ghidra export
+0x017586,FUN_00017586,268,34,4,"0x0EB93E,0x0EB968,0x0EBAF4,0x0EBAFA",ghidra 11.4.2 auto-analysis
+0x0176A0,FUN_000176a0,102,2,0,,ghidra 11.4.2 auto-analysis
+0x017706,FUN_00017706,174,1,3,"0x0176A0,0x0177B4,0x0430EC",ghidra 11.4.2 auto-analysis
+0x0177B4,FUN_000177b4,172,2,2,"0x0176A0,0x043006",ghidra 11.4.2 auto-analysis
+0x017860,FUN_00017860,342,1,7,"0x011082,0x01194A,0x011ABC,0x011AE4,0x01383C,0x0170DA,0x017586",ghidra 11.4.2 auto-analysis
+0x0179B6,soft_reset,16,4,1,0x000200,repo docs + ghidra export
+0x0179CA,FUN_000179ca,118,1,2,"0x00D9EE,0x00DC60",ghidra 11.4.2 auto-analysis
+0x017A40,FUN_00017a40,328,1,1,0x011BD8,ghidra 11.4.2 auto-analysis
+0x017B88,FUN_00017b88,6786,1,23,"0x00D9E2,0x00DBCC,0x00DEB2,0x011082,0x011820,0x01194A,0x011A1A,0x011A7C,0x011B76,0x011BD8,0x011C9A,0x01225C,0x012B82,0x012C20,0x01383C,0x01386A,0x0147D0,0x015C08,0x0171D6,0x0173BC,0x017586,0x0179CA,0x017A40",ghidra 11.4.2 auto-analysis
+0x01960A,FUN_0001960a,16,0,0,,ghidra 11.4.2 auto-analysis
+0x01961A,FUN_0001961a,120,1,0,,ghidra 11.4.2 auto-analysis
+0x019692,FUN_00019692,286,1,1,0x013654,ghidra 11.4.2 auto-analysis
+0x01B5D6,new_game_init,834,2,22,"0x012B82,0x01961A,0x01C0EC,0x01C21A,0x01D9BC,0x01DA10,0x01E390,0x01E562,0x020C5E,0x023A9E,0x023B84,0x0243D6,0x025456,0x02595A,0x026B58,0x026CCA,0x02A454,0x02B5F4,0x02CDD4,0x02E9A6,0x02F896,0x035612",repo docs + ghidra export
+0x01B918,FUN_0001b918,254,1,9,"0x00DA04,0x011DE8,0x0138A8,0x017860,0x01BA4E,0x01E5A0,0x026DD2,0x026E44,0x0275B0",ghidra 11.4.2 auto-analysis
+0x01BA16,FUN_0001ba16,16,2,0,,ghidra 11.4.2 auto-analysis
+0x01BA26,FUN_0001ba26,40,3,0,,ghidra 11.4.2 auto-analysis
+0x01BA4E,FUN_0001ba4e,1678,1,9,"0x00DE8E,0x00E358,0x01C176,0x020D58,0x0231D8,0x0232AC,0x0232D2,0x02343A,0x03D9F8",ghidra 11.4.2 auto-analysis
+0x01C0EC,FUN_0001c0ec,138,1,0,,ghidra 11.4.2 auto-analysis
+0x01C176,FUN_0001c176,164,13,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x01C21A,FUN_0001c21a,1504,4,8,"0x01BA16,0x01C83E,0x01E022,0x01E158,0x0210D8,0x024676,0x024916,0x025884",ghidra 11.4.2 auto-analysis
+0x01C802,FUN_0001c802,60,7,1,0x019692,ghidra 11.4.2 auto-analysis
+0x01C83E,FUN_0001c83e,84,9,0,,ghidra 11.4.2 auto-analysis
+0x01C892,FUN_0001c892,4324,2,7,"0x017586,0x01C176,0x01E158,0x020BFE,0x0258EE,0x026B08,0x02A562",ghidra 11.4.2 auto-analysis
+0x01D9BC,FUN_0001d9bc,84,1,0,,ghidra 11.4.2 auto-analysis
+0x01DA10,FUN_0001da10,92,1,0,,ghidra 11.4.2 auto-analysis
+0x01DA6C,FUN_0001da6c,1462,5,13,"0x0173BC,0x0173EC,0x020D0A,0x023AE0,0x024676,0x025456,0x02570A,0x025B4E,0x025C44,0x02A2CA,0x02D004,0x03090A,0x032D0E",ghidra 11.4.2 auto-analysis
+0x01E022,FUN_0001e022,50,15,0,,ghidra 11.4.2 auto-analysis
+0x01E0A4,FUN_0001e0a4,54,7,0,,ghidra 11.4.2 auto-analysis
+0x01E0E4,FUN_0001e0e4,50,4,0,,ghidra 11.4.2 auto-analysis
+0x01E11E,FUN_0001e11e,50,2,0,,ghidra 11.4.2 auto-analysis
+0x01E158,FUN_0001e158,50,2,0,,ghidra 11.4.2 auto-analysis
+0x01E18A,FUN_0001e18a,274,8,0,,ghidra 11.4.2 auto-analysis
+0x01E29C,FUN_0001e29c,244,2,0,,ghidra 11.4.2 auto-analysis
+0x01E390,FUN_0001e390,32,1,0,,ghidra 11.4.2 auto-analysis
+0x01E3B0,FUN_0001e3b0,118,3,0,,ghidra 11.4.2 auto-analysis
+0x01E426,FUN_0001e426,116,2,0,,ghidra 11.4.2 auto-analysis
+0x01E49A,FUN_0001e49a,76,4,0,,ghidra 11.4.2 auto-analysis
+0x01E4E6,FUN_0001e4e6,124,3,1,0x011BD8,ghidra 11.4.2 auto-analysis
+0x01E562,FUN_0001e562,62,1,0,,ghidra 11.4.2 auto-analysis
+0x01E5A0,FUN_0001e5a0,2338,5,11,"0x00DE30,0x00DE8E,0x01113C,0x011514,0x011A1A,0x01386A,0x01E4E6,0x02C8F2,0x02CC14,0x02CC62,0x02EA92",ghidra 11.4.2 auto-analysis
+0x01EEEE,FUN_0001eeee,936,1,7,"0x013882,0x026B58,0x026CCA,0x0297F0,0x02CC14,0x02CC62,0x035612",ghidra 11.4.2 auto-analysis
+0x01F296,verb_executor,5424,2,29,"0x00DE8E,0x0138A8,0x0173EC,0x017586,0x01E49A,0x020A88,0x026B58,0x026CCA,0x026DD2,0x026E44,0x029834,0x0298D2,0x02A22A,0x02BBD2,0x02C8F2,0x02CC62,0x02CCC4,0x02D38C,0x02DCCE,0x02EA92,0x02EE2A,0x02F11A,0x02F896,0x03019A,0x035612,0x03599C,0x037850,0x037A9A,0x03C2F4",repo docs + ghidra export
+0x0207D8,FUN_000207d8,172,1,2,"0x017586,0x020A88",ghidra 11.4.2 auto-analysis
+0x020884,FUN_00020884,434,5,8,"0x0138A8,0x017586,0x01E5A0,0x026CCA,0x026DD2,0x026E44,0x035612,0x03599C",ghidra 11.4.2 auto-analysis
+0x020A36,FUN_00020a36,82,1,2,"0x01F296,0x020884",ghidra 11.4.2 auto-analysis
+0x020A88,FUN_00020a88,374,7,9,"0x0138A8,0x017586,0x01E5A0,0x020884,0x026076,0x026CCA,0x026DD2,0x026E44,0x02A2CA",ghidra 11.4.2 auto-analysis
+0x020BFE,FUN_00020bfe,86,5,0,,ghidra 11.4.2 auto-analysis
+0x020C5E,FUN_00020c5e,12,1,1,0x020CF6,ghidra 11.4.2 auto-analysis
+0x020C6A,FUN_00020c6a,96,1,0,,ghidra 11.4.2 auto-analysis
+0x020CCA,FUN_00020cca,44,1,0,,ghidra 11.4.2 auto-analysis
+0x020CF6,FUN_00020cf6,20,2,2,"0x020C6A,0x020CCA",ghidra 11.4.2 auto-analysis
+0x020D0A,FUN_00020d0a,78,1,1,0x0210D8,ghidra 11.4.2 auto-analysis
+0x020D58,FUN_00020d58,70,2,0,,ghidra 11.4.2 auto-analysis
+0x020D9E,FUN_00020d9e,224,3,0,,ghidra 11.4.2 auto-analysis
+0x020E7E,FUN_00020e7e,448,2,3,"0x012FA0,0x023628,0x023770",ghidra 11.4.2 auto-analysis
+0x02103E,FUN_0002103e,154,4,0,,ghidra 11.4.2 auto-analysis
+0x0210D8,FUN_000210d8,188,6,2,"0x012FA0,0x02103E",ghidra 11.4.2 auto-analysis
+0x021194,FUN_00021194,360,3,8,"0x012FA0,0x01E022,0x02103E,0x0210D8,0x023628,0x023770,0x024916,0x025884",ghidra 11.4.2 auto-analysis
+0x0212FC,FUN_000212fc,270,1,6,"0x012FA0,0x02103E,0x0210D8,0x023628,0x024916,0x025884",ghidra 11.4.2 auto-analysis
+0x02140A,FUN_0002140a,222,15,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x0214E8,FUN_000214e8,110,1,0,,ghidra 11.4.2 auto-analysis
+0x02155E,world_tick,2688,1,20,"0x011082,0x012B82,0x0170DA,0x0173BC,0x0173EC,0x017586,0x01C83E,0x0214E8,0x023AE0,0x023B84,0x0253FE,0x025456,0x0258EE,0x0265BE,0x026B08,0x032C56,0x032D0E,0x035612,0x037B82,0x0EB9C4",repo docs + ghidra export
+0x021FE6,FUN_00021fe6,750,1,2,"0x0298D2,0x02A22A",ghidra 11.4.2 auto-analysis
+0x0222D4,FUN_000222d4,328,1,2,"0x02140A,0x025456",ghidra 11.4.2 auto-analysis
+0x02241C,FUN_0002241c,672,1,9,"0x01E0A4,0x024984,0x0253FE,0x025456,0x036E2E,0x037976,0x037D0E,0x03ABA6,0x03AE40",ghidra 11.4.2 auto-analysis
+0x0226BC,FUN_000226bc,2804,1,24,"0x012B82,0x017586,0x01BA16,0x01E0A4,0x01E0E4,0x01E18A,0x01E426,0x021194,0x02140A,0x021FE6,0x0222D4,0x02241C,0x024676,0x024984,0x025456,0x0265BE,0x02A22A,0x02AFF2,0x02B190,0x02D56A,0x032284,0x0337EE,0x03A62E,0x03E2D4",ghidra 11.4.2 auto-analysis
+0x0231D8,FUN_000231d8,212,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x0232AC,FUN_000232ac,38,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x0232D2,FUN_000232d2,360,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x02343A,FUN_0002343a,494,1,2,"0x00E358,0x012B82",ghidra 11.4.2 auto-analysis
+0x023628,FUN_00023628,328,3,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x023770,FUN_00023770,328,2,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x0238B8,FUN_000238b8,128,0,1,0x01107A,ghidra 11.4.2 auto-analysis
+0x023A9E,FUN_00023a9e,66,2,0,,ghidra 11.4.2 auto-analysis
+0x023AE0,FUN_00023ae0,164,13,2,"0x0210D8,0x025B4E",ghidra 11.4.2 auto-analysis
+0x023B84,FUN_00023b84,2130,16,5,"0x012FA0,0x025E12,0x031946,0x031958,0x032FFA",ghidra 11.4.2 auto-analysis
+0x0243D6,FUN_000243d6,672,12,5,"0x020D9E,0x020E7E,0x02140A,0x025CB4,0x025D2E",ghidra 11.4.2 auto-analysis
+0x024676,FUN_00024676,672,3,4,"0x020D58,0x020E7E,0x025CB4,0x025D2E",ghidra 11.4.2 auto-analysis
+0x024916,FUN_00024916,110,9,2,"0x0210D8,0x023AE0",ghidra 11.4.2 auto-analysis
+0x024984,FUN_00024984,1970,12,18,"0x012B82,0x017586,0x01C892,0x01E022,0x021194,0x02140A,0x02513E,0x025456,0x025D8E,0x025DE4,0x026076,0x0269F2,0x026B58,0x02BBD2,0x032730,0x032D4C,0x035612,0x03A62E",ghidra 11.4.2 auto-analysis
+0x02513E,FUN_0002513e,694,4,3,"0x012FA0,0x01C21A,0x02103E",ghidra 11.4.2 auto-analysis
+0x0253FE,FUN_000253fe,88,16,2,"0x01C892,0x01E022",ghidra 11.4.2 auto-analysis
+0x025456,FUN_00025456,692,28,4,"0x012FA0,0x02140A,0x025CB4,0x025D2E",ghidra 11.4.2 auto-analysis
+0x02570A,FUN_0002570a,378,9,4,"0x012FA0,0x01C21A,0x020D9E,0x0212FC",ghidra 11.4.2 auto-analysis
+0x025884,FUN_00025884,106,3,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x0258EE,FUN_000258ee,108,13,0,,ghidra 11.4.2 auto-analysis
+0x02595A,FUN_0002595a,500,4,3,"0x012FA0,0x023B84,0x025456",ghidra 11.4.2 auto-analysis
+0x025B4E,FUN_00025b4e,246,3,2,"0x012FA0,0x023AE0",ghidra 11.4.2 auto-analysis
+0x025C44,FUN_00025c44,112,1,2,"0x023AE0,0x024916",ghidra 11.4.2 auto-analysis
+0x025CB4,FUN_00025cb4,114,3,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x025D2E,FUN_00025d2e,88,3,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x025D8E,FUN_00025d8e,78,1,1,0x012FA0,ghidra 11.4.2 auto-analysis
+0x025DE4,FUN_00025de4,46,8,0,,ghidra 11.4.2 auto-analysis
+0x025E12,FUN_00025e12,612,1,0,,ghidra 11.4.2 auto-analysis
+0x026076,FUN_00026076,294,4,3,"0x020BFE,0x026B58,0x02A22A",ghidra 11.4.2 auto-analysis
+0x02619C,FUN_0002619c,1058,1,15,"0x0173BC,0x017586,0x01C176,0x020BFE,0x020D9E,0x023AE0,0x023B84,0x0243D6,0x025456,0x0269F2,0x026B58,0x032D0E,0x035612,0x0377FE,0x037840",ghidra 11.4.2 auto-analysis
+0x0265BE,FUN_000265be,1076,4,14,"0x0173BC,0x01C176,0x01DA6C,0x020BFE,0x023AE0,0x024984,0x025456,0x0258EE,0x026076,0x0269F2,0x026B08,0x026B58,0x026CCA,0x032D0E",ghidra 11.4.2 auto-analysis
+0x0269F2,FUN_000269f2,154,6,2,"0x01C176,0x01E022",ghidra 11.4.2 auto-analysis
+0x026A8C,FUN_00026a8c,124,5,4,"0x01DA6C,0x020A88,0x020BFE,0x026B58",ghidra 11.4.2 auto-analysis
+0x026B08,FUN_00026b08,80,3,0,,ghidra 11.4.2 auto-analysis
+0x026B58,FUN_00026b58,370,20,3,"0x00DE30,0x00DE52,0x01E3B0",ghidra 11.4.2 auto-analysis
+0x026CCA,FUN_00026cca,264,14,3,"0x011AE4,0x01E426,0x0275B0",ghidra 11.4.2 auto-analysis
+0x026DD2,FUN_00026dd2,114,5,4,"0x0118C8,0x011A1A,0x01386A,0x01E4E6",ghidra 11.4.2 auto-analysis
+0x026E44,FUN_00026e44,1750,5,10,"0x00DE30,0x01113C,0x011416,0x011514,0x0118C8,0x011A1A,0x01386A,0x01E4E6,0x0297F0,0x029834",ghidra 11.4.2 auto-analysis
+0x0275B0,FUN_000275b0,7530,2,21,"0x00DE30,0x00DE3E,0x00DE8E,0x00DEB2,0x01113C,0x011416,0x011624,0x011820,0x0118C8,0x011A1A,0x011F3A,0x01386A,0x0138A8,0x01E49A,0x02B656,0x02CC14,0x02CC62,0x02CD10,0x02EA92,0x02ECCA,0x030DA4",ghidra 11.4.2 auto-analysis
+0x02979A,FUN_0002979a,50,2,0,,ghidra 11.4.2 auto-analysis
+0x0297CE,FUN_000297ce,32,2,0,,ghidra 11.4.2 auto-analysis
+0x0297F0,FUN_000297f0,68,2,2,"0x02979A,0x0297CE",ghidra 11.4.2 auto-analysis
+0x029834,FUN_00029834,90,2,2,"0x02979A,0x0297CE",ghidra 11.4.2 auto-analysis
+0x0298D2,FUN_000298d2,2314,3,17,"0x00DE8E,0x0173EC,0x020884,0x020A88,0x02140A,0x026B58,0x02A2CA,0x02B656,0x02B6E0,0x02BBD2,0x02CE74,0x02D3DC,0x02EE6C,0x02EF4E,0x032D4C,0x035612,0x03599C",ghidra 11.4.2 auto-analysis
+0x02A22A,FUN_0002a22a,160,8,2,"0x012B82,0x0308C6",ghidra 11.4.2 auto-analysis
+0x02A2CA,FUN_0002a2ca,394,8,3,"0x017586,0x020884,0x02A454",ghidra 11.4.2 auto-analysis
+0x02A454,FUN_0002a454,270,3,1,0x02A22A,ghidra 11.4.2 auto-analysis
+0x02A562,FUN_0002a562,2050,3,19,"0x0173EC,0x017586,0x01DA6C,0x025456,0x02570A,0x0258EE,0x026076,0x0269F2,0x026B58,0x02AF72,0x02B656,0x02B68C,0x02BBD2,0x02CBA4,0x02D284,0x030628,0x0319EC,0x031A9C,0x035612",ghidra 11.4.2 auto-analysis
+0x02AD64,FUN_0002ad64,518,1,3,"0x01E022,0x0258EE,0x02A2CA",ghidra 11.4.2 auto-analysis
+0x02AF72,FUN_0002af72,128,1,3,"0x026B58,0x02C8F2,0x035612",ghidra 11.4.2 auto-analysis
+0x02AFF2,FUN_0002aff2,414,2,5,"0x017586,0x023B84,0x0243D6,0x025456,0x0258EE",ghidra 11.4.2 auto-analysis
+0x02B190,FUN_0002b190,290,3,4,"0x01E022,0x023B84,0x0243D6,0x0258EE",ghidra 11.4.2 auto-analysis
+0x02B402,FUN_0002b402,256,6,4,"0x01E022,0x023B84,0x0243D6,0x0258EE",ghidra 11.4.2 auto-analysis
+0x02B5F4,FUN_0002b5f4,98,2,1,0x02B68C,ghidra 11.4.2 auto-analysis
+0x02B656,FUN_0002b656,54,14,0,,ghidra 11.4.2 auto-analysis
+0x02B68C,FUN_0002b68c,84,9,0,,ghidra 11.4.2 auto-analysis
+0x02B6E0,FUN_0002b6e0,1258,3,10,"0x020A88,0x023AE0,0x023B84,0x0243D6,0x02A2CA,0x02B68C,0x02D004,0x02D50C,0x02EC64,0x0319EC",ghidra 11.4.2 auto-analysis
+0x02BBD2,FUN_0002bbd2,3324,11,10,"0x012FA0,0x0173EC,0x023B84,0x025456,0x026B58,0x02B68C,0x02F030,0x03019A,0x031946,0x031958",ghidra 11.4.2 auto-analysis
+0x02C8F2,FUN_0002c8f2,676,11,2,"0x012FA0,0x02B656",ghidra 11.4.2 auto-analysis
+0x02CBA4,FUN_0002cba4,70,1,2,"0x023AE0,0x02BBD2",ghidra 11.4.2 auto-analysis
+0x02CBEA,FUN_0002cbea,40,5,0,,ghidra 11.4.2 auto-analysis
+0x02CC14,FUN_0002cc14,78,6,2,"0x02C8F2,0x02CBEA",ghidra 11.4.2 auto-analysis
+0x02CC62,FUN_0002cc62,98,7,2,"0x02C8F2,0x02CBEA",ghidra 11.4.2 auto-analysis
+0x02CCC4,FUN_0002ccc4,76,1,1,0x02C8F2,ghidra 11.4.2 auto-analysis
+0x02CD10,FUN_0002cd10,196,1,2,"0x01113C,0x011514",ghidra 11.4.2 auto-analysis
+0x02CDD4,FUN_0002cdd4,160,2,0,,ghidra 11.4.2 auto-analysis
+0x02CE74,FUN_0002ce74,400,1,2,"0x02E8C8,0x03599C",ghidra 11.4.2 auto-analysis
+0x02D004,FUN_0002d004,640,4,4,"0x0243D6,0x025456,0x02570A,0x02595A",ghidra 11.4.2 auto-analysis
+0x02D284,FUN_0002d284,264,4,1,0x02B656,ghidra 11.4.2 auto-analysis
+0x02D38C,FUN_0002d38c,80,1,0,,ghidra 11.4.2 auto-analysis
+0x02D3DC,FUN_0002d3dc,284,2,4,"0x0138A8,0x01E5A0,0x026DD2,0x026E44",ghidra 11.4.2 auto-analysis
+0x02D50C,FUN_0002d50c,94,3,1,0x02A22A,ghidra 11.4.2 auto-analysis
+0x02D56A,FUN_0002d56a,1666,1,27,"0x0173BC,0x017586,0x020A88,0x02140A,0x023AE0,0x023B84,0x024916,0x024984,0x02513E,0x02570A,0x026A8C,0x026B58,0x026CCA,0x02A2CA,0x02A562,0x02B190,0x02B656,0x02B6E0,0x02BBD2,0x02C8F2,0x02D004,0x02D50C,0x031998,0x032D4C,0x035612,0x03599C,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x02DC0C,FUN_0002dc0c,194,1,2,"0x01C176,0x0253FE",ghidra 11.4.2 auto-analysis
+0x02DCCE,FUN_0002dcce,3024,1,24,"0x011082,0x012B82,0x01664E,0x0173EC,0x017586,0x023B84,0x025456,0x0269F2,0x026B58,0x02A22A,0x02B656,0x02B68C,0x02B6E0,0x02BBD2,0x02C8F2,0x02CBEA,0x02D50C,0x02DC0C,0x03081A,0x031998,0x0319EC,0x031A9C,0x032D4C,0x035612",ghidra 11.4.2 auto-analysis
+0x02E8C8,FUN_0002e8c8,222,2,0,,ghidra 11.4.2 auto-analysis
+0x02E9A6,FUN_0002e9a6,70,2,0,,ghidra 11.4.2 auto-analysis
+0x02E9EC,FUN_0002e9ec,84,1,0,,ghidra 11.4.2 auto-analysis
+0x02EA40,FUN_0002ea40,82,1,0,,ghidra 11.4.2 auto-analysis
+0x02EA92,price_function,466,3,0,,repo docs + ghidra export
+0x02EC64,FUN_0002ec64,100,2,0,,ghidra 11.4.2 auto-analysis
+0x02ECCA,FUN_0002ecca,350,1,2,"0x01113C,0x011416",ghidra 11.4.2 auto-analysis
+0x02EE2A,FUN_0002ee2a,66,2,3,"0x01386A,0x0138A8,0x013D84",ghidra 11.4.2 auto-analysis
+0x02EE6C,FUN_0002ee6c,226,2,2,"0x023B84,0x025456",ghidra 11.4.2 auto-analysis
+0x02EF4E,FUN_0002ef4e,226,1,2,"0x01E18A,0x025456",ghidra 11.4.2 auto-analysis
+0x02F030,level_from_xp,42,2,1,0x02F05A,repo docs + ghidra export
+0x02F05A,FUN_0002f05a,40,1,0,,ghidra 11.4.2 auto-analysis
+0x02F082,FUN_0002f082,78,1,1,0x02B68C,ghidra 11.4.2 auto-analysis
+0x02F0D0,FUN_0002f0d0,74,1,1,0x02B656,ghidra 11.4.2 auto-analysis
+0x02F11A,FUN_0002f11a,1916,1,5,"0x012FA0,0x017706,0x02B656,0x02C8F2,0x02F082",ghidra 11.4.2 auto-analysis
+0x02F896,FUN_0002f896,2170,2,20,"0x0177B4,0x01C21A,0x020CF6,0x023A9E,0x023B84,0x0243D6,0x025456,0x02595A,0x02A454,0x02B5F4,0x02B68C,0x02BBD2,0x02CDD4,0x02E9A6,0x02EE2A,0x02EE6C,0x02F030,0x02F0D0,0x031946,0x031958",ghidra 11.4.2 auto-analysis
+0x030110,FUN_00030110,138,1,2,"0x017586,0x03AACC",ghidra 11.4.2 auto-analysis
+0x03019A,FUN_0003019a,1166,2,5,"0x012B82,0x026A8C,0x026B58,0x032D4C,0x035612",ghidra 11.4.2 auto-analysis
+0x030628,FUN_00030628,498,1,4,"0x012B82,0x026B58,0x02BBD2,0x02CBEA",ghidra 11.4.2 auto-analysis
+0x03081A,FUN_0003081a,172,3,3,"0x023AE0,0x024916,0x02570A",ghidra 11.4.2 auto-analysis
+0x0308C6,FUN_000308c6,68,3,0,,ghidra 11.4.2 auto-analysis
+0x03090A,FUN_0003090a,1178,1,10,"0x01E022,0x023B84,0x0243D6,0x025456,0x02B656,0x02D004,0x02D284,0x02EA40,0x02EC64,0x0319EC",ghidra 11.4.2 auto-analysis
+0x030DA4,FUN_00030da4,2622,1,8,"0x00DE30,0x00DE3E,0x01113C,0x011F3A,0x01C176,0x02C8F2,0x02D284,0x0308C6",ghidra 11.4.2 auto-analysis
+0x0318C6,FUN_000318c6,128,3,1,0x037B82,ghidra 11.4.2 auto-analysis
+0x031946,max_power,18,3,0,,repo docs + ghidra export
+0x031958,max_hp,64,4,0,,repo docs + ghidra export
+0x031998,FUN_00031998,84,2,0,,ghidra 11.4.2 auto-analysis
+0x0319EC,FUN_000319ec,176,13,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x031A9C,FUN_00031a9c,1194,10,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x031F66,FUN_00031f66,460,0,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x03213C,FUN_0003213c,318,0,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x032284,FUN_00032284,1020,2,10,"0x011082,0x012B82,0x017586,0x01C176,0x01E0A4,0x01E18A,0x02B656,0x0318C6,0x0319EC,0x03268E",ghidra 11.4.2 auto-analysis
+0x03268E,FUN_0003268e,162,1,2,"0x01E022,0x024984",ghidra 11.4.2 auto-analysis
+0x032730,FUN_00032730,488,1,8,"0x017586,0x01C176,0x024916,0x02B656,0x0318C6,0x0319EC,0x031A9C,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x032922,FUN_00032922,742,1,3,"0x017586,0x01C176,0x01E3B0",ghidra 11.4.2 auto-analysis
+0x032C18,FUN_00032c18,62,2,0,,ghidra 11.4.2 auto-analysis
+0x032C56,FUN_00032c56,184,1,4,"0x023B84,0x0253FE,0x025456,0x0269F2",ghidra 11.4.2 auto-analysis
+0x032D0E,song_picker,62,6,0,,repo docs + ghidra export
+0x032D4C,FUN_00032d4c,506,6,6,"0x012FA0,0x013654,0x032F5E,0x033136,0x0331A4,0x0337D0",ghidra 11.4.2 auto-analysis
+0x032F5E,FUN_00032f5e,156,1,0,,ghidra 11.4.2 auto-analysis
+0x032FFA,FUN_00032ffa,316,1,1,0x00DEDA,ghidra 11.4.2 auto-analysis
+0x033136,FUN_00033136,110,1,0,,ghidra 11.4.2 auto-analysis
+0x0331A4,FUN_000331a4,1260,1,3,"0x012B82,0x02B656,0x02B68C",ghidra 11.4.2 auto-analysis
+0x0337D0,FUN_000337d0,30,1,0,,ghidra 11.4.2 auto-analysis
+0x0337EE,FUN_000337ee,4918,1,15,"0x00DE8E,0x012B82,0x012FA0,0x01E0A4,0x01E0E4,0x01E11E,0x01E18A,0x024984,0x0253FE,0x025456,0x034B50,0x034BD0,0x034D32,0x034DD8,0x037976",ghidra 11.4.2 auto-analysis
+0x034B50,FUN_00034b50,128,1,3,"0x012FA0,0x024984,0x025456",ghidra 11.4.2 auto-analysis
+0x034BD0,FUN_00034bd0,210,1,2,"0x012B82,0x0253FE",ghidra 11.4.2 auto-analysis
+0x034CA2,FUN_00034ca2,144,0,0,,ghidra 11.4.2 auto-analysis
+0x034D32,FUN_00034d32,166,1,2,"0x01E29C,0x024984",ghidra 11.4.2 auto-analysis
+0x034DD8,FUN_00034dd8,248,1,2,"0x01E29C,0x0253FE",ghidra 11.4.2 auto-analysis
+0x034ED0,FUN_00034ed0,244,0,2,"0x01E18A,0x0253FE",ghidra 11.4.2 auto-analysis
+0x034FC4,FUN_00034fc4,760,0,2,"0x00DE8E,0x0253FE",ghidra 11.4.2 auto-analysis
+0x0352C4,FUN_000352c4,168,0,1,0x0253FE,ghidra 11.4.2 auto-analysis
+0x0354A4,FUN_000354a4,366,0,2,"0x01E022,0x0253FE",ghidra 11.4.2 auto-analysis
+0x035612,FUN_00035612,68,17,2,"0x026B58,0x032D4C",ghidra 11.4.2 auto-analysis
+0x035656,FUN_00035656,838,1,8,"0x012B82,0x026B58,0x026CCA,0x02B656,0x02B68C,0x02BBD2,0x02D284,0x02E9EC",ghidra 11.4.2 auto-analysis
+0x03599C,FUN_0003599c,2158,5,18,"0x0173EC,0x01DA6C,0x0243D6,0x02513E,0x0253FE,0x025456,0x02570A,0x026B58,0x026CCA,0x0298D2,0x02A22A,0x02E8C8,0x035612,0x03620A,0x036954,0x036A00,0x036A94,0x03C636",ghidra 11.4.2 auto-analysis
+0x03620A,FUN_0003620a,204,1,5,"0x01E022,0x01E0A4,0x01E0E4,0x0253FE,0x02570A",ghidra 11.4.2 auto-analysis
+0x0362D6,FUN_000362d6,1550,2,16,"0x012B82,0x0173EC,0x01DA6C,0x024916,0x02513E,0x025456,0x02570A,0x0265BE,0x026A8C,0x026CCA,0x02A2CA,0x02D3DC,0x03081A,0x035612,0x035656,0x0383FE",ghidra 11.4.2 auto-analysis
+0x0368E4,FUN_000368e4,112,1,2,"0x00DE8E,0x0308C6",ghidra 11.4.2 auto-analysis
+0x036954,FUN_00036954,172,1,1,0x012B82,ghidra 11.4.2 auto-analysis
+0x036A00,FUN_00036a00,148,4,0,,ghidra 11.4.2 auto-analysis
+0x036A94,FUN_00036a94,616,2,1,0x03AAC4,ghidra 11.4.2 auto-analysis
+0x036CFC,FUN_00036cfc,236,1,1,0x03AF10,ghidra 11.4.2 auto-analysis
+0x036DE8,FUN_00036de8,70,1,1,0x01E18A,ghidra 11.4.2 auto-analysis
+0x036E2E,FUN_00036e2e,2400,1,21,"0x00DE8E,0x012B82,0x01E18A,0x025456,0x025DE4,0x026B58,0x026CCA,0x0362D6,0x036A94,0x036CFC,0x036DE8,0x03778E,0x0377FE,0x037840,0x037B82,0x0387AE,0x039F48,0x03B4AC,0x03B51E,0x03B748,0x03CB66",ghidra 11.4.2 auto-analysis
+0x03778E,FUN_0003778e,112,4,1,0x0377FE,ghidra 11.4.2 auto-analysis
+0x0377FE,FUN_000377fe,66,4,0,,ghidra 11.4.2 auto-analysis
+0x037840,FUN_00037840,16,5,0,,ghidra 11.4.2 auto-analysis
+0x037850,FUN_00037850,82,1,3,"0x0368E4,0x0378BA,0x037918",ghidra 11.4.2 auto-analysis
+0x0378BA,FUN_000378ba,94,1,0,,ghidra 11.4.2 auto-analysis
+0x037918,FUN_00037918,94,1,0,,ghidra 11.4.2 auto-analysis
+0x037976,FUN_00037976,176,3,3,"0x012B82,0x024984,0x0253FE",ghidra 11.4.2 auto-analysis
+0x037A26,FUN_00037a26,116,0,0,,ghidra 11.4.2 auto-analysis
+0x037A9A,FUN_00037a9a,232,1,0,,ghidra 11.4.2 auto-analysis
+0x037B82,FUN_00037b82,396,5,6,"0x017586,0x030110,0x036A00,0x03AACC,0x03AB8C,0x03B51E",ghidra 11.4.2 auto-analysis
+0x037D0E,power_deduct,456,1,6,"0x00DE8E,0x02140A,0x025456,0x025DE4,0x03B4AC,0x03C2C0",repo docs + ghidra export
+0x037ED6,FUN_00037ed6,16,0,0,,ghidra 11.4.2 auto-analysis
+0x037EE6,FUN_00037ee6,712,1,2,"0x0319EC,0x031A9C",ghidra 11.4.2 auto-analysis
+0x0381AE,FUN_000381ae,202,1,1,0x02140A,ghidra 11.4.2 auto-analysis
+0x038278,FUN_00038278,226,1,3,"0x012B82,0x0319EC,0x037840",ghidra 11.4.2 auto-analysis
+0x03835A,FUN_0003835a,164,1,3,"0x012B82,0x0319EC,0x031A9C",ghidra 11.4.2 auto-analysis
+0x0383FE,FUN_000383fe,112,8,2,"0x0319EC,0x031A9C",ghidra 11.4.2 auto-analysis
+0x03846E,FUN_0003846e,164,1,3,"0x0319EC,0x031A9C,0x037840",ghidra 11.4.2 auto-analysis
+0x038512,FUN_00038512,320,1,1,0x00DE8E,ghidra 11.4.2 auto-analysis
+0x03865C,FUN_0003865c,328,5,1,0x00DE8E,ghidra 11.4.2 auto-analysis
+0x0387AE,FUN_000387ae,162,1,1,0x00DE8E,ghidra 11.4.2 auto-analysis
+0x03888A,FUN_0003888a,174,7,3,"0x012B82,0x02140A,0x025DE4",ghidra 11.4.2 auto-analysis
+0x038938,FUN_00038938,234,1,2,"0x01C802,0x01C83E",ghidra 11.4.2 auto-analysis
+0x038A22,FUN_00038a22,94,1,0,,ghidra 11.4.2 auto-analysis
+0x038B00,FUN_00038b00,150,1,2,"0x0319EC,0x031A9C",ghidra 11.4.2 auto-analysis
+0x038B96,FUN_00038b96,196,1,4,"0x012B82,0x024984,0x0253FE,0x03AF92",ghidra 11.4.2 auto-analysis
+0x038C5A,FUN_00038c5a,400,1,6,"0x00DE8E,0x012B82,0x017586,0x02B402,0x03865C,0x03B152",ghidra 11.4.2 auto-analysis
+0x038DEA,FUN_00038dea,462,1,6,"0x00DE8E,0x012B82,0x017586,0x02B402,0x03865C,0x03B152",ghidra 11.4.2 auto-analysis
+0x038FB8,FUN_00038fb8,442,1,5,"0x00DE8E,0x017586,0x02B402,0x03865C,0x03B152",ghidra 11.4.2 auto-analysis
+0x039172,FUN_00039172,648,1,5,"0x00DE8E,0x017586,0x02B402,0x03865C,0x03B152",ghidra 11.4.2 auto-analysis
+0x0393FA,FUN_000393fa,888,1,9,"0x00DE8E,0x011082,0x012B82,0x01386A,0x017586,0x02B402,0x03865C,0x03B152,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039780,FUN_00039780,352,1,1,0x03CB66,ghidra 11.4.2 auto-analysis
+0x0398E0,FUN_000398e0,204,1,4,"0x02140A,0x025456,0x03AF92,0x03CB66",ghidra 11.4.2 auto-analysis
+0x0399AC,FUN_000399ac,72,1,1,0x03CB66,ghidra 11.4.2 auto-analysis
+0x0399F4,FUN_000399f4,64,1,1,0x03CB66,ghidra 11.4.2 auto-analysis
+0x039A34,FUN_00039a34,428,1,10,"0x00DE8E,0x02140A,0x0243D6,0x025DE4,0x031A9C,0x0383FE,0x03888A,0x03AF92,0x03CB66,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039BE0,FUN_00039be0,170,1,5,"0x00DE8E,0x0383FE,0x03888A,0x03AF92,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039C8A,FUN_00039c8a,170,1,5,"0x00DE8E,0x0383FE,0x03888A,0x03AF92,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039D34,FUN_00039d34,192,1,5,"0x00DE8E,0x0383FE,0x03888A,0x03AF92,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039DF4,FUN_00039df4,170,0,5,"0x00DE8E,0x0383FE,0x03888A,0x03AF92,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039E9E,FUN_00039e9e,170,1,5,"0x00DE8E,0x0383FE,0x03888A,0x03AF92,0x03CC4C",ghidra 11.4.2 auto-analysis
+0x039F48,FUN_00039f48,882,1,1,0x00DE8E,ghidra 11.4.2 auto-analysis
+0x03A62E,combat_dispatch,1174,2,10,"0x012B82,0x017586,0x01E0A4,0x02140A,0x023AE0,0x0258EE,0x025DE4,0x0318C6,0x03B1EE,0x03B4AC",repo docs + ghidra export
+0x03AAC4,FUN_0003aac4,8,1,0,,ghidra 11.4.2 auto-analysis
+0x03AACC,FUN_0003aacc,192,3,4,"0x0173EC,0x017586,0x026CCA,0x035612",ghidra 11.4.2 auto-analysis
+0x03AB8C,FUN_0003ab8c,26,2,1,0x03B4AC,ghidra 11.4.2 auto-analysis
+0x03ABA6,FUN_0003aba6,666,1,2,"0x01E022,0x0258EE",ghidra 11.4.2 auto-analysis
+0x03AE40,FUN_0003ae40,208,1,4,"0x024984,0x0253FE,0x025456,0x037976",ghidra 11.4.2 auto-analysis
+0x03AF10,FUN_0003af10,130,1,2,"0x01E022,0x0258EE",ghidra 11.4.2 auto-analysis
+0x03AF92,FUN_0003af92,448,9,5,"0x00DE8E,0x02140A,0x025DE4,0x03B152,0x03B1EE",ghidra 11.4.2 auto-analysis
+0x03B152,FUN_0003b152,156,7,1,0x012B82,ghidra 11.4.2 auto-analysis
+0x03B1EE,damage_melee,538,2,3,"0x00DE8E,0x03778E,0x037B82",repo docs + ghidra export
+0x03B408,FUN_0003b408,54,1,0,,ghidra 11.4.2 auto-analysis
+0x03B43E,FUN_0003b43e,110,1,2,"0x012B82,0x0258EE",ghidra 11.4.2 auto-analysis
+0x03B4AC,FUN_0003b4ac,26,5,0,,ghidra 11.4.2 auto-analysis
+0x03B4C6,FUN_0003b4c6,88,1,0,,ghidra 11.4.2 auto-analysis
+0x03B51E,FUN_0003b51e,410,2,9,"0x00DE8E,0x036A00,0x03AACC,0x03AB8C,0x03B6C0,0x03B748,0x03B988,0x03BA4C,0x03BB4E",ghidra 11.4.2 auto-analysis
+0x03B6C0,FUN_0003b6c0,136,1,2,"0x00DE8E,0x03B748",ghidra 11.4.2 auto-analysis
+0x03B748,FUN_0003b748,576,4,3,"0x00DE8E,0x012B82,0x03778E",ghidra 11.4.2 auto-analysis
+0x03B988,FUN_0003b988,196,1,0,,ghidra 11.4.2 auto-analysis
+0x03BA4C,FUN_0003ba4c,258,1,2,"0x03778E,0x03B748",ghidra 11.4.2 auto-analysis
+0x03BB4E,FUN_0003bb4e,492,1,8,"0x00DE8E,0x012B82,0x03BD3A,0x03BE8E,0x03C248,0x03C362,0x03C520,0x03CAF2",ghidra 11.4.2 auto-analysis
+0x03BD3A,FUN_0003bd3a,340,1,5,"0x012B82,0x02CC14,0x02CC62,0x03BE8E,0x03C520",ghidra 11.4.2 auto-analysis
+0x03BE8E,FUN_0003be8e,954,3,2,"0x00DE8E,0x03C248",ghidra 11.4.2 auto-analysis
+0x03C248,FUN_0003c248,120,5,1,0x03C2C0,ghidra 11.4.2 auto-analysis
+0x03C2C0,spell_cost,52,2,0,,repo docs + ghidra export
+0x03C2F4,FUN_0003c2f4,110,1,2,"0x03BE8E,0x03C248",ghidra 11.4.2 auto-analysis
+0x03C362,FUN_0003c362,446,1,6,"0x012B82,0x02CC14,0x02CC62,0x03C248,0x03C608,0x03CAD2",ghidra 11.4.2 auto-analysis
+0x03C520,FUN_0003c520,232,2,4,"0x02CC14,0x02CC62,0x03C248,0x03C608",ghidra 11.4.2 auto-analysis
+0x03C608,FUN_0003c608,46,2,0,,ghidra 11.4.2 auto-analysis
+0x03C636,FUN_0003c636,1166,1,3,"0x02BBD2,0x02CBEA,0x03CAD2",ghidra 11.4.2 auto-analysis
+0x03CAD2,FUN_0003cad2,32,2,1,0x012B82,ghidra 11.4.2 auto-analysis
+0x03CAF2,FUN_0003caf2,116,1,0,,ghidra 11.4.2 auto-analysis
+0x03CB66,FUN_0003cb66,230,7,0,,ghidra 11.4.2 auto-analysis
+0x03CC4C,FUN_0003cc4c,22,9,0,,ghidra 11.4.2 auto-analysis
+0x03CC62,FUN_0003cc62,462,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03CE30,FUN_0003ce30,782,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D13E,FUN_0003d13e,496,1,5,"0x00E358,0x011082,0x012B82,0x017586,0x0EB9EE",ghidra 11.4.2 auto-analysis
+0x03D32E,FUN_0003d32e,318,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D46C,FUN_0003d46c,188,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D528,FUN_0003d528,562,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D75A,FUN_0003d75a,566,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D990,FUN_0003d990,104,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03D9F8,FUN_0003d9f8,1952,1,18,"0x00E358,0x011082,0x012B82,0x017586,0x017B88,0x026A8C,0x026CCA,0x035612,0x03CC62,0x03CE30,0x03D13E,0x03D32E,0x03D46C,0x03D528,0x03D75A,0x03D990,0x03E198,0x0EB9EE",ghidra 11.4.2 auto-analysis
+0x03E198,FUN_0003e198,316,1,1,0x00E358,ghidra 11.4.2 auto-analysis
+0x03E2D4,FUN_0003e2d4,19280,1,65,"0x00DE8E,0x011082,0x012B82,0x017586,0x01C802,0x01C83E,0x01E022,0x01E0A4,0x01E0E4,0x01E11E,0x01E18A,0x021194,0x02140A,0x023AE0,0x023B84,0x0243D6,0x024916,0x024984,0x02570A,0x0258EE,0x02595A,0x025B4E,0x025DE4,0x02B190,0x02B402,0x031958,0x0319EC,0x031A9C,0x0362D6,0x0377FE,0x037840,0x037B82,0x037EE6,0x0381AE,0x038278,0x03835A,0x0383FE,0x03846E,0x038512,0x03888A,0x038938,0x038A22,0x038B00,0x038B96,0x038C5A,0x038DEA,0x038FB8,0x039172,0x0393FA,0x039780,0x0398E0,0x0399AC,0x0399F4,0x039A34,0x039BE0,0x039C8A,0x039D34,0x039E9E,0x03AF92,0x03B152,0x03B408,0x03B43E,0x03B4AC,0x03B4C6,0x03CB66",ghidra 11.4.2 auto-analysis
+0x042E34,eeprom_clock_seq_a,66,3,0,,repo docs + ghidra export
+0x042E76,eeprom_clock_seq_b,68,3,0,,repo docs + ghidra export
+0x042EBA,eeprom_shift_bit_out,52,2,0,,repo docs + ghidra export
+0x042EEE,FUN_00042eee,56,1,0,,ghidra 11.4.2 auto-analysis
+0x042F26,FUN_00042f26,56,1,0,,ghidra 11.4.2 auto-analysis
+0x042F5E,FUN_00042f5e,56,1,0,,ghidra 11.4.2 auto-analysis
+0x042F96,eeprom_shift_bit_in,50,2,0,,repo docs + ghidra export
+0x042FC8,eeprom_enable_init,16,1,0,,repo docs + ghidra export
+0x042FD8,FUN_00042fd8,46,2,2,"0x042E34,0x042E76",ghidra 11.4.2 auto-analysis
+0x043006,FUN_00043006,12,1,0,,ghidra 11.4.2 auto-analysis
+0x043012,eeprom_write,218,2,8,"0x042E34,0x042E76,0x042EBA,0x042EEE,0x042F26,0x042F5E,0x042F96,0x042FD8",repo docs + ghidra export
+0x0430EC,FUN_000430ec,8,1,0,,ghidra 11.4.2 auto-analysis
+0x0430F4,eeprom_read,328,1,6,"0x042E34,0x042E76,0x042EBA,0x042F96,0x042FD8,0x043012",repo docs + ghidra export
+0x04323C,save_validation,386,1,4,"0x00DCE2,0x042FC8,0x043012,0x0430F4",repo docs + ghidra export
+0x0EB772,sound_tick,86,1,1,0x0EBAC6,repo docs + ghidra export
+0x0EB806,sound_driver_upload,132,3,1,0x0EB920,repo docs + ghidra export
+0x0EB88A,start_song,86,1,2,"0x0EB806,0x0EBA7E",repo docs + ghidra export
+0x0EB8F2,FUN_000eb8f2,46,3,0,,ghidra 11.4.2 auto-analysis
+0x0EB920,thunk_FUN_000eb924,2,2,1,0x0EB924,ghidra 11.4.2 auto-analysis
+0x0EB922,FUN_000eb922,2,2,0,,ghidra 11.4.2 auto-analysis
+0x0EB924,FUN_000eb924,6,1,1,0x0EB922,ghidra 11.4.2 auto-analysis
+0x0EB92A,z80_access_prologue,20,1,0,,repo docs + ghidra export
+0x0EB93E,FUN_000eb93e,42,1,1,0x0EB8F2,ghidra 11.4.2 auto-analysis
+0x0EB968,FUN_000eb968,30,1,1,0x0EB8F2,ghidra 11.4.2 auto-analysis
+0x0EB986,FUN_000eb986,26,0,2,"0x0EB8F2,0x0EB93E",ghidra 11.4.2 auto-analysis
+0x0EB9C4,FUN_000eb9c4,42,2,1,0x0EB968,ghidra 11.4.2 auto-analysis
+0x0EB9EE,FUN_000eb9ee,18,2,2,"0x0EB92A,0x0EB968",ghidra 11.4.2 auto-analysis
+0x0EBA7E,load_song_data,72,1,1,0x0EB922,repo docs + ghidra export
+0x0EBAC6,sound_command_queue,46,1,2,"0x0EBAFE,0x0EBB04",repo docs + ghidra export
+0x0EBAF4,FUN_000ebaf4,6,1,1,0x0EBB04,ghidra 11.4.2 auto-analysis
+0x0EBAFA,FUN_000ebafa,4,1,0,,ghidra 11.4.2 auto-analysis
+0x0EBAFE,FUN_000ebafe,6,1,1,0x0EBB04,ghidra 11.4.2 auto-analysis
+0x0EBB04,FUN_000ebb04,106,2,2,"0x0EB806,0x0EB920",ghidra 11.4.2 auto-analysis
+0x0FD07C,runtime_checksum,80,1,0,,repo docs + ghidra export

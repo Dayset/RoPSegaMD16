@@ -2,7 +2,7 @@
 
 **Epic 1**  
 **Milestone:** M2  
-**Status:** open
+**Status:** done (2026-11-09)
 
 ## Goal
 Replace the linear sweep's guesses with Ghidra's recursive disassembly:
@@ -29,3 +29,28 @@ a function map of the whole ROM, with code/data boundaries proven.
 - **Acceptance:** MET: call-tree acceptance item (by #003 evidence, indexed here). PARTIAL: function list export exists only as the seed CSV. BLOCKED: full auto-analysis re-run + per-function code/data boundaries for 0x010000-0x043FFF and 0x0E0000-0x0FBFFF need rop-original.gen + Ghidra 11.4.2 + JDK 21 on the owner's machine; disasm/map.md ranges therefore stay likely/provisional.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation) — GHIDRA RUN DONE
+
+Toolchain installed in the agent VM: Temurin JDK 21.0.13 +
+Ghidra 11.4.2 PUBLIC (GitHub release). Headless import of a ROM
+copy + auto-analysis per docs/toolchain.md (52 s, exit 0), plus
+CreateMissingFunctions.py for the vector targets and
+ExportFunctions.py for the export (scripts in tools/ghidra/).
+
+- **438 functions, 1,434 unique-callee edges** exported to
+  disasm/ghidra/function_map.csv (full format: address, name,
+  size, caller/callee counts, callees, source). Auto-analysis
+  alone: 435/1,432; the three manual vector functions bring the
+  edge count to **exactly #003's 1,434** (function census +2 vs
+  #003's DumpCalls-derived 436 — different measure, recorded in
+  disasm/ghidra/README.md).
+- Boundaries decided: 0x010000–0x043FFF = 368 functions, 90.3%
+  coverage → **verified code** (rest embedded data).
+  0x0E0000–0x0FBFFF = only 18 functions/692 B (sound cluster +
+  tail) → **mostly data**, per-function split now in the CSV.
+  disasm/map.md updated for all three ranges.
+- Entry/VBlank/$4323C/$EB772 call trees: in the CSV (callees
+  columns) on top of the #003 architecture.md mapping.
+
+**Status after this update:** done (all acceptance items met).
