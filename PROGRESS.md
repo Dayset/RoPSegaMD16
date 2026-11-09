@@ -152,3 +152,5 @@ per-acceptance-item met/partial/blocked status. Summary:
 2. #017 (compression — `$DD5C` LZSS now identified + re-implemented in #004 and proven for all graphics in #005; remaining: check whether Nemesis/Kosinski/Enigma appear elsewhere) — the rest of Epic 3.
 3. Dayset picks the first mod target for #022 — difficulty, a spell, dialogue, or a fix.
 4. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 for #018, #031 for #019. Research (Epic 6) — #032–#036 are all junior-agent-ready now.
+
+- [x] **#022 target picked 2026-11-09** — Dayset chose Candidate A: fix the dead distance term in `$3B1EE`. Spec + evidence-first builder in `patches/distance-fix/` (harness expectation: D1/D7 28→31, dist sweep 38/31/30; other D-cases unchanged). Prior art checked: 2008 *Hand of Nexus* v2.0 hack is a cheat set, no damage-formula fix in its description. Patch bytes NOT yet generated — locate/apply/harness need `rop-original.gen` + Capstone/BlastEm on Dayset's machine; rebuild gate (#009/#013) still owed. #010's target is the same pick.

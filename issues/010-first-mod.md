@@ -25,3 +25,10 @@ Ship the first real change as a patch file, tested in an emulator.
 - **Acceptance:** MET: patch-workflow documentation. PARTIAL/BLOCKED: target pick is Dayset's (acceptance item 1) — agent must not pick it; emulator test needs the ROM + BlastEm on the owner's machine. Issue's own note says do not start before #009 — that dependency is still blocked.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 — target picked via #022
+
+Dayset picked the #022 target: **Candidate A, fix the dead
+distance term in `$3B1EE`** (see issues/022-first-mod.md update and
+patches/distance-fix/). That is also this issue's mod target.
+Patch generation remains blocked on the ROM/toolchain (as #022).
