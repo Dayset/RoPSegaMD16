@@ -10,23 +10,23 @@ Issues live in `issues/` — one file each. Update both together.
 
 | Epic | Name | Goal | Status |
 |---|---|---|---|
-| 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1 done) |
-| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003, #007 done; #019 open) |
-| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005 done) |
-| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (first patch shipped: music-off 2026-11-09; #022 target still TBD) |
+| 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1, M2, M5 done) |
+| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003, #007, #008, #019, #020 done; #021 in progress) |
+| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005, #006, #018 done; #017 in progress; #015/#016 open) |
+| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (music-off + #022 distance-fix shipped 2026-11-09; #010 still open) |
 | 5 | Tribute remake (Esenthel/Titan) | Recreate the same environment in a modern 3D engine — RE docs as spec, classic-isometric vs modern-3D, old vs new combat | 🟡 in progress (goal set 2026-11-09, issues #023–#031 open; #023/#024/#025/#029 ready to start) |
-| 6 | Research & history | Fansites, translations, interviews, reception — the reference database | 🟡 in progress (issues #032–#036 open, all ready to start) |
+| 6 | Research & history | Fansites, translations, interviews, reception — the reference database | 🟡 in progress (#033 substantially complete; #032/#034/#035/#036 partial) |
 
 ## Milestones
 
 | # | Milestone | Status |
 |---|---|---|
 | M1 | Repo + toolchain + first disassembly | ✅ done 2026-11-09 |
-| M2 | Code/data map + labelled entry/interrupts | 🟡 in progress |
-| M3 | Text + graphics + maps identified | 🟡 in progress (#004, #005, #006 done) |
+| M2 | Code/data map + labelled entry/interrupts | ✅ done 2026-11-09 (#003, #011, #019) |
+| M3 | Text + graphics + maps identified | 🟡 in progress (#004, #005, #006, #018 done; #017 in progress; #015/#016 open) |
 | M4 | Game logic mapped (stats/XP/gold/combat/spells) | 🟡 in progress (#007, #008, #020 done 2026-11-09; #021 remains) |
-| M5 | Rebuildable, byte-identical disassembly | ⬜ not started |
-| M6 | First real mod, shipped as a patch | 🟡 in progress (first patch shipped separately as music-off 2026-11-09; #022 target still TBD) |
+| M5 | Rebuildable, byte-identical disassembly | ✅ done 2026-11-09 (build.sh → verify_rebuild PASS; `cmp` byte-identical on all 1,048,576 bytes) |
+| M6 | First real mod, shipped as a patch | 🟡 in progress (#022 distance-fix shipped + verified 2026-11-09; #010 still open) |
 | M7 | Tribute remake in Esenthel/Titan (classic + modern, old + new combat) | 🟡 in progress (design `docs/tribute-remake.md`, issues #023–#031 open) |
 
 ## Issue board
@@ -41,20 +41,20 @@ Issues live in `issues/` — one file each. Update both together.
 | #006 | 3 | Maps / world data | ✅ done 2026-11-09 | M3 |
 | #007 | 2 | Game logic: stats, XP, gold, combat | ✅ done 2026-11-09 | M4 |
 | #008 | 2 | Spells / skills system | ✅ done 2026-11-09 | M4 |
-| #009 | 1 | Rebuildable byte-identical disassembly | ⬜ not started | M5 |
-| #010 | 4 | Patch workflow + first mod (target TBD) | ⬜ not started | M6 |
-| #011 | 1 | Ghidra recursive analysis + function map | ⬜ not started | M2 |
-| #012 | 1 | Split rebuildable asm: code vs incbin data | ⬜ not started | M2 |
-| #013 | 1 | Assembler verification: byte-identical rebuild gate | ⬜ not started | M5 |
-| #014 | 1 | Hardware-limits checklist + emulator/hardware test harness | ⬜ not started | M5 |
+| #009 | 1 | Rebuildable byte-identical disassembly | ✅ done 2026-11-09 | M5 |
+| #010 | 4 | Patch workflow + first mod (target TBD) | 🟡 in progress (target picked, #022 shipped) | M6 |
+| #011 | 1 | Ghidra recursive analysis + function map | ✅ done 2026-11-09 | M2 |
+| #012 | 1 | Split rebuildable asm: code vs incbin data | ✅ done 2026-11-09 | M2 |
+| #013 | 1 | Assembler verification: byte-identical rebuild gate | ✅ done 2026-11-09 | M5 |
+| #014 | 1 | Hardware-limits checklist + emulator/hardware test harness | ✅ done 2026-11-09 | M5 |
 | #015 | 3 | VDP register + VRAM layout map | ⬜ not started | M3 |
 | #016 | 3 | Tile/sprite/palette decoding + first rendered tileset | ⬜ not started | M3 |
-| #017 | 3 | Compression identification: Nemesis / Kosinski / Enigma | ⬜ not started | M3 |
-| #018 | 3 | Sound: Z80 driver + music/SFX map | ⬜ not started | M3 |
-| #019 | 2 | Save/SRAM validation + $DCE2 / $42FC8 / $43012 | ⬜ not started | M2 |
+| #017 | 3 | Compression identification: Nemesis / Kosinski / Enigma | 🟡 in progress (0x044000–0x05FFFF tested) | M3 |
+| #018 | 3 | Sound: Z80 driver + music/SFX map | ✅ done 2026-11-09 | M3 |
+| #019 | 2 | Save/SRAM validation + $DCE2 / $42FC8 / $43012 | ✅ done 2026-11-09 | M2 |
 | #020 | 2 | Main loop + game state machine | ✅ done 2026-11-09 | M4 |
-| #021 | 2 | Combat / XP / gold / spell tables + logic-flaw audit | ⬜ not started | M4 |
-| #022 | 4 | First mod: pick target + patch + verify | ⬜ not started | M6 |
+| #021 | 2 | Combat / XP / gold / spell tables + logic-flaw audit | 🟡 in progress (Bribe + food/water traced) | M4 |
+| #022 | 4 | First mod: pick target + patch + verify | ✅ done 2026-11-09 (shipped + verified) | M6 |
 | #023 | 5 | Esenthel engine setup & project skeleton | ⬜ not started | M7 |
 | #024 | 5 | Asset extraction pipeline (ROM → engine assets) | ⬜ not started | M7 |
 | #025 | 5 | World & overworld (Ushka Bau in 3D) | ⬜ not started | M7 |
@@ -148,10 +148,12 @@ per-acceptance-item met/partial/blocked status. Summary:
 
 ## Next
 
-1. #011 (Ghidra recursive analysis) + #019 (save validation) — the remaining M2 cluster.
-2. #017 (compression — `$DD5C` LZSS now identified + re-implemented in #004 and proven for all graphics in #005; remaining: check whether Nemesis/Kosinski/Enigma appear elsewhere) — the rest of Epic 3.
-3. Dayset picks the first mod target for #022 — difficulty, a spell, dialogue, or a fix.
-4. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 for #018, #031 for #019. Research (Epic 6) — #032–#036 are all junior-agent-ready now.
+1. Push `agent/all-open-issues` (now 11 commits ahead incl. this board sync) and update PR #1 — its head is still `b81e88a`, before M5.
+2. #015/#016 (VDP/VRAM + tiles/sprites) — now unblocked by the #011 function map, the M5 rebuild and BlastEm live-VRAM traces; #015's `$4323C` premise and #016's `0x060000` premise are both already disproven in their docs, so the work is the live trace, not the old wording.
+3. #021 remainder — debug-mode (`Diags On/Off`, `0x023934`) reachability, the Camp verb case in `$1F296` as the last named food/water candidate, live combat / save-corruption items from `docs/logic-audit.md` §5.
+4. #010 close-out — its acceptance is now met via the shipped #022 patch workflow; the issue file itself is still marked open.
+5. #017 remainder — trace `$E3B4` (threaded decoder) for the `0x044000–0x05FFFF` index table.
+6. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 for #018, #031 for #019. Research (Epic 6) — #033's maze GIF, #034's HG101/Pixelation thread, #035's release page and the 1991 vs 1992 date remain the honest dead-ends.
 
 - [x] **#022 target picked 2026-11-09** — Dayset chose Candidate A: fix the dead distance term in `$3B1EE`. Spec + evidence-first builder in `patches/distance-fix/` (harness expectation: D1/D7 28→31, dist sweep 38/31/30; other D-cases unchanged). Prior art checked: 2008 *Hand of Nexus* v2.0 hack is a cheat set, no damage-formula fix in its description. Patch bytes NOT yet generated — locate/apply/harness need `rop-original.gen` + Capstone/BlastEm on Dayset's machine; rebuild gate (#009/#013) still owed. #010's target is the same pick.
 
