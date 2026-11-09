@@ -36,6 +36,9 @@ cannot detect transpositions or compensating byte pairs, so
 forgeability experiment (corruption matrix on a real save image)
 is still owed — **needs ROM + BlastEm on the owner's machine**.
 Verdict: **proven weak by design; exploitability OPEN.**
+**Update (session #3): the matrix was run — §8.3. Exploitability
+PROVEN: a forged image validates (d1=0) and a compensating
+byte pair passes undetected. Q1 is closed.**
 
 ### Q2. Overflow in XP/gold/stats arithmetic? — PROVEN (mostly safe, two edges)
 - XP: capped at 13000, floored at 0 in `0x2C4E2` — but the cap path
@@ -122,6 +125,11 @@ it. Owed experiment: find the message's xref in the message routine
   xref search for `0x023934`/`0x02752A` in the Ghidra project +
   the `$1F296` verb-executor case map (the executor's full switch
   is the other big #021 unknown, architecture.md #020 section).
+- **Update (session #3): decided — §8.2.** The $2752A xref exists
+  ($26E44 options panel, pea at 0x26F04/0x26F28 and siblings);
+  the Diags toggle is executor case C=$37 at 0x205BC; the flag
+  ($FF0134) is live in the input decoder and persists in saves.
+  The $023934 format string itself has no reference anywhere.
 
 ## 4. Additional proven flaws (from #007/#008 — the fix list for #022/#027)
 
@@ -140,21 +148,42 @@ it. Owed experiment: find the message's xref in the message routine
 
 ## 5. Still open for #021 (needs ROM/emulator — exact blockers)
 
+**Session #3 update:** items 2, 3 and 4 below were closed in
+§8 (corruption matrix §8.3, debug mode §8.2, food/water §8.1);
+item 5's Bribe half was closed in §7.1. What remains is
+item 1 (live combat — attract run produced zero combat
+breakpoint hits, §8.4; still needs driven gameplay), the
+undecided halves of item 5, and item 6.
+
 1. Live combat: which damage path fires in a real fight (F9, and
    the giant function `0x3E2D4`'s block selection) — needs a
    save-state/input driver (architecture.md #020: bounded, no
    credible headless path without one).
-2. Save corruption matrix (Q1) and `$FF0168` mapping (#019 §5).
-3. Debug-mode xrefs (§3) + `$1F296` verb-executor full case map +
-   the (A,B,C,grp) → `$D28E` command-code mapping (#020 leftovers).
-4. Food/water consumption routine — still unlocated after #020
+2. ~~Save corruption matrix (Q1) and `$FF0168` mapping (#019 §5).~~
+   **Done at the validation level in §8.3** (d1 matrix run on
+   crafted EEPROM images). The $FF016A buffer *layout* remains
+   #019/open — a forged buffer's contents were not booted into
+   a loaded game state.
+3. ~~Debug-mode xrefs (§3) + `$1F296` verb-executor full case map +
+   the (A,B,C,grp) → `$D28E` command-code mapping (#020 leftovers).~~
+   **Mostly done in §8.1/§8.2:** the C-code switch at $2068E is
+   fully enumerated (28 cases); the Diags xref is traced. The
+   (A,B,grp) half of the executor dispatch and the $D28E
+   command-code mapping remain open.
+4. ~~Food/water consumption routine — still unlocated after #020
    (leads: `$FF0E16` readers `$2F1F0`/`$2FA2A`/`$302F0`/`$2EC80`;
-   guide rates in logic.md §3.7 remain hypotheses).
+   guide rates in logic.md §3.7 remain hypotheses).~~
+   **Done in §8.1:** the consumer is Camp ($3019A) — −100
+   Food/Water per Camp from $FFC364/$FFC366. The $302F0 lead
+   was Camp's own clock-set block. Guide per-step rates stay
+   unproven; no per-step decrement site exists in the trace.
 5. Bribe/attitude-repair action (attitude itself is proven in
    `$2EA92` + the `$2155E` drift loop +5/−4; the Bribe verb's
    effect is not), Doggonia 1000-gold entry fee, item-record
    +4..+9 bytes, `$FF012C` live mapping for `0x8E–0x92` spells,
    party-name writes of name indices 57–62 into `+0x14`.
+   **Bribe itself was traced in §7.1** (−10 gold, $2A22A
+   mode 8); the rest of this item remains open.
 6. Post-harness PC=0 fault root cause (logic.md §7.3) — the #008
    harness does NOT reproduce it, so it is specific to the #007
    harness's exit state (suspects listed there).
@@ -304,3 +333,158 @@ decrement site for them was found in this trace. If the game
 consumes them anywhere, the remaining unexamined candidate is
 the Camp verb's case in $1F296 — named here as the follow-up,
 not claimed.
+
+## 8. Session #3 traces 2026-11-09 (ROM + BlastEm debugger in VM)
+
+### 8.1 Camp — LOCATED, and it is the food/water consumer
+
+The executor's C-code dispatch (third switch in `$1F296`, at
+$2068E, on the byte in `$FFBB6C` copied from the verb record's
+C field) maps **C=$1C → case at 0x204CE** — Camp's own verb-table
+record (`0xCCE0A`, C=0x1C) feeds exactly this. The case is a
+single call: `$3019A(0)`. The full C-chain was enumerated this
+session (28 cases, $2027E–$20670 + exits); it also pins
+Bribe=C=$19→$20466 (confirming §7.1), Diags=C=$37→$205BC (§8.2)
+and two bare-exit stubs (C=$18→$20462, C=$1B→$204CA).
+
+`$3019A` (1,166 bytes, callers: the Camp case and `$2BBD2` at
+0x2BE58 with argument 1) does, in order:
+
+1. **Random encounter roll** (both argument modes): if
+   `$FF00AE==2`, `$26A8C` runs first. Then `RNG(3)` ($12B82):
+   nonzero (2/3) → no encounter. Zero (1/3) → spawn via
+   `$32D4C(3, 59, template, 0,0,0, $FFBB86, &local)` with
+   template ∈ {$5E, $4D, $4C} from a second `RNG(3)`, or $4E
+   if a further `RNG(30)` returns 0; the encounter message is
+   queued via `$26B58` with a name byte from the
+   template×6 record table at `$CECF2`. **Camping can start a
+   fight — it is not a safe rest.**
+2. **$FF00C0 table pass:** for i in 0..35, entries below 10 are
+   raised by 3 (shared clamp idiom, bounds −100..100); entry
+   34 is exempt. ($FF00C0 is a 36-word per-entity table also
+   written by the entity spawner $23B84 and copied by the
+   save-state code $2F896; its exact semantics remain open —
+   behaviour recorded, name not invented.)
+3. **World clock set:** if `$FF0E16 > 540` → `$FF0E16 = 0`,
+   else `$FF0E16 = 540`; message $35612(…, 0xD) / (…, 0xC)
+   respectively when the argument is 0. `$FF0124 = −1` (forces
+   the time-of-day/palette refresh in the world tick). This
+   is the block §7.2 saw at 0x302F0 and read as a standalone
+   "clamp pass" — in context it is Camp sleeping to the next
+   540/0 clock boundary (morning/midnight on the mod-2400
+   clock). §7.2's reading is corrected here.
+4. **Food/water consumption (argument 0 only — the verb-menu
+   Camp):** `$FFC364 = clamp($FFC364 − 100, 1, 30000)` and
+   `$FFC366 = clamp($FFC366 − 100, 1, 30000)` at
+   0x30346–0x303B4. **This is the missing consumption
+   routine.** It also settles §6: the fan PAR addresses
+   $FFC364/$FFC366 ARE the live Food/Water stores, and the
+   PAR value 0x7530 = 30000 is exactly this clamp's maximum.
+   Consumption is per-Camp (−100 each), not per-step; the
+   guide's per-step rates remain unproven and no per-step
+   decrement site exists in this trace.
+5. **Healing:** argument 0: for up to 6 roster entries
+   ($FF0E82 table), HP (+0x1C) and Power (+0x1E) each recover
+   **¼ of the deficit** toward their maxima (+0x20/+0x22).
+   Argument 1 (the `$2BBD2` item-path call): message 0xF via
+   $35612, then the same fields recover **½ of the deficit**
+   for 6 entries — and steps 4 (and the step-5 ¼ pass) are
+   skipped, while steps 1–3 still run as written.
+
+### 8.2 Debug mode (Diags) — REACHABLE; the setting is live, the overlay string is not referenced
+
+§3's owed xref experiment is done, plus a full flag trace:
+
+- **The toggle is a verb-executor case:** C=$37 → **0x205BC**:
+  `tst $FF0134; bne clear; set 1` — a pure toggle of the
+  Diags flag `$FF0134`, in the same dispatch chain as Bribe
+  (C=$19) and Camp (C=$1C). A sibling case (C=$38 → 0x205D8)
+  toggles `$FF013A` the same way.
+- **The options panel draws it:** `$26E44` (called from the
+  per-frame redraw `$1B918` when `$FF009C` is set, among other
+  callers) draws, when `$FF00AC != 0` and menu state
+  `$FFA7F8 == 8`: "Help On/Off" (flag `$FF0132`, strings at
+  $27522/$2752A), "Direct:" + "Lefty"/"Righty" (flag
+  `$FF0116`, $2753B/$27541), and **"Diags On"/"Diags Off"**
+  (flag `$FF0134`, $27548/$27551) via the text routine
+  $1113C at rows 12–15. The MAIN menu's `System` item carries
+  B=8 — matching the state-8 panel. The panel is live UI
+  code on the main loop's redraw path, not a leftover.
+- **The flag does something:** in the input decoder `$12FE8`,
+  pad-nibble values the normal direction tables reject
+  (≥ $A on the $FF0116 path at 0x13030; mirrored site
+  0x130B6) decode as **neutral (d6=4)** when Diags is OFF,
+  but are routed through a second jump table (0x13052 and
+  its twin) to direction codes 0–4 when Diags is ON.
+- **The flag persists:** `$2F11A` pushes `$FF0134` during
+  save serialisation (0x2F256); `$2F896` writes it back on
+  load (0x2FA90).
+- **The format string is a different story:** `0x023934`
+  (`N^NuSp:%i Dir:%i Ac:%i St:%i Dr:%i`) has **no reference
+  anywhere** — no lea/pea in the linear sweep, no longword
+  pointer in the ROM. The sprintf-style diagnostics overlay
+  it implies was either removed before shipping or reached
+  by a computed pointer no trace has found; the string
+  itself is inert in the shipped ROM.
+
+**Verdict: Diags is reachable and functional as a settings
+toggle (menu case + panel + input effect + save
+persistence). The debug *overlay* is not evidenced in the
+shipped code.** Runtime corroboration of the panel draw in
+the live game: §8.4.
+
+### 8.3 Save checksum — corruption matrix RUN (Q1 closed)
+
+$4323C's check, now read instruction by instruction
+(0x43272–0x432A6): S = (sum of buffer bytes 0..125) mod 256;
+the stored pair must satisfy buf[127] == S, buf[126] == ~S,
+buf[127] == ~buf[126]; mismatches count into d1; `d1==0`
+accepts. Four crafted EEPROM images were booted in BlastEm
+(scratch files in BlastEm's save dir; the repo ROM and the
+original blank EEPROM were restored afterwards), reading d1
+at the `tst.w d1` site (0x432A6) in the debugger:
+
+| Image | d1 | Verdict |
+|---|---|---|
+| Blank (all $FF) | 3 | all three checks fail — rejected |
+| Forged: bytes 0..125 = 0..125, pair set to S=0xC3 / ~S=0x3C | **0** | **accepted as a valid save** |
+| Forged + 1 byte flipped | 2 | detected (sum checks fail, pair check passes) |
+| Forged + compensating pair (+1/−1) | **0** | **corruption NOT detected** |
+
+**Q1 is closed: the save checksum is a format check, proven
+forgeable, and compensating corruption passes it.** (What a
+forged buffer's *contents* would do as a loaded game state
+was not tested — that needs the buffer layout, §5 of
+docs/save-validation.md; the claim stops at validation.)
+
+### 8.4 Runtime checks (BlastEm debugger, session #3)
+
+- **Combat paths never fire without input:** breakpoints at
+  $3A842 and $3B094 ($3B1EE's callers), at $3B1EE itself and
+  at the vestigial $40880 were armed from power-on through
+  the full intro and the main-loop attract sampling —
+  **zero hits**. No combat occurs in attract, so the live
+  damage-path question (F9) remains answered only at the
+  #008 dispatch level; it needs driven gameplay (input
+  driver), which this headless setup cannot do.
+- **Diags flag live value:** read at the $D28E stop as
+  **$FFFF** — Diags is ON by default in a fresh (no-save)
+  boot, matching the ROM RAM-init image at $FCE3C+$134
+  ($FF0132 Help is likewise $FFFF by default; both are
+  overwritten only by a loaded save via $2F896).
+- **Panel routine is called in the live loop:** advancing
+  to 0x1B9AA (the `jsr $26E44` site in $1B918) stopped
+  during the attract main loop — the game itself sets
+  $FF009C and takes the panel branch without any forcing.
+- **What could not be forced:** drawing the state-8 options
+  page rows (the "Diags On/Off" text) under debugger control
+  needs $FFA7F8=8 + $FF00AC=1 written to RAM, and this
+  BlastEm build's debugger `se` command **rejects every
+  memory-destination form tried** (bare, $-prefixed,
+  parenthesised, decimal — all "Invalid destinatino";
+  register destinations work, values parsed as decimal).
+  The row draw therefore rests on the static chain in §8.2
+  (panel code + string sites inside $26E44, which is
+  main-loop-called), not on a forced runtime screenshot.
+  Driving the real menu with pad input remains the other
+  route and needs an input driver.

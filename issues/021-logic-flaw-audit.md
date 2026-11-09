@@ -59,3 +59,58 @@ Map the numbers behind the game and audit them for logic flaws.
   Camp verb case in $1F296 (not yet traced).
 **Status stays in progress** — debug-mode reachability and
 the live-combat/save-corruption items from §5 remain open.
+
+## Update 2026-11-09 (session #3, ROM + BlastEm debugger) — CAMP, DEBUG MODE, SAVE MATRIX CLOSED
+
+Full traces in docs/logic-audit.md §8.
+
+- **Camp verb: TRACED.** Executor C-code dispatch (at
+  $2068E) enumerated — Camp is C=$1C → case 0x204CE →
+  $3019A(0). Camp: 1/3-chance random encounter spawn
+  ($32D4C), $FF00C0 table pass, world clock set to the
+  next 540/0 boundary, **Food −100 / Water −100**, party
+  heal ¼ of missing HP/Power. The $2BBD2 item path calls
+  $3019A(1): message + ½ heal, no provisions/clock cost.
+- **Food/water: RESOLVED (the §5 item-4 lead was Camp).**
+  The consumption routine is in $3019A at
+  0x30346–0x303B4, decrementing $FFC364/$FFC366 by 100
+  per Camp, clamped [1, 30000] — the fan PAR addresses
+  and their 0x7530 value are confirmed as the live
+  stores/clamp max. §7.2's 0x302F0 "clamp pass" is Camp's
+  own clock-set block (corrected in §8.1).
+- **Debug mode: REACHABILITY DECIDED.** The Diags toggle
+  is executor case C=$37 at 0x205BC (flag $FF0134); the
+  options panel $26E44 draws "Diags On/Off" from it
+  (state 8, strings $27548/$27551 — the $2752A xref the
+  audit owed is the pea at 0x26F28 and siblings); the flag
+  changes input decoding in $12FE8 (rejected pad nibbles
+  decode as directions only when ON) and persists via
+  $2F11A/$2F896. Live value at a fresh boot: $FFFF (ON by
+  default, from the ROM RAM-init image). The $26E44 call
+  branch was observed live in the attract loop
+  (advance-to 0x1B9AA stop). The format string $023934
+  has NO reference anywhere in the ROM — the sprintf
+  overlay is not evidenced in shipped code. Verdict:
+  **the setting is reachable and functional; the overlay
+  is inert.** (Forcing the state-8 page under the debugger
+  was blocked by a tool limit — BlastEm 0.6.3.4's `se`
+  rejects memory destinations; recorded in §8.4.)
+- **Save corruption matrix: RUN (Q1 closed).** $4323C's
+  check fully decoded (S = sum of bytes 0..125 mod 256;
+  stored pair must be S / ~S). Debugger d1 readbacks on
+  crafted EEPROM images (scratch files only): blank = 3
+  (rejected), forged pair = **0 (accepted)**, 1-byte
+  flip = 2 (detected), compensating pair = **0 (NOT
+  detected)**. The checksum is proven forgeable.
+- **Live combat: attract negative.** Breakpoints at
+  $3A842/$3B094/$3B1EE/$40880 armed power-on → intro →
+  main loop: zero hits. F9's live half still needs driven
+  gameplay (no input driver in this setup).
+
+**Status stays in progress.** Remaining: Q5 (Void-message
+trigger), live-combat items (F5/F9 live halves), F2's
+either/or, F7's caller proof, Doggonia fee, item-record
++4..+9 bytes, $FF012C live mapping, party-name writes,
+the (A,B,grp) executor-dispatch half, post-harness PC=0.
+All need driven gameplay or deeper static work — itemised
+in docs/logic-audit.md §5.
