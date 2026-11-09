@@ -40,3 +40,11 @@ data. Start now on the known map; grid-dependent parts wait for #006.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/025-world-overworld.md — spec from #006 data: terrain built on rec 9 (28x40, tileset rec 6, pal 11) + the 20 locations.htm city coordinates, scaled-map (press-B) behaviour specified, terrain-type enum decision recorded, and the walkable-grid gap handled as labelled Phase-1 approximation with the Phase-2 swap-in rule the acceptance requires.
+- **Acceptance:** PARTIAL: spec complete; no walkable world exists until #023 (engine) + #024 (export) land. The real terrain grid remains unlocated (lead: 0xE3B4 decoder / $FF1EC0 bitmap) — Phase 1 must be labelled approximation, per the issue.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

@@ -39,3 +39,11 @@ menu, status, inventory), and the sextant coordinate readout.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/029-dialogue-ui.md — spec from #020's verb table (MAIN/FIGHT/MOOD/PARTY/TACTIC/shop sets verbatim, incl. Feather-not-Arrow and the Keys/Rings C-value anomaly), dialogue display rules from #004 (dictionary export only, queue capacity initialised — F10 not reproduced), sextant readout format + sextant-item gating, Music menu with a WORKING Quiet, and the fight-anyone quirk decision (kept in both modes).
+- **Acceptance:** PARTIAL: spec complete; implementation waits on #023 + #024 text export (dialogue.json).
+
+**Status after this session:** in progress — partial (see below). Not marked done.

@@ -39,3 +39,11 @@ spell-related costs if they overlap.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/026-logic-reimplementation.md — full spec from docs/logic.md (dependency now met): verbatim formulas with addresses (XP/level/HP/Power/prices/buy/sell/RNG/attitude drift), the trading-table verification rule (20/21 reproduce; Gems 428 must NOT), food/water implemented as a labelled HYPOTHESIS table (routine unlocated), and per-flaw classic/fixed decisions (F5/F6/F7).
+- **Acceptance:** PARTIAL: spec complete; C++ implementation + test scene wait on #023. Food/water + Bribe remain hypotheses until the ROM routines are traced (see logic-audit §5).
+
+**Status after this session:** in progress — partial (see below). Not marked done.

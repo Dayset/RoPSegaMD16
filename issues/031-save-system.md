@@ -34,3 +34,11 @@ there is to save). Design can start now; implementation waits for
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/031-save-system.md — design: full save field list from #020 state + #007 structs; format decision = versioned JSON + SHA-256 (the original's weak byte-sum explicitly NOT reproduced); original-save import attempted on paper and answered NO for v1 with the reason.
+- **Acceptance:** PARTIAL: field list + format decided (acceptance items 1-2 as design). BLOCKED: implementation waits on #023; the import sub-item ('one real save imported') is blocked on #019's buffer layout, which is unknown — importing now would mean fabricating offsets.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

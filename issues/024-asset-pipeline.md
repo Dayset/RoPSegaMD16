@@ -42,3 +42,11 @@ Start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/024-asset-pipeline.md (design + export contract) + tools/extract_assets.py scaffold: palette exporter implemented (31 palettes -> palettes.json), other exporters wired to the proven decoders with explicit not-yet steps; the runtime-ROM question is ANSWERED (export at build time; shipped tribute does not read the ROM). Ran this session: exits with the exact blocker (no ROM).
+- **Acceptance:** PARTIAL: one documented command exists; palettes exporter real; tiles/maps/text exporters are scaffolds over tools/render_tiles.py, tools/decode_map.py, tools/extract_text.py. BLOCKED: a full export run needs rop-original.gen.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

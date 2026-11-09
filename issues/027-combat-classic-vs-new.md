@@ -40,3 +40,11 @@ waits for #007.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/027-combat.md — design: classic implements the traced $3A62E dispatch + $3B1EE formula verbatim (dead distance term included); new combat = fix list N1-N5, each mapped to a #021 flaw (F1/F4/F5/flat codes/revive asymmetry); runtime switch design; acceptance proof named (D1 case: 28 classic vs 31 new).
+- **Acceptance:** PARTIAL: design + fix list complete (acceptance items 1-2 on paper); no code until #023/#026. Live-combat half of the dispatch question (F9) remains open in the original-game sense but does not block the design.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

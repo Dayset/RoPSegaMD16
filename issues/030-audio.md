@@ -41,3 +41,11 @@ fan-site research can start now.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/030-audio.md — spec from #018: ROM-verified 19-entry song list (0xCD208) vs the 17 fan track names kept as a labelled hypothesis mapping; per-location playback model from $173BC/$32D0E behaviour; Quiet implemented as a real music_enabled flag checked at every request (the deliberate fix, in BOTH modes); SFX code list from $17586 call sites.
+- **Acceptance:** PARTIAL: spec complete; playback waits on #023 and on audio assets (the Z80 driver has never been disassembled — #018 partial — so SFX ship as code-keyed placeholders).
+
+**Status after this session:** in progress — partial (see below). Not marked done.

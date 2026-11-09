@@ -37,3 +37,11 @@ prototypes can start as soon as #023 lands.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/028-cameras.md — design: classic = faithful top-down scaled-map presentation (explicitly NOT textbook isometric, per the issue note) with the B-button map reveal; modern = orbit/zoom free camera (decision recorded, with rationale); switch design keeps all state in tribute/logic so no reload/state loss is possible by construction.
+- **Acceptance:** PARTIAL: decisions + design complete. BLOCKED: prototypes + the FPS acceptance numbers need #023 (engine) + #025 (world) on a real machine — no frame rate is estimated or claimed here.
+
+**Status after this session:** in progress — partial (see below). Not marked done.

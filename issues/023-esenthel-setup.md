@@ -40,3 +40,11 @@ Nothing. Start now — this is the first parallel track.
 
 ## Status
 open
+
+
+## Work done 2026-11-09 (agent session, no ROM in VM)
+
+- **Deliverable:** docs/tribute/023-engine-setup.md (decisions: source clone as sibling checkout, exact-commit recording, licence summary verified by web check 2026-11-09 with an editions discrepancy flagged, Windows+Linux first) + tribute/README.md skeleton with the per-issue directory ownership table.
+- **Acceptance:** PARTIAL: skeleton doc + build steps written. BLOCKED: engine source is not in this VM and acceptance requires building + opening a window — owner-machine work; engine commit + licence-file lines in tribute/README.md are deliberately blank until the clone exists.
+
+**Status after this session:** in progress — partial (see below). Not marked done.
