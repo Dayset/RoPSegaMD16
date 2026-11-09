@@ -11,11 +11,10 @@ BLASTEM=${BLASTEM:-/usr/games/blastem}
 
 sh tools/build.sh
 python3 tools/verify_rebuild.py build/rop-rebuilt.gen rop-original.gen
-cp build/rop-rebuilt.gen build/rop-test.gen
-python3 tools/checksum.py fix-all build/rop-test.gen 2>/dev/null || \
-  python3 tools/checksum.py fix-all --help >/dev/null 2>&1 || true
-# NOTE: checksum.py's exact CLI is in its docstring (docs/toolchain.md);
-# adjust the fix-all invocation above to match it on first real run.
+# checksum.py fix-all takes <src> <dst> (see its docstring) — the
+# earlier scaffold called it with one argument and hid the failure
+# behind `|| true`; fixed 2026-11-09 (VM tool-testing session).
+python3 tools/checksum.py fix-all build/rop-rebuilt.gen build/rop-test.gen
 
 [ -x "$BLASTEM" ] || { echo "test_harness: BlastEm not at $BLASTEM" >&2; exit 1; }
 rm -f "$HOME/address.log" /tmp/address.log

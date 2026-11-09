@@ -28,3 +28,11 @@ Prove the rebuild: assemble `disasm/src/` and get the original ROM back.
 - **Acceptance:** MET: gate script behaviour (by self-test); vasm question settled — GNU as is the assembler (vasm tarball 404 on 2026-11-09, docs/toolchain.md; the $hex trap is documented there and in build.sh). BLOCKED: an actual assemble-and-compare run needs disasm/src/ (#012) + assembler + ROM.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation, VM toolchain + ROM supplied)
+
+verify_rebuild.py: --selftest PASS and ROM-vs-itself PASS in the
+VM. checksum.py round-trips (incl. runtime checksum on a
+synthetic buffer) pass; real ROM verify-all OK. A real
+assemble-and-compare gate run still needs #012's disasm/src/.
+Toolchain details: docs/toolchain-vm.md.

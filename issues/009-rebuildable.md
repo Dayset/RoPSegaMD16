@@ -20,3 +20,14 @@ The disassembly reassembles to a byte-identical ROM (checksum aside).
 - **Acceptance:** MET: none fully. PARTIAL: build.sh exists (scaffold). BLOCKED: byte-identical output + clean-checkout repeatability need disasm/src/ (#012), rop-original.gen and m68k-linux-gnu-as — none present in this VM (verified: no ROM file, no assembler).
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation, VM toolchain + ROM supplied)
+
+ROM is now present in the agent VM (verified MD5) and the full
+#001 toolchain was reproduced there — Capstone 5.0.9 venv,
+GNU as 2.42, BlastEm 0.6.3.4 (docs/toolchain-vm.md). Tool tests:
+checksum/verify_rebuild/disassemble/extract_text/decode_map/
+render_tiles/extract_assets all pass against the real ROM
+(disassembly regenerates with exactly the #002 counts; text
+outputs byte-identical to committed). #009 itself remains
+blocked on #012 emission (disasm/src/), not on tooling.

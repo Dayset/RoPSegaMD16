@@ -28,3 +28,13 @@ A check every build and every mod must pass: it fits the hardware.
 - **Acceptance:** MET: checklist doc; gaps written down. PARTIAL: harness script exists but has never run — BLOCKED on #013 + BlastEm + ROM in this VM. 'Every mod ticks the checklist' is process, adopted via docs/first-mod-proposal.md referencing it.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation, VM toolchain + ROM supplied)
+
+BlastEm 0.6.3.4 now installed in the VM at /usr/games/blastem;
+original ROM boots headless (Xvfb + dummy audio, still running
+at timeout = pass signature). Both harness .s files assemble
+cleanly with GNU as 2.42. BUG FIXED in tools/test_harness.sh:
+its fix-all call missed the <dst> argument and swallowed the
+error with `|| true` — would have tested an un-fixed ROM.
+The full harness run still needs a rebuilt ROM (#013 gate).
