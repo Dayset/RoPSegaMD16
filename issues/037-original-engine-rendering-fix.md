@@ -144,3 +144,80 @@ and drive strip updates off tile-boundary crossings —
 the name tables' 128×32 geometry (R16=$03) and the
 $19692 4-slot chunk cache already provide the preload
 surface the acceptance describes.
+
+## Session #9 work log (2026-11-09) — candidates narrowed to the shared stack; gate still unmet, no patch
+
+**Candidate (1) — the $15012 scenes — statically characterised.**
+FUN_00015012 (2,982 B) has exactly **one caller**: the story
+dispatcher at 0x14FB4, which loops `bsr $15012` → dispatch on
+its return code (1/2/3 → $147D0 text crawls 0x20/0x3D/0x3B) →
+on 0 calls $12C20 and returns. $15012's 27 callees include
+$1194A (blitter), $11BD8/$11C9A (sprite writers), $147D0 +
+$15C08 (crawls), $12C20, and the $17860-family map drawers —
+it is the pictured-scene player, full stop. **It never calls
+$DC16** (not among its callees; $DC16's function-level
+callers are exactly $11E06, $12C20, $1664E). Whatever a
+$15012 scene does, it does not scroll via the choke point.
+
+**Correction to the session-#8 framing of the "composer".**
+The unrolled block at 0x13916–0x14782 is the tail of
+**$138A8**, which the repo docs already know as the
+**menu-display formatter** (docs/graphics.md §586) — a
+per-frame display routine that also draws entity sprites
+from the $1B446 6-byte frame-record table (its first $11BD8
+call, at 0x13916, draws the $FF02B2-indexed entity). It has
+**ten direct jsr call sites** (0x1207C, 0x16308, 0x1B97E,
+0x207CE, 0x209E6, 0x20BA8, 0x275D8, 0x29136, 0x2D4CA,
+0x2EE62 — fatal-error screen, map draw, verb executor
+cases, and more). Ghidra's exported call_edges.txt contains
+**none** of them — the "uncalled composer block" reading was
+an artefact of the export, the same failure mode the #011
+reconciliation documented. $138A8 is shared infrastructure:
+free play, menus, conversations, scripts and combat all
+composite through it. There is no cutscene-only renderer
+at this layer.
+
+**Candidate (2) — the Academy script event — its movement
+player is identified.** FUN_00020A88 (374 B) is called by
+the verb executor $1F296, by script-case code at 0x207D8,
+and by $D28E/$26A8C/$298D2/$2B6E0/$2D56A; it calls $138A8
+(the compositor) and the $26xxx step helpers ($26076,
+$26CCA, $26DD2, $26E44) — the **same helper family the
+free-play step handler FUN_00024984 uses**. Scripted entity
+movement is therefore the free-play movement stack driven
+by scripts, rendered by the shared compositor: candidate
+(2)'s "entity-step variant" is a parameterisation, not a
+separate engine.
+
+**Live checks (BlastEm, clean ROM).** (i) The session's
+address-coverage log (BlastEm `-l`, ~35 min of driven play:
+restores, camps, conversations, the beggar event + fight,
+two combats, menus) contains 15012, 138A8, 20A88, 1F296,
+DC16, 11BD8 and 24984 — all executed at least once across
+play + title attract (the attract runs the story dispatcher,
+so 15012's presence there is the intro flow, not free play).
+(ii) Breakpoints on $15012 and $20A88 armed during the
+intro's Book-of-Nexus crawl: **neither fired** in 30 s of
+crawl play, nor across the crawl→logo transition (the logo
+is drawn by the $147D0 family, maps.md) — both functions
+are scene-level, not per-frame, in that flow. The Academy
+beat itself was not reached (the #021 road blocker,
+docs/logic-audit.md §14.3, consumed the session's live
+time), so the issue's decisive driven experiment — $DC16 /
+$11BD8 watchpoints through the Academy opening — remains
+unrun.
+
+**Verdict.** Both named candidates collapse into the
+game's shared movement/compositing stack, and $15012 is
+positively excluded from the $DC16 scroll path. A
+Thalmus-specific frame drop, if real, must come from scene
+content (sprite count through $138A8's unrolled loop) or
+from script-step parameterisation ($20A88 driving the
+$26xxx helpers at a different rate) — neither of which a
+camera patch at $DC16 would address, and neither of which
+has been observed in the actual scene. **The trace-first
+gate is still unmet: no patch built, none shipped.** When
+the work resumes, the order is: reach the Academy opening
+(blocked on the same road as #021's follow-on), watchpoint
+$DC16 + breakpoint $20A88/$11BD8 through the Thalmus beat,
+and only then decide whether there is a mechanism to fix.
