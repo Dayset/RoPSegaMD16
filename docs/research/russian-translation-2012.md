@@ -54,6 +54,39 @@ and their one-line descriptions require reading the romhacking.ru
 release page — **owed** (browser read of that page; not fetched
 this session). Do not guess them here.
 
+### Update 2026-11-09 (continuation session) — release page still not found; one named lead
+
+Searches run 2026-11-09: Russian query ("Rings of Power русский
+перевод bybyc9lc9l 3 мода romhacking"), an English romhacking.net
+query, an exact-title Russian query, and a site-targeted Russian
+query. **The romhacking.ru release page itself did NOT surface
+in any of them and was not read — this is recorded as not found,
+not as checked-and-empty.**
+
+One lead surfaced, explicitly **not** the release page and **not
+settled**: the NES Ninja ROM listing for the game
+(http://nesninja.com/game/sega/rings-of-power/roms) catalogues
+bybyc9lc9l-translation ROM variants named: the base
+`[T+Rus_bybyc9lc9l]`, **(4 Mods Hack)**, **(Easy Hack)**,
+**(Ero Hack)** and **(Money Hack)**, plus a separate
+`[T+Rus_bybyc9lc9l]` "The Hand of Nexus Hack" file. This
+suggests the bundled mod variants circulate under the names
+Money Hack / Easy Hack / Ero Hack — consistent with §034's
+earlier note that the IA [RUS] collection lists a "Money Hack"
+variant — but ROM-set file names are not the release page's
+mod list: the count also disagrees ("+ 3 мода" on the release
+vs a "4 Mods Hack" combined variant in the set, and the
+archer-randomness removal of §1 maps to none of the three names
+obviously). The identity of "the other two mods" therefore
+remains **UNVERIFIED** pending the release page itself.
+
+Background find: an Emu-Land forum interview with bybyc9lc9l
+(https://www.emu-land.net/forum/index.php/topic,68103.0/imode.html)
+confirms he took up Rings of Power (SMD) after a suggestion by
+se1katsu and rebuilt its dictionary text system into plain
+blocks with Russian gender/number splits (matching §2); it
+contains no mod list.
+
 ## 4. User comments (acceptance item 4)
 
 - **Music-off bug comment:** recorded in `patches/music-off/README.md`

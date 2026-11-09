@@ -49,3 +49,10 @@ open
 - **Acceptance:** MET: technical approach (diff-verified in #004) + the dictionary hint + comments. PARTIAL: only one of the '3 mods' is identifiable from repo evidence (archer-randomness removal); the other mods' one-liners need the romhacking.ru release page read — owed, not guessed. The patch was not re-downloaded this session (by design it stays out of the repo).
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation session)
+
+- **romhacking.ru release page: NOT found.** Four searches run (Russian by-author/mod query, English romhacking.net query, exact-title Russian query, site-targeted Russian query); the release page did not surface in any of them and was not read. Recorded honestly in docs/research/russian-translation-2012.md §3 — not claimed as checked.
+- **New lead (unverified, not the release page):** NES Ninja's ROM listing (http://nesninja.com/game/sega/rings-of-power/roms) catalogues bybyc9lc9l variants named (4 Mods Hack), (Easy Hack), (Ero Hack), (Money Hack), plus a Hand of Nexus translated variant. This suggests the bundled mods circulate as Money / Easy / Ero hacks — consistent with the IA [RUS] "Money Hack" listing from #034 — but set file names are not the release page's mod list, the count disagrees ("+3 мода" vs a combined "4 Mods" variant), and none of the names obviously maps to the known archer-randomness removal. **The other two mods remain UNVERIFIED; do not treat the lead as the answer.**
+- **Background:** Emu-Land interview with bybyc9lc9l confirms he took the game up on se1katsu's suggestion and rebuilt the dictionary text system into plain blocks with gender/number splits (matches the diff findings); no mod list there.
+- **Still open:** read the romhacking.ru release page itself (or a Wayback capture of it) and record the 3 mods from its own text.
