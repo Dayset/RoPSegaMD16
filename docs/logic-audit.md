@@ -203,8 +203,11 @@ only 3 references in the whole ROM, all writes inside `$4323C`
 itself (`0x43240` clr, `0x432B6` =1 for the `$E0` clear-path,
 `0x432F6` =-1 for failure). Entry at `0x30C` ignores `$4323C`'s
 return value and resets the stack (`movea.l #0, a7`). A corrupt
-save is **never rejected at boot**; the Load handler (C=14 →
-`0x202CC`, calls `$2A22A`/`$298D2`) never checks `$FF0168` either.
+save is **never rejected at boot**; the real Load handler (C=81 →
+`0x20652`, calls `$2F896`) never checks `$FF0168` either.
+(Corrected in #019: the original text here said "C=14 →
+`0x202CC`" — case 14 is the 'Goods' shop verb, not Load; see
+`docs/save.md` §6.)
 
 **Pad-2 combos (CODE-VERIFIED).** `$E0` (B+C+Start on pad 2) at
 boot → `$FF0168=1`, buffer zeroed, `$FF01E8=$FF`, fill loop via
@@ -464,8 +467,8 @@ full map):**
 |---|---|---|
 | 8 | `$2027E` | |
 | 13 | `$2029E` | |
-| 14 | `$202CC` | **Load** |
-| 15 | `$202FA` | **Save** |
+| 14 | `$202CC` | 'Goods' shop verb (calls `$2A22A`/`$298D2`) — **not** Load (corrected in #019) |
+| 15 | `$202FA` | **not** Save (corrected in #019) |
 | 16 | `$2031C` | |
 | 17 | `$20332` | |
 | 18 | `$20370` | `$FF0132` Help toggle |
@@ -485,9 +488,9 @@ full map):**
 | 54 | `$205BC` | **Diags `$FF0134` toggle** |
 | 55 | `$205D8` | **Combat `$FF013A` toggle** |
 | 56 | `$205F4` | |
-| 80 | `$2063C` | |
-| 81 | `$20652` | |
-| 82 | `$20670` | |
+| 80 | `$2063C` | Music |
+| 81 | `$20652` | **Load** — calls `$2F896` (corrected in #019; was mislabelled as case 14) |
+| 82 | `$20670` | **Save** — calls `$2F11A` (corrected in #019; was mislabelled as case 15) |
 | 100 | `$20194` | |
 | 101 | `$201EA` | |
 | 102 | `$20226` | |

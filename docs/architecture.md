@@ -593,7 +593,7 @@ VBlank handler; the VBlank handler does frame counter + joypad +
 sound tick only. (Overview fix itself is a one-line edit, left for
 review — this file records the correction.)
 
-## $4323C and its helpers — call-graph level (full analysis is #019)
+## $4323C and its helpers — call-graph level (full analysis is #019, see `docs/save.md`)
 
 `$4323C` (386 bytes) is called once from entry (`0x30C`; its only
 call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
@@ -606,10 +606,16 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
   (resp. `$00`/`$40`/`$C0`/`$80`) to `$200000` with NOP delays.
 - `$42EBA` — shift **one bit out**: `lsl d0` → `roxr d1`, bit 6 of
   the `$200000` word is the clock (clear → write → set → write →
-  clear → write). Data bit on D0, clock on D6.
-- `$42F96` — shift **one bit in**: write `$80`, write `$C0`, read
+  clear → write). **Data bit on D7, clock on D6** (corrected in
+  #019 — the old text said "DI = D0", which misread CPU register d0
+  as data-bus bit D0; see `docs/save.md` §2).
+- `$42EEE` — shift **one bit in**: write `$80`, write `$C0`, read
   `$200000` → d1, write `$80`; the read bit comes back on D7
-  (`asl.b d1` / `roxl d0`).
+  (`asl.b d1` / `roxl d0`). (Corrected in #019 — the old text
+  labelled this routine `$42F96`.)
+- `$42F96` — **ACK read**: write `$80`, write `$C0`, read `$200000`
+  → d1, write `$80`; the caller does `tst.b d1; bpl` — ACK = DO bit
+  7 LOW (0); bit 7 = 1 means no-ACK/error.
 - `$43012` — EEPROM **read** (block): takes a buffer pointer, address
   and count off the stack, stores them at `$FF0150–$FF015C`, clocks the
   command out via `$42EBA` ×8 (with `or.w #1` in the command word — the
@@ -628,14 +634,19 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
   so it must be the write.**
 - So the save hardware is a **Microwire-style serial EEPROM**
   bit-banged through the cartridge `$200000` window (separate DI/DO/
-  CLK lines: DI = D0, CLK = D6, DO = D7). Chip identity (93C46 family
-  is the usual suspect) is **unknown** — #019 must confirm it.
-  Corroboration: BlastEm auto-detected an EEPROM from the
-  `$200000` access pattern and saved a **128-byte** `save.eeprom`
-  (all `$FF` — erased state, the game read it at boot and found it
-  blank), matching the 128-byte buffer at `$FF016A`. Note the ROM
-  header declares **no backup RAM** (bytes `0x1B0–0x1BF` are spaces)
-  — the EEPROM is only discoverable from the code, not the header.
+  CLK lines: **DI = D7, CLK = D6, DO = D7** — corrected in #019;
+  DI and DO share data-bus bit D7). Chip identity (93C46 family
+  is the usual suspect) is **unknown** — #019 did not confirm it.
+  Corroboration: BlastEm's `rom.db` lists this ROM (`T-50176`) as
+  `EEPROM { type i2c, size 128 }` with `bits_read { 7 sda }` and
+  `bits_write { 6 scl, 7 sda }` — an independent match for the
+  wiring. BlastEm auto-detected the EEPROM from the `$200000`
+  access pattern and saved a **128-byte** `save.eeprom`, matching
+  the 128-byte buffer at `$FF016A`. Note the ROM header declares
+  **no backup RAM** (bytes `0x1B0–0x1BF` are spaces) — the EEPROM
+  is only discoverable from the code, not the header. (Also #019:
+  BlastEm's fresh EEPROM reads as `0x00`, not `0xFF` — a real
+  erased 93C46 reads `0xFF`.)
 - `$DCE2` — **joypad port 2 read** (shared utility, not
   save-specific): same two-phase pattern as `$3AA` on `$A10005`,
   returns the inverted button byte in d0. Ghidra xrefs: 8 call sites
@@ -655,8 +666,10 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
   `$F0` if either combo is held, else the raw pad-2 byte. BlastEm
   log shows the validation branches (`0x43316`, `0x4333A`,
   `0x4332E`, `0x432F6`, `0x432B6`) all execute on a clean boot.
-  What the buffer holds (character data? which slots?) and what the
-  return value means to callers is #019's work.
+  Full analysis is #019 (`docs/save.md`): the buffer holds the
+  EEPROM image (magic `0x2A` + parity + 1001-bit packed game state
+  in `$FFA800`); the byte-sum check is vestigial — a valid save
+  fails it 3/3 — and `$FF0168` is never read by any code.
 
 ## Joypad read — $3AA (0x3AA–0x44A) — verified
 
@@ -692,11 +705,24 @@ graph to 446 functions / 1,449 edges; exports are under
   decided per function; entry, VBlank, `$4323C`, and `$EB772` call
   trees mapped. Exports under `disasm/ghidra/`; `disasm/map.md`
   updated.
-- **#019 (save validation):** EEPROM chip identity; the `$FF016A`
-  128-byte buffer's layout (what is stored where); the exact ACK/
-  error semantics of `$43012`/`$430F4`; what `$4323C`'s return value
-  means; whether the pad-2 `$E0`/`$B0` combos are a deliberate
-  "clear save" feature or a side effect of the validation path.
+- **#019 (save validation): DONE 2026-11-09** — see `docs/save.md`
+  (new doc). Medium decided: **128-byte serial EEPROM**, Microwire
+  bit-bang via `$200000`, **DI = D7, CLK = D6, DO = D7** (corrects
+  the "DI = D0" line above); `$DCE2`/`$42FC8`/`$43012`/`$430F4` fully
+  traced; `$E0` = B+C+Start, `$B0` = A+C+Start on pad 2; `$FF0168`
+  mapped (0/1/−1) and re-verified never read; the real format is
+  magic `0x2A` + `$176A0` parity + 1001-bit packed `$FFA800`, and a
+  valid save **fails** `$4323C`'s byte-sum check 3/3 (harness-proven)
+  — the check is vestigial. Save/load round-trip proven end to end
+  (`$2F11A` → `0x48`, `$2F896` → `0x49`, magic `0x2A`, parity
+  `0x1B` verified by independent recomputation). Real Load/Save are
+  `$2068E` cases **81/82** (corrects the #021 "C=14" label — case 14
+  is the 'Goods' shop verb). Open: chip identity (93C46 family
+  unproven), `$FF00C0` table meaning, `$FFBB6C` setter, `$2F896`'s
+  `0x4E` acceptance. BlastEm notes: fresh EEPROM reads as `0x00`
+  (not `0xFF`); it writes `save.eeprom` on exit but does not reload
+  it, so a live boot-from-save was not observed — persistence is
+  proven at the file level + via `$43012`. M2 is now COMPLETE.
 - **#020 (main loop / state machine): DONE 2026-11-09** — see the
   "Main loop + game state machine" section above. What it left
   open for #021: the exact mapping from the `0xCCDB8` verb-table
