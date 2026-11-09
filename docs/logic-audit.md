@@ -237,3 +237,70 @@ FF04A2 vs FF05DA on recruitment.
   the above: the stable ones are globals/struct-slot-0, the
   party blocks sit in the general entity table whose occupancy
   depends on spawn order.
+
+## 7. Continuation traces 2026-11-09 (ROM + Ghidra map in VM)
+
+### 7.1 Bribe — LOCATED (executor case in $1F296)
+
+The Bribe action is a case inside the verb executor `$1F296`,
+at **0x20466–0x204C6**:
+
+1. Gate: `jsr $1E49A($FF0E18)` must return 0 (an
+   interaction-state test on the current target record), else
+   the case exits.
+2. Funds check: the leader's gold (char struct +0x2A, read via
+   the $FF02DE base) is compared with **10** (`cmpi.w #$a`);
+   below 10 the case exits silently.
+3. Cost: `$2BBD2(1, -10, 0x400, leader)` — exactly **−10 gold**,
+   matching the walkthrough claim (10 gold) with code evidence.
+4. Effect: `$2A22A(8, 0, leader)` then `$298D2(result)` — the
+   attitude/mood adjustment is applied through the same helper
+   the neighbouring conversation cases use (sibling cases pass
+   9, 0x16, 0x17, 0x18 after the same $1E49A gate). $2A22A walks
+   related characters via struct fields +0x14/+0x26 and the RNG
+   ($12B82); the final +0x22 attitude write sits inside that
+   helper's downstream and was not isolated to a single
+   instruction in this trace — the claim stops there.
+   The refusal line "How dare you insult my honor by trying to
+   bribe me." lives in the dialogue layer; which gate failure
+   selects it was not traced.
+
+So: Bribe exists, costs exactly 10 gold, requires ≥10 gold and
+a bribable interaction state, and applies its attitude effect
+via $2A22A mode 8. The earlier "not located in code" note in
+docs/logic.md §3.6 is superseded by this trace.
+
+### 7.2 Food/water — the $FF0E16 complex is the world clock, NOT provisions
+
+All named $FF0E16 readers/writers were traced:
+
+- **world_tick $2155E (0x215B8)**: `$FF0E16 = ($FF0E16 + 1) mod
+  2400` once per tick (divs #$960, remainder via swap). It is a
+  **tick counter**, initialised by new_game_init to 540
+  (0x1B7A2) or 2100 (0x1B812) depending on mode.
+- The derived scale `$FF0E16 / 18` drives periodic events:
+  world_tick calls $170DA when the quotient is exactly 30
+  under state flags ($FF0124/$FF0126), and $170DA itself is a
+  calendar/clock routine (formats the counter with the
+  $CCB18/$CCC38 tables).
+- **0x302F0** is a clamp/normalise pass inside a 36-entry loop:
+  values above 540 are cleared to 0 with message 0xD via
+  $35612, values at/below are set to 540 with message 0xC —
+  clock-field normalisation, not consumption.
+- **0x2EC80/0x2EC9C** are threshold classifiers on the same
+  quotient (>30 ⟺ counter > 540).
+- **0x2FA2A** writes $FF0E16 from the $FFA800 record stream —
+  the save/load state copy.
+- The $32C56 call inside world_tick (0x21806) passes
+  (1, leader struct +0xE, leader struct +0xC) = position
+  coordinates; $32C56 is a what's-at-this-position lookup
+  (iterates via $269F2), not a provisions routine.
+
+**Verdict:** no per-step Food/Water consumption routine
+exists among the $FF0E16 sites — the suspected "step counter"
+is the world clock. Food/Water remain ordinary goods in the
+$2BBD2 inventory system (records 186/187); no tick-driven
+decrement site for them was found in this trace. If the game
+consumes them anywhere, the remaining unexamined candidate is
+the Camp verb's case in $1F296 — named here as the follow-up,
+not claimed.

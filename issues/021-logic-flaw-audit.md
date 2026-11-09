@@ -41,3 +41,21 @@ Map the numbers behind the game and audit them for logic flaws.
   routine's `bne` with `rts` — the bypass, verified against the
   ROM. All other codes land in the unmapped 0x9C00-0xA500 block;
   two fan-list anomalies pinned (docs/research/game-genie-decoded.md).
+
+## Update 2026-11-09 (continuation) — BRIBE + FOOD/WATER TRACED
+
+- **Bribe: LOCATED.** Executor case at 0x20466–0x204C6 in
+  $1F296: gate $1E49A($FF0E18)==0, gold ≥ 10 check, −10 gold
+  via $2BBD2(1, −10, 0x400, leader), attitude effect via
+  $2A22A(8, 0, leader) + $298D2. Full trace in
+  docs/logic-audit.md §7.1. (docs/logic.md's "not located"
+  note is superseded.)
+- **Food/water: honest negative for the named sites.**
+  $FF0E16 is the world clock (mod-2400 tick counter in
+  world_tick), not a provisions store; none of
+  $2F1F0/$2FA2A/$302F0/$2EC80 consume food/water, and the
+  $32C56 call in $2155E is a position lookup. Trace in
+  docs/logic-audit.md §7.2. Remaining candidate named: the
+  Camp verb case in $1F296 (not yet traced).
+**Status stays in progress** — debug-mode reachability and
+the live-combat/save-corruption items from §5 remain open.
