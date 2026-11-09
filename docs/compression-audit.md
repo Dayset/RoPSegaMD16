@@ -139,3 +139,57 @@ only one left: **input stream for the threaded decoder at
 $E3B4** (#020), which consumes a headerless byte stream via a
 jump table — consistent with everything observed. Decisive test
 remains: trace what sets a0 when $E3B4 is entered.
+
+## Update 2026-11-09 (session #4) — $E3B4 TRACED: decoder CONFIRMED, stream source REFUTED for this block
+
+The decisive trace the audit owed is done. The decoder's real
+entry is **$E358** (the bytes just before it are a mask/pattern
+table, which is why linear sweeps missed it):
+
+- $E358 pops four stack words: index, xbase (forced even), row,
+  variant. It loads **a0 = *(u32 table at $5F524)[index] +
+  $603E4**, optionally skips records (negative row: each skipped
+  record advances by its first byte's high nibble), then falls
+  into $E3B4 (variant 0) or branches to $E412 (variant != 0).
+- Direct callers exist (the "#020: no callers" note was about
+  $E3B4 itself): `jsr $E358` at $1BC1A/$1BC3C/$1BC84 (a band
+  renderer: loops rows in steps of 7, record $230 among them)
+  and $23234/$2326C/$2329E/$232C6/$23346/$233A6/$2342C.
+- The pointer table has **944 entries** spanning exactly
+  $5F524–$603E3 — it sits at the **tail of the 0x044000 block**
+  and ends precisely where the streams begin. The streams
+  themselves live at **$0603E4–$096069**, NOT in the block.
+- Mechanics (now fully read): per command byte, the low nibble
+  plus the xbase select a cell offset ($435C0) within a row-pair
+  band ($436E0); the high nibble plus 2 bits of the cell index
+  select a writer block via the $DF58 table (256 entries,
+  114 unique targets: the two loop continuations $E3E2/$E43C
+  and writer families at $E47C+ and $10078+). Writers stamp
+  stream bytes into the $FF1EC0 bitmap (33-byte rows) as
+  `(old & mask[$433C0][v]) | v`; variant B first expands each
+  byte through the $434C0 nibble-swap table. A 0x00 stream byte
+  terminates the call (exit via $11074).
+
+**Reimplementation:** `tools/decode_e358.py` (writer patterns
+extracted symbolically from the blocks themselves — all 114
+handler targets modelled, none unmodelled). Validation:
+**943/943 records consume exactly their table-delimited byte
+length under both variants.** A wrong key or stamp-count model
+desynchronises within a few commands; this is a byte-exact
+format proof.
+
+**Verdicts for #017:**
+- Threaded decoder: **CONFIRMED** — it is a real, custom,
+  threaded-code bitmap codec (neither Nemesis, Kosinski,
+  Enigma, nor $DD5C), and its decoder now exists in tools/.
+- "The 0x044000–0x05FFFF block is its input stream":
+  **REFUTED.** The streams are at $0603E4+. Of the block, only
+  the tail (the $5F524 pointer table) belongs to this system.
+- The block's bulk (and the 55-entry index at its head)
+  remains **unidentified**: no longword anywhere references
+  0x044000, Ghidra finds no functions, and no tested codec
+  matches. It is the last unidentified region of the ROM;
+  the honest status is "consumer unknown", not a guessed codec.
+- Graphics-vs-maps for the decoder streams: they are **map
+  data** — the $1BCxx caller renders map bands into $FF1EC0
+  (the "MM map" bitmap of #006/docs/maps.md).

@@ -44,3 +44,30 @@ hypothesis is the only one standing, and its decisive test
 (trace a0 at $E3B4 entry) belongs to the #020 follow-up.
 **Status: in progress** — range tested, codec question narrowed
 to the $E3B4 trace.
+
+## Update 2026-11-09 (session #4) — $E3B4 TRACED, DECODER WRITTEN
+
+- **Entry found:** $E358 (stack-arg prologue). a0 =
+  table[$5F524][index] + $603E4; variant selects $E3B4/$E412.
+  Direct callers: $1BC1A/$1BC3C/$1BC84 + $23234 family.
+- **Decoder written:** tools/decode_e358.py — full threaded
+  format (command byte → cell offset $435C0 + row band $436E0
+  → writer via $DF58; mask table $433C0; variant-B expansion
+  $434C0; output bitmap $FF1EC0, 33-byte rows). All 114 writer
+  targets modelled symbolically; **943/943 records consume
+  exactly their table length under both variants.**
+- **Hypothesis verdict:** decoder CONFIRMED (custom threaded
+  codec); "streams = the 0x044000 block" REFUTED — streams are
+  at $0603E4–$096069 (944 records); the block's tail
+  ($5F524–$603E3) is the decoder's pointer table.
+- **Graphics-vs-maps:** the streams are map data (band
+  renderer $1BCxx → $FF1EC0 "MM map" bitmap).
+- disasm/map.md rows updated for both blocks.
+- **Remaining gap:** the 0x044000 block's bulk + its head
+  index (55×10 B) still have no identified consumer (no
+  longword refs to $044000 exist). That is now the block's
+  only open question; the codec question this issue was
+  opened for is answered for every region except that bulk.
+
+**Status: in progress** — codec/decoders done; 0x044000 bulk
+consumer unidentified.
