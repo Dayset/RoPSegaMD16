@@ -2759,3 +2759,116 @@ disassembly line; registers must be read explicitly.
 **ROM integrity.** `rop-original.gen` MD5 re-verified unchanged:
 `30c18fdbe2183f64702ae9f1a45d63f9`. No commit or push made by this
 issue (parent verifies and pushes).
+
+---
+
+## 23. Session #10 — route to Mind solved STATICALLY (terrain/step model); live drive under way (2026-11-09)
+
+### 23.1 The step/terrain model (from code)
+
+Step handler FUN_00024984 calls the terrain query FUN_0001C892,
+which fills a tile-info struct (base = handler `a6-$22`): +0 X,
++2 Y, +4/+6 clamped destination, +8 movement mode, +$A dx, +$C dy,
++$14 entry/interaction code, +$18 result code (0 = step OK,
+$FE out-of-bounds, $FF blocked/too-steep, $E6 combat trigger,
+$E7 special), +$1A food cost, +$1C water cost. The handler charges
+the costs at $24F38 only when $FF00AE == 1, clamped [1, 30000],
+from $FFC364/$FFC366 — §10.1's per-step drain, mechanism-side.
+
+- **Mode** = `$25D8E`(entity field +6): field < $100 → mode = low
+  byte; high byte 1→6, 2→5, 3→7; anything else → fatal error $192
+  via $12FA0. Base costs by mode (set at $1C892 entry): mode 0 →
+  (2,2); mode 1 → (3,1) — matching §10.1's live grassland
+  measurement, so the party walks as mode 1; mode 4 → (38,38)
+  (the ~40–90x overworld drain of §13.2 is a coarser step, not a
+  different table); else (1,1).
+- **Tile fetch** `$1C176(X,Y)`: chunk records come from the $DD5C
+  archive via the descriptor table at $43850 (record base at
+  $FF0E98 == -1 → records 0..; else $FF0E98 + $4D). The location
+  descriptor at $FFA7FC → fixed RAM $FFB08C is initialised by
+  $1DA10: layer 0 = overworld (W 352, H 224, chunk 32, 11 chunks
+  per row). **Live-verified this session**: $FFB08C read back
+  352/224/32/11 and $FF0E98 = $FFFF in the running game, so the
+  overworld grid is archive records 0–76, row-major.
+- **Per-tile property** (the #017 note's "$5EDC4 table, likely
+  per-tile properties" — confirmed): `prop = word at
+  $5EDC4 + 2*(tile & $1FF)`; **class = (prop >> 10) & $3F**; if
+  tile bit 12 is set, class is remapped through the word table at
+  $1A5C0. **Height** `H = 2*(((tile>>13)&7) + ((prop>>7)&1)) +
+  ((prop>>8)&1)`. **Slope rule** ($1D800): step blocked (result
+  $FF) if |H_cur − H_dst| ≥ 4, with a −1 allowance when both
+  tiles' props have bit 8 set.
+- **Class dispatch** at $1D784 via the word table at $1D73E
+  (35 handlers, classes 0–$22); class ≥ $23 is passable outright.
+  The whole class block is gated on $FF00A4 ≠ 0 and mode ≠ 5;
+  $FF00A4 == 0 → free pass (interior path). Mode-1 (foot)
+  verdicts, handler by handler: PASS 5, 6, 7, 9, 17, 18, 19, 25,
+  26, 27, 28 (9 = road, costs forced (1,1); 19 adds +3/+6);
+  class 10 passes only E/W steps, class 11 only N/S steps;
+  BLOCKED 0, 1 (water), 2, 3, 4, 8, 12–16, 20–24, 29–34
+  (30 = location-entry tile: sets struct +$12 = $45, +$14 = 2
+  while still returning blocked). Classes 12–16 trigger the
+  $26B08 location-point lookup over the 455×10-byte table at
+  $D1D00 (§14's point table).
+
+### 23.2 The grid and the route
+
+`tools/passability.py` builds the 352×224 grid (records 0–76),
+applies the class + slope rules, and BFS-searches it. Assembly
+validated by coherence (row-major chunk order scores best of the
+three candidate orders) and by landmarks: spawn (109,130) =
+class 6 grassland; pond-village entry (109,124) = class 9 road;
+the (116–123, 107–119) $D1D00 cluster sits inside a walled
+enclave threaded with class-9 paths, exactly as session #9's
+live walks found it.
+
+- From spawn, **9,068 cells** are reachable. The direct east band
+  (y ≈ 100–140) is solid from x ≈ 128 — ridge classes plus slope
+  violations; no crossing anywhere in that band.
+- **The only route is a 335-step southern loop** (waypoints in
+  `docs/route-to-mind.md`): west around the lake, south, east
+  along y ≈ 175–192, north up x=120, east, north up x=155 and
+  x=164 into the east town cluster (66 reachable cells in the
+  (158–180, 102–120) box; entry waypoint (171,110)).
+- §14.3's two untested micro-routes are **closed by the grid**:
+  (a) the pond-village enclave has no east exit (east edge
+  blocked, band beyond); (b) the lake's east end is sealed
+  (class-17 pockets isolated by 4/33/8/16 cells).
+- The teleport landing (171,125) is class-1 water (the party is
+  placed there by the teleport's direct write), but its
+  neighbours connect to the same component (9,069 cells from the
+  landing): **13 steps to (164,119), 21 to (171,110)** — the
+  grant-assisted fallback is short and real (see the route doc).
+
+### 23.3 Live-drive findings so far (rop9live rig, 970 save)
+
+- Restore state: anchor (109,130), gold 970, Food 1472,
+  Water 1792, Buc HP 15/**20 max** (level 1 — §10.2's 35 is the
+  level-2 max), clock ≈ 7–8 PM, COMBAT = MANUAL in the save.
+- **COMBAT: AUTO toggle** lives in MAIN → SYSTEM → COMBAT
+  (panel shows HELP/DIRECT/DIAGS/COMBAT live). AUTO was set for
+  the drive; it does not make a solo level-1 Buc safe against
+  paired bears — three deaths this session (two manual, one
+  AUTO camp fight) before the route's first leg was done.
+- **Camp**: MAIN → CAMP; each camp ≈ +5–6 h of clock, −100 food
+  / −100 water, heal = ¼ of missing HP (15 → 20 at max 20 ✓ the
+  §8.1 formula). Camp dreams observed: the Void (§9.3) and the
+  Master ("Do not abuse your power…"). A camp can roll the 1/3
+  encounter at wake-up.
+- **SAVE is outside-only**: at the spawn diamond the SAVE verb
+  answers "YOU CAN ONLY SAVE THE GAME WHILE OUTSIDE." West of
+  spawn (anchor (107,126)) the same verb saved ("GAME SAVED."),
+  and after a death the title CONTINUE restored that in-game
+  save in-process (position on the southern plateau, COMBAT:
+  AUTO kept; HP/provisions as of the save's own snapshot).
+  Segment-saving is therefore a working road tactic in this rig.
+- Location anchors ($FF02C0/$FF02C2) snap per area (spawn
+  (109,130); pond village (109,124); west shore (107,126)) and
+  are **not** a tile-accurate party position; food deltas
+  (~13–21 per 2 s hold ≈ 4–5 tiles) are the reliable odometer.
+  Blocked holds in the zoomed view charged 0 on the lake's
+  south shore (contrast §14.3's close-view probing, where
+  blocked attempts did charge).
+
+Live drive continues from the plateau save; purchase (#022
+follow-on) and #037 remain gated on reaching Mind.
