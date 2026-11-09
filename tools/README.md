@@ -10,3 +10,4 @@
 - `render_tiles.py` — render packed tiles/sprites/maps to PNG (issue #005/#016)
 - `decode_map.py` — decode `$96120` tilemap records (issue #006)
 - `extract_assets.py` — ROM → `tribute/assets/` export pipeline (issue #024; scaffold + palettes)
+- `decode_gamegenie.py` — decode Genesis Game Genie codes to (address, word); `--selftest`, `--rop` for the #033 table (issue #021)
