@@ -80,8 +80,8 @@ Boot path (verified, `disasm/map.md`):
 `0x200` TMSS check → "SEGA" write at `$A14000` → VDP register table
 at `0x28E` → clear RAM/VRAM/CRAM → `jsr $FD07C` runtime checksum →
 `jsr $4323C` save validation → wait VBlank → display on (`$8134`) →
-joypad read (`$3AA`) → main game. Per-frame work is driven from the
-VBlank handler via `jsr $EB772`.
+joypad read (`$3AA`) → main game via `jmp $D25C` (dispatcher, #020).
+Per-frame sound is driven from the VBlank handler via `jsr $EB772`.
 
 Per-frame (verified, `0x1272` VBlank handler):
 frame counter `$FF0010++`, vblank flag `$FF0016` cleared, Z80 bus
@@ -172,17 +172,19 @@ marked unknown are the #015–#017 work.
    `0x094000–0x0CBFFF` (336 KB total), entropy 7.0–7.6 — the usual
    Genesis codecs to test are Nemesis, Kosinski, and Enigma (#017).
    Which block is graphics vs maps is unknown.
-4. **Per-frame (verified):** VBlank handler bumps the frame counter
-   and calls `$EB772` — the per-frame update/draw dispatch lives
-   there or below it; the exact draw list (plane A/B updates, sprite
+4. **Per-frame (verified, corrected #003):** VBlank handler bumps the frame counter
+   and calls `$EB772` — that is the per-frame **sound/music tick only**,
+   not a draw dispatch. Where the draw list lives (plane A/B updates, sprite
    table upload, palette changes, DMA scheduling) is unknown (#015).
 5. **Planes/sprites/palette (unknown):** VRAM layout (name tables,
    pattern base, sprite table, scroll values), CRAM palette contents,
    and sprite usage are all #015/#016 work. Hardware caps apply:
    80 sprites, 20/line, 64 colours.
-6. **Sound (unknown):** Z80 driver location and music/SFX format
-   are #018 work. The 68000 only touches the Z80 via `$A11100`
-   bus request/release around joypad reads so far.
+6. **Sound (partially known, #003):** sound tick `$EB772`, upload `$EB806`
+   (1,576 bytes ROM `$EBB6E` → Z80 RAM), start-song `$EB88A`, music streamer
+   `$EBA00`, command queue `$EBAC6` are traced. Music/SFX data format is
+   still #018 work. The 68000 touches the Z80 via `$A11100` bus
+   request/release.
 
 ## How a mod gets made (Epic 4 process)
 
@@ -202,7 +204,10 @@ marked unknown are the #015–#017 work.
 - Where does real code end? (#011 — Ghidra recursive analysis)
 - Which compression codec(s)? (#017)
 - How is dialogue tokenised? (#004)
-- Save medium: SRAM / EEPROM / passwords? (#019)
-- What is the main loop / state machine past `$EB772`? (#020)
-- What does `$42FC8` / `$DCE2` / `$43012` actually do? (#019)
+- Save medium: serial EEPROM, Microwire-style via `$200000` (#003) — chip
+  identity (93C46 family suspected, unconfirmed) and 128-byte buffer layout
+  still #019.
+- What is the main loop / state machine past the `$D25C` dispatcher? (#020)
+- `$42FC8` = EEPROM enable/init, `$43012` = EEPROM write, `$DCE2` = joypad
+  port 2 read (#003) — remaining save details still #019.
 - Is the debug mode (`Diags On/Off`) still reachable? (#021)

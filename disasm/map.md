@@ -56,24 +56,59 @@ Standard Sega startup, then the game's own init:
 - `0x28C` `bra $2FA` — jumps over the VDP table.
 - `0x2FA` `tst.w $C00004` then `jsr $FD07C` — the **runtime checksum
   self-test** (see below), then `nop`, `move.w #$2700,sr`.
-- `0x30C` `jsr $4323C` — first game routine (save/SRAM validation:
-  clears `$FF0168`, calls `$42FC8` and `$DCE2`, compares a byte to
-  `$E0`; details are issue #003/#007 work).
+- `0x30C` `jsr $4323C` — serial-EEPROM / save validation (issue #003,
+  call-graph level): calls `$42FC8` (EEPROM enable/init) and `$DCE2`
+  (joypad port 2 read), compares a byte to `$E0` (B+C+Start held on
+  pad 2 — a hidden combo that forces a blank save); otherwise validates
+  the 128-byte buffer at `$FF016A` by byte-sum. Writes via `$43012`,
+  reads via `$430F4`; both bit-bang a Microwire-style serial EEPROM
+  through `$200000` (DI=D0, CLK=D6, DO=D7). Full analysis is #019.
 - `0x318`–`0x32C` — wait for VBlank bit, `move.w #$8134,$C00004`
-  (display on), `bsr $3AA` (joypad read), `bsr $A14` (RAM clear +
-  VDP register setup), `bsr $3AA` again.
+  (display still blank, V-int + DMA on), `bsr $3AA` (joypad read),
+  `bsr $A14` (RAM clear + VDP register setup), `bsr $3AA` again,
+  wait for DMA-busy bit 1 to clear, `move.w #$8174,$C00004`
+  (**display ON**).
+- `0x35C`–`0x390` — title/attract loop: wait VBlank, read joypad,
+  exit if a button is pressed, else call `$4E6` (H-scroll attract
+  animation via VRAM `$2000`) when `$FFC000==0`; then `bra $119E`.
+- `0x119E` — main init: restore SSP `$FFEC1E`, clear 64 KB RAM, copy
+  `$240` bytes ROM `$FCE3C` → RAM `$FF0000`, write `"MANX"` at
+  `$FFC422`, `jsr $EB806` (sound-driver upload), `SR=$2000`,
+  `jmp $D25C`.
+- `0xD25C` — game-code dispatcher: calls `$11E06`, `$14FB6`,
+  `$1B5D6`, `$32D0E`, `$173BC`, `$D28E`, `$179B6`; its `rts` at
+  `0xD28C` is not reached in normal flow. `$D28E` (1,876 bytes) is the
+  flag-driven dispatcher (calls `$1350` queue-pop, `$12B82`,
+  `$12FE8`, branches to `$D8BA` — 52-byte structs at `$FF02B4` /
+  `$FF02DB`); the main loop itself is #020's work.
 
 Subroutines reached from entry (verified real code):
 
-- `0x3AA` — joypad read: writes `$40/$00` to `$A10003` with delay
-  loops, reads `$A10003`, returns the byte in d0/d1. The VBlank
-  handler at `0x1272` inlines the same sequence.
+- `0x3AA` — joypad read: writes `$40/$00` to `$A10003`/`$A10005`
+  with delay loops, reads **both** ports — port 1 → `$FFC00E`,
+  port 2 → `$FFC010` — returns the port-1 byte in d0 (port 2 in d1).
+  The VBlank handler at `0x1272` inlines only the port-1 half.
 - `0xA14` — clears work RAM (`0xFF0000`+, `0x3FF6` longwords) then
   writes a VDP register set (`$8004, $8134, $8228, $8330, …`).
 - `0x1272` VBlank handler — `move.w #0,$FF0016` (clear vblank flag),
   `addq.l #1,$FF0010` (frame counter++), saves d0-d2/a0, Z80 bus
   request, joypad read from `$A10003` (d0 = buttons, shifted/masked),
-  then continues past `0x12D0` (rest is issue #003).
+  `jsr $EB772` (sound tick), then the debounce/queue logic past
+  `0x12D0`: changed byte → `$FF0018=d0`, `$FF0019=3`, `rte`
+  (`0x1312`); unchanged → `$FF0019--`, re-queue into the 16-entry
+  ring `$FF001C`[head `$FF001A`] every 3 frames unless full (head+1 &
+  `$F` == tail `$FF001B`), `rte` (`0x1340`/`0x134E`). `$1350` is the
+  separate polled pop routine (called from `$D28E`).
+- `0x1270` HBlank handler — single `rte`; never fires (boot R0=`$04`
+  leaves H-int enable bit 4 = 0; BlastEm log: 0 hits in 10 s).
+- `0xEB772` — per-frame **sound/music tick** (NOT a graphics dispatch
+  — corrects the line in `docs/overview.md`): PAL/NTSC tempo tick
+  written to Z80 RAM `$A000E6`, `jsr $EBAC6` (sound command queue),
+  every 16 frames `jsr $EBA00` (music streamer). Called only from
+  VBlank (`0x12F2`).
+- `0xEB806` — sound-driver upload: `$1576` bytes ROM `$EBB6E` →
+  Z80 RAM `$A00000`; sets PAL flag `$FF0222` from `$A10001` bit 6.
+  Called from `$119E`, `$EB88A` (start-song), `0xEBB10`.
 
 ## Runtime checksum self-test (0xFD07C–0xFD0CB) — verified
 
@@ -117,7 +152,7 @@ of the loop reproduces the constant exactly):
 | `0x0CC000–0x0D7FFF` | 48 KB | Sparse tables (map data?) | provisional | Entropy 4.6–5.3, 28–44% zero bytes |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |
 | `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | likely | ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
-| `0x0E0000–0x0FBFFF` | 112 KB | Mixed code/data | provisional | Entropy 5.4–6.3; `jsr $DCE2` target region; needs Ghidra |
+| `0x0E0000–0x0FBFFF` | 112 KB | Mixed code/data — sound cluster verified | verified (sound) / provisional (rest) | `jsr $EB772`/`$EB806` targets; sound routines `$EB772`/`$EB806`/`$EB88A`/`$EB7C8`/`$EBA00`/`$EBAC6`/`$EBA7E` traced (issue #003); Ghidra found 436 functions overall; rest needs #011 |
 | `0x0FC000–0x0FD07B` | ~4 KB | Code (checksum routine + tail code) | verified | `jsr $FD07C` target; decodes cleanly |
 | `0x0FD07C–0x0FD0CB` | 80 B | Runtime checksum + fail path | verified | Simulated sum matches `0x8F33608C` |
 | `0x0FD0CC–0x0FFFFF` | 12,084 B | `0xFF` padding | verified | One unbroken `0xFF` run, 12,084 bytes; last real byte at `0x0FD0CB` |
@@ -147,13 +182,26 @@ of the loop reproduces the constant exactly):
   the ROM as contiguous ASCII — the title-screen text is in the
   strided/interleaved format above.
 
-## Open questions (for #003)
+## Open questions (for #003) — answered / partially answered 2026-11-09
 
-1. Where does real code end? The `0x010000–0x043FFF` block looks like
-   code, but the boundary with the `0x044000` compressed block and the
-   `0x0E0000–0x0FBFFF` mixed block needs recursive disassembly.
+1. Where does real code end? **Partially answered.** Ghidra headless
+   recursive analysis now exists (436 functions, 1,434 call edges,
+   dump at `/tmp/ghidra_calls.txt`) — but the boundary with the
+   `0x044000` compressed block is still open, and Ghidra did **not**
+   auto-create the interrupt-handler functions at `0x1270`/`0x1272`
+   or `$EB772` (vector targets have no call sites; create them
+   manually). Remaining work is #011.
 2. What do `$42FC8`, `$DCE2`, `$43012` (called from `$4323C`) do?
-   `$4323C` smells like SRAM/save validation.
+   **Answered at call-graph level.** `$42FC8` = serial-EEPROM
+   enable/init (8 clocked `$80` writes to `$200000` + `$42E76`);
+   `$DCE2` = joypad port 2 read (shared utility, 8 call sites);
+   `$43012` = EEPROM write (command out via `$42EBA` ×8, ACK in via
+   `$42F96`, retry limit 10 in `$FF014C`); `$430F4` = EEPROM read.
+   Together they bit-bang a Microwire-style serial EEPROM through
+   `$200000` (DI=D0, CLK=D6, DO=D7); `$E0` = B+C+Start on pad 2,
+   `$B0` = A+C+Start. BlastEm auto-detected a 128-byte EEPROM
+   (all `$FF`). Chip identity, the `$FF016A` buffer layout, and the
+   return-value semantics are #019's work.
 3. Is the `0x044000` / `0x094000` high-entropy data one compression
    format (Nemesis/Kosinski/Enigma — the usual Genesis codecs), and
    which block is graphics vs maps?

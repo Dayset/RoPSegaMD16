@@ -11,7 +11,7 @@ Issues live in `issues/` — one file each. Update both together.
 | Epic | Name | Goal | Status |
 |---|---|---|---|
 | 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1 done) |
-| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003 open) |
+| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003 done, #019 open) |
 | 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | ⬜ not started |
 | 4 | Mods | A few chosen changes, each as a tested patch | ⬜ not started (target TBD) |
 
@@ -32,7 +32,7 @@ Issues live in `issues/` — one file each. Update both together.
 |---|---|---|---|---|
 | #001 | 1 | Toolchain: Ghidra + Capstone + assembler + emulator | ✅ done | M1 |
 | #002 | 1 | First linear disassembly + code/data map | ✅ done | M1 |
-| #003 | 2 | Entry point, vectors, VBlank/HBlank interrupts | 🟡 in progress | M2 |
+| #003 | 2 | Entry point, vectors, VBlank/HBlank interrupts | ✅ done 2026-11-09 | M2 |
 | #004 | 3 | Text / dialogue extraction + tables | ⬜ not started | M3 |
 | #005 | 3 | Graphics: tiles, sprites, palettes, compression | ⬜ not started | M3 |
 | #006 | 3 | Maps / world data | ⬜ not started | M3 |
@@ -64,9 +64,10 @@ Issues live in `issues/` — one file each. Update both together.
 - [x] Original ROM boots and runs under BlastEm (headless via Xvfb + dummy audio); address log confirms boot through checksum into game code.
 - [x] Fixed `.gitignore` `*.md` rule that silently ignored every doc/issue file (skeleton commit 68e4f98 contained only `.gitignore`).
 - [x] Project overview written (`docs/overview.md`): 4 epics, rebuild contract, hardware limits, verified structure, strong/weak points, graphics pipeline, logic-flaw audit list. Issues restructured into epics + smaller tasks #011–#022.
+- [x] **#003 done 2026-11-09** — reset vector traced `0x200 → $FD07C → $4323C → $119E → $D25C` (TMSS/SEGA init, VDP table `0x28E`, display on `$8174`, attract loop, `"MANX"` init); VBlank `0x1272` fully traced (frame counter `$FF0010`, 3-frame debounce, 16-entry joypad ring `$FF001C`); HBlank `0x1270` is a single `rte` that never fires (R0=`$04`); `$EB772` is the per-frame **sound** tick (not a draw dispatch — corrects an `overview.md` line, fix left for review); `$4323C` helpers mapped at call-graph level (Microwire-style serial EEPROM via `$200000`, `$DCE2` = joypad port 2, `$E0`/`$B0` = pad-2 button combos). Verified by Capstone range dumps + Ghidra headless call graph (436 functions, 1,434 edges) + BlastEm address log (2,487 unique addresses; `1272` hit, `1270` 0 hits; BlastEm auto-detected a 128-byte EEPROM). Written up in `docs/architecture.md`; `disasm/map.md` updated; open questions 1–2 answered/partially answered. M2 stays in progress (#011, #019 remain).
 
 ## Next
 
-1. #003 (entry/vectors/interrupts) + #011 (Ghidra recursive analysis) + #019 (save validation) — the M2 cluster.
+1. #011 (Ghidra recursive analysis) + #019 (save validation) — the remaining M2 cluster.
 2. #004 (text extraction, packed dialogue blob at `0x0D6EBA`) and #017 (compression) — the two hard unknowns in Epic 3.
 3. Dayset picks the first mod target for #022 — difficulty, a spell, dialogue, or a fix.
