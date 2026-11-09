@@ -26,3 +26,21 @@ and `0x094000–0x0CBFFF`, and write a decoder.
 - **Acceptance:** MET: decoder-in-tools (for the codec actually used); graphics-vs-maps decided for 0x094000+ (it is both, as $DD5C tables). PARTIAL/BLOCKED: running the three named standard decoders against 0x044000-0x05FFFF needs rop-original.gen (absent); map.md update proposed, not applied.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (continuation) — RANGE TESTED, VERDICT IN
+
+Full results in docs/compression-audit.md ("0x044000–0x05FFFF
+TESTED"): entropy/structure measured; head = 55×10-byte index
+table (monotonic BE offsets); Ghidra (#011) finds 0 functions
+and no callers into the range → not code; exhaustive $DD5C scan
+→ only false positives (all-space outputs) → not $DD5C;
+Nemesis/Kosinski/Enigma header parses at the block head all
+fail → no evidence any of their streams starts the block.
+disasm/map.md updated for both blocks (0x094000 row upgraded to
+verified-$DD5C as this audit proposed).
+Remaining acceptance gap: graphics-vs-maps for the 0x044000
+block is still undecided — the threaded-decoder ($E3B4) stream
+hypothesis is the only one standing, and its decisive test
+(trace a0 at $E3B4 entry) belongs to the #020 follow-up.
+**Status: in progress** — range tested, codec question narrowed
+to the $E3B4 trace.

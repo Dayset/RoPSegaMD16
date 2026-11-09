@@ -89,3 +89,53 @@ the bytes.
 > `0x094000–0x0CBFFF` | Compressed data — `$DD5C` LZSS record tables
 > (`$96120` + `$B86AE`) | **verified** | 62/62 + 90/90 records
 > decompress cleanly (#005/#006); see `docs/compression-audit.md`.
+
+## Update 2026-11-09 (continuation) — 0x044000–0x05FFFF TESTED
+
+The ROM is in the VM now; the untested range was tested directly.
+
+**Entropy/structure.** Overall entropy 7.203 (16 KB sub-blocks
+6.93–7.24); zero bytes 7.2–11.4%; ASCII 29.6–43.0%. No long
+constant runs (longest 0x00 run = 7 bytes). The head of the block
+is a **55-entry index table of 10-byte records**
+(0x044000–0x044226): bytes `00 01 00 01`, a big-endian u16 at +4
+that increases strictly monotonically 0x5B07 → 0xA896 (steps of
+~100–212), u16 at +6 always 0, tail u16 0x00F2 for the first 33
+records and 0x0800 for the last 22. That is an offset/size index,
+not a compressed stream header.
+
+**Not code.** The #011 Ghidra census finds **0 functions** in
+the range, and no function anywhere in the ROM has a callee
+inside it (function_map.csv). The block is never executed or
+called as code.
+
+**Not $DD5C.** The repo's $DD5C decoder was run at every
+even-aligned offset in the range. It "succeeds" almost
+everywhere — and every one of those hits is a false positive:
+the outputs are all spaces (the decoder's ring buffer starts
+filled with 0x20 and the structured input keeps re-selecting
+space-producing back-references). A genuine $DD5C region (the
+$96120/$B86AE tables) does not behave like this. The first
+"plausible header" at 0x044004 is explained by the index table
+itself (the LE u32 at record+4 reads as a plausible length).
+
+**Standard codecs (Nemesis/Kosinski/Enigma).** All three are
+stream formats; if the block were one of their streams it would
+have to start at the block head — and the head is the index
+table above. Header parses at 0x044000: Nemesis first word
+0x0001 = a tile count of 1, which cannot describe 112 KB;
+Kosinski's LE u16 output-size field reads 0x0100 (256 bytes);
+Enigma's flag word reads 0x0001 with no consistent
+increment/decrement interpretation. **No positive evidence for
+any of the three; the block does not begin with any of their
+streams.** (Decoding at random mid-block offsets was not
+attempted: none of the three formats is self-synchronising, so
+mid-stream entry points are meaningless.)
+
+**Verdict.** 0x044000–0x05FFFF is **not code and not any
+identified codec**. Its head is an index table; the bulk remains
+unidentified. The standing explanation is unchanged and now the
+only one left: **input stream for the threaded decoder at
+$E3B4** (#020), which consumes a headerless byte stream via a
+jump table — consistent with everything observed. Decisive test
+remains: trace what sets a0 when $E3B4 is entered.
