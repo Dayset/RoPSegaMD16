@@ -1,0 +1,37 @@
+Changed bytes: original (MD5 30c18fdbe2183f64702ae9f1a45d63f9) -> patched ROM
+All addresses are 68000 ROM offsets (= file offsets). Values are hex bytes.
+
+0x0018E-0x0018F (2 bytes):
+  0x0018E: 8b 9f  ->  d9 4c
+
+0x173C0-0x173C1 (2 bytes):
+  0x173C0: 30 39  ->  4e b9
+
+0x173C3-0x173C5 (3 bytes):
+  0x173C3: ff 01 2e  ->  0f d0 cc
+
+0x173F4-0x173F9 (6 bytes):
+  0x173F4: 48 c0 60 00 01 78  ->  4e b9 00 0f d0 f0
+
+0xFD098-0xFD09B (4 bytes):
+  0xFD098: 8f 33 60 8c  ->  52 c1 ff ab
+
+0xFD0CC-0xFD0CE (3 bytes):
+  0xFD0CC: ff ff ff  ->  30 39 00
+
+0xFD0D0-0xFD0EB (28 bytes):
+  0xFD0D0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  01 2e 0c 40 00 12 66 00 00 12 0c 6e 00 12 00 08
+  0xFD0E0: ff ff ff ff ff ff ff ff ff ff ff ff  ->  67 00 00 08 2e bc 00 01 73 d6 4e 75
+
+0xFD0F0-0xFD0FE (15 bytes):
+  0xFD0F0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  48 c0 0c 40 00 12 67 00 00 1e 0c 79 00 12 00
+
+0xFD100-0xFD11A (27 bytes):
+  0xFD100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  01 2e 67 00 00 0a 58 4f 4e f9 00 01 75 70 58 4f
+  0xFD110: ff ff ff ff ff ff ff ff ff ff ff  ->  4e f9 00 01 75 82 33 fc 00 12 00
+
+0xFD11C-0xFD127 (12 bytes):
+  0xFD11C: ff ff ff ff ff ff ff ff ff ff ff ff  ->  01 2e 4e b9 00 0e b9 c4 4a 40 67 00
+
+0xFD129-0xFD137 (15 bytes):
+  0xFD129: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  e6 4e b9 00 0e b7 c8 58 4f 4e f9 00 01 75 82
