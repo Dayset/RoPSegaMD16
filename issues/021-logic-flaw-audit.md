@@ -248,3 +248,95 @@ docs/logic-audit-evidence/s6-*.png.
 Doggonia fee, $FF012C live, Bribe live, Q5 xref,
 party-name writes, (A,B,grp) dispatch, post-harness
 PC=0, $A5 live, a genuine Map shop purchase.
+
+## Update 2026-11-09 (session #7) — STATIC REMAINDER CLEARED; $A5 CONFIRMED; PURCHASE NARROWED TO ITS LAST TWO STEPS
+
+Full write-up: docs/logic-audit.md §12; evidence:
+docs/logic-audit-evidence/s7-*.png (post-rebuild). The
+pre-wipe live screenshots were lost in a VM /tmp wipe
+mid-session; the $A5 / Bribe / $FF012C numbers in §12
+are the in-session debugger transcriptions, labelled
+as such in the doc.
+
+- **(a) F2 RESOLVED.** $2EA92's doubling gate is OR,
+  not AND (§3.4 corrected). Missed table found: word
+  table at $1B298 indexed by merchant type — high byte
+  = halve-slot, low byte = double-slot. Type 32 word
+  0xFF02 doubles Gems: 200 → 400 → attitude-40 428 →
+  ×2 = 856 → sell /2 = **428 = the guide's number**.
+  $2EA92 has exactly 6 call sites; no hidden path.
+- **(b) F7 RESOLVED.** $FF02A0 has ONE store (0x2A458);
+  all $2A454 callers pass 0x00FF (reset) or a
+  zero-extended entity byte. 0xFFFF is unreachable;
+  the sentinel is 0x00FF by design. Latent only.
+- **(c) Doggonia fee ANSWERED.** No 1,000-gold fee in
+  code (45-site $2BBD2 census; no −1000 anywhere; the
+  $298D2 data-driven gold commands at 0x29F28/0x2A0E0
+  are the only scripted-charge mechanism). Live: the
+  Doggon tax is **150 gold**, demanded verbatim at the
+  tax posts, paid twice (1000→850, 970→820).
+- **(d) Item bytes RESOLVED.** Records start at
+  $D66A0 (not $D66A6): +0 spawner byte, +1 message id,
+  +2 shop code, +3 price-record count, +4 word =
+  per-slot count cap, +6 name_idx, +8 w. #007's
+  "+4..+9" were the next record's head.
+- **(e) Party-name writes RESOLVED.** Spawn-time
+  template copies only ($23B84: 0x23F52 from $CECF0
+  templates — party = templates 1–6, names 57–62; kind-1
+  path 0x23D5A from $CF1AC); save load block-copies.
+  No creation/rename UI exists.
+- **(f) (A,B,grp) dispatch RESOLVED.** A = action-class
+  selector ($1FE8A/$20148 chains), B = menu state →
+  $FFA7F8, grp = C-staging class ($1F404: grp 1 →
+  $FFBB6C, grp 3 → $FFBB6D, grp 8 → combat). The "#020
+  mapping to $D28E codes" premise was wrong; only
+  command 21 enters $1F296.
+- **(g) Q5 NARROWED.** Dream records 1085–1090 /
+  Void 1091–1095 / Nexus 1096+ at $DDBD8; Camp trigger
+  picks visitor templates Thalmus/VOID/NEXUS (Cookie on
+  RNG(30)==0) — P(Void dream) ≈ 1/9. The 0x1215A death
+  string has NO xref (index-selected from the
+  0x11F000–0x123000 block); its selecting index/caller
+  is the precise remainder.
+- **(h) PC=0 DIAGNOSED + FIXED.** Harness artifact:
+  the 0x35C hook is a jsr inside a VDP busy-poll loop;
+  both #007/#008 harnesses exited `jmp 0x362` without
+  popping the return address — 4 stack bytes leak per
+  poll iteration (fault A7 $FFD3B8 = 6,246 B ≈ 1,561
+  leaks below boot SSP 0xFFEC1E). Fix applied to
+  tools/test_logic_harness.s + tools/test_spells_
+  harness.s (`lea 4(%sp),%sp` at all four exits).
+- **(i) $FF012C MAPPED.** = current combat
+  action/effect code: 0 in attract/field/overworld/
+  map/menus/conversation; 0x200 during a live battle;
+  0x201 once on a death screen; 0 again at the PICK
+  menu (set during action resolution).
+- **(j) Bribe EXECUTED LIVE.** Captain at the tax
+  post: "PSSST! HOW ABOUT 10 GOLD?", gold 850 → 840
+  (−10 exactly), attitude 64 → 100 (+36, $2A22A mode
+  8), +0x20 unchanged.
+- **Item 2(a) $A5 combo CONFIRMED.** Map screen,
+  scratch-grant vehicle (labelled, as §11): pad-2
+  Start+C+Left+Up → leader HP 20 → 140, Power
+  1000 → 9000, maxima 20 → 140 / 1000 → 9000
+  ($FF0304/$FF0306/$FF0308/$FF030A); slot 0 unchanged.
+- **Item 2(b) genuine Map purchase STILL OPEN —
+  narrowed to its last two steps.** Rule complete:
+  Map = cat 13, slot 6, base 415 gold; cat-13 code is
+  0, so it is vended via the BUY verb "Items" (C=13)
+  in any real shopkeeper's conversation; the test is
+  $FF02A8 ≠ 0x7530 in conversation. City reached 3×;
+  every conversation opened read the sentinel. Never
+  yet executed: entering a Mind shop building (plaza
+  stairs-building doorstep reached ~(124,110),
+  entry test interrupted by the /tmp wipe) and the
+  $FF02A8 read inside a Mind shop. Solo Buc died
+  twice more post-rebuild (beast ~12/hit; mutual kill
+  with knight Davin). Resume point: this session's
+  EEPROM save (970 gold, field-south, COMBAT=MANUAL)
+  via title CONTINUE.
+
+**Status stays in progress** — on exactly two
+sub-items: (g)'s death-string index/caller, and the
+genuine Map purchase (2b). Everything else on the
+§11.3 list is closed.

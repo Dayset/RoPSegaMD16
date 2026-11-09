@@ -944,3 +944,491 @@ god-mode combo's live verification, and — newly
 sharpened — a genuine shop purchase of the Map
 (category-13 NPC unidentified; the matching rule is
 in §11.1).
+
+## 12. Session #7 — the §11.3 remainder, item by item (2026-11-09)
+
+Session #7 worked the §11.3 list in order. Static verdicts
+come from full Capstone reads of the named functions
+against `disasm/ghidra/function_map.csv`; live verdicts
+from the BlastEm + xdotool driver on the clean ROM
+(unless a grant is explicitly labelled). One evidence
+note up front: at ~20:27 CST the VM's /tmp was wiped and
+its tool install reset mid-session, destroying the
+pre-wipe live screenshots (the $A5 check, the Bribe, the
+$FF012C reads). The numbers quoted for those three items
+are the in-session debugger transcriptions made at the
+time; the toolchain was reinstalled from the Ubuntu pool
+(same versions) and all later evidence is post-rebuild
+(s7f/s7g/s7h/s7i screenshots; the three relied on are
+copied into docs/logic-audit-evidence/ with s7- names).
+
+### 12.1 (a) F2 — RESOLVED: the guide is right; no separate path
+
+Full read of $2EA92 (the price function). The merchant
+doubling gate at 0x2EB3E is an **OR**, not the AND that
+§3.4 recorded: `cmpi.w #$20, -$2(a6)` — merchant type
+(m20) == 32 doubles unconditionally; otherwise
+loc $FF0E92 & 0x3FF == 367 also doubles. §3.4's "and" is
+wrong and is corrected here.
+
+Second, #007 missed a table: the item-14 block carries
+TWO modifier-match tables in the word table at $1B298,
+indexed by merchant type m20 — the **high byte is the
+halve-slot** (byte at $1B298 == item modifier → price/2)
+and the **low byte is the double-slot** (byte at $1B299
+== modifier → price×2). Merchant type 32's word is
+**0xFF02**: double-slot 2 = Gems (types 10, 17, 34 also
+double Gems). The guide's number now reproduces exactly:
+
+- Gems base 200 → type-32 doubling **400** → attitude 40:
+  400 − (−10·400/140) = 400 + 28 = **428** (divs
+  truncates toward zero) → $1B299 match ×2 → $2EA92
+  returns **856** → sell price = 856/2 = **428**, the
+  guide's figure.
+- Sell site verified at 0x1FB88: $2EA92(14, slot), a
+  single `divs.w #2` at 0x1FB9E, then $2BBD2(1, price/2,
+  0x400, leader); the item is removed via
+  $2BBD2(1, −1, item·64 + slot).
+- $2EA92 call-site census (jsr + bsr) is exhaustive at
+  exactly 6 sites: 0x1E908 ($1E5A0 display), 0x1FB94
+  (sell), 0x1FD00 (buy-check), 0x1FDD2 (buy), 0x287A4 /
+  0x2897A (displays). There is no seventh path.
+- Buy side cross-checks too: type 2's halve-slot is 2,
+  attitude 70 → 172/2 = **86** = the guide's buy price.
+
+**Verdict: F2 closed — no flaw and no hidden path; the
+guide's 428 is the ordinary output of $2EA92 + the
+sell-site halving.**
+
+### 12.2 (b) F7 caller — RESOLVED: latent only; 0x00FF is the designed sentinel
+
+$FF02A0 (the current-conversation/merchant index) has
+exactly ONE store instruction in the ROM: 0x2A458 in
+$2A454 (`move.w $8(a6), $FF02A0`). All four call sites of
+$2A454:
+
+- 0x1B72E and 0x1B8AC (new_game_init) push **#$FF
+  (0x00FF)** — the reset value;
+- 0x2FA08 ($2F896 save load) pushes #$FF — reset;
+- 0x2A3E0 (bsr inside $2A2CA, the conversation-link
+  routine) passes a zero-extended entity byte: ≠ 0xFF
+  takes the entity path; 0xFF takes the reset branch at
+  0x2A378.
+
+0xFFFF can never be stored. The RAM-init image does hold
+0xFFFF at $FF02A0, but new-game init resets it to 0x00FF
+before any price call can run. Every other reader
+(0x21FEE, 0x276FC, 0x33208) also compares against
+`#$ff`. #007's 0xFFFF was the harness's own wrong
+assumption, not a game state.
+
+**Verdict: F7 closed — the merchant block cannot run
+with index −1 in the shipped flow; the "bug" is latent
+in a state the game never reaches.**
+
+### 12.3 (c) Doggonia fee — no 1,000-gold fee in code; the live Doggon tax is 150
+
+Static census, exhaustive:
+
+- No `push #-1000` (or equivalent immediate) anywhere.
+- All **45 $2BBD2 call sites** are now censused
+  (31 jsr.abs + 14 jsr.pc); none passes 1000/−1000 in
+  any argument. $2C474 has no callers outside $2BBD2
+  internals.
+- The mechanism a scripted fee would use exists and is
+  data-driven: inside the conversation engine $298D2,
+  0x29F28 and 0x2A0E0 execute $2BBD2(1, −(record &
+  0xFFF), 0x400, leader) — take gold, amount = low 12
+  bits of a conversation record word (the beggar's −50
+  flows through exactly this); 0x2A10A is the matching
+  give-gold command. A 1,000 fee would be a record word
+  carrying 0x3E8 in Doggon XXIV's conversation data; the
+  record provenance runs through a helper-filled local
+  buffer (−$4(a6) in $298D2, only lea'd, never directly
+  stored), so the specific record was not isolated
+  statically. "Per room entry" matches no engine
+  mechanism at all — charges are conversation commands,
+  fired when spoken, not on room entry.
+
+Live (clean ROM, twice): Doggon's tax posts demand,
+verbatim, **"HOLT SIR! KING DOGGON DEMANDS A TAX OF 150
+GOLD. WILL YOU PAY?"** Paying cost exactly 150 both
+times (1000 → 850 at the harbour post, §12.10; 970 → 820
+at the field post, evidence s7-tax-demand.png /
+s7-tax-paid.png). Refusing means a knight fight. No
+1,000-gold charge was ever observed.
+
+**Verdict: the claimed 1,000-gold-per-room-entry fee
+(the claim traces to a Genesis Temple retrospective)
+does not exist in the code as stated; the real Doggon
+charge is the 150-gold tax-post demand. Leaning article
+error. The only static residue is the un-isolated
+conversation record that would carry a scripted amount —
+the engine caps such a command at 0xFFF = 4095, so a
+scripted 1,000 is representable but was not found in any
+traced path or observed in play.**
+
+### 12.4 (d) Item bytes +4..+9 — RESOLVED: the records start at $D66A0, not $D66A6
+
+#007 anchored the item records on the name field, six
+bytes late. The true layout is 20 records × 10 bytes at
+**$D66A0–$D6768**, and every byte is now labelled:
+
+- **+0 byte — spawner byte**: $23B84 kind-5 spawn reads
+  it as entity +0x6 := 0x200 + byte. Category values
+  0–19: [6,7,7,7,7,7,7,7,7,7,2,6,3,4,6,6,5,7,0,6].
+- **+1 byte — per-category message id**: the first field
+  of the $26B58 records used in shop flows (sites
+  0x1FD6A buy-refusal, 0x1F032 shop exit, 0x29B90 /
+  0x29BF8 in $298D2). Values [68,72×9,67,68,87,86,68,
+  22,86,13,47,68]; goods category 14 = 68, which is the
+  literal "sold!" message id.
+- **+2 byte — shop code**: matched against NPC struct
+  +0x17 in the $2A454 loop at 0x2A4D2 (this is the byte
+  §11.1 cited as "$D66A2+i·10"). Spells cats 1–6 =
+  8,9,10,11,12,13; services 26; goods-186 = 27; crafts
+  28; healing 20; drinks 25; cats 0,7,8,9,10,12,13,17,
+  18 = 0 (category 13's code 0 matters in §12.11).
+- **+3 byte — price-record count**: getter $2CBEA;
+  loops at $2CC14 and $2F11A (0x2F5C8/0x2F5E4). Matches
+  the w-column gaps 19/19; price record 124 is an
+  unassigned pad between cat 9's single record 123 and
+  the rings at 125.
+- **+4 word — per-slot count cap**: the clamp inside
+  $2BBD2 at 0x2C114; returned by $2D38C (0x2D3CE); the
+  UI compare at 0x1EBE6/0x1EC5E in $1E5A0 draws the
+  quantity column only when cap > 1. Goods cat 14 = 99,
+  healing cat 16 = 9999 (the stacking caps).
+- **+6 word — name_idx**; **+8 word — w** (price-table
+  base) — as #007 had them.
+
+In #007's $D66A6 framing, "bytes +4..+9 of record i" are
+record i+1's [+0][+1][+2][+3][+4 word] — the unlabelled
+bytes were the next record's head, which is why they
+resisted a per-record reading.
+
+Also from $2A454: $FF02A8 (current category) initialises
+to the **0x7530 sentinel**; on a match $FF02AA = NPC
++0x24 byte and $FF02AC = NPC +0x25 byte (gate: +0x25 > 0,
+tst at 0x2A4EA). The category loop does **not** break —
+the last matching NPC wins (this is why code-0 NPCs land
+on category 18, and why categories like 13 are reached
+through BUY-menu verbs whose C operand is the category:
+Goods 14 / Items 13 / Papers 17, Keys 0x69, Rings 0x66
+— see §12.11).
+
+### 12.5 (e) Party-name writes — RESOLVED: fixed template data, no creation or rename
+
+Character names are written at spawn from template data
+in $23B84; there is no name-creation or rename UI
+anywhere, and save load ($2F896) restores names by block
+copy. Two spawn paths write the name words:
+
+- Encounter/character path, 0x23F52: struct +0x14 =
+  word at $CECF0 + template·6 (the values 0/1/2 are
+  substituted via $32FFA). **Party members are $CECF2
+  templates 1–6 = name words 57 Buc, 58 Slash,
+  61 Feather, 59 Mortimer, 60 Obliky, 62 Alexi**
+  (6-byte template records; template 1 =
+  17 04 01 00 00 3a).
+- Kind-1 path, 0x23D5A: copies 6 words [+0x14..+0x1E]
+  from the 24-byte template records at $CF1AC (record
+  pointer = $C(a6)); records whose +0 word is 57–62:
+  recs 10/11 = Alexi (62), recs 35/52/53/54 = Buc (57).
+
+The other +0x14 writes in $2595A (0x25A58) are roster /
+link slot bookkeeping — a spawned slot number written
+into a group entity's +0x14 array, not a name. Name
+strings live in $CD431 (16-byte entries): 57 Buc,
+58 Slash, 59 Mortimer, 60 Obliky, 61 Feather, 62 Alexi,
+93 Doggon XXIV, 101 NEXUS, 102 VOID, 75 Thalmus,
+68 Cookie.
+
+**Verdict: names are immutable shipped data; the only
+writes are spawn-time template copies and the save-load
+block copy.**
+
+### 12.6 (f) (A,B,grp) dispatch — RESOLVED: full parameter semantics
+
+The premise inherited from #020 — that A/B/grp map onto
+$D28E codes — was wrong, and is corrected here. Verb
+records are 14 bytes at $CCDB8: [10-byte name][A +0x0A]
+[B +0x0B][C +0x0C][grp +0x0D]. The executor $1F296 is
+entered only by $D28E command 21, and A/B/grp never
+become $D28E codes. Semantics:
+
+- **A = action-class selector.** Subtract-and-branch
+  chains at $1FE8A (entry; A read from the $FFBB82
+  record's +0x0A) and $20148 (after a submenu descent):
+  0x42 → $1FCA4/$200D6, 0x43 → $1F9D0/$1FEF4,
+  0x46 → $1F92A, 0x49 → $1F2B8/$1FFC6,
+  0x4C → $1FB2E/$1FF44, 0x4E → $1F45E, 0x53 → $1F60C.
+  An unlisted A descends: $FFBB82 := $CCDB8 +
+  word[$FF01EA + $FFA7F8·2] (a menu-offset table held in
+  RAM at $FF01EA) and re-dispatches; the final default
+  falls into the C-switch.
+- **B = menu state.** Copied verbatim into $FFA7F8 at
+  0x1F43E, 0x1F590, 0x1F902, 0x1F9B8, 0x1FB16 ($FFA7F8:
+  8 = SYSTEM panel; 0x15/0x19 = shop substates; it also
+  indexes the descent offset table above).
+- **grp = parameter staging class** (dispatch at
+  $1F404): grp 1 → C staged to $FFBB6C; grp 3 → C staged
+  to $FFBB6D (consumed at 0x20194 with the $FF0E82
+  roster); grp 8 → combat verbs (target selection via
+  $2CC62/$3C2F4 first). All classes share a common tail:
+  selection → $FFBB70 via $2CC62, B → $FFA7F8, a
+  menu-stack push via $FFBB80, back to the A-chain.
+- **C** feeds the 28-case switch at $2068E on $FFBB6C
+  (Bribe C=0x19, Camp C=0x1C, Diags C=0x37 — as §8).
+
+### 12.7 (g) Q5 xref — dream solved; the death string's caller narrowed, still open
+
+The dream texts are $DDBD8 dialogue records: master
+dreams 1085–1090, **Void dreams 1091–1095** (the §9.3
+line is record 1091, "Betrayer, deceiver…", pointer
+0x0A164), Nexus dreams 1096+. The trigger is in Camp
+$3019A (0x301AE–0x30226): the 1/3 encounter roll's
+second RNG(3) picks a template ∈ {$5E, $4D, $4C} whose
+$CECF0+t·6 name words are **Thalmus (75), VOID (102),
+NEXUS (101)**; RNG(30)==0 picks template $4E (Cookie,
+68). These are dream *visitors*, not monsters, which is
+why Camp encounters never fight. P(Void dream) ≈
+1/3 × 1/3 = 1/9 per Camp. $35612, once a candidate
+printer, is a $32D4C-spawn + $26B58 queue wrapper (spawn
+a visitor by template id and queue its greeting).
+
+The original Q5 death string at 0x1215A ("…By a cruel
+twist of fate, Void has found your party and
+exterminated you in a mere ⟨n⟩ seconds…", with a numeric
+placeholder byte) has **no longword/pea xref anywhere in
+the ROM** — the census is negative. It sits in the
+0x11F000–0x123000 formatted-text block, selected by
+index rather than by address.
+
+**Verdict: the dream half of Q5 is closed. The narrowed
+remainder: which index, and which caller, selects the
+0x1215A death string. Left open, precisely stated.**
+
+### 12.8 (h) Post-harness PC=0 — DIAGNOSED: harness artifact, root cause proven
+
+The anomaly belongs to the #007 logic harness
+(tools/test_logic_harness.s; the #008 spells harness
+shares the pattern) — not to tools/test_harness.sh,
+which is #014's smoke script. The harness hooks 0x35C
+with a **jsr** $FD0CC. But 0x35C is inside a VDP
+busy-poll loop in the shipped code:
+
+- 0x35C `move.w $C00004, d1` (the displaced instruction)
+- 0x362 `btst #3, d1; bne $35C` — loop back
+- 0x390 `beq $35C` — also loop back
+
+Both harnesses exit with `jmp 0x362` **without popping
+the 4-byte return address the jsr pushed**. The poll
+spins at full CPU speed between VDP waits, so the stack
+leaks 4 bytes per poll iteration. The numbers in §7.3
+fit exactly: boot SSP (vector 0) = 0xFFEC1E; the
+fault-time A7 in §7.3 was $FFD3B8 — 0x1866 = 6,246 bytes
+≈ 1,561 leaked return addresses below the boot stack
+pointer, down into the harness's own scratch region —
+after which a corrupted return lands at 0, the CPU
+executes the vector table as code, and the run freezes
+on the write to 0xDFFFFE. The unmodified ROM never
+faults (§7.3: a breakpoint at 0 was never hit in 8 s).
+The earlier suspects — the level-up jingle via $173EC(8),
+the RNG seed $FF0072, the scrubbed message records — are
+exonerated. §7.3's note that the #008 harness "does not
+reproduce" the fault is a run-duration/observation-window
+artifact: both harnesses carry the identical jmp exit.
+
+**Fix applied this session** (tools commit): `lea
+4(%sp),%sp` before every `jmp 0x362` exit in both
+harness files (four sites), with the reason recorded in
+the file comments. Either that, or hook with jmp instead
+of jsr — the pop is the smaller change.
+
+### 12.9 (i) $FF012C live mapping — COMPLETE
+
+Static profile first: $FF012C is the **current combat
+action/effect code**. Direct stores at 0x37E56 (= 0x200,
+in the $37D0E spell-cost routine), 0x3B4BA (= $3B1EE's
+own action-code argument), 0x4283C (= 0x8C, inside the
+$3E2D4 spell machine). It is read by $3B1EE's flat-damage
+compares (0x8E–0x92 → 70, 0x97 → 5, at 0x3B21A+), by
+$28002/$2844C (0x7D/0x7F compares), and throughout the
+spell machine.
+
+Live debugger reads (word at the even address),
+2026-11-09 19:55–20:35 CST (transcriptions; screenshots
+lost in the /tmp wipe, §12 preamble): **0** in the
+attract/demo loop, in the starting field close view, on
+the overworld, on the map screen, and in NPC
+conversation (multiple reads); **0x200** during a live
+random-encounter battle (read twice, 20:19:37 and
+20:19:46 CST); **0x201** once on the death screen after
+a knight fight (20:35:40 CST). Post-rebuild corroboration:
+during session #7's later MANUAL battles the value read
+**0 at the PICK menu** — it is set while an action
+resolves and clears back to 0 at the pick prompt.
+
+**Verdict: $FF012C = 0 outside combat; in combat it
+holds the current action/effect code (0x200 set by the
+spell system as actions resolve). The §5 question is
+answered.**
+
+### 12.10 (j) Bribe live — EXECUTED, exact traced effects
+
+Live on the clean ROM, 2026-11-09 ~20:12 CST (debugger
+transcriptions; screenshots lost in the wipe). Partner:
+the Doggon tax-post **captain** at the field/gate post
+(entity slot 6; $FF02A0 = 6; $FF02A8 = 0x7530 sentinel —
+a guard/event NPC, not a shopkeeper). His TALK menu
+(Talk/Job/Class/City/Quest/Buy/Sell/Show/**Bribe**/Fight)
+was scrolled to Bribe and selected with B (in
+conversations A only advances text; B picks).
+
+- Pre-state: gold $FF02DE = **850**; captain attitude
+  (slot 6, struct +0x22 at $FF040E) = **64**; +0x20 = 14.
+- Buc's scripted line appeared: **"PSSST! HOW ABOUT
+  10 GOLD?"**
+- Gold **850 → 840** — exactly −10, the traced
+  $2BBD2(1, −10, 0x400, leader) (§7.1).
+- Attitude **64 → 100** — +36, the $2A22A mode-8 effect.
+- +0x20 unchanged at 14. The captain's reply was the
+  generic "I HAVE NOTHING MORE TO SAY ON THAT TOPIC."
+  Conversation exited cleanly with C (OUT).
+
+The same session's tax payment at that post is the
+§12.3 live evidence: demand text verbatim, gold
+1000 → 850 (and, post-rebuild, at the field post
+970 → 820; evidence s7-tax-demand.png, s7-tax-paid.png).
+
+**Verdict: Bribe confirmed live, gold delta and attitude
+effect exactly as statically traced.**
+
+### 12.11 Item 2(a) — the $A5 combo: CONFIRMED
+
+On the map screen, 2026-11-09 ~19:58 CST (transcriptions;
+screenshots lost in the wipe). Vehicle, labelled as in
+§11: the Map was obtained on a scratch ROM copy via the
+session-#6 one-byte init patch (0x2CE3D $01 → $41,
+checksums re-fixed on the scratch copy only; debugger
+read $FFC340 = 0x4100 confirming the grant). Pad-2
+**$A5 = Start+C+Left+Up** held 1,600 ms (driver keys
+h+t+j+i). Leader (slot 1) debugger reads, before → after:
+
+- HP current $FF0304: **20 → 140 (0x8C)**
+- Power current $FF0306: **1000 → 9000 (0x2328)**
+- HP max $FF0308: **20 → 140**
+- Power max $FF030A: **1000 → 9000**
+
+Slot-0 fields unchanged (0/1). Exactly the claimed
+effect — the fan $A5 god-mode cheat is TRUE. The map
+screen was exited cleanly with B; no travel was made.
+(Session #6's blocker — dying to a destination encounter
+before a second map visit — was avoided by verifying
+from the map-screen state directly, as the effect
+applies there.)
+
+### 12.12 Item 2(b) — genuine Map purchase: NOT completed; the chain's break is precise
+
+The shop rule is now fully pinned (this session + §11.1):
+an NPC is a shopkeeper for category i iff its struct
++0x17 byte equals the item-record shop code at
+$D66A0+i·10 +2 and its +0x25 byte > 0 ($2A454 loop
+0x2A4BC–0x2A540, last match wins; sets $FF02A8 = category,
+$FF02AA = +0x24, $FF02AC = +0x25). **Map = category 13,
+slot 6, price record 159, base price 415 gold**
+($2EA92(13,6): w = 153 → record 159, raw 99 →
+(99−16)·5 = 415; attitude-scaled: att 0 ≈ 563,
+att 50 = 415, att 100 ≈ 267). Category 13's shop code is
+**0**, so category-13 goods are not vended by a code-13
+NPC: they are reached through the **BUY-menu verb
+"Items" (C = 13)** inside a conversation with an NPC who
+matched *some* category (i.e. any real shopkeeper, whose
+conversation carries a Buy verb). The decisive in-game
+test for "is this NPC a shopkeeper" is a debugger read
+of $FF02A8 ≠ 0x7530 during its conversation.
+
+Session #7 attempts (clean ROM unless noted): the City
+of the Mind was reached three times pre-wipe; the tax
+was paid; the captain was bribed (§12.10); live entity
+slots in the city were surveyed (slots 2/3/4 at
+(125,103), (126,112), (124,112); slots 5–7 were the tax
+knights); every conversation actually opened — a field
+NPC (slot 2) and the captain (slot 6) — read the 0x7530
+sentinel, i.e. neither is a shopkeeper. In attempt E
+(pre-wipe) the party reached the doorstep of the plaza
+stairs-building in Mind at ~(124,110); the entry test
+(B while facing the door) was interrupted by the /tmp
+wipe. Post-rebuild, the beggar fight was won under
+MANUAL combat (+6 XP / +20 gold — matching §9 exactly;
+evidence s7-beggar-victory-manual.png), a save/restore
+cycle was proven (EEPROM save south of the field:
+970 gold; CONTINUE restores it — "GAME RESTORED."), and
+the overland route was re-mapped, but solo Buc died
+twice more (a riverbank beast hitting ~12/round; a
+mutual kill with the knight Davin) before reaching the
+city again. Across sessions #4/#6/#7 Buc has died nine
+times on this errand; the survival lesson is that solo
+Buc cannot fight the route's random encounters (beast
+~12/hit, knight ~8/hit vs his 20 HP) and must travel
+roads only, in short hops between saves.
+
+**Where the chain breaks, exactly:** not at the shop
+rule (fully known), not at gold (970 ≥ 563 worst case),
+not at the BUY menu (Items/C=13 identified). It breaks
+at *reaching a shopkeeper's conversation inside Mind
+and opening it* — the building-entry test at the plaza
+stairs-building (~(124,110)) and the $FF02A8 read inside
+a Mind shop conversation are the two steps never yet
+executed. The EEPROM save left by this session (970
+gold, Buc at the field-south overworld, COMBAT = MANUAL)
+loads via title CONTINUE and is the resume point.
+
+**Verdict: purchase still open — a genuine attempt is
+documented end-to-end except for its final two steps,
+which are named precisely.**
+
+### 12.13 Incidental live observations (session #7)
+
+- **Save rule:** SYSTEM → SAVE works only on the
+  overworld — inside a location close view the game
+  answers "YOU CAN ONLY SAVE THE GAME WHILE OUTSIDE."
+- **Battle structure (MANUAL):** a combatant's turn
+  opens directly at the PICK (spell) menu; C does not
+  back out to a parent verb menu, so there is no
+  flee option at that level. "Buc RETREATS" in the log
+  is the HOLD mood's repositioning, not flight. Enemy
+  panels show truncated two-line class tags (Dunn;
+  Davin "KN/KN DED"; the riverbank beast "Co…").
+- **F5 footnote (observation, not a re-verdict):** after
+  the beggar victory Buc's HP read 5 during the
+  battle-end transition and 20 at the first post-tally
+  read, and the EEPROM save written minutes later holds
+  15 — the tally/XP-grant path ($2C4E2, §10.2) touches
+  current HP on ordinary grants in ways the §10.2
+  level-up experiment did not exercise. Recorded as an
+  observation for whoever next instruments $2C4E2; §10.2's
+  verdicts stand on their own experiments.
+- **Evin's event is not field-bound:** the beggar event
+  also fires inside the house location at overworld
+  (114,130), south of the field's mountain band (paid
+  50 there post-rebuild: 970 → 920).
+- The captain's TALK menu is reachable both before and
+  after paying the tax; the 150-gold demand repeats at
+  each post independently (field post and harbour post
+  are separate posts with separate captains).
+
+### 12.14 #021 status after session #7
+
+Closed this session: (a) F2, (b) F7, (d) item bytes
++4..+9, (e) party-name writes, (f) (A,B,grp) dispatch,
+(h) post-harness PC=0 (diagnosed + harness fix applied),
+(i) $FF012C live mapping, (j) Bribe live, Item 2(a) $A5
+combo. (c) Doggonia fee: answered — no such fee in code;
+the live charge is the 150-gold tax. Still open, both
+narrowed to single steps: **(g)** the index/caller that
+selects the 0x1215A Void death string, and **2(b)** a
+genuine Map purchase (enter a Mind shop building; read
+$FF02A8 in conversation; BUY → Items → Map). #021 stays
+**in progress** on those two sub-items alone.
