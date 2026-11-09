@@ -73,9 +73,14 @@
 _start:
     cmpi.w #0xBEEF, 0xFFD000
     bne run_tests
-    /* already ran: displaced instruction, back to attract loop */
+    /* already ran: displaced instruction, back to attract loop.
+     * rts, NOT jmp 0x362: the hook is `jsr $FD0CC`, which pushed 0x362
+     * as the return address; jmp would leak 4 stack bytes per hook hit,
+     * and the hook sits at 0x35C (the attract loop's VBlank spin target),
+     * so the stack plummets into RAM and the game faults at PC=0 in ~3 s
+     * (#021 Q13). rts returns to 0x362 and pops the address: no leak. */
     move.w 0xC00004, %d1
-    jmp 0x362
+    rts
 run_tests:
     move.w #0xBEEF, 0xFFD000
     move.w #0xA5A5, 0xFFD002
@@ -394,9 +399,11 @@ restore_party:
 canary_ok:
     move.w #0xA5A5, (%a5)+
 done:
-    /* displaced instruction, back to attract loop */
+    /* displaced instruction, back to attract loop (rts, not jmp 0x362:
+     * see the note at the "already ran" branch — jmp leaks the jsr's
+     * return address on every hook hit and faults the game at PC=0). */
     move.w 0xC00004, %d1
-    jmp 0x362
+    rts
 
 /* One damage case: reset target HP=100, $FFC37C=-1, $FFC380=0,
  * call $3B1EE(0, 1, 60), store d0, target HP, $FFC380. */

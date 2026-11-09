@@ -351,30 +351,47 @@ papered over.
   `$1664E` (`0x166D8`, `0x169C6`, `0x16ACA`, `0x16B04`); and
   sites at `0x12AC8`, `0x14E54`, `0x14F2C`, `0x1591E`,
   `0x161AA` inside large routines of the same blocks.
-- `$12FE8` (`0x12FE8–0x1316E`) is the **menu/verb input
+- `$12FE8` (`0x12FE8–0x13650`) is the **menu/verb input
   decoder**: pops `$1350`, takes the low nibble of the
   button byte (the D-pad), maps it through jump tables (at
   `0x13052`, `0x13078`, `0x130D8`, `0x130FE`) gated by
   `$FF0116` and `$FF0134` mode flags, producing d6 = 0–4
-  (direction/selection index). Returns a pointer to a 4-byte
-  command record at `$FF0240`: [byte0 = command (0, or
-  `0x25`=37 when a face button A/B/C/Start bit 4/5/6/7 is
-  newly pressed vs previous state `$FF0244`, in the
-  `$FF0110` path), byte1 = d6, word = -1]. Writes `$FF0136`
-  = d6 (current menu selection index) when `$FF00AC == 0`
-  and `$FF010E` bit 0 == 0, else `$FF0136` = 4. If `$FF0112
-  != 0` it copies the record to `$FF0240` and returns
-  `$FF0240`.
+  (direction/selection index). It writes the `$FF0240`
+  command byte from the **button pressed + mode flags**
+  (0x12FE8–0x13650, full map in #021): D-pad only → 10
+  (when the selection returns to 4 / `$FF0086==4`) or 0;
+  A (bit 4) → 21 (if `$FF00AC`) / 30 (if `$FF00AE==1`) / 35
+  (otherwise), plus 40/0 variants; B (bit 5) → 22 (if
+  `$FF00AC`) / 50 (if `$FF00AE==1`) / 55 (otherwise); C
+  (bit 6) → 37 (if `$FF00AC`) / 45 (if `$FF010E` bit 0) / 40
+  (selection changed) / 0; Start (bit 7) → 20, and combos 24
+  (Start+C, selection byte 6) / 25 (Start+A or Start+B).
+  `$FF00AE` (1/2) is the input mode flag (set 1 at `$D29E`
+  each `$D28E` iteration; set 2 at `0x1DC1C`, back to 1 at
+  `0x1DE6A`). The record at `$FF0240` is [byte0 = command,
+  byte1 = d6, word = -1]. Writes `$FF0136` = d6 (current menu
+  selection index) when `$FF00AC == 0` and `$FF010E` bit 0
+  == 0, else `$FF0136` = 4. If `$FF0112 != 0` it copies the
+  record to `$FF0240` and returns `$FF0240`.
+  **CORRECTED in #021 — this was described as producing only
+  command 0 or 37; it produces 0, 10, 20, 21, 22, 24, 25,
+  30, 35, 37, 40, 45, 50, 55.**
 - `$FF0136` (menu selection index) is read at `0x138D2`
   (inside a routine at `0x138A8` that indexes a 6-byte
   table at `$1B446` by `$FF0136*6` and formats a display
   value).
-- Note: `$12FE8` only produces command 0 or 37, yet the
-  `$D28E` switch has 15 cases — the other command values
-  (10, 20, 21…) are written into the command slot by other
-  paths (e.g. `$D328` writes 10 literally in the `$FF0128`
-  branch; `$D43E` special-cases `0x25` and `0x28`=40). The
-  full command-source mapping is open for #021.
+- Note: `$12FE8` produces 0, 10, 20, 21, 22, 24, 25, 30,
+  35, 37, 40, 45, 50, 55 (see above) — the `$D28E` switch's
+  15 cases are all reachable from it. The remaining command
+  value, 23, has **no writer found** in the ROM (no literal
+  `move.b #$17` into the command slot) — open. Other writers:
+  `$D328` writes 10 literally in the `$FF0128` branch;
+  `$D43E` clears the command to 0 when a message is pending
+  (unless the command is 0/37/40) and calls `$17586(-1, 0x14`).
+  The `$D28E` switch is on the `$FF0240` command byte; the
+  verb C codes are NOT `$D28E` codes — the bridge is `$D28E`
+  case 21 → `$1F296`, which dispatches on the selected
+  record's C byte (full `$1F296` case map in #021).
 
 ### Per-frame world tick $2155E (partially traced)
 
@@ -593,12 +610,22 @@ call site) and calls `$42FC8`, `$DCE2`, `$43012`, `$430F4` (Ghidra).
 - `$42F96` — shift **one bit in**: write `$80`, write `$C0`, read
   `$200000` → d1, write `$80`; the read bit comes back on D7
   (`asl.b d1` / `roxl d0`).
-- `$43012` — EEPROM **write**: takes address/buffer args off the
-  stack, stores them at `$FF0150–$FF015C`, clocks the command out via
-  `$42EBA` ×8, reads an ACK bit via `$42F96`; on error `$FF014E++`
-  and retries up to `$FF014C` (10).
-- `$430F4` — EEPROM **read**: same bit-bang pattern (command out,
-  ACK in), then reads bytes back through `$42EBA`/`$3DC2A`.
+- `$43012` — EEPROM **read** (block): takes a buffer pointer, address
+  and count off the stack, stores them at `$FF0150–$FF015C`, clocks the
+  command out via `$42EBA` ×8 (with `or.w #1` in the command word — the
+  read bit), reads an ACK bit via `$42F96`, then reads bytes back through
+  the `$42EEE` bit-in loop (`move.b d0, (a0)+`), looping `$FF015C` times.
+  On error `$FF014E++` and retries up to `$FF014C` (10).
+  **CORRECTED in #021 — this was labelled "write" in #003; the call-site
+  proof is decisive: boot validation calls `$43012(d1=$80, a0=$FF016A)`
+  and then validates the buffer, so it must be the read.**
+- `$430F4` — EEPROM **write** (one byte): same bit-bang pattern
+  (command out via `$42EBA` ×8 **without** the `or #1`, ACK in via
+  `$42F96`), then sends the byte (`move.b (a0), d0; lsl #8; $42EBA` ×8)
+  and waits out the write cycle (`move.w #$1518, d0; dbra`).
+  **CORRECTED in #021 — this was labelled "read" in #003; the clear-save
+  loop calls `$430F4` 128× with a0 advancing through the zeroed buffer,
+  so it must be the write.**
 - So the save hardware is a **Microwire-style serial EEPROM**
   bit-banged through the cartridge `$200000` window (separate DI/DO/
   CLK lines: DI = D0, CLK = D6, DO = D7). Chip identity (93C46 family

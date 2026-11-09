@@ -712,8 +712,8 @@ Scratch `$FFD000`–`$FFD1FF` was chosen after a gap analysis of referenced
 
 Build/run recipe: assemble, `objcopy -O binary`, copy `rop-original.gen`
 to `/tmp/test007.gen`, write the harness at `0xFD0CC`, write the hook at
-`0x35C`, `python3 tools/checksum.py fix-all` (header `0x169F`, runtime
-`0x7C7B5FDB`, both OK). Read back with a breakpoint at address 0 (see
+`0x35C`, `python3 tools/checksum.py fix-all` (header `0x0EBF` after the
+#021 `rts` fix — `0x169F` before it — runtime `0x7C7B5FDB`, both OK). Read back with a breakpoint at address 0 (see
 §7.2). The original ROM is never modified (MD5 re-verified after every
 build: `30c18fdbe2183f64702ae9f1a45d63f9`).
 
@@ -749,7 +749,7 @@ in all cases — its v is 0 → floor clamp) and merchant-none `0xFFFF`
 (the code compares against `0xFF`); item 23 + `0x00FF` discriminates
 all three merchant paths.
 
-### 7.3 The post-harness fault (unresolved, #021)
+### 7.3 The post-harness fault (SOLVED in #021, Q13)
 
 After the harness returns, the game faults: after `c` (continue) the
 log shows `machine freeze due to write to address DFFFFE`, then `Saved
@@ -757,21 +757,32 @@ EEPROM...`, and the debugger stops answering. Bisected with
 breakpoints: the harness completes (`done` reached), the attract loop
 re-enters repeatedly, then **PC reaches address 0** — the CPU fetches
 from address 0 (`0: dc.w $FF`), executes the vector table as code,
-and eventually writes to `0xDFFFFE` → freeze. `$26CCA`/`$1E426` did
-**not** hit before PC=0, so the fault is not via the message pump. No
-exception frame was found at SP (`p a7` = `0xFFFFD3B8`; memory at
-`$FFFFD3B0`–`$FFFFD3C4` all zero except `$FFFFD3B2` = `0x882`) — so PC
-most likely reached 0 via a jump/call/return to address 0, not via an
-exception, though the stacked-PC lead (`0x882`, inside a routine at
-`~0x870`) is unverified. **The original ROM does not fault** (8 s at
-the title screen, breakpoint at 0 never hit), so the fault is
-harness-caused (some leftover state — prime suspects: the level-up
-jingle queued by `$173EC(8)`, the RNG seed `$FF0072`, the scrubbed
-message records). The address log (`-l`, `$HOME/address.log`, first-hit
-order) shows no new game-code branch targets in the test run beyond
-the harness itself (`FD0CC`, `FD0E2`, `FD582`, `FD586`, `FD590`) — the
-fault path reuses already-seen addresses, or the log flushes before
-the fault.
+and eventually writes to `0xDFFFFE` → freeze.
+
+**Root cause (found #021): the harness itself leaks the stack.** The
+hook is `jsr $FD0CC` (pushes return address `0x362`), but both
+harness exits used `jmp 0x362` instead of `rts` — so the pushed
+return address is never popped: **4 stack bytes leak on every hook
+hit**. The hook sits at `0x35C`, the target of the attract loop's
+VBlank spin (`btst #3, d1; bne $35C`), so it is hit hundreds of times
+per frame; the stack plummets from `$FFEC1E` into RAM (at the fault,
+`a7 = $FFFFD3B4`, ~6 KB consumed) and an `rts` eventually pops a 0 →
+PC=0. The fault is in the attract loop, **before** the attract exit
+(`$392`, `$119E`, `$D25C` are never reached — proven by breakpoints).
+The earlier prime suspects are all **killed**: skipping gold, XP,
+damage, or price individually does not stop the fault, and restoring
+`a5` does not either. The `0x882` seen on the stack was a red herring
+(it is the target of `$4E6`'s `bge`, not a return address). The
+`#008` harness has the **same** fault (its test ROM also hits PC=0 at
+~3.2 s if left running) — it was never observed because that driver's
+run ends right after reading the results at `done`.
+
+**Fix (applied #021 to all three harness sources):** both exits use
+`rts` instead of `jmp 0x362` — `rts` returns to the pushed `0x362`
+and pops it, so there is no leak. Verified: the fixed #007 harness
+produces the same **90/90** results and runs 12 s clean (no PC=0);
+the fixed #021 harness still gives **25/25**. **Rule for all future
+harnesses: a `jsr` hook must be exited with `rts`, never `jmp`.**
 
 **Readback method that works:** set a breakpoint at 0 (`b 0`), `c`,
 wait ~5 s, then read `$FFD000+` while stopped at PC=0 — the debugger
