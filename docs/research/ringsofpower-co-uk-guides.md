@@ -212,3 +212,26 @@ pics/loony/links/invertedmap Feb 2009; sounds Jul 2009; division May
 2012) — the April 2008 site was the home page, the five section
 indexes, the intro pages, and the six In Depth guides. A junior agent
 reading the remaining pages is issue #033.
+
+## Inventory details (late CDX pass, 2026-11-09)
+
+- The home page is the most-captured page: snapshots span
+  28 Dec 2007–19 Aug 2025. Its 4 Mar 2008 news credits **Xavier
+  Whipon** for a selection of Game Genie codes, an IPS patch, and
+  "information on the workings of the game" — a name to follow up
+  in #033 (who he is, whether the patch is reachable anywhere).
+- **No downloadable files** in the 59-URL inventory: no .zip, .ips,
+  .mp3 or .exe URL. The IPS patch and Game Genie codes are described
+  on cheats.htm / the home page, and the music themes on sounds.htm,
+  but no file URL for them is archived under this host.
+- tradinginv.htm has **no 200 capture** (16 Apr 2008 entry is a 302
+  redirect) — do not treat it as a readable page.
+- **No separate combat page** and **no standalone generic item-list
+  page** exist in the inventory; the closest are stones.htm,
+  trading.htm, locations.htm (items) and spells.htm (mechanics).
+- division.htm's 2012 snapshot title reads **"Ringsofpower.8m.com"**
+  — the site later lived on an 8m.com mirror.
+- CDX caveats: timestamps are capture times, not publication dates;
+  www vs non-www and :80 variants appear as separate urlkeys; the
+  monthly-collapse listing missed single-capture pages (links.htm,
+  invertedmap.htm), verified separately.

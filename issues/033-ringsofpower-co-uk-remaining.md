@@ -19,7 +19,11 @@ is everything else.
   Mortimer (necromancer), Obliky (enchanter) — spell lists for #008
 - [ ] hints.htm, cheats.htm (incl. Game Genie codes + the IPS patch
   note), secrets.htm (sunken treasure, empty caves, Void as a
-  vehicle) summarised
+  vehicle) summarised. Note: home-page news (4 Mar 2008) credits
+  **Xavier Whipon** for the Game Genie codes, an IPS patch and
+  "information on the workings of the game" — find out who he is
+  if the pages say, and whether the patch is reachable anywhere
+  (the CDX inventory has no downloadable file URL for it).
 - [ ] map.htm (interactive map), pics.htm, sounds.htm, loony.htm,
   commerce.htm / division.htm (city profiles), what.htm, story.htm
   noted: what each contains and whether anything is usable
