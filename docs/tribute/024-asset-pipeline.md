@@ -41,3 +41,18 @@ the paradox, the exporter changes in exactly one place
   graphics table — route it to `books.json`, not tiles.
 - Tilemap paired records (22/48 etc.) are alternative layers, not
   overlays (`docs/maps.md`) — export both, tag `layer_alt`.
+
+## Run report 2026-11-09 (session #4)
+
+Implemented + ran: tools/extract_assets.py now wraps
+render_tiles.py (tiles/sprites), decode_map.py (maps) and
+extract_text.py (dialogue/dictionary/books). One command
+produces the full contract under tribute/assets/ (153
+files, ~1.6 MB, git-ignored) with manifest.json provenance.
+Verification: 21/21 maps rectangular and lossless (no
+palette/priority bits exist in the map words themselves —
+they come from the blitter base, carried at top level);
+90/90 sprites 48×48 with embedded palettes (rec 0 matches
+the #005 committed render); dialogue record 0 keeps the
+shipped "unknown building." bug verbatim; books decode to
+the expected texts. Details: tribute/README.md run table.

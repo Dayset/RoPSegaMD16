@@ -50,3 +50,24 @@ open
 - **Acceptance:** PARTIAL: one documented command exists; palettes exporter real; tiles/maps/text exporters are scaffolds over tools/render_tiles.py, tools/decode_map.py, tools/extract_text.py. BLOCKED: a full export run needs rop-original.gen.
 
 **Status after this session:** in progress — partial (see below). Not marked done.
+
+## Update 2026-11-09 (session #4) — PIPELINE IMPLEMENTED + RUN
+
+- tools/extract_assets.py rewritten from scaffold to the
+  full pipeline (wraps the proven decoders, per the issue's
+  "extend or wrap, do not edit" rule). One command:
+  `python3 tools/extract_assets.py`.
+- **Acceptance: ALL MET.** Tiles: 37 tileset PNGs (packed
+  decode, palettes applied). Maps: 21 tilemap JSONs
+  (indices + flips; palette from the blitter base at top
+  level — verified no map word carries palette/priority
+  bits itself). Text: dialogue.json (1,183 records, UTF-8)
+  + dictionary.json (3,466 words) + books.json (4 streams).
+  Palettes: 31 × 16 RGB. Outputs under tribute/assets/
+  (git-ignored build products) + manifest.json.
+- Verification details in tribute/README.md (run table)
+  and docs/tribute/024-asset-pipeline.md.
+- Remaining for the tribute (not this issue): the Esenthel
+  engine project + importers live in #023 (owner machine).
+
+**Status: done** (in-VM scope; engine import is #023).
