@@ -1,0 +1,25 @@
+Entity templates at ROM 0xCF1AC, 24 bytes each (from #020, $23B84)
+Copy loop writes words 0-5 to struct +0x14..+0x1E; word at +0x0C (w6) -> struct +0x20;
+byte at +0x13 selects the +0x18 level bits for type-1 entities; w8/w9/w10/w11 feed a
+stat computation at 0x23DE0 (word w10 * byte +0x12 / 100, added to word +0x10, clamped +-100).
+
+  t  0 @0xcf1ac: name_idx=  1 'Man'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=1 w7=0x0000 w8=0 w9=0x0000 w10=0x3001 w11=0x0505  (+0x13 byte=0x00)
+  t  1 @0xcf1c4: name_idx= 94 'Fiver'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0xfa00 w8=70 w9=0x5002 w10=0x3c1e w11=0x0911  (+0x13 byte=0x02)
+  t  2 @0xcf1dc: name_idx= 95 'Hideous'  w1=96 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0xfa00 w8=60 w9=0x5a0c w10=0x341e w11=0x0c0d  (+0x13 byte=0x0c)
+  t  3 @0xcf1f4: name_idx=101 'NEXUS'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0xfa00 w8=70 w9=0x5002 w10=0x381e w11=0x1205  (+0x13 byte=0x02)
+  t  4 @0xcf20c: name_idx=109 'Abattoir'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0xfa00 w8=70 w9=0x5002 w10=0x382f w11=0x1903  (+0x13 byte=0x02)
+  t  5 @0xcf224: name_idx=102 'VOID'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=15 w7=0xfa00 w8=70 w9=0x5002 w10=0x301e w11=0x1207  (+0x13 byte=0x02)
+  t  6 @0xcf23c: name_idx=103 'Bob'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=10 w7=0xfa00 w8=70 w9=0x5002 w10=0x342b w11=0x0408  (+0x13 byte=0x02)
+  t  7 @0xcf254: name_idx=104 'Eddie'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=34 w7=0xfa00 w8=70 w9=0x5002 w10=0x3822 w11=0x0206  (+0x13 byte=0x02)
+  t  8 @0xcf26c: name_idx=105 'Guardian'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=34 w7=0xfa00 w8=70 w9=0x5002 w10=0x3022 w11=0x0209  (+0x13 byte=0x02)
+  t  9 @0xcf284: name_idx= 34 'Carmelli'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=19 w7=0x0000 w8=5 w9=0x050b w10=0x342a w11=0x0207  (+0x13 byte=0x0b)
+  t 10 @0xcf29c: name_idx= 62 'Alexi'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0000 w8=80 w9=0x5a02 w10=0x3830 w11=0x0302  (+0x13 byte=0x02)
+  t 11 @0xcf2b4: name_idx= 62 'Alexi'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0000 w8=80 w9=0x5a02 w10=0x3430 w11=0x0207  (+0x13 byte=0x02)
+  t 12 @0xcf2cc: name_idx= 34 'Carmelli'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=19 w7=0x0000 w8=5 w9=0x050b w10=0x3430 w11=0x0802  (+0x13 byte=0x0b)
+  t 13 @0xcf2e4: name_idx= 98 'Lucius'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0102 w8=90 w9=0x5a02 w10=0x381f w11=0x0406  (+0x13 byte=0x02)
+  t 14 @0xcf2fc: name_idx= 98 'Lucius'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x1201 w8=90 w9=0x5a02 w10=0x3420 w11=0x0505  (+0x13 byte=0x02)
+  t 15 @0xcf314: name_idx= 23 'Beruchata'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0003 w8=40 w9=0x2802 w10=0x3822 w11=0x0502  (+0x13 byte=0x02)
+  t 16 @0xcf32c: name_idx= 23 'Beruchata'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0003 w8=40 w9=0x2802 w10=0x3823 w11=0x0501  (+0x13 byte=0x02)
+  t 17 @0xcf344: name_idx= 31 'Horana'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0003 w8=40 w9=0x5002 w10=0x342c w11=0x0505  (+0x13 byte=0x02)
+  t 18 @0xcf35c: name_idx= 25 'Tinini'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=2 w7=0x0002 w8=40 w9=0x3c0c w10=0x3823 w11=0x0507  (+0x13 byte=0x0c)
+  t 19 @0xcf374: name_idx= 33 'Batusha'  w1=0 w2=0 w3=0 w4=0 w5=0 | w6=19 w7=0x0000 w8=65446 w9=0x0505 w10=0x3c23 w11=0x0708  (+0x13 byte=0x05)

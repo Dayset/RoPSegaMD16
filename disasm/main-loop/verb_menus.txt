@@ -1,0 +1,53 @@
+Menu verb table at ROM 0xCCDB8-0xCCFF0 (from #020, re-parsed 2026-11-09)
+Record layout (verified against the raw bytes):
+  item record  = 14 bytes: [10-byte name, NUL-padded][A][B][C][grp]
+  header record = 12 bytes: [10-byte name, NUL-padded][A][grp]
+  (headers are the menu titles: MAIN, FIGHT, MOOD, PARTY, TACTIC, BUY, INVEN, USE)
+grp = menu/group id: 1=main/shop, 2=party disciplines, 4=mood/tactic headers,
+  5=inven header, 6=combat/party headers, 8=mood/tactic/shop items.
+C reads as the item's verb/action code for the main menu (Party=0x64, Search=0x13,
+Map=0x11, Camp=0x1C) and as a 0-based index for PARTY (0-5) and TACTIC (8-11);
+the exact mapping of A/B/C to the $D28E command switch is NOT yet proven - #021.
+
+  0xccdb8 HEADER sz=12 'MAIN'  trailer[4e 07]
+  0xccdc4 item   sz=14 'Inven'  trailer[00 06 00 01]
+  0xccdd2 item   sz=14 'Spells'  trailer[00 18 00 01]
+  0xccde0 item   sz=14 'Party'  trailer[00 03 64 01]
+  0xccdee item   sz=14 'Search'  trailer[00 00 13 01]
+  0xccdfc item   sz=14 'Map'  trailer[00 00 11 01]
+  0xcce0a item   sz=14 'Camp'  trailer[00 00 1c 01]
+  0xcce18 item   sz=14 'System'  trailer[00 08 00 01]
+  0xcce26 HEADER sz=12 'FIGHT'  trailer[4e 06]
+  0xcce32 item   sz=14 'Flee'  trailer[00 00 06 08]
+  0xcce40 item   sz=14 '------'  trailer[00 32 00 01]
+  0xcce4e item   sz=14 'Berzrk'  trailer[00 00 01 08]
+  0xcce5c item   sz=14 'Advnce'  trailer[00 00 02 08]
+  0xcce6a item   sz=14 'Hold'  trailer[00 00 03 08]
+  0xcce78 item   sz=14 'Wary'  trailer[00 00 04 08]
+  0xcce86 HEADER sz=12 'MOOD'  trailer[53 04]
+  0xcce92 item   sz=14 'Berzrk'  trailer[00 00 01 08]
+  0xccea0 item   sz=14 'Advnce'  trailer[00 00 02 08]
+  0xcceae item   sz=14 'Hold'  trailer[00 00 03 08]
+  0xccebc item   sz=14 'Wary'  trailer[00 00 04 08]
+  0xcceca HEADER sz=12 'PARTY'  trailer[43 06]
+  0xcced6 item   sz=14 'Sorc'  trailer[00 00 00 02]
+  0xccee4 item   sz=14 'Knight'  trailer[00 00 01 02]
+  0xccef2 item   sz=14 'Archer'  trailer[00 00 02 02]
+  0xccf00 item   sz=14 'Necro'  trailer[00 00 03 02]
+  0xccf0e item   sz=14 'Enchnt'  trailer[00 00 04 02]
+  0xccf1c item   sz=14 'Conjur'  trailer[00 00 05 02]
+  0xccf2a HEADER sz=12 'TACTIC'  trailer[53 04]
+  0xccf36 item   sz=14 'Asasin'  trailer[00 00 08 08]
+  0xccf44 item   sz=14 'GangUp'  trailer[00 00 09 08]
+  0xccf52 item   sz=14 'Cover'  trailer[00 00 0a 08]
+  0xccf60 item   sz=14 'Guard'  trailer[00 00 0b 08]
+  0xccf6e HEADER sz=12 'BUY'  trailer[42 01]
+  0xccf7a item   sz=14 'No'  trailer[00 00 01 01]
+  0xccf88 HEADER sz=12 'INVEN'  trailer[4e 05]
+  0xccf94 item   sz=14 'Goods'  trailer[00 10 0e 08]
+  0xccfa2 item   sz=14 'Items'  trailer[00 07 0d 08]
+  0xccfb0 item   sz=14 'Papers'  trailer[00 15 11 08]
+  0xccfbe item   sz=14 'Keys'  trailer[00 00 69 01]
+  0xccfcc item   sz=14 'Rings'  trailer[00 00 66 01]
+  0xccfda HEADER sz=12 'USE'  trailer[49 01]
+  0xccfe6 item   sz=10 'No'  trailer[]

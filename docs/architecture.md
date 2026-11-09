@@ -140,8 +140,347 @@ dispatcher: it tests state flags (`$FF00AC`, `$FF0030`, `$FF011E`,
 routine), `$12B82`, `$12FE8`, and branches to `$D8BA` from three
 sites (`0xD2EC`, `0xD2F8`, `0xD30A`). `$D8BA` indexes 52-byte
 (`$34`) structs in tables at `$FF02B4`/`$FF02DB` via the index in
-`$FF0120` and calls `$2A2CA` / `$26A8C`. What those structs are is
-#020's question.
+`$FF0120` and calls `$2A2CA` / `$26A8C`. The full trace of `$D28E`
+and the state machine is issue #020, in the section below
+("Main loop + game state machine").
+
+## Main loop + game state machine (issue #020, 2026-11-09) — verified
+
+Status: **verified** — every claim below was checked with a tool run
+(Capstone range disassembly, ROM table reads). Confidence is marked
+per section; the places the trace stops are labelled open, not
+papered over.
+
+### Top-level flow
+
+- `$119E` does `jmp $D25C`; `$D25C` calls seven routines in order:
+  `$11E06`, `$14FB6`, `$1B5D6`, `$32D0E`, `$173BC`, `$D28E`,
+  `$179B6`. `$D28E`'s `rts` is dead in practice: when `$D28E`
+  returns, `$D25C` calls `$179B6` — the **soft reset** (`movea.l
+  $FFEC1E,a7; jmp $200`) — which never returns, so the game reboots
+  through the whole entry path after the main loop exits.
+- `$D28E` (`0xD28E–0xD9DE`, 1,876 bytes). Entry: clears
+  `$FF010E`/`$FF00AC`, `$FF00AE=1`, `$26CCA(1)`, `$1BA26`,
+  `$1B918`. Loop head at `$D2BE`; loop-back at `$D9DA`: `tst
+  $FF00BE; beq $D2BE` (loop while `$FF00BE==0`); else `bra $D392`
+  → `unlk; rts` (exit to `$D25C` → `$179B6` → reset).
+  **`$FF00BE` is set to -1 at exactly one site, `0x20188`**
+  (inside the `$1F296` verb executor) — that is the only exit from
+  the main loop.
+- Frame pacing at `$D95C`: `$FF00AC` set + `$FF0030 ≤ $32` +
+  `$FF02A2` bit 0 set → `$226BC`; else a 10000-iteration delay
+  loop. `$FF0030` is a per-iteration counter clamped to `$7530`
+  (30000), reset to 0 when `$FF00AC` is set and a command byte is
+  present. `$1B918` (the per-frame redraw checker) is called twice
+  per `$D28E` iteration — head and tail.
+
+### The seven $D25C callees
+
+- `$11E06` — VDP register setup (writes R0=`$04`, R1=`$34`,
+  R2=`$00`, R3=`$04`, R4=`$00`, R5=`$12`, R13=`$08`, R7=`$00`,
+  R10=`$FF`, R11=`$00`… via `$D9E2`; the dump cuts off at 0x78
+  bytes, one `jsr $aaaaaaaa.l` mis-decode at `0x117C`).
+- `$14FB6` — intro/story driver. Loops on `$123B0`'s return:
+  1 → `$147D0(0,0x20)`, 2 → `$147D0(0,0x3D)`, 3 →
+  `$147D0(0,0x3B)`, 0 → `$12C20` (world-map draw), then `rts`.
+  Helper `$15012` plays music `$173BC(1)` + `$15C08`. Sets
+  `$FF0128=-1` at `0x15512` (the "intro ran" flag — see `$1B5D6`
+  below).
+- `$1B5D6` — new-game init (next section).
+- `$32D0E` — song picker: returns `0x11` (17) if the leader
+  struct `+0x06` == 2 or 3, else 2; d0 is passed to `$173BC`.
+- `$173BC` — location-song player (known from the music-off patch).
+- `$D28E` — main loop (this section).
+- `$179B6` — soft reset (above).
+
+### New-game init $1B5D6 — answers #008's $FF0E18[2] question
+
+- `$1E390($FF0E18, 8)` at `0x1B5DA` — this **confirms** the
+  message-queue capacity initialiser: new-game init sets capacity
+  8. (#008's partial answer confirmed; the owner is `$1B5D6` in
+  the live new-game flow.)
+- Then: `$FFC324=-1`; rank-table pointers at `$FFA7CC`
+  (`0x1B5F4`); `$FF00B6=$134`; `$FF00B8=$FF00B6*16+$20`;
+  `$1961A($FFA880, 4)`; `$1C0EC` (10×10 grid fill — **not** party
+  init, per #008); `$1D9BC($FF0E8E)`; `$1DA10` table inits
+  (`$FFB08C`, `$FFB09C`, `$FFB0AC`, `$FFB0BC`); `$2A454(-1)`;
+  `$FF0E78=$FF0E7E=0`; `$20C5E`; `$FFA7FC=$FFB08C`; `$23A9E`;
+  `$2B5F4`.
+- Leader spawn: if `$FF0128 == 0` → `$1C21A(6, 0x6F, 0x7D)`
+  then `$23B84(1, -1, 0, 0, 1, 0x6F, 0x7D)` → d0 → `$FF02B2`
+  (leader index), `$FF0E16=$21C` (540); else (`$FF0128 != 0`)
+  → random X=`$12B82(0x160)`, Y=`$12B82(0xE0)`,
+  `$1C21A(6, Y, X)`, `$12B82(4)`, `$23B84(1, -1, 0, 4, rand4,
+  Y, X)` → `$FF02B2`, `$FF0E16=$834` (2100). So the leader
+  spawns at fixed map position (111, 125) when the intro did
+  **not** set `$FF0128`, or at a random position when it did.
+  `$FF0128` is written at exactly one site, `0x15512` (in the
+  `$14FB6` intro flow) — so the fixed spawn is the no-intro path
+  and the random spawn is the normal post-intro path.
+  **`$FF0128` is likely a "loaded/continued game" flag** — still
+  to confirm (medium confidence: it is the only write, and it
+  sits in the intro driver).
+- Then `$25456(leader, …)` + `$2CDD4` + `$243D6(leader)`.
+
+### Character creation $23B84 — the Arrow/Feather answer, and a puzzle
+
+- Finds the first free slot in the `0x38`-entry char table
+  (first slot with `+0x00 & $F == 0`); `$12FA0(0x1A)` if the
+  table is full; `$12FA0(0x1B)` if arg `$C ≥ $1CE` (type 1) or
+  `≥ $CA` (type 4). 27 call sites (enemies, NPCs, party) —
+  `$23B84` is the general entity spawner, not a party-only
+  routine.
+- Sets `+0x00` low nibble = arg `$8 & $F`; clears `+0x00`
+  bit 15; if arg `$A != -1` sets `+0x18` bits 4–9 =
+  arg `$A << 4` (level), else sets `+0x18` bits 4–9 = `0x20`;
+  if arg `$8 == 1` and arg `$C != -1`, template byte
+  `+0x13` (`$CF1BF + $C*0x18`) → `+0x18` bits 4–9 (level);
+  if arg `$8 == 6` sets `+0x18` bits 4–9 = `0x90`; clears
+  `+0x18` bits 10–11; if arg `$8 == 4` sets `+0x18` bit 12,
+  else clears it; stores arg `$C` at
+  `struct[$FF02B6 + idx*0x34]` and `0xFF` at
+  `struct[$FF02B8 + idx*0x34]`; if arg `$C != -1` and arg
+  `$8 == 1`, copies template words from `$CF1AC + $C*0x18`
+  (24-byte templates).
+- Template copy (0x23D5C–0x23D92): 6 words from
+  `$CF1AC + template*0x18` → struct `+0x14`…`+0x1E`. So
+  **template word 0 is the name index (`+0x14`)**.
+- Templates (24 bytes each at `$CF1AC`;
+  `disasm/main-loop/entity_templates.txt`): template 0 = name
+  1 "Man", t1 "Fiver", t2 "Hideous", t3 "NEXUS", t4
+  "Abattoir", t5 "VOID", t6 "Bob", t7 "Eddie", t10/t11
+  "Alexi" (62), t35/t52–54 "Buc" (57).
+- **The new-game leader is created with template 0 in both
+  `$FF0128` branches — so its name index is 1 ("Man") at
+  creation.** That is not Buc (57). And the other party
+  members' templates (Slash 58, Mortimer 59, Obliky 60,
+  Feather 61) do not appear in templates 0–199 at all.
+  Conclusion: the party is **not** built from this template
+  table at new-game init — the leader's name must be set
+  after `$23B84` (by `$25456`/`$243D6`/`$2CDD4` or by the
+  intro/story flow), or the party joins later. **Open for
+  #021:** find where `+0x14` is written with 57–62.
+- What **is** settled: the six **disciplines are named in
+  ROM** (PARTY menu: Sorc, Knight, Archer, Necro, Enchnt,
+  Conjur — see the verb table below). "Archer" exists as a
+  discipline name; the character name 61 is "Feather" and
+  "Arrow" is name 80 (also a spell name_idx 200). The fan
+  guide's "Arrow" is the archer's discipline name conflated
+  with the character — **the ROM calls the character
+  Feather**. Discipline↔spell-block mapping is still **not**
+  proven from code (the six blocks' names only suggest the
+  mapping).
+
+### $D28E flag dispatch
+
+- `$FF011E != 0` or `$FF0120 != -1` → `$D8BA` (entity
+  processing: `$FF0120` index → struct `$FF02DB` byte →
+  struct `$FF02B4`, `+0x00` bits 4–9 == 5 or `0x11` → set
+  bits, then `$2A2CA($FF0120, $FF0E82)`; then `$26A8C` if
+  `$FF011E`).
+- `$FF0094` / `$FF00AC` gates; `$FF0128` / `$FF0112` select
+  input paths.
+- `$FF0030` is a frame counter incremented each iteration,
+  clamped to `0x7530` (30000); reset to 0 when `$FF00AC` is
+  set and a command byte is present.
+- Command switch at `$D740` (subtract-and-branch chain,
+  re-verified 2026-11-09; full table in
+  `disasm/main-loop/d28e_switch.txt`): 0 → idle; 10 →
+  `$1EEEE` (the `$FF0128` path); 20 → `$1E3B0`
+  (message-queue push); 21 → `$1F296` (verb executor); 22 →
+  `$207D8`; 23 → `$1E5A0`; 24 → `$20884`; 25 → `$20A36`; 30 →
+  `$265BE`; 35 → `$2A562`; 37 → `$26CCA` + `$17586(0x11,-1)`
+  (confirm, `$FF0030=0x64`); 40 → `$2AFF2`; 45 →
+  `$FF0138=-1` (inline); 50 → `$2619C`; 55 → `$32C18` /
+  `$26A8C` / `$2AD64`.
+- Combat-trigger checks at `$D7A2`/`$D84C`: `$FF013A` /
+  `$FF0138` with `$FF010E` bit 0 and `$FF0EA8`
+  (spell-sequencer step) gates → `$20A36(1, 0)` calls;
+  `$36A00(leader +0x29 byte)` must return 0 and `$FF0EA8 < 5`.
+  `$FF00AC` / `$FF02B2` / `$FF02DB` checks precede them.
+
+### The verb executor $1F296 (partially traced)
+
+- `0x1F296–~0x2077A` (~3.6 KB). Head reads `$FFBB82`
+  (pointer to the current menu record), byte `+0x0A`, then
+  `bra $1FE8A` (a big switch). `$FF00BE=-1` at `0x20188` is
+  one branch — the quit/reset action that exits the main
+  loop (→ `$D28E` returns → `$179B6` soft reset → title).
+  The routine also calls `$2BBD2` (resource routine) at
+  `0x1FE0C` with the leader index. Full case mapping is
+  #021 work.
+
+### Menu verb table (verified, ROM 0xCCDB8–0xCCFF0)
+
+- Records: item = 14 bytes `[10-byte name, NUL-padded][A][B][C][grp]`;
+  header = 12 bytes `[10-byte name, NUL-padded][A][grp]`.
+  Headers are the menu titles: MAIN, FIGHT, MOOD, PARTY,
+  TACTIC, BUY, INVEN, USE. Full dump with raw trailer bytes:
+  `disasm/main-loop/verb_menus.txt`. (The last 'No' record
+  at `0xCCFE6` is truncated by the dump range — its trailer
+  lies past `0xCCFF0`.)
+- Main (grp 1): MAIN, Inven, Spells, Party, Search, Map,
+  Camp, System.
+- Combat: FIGHT, Flee, ------, Berzrk, Advnce, Hold, Wary
+  (grp 8 items; `------` is a grp-1 separator).
+- MOOD: Berzrk, Advnce, Hold, Wary (grp 8, C=1–4).
+- PARTY disciplines: **Sorc, Knight, Archer, Necro, Enchnt,
+  Conjur** (grp 2, C=0–5) — the six disciplines, named in ROM.
+- TACTIC: Asasin, GangUp, Cover, Guard (grp 8, C=8–11).
+- Shop: BUY, (No), INVEN, Goods, Items, Papers, Keys, Rings,
+  USE, SYSTEM. Goods/Items/Papers C values (`0x0E`/`0x0D`/
+  `0x11` = 14/13/17) match #007's item-category numbers for
+  goods/items/papers; Keys (`0x69`=105) and Rings
+  (`0x66`=102) do **not** match their category numbers
+  (12/10) — unexplained.
+- The C byte reads as the item's verb/action code for the
+  main menu (Party=`0x64`, Search=`0x13`, Map=`0x11`,
+  Camp=`0x1C`). The exact mapping from (A,B,C,grp) to the
+  `$D28E` switch codes is **not** proven — #021.
+
+### Input: where the VBlank joypad queue is consumed
+
+- The queue is the 16-entry ring `$FF001C` (head `$FF001A`,
+  tail `$FF001B`), filled by the VBlank handler `0x1272`,
+  popped by `$1350` (returns the next byte in d0 and
+  `$FF002C`; empty → returns the last value).
+- `$1350` has **16 call sites**: 2 in `$D28E` itself
+  (`0xD366`, `0xD398`); the menu-input block `$12F48`
+  (`0x12F4C`, `0x12F6C`), `$12FB4` (`0x12FCA`), `$12FE8`
+  (`0x12FF2`); the intro/story block `$15012` (`0x1537A`),
+  `$1664E` (`0x166D8`, `0x169C6`, `0x16ACA`, `0x16B04`); and
+  sites at `0x12AC8`, `0x14E54`, `0x14F2C`, `0x1591E`,
+  `0x161AA` inside large routines of the same blocks.
+- `$12FE8` (`0x12FE8–0x1316E`) is the **menu/verb input
+  decoder**: pops `$1350`, takes the low nibble of the
+  button byte (the D-pad), maps it through jump tables (at
+  `0x13052`, `0x13078`, `0x130D8`, `0x130FE`) gated by
+  `$FF0116` and `$FF0134` mode flags, producing d6 = 0–4
+  (direction/selection index). Returns a pointer to a 4-byte
+  command record at `$FF0240`: [byte0 = command (0, or
+  `0x25`=37 when a face button A/B/C/Start bit 4/5/6/7 is
+  newly pressed vs previous state `$FF0244`, in the
+  `$FF0110` path), byte1 = d6, word = -1]. Writes `$FF0136`
+  = d6 (current menu selection index) when `$FF00AC == 0`
+  and `$FF010E` bit 0 == 0, else `$FF0136` = 4. If `$FF0112
+  != 0` it copies the record to `$FF0240` and returns
+  `$FF0240`.
+- `$FF0136` (menu selection index) is read at `0x138D2`
+  (inside a routine at `0x138A8` that indexes a 6-byte
+  table at `$1B446` by `$FF0136*6` and formats a display
+  value).
+- Note: `$12FE8` only produces command 0 or 37, yet the
+  `$D28E` switch has 15 cases — the other command values
+  (10, 20, 21…) are written into the command slot by other
+  paths (e.g. `$D328` writes 10 literally in the `$FF0128`
+  branch; `$D43E` special-cases `0x25` and `0x28`=40). The
+  full command-source mapping is open for #021.
+
+### Per-frame world tick $2155E (partially traced)
+
+- Called once per `$D28E` iteration (via the `$D95C` path).
+  Updates animation counters: `$FFA7FC` record `+0x0A` =
+  (x+1)%4, `$FF0092` = (x+1)%2; **`$FF0E16` = (`$FF0E16`+1) %
+  `0x960` (2400) — the step counter**; `$FF0144` =
+  (`$FF0144`+1) % `0xC8` (200).
+- Palette fades via `$170DA` (called when `$FF0124 != 0`, or
+  when `$FF0126 == 2` and `$FF0E16`/18 is 0 or 30): `$170DA`
+  loads palettes `$CCC38`/`$CCB18`/`$CCCB8` via `$11082` or
+  cross-fades them via `$1225C`, depending on `$FF0126`
+  (mode 1/2/4) and `$FF0E16`/18. `$FF0124` is the "palette
+  refresh requested" flag, cleared by `$170DA`.
+- Location/arrival checks on `$FFC364`/`$FFC366` (a
+  coordinate pair): both > 500 → merchant-attitude loop
+  with delta +5; both > 1 → `$35612(0x44, 0x24)` +
+  `$17586(0x14,-1)`; else → `$35612(0x44, 2)`, palette 22
+  load, `$FF0124=-1`, `$25456(leader,…)`,
+  `$32C56(leader X, leader Y, 1)`, `$32D0E` → `$173BC`
+  (music change), `$17586(0x14,-1)`.
+- Merchant attitude drift (`0x21850+`): iterates the 6
+  merchants in `$FF0E82`, adjusting struct `+0x1C` by d7
+  (+5 or -4) with clamping against `+0x20`, and `+0x1E`
+  by d7*10+30 against `+0x22`; calls `$37B82` (death check)
+  per merchant. This is the live attitude drift behind
+  #007's price function.
+- `$FF0E16` step-counter readers elsewhere: `$D372`
+  (`$FF0E16`/10 == 3 test), `$170DA`, `$2EC80`/`$2EC9C`
+  (predicates: `$FF0E16`/18 > 30 → `0xFF`/0, else 0/`0xFF`),
+  `0x2F1F0`/`0x2FA2A`/`0x302F0`.
+
+### Food/water consumption — NOT located (honest gap, narrowed)
+
+- `$170DA` is a palette routine, **not** the consumption
+  routine (the `$FF0E16`/18 triggers in `$2155E` drive
+  palette fades, not food/water).
+- The `$2BBD2` codes `0x380`/`0x381` (food/water goods slots
+  0/1) are inventory-count codes (`$2C8F2`), not consumption.
+  No `$2BBD2` call site with a per-step decrement was found.
+  The consumption routine is still open for #021; the
+  strongest remaining leads are the `$FF0E16` step
+  counter's readers (`$2F1F0`, `$2FA2A`, `$302F0`, `$2EC80`)
+  and the `$32C56` position-based call in `$2155E`.
+
+### Terrain grid — NOT located, but the decoder is now understood (partial close of the #006 gap)
+
+- The threaded decoder at `0xE3B4`/`0xE412` **is** the
+  terrain/map bitmap decoder: it sets up tables a1=`$435C0`
+  (nibble expansion), a2=`$436E0` (tile offsets), a3=`$433C0`
+  (masks), a4=`$FF1EC0` (output bitmap), a6=`$DF58` (jump
+  table), reads a byte stream from a0, and dispatches
+  through the `$DF58` table (which alternates `$E3E2`/
+  `$E43C` — the two entry continuations) via `move.l
+  (a6,d2.w), -(a7); rts` (threaded code). It has **no direct
+  jsr/bsr callers** — it is entered only through the `$DF58`
+  table itself. The output is a bitmap at `$FF1EC0` (the "MM
+  map" bitmap; the unrolled writer at `0xE47C` writes
+  33-byte rows).
+- What is still missing: which routine jumps into the
+  decoder with a0 pointing at the stream (the source block
+  — the `0x044000–0x05FFFF` high-entropy block is still the
+  prime suspect) and how the `$FF1EC0` bitmap is consumed by
+  movement/collision. So the terrain grid itself is still
+  not located — but the decoder mechanism is now
+  documented, which narrows #021's search to the decoder's
+  entry points and the `$FF1EC0` consumers.
+
+### Live combat — not driven headlessly (bounded, with evidence)
+
+- The live-combat half of #007 Q1 (watching `$3A62E`
+  dispatch during real gameplay) was **not** attempted
+  headlessly: there is no credible path without a
+  save-state + scripted-input driver. The #008 harness
+  pattern (hook at `0x35C`, fabricated structs, results in
+  `$FFD000+`) proves the dispatch at the routine level —
+  both branches, `$FFC418`/`$FFC41A` set correctly — but
+  driving a real fight needs starting a new game,
+  navigating menus, positioning the party next to an enemy,
+  and triggering the fight, which is a full playthrough
+  driver, not a harness. The dispatch-level answer from
+  #008 stands; the live half stays open for #021 (needs a
+  save-state/input driver).
+
+### States identified (summary)
+
+- Title/attract: `0x35C–0x390` loop (entry path), then
+  `$14FB6` intro/story driver, then `$1B5D6` new-game init,
+  then `$D28E`.
+- Overworld/town: `$D28E` main loop + `$2155E` world tick +
+  `$1B918` redraw checker + `$170DA` palette fades;
+  movement via `$1C21A` (position setter, mode 6 = direct
+  add into `$FF0E8E`/`$FF0E90` modulo area size).
+- Menu: `$12FE8` decoder + `$FF0240` command record +
+  `$D28E` switch + `$1F296` verb executor; verb table at
+  `0xCCDB8`.
+- Combat: `$D7A2`/`$D84C` trigger checks → `$20A36`;
+  `$3A62E` dispatch (melee `$3B1EE` vs giant spell machine
+  `0x3E2D4`, selected by `+0x24`) per #008; `$FF0EA8` is
+  the spell-sequencer step.
+- Dialogue/message: `$26CCA` message-queue pop/display
+  (`$1E426` pop; record at `$FFBC94 + slot*0xD2`);
+  `$1E3B0` enqueue (switch case 20).
+- Exit: `$FF00BE=-1` (only at `0x20188`) → `$D28E` returns
+  → `$179B6` soft reset → `$200` (full reboot through
+  entry).
 
 ## Interrupt handlers — verified
 
@@ -327,10 +666,15 @@ functions manually. The call-graph dump is at `/tmp/ghidra_calls.txt`
   error semantics of `$43012`/`$430F4`; what `$4323C`'s return value
   means; whether the pad-2 `$E0`/`$B0` combos are a deliberate
   "clear save" feature or a side effect of the validation path.
-- **#020 (main loop / state machine):** what `$D25C`'s seven callees
-  each do; the `$D28E` flag dispatch and the `$FF02B4`/`$FF02DB`
-  52-byte structs behind `$D8BA`; where the eternal main loop
-  actually sits (the `rts` at `0xD28C` is not reached in normal flow).
+- **#020 (main loop / state machine): DONE 2026-11-09** — see the
+  "Main loop + game state machine" section above. What it left
+  open for #021: the exact mapping from the `0xCCDB8` verb-table
+  (A,B,C,grp) records to the `$D28E` command-switch codes; the
+  full `$1F296` verb-executor case map; where `+0x14` is written
+  with the party names 57–62 (the leader is created as template
+  0 "Man"); the food/water consumption routine; the terrain-grid
+  stream source and the `$FF1EC0` bitmap's consumers; the
+  live-combat half of #007 Q1 (needs a save-state/input driver).
 - **#003 open ends, kept:** `$42E00` is a jump-table dispatcher on
   d0 (branches to `$40DD4`/`$3E384`/`$3E38E`/`$40CDC`/`$40E22`/
   `$40EDC`/`$41EB4`/`$3E418`) — purpose unknown; `$EBB04`/`$EBBFE`

@@ -1,0 +1,27 @@
+$D28E command switch (at $D740, d0 = command byte from -$4(a6)) - from #020
+Command values and the routine each case calls. The verb-code -> menu-name
+mapping is partial: 37 (0x25) = confirm (written by $12FE8 on a face-button
+press); 10 = the $FF0128 path ($D328 writes 10 literally); 40 (0x28) is
+special-cased at $D43E. The other codes are written into the command slot by
+paths not yet fully traced - see docs/architecture.md.
+
+  cmd    case addr  callee            notes
+  0      $D6B0      (fallthrough)     no-op / idle
+  10     $D4AC      $1EEEE            $FF0128 path (loaded-game branch)
+  20     $D4F2      $1E3B0            message-queue push (enqueue)
+  21     $D552      $1F296            big verb executor (0x1F296-0x2077A, ~3.6KB)
+  22     $D55C      $207D8            (untraced)
+  23     $D566      $1E5A0            (untraced)
+  24     $D570      $20884            (untraced)
+  25     $D59C      $20A36            (untraced; $20A36(1,0) also called from combat checks)
+  30     $D612      $265BE            (untraced)
+  35     $D62C      $2A562            (untraced)
+  37     $D5C4      $26CCA + $17586   confirm: message pop + $17586(0x11,-1), $FF0030=0x64
+  40     $D666      $2AFF2            (untraced; 0x28 special-cased at $D43E)
+  45     $D692      (inline)          $FF0138 = -1
+  50     $D69E      $2619C            (untraced)
+  55     $D6EA      $32C18/$26A8C/$2AD64  (untraced)
+
+Combat-trigger checks (in $D28E, $D7A2/$D84C):
+  $FF013A / $FF0138 with $FF010E bit 0 and $FF0EA8 (spell-sequencer step) gates
+  -> $20A36(1, 0) calls. $FF00AC / $FF02B2 / $FF02DB checks precede them.
