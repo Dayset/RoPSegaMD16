@@ -583,8 +583,11 @@ per-line ±X zigzag on Plane A while Plane B sits at a constant
   X/Y are the on-screen coordinates, register value − 128).
   All 32 sprites are present in `vs`: two blocks — sprites 0–17
   in 9 rows × 2 columns (X 208/240, Y 200–248, step 6, tiles
-  513–677 step 4) and sprites 18–31 in 7 rows × 2 columns
-  (X 264/296, Y 220–226, step 1, tiles 681–821 step 4).
+  513–581 step 4) and sprites 18–31 in 7 rows × 2 columns
+  (X 264/296, Y 220–226, step 1, tiles 585–637 step 4).
+  (An earlier draft said 513–677 / 681–821 — wrong; the live `vs`
+  dump gives 513–581 / 585–637. Corrected during the #016
+  verification.)
   The sprite table is animated during the attract: an earlier
   snapshot at frame ~30 showed the same sprites at Y≈233–236,
   X≈223–243 — the block drifts up-left over the first seconds.
@@ -634,12 +637,18 @@ disassembly; its H-scroll write is verified live in §7.2.
 
 ## 9. Open items (not solved here)
 
-- **Packed-vs-planar paradox (#016):** the decompressed tile
-  bytes are packed 2 px/byte (#005) but the VDP wants bitplanar
-  data and the DMA path (`$11A7C`/`$DA04`, verbatim) shows no
-  packed→planar conversion — yet the game displays correctly.
-  Still open; this issue records the DMA path as verbatim and
-  leaves the paradox to #016.
+- **Packed-vs-planar paradox: RESOLVED in #016 (§10.1).** The
+  decompressed tile bytes are packed and the VDP consumes them as
+  packed (live VRAM snapshot + minimal VDP test ROM). The remaining
+  open piece is re-verifying the textbook "bitplanar" claim against
+  the VDP manual / BlastEm source (§10.1 caveat).
+- **CRAM R/B order (new, #016 §10.2).** Corrected to
+  `r=(w>>1)&7, b=(w>>9)&7` by the test ROM. The world-map sea colour
+  (pal 11 code-pinned reads as browns/reds under the corrected
+  decoding, vs the blue sea #006 described from the old rendering)
+  should be re-verified against a live game CRAM snapshot on the
+  world map; the #005 PNGs should be regenerated with the corrected
+  palette.
 - **`$16512` column writer:** the cell semantics (the `$1AE98`
   descriptor table layout, the `$FF8678` tile base, the exact
   column/row mapping) are only outlined in §6.4.
@@ -662,13 +671,258 @@ disassembly; its H-scroll write is verified live in §7.2.
   pass `$4000` (VRAM `$4000` = tile 512, in the `$170DA`/`$17860`
   area).
 
+## 10. Issue #016 — packed-vs-planar resolution, palettes, sprites (done 2026-11-09)
+
+### 10.1 The packed-vs-planar paradox — RESOLVED (packed is real)
+
+**Resolution: the decompressed tile bytes ARE packed, 2 px/byte, high
+nibble first, and the VDP consumes them as packed. There is no
+packed→planar conversion anywhere in the ROM, because none is
+needed.** The paradox is resolved by disproving the textbook premise,
+not by finding a conversion routine.
+
+Evidence chain (all live, all in this issue):
+
+1. **Upload path is verbatim (disassembly, #015 §6.3).** `$1383C` →
+   `$11A7C` → `$DA04` DMA and `$11AE4` → `$11B2E` → `$DA04` DMA copy
+   the decompressed bytes to VRAM with no transformation. The
+   `$13654` dispatcher, the `$11ABC`/`$11B2E` uploaders, and the
+   `$DA04` DMA routine are all verbatim. No conversion routine exists
+   on that path (and a full-ROM search finds no packed→planar
+   converter feeding it).
+2. **Live VRAM snapshot (harness 2, `tools/test_tiles2_harness.s`,
+   230 B, hook `$35C`, `rts` exit).** The decode buffer at `$FF1EC0`
+   holds tile 93 as `1111 1111 FFFF FFFF 1F11 1F11 1F1F 1F1F 1F1F
+   1F11 1F11 1F1F FFFF FFFF 1111 1111`; VRAM tile `0x700+93` holds
+   the **byte-identical** 32 bytes. The bytes that arrive in VRAM
+   are the packed bytes. (Harness 1, `test_tiles_harness.s`, had a
+   one-word VRAM-read shift — the first VRAM read after setting the
+   address returns the word **at** that address, no dummy word;
+   harness 2 corrected this.)
+3. **Minimal VDP test ROM (`.scratch016/vdp_test.s`/`.gen`, greyscale
+   palette).** Tile 93's packed bytes are written to VRAM tile 1 and
+   an interleaved planar copy of the same tile to VRAM tile 2; both
+   are displayed on Plane A. Tile 1 displays as the intended glyph
+   (**64/64 pixels** match the packed reading, greyscale-confirmed);
+   tile 2 displays as the **packed reading of the planar bytes**
+   (vertical bars). The VDP consumes the bytes as packed. A planar
+   copy does not display as the glyph — so if the game stored
+   planar data, its graphics would be bars, and they are not.
+4. **The `$AB2` generated tiles are packed by construction (§10.3).**
+   The generator writes longwords `0x66666666` / `0x44444444` /
+   `0x55555555` — each byte is a pair of identical nibbles, i.e.
+   packed pixels — and the game displays them correctly as the
+   attract logo. A bitplanar format would make those bytes
+   meaningless.
+
+**Caveat (do not drop this).** This contradicts the textbook "Genesis
+VDP pattern format is bitplanar" description (and Sonic's documented
+planar tiles). The resolution is proven for *this game's* data path
+(live VRAM + test ROM), but the textbook claim itself was not
+re-verified against the VDP manual or the BlastEm source — it is
+flagged for re-verification, not treated as settled. The most likely
+reading is that the textbook describes one valid layout and this
+game uses another that the VDP also accepts, but that is a
+hypothesis, not a finding. Do not present the VDP-format claim as
+unqualified fact outside this game.
+
+**Test-ROM gotchas (recorded for reuse).** BlastEm faults on a TMSS
+write to `$A14000` for an unrecognised SHA1 — omit it. R15 must be
+`0x02` for sequential word writes (R15=`0x01` overlaps them and
+garbles VRAM/CRAM — this caused a solid-blue screen). VDP control
+word for CRAM write is `0xC0000000`, VRAM write `0x4000|addr`
+(word2 = addr>>14).
+
+### 10.2 Palettes — the master table (31 palettes, corrected decoding)
+
+**Correction 1 — the table's boundary (count unchanged).** The master
+table at ROM `0x0CC9D8` holds palettes 0–30 (31 × 32 B = 992 B,
+ending at `0x0CCDB8`) — #005's count of 31 was correct. The new
+finding is what comes next: the 32nd 32-byte slot (slot 31, ROM
+`0x0CCDB8`) is **not** a palette, it is ASCII menu text — `MAIN`,
+`Inven…`, `Spells`, `Party`, `Search`, `Map`, `Camp`, `System`,
+`FIGHT`, `Flee` — the `$D28E` verb/command menu table. (An earlier
+draft of this section said "30 palettes" — an off-by-one in counting
+0–30; corrected during verification.)
+
+**Correction 2 — the CRAM channel order (R/B swap).** #005 and
+`tools/render_tiles.py` decoded the CRAM word as
+`r=(w>>9)&7, g=(w>>5)&7, b=(w>>1)&7`. That is **wrong: R and B are
+swapped**. The correct order is `r=(w>>1)&7, g=(w>>5)&7,
+b=(w>>9)&7` (word layout `0BBB0GGG0RRR0` — B at bits 9–11, R at
+bits 1–3, which is what the `render_tiles.py` docstring already
+said; the code contradicted it). Proof: a colour variant of the
+minimal VDP test ROM (same code as `.scratch016/vdp_test.s`, only
+the `pal:` table replaced: CRAM[1] = `0x0E00`, CRAM[5] = `0x00E0`,
+CRAM[7] = `0x000E`, CRAM[15] = `0x0EEE`) shows pixel value 1 as
+pure **blue** (0,0,255) and pixel value 5 as pure **green** — so
+bits 9–11 are blue and bits 1–3 are red. Evidence: the crops
+`.scratch016/vdp_tile_left.png` / `vdp_tile_right.png` (blue glyph
+vs green bars — the two wrap instances of the tile pair), and an
+independent re-run during verification with the same colour palette
+counted 408 saturated-blue pixels and 0 saturated-red pixels. (The
+preserved `vdp_test.s` is the greyscale variant used for the §10.1
+display test.) Corroborated by the `$B86AE` rec 0 embedded palette, which
+decodes to warm browns/red (skin tones) only under the corrected
+order; under the old order it is all blues/greens. **`render_tiles.py`
+`md_word_to_rgb` is fixed in this issue; the #005 PNGs in
+`disasm/graphics/` (rendered with the old order) have red and blue
+swapped — shapes correct, colours not — and are flagged for
+regeneration, not silently trusted.**
+
+The full table below uses the corrected decoding (channel ×255/7).
+Words are ground truth; RGB is the corrected reading. Uses are from
+code where pinned, otherwise best-fit from #005/#006 (marked `?`).
+
+| pal | words (16 × 9-bit BGR) | RGB (corrected) | use |
+|----:|------------------------|-----------------|-----|
+| 0 | `0000 0A00 00A0 0AA0 000A 0A0A 004A 0AAA 0444 0E44 04E4 0EE4 044E 0E4E 04EE 0EEE` | `#000000 #0000B6 #00B600 #00B6B6 #B60000 #B600B6 #B64800 #B6B6B6 #484848 #4848FF #48FF48 #48FFFF #FF4848 #FF48FF #FFFF48 #FFFFFF` | RGB cube; slot 1 on title (`$11E06`) |
+| 1 | `0000 0000 0444 0888 0AAA 0CCC 0024 0026 0046 0048 0268 028A 0E62 000C 008E 0EEE` | `#000000 #000000 #484848 #919191 #B6B6B6 #DADADA #482400 #6D2400 #6D4800 #914800 #916D24 #B69124 #246DFF #DA0000 #FF9100 #FFFFFF` | default for renders; grey-brown ramp |
+| 2 | `00E0 0000 000C 004E 008E 00AE 02CE 04EE 0E40 0E60 0E80 0EA0 0EC0 0CC2 0CC8 0EEE` | `#00FF00 #000000 #DA0000 #FF4800 #FF9100 #FFB600 #FFDA24 #FFFF48 #0048FF #006DFF #0091FF #00B6FF #00DAFF #24DADA #91DADA #FFFFFF` | ? (colour 0 is green) |
+| 3 | `00EE 0000 0020 0060 0080 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0000 0088 06EE 0EEE` | `#FFFF00 #000000 #002400 #006D00 #009100 #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #000000 #919100 #FFFF6D #FFFFFF` | ? (mostly magenta) |
+| 4 | `00E0 0000 0444 0666 0888 0AAA 0CCC 0EEE 0222 0444 0666 0888 0AAA 0CCC 0EEE 0E0E` | `#00FF00 #000000 #484848 #6D6D6D #919191 #B6B6B6 #DADADA #FFFFFF #242424 #484848 #6D6D6D #919191 #B6B6B6 #DADADA #FFFFFF #FF00FF` | ? (grey ramp ×2) |
+| 5 | `00E0 0000 0444 0666 0888 0AAA 0CCC 0EEE 0000 0444 0666 0888 0000 0088 06EE 0EEE` | `#00FF00 #000000 #484848 #6D6D6D #919191 #B6B6B6 #DADADA #FFFFFF #000000 #484848 #6D6D6D #919191 #000000 #919100 #FFFF6D #FFFFFF` | ? (grey ramp) |
+| 6 | `0EE0 0000 0A26 0E40 0E80 0880 00C0 00E8 00EE 008E 004E 004C 000A 0006 00AE 00CE` | `#00FFFF #000000 #6D24B6 #0048FF #0091FF #009191 #00DA00 #91FF00 #FFFF00 #FF9100 #FF4800 #DA4800 #B60000 #6D0000 #FFB600 #FFDA00` | ? (rainbow) |
+| 7 | `0000 0000 066C 046A 044A 0248 0028 0026 0006 0004 0E40 04EE 028C 0AAA 0CCC 0EEE` | `#000000 #000000 #DA6D6D #B66D48 #B64848 #914824 #912400 #6D2400 #6D0000 #480000 #0048FF #FFFF48 #DA9124 #B6B6B6 #DADADA #FFFFFF` | ? |
+| 8 | all `0000` | all `#000000` | ALL ZERO (black) |
+| 9 | all `0EEE` | all `#FFFFFF` | ALL WHITE |
+| 10 | `0000 0A00 0C60 0080 0EA0 02C2 0004 0444 04E4 0666 0028 0AAA 044E 0000 04EE 0EEE` | `#000000 #0000B6 #006DDA #009100 #00B6FF #24DA24 #480000 #484848 #48FF48 #6D6D6D #912400 #B6B6B6 #FF4848 #000000 #FFFF48 #FFFFFF` | title, slot 0 (`$11E06`); cross-fade source (`$170DA` mode 2) |
+| 11 | `0000 0000 0666 0222 0024 044A 0026 0448 0008 046A 0888 028A 066C 0444 0246 04EE` | `#000000 #000000 #6D6D6D #242424 #482400 #B64848 #6D2400 #914848 #910000 #B66D48 #919191 #B69124 #DA6D6D #484848 #6D4824 #FFFF48` | world map — code-pinned (#006) |
+| 12 | `0000 0000 0024 0008 0224 0226 0002 000A 0248 0268 046C 028A 048C 044A 088C 04AA` | `#000000 #000000 #482400 #910000 #482424 #6D2424 #240000 #B60000 #914824 #916D24 #DA6D48 #B69124 #DA9148 #B64848 #DA9191 #B6B648` | ? |
+| 13 | `00A0 0000 0008 00EE 00CC 008E 006E 004E 002E 000C 08EE 0088 0006 0E6E 0E6E 0EEE` | `#00B600 #000000 #910000 #FFFF00 #DADA00 #FF9100 #FF6D00 #FF4800 #FF2400 #DA0000 #FFFF91 #919100 #6D0000 #FF6DFF #FF6DFF #FFFFFF` | fan-map colour match (#006) |
+| 14 | `0E0E 0000 0222 0444 0666 0888 0026 0048 046A 068C 0040 0060 0080 00A0 00EE 0EEE` | `#FF00FF #000000 #242424 #484848 #6D6D6D #919191 #6D2400 #914800 #B66D48 #DA916D #004800 #006D00 #009100 #00B600 #FFFF00 #FFFFFF` | night landscape best-fit (#006) |
+| 15 | `0000 00E0 0EEC 0ECA 0EA8 0E86 0E64 0E42 0E8E 0E8E 0266 0488 06AA 08CC 0AEE 0EEE` | `#000000 #00FF00 #DAFFFF #B6DAFF #91B6FF #6D91FF #486DFF #2448FF #FF91FF #FF91FF #6D6D24 #919148 #B6B66D #DADA91 #FFFFB6 #FFFFFF` | ? |
+| 16 | `0000 00E0 0020 0060 0080 0024 0240 0460 0680 08A0 0AC0 0CE0 00E0 00E0 0EEC 0EEE` | `#000000 #00FF00 #002400 #006D00 #009100 #482400 #004824 #006D48 #00916D #00B691 #00DAB6 #00FFDA #00FF00 #00FF00 #DAFFFF #FFFFFF` | ? |
+| 17 | `0404 0000 0222 0444 0666 0888 0AAA 0E8E 0644 0866 0A88 0CAA 06AA 00EE 0EEE 0E8E` | `#480048 #000000 #242424 #484848 #6D6D6D #919191 #B6B6B6 #FF91FF #48486D #6D6D91 #9191B6 #B6B6DA #B6B66D #FFFF00 #FFFFFF #FF91FF` | archway map pal (#006) |
+| 18 | `0E0E 0000 0000 0C20 0A00 0666 0040 0080 0EA4 0800 0020 0400 0E80 0EEE 0C40 0200` | `#FF00FF #000000 #000000 #0024DA #0000B6 #6D6D6D #004800 #009100 #48B6FF #000091 #002400 #000048 #0091FF #FFFFFF #0048DA #000024` | ? |
+| 19 | `0000 0200 0400 0420 0820 0640 0204 0000 0640 0200 0202 0824 0406 0000 0844 0A66` | `#000000 #000024 #000048 #002448 #002491 #00486D #480024 #000000 #00486D #000024 #240024 #482491 #6D0048 #000000 #484891 #6D6DB6` | cross-fade target (`$170DA` mode 2, `$1225C`) |
+| 20 | `0000` then 15 × `0EEE` | `#000000` then 15 × `#FFFFFF` | mostly white |
+| 21 | `0000 0A00 0C44 0000 0E88 0000 0000 0C44 0C44 0C66 0000 0EAA 0C44 0000 0EEE 0EEE` | `#000000 #0000B6 #4848DA #000000 #9191FF #000000 #000000 #4848DA #4848DA #6D6DDA #000000 #B6B6FF #4848DA #000000 #FFFFFF #FFFFFF` | ? |
+| 22 | `0000 0004 000A 000A 006E 000E 0004 0008 00AE 0006 0008 002E 000E 0000 04EE 0EEE` | `#000000 #480000 #B60000 #B60000 #FF6D00 #FF0000 #480000 #910000 #FFB600 #6D0000 #910000 #FF2400 #FF0000 #000000 #FFFF48 #FFFFFF` | ? |
+| 23 | `0000 0A00 0C60 0680 0EA0 0CC2 0A04 0E44 0EE4 0E66 0A28 0EAA 0E4A 0000 0ECC 0ECC` | `#000000 #0000B6 #006DDA #00916D #00B6FF #24DADA #4800B6 #4848FF #48FFFF #6D6DFF #9124B6 #B6B6FF #B648FF #000000 #DADAFF #DADAFF` | ? |
+| 24 | `0000 0E88 0ECA 0AEA 0ECA 0AEA 088A 0AAA 0CEC 0AAA 0ACE 0CCC 0CCE 0888 0CEE 0EEE` | `#000000 #9191FF #B6DAFF #B6FFB6 #B6DAFF #B6FFB6 #B69191 #B6B6B6 #DAFFDA #B6B6B6 #FFDAB6 #DADADA #FFDADA #919191 #FFFFDA #FFFFFF` | ? |
+| 25 | `0000 0E40 0E62 0EA2 0EC4 0EE6 0000 00E0 000E 0222 0444 0400 0888 0AAA 0CCC 0EEE` | `#000000 #0048FF #246DFF #24B6FF #48DAFF #6DFFFF #000000 #00FF00 #FF0000 #242424 #484848 #000048 #919191 #B6B6B6 #DADADA #FFFFFF` | ? |
+| 26 | `0E0E 0000 0022 0066 0088 00CC 00EE 0EEE 0200 0600 0ECA 0C00 0E00 00E0 0E82 0E0E` | `#FF00FF #000000 #242400 #6D6D00 #919100 #DADA00 #FFFF00 #FFFFFF #000024 #00006D #B6DAFF #0000DA #0000FF #00FF00 #2491FF #FF00FF` | ? |
+| 27 | `0000 0000 0AAC 0CAA 088A 0A88 0666 0444 00CC 0088 0044 0022 000E 0060 0080 00E0` | `#000000 #000000 #DAB6B6 #B6B6DA #B69191 #9191B6 #6D6D6D #484848 #DADA00 #919100 #484800 #242400 #FF0000 #006D00 #009100 #00FF00` | castle map pal (#006) |
+| 28 | `0E0E 0E00 0E22 0E66 0EAA 0ECC 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E` | `#FF00FF #0000FF #2424FF #6D6DFF #B6B6FF #DADAFF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF` | ? (mostly magenta) |
+| 29 | `0E0E 000A 000E 046E 088E 0CCE 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E 0E0E` | `#FF00FF #B60000 #FF0000 #FF6D48 #FF9191 #FFDADA #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF #FF00FF` | ? (mostly magenta) |
+| 30 | `00E0 0000 0222 000E 0400 0800 0A00 0666 0888 0446 0668 0E22 0000 000A 0444 0EEE` | `#00FF00 #000000 #242424 #FF0000 #000048 #000091 #0000B6 #6D6D6D #919191 #6D4848 #916D6D #2424FF #000000 #B60000 #484848 #FFFFFF` | starfield map pal (#006) |
+
+Loader: `$11082(table_ptr, slot)` → 16 words into CRAM
+(`$D9E2`/`$D9EE`); `$170DA` cross-fades (mode 2: pal 10↔19 via
+`$1225C`, 9 steps). Pal 8 all-zero, pal 9 all-white, pal 20
+mostly-white — these are fade/clear sentinels, not scene palettes.
+
+### 10.3 Sprite patterns — two sources, neither is a plain `$DD5C` tile record
+
+The task's premise ("sprite pattern from a `$DD5C` record") is only
+half right. There are two sprite-pattern sources, and the attract
+sprites — the ones the issue file meant — are **not** `$DD5C`
+records at all.
+
+**A. The attract sprites (tiles 513–584) are GENERATED by `$AB2`,
+not decompressed.** `$AB2` (0xAB6–0xB28, inside `$A14`, called from
+0xAA2) builds 72 tiles in a RAM buffer at `$FFC0EA` and CPU-copies
+them to VRAM `$4020` (tile 513; 576 longwords = 2304 B = 72 tiles).
+The generator reads run-length bytes from the byte table `$D92`
+and, for each run, writes longwords `0x66666666` / `0x44444444` /
+`0x55555555` into the buffer at stride 32 (`d6 += 32` per longword,
+8 longwords per tile) — i.e. the generated bytes are packed pixel
+pairs by construction (each byte is two identical nibbles). The
+attract sprite table (§7.3) points at these tiles: sprite 0 is
+tile 513 (`Pat=$4020`, VRAM byte address = tile × 32 = 513×32 =
+`$4020`), and all 32 sprites use tiles 513–637 step 4 — sprites 0–17
+(tiles 513–581) are the `$AB2`-generated tiles; sprites 18–31
+(tiles 585–637, 7 rows × 2 columns, Y stepping 1 px) sit past the
+generated range, so their pattern source is open (tile 585 is the
+`$FFD2EA` buffer uploaded by `$4E6` phase 2; tiles 589–637 are
+unaccounted — see §10.5). (An earlier draft said "513–677" — a
+transcription slip; the live `vs` dump gives 513–637. Corrected
+during verification.) A Python simulation of `$AB2`
+reproduces the live VRAM tiles exactly (tiles 513–516, 564–567
+verified against harness 1's snapshot). The generated tiles are
+rendered in `.scratch016/gen_packed.png` (packed) vs
+`.scratch016/gen_planar.png` (planar = noise) — the packed render
+is the dithered logo; the planar render is bars. **Note:** that
+scratch PNG was rendered with the old (R/B-swapped) palette; its
+shapes are correct, its colours are not.
+`$FFD2EA` is a separate zero buffer, uploaded by `$4E6` phase 2 to
+VRAM `$4920` (tile 585).
+
+**B. The `$B86AE` records ARE the `$DD5C` sprite-pattern sets.**
+Each is `[32-byte embedded palette][36 tiles]` (1152 B of packed
+tiles). Rendered in this issue (corrected palette):
+`disasm/graphics/016_portrait_b86ae_rec00_full.png` — rec 0, 36
+tiles, 6×6, scale 8, its own embedded palette (words `0080 0000
+0AAA 0666 0444 0008 0068 0048 0046 0026 0024 0004 0002 0088 00AA
+0EEE` → warm browns/reds, i.e. skin tones under the corrected
+decoding). Tile-index → pattern-address mapping: `$11AE4` loads
+the record's 36 tiles to a VRAM tile base (via `$11B2E` → `$DA04`
+DMA, §6.3); the sprite attribute word 2 (tile+flip+pal+pri, §7.3)
+selects the tile within that base, and the pattern's VRAM byte
+address is tile × 32. The portrait is a face — it renders
+coherently only packed, which is the tile-data confirmation (§10.4).
+
+### 10.4 Tile-data confirmation — full tilesets, correct palettes
+
+Rendered in this issue (all packed layout, corrected palette,
+`tools/render_tiles.py`):
+
+- `disasm/graphics/016_font_rec00_full.png` — `$96120` rec 0, the
+  full ASCII font, **103 tiles** (3296 B decompressed), 16 cols,
+  scale 8, pal 1. The font + "MORE" UI text; coherent only packed.
+- `disasm/graphics/016_terrain_rec06_full.png` — `$96120` rec 6,
+  **438 tiles** (14016 B decompressed), 16 cols, scale 8, pal 1.
+  The terrain set.
+- `disasm/graphics/016_portrait_b86ae_rec00_full.png` — `$B86AE`
+  rec 0, 36 tiles, embedded palette (see §10.3B).
+
+No `$96120`/`$B86AE` record renders as noise under the packed
+interpretation. The stale premise is corrected: raw ROM
+`0x060000–0x093FFF` is **not** tiles (it is not raw tiles in any
+layout; the `$96120` streams start at `0x09638C`, and
+`0x068300–0x093FFF` is ~172 KB of unknown data, #017). The real
+tiles are the `$DD5C` records in the `$96120` table (62 records,
+sources `0x09638C–0x0B86AE`) and the `$B86AE` table (90 records),
+all decompressed clean by #005 (62/62 + 90/90).
+
+### 10.5 What stays open (from #016)
+
+- The textbook "bitplanar" claim vs the live packed evidence — the
+  VDP-manual / BlastEm-source re-verification (see §10.1 caveat).
+- Pal 11 / pal 13 sea-colour question: under the corrected decoding
+  the world-map palette (pal 11, code-pinned) reads as browns/reds
+  rather than the blue sea #006 described from the old (swapped)
+  rendering. The sea colour should be re-verified against a live
+  game CRAM snapshot on the world map; the #006 "fan colours match
+  pal 13" claim was itself made under the old decoding.
+- Sprite tiles 589–637 (sprites 18–31) have no identified pattern
+  source — only tile 585 is accounted for (`$FFD2EA` via `$4E6`
+  phase 2).
+- The `#005` PNGs in `disasm/graphics/` (rendered with the old
+  R/B-swapped palette) should be regenerated with the corrected
+  `render_tiles.py`.
+- `$D28E` case-23 writer, `$16512` cell semantics, `$FF8674`/
+  `$FF8678` tile bases, R18=`$94`, `$4E6` phase-2 visuals — carried
+  from §9.
+
 ## Files
 
-- `docs/graphics.md` (this file)
-- `tools/test_vdp_harness.s` — the §7 snapshot harness (build:
-  `m68k-linux-gnu-as -m68000 -o harness015.o
-  tools/test_vdp_harness.s && m68k-linux-gnu-objcopy -O binary
-  harness015.o harness015.bin`; inject at `0xFD0CC`, hook
-  `4E B9 00 0F D0 CC` at `0x35C`, `tools/checksum.py fix-all`)
-- `issues/015-vdp-vram-map.md` — marked done (with the `$EB772`
-  bullet corrected)
+- `docs/graphics.md` (this file) — §10 added for #016
+- `tools/test_tiles_harness.s`, `tools/test_tiles2_harness.s`,
+  `tools/test_tiles3_harness.s`, `tools/test_tiles4_harness.s` —
+  the #016 VRAM-snapshot harnesses (harness 2 is the one that
+  proved the packed upload; harness 4 hooks `$D292`, not yet run —
+  its trigger design may not fire without input)
+- `.scratch016/vdp_test.s` / `.scratch016/vdp_test.gen` — the
+  minimal VDP test ROM (packed vs planar, greyscale + colour
+  palettes) that proved the VDP consumes packed bytes and the
+  CRAM R/B order
+- `tools/render_tiles.py` — `md_word_to_rgb` corrected (R/B swap),
+  paradox docstring updated to RESOLVED
+- `issues/016-tiles-sprites-palettes.md` — marked done (with the
+  stale first bullet corrected)
+- `disasm/graphics/016_font_rec00_full.png`,
+  `disasm/graphics/016_terrain_rec06_full.png`,
+  `disasm/graphics/016_portrait_b86ae_rec00_full.png` — the #016
+  full-tileset renders (corrected palette)
