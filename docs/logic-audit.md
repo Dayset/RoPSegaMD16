@@ -158,3 +158,82 @@ it. Owed experiment: find the message's xref in the message routine
 6. Post-harness PC=0 fault root cause (logic.md §7.3) — the #008
    harness does NOT reproduce it, so it is specific to the #007
    harness's exit state (suspects listed there).
+
+## 6. Cross-verification: fan PAR/Gens RAM codes vs the repo struct (#033 cheats, 2026-11-09 continuation)
+
+The cheats.htm Gens codes (Spiridakis, via #033) give per-character
+RAM blocks as Exp/HP/MP triples. The repo struct (logic.md §1,
+verified) is 52 bytes (0x34) at base $FF02B4, with XP at +0x1A,
+current HP at +0x1C, current Power at +0x1E. Test: for each fan
+address A(field), (A − 0xFF02B4 − field_offset) must be a whole
+multiple of 0x34. **It is, for all six blocks, exactly:**
+
+| Character (fan label) | Exp | HP | MP | (addr−base−0x1A)/0x34 = slot |
+|---|---|---|---|---|
+| Buc | FF0302 | FF0304 | FF0306 | 1 |
+| (ambiguous B) | FF04A2 | FF04A4 | FF04A6 | 9 |
+| Feather | FF04D6 | FF04D8 | FF04DA | 10 |
+| Slash | FF05A6 | FF05A8 | FF05AA | 14 |
+| (ambiguous A) | FF05DA | FF05DC | FF05DE | 15 |
+| Alexi | FF060E | FF0610 | FF0612 | 16 |
+
+This is a strong two-way validation: the fan codes (an independent
+1990s/2000s source) land on the repo's struct grid with the repo's
+field offsets, and the repo struct predicts exactly the +2/+4
+spacing the codes show. Equivalent reading: with a base of
+$FF02E8 the same blocks are slots 0/8/9/13/14/15 — the codes alone
+fix only the *relative* layout (Buc lowest; then B, Feather; then
+Slash, A, Alexi at the top, with gaps = other entities in the
+0x38-entry general table); the repo base $FF02B4 (proven from
+code, e.g. $FF02DC = slot 0 +0x28) is what pins the absolute slot
+numbers above.
+
+Side corroboration: the codes' "max Exp" value for Slash/Feather/
+Alexi is 0x32C8 = **13000, exactly the repo-proven XP cap**
+(logic.md §2). Buc's reads 0x3A98 (=15000, the gold cap value —
+likely a copy slip in the fan list).
+
+### Mortimer vs Obliky — NOT resolved; hypothesis recorded
+
+The two unlabelled blocks are slots 9 (B, just before Feather)
+and 15 (A, between Slash and Alexi). Nothing in the repo ties a
+name to either slot: party *name* order (57 Buc, 58 Slash,
+59 Mortimer, 60 Obliky, 61 Feather, 62 Alexi) does not match the
+RAM order (Slash and Feather are swapped relative to it), and
+recruitment order doesn't either (Slash joins first but sits at
+14, above Feather's 10 — the table is world-entity creation
+order, not join order). **Strongest hypothesis (low confidence):
+A (FF05DA, slot 15) = Mortimer, B (FF04A2, slot 9) = Obliky** —
+from the listing order in one of the two cheats.htm extractions
+(which names Mortimer's group first at FF05DA) and Mortimer's
+Division-guild association with Slash (slot 14, adjacent).
+Decisive experiment (owed): in a live game, recruit one of them
+and watch which block's XP/HP move, or breakpoint writes to
+FF04A2 vs FF05DA on recruitment.
+
+### Food / Water / Money globals — matches and mismatches
+
+- **Money FF02DE:3A98** — value 0x3A98 = **15000, exactly the
+  repo gold cap**. Address: $FF02DE = $FF02B4 + 0x2A = **slot 0's
+  +0x2A gold field** under the repo base. Consistent with gold
+  living in a character struct's +0x2A (logic.md §1), IF the
+  gold-holder occupies slot 0 in the PAR author's game state —
+  but note the tension: the fan "Buc" block sits at slot 1 under
+  the same base, so either the leader's gold is kept in a
+  slot-0 struct, or the author's Buc was in slot 1 while gold
+  was read from slot 0. Flagged, not smoothed over. It is NOT
+  $FFC40C (that is the *battle* gold-total accumulator, a
+  different thing — no conflict).
+- **Food FFC364 / Water FFC366 (value 0x7530 = 30000)** — no repo
+  doc names a global at $FFC364/366. The nearest mapped
+  neighbours are the combat block ($FFC37C message target,
+  $FFC380 damage). Food/water as *inventory* are goods slots
+  0/1 handled via $2BBD2 codes 0x380/0x381 (logic.md §3.7), so
+  $FFC364/366 are plausibly cached current amounts in the
+  $FFC3xx state block, **unverified**. The consumption routine
+  that would prove it is still unlocated (§5 item 4).
+- Xavier's claim that Food/Water/Gold addresses are *stable*
+  while other characters' move between games is consistent with
+  the above: the stable ones are globals/struct-slot-0, the
+  party blocks sit in the general entity table whose occupancy
+  depends on spawn order.
