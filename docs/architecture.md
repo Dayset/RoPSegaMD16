@@ -40,7 +40,7 @@ runtime checksum sum).
 BlastEm address log (10 s run, 2,487 unique addresses, first-hit
 order) confirms the runtime flow: `200 → 2FA → 119E → D25C`, then
 `D28E` and the sound upload `EB806`. Ghidra headless call graph
-(436 functions, 1,434 edges) agrees: entry `FUN_00000200` calls
+(446 functions, 1,449 edges, after #011) agrees: entry `FUN_00000200` calls
 `$FD07C`, `$119E`, `$4323C`, `$3AA`, `$A14`, `$4E6`.
 
 ### 0x200 — TMSS check + table-driven hardware init
@@ -677,17 +677,21 @@ call sets above. It did **not** auto-create functions at the
 interrupt entry points `0x1270` / `0x1272` or at `$EB772` — vector
 targets have no call sites, so the analyser never discovered them;
 the `jsr $EB772` at `0x12F2` is visible only in the Capstone linear
-disassembly. Any future Ghidra work on interrupts must create those
-functions manually. The call-graph dump is at `/tmp/ghidra_calls.txt`
-(scratch, not in the repo).
+disassembly. Those three (plus 8 more the analyser missed —
+`$EBA00`, `$EB7C8`, `$EB8E0`, `$2B2B2`, `$2B502`, `$2988E`,
+`$3536C`, `$3539A`) were created manually in **#011**, bringing the
+graph to 446 functions / 1,449 edges; exports are under
+`disasm/ghidra/` (see `disasm/ghidra/README.md`).
 
 ## What remains unknown (for #011 / #019 / #020)
 
-- **#011 (Ghidra recursive analysis):** function boundaries in
-  `0x010000–0x043FFF` and `0x0E0000–0x0FBFFF` are still provisional;
-  the linear sweep mis-decodes data as code. The 436-function graph
-  is a start, not a map — and the interrupt handlers need manual
-  function creation (see above).
+- **#011 (Ghidra recursive analysis): DONE 2026-11-09** — 446
+  functions / 1,449 edges; boundaries for `0x010000–0x043FFF`
+  (90.7% code, every gap ≥64 B classified) and `0x0E0000–0x0FBFFF`
+  (0.9% code, sound cluster only, both gaps classified as data)
+  decided per function; entry, VBlank, `$4323C`, and `$EB772` call
+  trees mapped. Exports under `disasm/ghidra/`; `disasm/map.md`
+  updated.
 - **#019 (save validation):** EEPROM chip identity; the `$FF016A`
   128-byte buffer's layout (what is stored where); the exact ACK/
   error semantics of `$43012`/`$430F4`; what `$4323C`'s return value

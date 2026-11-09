@@ -16,7 +16,9 @@ Confidence levels: **verified** = reached from a vector or from code that
 is itself vector-reached, and the bytes decode as sensible 68000;
 **likely** = strong indirect evidence (strings, entropy, calls into it);
 **provisional** = best guess from entropy/strings, needs Ghidra's recursive
-analysis (#003) to confirm.
+analysis (#011) to confirm. After #011, the two target ranges
+(`0x010000–0x043FFF`, `0x0E0000–0x0FBFFF`) are decided per function —
+see "Ghidra recursive analysis (issue #011)" below.
 
 **Warning about the method:** a linear sweep decodes data as plausible
 m68k almost everywhere — per-16 KB "instruction density" came out
@@ -60,8 +62,9 @@ Standard Sega startup, then the game's own init:
   call-graph level): calls `$42FC8` (EEPROM enable/init) and `$DCE2`
   (joypad port 2 read), compares a byte to `$E0` (B+C+Start held on
   pad 2 — a hidden combo that forces a blank save); otherwise validates
-  the 128-byte buffer at `$FF016A` by byte-sum. Writes via `$43012`,
-  reads via `$430F4`; both bit-bang a Microwire-style serial EEPROM
+  the 128-byte buffer at `$FF016A` by byte-sum. Reads via `$43012`,
+  writes via `$430F4` (CORRECTED in #021 — this file had them swapped
+  before #011); both bit-bang a Microwire-style serial EEPROM
   through `$200000` (DI=D0, CLK=D6, DO=D7). Full analysis is #019.
 - `0x318`–`0x32C` — wait for VBlank bit, `move.w #$8134,$C00004`
   (display still blank, V-int + DMA on), `bsr $3AA` (joypad read),
@@ -144,18 +147,84 @@ of the loop reproduces the constant exactly):
 | `0x000100–0x0001FF` | 256 B | Header | verified | `SEGA GENESIS`, `GM T-50176 -00`, checksum `0x8B9F` |
 | `0x000200–0x000FFF` | ~3.5 KB | Entry, VDP table, init code | verified | Vector-reached; decodes as textbook Sega startup |
 | `0x001000–0x0012FF` | ~768 B | Interrupt handlers + joypad code | verified | L4/L6 vector targets; VBlank handler reads `$A10003`, bumps `$FF0010` |
-| `0x001300–0x00FFFF` | ~60 KB | Code (handlers, subroutines, tables) | likely | Called from entry (`$3AA`, `$A14`); entropy 5.4–6.8, ASCII 0.24–0.28 |
-| `0x010000–0x043FFF` | 208 KB | Code + embedded strings/tables | likely | `jsr $4323C` target lives here; 100+ spaced strings per 64 KB; entropy ~6.0 |
-| `0x044000–0x05FFFF` | 112 KB | Compressed data (probably graphics) | provisional | Entropy 7.0–7.24, the highest outside the other compressed block; few strings |
+| `0x001300–0x00FFFF` | ~60 KB | Code (47 functions) + one big data gap | verified (code) / verified (data gap) | 47 Ghidra functions, 10.5% exact coverage; gap `0x001394–0x00D25B` (48,840 B) is binary tables — 156 data references from code, no call targets (#011) |
+| `0x010000–0x043FFF` | 208 KB | Code, 90.7% covered, 16 data gaps | verified | 193,264/212,992 bytes in Ghidra function bodies (#011); gaps are strings/tables/word tables, each with function-address evidence — see "Ghidra recursive analysis" below |
+| `0x044000–0x05FFFF` | 112 KB | Compressed data | verified (data) | 0 Ghidra functions, 0 call targets (#011); entropy 7.0–7.24 |
 | `0x060000–0x093FFF` | 208 KB | Compressed data (NOT raw tiles — see #005) | verified (not tiles) | Noise in every tile layout (packed/planar); this range is the start of the `$96120` compressed streams (`0x09638C–0x0B86AE`); the "tile graphics" label was wrong — corrected in #005 |
-| `0x094000–0x0CBFFF` | 224 KB | Compressed data | provisional | Entropy 7.2–7.57 (highest in ROM); few strings |
-| `0x0CC000–0x0D7FFF` | 48 KB | Sparse tables (map data?) | provisional | Entropy 4.6–5.3, 28–44% zero bytes |
+| `0x094000–0x0CBFFF` | 224 KB | Compressed data | verified (data) | 0 Ghidra functions, 0 call targets (#011); entropy 7.2–7.57 (highest in ROM); few strings |
+| `0x0CC000–0x0D7FFF` | 48 KB | Tables + dialogue blob | verified (data) | 0 Ghidra functions (#011); entropy 4.6–5.3, 28–44% zero bytes; dialogue blob at `0x0D6EBA–0x0DC0C0` (#004) |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |
-| `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | likely | ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
-| `0x0E0000–0x0FBFFF` | 112 KB | Mixed code/data — sound cluster verified | verified (sound) / provisional (rest) | `jsr $EB772`/`$EB806` targets; sound routines `$EB772`/`$EB806`/`$EB88A`/`$EB7C8`/`$EBA00`/`$EBAC6`/`$EBA7E` traced (issue #003); Ghidra found 436 functions overall; rest needs #011 |
+| `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | verified (data) | 0 Ghidra functions (#011); ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
+| `0x0E0000–0x0FBFFF` | 112 KB | Sound cluster (984 B code) + data | verified (sound + data) | Sound routines `$EB772`/`$EB806`/`$EB88A`/`$EB7C8`/`$EBA00`/`$EBAC6`/`$EBA7E` traced (#003); 0.9% exact coverage; gaps `0x0E0000–0x0EB771` (structured table data) and `0x0EBB6E–0x0FBFFF` (Z80 driver blob + rest) decided in #011 |
 | `0x0FC000–0x0FD07B` | ~4 KB | Code (checksum routine + tail code) | verified | `jsr $FD07C` target; decodes cleanly |
 | `0x0FD07C–0x0FD0CB` | 80 B | Runtime checksum + fail path | verified | Simulated sum matches `0x8F33608C` |
 | `0x0FD0CC–0x0FFFFF` | 12,084 B | `0xFF` padding | verified | One unbroken `0xFF` run, 12,084 bytes; last real byte at `0x0FD0CB` |
+
+## Ghidra recursive analysis (issue #011, 2026-11-09)
+
+Ghidra 11.4.2, full auto-analysis re-run on the project in
+`tools/ghidra/projects/rop`. Exports under `disasm/ghidra/`
+(`functions.txt`, `call_edges.txt`, `function_bodies.txt`,
+`call_trees.txt`, `not_reachable_from_entry.txt`, `README.md` —
+the README carries the full gap inventory, the missed-code list, and
+the cross-check method; this section is the summary).
+
+- **446 functions, 1,449 direct call edges.** Auto-analysis found
+  435; **11 were created manually** — the analyser only follows
+  direct calls and vector targets, so code reached only via computed
+  dispatch (jump tables, `$2BBD2` dispatch, function pointers) or
+  with no callers at all is invisible to it: `0x1270` (HBlank, 2 B),
+  `0x1272` (VBlank, 216 B), `$EB772` (86 B), `$EBA00` (music streamer,
+  126 B — the `jsr $EBA00` at `0xEB7BE` was in Ghidra's listing but
+  the analyser never followed it to create the callee), `$EB7C8`
+  (stop-sound, 62 B, dead code), `$EB8E0` (18 B), `$2B2B2` and
+  `$2B502` (combatant-setup wrappers, 336 B / 242 B), `$2988E`
+  (68 B), `$3536C` (46 B), `$3539A` (266 B). Three more code blocks
+  were disassembled but are **not** function entries (jump-table
+  case bodies, no `link` prologue): `$1E022`'s blocks at
+  `0x1E02E–0x1E075`, the spell-area block at `0x38850–0x38889`,
+  the sound-cluster blocks at `0xEB9A0–0xEB9C3`.
+- **Coverage (exact body addresses, not spans):**
+  `0x010000–0x043FFF` 90.7% (193,264/212,992 B),
+  `0x0E0000–0x0FBFFF` 0.9% (984 B, the sound cluster only),
+  `0x000000–0x00FFFF` 10.5%, `0x0FC000–0x0FFFFF` 0.5%,
+  all other ranges 0.0% — which independently confirms the #005/#006
+  data classifications for the compressed blocks.
+- **Every gap ≥64 B in the two target ranges is classified** with
+  function-address evidence (data references = literal immediates in
+  real code; call targets = direct `jsr`/`bsr`/`jmp`/`bra` targets):
+  `0x010000–0x043FFF` has 16 gaps — 15 data (menu/message strings,
+  the 7,718 B string/table block at `0x0197B0`, the terrain-decoder
+  tables at `0x0433C0`, three combat word tables at `0x3A220`/
+  `0x3A354`/`0x3A5D0`, the Void string at `0x01215E`) and 1 code
+  (the `$1E022` case blocks); `0x0E0000–0x0FBFFF` has 2 gaps —
+  `0x0E0000–0x0EB771` (structured table data; one interior address
+  `0xE0A18` pushed as a pointer at `0x32EBE`) and
+  `0x0EBB6E–0x0FBFFF` (Z80 driver blob `0xEBB6E–0xED0E4` + rest).
+- **Cross-check:** all 289 distinct absolute-`jsr` targets in the
+  linear sweep (3,143 sites) are function entries, and all 289
+  appear among Ghidra's 413 distinct callees (1,449 edges, all
+  entries); the one genuine missed target was `$EBA00`
+  (`jsr $EBA00(pc)` at `0xEB7BE`, fixed). Where Ghidra and the
+  linear sweep disagree, Ghidra wins — except for computed-dispatch
+  code, where the Capstone decode + the #007/#008/#020/#021 traces
+  are the evidence.
+- **Call trees mapped** (`disasm/ghidra/call_trees.txt`): entry
+  `0x200` reaches 405 functions (depth 1 is exactly the verified
+  trace `$3AA`/`$4E6`/`$A14`/`$119E`/`$4323C`/`$FD07C`; depth 3 holds
+  the seven `$D25C` callees, agreeing with #020); VBlank `0x1272`
+  reaches 10 (`$EB772` → `$EBA00`/`$EBAC6`, agreeing with the
+  verified sound-tick trace); `$4323C` reaches 14 (the four helpers
+  `$DCE2`/`$42FC8`/`$43012`/`$430F4` plus `$42E34`/`$42E76`/`$42EBA`/
+  `$42EEE`/`$42F96` and `$DCCA`/`$42F26`/`$42F5E`/`$42FD8`,
+  agreeing with docs/architecture.md); `$EB772` reaches 9.
+- **Ghidra limitations recorded:** it merges flow-connected routines
+  into one function (`$2B240` inside `FUN_0002b190`, `$2B4B0`
+  inside `FUN_0002b402`, `$35600` inside `FUN_000354a4`) and its
+  bodies exclude embedded jump tables (correctly — they are data).
+  41 functions are not reachable from entry by direct edges
+  (vectors, sound cluster, computed dispatch) — listed in
+  `disasm/ghidra/not_reachable_from_entry.txt`.
 
 ## Text locations (for issue #004)
 
@@ -184,19 +253,25 @@ of the loop reproduces the constant exactly):
 
 ## Open questions (for #003) — answered / partially answered 2026-11-09
 
-1. Where does real code end? **Partially answered.** Ghidra headless
-   recursive analysis now exists (436 functions, 1,434 call edges,
-   dump at `/tmp/ghidra_calls.txt`) — but the boundary with the
-   `0x044000` compressed block is still open, and Ghidra did **not**
-   auto-create the interrupt-handler functions at `0x1270`/`0x1272`
-   or `$EB772` (vector targets have no call sites; create them
-   manually). Remaining work is #011.
+1. Where does real code end? **Answered for the two #011 ranges.**
+   Ghidra recursive analysis (446 functions, 1,449 call edges,
+   exports under `disasm/ghidra/`): `0x010000–0x043FFF` is 90.7%
+   code with every gap ≥64 B classified (15 data, 1 code — the
+   `$1E022` case blocks); `0x0E0000–0x0FBFFF` is 0.9% code (sound
+   cluster only) with both gaps classified as data; the compressed
+   blocks have 0 functions. The interrupt-handler functions at
+   `0x1270`/`0x1272` and `$EB772` were created manually (vector
+   targets have no call sites). Remaining: the `$FF1EC0` bitmap
+   consumers and the `$2B240`-family entry mechanism (computed
+   dispatch — see #021).
 2. What do `$42FC8`, `$DCE2`, `$43012` (called from `$4323C`) do?
    **Answered at call-graph level.** `$42FC8` = serial-EEPROM
    enable/init (8 clocked `$80` writes to `$200000` + `$42E76`);
    `$DCE2` = joypad port 2 read (shared utility, 8 call sites);
-   `$43012` = EEPROM write (command out via `$42EBA` ×8, ACK in via
-   `$42F96`, retry limit 10 in `$FF014C`); `$430F4` = EEPROM read.
+   `$43012` = EEPROM **read** (block; command out via `$42EBA` ×8
+   with `or.w #1` in the command word — the read bit, ACK in via
+   `$42F96`, retry limit 10 in `$FF014C`); `$430F4` = EEPROM
+   **write** (one byte; same bit-bang pattern without the `or #1`).
    Together they bit-bang a Microwire-style serial EEPROM through
    `$200000` (DI=D0, CLK=D6, DO=D7); `$E0` = B+C+Start on pad 2,
    `$B0` = A+C+Start. BlastEm auto-detected a 128-byte EEPROM

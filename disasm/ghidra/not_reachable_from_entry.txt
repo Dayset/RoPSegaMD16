@@ -1,0 +1,46 @@
+Functions NOT reachable from entry 0x200 by direct call edges (41).
+These are reached via vectors (0x1270/0x1272), via the VBlank handler
+($EB772 and the sound cluster), or only via computed dispatch / jump
+tables / function pointers (no direct jsr/bsr/jmp edge exists).
+
+0x01270 HBlank_handler called-by-direct: none
+0x01272 VBlank_handler called-by-direct: none
+0x0D9FA FUN_0000d9fa called-by-direct: 0x1110A
+0x0DA92 FUN_0000da92 called-by-direct: none
+0x0DB30 FUN_0000db30 called-by-direct: none
+0x0DC82 FUN_0000dc82 called-by-direct: 0x11BB8
+0x0DE02 FUN_0000de02 called-by-direct: none
+0x1107A FUN_0001107a called-by-direct: 0x238B8
+0x110D0 FUN_000110d0 called-by-direct: none
+0x1110A FUN_0001110a called-by-direct: none
+0x11588 FUN_00011588 called-by-direct: none
+0x115C2 FUN_000115c2 called-by-direct: none
+0x11BB8 FUN_00011bb8 called-by-direct: none
+0x11FAE FUN_00011fae called-by-direct: 0x11588
+0x12F48 FUN_00012f48 called-by-direct: none
+0x12F80 FUN_00012f80 called-by-direct: none
+0x1960A FUN_0001960a called-by-direct: none
+0x238B8 FUN_000238b8 called-by-direct: none
+0x2988E FUN_2988e called-by-direct: none
+0x2B2B2 FUN_2b2b2 called-by-direct: none
+0x2B502 FUN_2b502 called-by-direct: none
+0x31F66 FUN_00031f66 called-by-direct: none
+0x3213C FUN_0003213c called-by-direct: none
+0x34CA2 FUN_00034ca2 called-by-direct: none
+0x34ED0 FUN_00034ed0 called-by-direct: none
+0x34FC4 FUN_00034fc4 called-by-direct: none
+0x352C4 FUN_000352c4 called-by-direct: none
+0x3536C FUN_3536c called-by-direct: none
+0x3539A FUN_3539a called-by-direct: none
+0x354A4 FUN_000354a4 called-by-direct: none
+0x37A26 FUN_00037a26 called-by-direct: none
+0x37ED6 FUN_00037ed6 called-by-direct: none
+0x39DF4 FUN_00039df4 called-by-direct: none
+0xEB772 FUN_EB772_sound_tick called-by-direct: 0x01272
+0xEB7C8 EB7C8 called-by-direct: none
+0xEB8E0 FUN_eb8e0 called-by-direct: none
+0xEB924 FUN_000eb924 called-by-direct: none
+0xEB986 FUN_000eb986 called-by-direct: none
+0xEBA00 EBA00 called-by-direct: 0xEB772
+0xEBAC6 FUN_000ebac6 called-by-direct: 0xEB772
+0xEBAFE FUN_000ebafe called-by-direct: 0xEBAC6
