@@ -1,0 +1,23 @@
+# The ROM itself — never commit it. Bring your own dump.
+*.gen
+*.bin
+*.smd
+# NOTE: do NOT ignore *.md — the repo's docs, issues and PROGRESS.md are
+# markdown. (An earlier *.md rule silently ignored every doc file.)
+# Toolchain / build outputs
+.venv/
+__pycache__/
+*.pyc
+build/
+*.ips
+!patches/*.ips
+# Ghidra
+*.gpr
+*.rep/
+# Emulator saves / states
+*.srm
+*.state*
+# Ghidra install + projects (toolchain download, not repo content)
+tools/ghidra/
+# Generated disassembly (20 MB, reproducible — see disasm/README.md)
+disasm/rop.s
