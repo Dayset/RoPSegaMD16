@@ -149,9 +149,9 @@ of the loop reproduces the constant exactly):
 | `0x001000–0x0012FF` | ~768 B | Interrupt handlers + joypad code | verified | L4/L6 vector targets; VBlank handler reads `$A10003`, bumps `$FF0010` |
 | `0x001300–0x00FFFF` | ~60 KB | Code (47 functions) + one big data gap | verified (code) / verified (data gap) | 47 Ghidra functions, 10.5% exact coverage; gap `0x001394–0x00D25B` (48,840 B) is binary tables — 156 data references from code, no call targets (#011) |
 | `0x010000–0x043FFF` | 208 KB | Code, 90.7% covered, 16 data gaps | verified | 193,264/212,992 bytes in Ghidra function bodies (#011); gaps are strings/tables/word tables, each with function-address evidence — see "Ghidra recursive analysis" below |
-| `0x044000–0x05FFFF` | 112 KB | Compressed data | verified (data) | 0 Ghidra functions, 0 call targets (#011); entropy 7.0–7.24 |
-| `0x060000–0x093FFF` | 208 KB | Compressed data (NOT raw tiles — see #005) | verified (not tiles) | Noise in every tile layout (packed/planar); this range is the start of the `$96120` compressed streams (`0x09638C–0x0B86AE`); the "tile graphics" label was wrong — corrected in #005 |
-| `0x094000–0x0CBFFF` | 224 KB | Compressed data | verified (data) | 0 Ghidra functions, 0 call targets (#011); entropy 7.2–7.57 (highest in ROM); few strings |
+| `0x044000–0x05FFFF` | 112 KB | **Map chunks, `$DD5C` LZSS** (not a new codec — #017) | verified | `$43850` table: 252 records [u32 rel-off, u32 declen, u16 type=1], base `0x44228`; 99× 2048 B = 32×32 tilemap chunks + 153× 242 B = 11×11 tilemap chunks, all decode to exact table lengths, streams contiguous `0x44228–0x05EDC4`; loader `$19692` 4-slot cache via `$1C802`. Also `$5EDC4` 512-word table, `0x05F1C4` 864 B unknown, `$5F524` terrain offset table (176 u32, streams `0x603E4+`) |
+| `0x060000–0x093FFF` | 208 KB | Terrain streams + unknown | verified (part) / unknown | `0x060000–0x068300` = terrain streams from the `$5F524` table (last ends ~`0x68300`; read by the threaded `$E3B4` decoder — **not** `$DD5C`: `$DD5C` fails at `0x603E4`); `0x068300–0x093FFF` (~172 KB) is NOT terrain and NOT `$DD5C` sources — unknown. **Corrected #017:** this range is NOT "the start of the `$96120` streams" — those start at `0x09638C` |
+| `0x094000–0x0CBFFF` | 224 KB | **Graphics, `$DD5C` LZSS** (#005) + one unknown gap (#017) | verified | `0x094000–0x096120` (8,608 B) unidentified structured data — Nemesis/Kosinski/Enigma/`$DD5C`/raw-tiles all tested and rejected with evidence (see #017); `0x096120` table + 62 `$DD5C` streams `0x09638C–0x0B86AE`, `0x0B86AE` table + 90 `$DD5C` streams `0x0B8A32–0x0CC9D8`, master palette table `0x0CC9D8` |
 | `0x0CC000–0x0D7FFF` | 48 KB | Tables + dialogue blob | verified (data) | 0 Ghidra functions (#011); entropy 4.6–5.3, 28–44% zero bytes; dialogue blob at `0x0D6EBA–0x0DC0C0` (#004) |
 | `0x0D6EBA–0x0DC0C0` | 20,998 B | **Dialogue blob** | likely | One unbroken 20,998-byte run of printable ASCII; words mostly concatenated (packed/tokenised text, not plain sentences) — issue #004 |
 | `0x0D8000–0x0DFFFF` | 32 KB | Dialogue blob + tables | verified (data) | 0 Ghidra functions (#011); ASCII fraction 1.00 in the `0x0D8000` block; contains the blob above |
@@ -279,6 +279,17 @@ the cross-check method; this section is the summary).
    return-value semantics are #019's work.
 3. Is the `0x044000` / `0x094000` high-entropy data one compression
    format (Nemesis/Kosinski/Enigma — the usual Genesis codecs), and
-   which block is graphics vs maps?
+   which block is graphics vs maps? **Answered 2026-11-09 (#017).**
+   Neither block is a new codec — both are the proven `$DD5C` LZSS:
+   `0x044000–0x05FFFF` is **maps** (the `$43850` table: 99× 32×32
+   + 153× 11×11 tilemap chunks, loader `$19692`/`$1C802`);
+   `0x094000–0x0CBFFF` is **graphics** (`$96120`/`$B86AE` tables,
+   #005). Nemesis/Kosinski/Enigma were tested with round-trip-validated
+   reference decoders (Clownacy clownlzss/clownnemesis) on the only
+   genuinely unknown bytes (`0x094000–0x096120`) and all rejected:
+   Nemesis hard-fails, Kosinski/Enigma outputs match the known-garbage
+   profile from a `$DD5C` control stream. The gap itself (8,608 B,
+   4-bit-periodic words) is still unidentified, as are `0x05F1C4`
+   (864 B) and `0x068300–0x093FFF` (~172 KB).
 4. How is the dialogue blob tokenised — where are the word boundaries
    and control codes?
