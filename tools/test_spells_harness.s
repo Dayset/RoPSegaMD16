@@ -60,8 +60,13 @@
 _start:
     cmpi.w #0xBEEF, 0xFFD000
     bne run_tests
-    /* already ran: displaced instruction, back to attract loop */
+    /* already ran: displaced instruction, back to attract loop.
+       Pop the jsr return address first (session #7, logic-audit
+       §12.8: the hook is a jsr inside a VDP poll loop, so an
+       unpopped exit leaks 4 stack bytes per poll iteration and
+       eventually corrupts a return into PC=0). */
     move.w 0xC00004, %d1
+    lea 4(%sp),%sp
     jmp 0x362
 run_tests:
     move.w #0xBEEF, 0xFFD000
@@ -336,8 +341,10 @@ restore_q:
 canary_ok:
     move.w #0xA5A5, (%a5)+
 done:
-    /* displaced instruction, back to attract loop */
+    /* displaced instruction, back to attract loop; pop the jsr
+       return address first (see _start note above / §12.8) */
     move.w 0xC00004, %d1
+    lea 4(%sp),%sp
     jmp 0x362
 
 /* One $3A62E dispatch case: reset $FF012C/$FF012A/$FFC418/$FFC41A/
