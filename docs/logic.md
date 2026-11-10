@@ -629,36 +629,60 @@ Road and Desert are now pinned; Grass, Swamp and Ice are not.
 | Manual (per mile) | Food | Water | Code match |
 |---|---|---|---|
 | On foot — Road | 1 | 1 | **type 9, mode 0: set (1,1) ✓ [live]** |
-| On foot — Grass | 4 | 2 | no mode-0 type gives (4,2) — [open] |
+| On foot — Grass | 4 | 2 | **manual approximate — water 2 is unattainable in any mode [live/static, resolved]** |
 | On foot — Desert | 7 | 5 | **type 17, mode 0: (3,1)+(4,4) = (7,5) ✓ [live]** |
-| On foot — Swamp | 8 | 4 | no mode-0 type gives (8,4) — [open] |
-| On foot — Ice waste | 4 | 3 | no mode-0 type gives (4,3) — [open] |
+| On foot — Swamp | 8 | 4 | **manual approximate — water 4 is unattainable in any mode [live/static, resolved]** |
+| On foot — Ice waste | 4 | 3 | **manual approximate — (4,3) is unattainable as a flat cost [live/static, resolved]** |
 | Boat, shallow | 1 | 1 | base (1,1) ✓ (no addition) [live] |
 | Boat, deep | 5 | 20 | **type 0, mode 7: (1,1)+(4,19) = (5,20) ✓ [live]** |
 | Ship, deep | 1 | 1 | base (1,1) ✓ [live] |
 | Dino, road | 1 | 1 | type 9, mode 1: set (1,1) ✓ [live] |
 | Dino, other | 3 | 1 | **mode 1 base (3,1) ✓ [live]** |
-| Dragon, all | 40 | 40 | mode 4 base (38,38) — **off by 2, confirmed live** [open] |
+| Dragon, all | 40 | 40 | mode 4 is **always (38,38)** — the manual rounds 38 to 40 **[live/static, resolved]** |
 
 Code costs actually attainable on flat terrain **[live]**: mode 0 →
 (1,1), (3,1), (7,5), (5,5), (6,5); mode 1 → (3,1), (1,1), (6,7);
 mode 4 → (38,38); mode 7 → (1,1), (5,20), (5,5); mode 2 → (5,20)
-on type 0; mode 6 → (5,5) on type 17. Mode-0 water is only **1 or 5**
-(live) — never 2, 3 or 4 — so the manual's Grass (2), Swamp (4) and
-Ice (3) water values cannot be flat mode-0 costs. Either the manual's
-rates are approximate (per "mile" may not be one step, or the rates
-are rounded), or those terrains are reached via a different mode or a
-height component. **Desert is the one manual on-foot terrain that
-matches exactly: type 17 gives (7,5) on foot.** Which world-map
-terrain type 17 *is* (desert, by the rate) is a mapping claim, not a
-code claim — the type's identity still needs a world-map pin
-(overworld coordinate (58,81) is a type-17 cell).
+on type 0, **(3,3) on type 17**; mode 6 → (5,5) on type 17. Static
+enumeration over all 8 modes × 35 terrain types gives attainable
+water values **[1, 3, 5, 7, 20, 38] — never 2 or 4**. So the manual's
+Grass (water 2) and Swamp (water 4) are **unattainable in the code in
+any mode, on any terrain, with any height** (the height term only
+affects food, never water — `$01D8B4` writes to `+$1A` only). Water 3
+is attainable only as mode 2, type 17 → (3,3) **[live, 2026-11-10,
+46/46 harness]** — but that is not on foot (mode 2, not mode 0) and
+type 17 is Desert, not Ice, so (4,3) is unattainable as a flat
+on-foot cost too. **Verdict: the manual is approximate for
+Grass/Swamp/Ice.** The food values (4, 8, 4) are attainable via the
+height term (base 3 + height/2), but the water values (2, 4, 3)
+cannot be produced by any code path. Desert and Road match exactly,
+so the manual is generally accurate — but these three terrains do not
+correspond to any per-step cost the code can produce. **Desert is the
+one manual on-foot terrain that matches exactly: type 17 gives (7,5)
+on foot.** Which world-map terrain type 17 *is* (desert, by the rate)
+is a mapping claim, not a code claim — the type's identity still needs
+a world-map pin (overworld coordinate (58,81) is a type-17 cell).
 
-#### Live harness — `$1C892` (2026-11-10, 44/44 cases)
+**Verdict: the Dragon manual rate (40/40) is a rounding of the code's
+(38,38).** Mode 4's cost is **always (38,38)** — no terrain addition
+and no height term can change it. The dispatch at `$01CF38`–`$01CF68`
+is reached for mode 4 only if the terrain type is 29 (`$1D`); type 29
+does not exist in `$5EDC4`, and the type-29 handler (`$1D65A`) adds
+nothing anyway (`clr.w -$a(a6)` + `bra.w L01D796`). And the height
+term is **skipped** for mode 4: when the dispatch is skipped (mode 4
+on a non-29 type), it goes to `L01D9B6` → `L01C984` (direct return),
+bypassing the height term at `$01D800`–`$01D8B4`. **[live, 2026-11-10,
+46/46 harness]:** mode 4 on a +4 slope (148,15) still gives food 38,
+water 38 — the height term does not run for the dragon. So (40,40)
+cannot be produced by any code path; the manual rounds 38 to 40 (or
+approximates). The same skip applies to mode 5 (dispatch skipped
+entirely) and to `$FF00A4 == 0`.
+
+#### Live harness — `$1C892` (2026-11-10, 46/46 cases)
 
 `.scratch007/harness_c892.s` + `build_c892.py` + `run_c892.py`
 (test ROM `.scratch007/test007.gen`, MD5
-`bc40401378c482c182f1ba379466eb4d`). Hook at the attract loop `0x35C`
+`58e9778049980ea6861954d376b0a65c`). Hook at the attract loop `0x35C`
 (`jsr $FD0CC.l`, trampoline at `0xFD0CC`, exits with `rts`), results
 in `$FFD000+` (7 words/case: mode, live type, dest tile, food, water,
 d0, blocked). Each case sets the struct at `$FFD300` (mode at `+0x08`,
@@ -667,18 +691,22 @@ a chosen overworld (x,y), loads the real chunk via `$19692`, calls
 `$1C892`, and records the struct `+0x1A`/`+0x1C` plus the live
 `$5EDC4` type (`rol.w #$6` extraction, as `$02dc0c` does it) and the
 destination tile from `$FF0248`. `$FF00A4 = 1` is required (the terrain
-dispatch at `$01CF38` is skipped when it is 0). **All 44 cases passed
+dispatch at `$01CF38` is skipped when it is 0). **All 46 cases passed
 against the live-corrected expectations** (ran flag `$FFD000 = $BEEF`,
 canary `$FFDFFE = $5A5A`; every destination tile matched the offline
 chunk decode, proving the chunk-cache positioning is correct). The
-44 cases: mode 0 on 30 `$5EDC4` types (0–23, 25, 27, 28, 30, 31, 33 —
+46 cases: mode 0 on 30 `$5EDC4` types (0–23, 25, 27, 28, 30, 31, 33 —
 types 24/26/29 do not exist in `$5EDC4`; 32/34 exist but no flat east
 step onto them was found in the overworld); mode 1 on types 9/0/17/19;
-mode 4 on types 9/0; mode 7 on types 0/9/17; mode 2 on type 0;
+mode 4 on types 9/0; mode 7 on types 0/9/17; mode 2 on types 0/17;
 mode 6 on type 17; and three height cases on type 9 (delta +4 → food
 3, delta +2 → food 2, delta −4 → food −1 — **the height term is
 confirmed live, including the negative direction: food can go below
-the type-9 base, to −1**). Two harness bugs were found and fixed
+the type-9 base, to −1**), plus two discrepancy cases added 2026-11-10:
+mode 2 type 17 → (3,3) (the only water-3 in any mode) and mode 4 on a
++4 slope (148,15) → (38,38) (**the height term is skipped for the
+dragon** — the dispatch bypass at `$01CF50`–`$01CF68` returns via
+`L01D9B6` → `L01C984` without running it). Two harness bugs were found and fixed
 during the run: the type extraction used `lsr #6` (wrong — it reads
 bits 6–11, not 10–15; fixed to `rol #6` like `$02dc0c`), and the
 `lsr #10` fix attempt was rejected by GAS (immediate shifts are 1–8
@@ -861,9 +889,9 @@ from the cost, and not pursued here.
   (per-cell driver), `$01c892` (this step routine), `$02619c`/`$0265be`
   (NPC/AI), `$02dc0c` (walkability gate).
 
-#### What would settle the open rates [partly open]
+#### What would settle the open rates [resolved 2026-11-10]
 
-The `$1C892` live harness ran 2026-11-10 (44/44 cases, `.scratch007/harness_c892.s`, test ROM `bc40401378c482c182f1ba379466eb4d`): it called `$1C892` with a controlled mode and terrain (chunk cache pre-loaded via `$19692`) and read struct `+0x1A`/`+0x1C`. It pinned Road (type 9, 1/1) and **Desert (type 17, 7/5)** and confirmed the Dragon 38/38 (not the manual's 40/40) and the height term live, including the negative direction. The routine, the formula shape, the base costs (corrected live: mode 0/1 base is (3,1), not (2,2)), the terrain additions and the height term are now **live-verified**. Still open: the Grass/Swamp/Ice type mapping (live mode-0 water is only 1 or 5, so the manual's 4/2, 8/4, 4/3 cannot be flat mode-0 costs) and the Dragon 40/40 vs live 38/38 gap.
+The `$1C892` live harness ran 2026-11-10 (46/46 cases, `.scratch007/harness_c892.s`, test ROM `58e9778049980ea6861954d376b0a65c`): it called `$1C892` with a controlled mode and terrain (chunk cache pre-loaded via `$19692`) and read struct `+0x1A`/`+0x1C`. It pinned Road (type 9, 1/1) and **Desert (type 17, 7/5)** and confirmed the height term live, including the negative direction. The routine, the formula shape, the base costs (corrected live: mode 0/1 base is (3,1), not (2,2)), the terrain additions and the height term are now **live-verified**. **Both remaining discrepancies are resolved:** Grass/Swamp/Ice — the manual is approximate (water 2 and 4 are unattainable in any mode; water 3 exists only as mode 2, type 17 → (3,3), not on foot and not Ice); Dragon — mode 4 is always (38,38), the manual rounds 38 to 40 (no terrain addition for mode 4, and the height term is skipped for it — live: mode 4 on a +4 slope still gives (38,38)).
 
 ## 4. Combat action routine `$3A62E` — verified (static)
 

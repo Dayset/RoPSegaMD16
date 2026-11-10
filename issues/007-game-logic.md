@@ -44,7 +44,7 @@ and combat damage.
 - Which damage path runs in live combat (`$3B1EE` vs `0x40880` spell path);
   `$FFC418`/`$FFC41A` contents; `$3B1EE` arg puzzle. → #008.
 - Transport / food-water consumption routine — **located (static,
-  2026-11-10) and live-verified (2026-11-10, 44/44 harness cases)**:
+  2026-11-10) and live-verified (2026-11-10, 46/46 harness cases)**:
   deduction in `FUN_024984` `$024F38`–`$024FB2` (gate `$FF00AE==1`,
   food `$FFC364`, water `$FFC366`, clamp [1, 30000]); cost computed by
   `FUN_01c892` `$01C892` = base(mode) + terrain addition + height/2
@@ -53,12 +53,24 @@ and combat damage.
   not (2,2)** — the (2,2) write at `$01C8C6` falls through into the
   mode-1 (3,1) block. Verified vs manual: Road 1/1 (type 9, mode 0),
   **Desert 7/5 (type 17, mode 0: (3,1)+(4,4))**, Dino 3/1 (mode 1
-  base), Boat deep 5/20 (type 0, mode 7), **Dragon 38/38 (mode 4 base,
-  confirmed live — manual's 40/40 is off by 2)**; height term
-  confirmed live incl. negative (delta −4 → food −1). **Open:**
-  terrain-type → terrain-name mapping for Grass/Swamp/Ice (manual
-  water 2/4/3 not attainable as flat mode-0 water — live mode-0 water
-  is only 1 or 5), Dragon 40/40 vs live 38/38. **CAMP — located and
+  base), Boat deep 5/20 (type 0, mode 7), **Dragon is always (38,38)
+  (mode 4 base, confirmed live — the manual's 40/40 rounds 38)**;
+  height term confirmed live incl. negative (delta −4 → food −1).
+  **Resolved 2026-11-10 (46/46 harness): Grass/Swamp/Ice — the manual
+  is approximate.** Static enumeration over all 8 modes × 35 types
+  gives attainable water [1, 3, 5, 7, 20, 38] — never 2 or 4 — so the
+  manual's Grass (water 2) and Swamp (water 4) are unattainable in any
+  mode, on any terrain, with any height (the height term only affects
+  food). Water 3 exists only as mode 2, type 17 → (3,3) [live], which
+  is not on foot and type 17 is Desert, so Ice (4,3) is unattainable
+  as a flat on-foot cost too. **Dragon — resolved: mode 4 is always
+  (38,38).** No terrain addition exists for mode 4 (dispatch reached
+  only if type 29, which does not exist in `$5EDC4`, and the type-29
+  handler `$1D65A` adds nothing); the height term is skipped for mode
+  4 (dispatch bypass → `L01D9B6` → `L01C984` return) — live: mode 4 on
+  a +4 slope still gives (38,38). So (40,40) cannot be produced by any
+  code path; the manual rounds 38 to 40. Harness:
+  `.scratch007/harness_c892.s` (see docs/logic.md §3.7). **CAMP — located and
   live-verified (2026-11-10, 3/3 harness cases):** handler
   `FUN_03019a` `$03019a`, called as C=28 from the verb executor
   (Camp verb-table byte 11 = `$1C`); deduction is a direct register
