@@ -13386,7 +13386,7 @@ L01C26E:
 	move.w $c(a6),-$a(a6)	; $01C27C
 	move.w $c(a6),-(a7)	; $01C282
 	move.w $a(a6),-(a7)	; $01C286
-	jsr sys_unk_01e158.l	; $01C28A
+	jsr sign_quadrant.l	; $01C28A
 	addq.w #$4,a7	; $01C290
 	move.w d0,-$4(a6)	; $01C292
 	bra.b L01C2BA	; $01C296
@@ -14080,7 +14080,7 @@ L01CA66:
 	move.w $c(a0),-(a7)	; $01CAD4
 	movea.l $8(a6),a0	; $01CAD8
 	move.w $a(a0),-(a7)	; $01CADC
-	jsr sys_unk_01e158.l	; $01CAE0
+	jsr sign_quadrant.l	; $01CAE0
 	addq.w #$4,a7	; $01CAE6
 	move.w d0,-(a7)	; $01CAE8
 	move.w $ff0e82.l,-(a7)	; $01CAEA
@@ -15718,7 +15718,7 @@ L01E144:
 L01E156:
 	bra.b L01E12C	; $01E156
 	; code $01E158-$01E189
-sys_unk_01e158:
+sign_quadrant:
 	link.w a6,#$0	; $01E158
 	tst.w $8(a6)	; $01E15C
 	ble.b L01E168	; $01E160

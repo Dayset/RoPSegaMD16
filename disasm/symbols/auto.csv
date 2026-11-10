@@ -95,7 +95,7 @@ addr,name,tier,note
 0x01E0A4,sys_unk_01e0a4,0,auto: touches none
 0x01E0E4,sys_unk_01e0e4,0,auto: touches none
 0x01E11E,sys_unk_01e11e,0,auto: touches none
-0x01E158,sys_unk_01e158,0,auto: touches none
+0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
 0x01E18A,spell_duration_tick,2,spells.md: duration nibble decremented each step
 0x01E29C,sys_unk_01e29c,0,auto: touches none
 0x01E390,queue_init,1,architecture.md:198 and spells.md:653 queue init (capacity byte[2]=8)
