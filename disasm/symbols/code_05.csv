@@ -1,0 +1,3 @@
+addr,name,tier,note
+0x026B58,text_enqueue_message,2,docs/logic.md 2.7: message enqueue with dedup; leader gate kind 4; writes $FFBC94 ring; $1E3B0 slot alloc; sets $FF009A
+0x02BBD2,inv_apply_resource,2,docs/logic.md 3.2: central resource/goods dispatcher; code/64 quotient; code%64 remainder; gold/XP/Heal/Pow Up/Life; services; shop

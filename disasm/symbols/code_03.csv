@@ -3,6 +3,11 @@ addr,name,tier,note
 0x01B918,redraw_check,2,docs/architecture.md: $1B918 per-frame redraw checker
 0x01BA26,request_full_redraw,2,docs/logic.md: $1BA26 request full redraw
 0x01C0EC,grid_fill,2,docs/architecture.md:204: 10x10 grid fill; not party init
+0x01E022,world_get_step_delta,1,direction to (dx dy) step vector; 0=N 1=E 2=S 3=W; >=4=(0 0)
+0x01E0A4,world_reverse_dir,1,opposite direction; 0<>2 1<>3; 4 stays 4
+0x01E0E4,world_turn_dir_right,1,turn direction clockwise; 0>1>2>3>0; inverse of world_turn_dir_left
+0x01E11E,world_turn_dir_left,1,turn direction counter-clockwise; 0>3>2>1>0; inverse of world_turn_dir_right
 0x01E3B0,queue_push,2,docs/logic.md: $1E3B0 push/enqueue (head/tail bytes)
 0x01E49A,queue_depth,2,docs/logic.md: $1E49A returns byte0 - byte1 (queue depth)
 0x01F296,verb_exec,2,docs/architecture.md: $1F296 verb executor
+0x020BFE,world_get_mode_portrait,1,travel mode to $B86AE portrait index; 0 walk>23 1 dino>21 2 boat>22 3 ship>5 4 dragon>35; kind-7 message id
