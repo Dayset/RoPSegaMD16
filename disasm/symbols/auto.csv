@@ -108,13 +108,13 @@ addr,name,tier,note
 0x020C5E,map_prepare,1,maps.md:461 must run before 0x20E7E
 0x020C6A,table_fill_ff,2,maps.md: $FFB36C+1024 initialised to $FF (empty) by $20C6A
 0x020CCA,sys_unk_020cca,0,auto: touches $FFB0CC
-0x020CF6,sys_unk_020cf6,0,auto: touches $FF0096
+0x020CF6,shop_merchant_clear_all,2,save.md:441 zeroes 6 merchant structs at FF0E82
 0x020D0A,sys_unk_020d0a,0,auto: touches $FFB0CC $FFB0D2
 0x020D58,sys_unk_020d58,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
 0x020D9E,sys_unk_020d9e,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
-0x020E7E,sys_unk_020e7e,0,auto: touches $FF0096 $FFA7FC $FFB0CC $FFB0CE $FFB0D0 $FFB0D2
+0x020E7E,map_grid_create,2,maps.md:468-485 grid creation: type>=0 grid 0; type<0 grid 1
 0x02103E,sys_unk_02103e,0,auto: touches $FFB36C $FFB76C
-0x0210D8,sys_unk_0210d8,0,auto: touches $FF0096 $FFA7FC $FFB0CC $FFB36C
+0x0210D8,map_record_remove,2,maps.md:498 removes a record; frees it; clears grid cell via 2103E
 0x021194,sys_unk_021194,0,auto: touches $FFA7FC $FFB0CC $FFB36C
 0x0212FC,sys_unk_0212fc,0,auto: touches $FFA7FC $FFB0CC $FFB36C
 0x02140A,sys_unk_02140a,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
@@ -125,19 +125,19 @@ addr,name,tier,note
 0x0226BC,sys_unk_0226bc,0,auto: touches $FF0094 $FF0096 $FF00AC $FF00AE $FF010C $FF010E
 0x0232AC,sys_unk_0232ac,0,auto: touches none
 0x0232D2,sys_unk_0232d2,0,auto: touches $FF0148 $FFA7FC
-0x02343A,sys_unk_02343a,0,auto: touches $FF0092 $FF010E $FFA7FC
+0x02343A,map_promote_record,2,maps.md:503 dispatch-1 case of 1BA4E promotes record (live)
 0x023628,sys_unk_023628,0,auto: touches $FFA7FC $FFB36C $FFB76C
 0x023770,sys_unk_023770,0,auto: touches $FFA7FC $FFB36C $FFB76C
 0x0238B8,sys_unk_0238b8,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
-0x023A9E,sys_unk_023a9e,0,auto: touches $FF02B4 $FF02B8
-0x023AE0,sys_unk_023ae0,0,auto: touches $FF00C0 $FF02B4 $FF02B6 $FF02B8 $FF02BA $FF02BC
+0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
+0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
 0x0243D6,sys_unk_0243d6,0,auto: touches $FF02B2 $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE
 0x024676,sys_unk_024676,0,auto: touches $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE $FF02C0
 0x024916,sys_unk_024916,0,auto: touches $FF02B4 $FF02B8
 0x024984,sys_unk_024984,0,auto: touches $FF009A $FF00AE $FF010E $FF0110 $FF011C $FF011E
 0x02513E,sys_unk_02513e,0,auto: touches $FF010E $FF02B8 $FF0E8E $FF0E90 $FFA7FC
-0x0253FE,sys_unk_0253fe,0,auto: touches none
-0x025456,sys_unk_025456,0,auto: touches $FF02B2 $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE
+0x0253FE,map_walk_check,2,maps.md:415-416;591 returns step-blocked flag (mode 0x17 walkability)
+0x025456,npc_leader_init,1,architecture.md:223 called with leader after load; role from callers
 0x02570A,sys_unk_02570a,0,auto: touches $FF00AE $FF02B4 $FF02B8 $FF02C0 $FF02C2 $FF02C4
 0x025884,sys_unk_025884,0,auto: touches $FF02B4 $FF02B8 $FFB0CC
 0x0258EE,sys_unk_0258ee,0,auto: touches $FF02B4 $FF02C0 $FF02C2

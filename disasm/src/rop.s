@@ -12558,7 +12558,7 @@ new_game_init:
 	jsr map_prepare.l	; $01B742
 	lea.l $ffb08c.l,a0	; $01B748
 	move.l a0,$ffa7fc.l	; $01B74E
-	jsr sys_unk_023a9e.l	; $01B754
+	jsr shop_merchant_init.l	; $01B754
 	jsr sys_unk_02b5f4.l	; $01B75A
 	tst.w $ff0128.l	; $01B760
 	bne.b L01B7AC	; $01B766
@@ -12616,7 +12616,7 @@ L01B81A:
 	move.w #$ffff,-(a7)	; $01B82E
 	clr.w -(a7)	; $01B832
 	move.w $ff02b2.l,-(a7)	; $01B834
-	jsr sys_unk_025456.l	; $01B83A
+	jsr npc_leader_init.l	; $01B83A
 	lea.l $10(a7),a7	; $01B840
 	jsr sys_unk_02cdd4.l	; $01B844
 	move.w $ff02b2.l,-(a7)	; $01B84A
@@ -13068,7 +13068,7 @@ L01BDA6:
 	move.w -$c(a6),-(a7)	; $01BDD8
 	move.w -$a(a6),-(a7)	; $01BDDC
 	move.l -$1a(a6),-(a7)	; $01BDE0
-	jsr sys_unk_02343a.l	; $01BDE4
+	jsr map_promote_record.l	; $01BDE4
 	lea.l $a(a7),a7	; $01BDEA
 	bra.w L01BEA0	; $01BDEE
 L01BDF2:
@@ -13243,7 +13243,7 @@ L01BFC8:
 	move.w -$c(a6),-(a7)	; $01BFFA
 	move.w -$a(a6),-(a7)	; $01BFFE
 	move.l -$1a(a6),-(a7)	; $01C002
-	jsr sys_unk_02343a.l	; $01C006
+	jsr map_promote_record.l	; $01C006
 	lea.l $a(a7),a7	; $01C00C
 	bra.w L01C0C2	; $01C010
 L01C014:
@@ -13507,7 +13507,7 @@ L01C32A:
 	moveq #$0,d0	; $01C364
 	move.b -$d(a6),d0	; $01C366
 	move.w d0,-(a7)	; $01C36A
-	jsr sys_unk_0210d8.l	; $01C36C
+	jsr map_record_remove.l	; $01C36C
 	addq.w #$2,a7	; $01C372
 	bra.b L01C382	; $01C374
 L01C376:
@@ -13535,7 +13535,7 @@ L01C382:
 	moveq #$0,d0	; $01C3BC
 	move.b -$d(a6),d0	; $01C3BE
 	move.w d0,-(a7)	; $01C3C2
-	jsr sys_unk_0210d8.l	; $01C3C4
+	jsr map_record_remove.l	; $01C3C4
 	addq.w #$2,a7	; $01C3CA
 	bra.b L01C3DA	; $01C3CC
 L01C3CE:
@@ -13612,7 +13612,7 @@ L01C454:
 	moveq #$0,d0	; $01C48E
 	move.b -$d(a6),d0	; $01C490
 	move.w d0,-(a7)	; $01C494
-	jsr sys_unk_0210d8.l	; $01C496
+	jsr map_record_remove.l	; $01C496
 	addq.w #$2,a7	; $01C49C
 	bra.b L01C4AC	; $01C49E
 L01C4A0:
@@ -13640,7 +13640,7 @@ L01C4AC:
 	moveq #$0,d0	; $01C4E6
 	move.b -$d(a6),d0	; $01C4E8
 	move.w d0,-(a7)	; $01C4EC
-	jsr sys_unk_0210d8.l	; $01C4EE
+	jsr map_record_remove.l	; $01C4EE
 	addq.w #$2,a7	; $01C4F4
 	bra.b L01C504	; $01C4F6
 L01C4F8:
@@ -13714,7 +13714,7 @@ L01C580:
 	moveq #$0,d0	; $01C5B4
 	move.b -$d(a6),d0	; $01C5B6
 	move.w d0,-(a7)	; $01C5BA
-	jsr sys_unk_0210d8.l	; $01C5BC
+	jsr map_record_remove.l	; $01C5BC
 	addq.w #$2,a7	; $01C5C2
 	bra.b L01C5D2	; $01C5C4
 L01C5C6:
@@ -13739,7 +13739,7 @@ L01C5D2:
 	moveq #$0,d0	; $01C606
 	move.b -$d(a6),d0	; $01C608
 	move.w d0,-(a7)	; $01C60C
-	jsr sys_unk_0210d8.l	; $01C60E
+	jsr map_record_remove.l	; $01C60E
 	addq.w #$2,a7	; $01C614
 	bra.b L01C624	; $01C616
 L01C618:
@@ -13813,7 +13813,7 @@ L01C6A0:
 	moveq #$0,d0	; $01C6D4
 	move.b -$d(a6),d0	; $01C6D6
 	move.w d0,-(a7)	; $01C6DA
-	jsr sys_unk_0210d8.l	; $01C6DC
+	jsr map_record_remove.l	; $01C6DC
 	addq.w #$2,a7	; $01C6E2
 	bra.b L01C6F2	; $01C6E4
 L01C6E6:
@@ -13838,7 +13838,7 @@ L01C6F2:
 	moveq #$0,d0	; $01C726
 	move.b -$d(a6),d0	; $01C728
 	move.w d0,-(a7)	; $01C72C
-	jsr sys_unk_0210d8.l	; $01C72E
+	jsr map_record_remove.l	; $01C72E
 	addq.w #$2,a7	; $01C734
 	bra.b L01C744	; $01C736
 L01C738:
@@ -15397,7 +15397,7 @@ L01DAA6:
 	move.w d0,-(a7)	; $01DB84
 	clr.w -(a7)	; $01DB86
 	move.w $c(a6),-(a7)	; $01DB88
-	jsr sys_unk_025456.l	; $01DB8C
+	jsr npc_leader_init.l	; $01DB8C
 	lea.l $10(a7),a7	; $01DB92
 L01DB96:
 	move.w #$1,-(a7)	; $01DB96
@@ -15558,7 +15558,7 @@ L01DD7E:
 	cmpi.w #$2,$ff0ea2.l	; $01DDBA
 	bne.b L01DDD0	; $01DDC2
 	move.w a4,-(a7)	; $01DDC4
-	jsr sys_unk_023ae0.l	; $01DDC6
+	jsr combat_attacker_check.l	; $01DDC6
 	addq.w #$2,a7	; $01DDCC
 	bra.b L01DDD4	; $01DDCE
 L01DDD0:
@@ -15628,7 +15628,7 @@ L01DE44:
 	move.w a4,-(a7)	; $01DED4
 	clr.w -(a7)	; $01DED6
 	move.w -$2(a6),-(a7)	; $01DED8
-	jsr sys_unk_025456.l	; $01DEDC
+	jsr npc_leader_init.l	; $01DEDC
 	lea.l $10(a7),a7	; $01DEE2
 	move.w d7,-(a7)	; $01DEE6
 	move.w d6,-(a7)	; $01DEE8
@@ -19154,7 +19154,7 @@ L020C56:
 	; code $020C5E-$020C69
 map_prepare:
 	link.w a6,#$0	; $020C5E
-	jsr sys_unk_020cf6(pc)	; $020C62
+	jsr shop_merchant_clear_all(pc)	; $020C62
 	unlk a6	; $020C66
 	rts	; $020C68
 	; code $020C6A-$020CC9
@@ -19203,7 +19203,7 @@ L020CD2:
 	unlk a6	; $020CF2
 	rts	; $020CF4
 	; code $020CF6-$020D09
-sys_unk_020cf6:
+shop_merchant_clear_all:
 	link.w a6,#$0	; $020CF6
 	clr.w $ff0096.l	; $020CFA
 	jsr table_fill_ff(pc)	; $020D00
@@ -19226,7 +19226,7 @@ L020D12:
 	cmpi.w #$1,(a0,d0.l)	; $020D36
 	beq.b L020D48	; $020D3C
 	move.w -$2(a6),-(a7)	; $020D3E
-	jsr sys_unk_0210d8(pc)	; $020D42
+	jsr map_record_remove(pc)	; $020D42
 	addq.w #$2,a7	; $020D46
 L020D48:
 	addq.w #$1,-$2(a6)	; $020D48
@@ -19336,7 +19336,7 @@ L020E5E:
 	unlk a6	; $020E7A
 	rts	; $020E7C
 	; code $020E7E-$02103D
-sys_unk_020e7e:
+map_grid_create:
 	link.w a6,#$fffa	; $020E7E
 	move.w #$ffff,-$2(a6)	; $020E82
 	tst.w $8(a6)	; $020E88
@@ -19525,7 +19525,7 @@ L0210C2:
 	moveq #$0,d0	; $0210D4
 	bra.b L021080	; $0210D6
 	; code $0210D8-$021193
-sys_unk_0210d8:
+map_record_remove:
 	link.w a6,#$fff8	; $0210D8
 	move.w $8(a6),d0	; $0210DC
 	muls.w #$c,d0	; $0210E0
@@ -19685,7 +19685,7 @@ L0212CE:
 	cmp.w #$ffff,d5	; $0212DC
 	bne.b L0212EE	; $0212E0
 	move.w $8(a6),-(a7)	; $0212E2
-	jsr sys_unk_0210d8(pc)	; $0212E6
+	jsr map_record_remove(pc)	; $0212E6
 	addq.w #$2,a7	; $0212EA
 	bra.b L0212F8	; $0212EC
 L0212EE:
@@ -19767,7 +19767,7 @@ L0213D8:
 	cmp.w #$ffff,d5	; $0213E6
 	bne.b L0213F8	; $0213EA
 	move.w $8(a6),-(a7)	; $0213EC
-	jsr sys_unk_0210d8(pc)	; $0213F0
+	jsr map_record_remove(pc)	; $0213F0
 	addq.w #$2,a7	; $0213F4
 	bra.b L021402	; $0213F6
 L0213F8:
@@ -20019,7 +20019,7 @@ L0216BA:
 	and.w #$3,d1	; $0216FA
 	bne.b L02170A	; $0216FE
 	move.w d4,-(a7)	; $021700
-	jsr sys_unk_023ae0.l	; $021702
+	jsr combat_attacker_check.l	; $021702
 	addq.w #$2,a7	; $021708
 L02170A:
 	addq.w #$1,d4	; $02170A
@@ -20070,7 +20070,7 @@ L02175E:
 	move.w #$ffff,-(a7)	; $0217C4
 	clr.w -(a7)	; $0217C8
 	move.w $ff02b2.l,-(a7)	; $0217CA
-	jsr sys_unk_025456.l	; $0217D0
+	jsr npc_leader_init.l	; $0217D0
 	lea.l $10(a7),a7	; $0217D6
 	move.w #$1,-(a7)	; $0217DA
 	move.w $ff02b2.l,d0	; $0217DE
@@ -20245,7 +20245,7 @@ L0219C2:
 	move.w #$ffff,-(a7)	; $021A22
 	clr.w -(a7)	; $021A26
 	move.w $ff02b2.l,-(a7)	; $021A28
-	jsr sys_unk_025456.l	; $021A2E
+	jsr npc_leader_init.l	; $021A2E
 	lea.l $10(a7),a7	; $021A34
 	move.w #$3,-(a7)	; $021A38
 	move.w $ff02b2.l,d0	; $021A3C
@@ -20363,7 +20363,7 @@ L021B68:
 	move.w d7,d0	; $021BAC
 	add.w -$2(a6),d0	; $021BAE
 	move.w d0,-(a7)	; $021BB2
-	jsr sys_unk_0253fe.l	; $021BB4
+	jsr map_walk_check.l	; $021BB4
 	lea.l $a(a7),a7	; $021BBA
 	tst.w d0	; $021BBE
 	bne.w L021CB8	; $021BC0
@@ -20448,7 +20448,7 @@ L021C66:
 	move.w #$ffff,-(a7)	; $021CA4
 	clr.w -(a7)	; $021CA8
 	move.w a4,-(a7)	; $021CAA
-	jsr sys_unk_025456.l	; $021CAC
+	jsr npc_leader_init.l	; $021CAC
 	lea.l $10(a7),a7	; $021CB2
 	bra.b L021CC2	; $021CB6
 L021CB8:
@@ -20672,7 +20672,7 @@ L021ED4:
 	move.w #$ffff,-(a7)	; $021FBA
 	clr.w -(a7)	; $021FBE
 	move.w a4,-(a7)	; $021FC0
-	jsr sys_unk_025456.l	; $021FC2
+	jsr npc_leader_init.l	; $021FC2
 	lea.l $10(a7),a7	; $021FC8
 	move.w #$2,-(a7)	; $021FCC
 	move.w $ff02b2.l,-(a7)	; $021FD0
@@ -21015,7 +21015,7 @@ L0223C8:
 	move.w #$ffff,-(a7)	; $0223F6
 	move.w #$ffff,-(a7)	; $0223FA
 	move.w d4,-(a7)	; $0223FE
-	jsr sys_unk_025456.l	; $022400
+	jsr npc_leader_init.l	; $022400
 	lea.l $10(a7),a7	; $022406
 L02240A:
 	addq.w #$1,d4	; $02240A
@@ -21054,7 +21054,7 @@ sys_unk_02241c:
 	muls.w #$34,d0	; $02248C
 	lea.l $ff02c0.l,a0	; $022490
 	move.w (a0,d0.l),-(a7)	; $022496
-	jsr sys_unk_0253fe.l	; $02249A
+	jsr map_walk_check.l	; $02249A
 	lea.l $a(a7),a7	; $0224A0
 	movea.w d0,a3	; $0224A4
 	move.w a3,d0	; $0224A6
@@ -21107,7 +21107,7 @@ L0224FC:
 	move.w $ff0130.l,d0	; $022536
 	sub.w #$64,d0	; $02253C
 	move.w d0,-(a7)	; $022540
-	jsr sys_unk_025456.l	; $022542
+	jsr npc_leader_init.l	; $022542
 	lea.l $10(a7),a7	; $022548
 	clr.w $ff0130.l	; $02254C
 L022552:
@@ -21149,7 +21149,7 @@ L022592:
 	move.w #$ffff,-(a7)	; $0225CE
 	clr.w -(a7)	; $0225D2
 	move.w d5,-(a7)	; $0225D4
-	jsr sys_unk_025456.l	; $0225D6
+	jsr npc_leader_init.l	; $0225D6
 	lea.l $10(a7),a7	; $0225DC
 	movea.l -$4(a6),a0	; $0225E0
 	andi.w #$bfff,(a0)	; $0225E4
@@ -21166,7 +21166,7 @@ L0225F0:
 	move.w #$ffff,-(a7)	; $02260C
 	clr.w -(a7)	; $022610
 	move.w d5,-(a7)	; $022612
-	jsr sys_unk_025456.l	; $022614
+	jsr npc_leader_init.l	; $022614
 	lea.l $10(a7),a7	; $02261A
 	movea.l -$4(a6),a0	; $02261E
 	andi.w #$bfff,(a0)	; $022622
@@ -21186,7 +21186,7 @@ L0225F0:
 	muls.w #$34,d0	; $02264E
 	lea.l $ff02c0.l,a0	; $022652
 	move.w (a0,d0.l),-(a7)	; $022658
-	jsr sys_unk_0253fe.l	; $02265C
+	jsr map_walk_check.l	; $02265C
 	lea.l $a(a7),a7	; $022662
 	movea.w d0,a3	; $022666
 	cmpa.w #$c8,a3	; $022668
@@ -21376,7 +21376,7 @@ L0227FC:
 	move.w #$ffff,-(a7)	; $0228EA
 	clr.w -(a7)	; $0228EE
 	move.w d5,-(a7)	; $0228F0
-	jsr sys_unk_025456.l	; $0228F2
+	jsr npc_leader_init.l	; $0228F2
 	lea.l $10(a7),a7	; $0228F8
 	move.w d5,d0	; $0228FC
 	muls.w #$34,d0	; $0228FE
@@ -22237,7 +22237,7 @@ L023434:
 	unlk a6	; $023436
 	rts	; $023438
 	; code $02343A-$023627
-sys_unk_02343a:
+map_promote_record:
 	link.w a6,#$0	; $02343A
 	movem.l d4-d5/a3,-(a7)	; $02343E
 	movea.l $8(a6),a0	; $023442
@@ -22622,7 +22622,7 @@ L023938:
 	; data $023938-$023A9D
 	incbin "rop-original.gen",$023938,$166
 	; code $023A9E-$023ADF
-sys_unk_023a9e:
+shop_merchant_init:
 	link.w a6,#$fffe	; $023A9E
 	clr.w -$2(a6)	; $023AA2
 L023AA6:
@@ -22642,7 +22642,7 @@ L023AA6:
 	unlk a6	; $023ADC
 	rts	; $023ADE
 	; code $023AE0-$023B83
-sys_unk_023ae0:
+combat_attacker_check:
 	link.w a6,#$0	; $023AE0
 	move.w $8(a6),d0	; $023AE4
 	muls.w #$34,d0	; $023AE8
@@ -22669,7 +22669,7 @@ L023B20:
 	muls.w #$34,d0	; $023B3A
 	lea.l $ff02b8.l,a0	; $023B3E
 	move.w (a0,d0.l),-(a7)	; $023B44
-	jsr sys_unk_0210d8.l	; $023B48
+	jsr map_record_remove.l	; $023B48
 	addq.w #$2,a7	; $023B4E
 L023B50:
 	move.w $8(a6),d0	; $023B50
@@ -23453,7 +23453,7 @@ L0245D8:
 	lea.l $ff02bc.l,a0	; $024614
 	move.w (a0,d0.l),-(a7)	; $02461A
 	move.w d6,-(a7)	; $02461E
-	jsr sys_unk_020e7e.l	; $024620
+	jsr map_grid_create.l	; $024620
 	lea.l $e(a7),a7	; $024626
 	move.w $8(a6),d1	; $02462A
 	muls.w #$34,d1	; $02462E
@@ -23617,7 +23617,7 @@ L024804:
 	move.w d6,d0	; $02485C
 	neg.w d0	; $02485E
 	move.w d0,-(a7)	; $024860
-	jsr sys_unk_020e7e.l	; $024862
+	jsr map_grid_create.l	; $024862
 	lea.l $e(a7),a7	; $024868
 	move.w d7,d1	; $02486C
 	muls.w #$34,d1	; $02486E
@@ -23675,7 +23675,7 @@ sys_unk_024916:
 	cmpi.w #$ff,-$2(a6)	; $02492E
 	beq.b L02497C	; $024934
 	move.w -$2(a6),-(a7)	; $024936
-	jsr sys_unk_0210d8.l	; $02493A
+	jsr map_record_remove.l	; $02493A
 	addq.w #$2,a7	; $024940
 	move.w $8(a6),d0	; $024942
 	muls.w #$34,d0	; $024946
@@ -23689,7 +23689,7 @@ sys_unk_024916:
 	cmp.w #$6,d1	; $02496C
 	bne.b L02497C	; $024970
 	move.w $8(a6),-(a7)	; $024972
-	jsr sys_unk_023ae0(pc)	; $024976
+	jsr combat_attacker_check(pc)	; $024976
 	addq.w #$2,a7	; $02497A
 L02497C:
 	move.w -$2(a6),d0	; $02497C
@@ -23752,7 +23752,7 @@ L0249F6:
 	move.w #$ffff,-(a7)	; $024A1E
 	clr.w -(a7)	; $024A22
 	move.w -$34(a6),-(a7)	; $024A24
-	jsr sys_unk_025456(pc)	; $024A28
+	jsr npc_leader_init(pc)	; $024A28
 	lea.l $10(a7),a7	; $024A2C
 	move.w -$34(a6),d0	; $024A30
 	muls.w #$34,d0	; $024A34
@@ -23926,7 +23926,7 @@ L024C66:
 	move.w #$ffff,-(a7)	; $024C9C
 	clr.w -(a7)	; $024CA0
 	move.w -$34(a6),-(a7)	; $024CA2
-	jsr sys_unk_025456(pc)	; $024CA6
+	jsr npc_leader_init(pc)	; $024CA6
 	lea.l $10(a7),a7	; $024CAA
 	move.w -$34(a6),d0	; $024CAE
 	muls.w #$34,d0	; $024CB2
@@ -24489,7 +24489,7 @@ L0253FA:
 	unlk a6	; $0253FA
 	rts	; $0253FC
 	; code $0253FE-$025455
-sys_unk_0253fe:
+map_walk_check:
 	link.w a6,#$ffd8	; $0253FE
 	pea.l -$28(a6)	; $025402
 	move.w $e(a6),-(a7)	; $025406
@@ -24510,7 +24510,7 @@ sys_unk_0253fe:
 	unlk a6	; $025452
 	rts	; $025454
 	; code $025456-$025709
-sys_unk_025456:
+npc_leader_init:
 	link.w a6,#$0	; $025456
 	movem.l d4-d6,-(a7)	; $02545A
 	moveq #$ff,d5	; $02545E
@@ -25003,7 +25003,7 @@ L0259EC:
 	move.w #$ffff,-(a7)	; $025ADC
 	clr.w -(a7)	; $025AE0
 	move.w d6,-(a7)	; $025AE2
-	jsr sys_unk_025456(pc)	; $025AE4
+	jsr npc_leader_init(pc)	; $025AE4
 	lea.l $10(a7),a7	; $025AE8
 L025AEC:
 	tst.w d4	; $025AEC
@@ -25023,7 +25023,7 @@ L025AEC:
 	move.w a3,-(a7)	; $025B1E
 	clr.w -(a7)	; $025B20
 	move.w d6,-(a7)	; $025B22
-	jsr sys_unk_025456(pc)	; $025B24
+	jsr npc_leader_init(pc)	; $025B24
 	lea.l $10(a7),a7	; $025B28
 L025B2C:
 	addq.w #$1,d4	; $025B2C
@@ -25080,7 +25080,7 @@ L025BAA:
 	add.l d1,d0	; $025BD8
 	lea.l $ff02c8.l,a0	; $025BDA
 	move.w (a0,d0.l),-(a7)	; $025BE0
-	jsr sys_unk_023ae0(pc)	; $025BE4
+	jsr combat_attacker_check(pc)	; $025BE4
 	addq.w #$2,a7	; $025BE8
 	move.w -$4(a6),d0	; $025BEA
 	muls.w #$18,d0	; $025BEE
@@ -25137,7 +25137,7 @@ L025C4C:
 	and.w #$1,d1	; $025C98
 	bne.b L025CA6	; $025C9C
 	move.w d4,-(a7)	; $025C9E
-	jsr sys_unk_023ae0(pc)	; $025CA0
+	jsr combat_attacker_check(pc)	; $025CA0
 	addq.w #$2,a7	; $025CA4
 L025CA6:
 	addq.w #$1,d4	; $025CA6
@@ -25740,7 +25740,7 @@ L0263B4:
 	move.w #$ffff,-(a7)	; $026400
 	clr.w -(a7)	; $026404
 	move.w -$a(a6),-(a7)	; $026406
-	jsr sys_unk_025456.l	; $02640A
+	jsr npc_leader_init.l	; $02640A
 	lea.l $10(a7),a7	; $026410
 	move.w #$ffff,-(a7)	; $026414
 	move.w #$ffff,-(a7)	; $026418
@@ -25750,7 +25750,7 @@ L0263B4:
 	move.w #$ffff,-(a7)	; $026428
 	clr.w -(a7)	; $02642C
 	move.w $8(a6),-(a7)	; $02642E
-	jsr sys_unk_025456.l	; $026432
+	jsr npc_leader_init.l	; $026432
 	lea.l $10(a7),a7	; $026438
 	move.w -$a(a6),-(a7)	; $02643C
 	jsr sys_unk_0243d6.l	; $026440
@@ -25835,7 +25835,7 @@ L02654C:
 	jsr sys_unk_035612.l	; $026566
 	addq.w #$4,a7	; $02656C
 	move.w -$6(a6),-(a7)	; $02656E
-	jsr sys_unk_023ae0.l	; $026572
+	jsr combat_attacker_check.l	; $026572
 	addq.w #$2,a7	; $026578
 	move.w #$ffff,-(a7)	; $02657A
 	move.w #$20,-(a7)	; $02657E
@@ -26168,7 +26168,7 @@ L026954:
 	move.w #$ffff,-(a7)	; $026966
 	clr.w -(a7)	; $02696A
 	move.w d5,-(a7)	; $02696C
-	jsr sys_unk_025456.l	; $02696E
+	jsr npc_leader_init.l	; $02696E
 	lea.l $10(a7),a7	; $026974
 	move.w $a(a6),-(a7)	; $026978
 	move.w $8(a6),-(a7)	; $02697C
@@ -26182,10 +26182,10 @@ L026954:
 	move.w #$ffff,-(a7)	; $02699A
 	clr.w -(a7)	; $02699E
 	move.w $8(a6),-(a7)	; $0269A0
-	jsr sys_unk_025456.l	; $0269A4
+	jsr npc_leader_init.l	; $0269A4
 	lea.l $10(a7),a7	; $0269AA
 	move.w d5,-(a7)	; $0269AE
-	jsr sys_unk_023ae0.l	; $0269B0
+	jsr combat_attacker_check.l	; $0269B0
 	addq.w #$2,a7	; $0269B6
 	clr.l -(a7)	; $0269B8
 	clr.w -(a7)	; $0269BA
@@ -31018,7 +31018,7 @@ L02AB4A:
 	move.w #$ffff,-(a7)	; $02AC0E
 	clr.w -(a7)	; $02AC12
 	move.w $ff0e82.l,-(a7)	; $02AC14
-	jsr sys_unk_025456.l	; $02AC1A
+	jsr npc_leader_init.l	; $02AC1A
 	lea.l $10(a7),a7	; $02AC20
 	jsr sys_unk_026076.l	; $02AC24
 	bra.w L02AD60	; $02AC2A
@@ -31356,7 +31356,7 @@ L02B066:
 	move.w #$ffff,-(a7)	; $02B07A
 	clr.w -(a7)	; $02B07E
 	move.w $8(a6),-(a7)	; $02B080
-	jsr sys_unk_025456.l	; $02B084
+	jsr npc_leader_init.l	; $02B084
 	lea.l $10(a7),a7	; $02B08A
 	move.w #$1,$ff0142.l	; $02B08E
 L02B096:
@@ -32016,7 +32016,7 @@ L02B99A:
 	cmpi.w #$ffff,-$4(a6)	; $02B9A0
 	beq.b L02B9B4	; $02B9A6
 	move.w -$4(a6),-(a7)	; $02B9A8
-	jsr sys_unk_023ae0.l	; $02B9AC
+	jsr combat_attacker_check.l	; $02B9AC
 	addq.w #$2,a7	; $02B9B2
 L02B9B4:
 	bra.w L02BBCE	; $02B9B4
@@ -32152,7 +32152,7 @@ L02BB5A:
 	addq.w #$2,a7	; $02BBA4
 L02BBA6:
 	move.w -$2(a6),-(a7)	; $02BBA6
-	jsr sys_unk_023ae0.l	; $02BBAA
+	jsr combat_attacker_check.l	; $02BBAA
 	addq.w #$2,a7	; $02BBB0
 L02BBB2:
 	bra.b L02BBCE	; $02BBB2
@@ -32818,7 +32818,7 @@ L02C43E:
 	move.w #$ffff,-(a7)	; $02C452
 	clr.w -(a7)	; $02C456
 	move.w -$a(a6),-(a7)	; $02C458
-	jsr sys_unk_025456.l	; $02C45C
+	jsr npc_leader_init.l	; $02C45C
 	lea.l $10(a7),a7	; $02C462
 	bra.w L02C8EE	; $02C466
 L02C46A:
@@ -33374,7 +33374,7 @@ sys_unk_02cba4:
 	jsr inv_apply_resource(pc)	; $02CBD4
 	addq.w #$8,a7	; $02CBD8
 	move.w $a(a6),-(a7)	; $02CBDA
-	jsr sys_unk_023ae0.l	; $02CBDE
+	jsr combat_attacker_check.l	; $02CBDE
 	addq.w #$2,a7	; $02CBE4
 	unlk a6	; $02CBE6
 	rts	; $02CBE8
@@ -33921,7 +33921,7 @@ L02D210:
 	move.w #$ffff,-(a7)	; $02D224
 	clr.w -(a7)	; $02D228
 	move.w d6,-(a7)	; $02D22A
-	jsr sys_unk_025456.l	; $02D22C
+	jsr npc_leader_init.l	; $02D22C
 	lea.l $10(a7),a7	; $02D232
 	move.w d6,-(a7)	; $02D236
 	jsr sys_unk_0243d6.l	; $02D238
@@ -34520,7 +34520,7 @@ L02DA0A:
 	move.b (a0,d0.l),d1	; $02DA26
 	move.w d1,-$2(a6)	; $02DA2A
 	move.w -$2(a6),-(a7)	; $02DA2E
-	jsr sys_unk_023ae0.l	; $02DA32
+	jsr combat_attacker_check.l	; $02DA32
 	addq.w #$2,a7	; $02DA38
 	bra.w L02DBEA	; $02DA3A
 L02DA3E:
@@ -34651,7 +34651,7 @@ sys_unk_02dc0c:
 	move.w #$2,-(a7)	; $02DC1E
 	move.w $a(a6),-(a7)	; $02DC22
 	move.w $8(a6),-(a7)	; $02DC26
-	jsr sys_unk_0253fe.l	; $02DC2A
+	jsr map_walk_check.l	; $02DC2A
 	lea.l $a(a7),a7	; $02DC30
 	tst.w d0	; $02DC34
 	bne.b L02DC3C	; $02DC36
@@ -35334,7 +35334,7 @@ L02E58A:
 	move.w #$ffff,-(a7)	; $02E59E
 	clr.w -(a7)	; $02E5A2
 	move.w -$8(a6),-(a7)	; $02E5A4
-	jsr sys_unk_025456.l	; $02E5A8
+	jsr npc_leader_init.l	; $02E5A8
 	lea.l $10(a7),a7	; $02E5AE
 	move.w #$ffff,-(a7)	; $02E5B2
 	move.w #$f,-(a7)	; $02E5B6
@@ -36093,7 +36093,7 @@ sys_unk_02ee6c:
 	move.w #$ffff,-(a7)	; $02EF36
 	clr.w -(a7)	; $02EF3A
 	move.w -$2(a6),-(a7)	; $02EF3C
-	jsr sys_unk_025456.l	; $02EF40
+	jsr npc_leader_init.l	; $02EF40
 	lea.l $10(a7),a7	; $02EF46
 	unlk a6	; $02EF4A
 	rts	; $02EF4C
@@ -36138,7 +36138,7 @@ L02EF6C:
 	move.w #$ffff,-(a7)	; $02EFCA
 	clr.w -(a7)	; $02EFCE
 	move.w $8(a6),-(a7)	; $02EFD0
-	jsr sys_unk_025456.l	; $02EFD4
+	jsr npc_leader_init.l	; $02EFD4
 	lea.l $10(a7),a7	; $02EFDA
 	pea.l -$4(a6)	; $02EFDE
 	pea.l -$2(a6)	; $02EFE2
@@ -36158,7 +36158,7 @@ L02EF6C:
 	move.w #$ffff,-(a7)	; $02F018
 	clr.w -(a7)	; $02F01C
 	move.w $a(a6),-(a7)	; $02F01E
-	jsr sys_unk_025456.l	; $02F022
+	jsr npc_leader_init.l	; $02F022
 	lea.l $10(a7),a7	; $02F028
 	bra.w L02EF64	; $02F02C
 	; code $02F030-$02F059
@@ -36799,8 +36799,8 @@ L02F8AE:
 	move.w -$e(a6),d0	; $02F8D0
 	bra.b L02F8AA	; $02F8D4
 L02F8D6:
-	jsr sys_unk_020cf6.l	; $02F8D6
-	jsr sys_unk_023a9e.l	; $02F8DC
+	jsr shop_merchant_clear_all.l	; $02F8D6
+	jsr shop_merchant_init.l	; $02F8DC
 	clr.w -$4(a6)	; $02F8E2
 L02F8E6:
 	moveq #$0,d0	; $02F8E6
@@ -36863,7 +36863,7 @@ L02F8E6:
 	move.w #$ffff,-(a7)	; $02F9D2
 	clr.w -(a7)	; $02F9D6
 	move.w $ff02b2.l,-(a7)	; $02F9D8
-	jsr sys_unk_025456.l	; $02F9DE
+	jsr npc_leader_init.l	; $02F9DE
 	lea.l $10(a7),a7	; $02F9E4
 	move.w $ff02b2.l,-(a7)	; $02F9E8
 	jsr sys_unk_0243d6.l	; $02F9EE
@@ -37096,7 +37096,7 @@ L02FD3A:
 	move.w #$ffff,-(a7)	; $02FD7A
 	clr.w -(a7)	; $02FD7E
 	move.w -$6(a6),-(a7)	; $02FD80
-	jsr sys_unk_025456.l	; $02FD84
+	jsr npc_leader_init.l	; $02FD84
 	lea.l $10(a7),a7	; $02FD8A
 	move.w -$6(a6),-(a7)	; $02FD8E
 	jsr sys_unk_0243d6.l	; $02FD92
@@ -37894,7 +37894,7 @@ L030830:
 	cmp.w #$1,d1	; $030852
 	bne.b L030864	; $030856
 	move.w -$2(a6),-(a7)	; $030858
-	jsr sys_unk_023ae0.l	; $03085C
+	jsr combat_attacker_check.l	; $03085C
 	addq.w #$2,a7	; $030862
 L030864:
 	move.w -$2(a6),d0	; $030864
@@ -38293,7 +38293,7 @@ L030CCC:
 	move.w #$ffff,-(a7)	; $030D5E
 	clr.w -(a7)	; $030D62
 	move.w d7,-(a7)	; $030D64
-	jsr sys_unk_025456.l	; $030D66
+	jsr npc_leader_init.l	; $030D66
 	lea.l $10(a7),a7	; $030D6C
 	move.w d7,-(a7)	; $030D70
 	jsr sys_unk_0243d6.l	; $030D72
@@ -40913,7 +40913,7 @@ L032C66:
 	move.w $c(a6),-(a7)	; $032C86
 	move.w -$6(a6),-(a7)	; $032C8A
 	move.w -$8(a6),-(a7)	; $032C8E
-	jsr sys_unk_0253fe.l	; $032C92
+	jsr map_walk_check.l	; $032C92
 	lea.l $a(a7),a7	; $032C98
 	tst.w d0	; $032C9C
 	bne.b L032CA8	; $032C9E
@@ -40945,7 +40945,7 @@ L032CB4:
 	move.w #$ffff,-(a7)	; $032CF6
 	clr.w -(a7)	; $032CFA
 	move.w -$2(a6),-(a7)	; $032CFC
-	jsr sys_unk_025456.l	; $032D00
+	jsr npc_leader_init.l	; $032D00
 	lea.l $10(a7),a7	; $032D06
 L032D0A:
 	unlk a6	; $032D0A
@@ -41895,7 +41895,7 @@ L033852:
 	move.w #$ffff,-(a7)	; $033866
 	clr.w -(a7)	; $03386A
 	move.w $8(a6),-(a7)	; $03386C
-	jsr sys_unk_025456.l	; $033870
+	jsr npc_leader_init.l	; $033870
 	lea.l $10(a7),a7	; $033876
 	movea.l -$22(a6),a0	; $03387A
 	andi.w #$bfff,(a0)	; $03387E
@@ -41941,7 +41941,7 @@ L0338F4:
 	move.w #$ffff,-(a7)	; $033908
 	clr.w -(a7)	; $03390C
 	move.w $8(a6),-(a7)	; $03390E
-	jsr sys_unk_025456.l	; $033912
+	jsr npc_leader_init.l	; $033912
 	lea.l $10(a7),a7	; $033918
 	movea.l -$22(a6),a0	; $03391C
 	andi.w #$bfff,(a0)	; $033920
@@ -41977,7 +41977,7 @@ L033968:
 	move.w #$ffff,-(a7)	; $03397C
 	clr.w -(a7)	; $033980
 	move.w $8(a6),-(a7)	; $033982
-	jsr sys_unk_025456.l	; $033986
+	jsr npc_leader_init.l	; $033986
 	lea.l $10(a7),a7	; $03398C
 	movea.l -$22(a6),a0	; $033990
 	andi.w #$bfff,(a0)	; $033994
@@ -42085,7 +42085,7 @@ L033AA0:
 	muls.w #$34,d0	; $033B22
 	lea.l $ff02c0.l,a0	; $033B26
 	move.w (a0,d0.l),-(a7)	; $033B2C
-	jsr sys_unk_0253fe.l	; $033B30
+	jsr map_walk_check.l	; $033B30
 	lea.l $a(a7),a7	; $033B36
 	move.w d0,-$4(a6)	; $033B3A
 	tst.w -$4(a6)	; $033B3E
@@ -42102,7 +42102,7 @@ L033AA0:
 	move.w #$ffff,-(a7)	; $033B68
 	clr.w -(a7)	; $033B6C
 	move.w $8(a6),-(a7)	; $033B6E
-	jsr sys_unk_025456.l	; $033B72
+	jsr npc_leader_init.l	; $033B72
 	lea.l $10(a7),a7	; $033B78
 	movea.l -$22(a6),a0	; $033B7C
 	andi.w #$bfff,(a0)	; $033B80
@@ -42215,7 +42215,7 @@ L033C8C:
 	muls.w #$34,d0	; $033D1E
 	lea.l $ff02c0.l,a0	; $033D22
 	move.w (a0,d0.l),-(a7)	; $033D28
-	jsr sys_unk_0253fe.l	; $033D2C
+	jsr map_walk_check.l	; $033D2C
 	lea.l $a(a7),a7	; $033D32
 	move.w d0,-$4(a6)	; $033D36
 	tst.w -$4(a6)	; $033D3A
@@ -42232,7 +42232,7 @@ L033C8C:
 	move.w #$ffff,-(a7)	; $033D64
 	clr.w -(a7)	; $033D68
 	move.w $8(a6),-(a7)	; $033D6A
-	jsr sys_unk_025456.l	; $033D6E
+	jsr npc_leader_init.l	; $033D6E
 	lea.l $10(a7),a7	; $033D74
 	movea.l -$22(a6),a0	; $033D78
 	andi.w #$bfff,(a0)	; $033D7C
@@ -42259,7 +42259,7 @@ L033DA6:
 	muls.w #$34,d0	; $033DC6
 	lea.l $ff02c0.l,a0	; $033DCA
 	move.w (a0,d0.l),-(a7)	; $033DD0
-	jsr sys_unk_0253fe.l	; $033DD4
+	jsr map_walk_check.l	; $033DD4
 	lea.l $a(a7),a7	; $033DDA
 	move.w d0,-$4(a6)	; $033DDE
 	tst.w -$4(a6)	; $033DE2
@@ -42276,7 +42276,7 @@ L033DA6:
 	move.w #$ffff,-(a7)	; $033E0C
 	clr.w -(a7)	; $033E10
 	move.w $8(a6),-(a7)	; $033E12
-	jsr sys_unk_025456.l	; $033E16
+	jsr npc_leader_init.l	; $033E16
 	lea.l $10(a7),a7	; $033E1C
 	movea.l -$22(a6),a0	; $033E20
 	andi.w #$bfff,(a0)	; $033E24
@@ -42313,7 +42313,7 @@ L033E66:
 	muls.w #$34,d0	; $033E90
 	lea.l $ff02c0.l,a0	; $033E94
 	move.w (a0,d0.l),-(a7)	; $033E9A
-	jsr sys_unk_0253fe.l	; $033E9E
+	jsr map_walk_check.l	; $033E9E
 	lea.l $a(a7),a7	; $033EA4
 	move.w d0,-$4(a6)	; $033EA8
 	tst.w -$4(a6)	; $033EAC
@@ -42330,7 +42330,7 @@ L033E66:
 	move.w #$ffff,-(a7)	; $033ED6
 	clr.w -(a7)	; $033EDA
 	move.w $8(a6),-(a7)	; $033EDC
-	jsr sys_unk_025456.l	; $033EE0
+	jsr npc_leader_init.l	; $033EE0
 	lea.l $10(a7),a7	; $033EE6
 	movea.l -$22(a6),a0	; $033EEA
 	andi.w #$bfff,(a0)	; $033EEE
@@ -42355,7 +42355,7 @@ L033EFA:
 	muls.w #$34,d0	; $033F30
 	lea.l $ff02c0.l,a0	; $033F34
 	move.w (a0,d0.l),-(a7)	; $033F3A
-	jsr sys_unk_0253fe.l	; $033F3E
+	jsr map_walk_check.l	; $033F3E
 	lea.l $a(a7),a7	; $033F44
 	move.w d0,-$4(a6)	; $033F48
 	tst.w -$4(a6)	; $033F4C
@@ -42432,7 +42432,7 @@ L03402E:
 	move.w #$ffff,-(a7)	; $034042
 	clr.w -(a7)	; $034046
 	move.w $8(a6),-(a7)	; $034048
-	jsr sys_unk_025456.l	; $03404C
+	jsr npc_leader_init.l	; $03404C
 	lea.l $10(a7),a7	; $034052
 	movea.l -$22(a6),a0	; $034056
 	andi.w #$bfff,(a0)	; $03405A
@@ -42525,7 +42525,7 @@ L03415C:
 	muls.w #$34,d0	; $034180
 	lea.l $ff02c0.l,a0	; $034184
 	move.w (a0,d0.l),-(a7)	; $03418A
-	jsr sys_unk_0253fe.l	; $03418E
+	jsr map_walk_check.l	; $03418E
 	lea.l $a(a7),a7	; $034194
 	move.w d0,-$4(a6)	; $034198
 	tst.w -$4(a6)	; $03419C
@@ -42564,7 +42564,7 @@ L03415C:
 	muls.w #$34,d0	; $034216
 	lea.l $ff02c0.l,a0	; $03421A
 	move.w (a0,d0.l),-(a7)	; $034220
-	jsr sys_unk_0253fe.l	; $034224
+	jsr map_walk_check.l	; $034224
 	lea.l $a(a7),a7	; $03422A
 	move.w d0,-$4(a6)	; $03422E
 	tst.w -$4(a6)	; $034232
@@ -42584,7 +42584,7 @@ L034240:
 	move.w #$ffff,-(a7)	; $03426A
 	clr.w -(a7)	; $03426E
 	move.w $8(a6),-(a7)	; $034270
-	jsr sys_unk_025456.l	; $034274
+	jsr npc_leader_init.l	; $034274
 	lea.l $10(a7),a7	; $03427A
 	movea.l -$22(a6),a0	; $03427E
 	andi.w #$bfff,(a0)	; $034282
@@ -42676,7 +42676,7 @@ L034382:
 	muls.w #$34,d0	; $0343A6
 	lea.l $ff02c0.l,a0	; $0343AA
 	move.w (a0,d0.l),-(a7)	; $0343B0
-	jsr sys_unk_0253fe.l	; $0343B4
+	jsr map_walk_check.l	; $0343B4
 	lea.l $a(a7),a7	; $0343BA
 	move.w d0,-$4(a6)	; $0343BE
 	tst.w -$4(a6)	; $0343C2
@@ -42710,7 +42710,7 @@ L034382:
 	muls.w #$34,d0	; $03442C
 	lea.l $ff02c0.l,a0	; $034430
 	move.w (a0,d0.l),-(a7)	; $034436
-	jsr sys_unk_0253fe.l	; $03443A
+	jsr map_walk_check.l	; $03443A
 	lea.l $a(a7),a7	; $034440
 	move.w d0,-$4(a6)	; $034444
 	tst.w -$4(a6)	; $034448
@@ -42730,7 +42730,7 @@ L034456:
 	move.w #$ffff,-(a7)	; $034480
 	clr.w -(a7)	; $034484
 	move.w $8(a6),-(a7)	; $034486
-	jsr sys_unk_025456.l	; $03448A
+	jsr npc_leader_init.l	; $03448A
 	lea.l $10(a7),a7	; $034490
 	movea.l -$22(a6),a0	; $034494
 	andi.w #$bfff,(a0)	; $034498
@@ -42822,7 +42822,7 @@ L034598:
 	muls.w #$34,d0	; $0345BC
 	lea.l $ff02c0.l,a0	; $0345C0
 	move.w (a0,d0.l),-(a7)	; $0345C6
-	jsr sys_unk_0253fe.l	; $0345CA
+	jsr map_walk_check.l	; $0345CA
 	lea.l $a(a7),a7	; $0345D0
 	move.w d0,-$4(a6)	; $0345D4
 	tst.w -$4(a6)	; $0345D8
@@ -42856,7 +42856,7 @@ L034598:
 	muls.w #$34,d0	; $034642
 	lea.l $ff02c0.l,a0	; $034646
 	move.w (a0,d0.l),-(a7)	; $03464C
-	jsr sys_unk_0253fe.l	; $034650
+	jsr map_walk_check.l	; $034650
 	lea.l $a(a7),a7	; $034656
 	move.w d0,-$4(a6)	; $03465A
 	tst.w -$4(a6)	; $03465E
@@ -42876,7 +42876,7 @@ L03466C:
 	move.w #$ffff,-(a7)	; $034696
 	clr.w -(a7)	; $03469A
 	move.w $8(a6),-(a7)	; $03469C
-	jsr sys_unk_025456.l	; $0346A0
+	jsr npc_leader_init.l	; $0346A0
 	lea.l $10(a7),a7	; $0346A6
 	movea.l -$22(a6),a0	; $0346AA
 	andi.w #$bfff,(a0)	; $0346AE
@@ -43099,7 +43099,7 @@ L03497E:
 	move.w #$ffff,-(a7)	; $034992
 	clr.w -(a7)	; $034996
 	move.w $8(a6),-(a7)	; $034998
-	jsr sys_unk_025456.l	; $03499C
+	jsr npc_leader_init.l	; $03499C
 	lea.l $10(a7),a7	; $0349A2
 	movea.l -$22(a6),a0	; $0349A6
 	andi.w #$bfff,(a0)	; $0349AA
@@ -43134,7 +43134,7 @@ L0349B8:
 	move.w #$ffff,-(a7)	; $034A12
 	clr.w -(a7)	; $034A16
 	move.w $8(a6),-(a7)	; $034A18
-	jsr sys_unk_025456.l	; $034A1C
+	jsr npc_leader_init.l	; $034A1C
 	lea.l $10(a7),a7	; $034A22
 	move.w #$ffff,-(a7)	; $034A26
 	move.w #$ffff,-(a7)	; $034A2A
@@ -43144,7 +43144,7 @@ L0349B8:
 	move.w #$ffff,-(a7)	; $034A3A
 	clr.w -(a7)	; $034A3E
 	move.w $8(a6),-(a7)	; $034A40
-	jsr sys_unk_025456.l	; $034A44
+	jsr npc_leader_init.l	; $034A44
 	lea.l $10(a7),a7	; $034A4A
 	movea.l -$22(a6),a0	; $034A4E
 	andi.w #$bfff,(a0)	; $034A52
@@ -43197,7 +43197,7 @@ L034ADA:
 	move.w #$ffff,-(a7)	; $034AEE
 	clr.w -(a7)	; $034AF2
 	move.w $8(a6),-(a7)	; $034AF4
-	jsr sys_unk_025456.l	; $034AF8
+	jsr npc_leader_init.l	; $034AF8
 	lea.l $10(a7),a7	; $034AFE
 	movea.l -$22(a6),a0	; $034B02
 	andi.w #$bfff,(a0)	; $034B06
@@ -43246,7 +43246,7 @@ L034B84:
 	move.w #$ffff,-(a7)	; $034B98
 	clr.w -(a7)	; $034B9C
 	move.w $8(a6),-(a7)	; $034B9E
-	jsr sys_unk_025456.l	; $034BA2
+	jsr npc_leader_init.l	; $034BA2
 	lea.l $10(a7),a7	; $034BA8
 	movea.l -$1e(a6),a0	; $034BAC
 	andi.w #$bfff,(a0)	; $034BB0
@@ -43289,7 +43289,7 @@ L034BE8:
 	muls.w #$34,d0	; $034C28
 	lea.l $ff02c0.l,a0	; $034C2C
 	move.w (a0,d0.l),-(a7)	; $034C32
-	jsr sys_unk_0253fe.l	; $034C36
+	jsr map_walk_check.l	; $034C36
 	lea.l $a(a7),a7	; $034C3C
 	move.w d0,-$4(a6)	; $034C40
 	beq.b L034C52	; $034C44
@@ -43311,7 +43311,7 @@ L034C52:
 	muls.w #$34,d0	; $034C7E
 	lea.l $ff02c0.l,a0	; $034C82
 	move.w (a0,d0.l),-(a7)	; $034C88
-	jsr sys_unk_0253fe.l	; $034C8C
+	jsr map_walk_check.l	; $034C8C
 	lea.l $a(a7),a7	; $034C92
 	move.w d0,-$4(a6)	; $034C96
 L034C9A:
@@ -43452,7 +43452,7 @@ L034E3C:
 	muls.w #$34,d0	; $034E5C
 	lea.l $ff02c0.l,a0	; $034E60
 	move.w (a0,d0.l),-(a7)	; $034E66
-	jsr sys_unk_0253fe.l	; $034E6A
+	jsr map_walk_check.l	; $034E6A
 	lea.l $a(a7),a7	; $034E70
 	move.w d0,-$a(a6)	; $034E74
 	cmp.w #$c8,d0	; $034E78
@@ -43473,7 +43473,7 @@ L034E8C:
 	muls.w #$34,d0	; $034EAC
 	lea.l $ff02c0.l,a0	; $034EB0
 	move.w (a0,d0.l),-(a7)	; $034EB6
-	jsr sys_unk_0253fe.l	; $034EBA
+	jsr map_walk_check.l	; $034EBA
 	lea.l $a(a7),a7	; $034EC0
 	move.w d0,-$a(a6)	; $034EC4
 L034EC8:
@@ -43518,7 +43518,7 @@ L034F30:
 	muls.w #$34,d0	; $034F50
 	lea.l $ff02c0.l,a0	; $034F54
 	move.w (a0,d0.l),-(a7)	; $034F5A
-	jsr sys_unk_0253fe.l	; $034F5E
+	jsr map_walk_check.l	; $034F5E
 	lea.l $a(a7),a7	; $034F64
 	move.w d0,-$a(a6)	; $034F68
 	cmp.w #$c8,d0	; $034F6C
@@ -43539,7 +43539,7 @@ L034F80:
 	muls.w #$34,d0	; $034FA0
 	lea.l $ff02c0.l,a0	; $034FA4
 	move.w (a0,d0.l),-(a7)	; $034FAA
-	jsr sys_unk_0253fe.l	; $034FAE
+	jsr map_walk_check.l	; $034FAE
 	lea.l $a(a7),a7	; $034FB4
 	move.w d0,-$a(a6)	; $034FB8
 L034FBC:
@@ -43749,7 +43749,7 @@ L03524E:
 	move.w -$e(a6),d0	; $03528A
 	add.w -$a(a6),d0	; $03528E
 	move.w d0,-(a7)	; $035292
-	jsr sys_unk_0253fe.l	; $035294
+	jsr map_walk_check.l	; $035294
 	lea.l $a(a7),a7	; $03529A
 	move.w d0,-$14(a6)	; $03529E
 	cmpi.w #$c8,-$14(a6)	; $0352A2
@@ -43806,7 +43806,7 @@ L03532C:
 	move.b d4,d0	; $03533C
 	ext.w d0	; $03533E
 	move.w d0,-(a7)	; $035340
-	jsr sys_unk_0253fe.l	; $035342
+	jsr map_walk_check.l	; $035342
 	lea.l $a(a7),a7	; $035348
 	cmp.w #$ff,d0	; $03534C
 	bne.b L03535C	; $035350
@@ -43952,7 +43952,7 @@ L0354EC:
 	move.w #$6,-(a7)	; $0354F2
 	move.w -$c(a6),-(a7)	; $0354F6
 	move.w -$a(a6),-(a7)	; $0354FA
-	jsr sys_unk_0253fe.l	; $0354FE
+	jsr map_walk_check.l	; $0354FE
 	lea.l $a(a7),a7	; $035504
 	move.w d0,-$e(a6)	; $035508
 	tst.w -$e(a6)	; $03550C
@@ -43995,7 +43995,7 @@ L03557C:
 	move.w #$6,-(a7)	; $035582
 	move.w -$c(a6),-(a7)	; $035586
 	move.w -$a(a6),-(a7)	; $03558A
-	jsr sys_unk_0253fe.l	; $03558E
+	jsr map_walk_check.l	; $03558E
 	lea.l $a(a7),a7	; $035594
 	move.w d0,-$e(a6)	; $035598
 	tst.w -$e(a6)	; $03559C
@@ -44783,7 +44783,7 @@ L036010:
 	move.w #$6,-(a7)	; $0360B6
 	move.w -$36(a6),-(a7)	; $0360BA
 	move.w -$34(a6),-(a7)	; $0360BE
-	jsr sys_unk_0253fe.l	; $0360C2
+	jsr map_walk_check.l	; $0360C2
 	lea.l $a(a7),a7	; $0360C8
 	tst.w d0	; $0360CC
 	bne.b L0360E6	; $0360CE
@@ -44821,7 +44821,7 @@ L036134:
 	move.w #$ffff,-(a7)	; $036148
 	clr.w -(a7)	; $03614C
 	move.w -$30(a6),-(a7)	; $03614E
-	jsr sys_unk_025456.l	; $036152
+	jsr npc_leader_init.l	; $036152
 	lea.l $10(a7),a7	; $036158
 L03615C:
 	addq.w #$1,-$2(a6)	; $03615C
@@ -44909,7 +44909,7 @@ L036264:
 	move.w #$6,-(a7)	; $036298
 	move.w -$a(a6),-(a7)	; $03629C
 	move.w -$8(a6),-(a7)	; $0362A0
-	jsr sys_unk_0253fe.l	; $0362A4
+	jsr map_walk_check.l	; $0362A4
 	lea.l $a(a7),a7	; $0362AA
 	tst.w d0	; $0362AE
 	bne.b L03624A	; $0362B0
@@ -45205,7 +45205,7 @@ L036698:
 	move.w #$ffff,-(a7)	; $036708
 	clr.w -(a7)	; $03670C
 	move.w $ff0e82.l,-(a7)	; $03670E
-	jsr sys_unk_025456.l	; $036714
+	jsr npc_leader_init.l	; $036714
 	lea.l $10(a7),a7	; $03671A
 	move.w #$7,-(a7)	; $03671E
 	move.w #$4a,-(a7)	; $036722
@@ -46301,7 +46301,7 @@ L03758A:
 	move.w #$ffff,-(a7)	; $0375D2
 	clr.w -(a7)	; $0375D6
 	move.w $8(a6),-(a7)	; $0375D8
-	jsr sys_unk_025456.l	; $0375DC
+	jsr npc_leader_init.l	; $0375DC
 	lea.l $10(a7),a7	; $0375E2
 	move.w $28(a4),d0	; $0375E6
 	lsr.w #$2,d0	; $0375EA
@@ -46618,7 +46618,7 @@ L03798E:
 	muls.w #$34,d0	; $0379CE
 	lea.l $ff02c0.l,a0	; $0379D2
 	move.w (a0,d0.l),-(a7)	; $0379D8
-	jsr sys_unk_0253fe.l	; $0379DC
+	jsr map_walk_check.l	; $0379DC
 	lea.l $a(a7),a7	; $0379E2
 	move.w d0,-$4(a6)	; $0379E6
 	cmp.w #$c8,d0	; $0379EA
@@ -46941,7 +46941,7 @@ L037E02:
 	move.w #$ffff,-(a7)	; $037E16
 	clr.w -(a7)	; $037E1A
 	move.w -$6(a6),-(a7)	; $037E1C
-	jsr sys_unk_025456.l	; $037E20
+	jsr npc_leader_init.l	; $037E20
 	lea.l $10(a7),a7	; $037E26
 	move.w #$ffff,$ffc37c.l	; $037E2A
 	move.w #$ffff,$ffc37e.l	; $037E32
@@ -46963,7 +46963,7 @@ L037E5E:
 	move.w #$ffff,-(a7)	; $037E72
 	clr.w -(a7)	; $037E76
 	move.w -$6(a6),-(a7)	; $037E78
-	jsr sys_unk_025456.l	; $037E7C
+	jsr npc_leader_init.l	; $037E7C
 	lea.l $10(a7),a7	; $037E82
 	move.l -$10(a6),-(a7)	; $037E86
 	jsr sys_unk_025de4.l	; $037E8A
@@ -48121,7 +48121,7 @@ L038BD6:
 	muls.w #$34,d0	; $038BFA
 	lea.l $ff02c0.l,a0	; $038BFE
 	move.w (a0,d0.l),-(a7)	; $038C04
-	jsr sys_unk_0253fe.l	; $038C08
+	jsr map_walk_check.l	; $038C08
 	lea.l $a(a7),a7	; $038C0E
 	move.w d0,-$4(a6)	; $038C12
 	tst.w -$4(a6)	; $038C16
@@ -49174,7 +49174,7 @@ sys_unk_0398e0:
 	move.w #$ffff,-(a7)	; $039968
 	clr.w -(a7)	; $03996C
 	move.w $8(a6),-(a7)	; $03996E
-	jsr sys_unk_025456.l	; $039972
+	jsr npc_leader_init.l	; $039972
 	lea.l $10(a7),a7	; $039978
 	movea.l a3,a0	; $03997C
 	adda.l #$28,a0	; $03997E
@@ -50332,7 +50332,7 @@ L03A75A:
 	tst.w $20(a0)	; $03A76E
 	blt.b L03A7C8	; $03A772
 	move.w $8(a6),-(a7)	; $03A774
-	jsr sys_unk_023ae0.l	; $03A778
+	jsr combat_attacker_check.l	; $03A778
 	addq.w #$2,a7	; $03A77E
 	move.w #$1,-$1a(a6)	; $03A780
 	clr.w $ff012a.l	; $03A786
@@ -50571,7 +50571,7 @@ L03AA7C:
 	cmp.w $20(a0),d0	; $03AA8C
 	bge.b L03AAAE	; $03AA90
 	move.w -$a(a6),-(a7)	; $03AA92
-	jsr sys_unk_023ae0.l	; $03AA96
+	jsr combat_attacker_check.l	; $03AA96
 	addq.w #$2,a7	; $03AA9C
 	move.w #$ffff,-(a7)	; $03AA9E
 	move.w #$20,-(a7)	; $03AAA2
@@ -50581,7 +50581,7 @@ L03AAAE:
 	tst.w -$1a(a6)	; $03AAAE
 	bne.b L03AAC0	; $03AAB2
 	move.w $8(a6),-(a7)	; $03AAB4
-	jsr sys_unk_023ae0.l	; $03AAB8
+	jsr combat_attacker_check.l	; $03AAB8
 	addq.w #$2,a7	; $03AABE
 L03AAC0:
 	unlk a6	; $03AAC0
@@ -50892,7 +50892,7 @@ sys_unk_03ae40:
 	muls.w #$34,d0	; $03AE64
 	lea.l $ff02c0.l,a0	; $03AE68
 	move.w (a0,d0.l),-(a7)	; $03AE6E
-	jsr sys_unk_0253fe.l	; $03AE72
+	jsr map_walk_check.l	; $03AE72
 	lea.l $a(a7),a7	; $03AE78
 	move.w d0,-$2(a6)	; $03AE7C
 	cmpi.w #$c8,-$2(a6)	; $03AE80
@@ -50917,7 +50917,7 @@ L03AEAE:
 	move.w #$ffff,-(a7)	; $03AEC2
 	clr.w -(a7)	; $03AEC6
 	move.w $8(a6),-(a7)	; $03AEC8
-	jsr sys_unk_025456.l	; $03AECC
+	jsr npc_leader_init.l	; $03AECC
 	lea.l $10(a7),a7	; $03AED2
 	move.w -$2(a6),d0	; $03AED6
 	muls.w #$34,d0	; $03AEDA
@@ -59944,7 +59944,7 @@ L042866:
 	jsr sys_unk_025b4e.l	; $042876
 	addq.w #$2,a7	; $04287C
 	move.w $ff0294.l,-(a7)	; $04287E
-	jsr sys_unk_023ae0.l	; $042884
+	jsr combat_attacker_check.l	; $042884
 	addq.w #$2,a7	; $04288A
 	lea.l $ff010e.l,a0	; $04288C
 	andi.w #$dfff,(a0)	; $042892
