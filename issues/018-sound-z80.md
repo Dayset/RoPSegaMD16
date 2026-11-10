@@ -44,21 +44,24 @@ path). Top table SFX identified by context in `docs/sound.md` §8.4 (SFX 32
 combat/XP); no SFX audio was captured — that is the remaining follow-up.
 Original ROM re-verified unchanged (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
-**SFX/burst follow-up 2026-11-10 (docs/sound.md §7.5, §8.4, §12 items 11–12):**
-the 7 most-used table SFX (32, 1, 20, 15, 19, 21, 33) plus SFX 17 and
-pointer SFX 91/92/94/95 were captured as audio with a 68k harness
-(`.scratch018/sfx/`, NOT committed) — durations + fundamentals measured,
-character guesses labelled as such (SFX 21's spectrum is identical to
-19's; SFX 33 sounds 10.6 s despite a 3-byte record). The two non-dispatch
-bursts are NARROWED, not solved: burst 1 (~24.4–28.4 s) is the same phrase
-as the ~37.6–41.6 s event in every SFX capture (envelope + 0.44 lagged
-correlation); burst 2 (~67.6–71.1 s) is a different phrase. Ruled out:
-direct `$EB88A` (no callers outside the dispatch), song 0's hidden note
-data (parser takes 686 s to reach the `$FC $80` seek; a test ROM with the
-248 B zeroed still plays the event), all 12 captured SFX, and every song
-opening/complete song. Remaining candidates: the variable-index `$17586`
-at `0x01837E`, one of the 31 uncaptured table SFX, a song fragment, or the
-`$0967` PSG routine. Original ROM re-verified unchanged (MD5
+**Burst follow-up 2026-11-10 (debugger; docs/sound.md §7.5, §12 item 12):**
+burst 1 is **SOLVED — SFX 94** (pointer SFX, data `$4504`, called from
+`FUN_0123b0` at `$0129DC`). A BlastEm breakpoint on `$17586` in the
+song-0 ROM logs exactly two calls in 99 s emulated — SFX 94 at 17.2 s,
+SFX 1 at 60.4 s — with audio events at 17.3 s and 60.4 s in the same run
+(ratio calibrated from that run's audio, 2.197); the SFX 94 harness
+capture shares burst 1's spectral peaks (193/232/260–263/318/490 Hz) and
+band ratio (0.96). The earlier "ruled out by correlation 0.03–0.07" for
+SFX 94 was a window/alignment artefact, superseded. Burst 2 (~67.6–71.1 s)
+is **still open**: not SFX 1 (the only `$17586` call at its time — spectrum
+and correlation do not match), not a song start (no `$173EC` call at its
+time), not SFX 20/32/33; the 31 uncaptured table SFX and the variable-index
+`$17586` at `0x01837E` are ruled out (`$17586` is the only SFX path, no
+bypass; the breakpoint log is exhaustive). Remaining: the `$0967` PSG
+routine (the Z80's PSG SFX player — part of SFX playback, not autonomous)
+or a Z80-autonomous PSG sound; leading hypothesis is SFX 1's PSG voice
+with its FM voice suppressed/masked in the cinematic context (weak
+evidence only). Original ROM re-verified unchanged (MD5
 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
 ## Notes
