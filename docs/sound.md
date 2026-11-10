@@ -18,7 +18,7 @@ unfinished work, listed in §12.
 - **The 0x0E0000–0x0EB771 "song/SFX data" hypothesis from L011 is WRONG.**
   That range is not song data. Songs live at **`$ED0E8–$FCB7C+`** (19 songs, right
   after the driver blob) plus one song at **`$00692E`** (embedded in the low
-  code region); SFX records live at **`$FCAE2`** (69 records × 22 bytes).
+  code region); SFX records live at **`$FCAE2`** (62 records × 22 bytes).
   What `0x0E0000–0x0EB771` actually is remains open (§12) — it is not music.
 - **The 68000 streams song data to the Z80** through a 1 KB ring buffer at Z80
   `$1600–$1A00`, refilling 256-byte chunks whenever the Z80's chunk byte at
@@ -28,7 +28,7 @@ unfinished work, listed in §12.
 - **19 playable songs** (indices 0–17 and 20) plus two silent indices (18, 19).
   Index 18 is the music menu's "Quiet". Index 20 is a 10-byte one-shot arrival
   jingle that shares its tail with song 2.
-- **69 SFX records** (indices 0–68) in a 22-byte table at `$FCAE2`, delivered as
+- **62 SFX records** (indices 0–61) in a 22-byte table at `$FCAE2`, delivered as
   23-byte command blocks to Z80 `$003A` on two alternating slots (commands 6/7);
   **SFX 90–96 are special**: they carry a 68k ROM pointer (banked into the Z80's
   `$8000` window) instead of a table record.
@@ -658,9 +658,9 @@ unchanged after all work (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
 ## 8. The SFX map [static]
 
-### 8.1 Table SFX: `$FCAE2`, 22-byte records, indices 0–89
+### 8.1 Table SFX: `$FCAE2`, 22-byte records, indices 0–61
 
-The table region holds 62 slots (indices 0–61, `$FCAE2–$FD036`); only indices
+The table region holds 62 slots (indices 0–61, `$FCAE2–$FD036`, 62 × 22 = 1364 bytes); only indices
 0–38 are ever called (see the call-site table below). Past that: indices
 62–63 read a 16-bit increasing table at `$FD036` (values `0x023C–0x065E`),
 not SFX data; index 64 is zeros; index 65 straddles the runtime-checksum
