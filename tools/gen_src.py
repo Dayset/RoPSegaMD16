@@ -15,6 +15,9 @@ Rules:
   * Branch and pc-relative targets that are instruction starts or data positions get
     labels (`FUN_xxxxxx` for function entries, `Lxxxxxx` otherwise); data slices are
     split at them.
+  * Non-flow absolute operands (`$hex` with a `.l`/`.w` suffix) that point at ROM
+    data positions get `Lxxxxxx` labels too; immediates, displacements,
+    pc-relative operands, and RAM/hardware addresses stay numeric.
   * The whole file is then checked by tools/verify_rebuild.py (byte-identity gate).
 """
 import re
@@ -31,6 +34,43 @@ OUT = Path("disasm/src/rop.s")
 VASM = Path("tools/vasm/vasmm68k_mot")
 ROM_SIZE = 0x100000
 TARGET_RE = re.compile(r"\$([0-9a-fA-F]+)")
+ABS_OP_RE = re.compile(r"^\$([0-9a-fA-F]+)(\.[lwb])?$")
+
+
+def split_operands(op):
+    """Split an op_str on top-level commas (commas inside parentheses don't split)."""
+    parts, cur, depth = [], "", 0
+    for ch in op:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch == "," and depth == 0:
+            parts.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    if cur:
+        parts.append(cur)
+    return [p.strip() for p in parts]
+
+
+def abs_operands(op):
+    """Absolute-address operands of a non-flow instruction: {operand index: value}.
+
+    Only a bare `$hex` operand (with an optional `.l`/`.w` size suffix) counts.
+    Immediates (`#$..`), displacements (`$xx(An)`), and pc-relative operands are
+    excluded — those must stay numeric. The caller decides which values are
+    labellable (ROM data positions); the rest stay numeric.
+    """
+    refs = {}
+    for idx, operand in enumerate(split_operands(op)):
+        if operand.startswith("#") or "(pc" in operand or "(" in operand:
+            continue
+        m = ABS_OP_RE.match(operand)
+        if m:
+            refs[idx] = int(m.group(1), 16)
+    return refs
 
 
 def load_ranges():
@@ -133,6 +173,7 @@ def main():
     # 3. label targets for converted instructions that reference another address
     targets = set()
     converted = {}
+    abs_refs = {}   # addr -> {operand index: target} for non-flow absolute operands
     for start, end, entry, insns, tail in code:
         for addr, size, mnem, op in insns:
             if addr in ok and is_flow(mnem, op):
@@ -146,6 +187,14 @@ def main():
                     converted[addr] = False
             elif addr in ok:
                 converted[addr] = True
+                # non-flow: absolute operands pointing at ROM data get labels too.
+                # Only the collected operands are ever rewritten (step 3b); an
+                # instruction with a RAM/hardware operand stays converted and
+                # that operand stays numeric.
+                refs = {i: t for i, t in abs_operands(op).items()
+                        if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code)}
+                if refs:
+                    abs_refs[addr] = refs
             else:
                 converted[addr] = False
 
@@ -159,6 +208,52 @@ def main():
     def lab(t):
         """One name per address, used for both definitions and references."""
         return f"FUN_{t:06x}" if t in entry_names else f"L{t:06X}"
+
+    # 3b. verify the labelled form of each rewritten non-flow instruction assembles
+    # to the same bytes (the .l/.w suffix forces the mode; prove it per instruction).
+    # A failure reverts that instruction to its numeric operands and drops its
+    # targets, so no label is defined that nothing references.
+    def verify_labelled(addr, text, size):
+        labs = set(re.findall(r"\b(?:FUN_[0-9a-f]{6}|L[0-9A-F]{6})\b", text))
+        if not labs:
+            return True
+        eqs = []
+        for lname in sorted(labs):
+            v = int(lname[4:] if lname.startswith("FUN_") else lname[1:], 16)
+            eqs.append(f"{lname} equ ${v:X}")
+        with tempfile.TemporaryDirectory() as d:
+            src = Path(d) / "i.s"
+            obj = Path(d) / "i.bin"
+            src.write_text("\n".join(eqs) + f"\n\tsection t,code\n\torg ${addr:X}\n\t{text}\n")
+            r = subprocess.run([str(VASM), "-Fbin", "-m68000", "-no-opt", "-o", str(obj), str(src)],
+                               capture_output=True, text=True)
+            if r.returncode != 0 or not obj.exists():
+                return False
+            data = obj.read_bytes()
+            # length must match too: a shorter encoding that happens to share a
+            # prefix with the original would otherwise pass the byte compare
+            return len(data) == size and data == bytes(rom[addr:addr + size])
+
+    insn_by_addr = {}
+    for start, end, entry, insns, tail in code:
+        for addr, size, mnem, op in insns:
+            insn_by_addr[addr] = (mnem, op, size)
+
+    abs_labelled_text = {}   # addr -> labelled text, for rewrites that verified
+    n_abs_labelled = 0
+    for addr, refs in list(abs_refs.items()):
+        mnem, op, size = insn_by_addr[addr]
+        parts = split_operands(op)
+        for idx, t in refs.items():
+            m = ABS_OP_RE.match(parts[idx])
+            parts[idx] = f"{lab(t)}{m.group(2) or ''}"
+        text = f"{mnem} {','.join(parts)}".strip()
+        if verify_labelled(addr, text, size):
+            abs_labelled_text[addr] = text
+            targets |= set(refs.values())
+            n_abs_labelled += len(refs)
+        else:
+            del abs_refs[addr]
 
     # 4. emit
     out = [
@@ -209,6 +304,9 @@ def main():
                     # only branch and pc-relative operands take label targets; immediates stay numeric
                     text = TARGET_RE.sub(lambda m: lab(int(m.group(1), 16))
                                          if int(m.group(1), 16) in label_addrs else m.group(0), text)
+                elif addr in abs_labelled_text:
+                    # non-flow: only the collected absolute operands were rewritten
+                    text = abs_labelled_text[addr]
                 out.append(f"\t{text}\t; ${addr:06X}")
             else:
                 w = rom[addr:addr + size]
@@ -234,7 +332,7 @@ def main():
     OUT.write_text("\n".join(out) + "\n")
     n_conv = sum(1 for v in converted.values() if v)
     print(f"wrote {OUT}: {len(code)} code ranges, {n_conv} mnemonic instructions, "
-          f"{len(targets)} branch/pc targets labelled")
+          f"{len(targets)} targets labelled ({n_abs_labelled} non-flow absolute operands)")
     return 0
 
 
