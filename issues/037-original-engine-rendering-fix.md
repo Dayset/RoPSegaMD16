@@ -221,3 +221,23 @@ the work resumes, the order is: reach the Academy opening
 (blocked on the same road as #021's follow-on), watchpoint
 $DC16 + breakpoint $20A88/$11BD8 through the Thalmus beat,
 and only then decide whether there is a mechanism to fix.
+
+**Session #10 log (2026-11-09).** The road blocker is
+CLEARED: the route to Mind was solved from code and driven
+clean (docs/logic-audit.md §23.4, docs/route-to-mind.md —
+21 steps, gate tile (118,121), SAVE banked at (114,124)).
+The Academy of Sorcery's doorstep was reached and its banner
+read ("WELCOME TO THE CITY OF THE MIND, HOME OF THE WORLD
+FAMOUS ACADEMY OF SORCERY.", evidence s10-acad2 in the
+session-#10 rig), but the interior was not entered before
+the session's live time ran out: six road/city deaths (gate
+Wyvern, knight pairs, an idle-wait ambush inside the city)
+consumed the margin. The decisive experiment — $DC16
+watchpoints + $20A88/$11BD8 breakpoints through the Thalmus
+beat — remains unrun, exactly as scoped in session #9's
+verdict. **Gate still unmet: no patch built, none shipped.**
+Resume: restore rop9live/save-114124.eeprom (or
+save-970.eeprom), drive the 21-step route by day, enter the
+Academy from the fountain plaza, and run the experiment
+inside; the Academy interior is also the largest untested
+location for the #021-follow-on Map purchase.

@@ -1,7 +1,14 @@
 # Route to Mind — solved statically (session #10)
 
+**Correction (session #10, live):** the town at the end of the
+southern loop below is a *different* east-coast city, not Mind.
+Mind is the town immediately NE of spawn (§11.1), and it was
+**reached live by a clean 21-step route** — see "Driven route"
+at the end of this file. The loop analysis stands as the solved
+route to the east-coast cluster.
+
 The east band is walled at ground level; the only foot route from
-spawn to the east-coast town cluster (presumed Mind, $D1D00 point
+spawn to the east-coast town cluster ($D1D00 point
 cluster at (162–178, 105–117)) is a long **southern loop**: west
 around the lake, south down the west side, east along the deep-south
 corridor, then north up the x≈120 and x≈155/x≈164 corridors into the
@@ -76,3 +83,50 @@ from the clean 335-step run.
   record set = archive records 0–76) ✓ matches the grid assembly.
 - The walled enclave and the sealed lake east end match session
   #9's live probes (ridge and inlet impassable; §14.3).
+
+## Driven route — spawn → Mind, CLEAN (session #10, live, item 1 DONE)
+
+Mind's south gate is the class-30 tile **(118,121)**. BFS from
+spawn (tools/passability.py model, class 30 admitted as a goal
+tile) = **21 steps**, driven tile-exact with 400 ms holds
+(1 hold = 1 step; position verified by debugger reads after
+every leg):
+
+```
+(109,130) spawn
+→ N×5 (109,125)          road north; passes the south tax post's
+                         tiles WITHOUT firing it (overworld
+                         pass-through does not trigger the event)
+→ E×2, N×1, E×3 (114,124)  bank an in-game SAVE here (outside;
+                         restores at the road with COMBAT kept)
+→ N×1, E×6 (120,123)
+→ N×2 (120,121)
+→ W×1, N×1, W×2 (118,120) (119,120) is class 10 (E/W-only),
+                         entered going west ✓; (119,121) and
+                         (119,122) are class 2 — the direct row
+                         south of the gate is walled
+→ S×1 onto (118,121)     GATE: garden location loads ($FF0E98=$10)
+```
+
+From the gate's garden, the city district lies through the
+garden's NW exit; the Academy of Sorcery is the large complex
+SE of the fountain plaza (doorstep banner: "WELCOME TO THE CITY
+OF THE MIND, HOME OF THE WORLD FAMOUS ACADEMY OF SORCERY.").
+Arrival state on the clean run: **gold 970 intact** (no tax),
+after camps to dawn at spawn (HP 15→20, Food 1472→1272).
+
+Hazards and traps (logic-audit §23.4 has the full record):
+
+- A **gate Wyvern** guards the doorstep approach (killed Buc
+  from HP 10); knight pairs patrol the city at night; roaming
+  parties attack even an idle party inside the city.
+- **Never SAVE on the south post's tiles** (e.g. (109,125)):
+  the restore lands inside the tax demand and every YES
+  re-charges 150 (observed 970→820→670). The (114,124) save
+  above is the safe bank (rop9live/save-114124.eeprom).
+- The north gate (117,110) is also class 30 and reachable —
+  (116,120) → N×4, E×1, N×6 — but a second tax post
+  (~(117,114), $FF0E98=$1B) fires on that approach; a third
+  post hides in a building south of the Academy courtyard
+  ($FF0E98=$1E). Driven into (not restored into), a post
+  charges once: pay, exit with C, step away.

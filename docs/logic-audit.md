@@ -2872,3 +2872,97 @@ live walks found it.
 
 Live drive continues from the plateau save; purchase (#022
 follow-on) and #037 remain gated on reaching Mind.
+
+### 23.4 Live drive COMPLETED — Mind reached clean; purchase still open; #037 unreached (session #10, later)
+
+The rig was lost to a VM replacement mid-session (BlastEm and
+xdotool gone from /usr; reinstalled from the banked .debs in the
+session-#7 scratch). The EEPROM on disk had never been flushed,
+so the run restarted from the pristine 970 save. Corrections to
+§23.3 from the calibrated driving that followed:
+
+- **The anchor IS tile-accurate on the open overworld.** With
+  400 ms holds, one hold = exactly one tile step (verified
+  repeatedly: (108,128)→E,N,N→(109,126); spawn→N×5→(109,125)).
+  §23.3's "snap per area" impression came from battle-eaten
+  inputs and location interiors, where +0xC/+0xE instead holds
+  the entry anchor. Food drain per step = the mode-1 (3,1)
+  rate in this view.
+- **Geography correction (supersedes §23.2's presumption).**
+  Mind is the town immediately NE of spawn (§11.1), footprint
+  ≈ (113–127, 105–125); the 335-step southern loop leads to a
+  *different* east-coast city and was NOT driven. BFS
+  spawn→Mind-gate = **21 steps**: N×5 (109,125), E×2, N×1,
+  E×3 (114,124), N×1, E×6 (120,123), N×2 (120,121), then
+  W×1, N×1, W×2, S×1 onto the class-30 gate tile **(118,121)**
+  ((121,121) itself is a standable class-6 tile beside it;
+  (119,121)/(119,122) are class 2 and wall the direct row).
+- **The clean run (the one that counts):** camps to dawn
+  (HP 15→20), the 21-step route with an in-game SAVE banked at
+  (114,124), arrival in Mind with **gold 970 intact — no tax
+  paid**: stepping *through* the south post's tiles in the
+  overworld does not fire its event. Entry evidence:
+  $FF0E98 = $10 in the gate's garden location, close-view
+  screenshots, and the Academy doorstep banner (below).
+- **Tax posts — three, and a restore trap.** Posts sit at the
+  south road (109,124) area, the north gate approach
+  (~(117,114), $FF0E98 = $1B), and inside a building south of
+  the Academy courtyard ($FF0E98 = $1E). The event fires on
+  location entry / restore-in-place, NOT on overworld
+  pass-through. **A save written on post tiles (109,125)
+  restores INTO the demand**, and each YES re-charges 150
+  (observed 970→820→670 in one run) — the §13.2 "paid flag
+  holds" observation does not survive a save/restore cycle,
+  because the restored snapshot predates the payment. When
+  driven into (not restored into), pay once, exit the
+  conversation (B = pick, C = out), and step away immediately:
+  no re-charge (820 held at the north and courtyard posts).
+- **Save snapshot semantics:** CONTINUE restored HP 15 /
+  Food 1248 from a save written at live HP 20 / Food 1272 —
+  the stored snapshot lags the live values (also seen
+  pre-compaction: HP 15/Food 1024 banked from live 20/1052).
+  Restores also keep the COMBAT toggle (AUTO persisted into
+  the (114,124) save, banked post-session as
+  rop9live/save-114124.eeprom, MD5 e24f15114d80ad0b413aff66f5401f7e).
+- **In-Mind censuses (item 2):** §14.1's test applied in the
+  garden location, three city-district screens, and the
+  Academy courtyard. NO slot anywhere read +0x17 ∈ shop codes
+  ∧ +0x25 > 0 except the **Academy-courtyard teacher at
+  (123,109): +0x17 = 70 (0x46), +0x25 = 1** — the §14.1
+  guild/teacher template class, which can never sell. The
+  recurring +0x17 = 0x46/+0x25 ∈ {1,2} entities and the
+  +0x17 = 0x2C guards are likewise non-sellers. Conversations
+  executed with the $FF02A8 test: the beggar (0x7530, below).
+  **The seller is still unisolated**; untested ground that
+  remains: the fountain-plaza shop interiors E of the Academy
+  courtyard, the harbour building, house interiors, and the
+  Academy interior itself.
+- **−50-gold micro-question SETTLED (was §14.2's open item).**
+  The beggar's scripted ask ("WILL YOU GIVE ME 50 GOLD?")
+  answered YES deducted exactly 50 mid-conversation (gold
+  read 820 → 770 with the prompt on screen; evidence
+  s10-beggar1 + debugger reads). Session #9's unexplained
+  970→920 was this payment, not a stray BUY. The beggar PAIR
+  re-fires the ask (the partner); refusing the second starts
+  the Evin fight — won under AUTO: **+6 XP, +20 gold** (Buc
+  HP 15→10), matching session #4 exactly.
+- **Mind hazards (all solo-Buc, level 1):** the gate Wyvern
+  guards the (118,121) doorstep approach (Daggers 7, Earth;
+  killed Buc from HP 10); knight pairs patrol the city at
+  night (killed Buc twice, once at the (114,124)→city leg,
+  once in the city with a "Lemun" NPC advancing as a third
+  combatant); a goblin-type trio killed Buc during an idle
+  wait inside the city — **do not idle in Mind**. Six deaths
+  this session across all runs; every death restored cleanly
+  from the last banked save.
+- **Academy reached (doorstep):** banner "WELCOME TO THE CITY
+  OF THE MIND, HOME OF THE WORLD FAMOUS ACADEMY OF SORCERY."
+  (evidence s10-acad2) at the complex SE of the fountain
+  plaza. The interior was NOT entered before the session's
+  live time ran out, so **#037's Thalmus beat is still
+  unreached and no watchpoint experiment ran — no patch, per
+  the issue's trace-first gate.** Resume: restore
+  save-114124.eeprom (114,124) or save-970.eeprom, drive the
+  21-step route by day, enter the Academy from the plaza,
+  and run the census + $FF02A8 conversations inside (the
+  Academy is also the largest untested seller location).
