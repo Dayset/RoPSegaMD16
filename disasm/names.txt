@@ -80,3 +80,13 @@
 0x00020670 save_menu_save       # docs/logic-audit.md:493 Save; calls $2F11A
 0x0002F11A save_serialise       # docs/save.md:336 SAVE serialiser
 0x0002F896 save_deserialise     # docs/logic-audit.md:492 Load path; RROP rings_saves.h hooks the menu at $20652
+# --- batch 7: serial EEPROM driver (docs/save.md section 2, addresses from its headings) ---
+0x00042FC8 eeprom_init          # docs/save.md:151 EEPROM serial init, retry limit $FF014C=10
+0x00042FD8 eeprom_delay         # docs/save.md:161 delay loop move.w #$1964
+0x00042E34 eeprom_start         # docs/save.md:154-155 start sequence; eeprom_init calls it, then $42E76
+0x00042E76 eeprom_stop          # docs/save.md:157 closing sequence (write $00,$40,$C0)
+0x00042EBA eeprom_bit_out       # docs/save.md:165 shifts one bit out, 0x42EBA-0x42EEC
+0x00042EEE eeprom_bit_in        # docs/save.md:169 shifts one bit in, 0x42EEE-0x42F24
+0x00042F96 eeprom_ack_read      # docs/save.md:172 ACK read, 0x42F96-0x42FC6
+0x00043012 eeprom_read_block    # docs/save.md:176 EEPROM READ (block), 0x43012-0x430E0
+0x000430F4 eeprom_write_byte    # docs/save.md:198 EEPROM WRITE (one byte), 0x430F4-0x43230

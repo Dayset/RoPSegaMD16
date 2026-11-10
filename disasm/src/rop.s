@@ -59500,7 +59500,7 @@ L042CFE:
 L042E30:
 	bra.w L03E418	; $042E30
 	; code $042E34-$042E75
-FUN_042e34:
+eeprom_start:
 	nop	; $042E34
 	nop	; $042E36
 	nop	; $042E38
@@ -59526,7 +59526,7 @@ FUN_042e34:
 	nop	; $042E72
 	rts	; $042E74
 	; code $042E76-$042EB9
-FUN_042e76:
+eeprom_stop:
 	move.w #$0,$200000.l	; $042E76
 	nop	; $042E7E
 	nop	; $042E80
@@ -59550,7 +59550,7 @@ FUN_042e76:
 	nop	; $042EB6
 	rts	; $042EB8
 	; code $042EBA-$042EED
-FUN_042eba:
+eeprom_bit_out:
 	lsl.w #$1,d0	; $042EBA
 	roxr.b #$1,d1	; $042EBC
 	bclr #$6,d1	; $042EBE
@@ -59569,7 +59569,7 @@ FUN_042eba:
 	move.w d1,$200000.l	; $042EE6
 	rts	; $042EEC
 	; code $042EEE-$042F25
-FUN_042eee:
+eeprom_bit_in:
 	move.w #$80,$200000.l	; $042EEE
 	nop	; $042EF6
 	nop	; $042EF8
@@ -59630,7 +59630,7 @@ FUN_042f5e:
 	nop	; $042F92
 	rts	; $042F94
 	; code $042F96-$042FC7
-FUN_042f96:
+eeprom_ack_read:
 	move.w #$80,$200000.l	; $042F96
 	nop	; $042F9E
 	move.w #$c0,$200000.l	; $042FA0
@@ -59646,11 +59646,11 @@ FUN_042f96:
 	nop	; $042FC4
 	rts	; $042FC6
 	; code $042FC8-$042FD7
-FUN_042fc8:
+eeprom_init:
 	move.w #$a,$ff014c.l	; $042FC8
 	move.w #$0,$ff014e.l	; $042FD0
 	; code $042FD8-$043005
-FUN_042fd8:
+eeprom_delay:
 	move.w #$1964,d0	; $042FD8
 L042FDC:
 	nop	; $042FDC
@@ -59664,9 +59664,9 @@ L042FE4:
 	nop	; $042FF2
 	nop	; $042FF4
 	nop	; $042FF6
-	jsr FUN_042e34(pc)	; $042FF8
+	jsr eeprom_start(pc)	; $042FF8
 	dbra d0,L042FE4	; $042FFC
-	jsr FUN_042e76(pc)	; $043000
+	jsr eeprom_stop(pc)	; $043000
 	rts	; $043004
 	; code $043006-$043011
 FUN_043006:
@@ -59674,7 +59674,7 @@ FUN_043006:
 	move.l $8(a7),d1	; $04300A
 	movea.l $c(a7),a0	; $04300E
 	; code $043012-$0430EB
-FUN_043012:
+eeprom_read_block:
 	move.w #$0,$ff014e.l	; $043012
 	move.w d1,$ff015c.l	; $04301A
 	move.l a0,$ff0150.l	; $043020
@@ -59682,24 +59682,24 @@ FUN_043012:
 	move.l d1,$ff0158.l	; $04302C
 	bra.b L043036	; $043032
 L043034:
-	bsr.b FUN_042fd8	; $043034
+	bsr.b eeprom_delay	; $043034
 L043036:
 	movea.l $ff0150.l,a0	; $043036
 	move.l $ff0154.l,d0	; $04303C
-	jsr FUN_042e34(pc)	; $043042
+	jsr eeprom_start(pc)	; $043042
 	and.w #$7f,d0	; $043046
 	lsl.w #$1,d0	; $04304A
 	or.w #$1,d0	; $04304C
 	lsl.w #$8,d0	; $043050
-	jsr FUN_042eba(pc)	; $043052
-	jsr FUN_042eba(pc)	; $043056
-	jsr FUN_042eba(pc)	; $04305A
-	jsr FUN_042eba(pc)	; $04305E
-	jsr FUN_042eba(pc)	; $043062
-	jsr FUN_042eba(pc)	; $043066
-	jsr FUN_042eba(pc)	; $04306A
-	jsr FUN_042eba(pc)	; $04306E
-	jsr FUN_042f96(pc)	; $043072
+	jsr eeprom_bit_out(pc)	; $043052
+	jsr eeprom_bit_out(pc)	; $043056
+	jsr eeprom_bit_out(pc)	; $04305A
+	jsr eeprom_bit_out(pc)	; $04305E
+	jsr eeprom_bit_out(pc)	; $043062
+	jsr eeprom_bit_out(pc)	; $043066
+	jsr eeprom_bit_out(pc)	; $04306A
+	jsr eeprom_bit_out(pc)	; $04306E
+	jsr eeprom_ack_read(pc)	; $043072
 	tst.b d1	; $043076
 	bpl.b L043096	; $043078
 	addq.w #$1,$ff014e.l	; $04307A
@@ -59707,17 +59707,17 @@ L043036:
 	move.w $ff014e.l,d1	; $043082
 	cmp.w $ff014c.l,d1	; $043088
 	bpl.b L0430E2	; $04308E
-	jsr FUN_042fd8(pc)	; $043090
+	jsr eeprom_delay(pc)	; $043090
 	bra.b L043034	; $043094
 L043096:
-	jsr FUN_042eee(pc)	; $043096
-	jsr FUN_042eee(pc)	; $04309A
-	jsr FUN_042eee(pc)	; $04309E
-	jsr FUN_042eee(pc)	; $0430A2
-	jsr FUN_042eee(pc)	; $0430A6
-	jsr FUN_042eee(pc)	; $0430AA
-	jsr FUN_042eee(pc)	; $0430AE
-	jsr FUN_042eee(pc)	; $0430B2
+	jsr eeprom_bit_in(pc)	; $043096
+	jsr eeprom_bit_in(pc)	; $04309A
+	jsr eeprom_bit_in(pc)	; $04309E
+	jsr eeprom_bit_in(pc)	; $0430A2
+	jsr eeprom_bit_in(pc)	; $0430A6
+	jsr eeprom_bit_in(pc)	; $0430AA
+	jsr eeprom_bit_in(pc)	; $0430AE
+	jsr eeprom_bit_in(pc)	; $0430B2
 	move.b d0,(a0)+	; $0430B6
 	subq.w #$1,$ff015c.l	; $0430B8
 	beq.b L0430C6	; $0430BE
@@ -59725,7 +59725,7 @@ L043096:
 	bra.b L043096	; $0430C4
 L0430C6:
 	jsr FUN_042f5e(pc)	; $0430C6
-	jsr FUN_042e76(pc)	; $0430CA
+	jsr eeprom_stop(pc)	; $0430CA
 L0430CE:
 	movea.l $ff0150.l,a0	; $0430CE
 	move.l $ff0154.l,d0	; $0430D4
@@ -59739,31 +59739,31 @@ FUN_0430ec:
 	move.l $4(a7),d0	; $0430EC
 	movea.l $8(a7),a0	; $0430F0
 	; code $0430F4-$04323B
-FUN_0430f4:
+eeprom_write_byte:
 	move.w #$0,$ff014e.l	; $0430F4
 	move.l a0,$ff0160.l	; $0430FC
 	move.l d0,$ff0164.l	; $043102
 	move.l d1,-(a7)	; $043108
 	bra.b L043110	; $04310A
 L04310C:
-	jsr FUN_042fd8(pc)	; $04310C
+	jsr eeprom_delay(pc)	; $04310C
 L043110:
 	movea.l $ff0160.l,a0	; $043110
 	move.l $ff0164.l,d0	; $043116
-	jsr FUN_042e34(pc)	; $04311C
+	jsr eeprom_start(pc)	; $04311C
 	and.w #$7f,d0	; $043120
 	lsl.w #$1,d0	; $043124
 	lsl.w #$8,d0	; $043126
 	move.w d0,$ff015e.l	; $043128
-	jsr FUN_042eba(pc)	; $04312E
-	jsr FUN_042eba(pc)	; $043132
-	jsr FUN_042eba(pc)	; $043136
-	jsr FUN_042eba(pc)	; $04313A
-	jsr FUN_042eba(pc)	; $04313E
-	jsr FUN_042eba(pc)	; $043142
-	jsr FUN_042eba(pc)	; $043146
-	jsr FUN_042eba(pc)	; $04314A
-	jsr FUN_042f96(pc)	; $04314E
+	jsr eeprom_bit_out(pc)	; $04312E
+	jsr eeprom_bit_out(pc)	; $043132
+	jsr eeprom_bit_out(pc)	; $043136
+	jsr eeprom_bit_out(pc)	; $04313A
+	jsr eeprom_bit_out(pc)	; $04313E
+	jsr eeprom_bit_out(pc)	; $043142
+	jsr eeprom_bit_out(pc)	; $043146
+	jsr eeprom_bit_out(pc)	; $04314A
+	jsr eeprom_ack_read(pc)	; $04314E
 	tst.b d1	; $043152
 	bpl.b L043176	; $043154
 	addq.w #$1,$ff014e.l	; $043156
@@ -59771,20 +59771,20 @@ L043110:
 	move.w $ff014e.l,d1	; $043160
 	cmp.w $ff014c.l,d1	; $043166
 	bpl.w L043232	; $04316C
-	jsr FUN_042fd8(pc)	; $043170
+	jsr eeprom_delay(pc)	; $043170
 	bra.b L04310C	; $043174
 L043176:
 	move.b (a0),d0	; $043176
 	lsl.w #$8,d0	; $043178
-	jsr FUN_042eba(pc)	; $04317A
-	jsr FUN_042eba(pc)	; $04317E
-	jsr FUN_042eba(pc)	; $043182
-	jsr FUN_042eba(pc)	; $043186
-	jsr FUN_042eba(pc)	; $04318A
-	jsr FUN_042eba(pc)	; $04318E
-	jsr FUN_042eba(pc)	; $043192
-	jsr FUN_042eba(pc)	; $043196
-	jsr FUN_042f96(pc)	; $04319A
+	jsr eeprom_bit_out(pc)	; $04317A
+	jsr eeprom_bit_out(pc)	; $04317E
+	jsr eeprom_bit_out(pc)	; $043182
+	jsr eeprom_bit_out(pc)	; $043186
+	jsr eeprom_bit_out(pc)	; $04318A
+	jsr eeprom_bit_out(pc)	; $04318E
+	jsr eeprom_bit_out(pc)	; $043192
+	jsr eeprom_bit_out(pc)	; $043196
+	jsr eeprom_ack_read(pc)	; $04319A
 	tst.b d1	; $04319E
 	bpl.b L0431C2	; $0431A0
 	addq.w #$1,$ff014e.l	; $0431A2
@@ -59792,10 +59792,10 @@ L043176:
 	move.w $ff014e.l,d1	; $0431AC
 	cmp.w $ff014c.l,d1	; $0431B2
 	bpl.b L043232	; $0431B8
-	jsr FUN_042fd8(pc)	; $0431BA
+	jsr eeprom_delay(pc)	; $0431BA
 	bra.w L04310C	; $0431BE
 L0431C2:
-	jsr FUN_042e76(pc)	; $0431C2
+	jsr eeprom_stop(pc)	; $0431C2
 	move.w #$1518,d0	; $0431C6
 L0431CA:
 	nop	; $0431CA
@@ -59806,7 +59806,7 @@ L0431CA:
 	moveq #$1,d1	; $0431DA
 	move.l $ff0164.l,d0	; $0431DC
 	lea.l $ff015f.l,a0	; $0431E2
-	jsr FUN_043012(pc)	; $0431E8
+	jsr eeprom_read_block(pc)	; $0431E8
 	tst.w $ff014e.l	; $0431EC
 	bmi.b L043232	; $0431F2
 	movea.l $ff0160.l,a0	; $0431F4
@@ -59818,7 +59818,7 @@ L0431CA:
 	move.w $ff014e.l,d1	; $04320C
 	cmp.w $ff014c.l,d1	; $043212
 	bpl.b L043232	; $043218
-	jsr FUN_042fd8(pc)	; $04321A
+	jsr eeprom_delay(pc)	; $04321A
 	bra.w L04310C	; $04321E
 L043222:
 	movea.l $ff0160.l,a0	; $043222
@@ -59832,14 +59832,14 @@ L043232:
 save_validate:
 	movem.l d0-d1,-(a7)	; $04323C
 	clr.w $ff0168.l	; $043240
-	jsr FUN_042fc8(pc)	; $043246
+	jsr eeprom_init(pc)	; $043246
 	jsr pad2_read.l	; $04324A
 	cmp.b #$e0,d0	; $043250
 	beq.b L0432B6	; $043254
 	moveq #$0,d0	; $043256
 	move.l #$80,d1	; $043258
 	lea.l $ff016a.l,a0	; $04325E
-	jsr FUN_043012(pc)	; $043264
+	jsr eeprom_read_block(pc)	; $043264
 	tst.w $ff014e.l	; $043268
 	bmi.w L0432F6	; $04326E
 	moveq #$7d,d1	; $043272
@@ -59884,7 +59884,7 @@ L0432C8:
 	lea.l $ff016a.l,a0	; $0432D6
 	moveq #$0,d0	; $0432DC
 L0432DE:
-	jsr FUN_0430f4(pc)	; $0432DE
+	jsr eeprom_write_byte(pc)	; $0432DE
 	tst.w $ff014e.l	; $0432E2
 	bmi.b L0432F6	; $0432E8
 	addq.l #$1,a0	; $0432EA
