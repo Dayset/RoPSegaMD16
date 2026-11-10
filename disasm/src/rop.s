@@ -8,56 +8,66 @@ rom_start:
 	incbin "rop-original.gen",$000000,$200
 	; code $000200-$00028D
 FUN_000200:
-	dc.w $4AB9,$00A1,$0008	; tst.l $a10008.l
-	dc.w $6606	; bne.b $20e
-	dc.w $4A79,$00A1,$000C	; tst.w $a1000c.l
-	dc.w $667C	; bne.b $28c
+	tst.l $a10008.l	; $000200
+	bne.b L00020E	; $000206
+	tst.w $a1000c.l	; $000208
+L00020E:
+	bne.b L00028C	; $00020E
 	dc.w $4BFA,$007C	; lea.l $28e(pc), a5
-	dc.w $4C9D,$00E0	; movem.w (a5)+, d5-d7
-	dc.w $4CDD,$1F00	; movem.l (a5)+, a0-a4
-	dc.w $1029,$EF01	; move.b -$10ff(a1), d0
-	dc.w $0200,$000F	; andi.b #$f, d0
-	dc.w $6708	; beq.b $22e
-	dc.w $237C,$5345,$4741,$2F00	; move.l #$53454741, $2f00(a1)
-	dc.w $3014	; move.w (a4), d0
-	dc.w $7000	; moveq #$0, d0
-	dc.w $2C40	; movea.l d0, a6
-	dc.w $4E66	; move a6, usp
-	dc.w $7217	; moveq #$17, d1
-	dc.w $1A1D	; move.b (a5)+, d5
-	dc.w $3885	; move.w d5, (a4)
-	dc.w $DA47	; add.w d7, d5
-	dc.w $51C9,$FFF8	; dbra d1, $238
-	dc.w $289D	; move.l (a5)+, (a4)
-	dc.w $3680	; move.w d0, (a3)
-	dc.w $3287	; move.w d7, (a1)
-	dc.w $3487	; move.w d7, (a2)
+	movem.w (a5)+,d5-d7	; $000214
+	movem.l (a5)+,a0-a4	; $000218
+	move.b -$10ff(a1),d0	; $00021C
+	andi.b #$f,d0	; $000220
+	beq.b L00022E	; $000224
+	move.l #$53454741,$2f00(a1)	; $000226
+L00022E:
+	move.w (a4),d0	; $00022E
+	moveq #$0,d0	; $000230
+	movea.l d0,a6	; $000232
+	move a6,usp	; $000234
+	moveq #$17,d1	; $000236
+L000238:
+	move.b (a5)+,d5	; $000238
+	move.w d5,(a4)	; $00023A
+	add.w d7,d5	; $00023C
+	dbra d1,L000238	; $00023E
+	move.l (a5)+,(a4)	; $000242
+	move.w d0,(a3)	; $000244
+	move.w d7,(a1)	; $000246
+	move.w d7,(a2)	; $000248
+L00024A:
 	dc.w $0111	; btst.l d0, (a1)
-	dc.w $66FC	; bne.b $24a
-	dc.w $7425	; moveq #$25, d2
-	dc.w $10DD	; move.b (a5)+, (a0)+
-	dc.w $51CA,$FFFC	; dbra d2, $250
-	dc.w $3480	; move.w d0, (a2)
-	dc.w $3280	; move.w d0, (a1)
-	dc.w $3487	; move.w d7, (a2)
-	dc.w $2D00	; move.l d0, -(a6)
-	dc.w $51CE,$FFFC	; dbra d6, $25c
-	dc.w $289D	; move.l (a5)+, (a4)
-	dc.w $289D	; move.l (a5)+, (a4)
-	dc.w $761F	; moveq #$1f, d3
-	dc.w $2680	; move.l d0, (a3)
-	dc.w $51CB,$FFFC	; dbra d3, $268
-	dc.w $289D	; move.l (a5)+, (a4)
-	dc.w $7813	; moveq #$13, d4
-	dc.w $2680	; move.l d0, (a3)
-	dc.w $51CC,$FFFC	; dbra d4, $272
-	dc.w $7A03	; moveq #$3, d5
-	dc.w $175D,$0011	; move.b (a5)+, $11(a3)
-	dc.w $51CD,$FFFA	; dbra d5, $27a
-	dc.w $3480	; move.w d0, (a2)
-	dc.w $4CD6,$7FFF	; movem.l (a6), d0-d7/a0-a6
-	dc.w $46FC,$2700	; move.w #$2700, sr
-	dc.w $606C	; bra.b $2fa
+	bne.b L00024A	; $00024C
+	moveq #$25,d2	; $00024E
+L000250:
+	move.b (a5)+,(a0)+	; $000250
+	dbra d2,L000250	; $000252
+	move.w d0,(a2)	; $000256
+	move.w d0,(a1)	; $000258
+	move.w d7,(a2)	; $00025A
+L00025C:
+	move.l d0,-(a6)	; $00025C
+	dbra d6,L00025C	; $00025E
+	move.l (a5)+,(a4)	; $000262
+	move.l (a5)+,(a4)	; $000264
+	moveq #$1f,d3	; $000266
+L000268:
+	move.l d0,(a3)	; $000268
+	dbra d3,L000268	; $00026A
+	move.l (a5)+,(a4)	; $00026E
+	moveq #$13,d4	; $000270
+L000272:
+	move.l d0,(a3)	; $000272
+	dbra d4,L000272	; $000274
+	moveq #$3,d5	; $000278
+L00027A:
+	move.b (a5)+,$11(a3)	; $00027A
+	dbra d5,L00027A	; $00027E
+	move.w d0,(a2)	; $000282
+	movem.l (a6),d0-d7/a0-a6	; $000284
+	move.w #$2700,sr	; $000288
+L00028C:
+	bra.b $2fa	; $00028C
 	; data $00028E-$0002F9 (108 bytes)
 	incbin "rop-original.gen",$00028E,$6C
 	; code $0002FA-$0003A9
@@ -850,49 +860,51 @@ FUN_00119e:
 	dc.w $4EF9,$0000,$D25C	; jmp $d25c.l
 	; code $001270-$001271
 FUN_001270:
-	dc.w $4E73	; rte
+	rte	; $001270
 	; code $001272-$00133B
 FUN_001272:
-	dc.w $33FC,$0000,$00FF,$0016	; move.w #$0, $ff0016.l
-	dc.w $52B9,$00FF,$0010	; addq.l #$1, $ff0010.l
-	dc.w $48E7,$E080	; movem.l d0-d2/a0, -(a7)
-	dc.w $33FC,$0100,$00A1,$1100	; move.w #$100, $a11100.l
-	dc.w $13FC,$0040,$00A1,$0009	; move.b #$40, $a10009.l
-	dc.w $13FC,$0000,$00A1,$0003	; move.b #$0, $a10003.l
-	dc.w $33FC,$0000,$00A1,$1100	; move.w #$0, $a11100.l
-	dc.w $720A	; moveq #$a, d1
-	dc.w $51C9,$FFFE	; dbra d1, $12a6
-	dc.w $33FC,$0100,$00A1,$1100	; move.w #$100, $a11100.l
-	dc.w $1039,$00A1,$0003	; move.b $a10003.l, d0
-	dc.w $E500	; asl.b #$2, d0
-	dc.w $C03C,$00C0	; and.b #$c0, d0
-	dc.w $13FC,$0040,$00A1,$0003	; move.b #$40, $a10003.l
-	dc.w $33FC,$0000,$00A1,$1100	; move.w #$0, $a11100.l
-	dc.w $720A	; moveq #$a, d1
-	dc.w $51C9,$FFFE	; dbra d1, $12d0
-	dc.w $33FC,$0100,$00A1,$1100	; move.w #$100, $a11100.l
-	dc.w $1239,$00A1,$0003	; move.b $a10003.l, d1
-	dc.w $C23C,$003F	; and.b #$3f, d1
-	dc.w $33FC,$0000,$00A1,$1100	; move.w #$0, $a11100.l
-	dc.w $8001	; or.b d1, d0
-	dc.w $4600	; not.b d0
-	dc.w $4EB9,$000E,$B772	; jsr $eb772.l
-	dc.w $B039,$00FF,$0018	; cmp.b $ff0018.l, d0
-	dc.w $6742	; beq.b $1342
-	dc.w $13C0,$00FF,$0018	; move.b d0, $ff0018.l
-	dc.w $13FC,$0003,$00FF,$0019	; move.b #$3, $ff0019.l
-	dc.w $4CDF,$0107	; movem.l (a7)+, d0-d2/a0
-	dc.w $4E73	; rte
-	dc.w $7200	; moveq #$0, d1
-	dc.w $1239,$00FF,$001A	; move.b $ff001a.l, d1
-	dc.w $1401	; move.b d1, d2
-	dc.w $41F9,$00FF,$001C	; lea.l $ff001c.l, a0
-	dc.w $5202	; addq.b #$1, d2
-	dc.w $C43C,$000F	; and.b #$f, d2
-	dc.w $B439,$00FF,$001B	; cmp.b $ff001b.l, d2
-	dc.w $670A	; beq.b $133c
-	dc.w $1180,$1000	; move.b d0, (a0, d1.w)
-	dc.w $13C2,$00FF,$001A	; move.b d2, $ff001a.l
+	move.w #$0,$ff0016.l	; $001272
+	addq.l #$1,$ff0010.l	; $00127A
+	movem.l d0-d2/a0,-(a7)	; $001280
+	move.w #$100,$a11100.l	; $001284
+	move.b #$40,$a10009.l	; $00128C
+	move.b #$0,$a10003.l	; $001294
+	move.w #$0,$a11100.l	; $00129C
+	moveq #$a,d1	; $0012A4
+L0012A6:
+	dbra d1,L0012A6	; $0012A6
+	move.w #$100,$a11100.l	; $0012AA
+	move.b $a10003.l,d0	; $0012B2
+	asl.b #$2,d0	; $0012B8
+	and.b #$c0,d0	; $0012BA
+	move.b #$40,$a10003.l	; $0012BE
+	move.w #$0,$a11100.l	; $0012C6
+	moveq #$a,d1	; $0012CE
+L0012D0:
+	dbra d1,L0012D0	; $0012D0
+	move.w #$100,$a11100.l	; $0012D4
+	move.b $a10003.l,d1	; $0012DC
+	and.b #$3f,d1	; $0012E2
+	move.w #$0,$a11100.l	; $0012E6
+	or.b d1,d0	; $0012EE
+	not.b d0	; $0012F0
+	jsr $eb772.l	; $0012F2
+	cmp.b $ff0018.l,d0	; $0012F8
+	beq.b $1342	; $0012FE
+	move.b d0,$ff0018.l	; $001300
+	move.b #$3,$ff0019.l	; $001306
+	movem.l (a7)+,d0-d2/a0	; $00130E
+	rte	; $001312
+	moveq #$0,d1	; $001314
+	move.b $ff001a.l,d1	; $001316
+	move.b d1,d2	; $00131C
+	lea.l $ff001c.l,a0	; $00131E
+	addq.b #$1,d2	; $001324
+	and.b #$f,d2	; $001326
+	cmp.b $ff001b.l,d2	; $00132A
+	beq.b $133c	; $001330
+	move.b d0,(a0,d1.w)	; $001332
+	move.b d2,$ff001a.l	; $001336
 	; data $00133C-$001341 (6 bytes)
 	incbin "rop-original.gen",$00133C,$6
 	; code $001342-$00134F
@@ -55116,22 +55128,24 @@ FUN_043316:
 	incbin "rop-original.gen",$0433C0,$A83B2
 	; code $0EB772-$0EB7C7
 FUN_0eb772:
-	dc.w $48E7,$FFFE	; movem.l d0-d7/a0-a6, -(a7)
-	dc.w $4A39,$00FF,$0222	; tst.b $ff0222.l
-	dc.w $6708	; beq.b $eb786
-	dc.w $0679,$0033,$00FF,$0234	; addi.w #$33, $ff0234.l
-	dc.w $33FC,$0100,$00A1,$1100	; move.w #$100, $a11100.l
-	dc.w $0679,$0100,$00FF,$0234	; addi.w #$100, $ff0234.l
-	dc.w $13F9,$00FF,$0234,$00A0,$00E6	; move.b $ff0234.l, $a000e6.l
-	dc.w $33FC,$0000,$00A1,$1100	; move.w #$0, $a11100.l
+	movem.l d0-d7/a0-a6,-(a7)	; $0EB772
+	tst.b $ff0222.l	; $0EB776
+	beq.b L0EB786	; $0EB77C
+	addi.w #$33,$ff0234.l	; $0EB77E
+L0EB786:
+	move.w #$100,$a11100.l	; $0EB786
+	addi.w #$100,$ff0234.l	; $0EB78E
+	move.b $ff0234.l,$a000e6.l	; $0EB796
+	move.w #$0,$a11100.l	; $0EB7A0
 	dc.w $4EBA,$031C	; jsr $ebac6(pc)
-	dc.w $5279,$00FF,$0220	; addq.w #$1, $ff0220.l
-	dc.w $3039,$00FF,$0220	; move.w $ff0220.l, d0
-	dc.w $C07C,$000F	; and.w #$f, d0
-	dc.w $6604	; bne.b $eb7c2
+	addq.w #$1,$ff0220.l	; $0EB7AC
+	move.w $ff0220.l,d0	; $0EB7B2
+	and.w #$f,d0	; $0EB7B8
+	bne.b L0EB7C2	; $0EB7BC
 	dc.w $4EBA,$0240	; jsr $eba00(pc)
-	dc.w $4CDF,$7FFF	; movem.l (a7)+, d0-d7/a0-a6
-	dc.w $4E75	; rts
+L0EB7C2:
+	movem.l (a7)+,d0-d7/a0-a6	; $0EB7C2
+	rts	; $0EB7C6
 	; code $0EB7C8-$0EB805
 FUN_0eb7c8:
 	dc.w $51F9,$00FF,$021E	; sf.b $ff021e.l

@@ -19,7 +19,41 @@ Run from the repository root:  python3 tools/gen_src.py
 import sys
 from pathlib import Path
 
+import subprocess
+import tempfile
+
 import capstone
+
+VASM = Path("tools/vasm/vasmm68k_mot")
+# Blocks converted from raw words to mnemonics (verified per instruction). Addresses are entries.
+MNEMONIC_ENTRIES = {0x000200, 0x001270, 0x001272, 0x0EB772}
+
+
+def as_mnemonic(insn, rom, label_for=None):
+    """Return the mnemonic line for insn if it re-assembles to the same bytes, else None.
+
+    The bytes are checked with the instruction placed at its real address (org), so absolute
+    branch targets and pc-relative operands resolve exactly as in the ROM. The returned text
+    may use block labels (label_for), which are defined by the emitter.
+    """
+    if "(pc)" in insn.op_str or "pc)" in insn.op_str:
+        # pc-relative operands: vasm resolves them against the file offset, not the ROM
+        # address, so these stay raw until labels are emitted for their targets.
+        return None
+    abs_text = f"{insn.mnemonic} {insn.op_str.replace(', ', ',')}".strip()
+    out_text = label_for(insn, abs_text) if label_for is not None else abs_text
+    with tempfile.TemporaryDirectory() as d:
+        src = Path(d) / "i.s"
+        obj = Path(d) / "i.bin"
+        src.write_text(f"\tsection t,code\n\torg ${insn.address:X}\n\t{abs_text}\n")
+        r = subprocess.run([str(VASM), "-Fbin", "-m68000", "-no-opt", "-o", str(obj), str(src)],
+                           capture_output=True, text=True)
+        if r.returncode != 0 or not obj.exists():
+            return None
+        if obj.read_bytes() != bytes(rom[insn.address:insn.address + insn.size]):
+            return None
+    return out_text
+
 
 ROM = Path("rop-original.gen")
 BODIES = Path("disasm/ghidra/function_bodies.txt")
@@ -83,12 +117,40 @@ def main():
         addr = start
         blob = rom[start:end + 1]
         insns = list(md.disasm(blob, start))
+        block_addrs = {i.address for i in insns}
+
+        def block_label(insn, text):
+            """Replace absolute targets that land on an instruction in this block with labels."""
+            import re
+            def repl(m):
+                t = int(m.group(1), 16)
+                return f"L{t:06X}" if t in block_addrs else m.group(0)
+            if insn.mnemonic.startswith(("b", "j", "db")) or "(pc)" in insn.op_str:
+                return re.sub(r"\$([0-9a-fA-F]+)", repl, text)
+            return text
+        import re as _re
+        block_targets = set()
+        if start in MNEMONIC_ENTRIES:
+            for i in insns:
+                if i.mnemonic.startswith(("b", "j", "db")) or "(pc)" in i.op_str:
+                    for m in _re.finditer(r"\$([0-9a-fA-F]+)", i.op_str):
+                        t = int(m.group(1), 16)
+                        if t in block_addrs:
+                            block_targets.add(t)
         decoded_end = start
         for insn in insns:
             if insn.address in entries and insn.address not in emitted:
                 emitted.add(insn.address)
                 out.append(f"{label(insn.address)}:")
+            if insn.address in block_targets and insn.address not in entries:
+                out.append(f"L{insn.address:06X}:")
             words = rom[insn.address:insn.address + insn.size]
+            text = as_mnemonic(insn, rom, block_label) if (start in MNEMONIC_ENTRIES and not (insn.size % 2)) else None
+            if text:
+                out.append(f"\t{text}\t; ${insn.address:06X}")
+                decoded_end = insn.address + insn.size
+                code_bytes += insn.size
+                continue
             raw = ",".join(f"${words[i]:02X}{words[i+1]:02X}" for i in range(0, len(words) - len(words) % 2, 2))
             out.append(f"\tdc.w {raw}\t; {insn.mnemonic} {insn.op_str}".rstrip())
             decoded_end = insn.address + insn.size
