@@ -1,0 +1,10 @@
+# Code ranges found by linear 68000 decode, not in Ghidra function_bodies.txt.
+# Format matches function_bodies.txt: RANGE <entry> <start> <end> (hex, inclusive).
+# Each range ends before a jump table (dc.w words) that the dispatch at 0x3A236, 0x3A5E6, 0x38AF8, 0x334EA reads.
+RANGE 0x03A062 0x03A062 0x03A21F
+RANGE 0x03A4A2 0x03A4A2 0x03A5CF
+RANGE 0x038AB2 0x038AB2 0x038AE1
+RANGE 0x033396 0x033396 0x0334C9
+RANGE 0x01E02E 0x01E02E 0x01E075
+RANGE 0x038A40 0x038A40 0x038A7F
+RANGE 0x03A2E4 0x03A2E4 0x03A353

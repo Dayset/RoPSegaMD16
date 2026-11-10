@@ -91,6 +91,7 @@ addr,name,tier,note
 0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
 0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
 0x01DA6C,sys_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
+0x01E02E,sys_unk_01e02e,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
 0x01E18A,spell_duration_tick,2,spells.md: duration nibble decremented each step
 0x01E29C,sys_unk_01e29c,0,auto: touches none
@@ -234,6 +235,7 @@ addr,name,tier,note
 0x032FFA,sys_unk_032ffa,0,auto: touches $FF0E92
 0x033136,sys_unk_033136,0,auto: touches none
 0x0331A4,sys_unk_0331a4,0,auto: touches $FF02A0 $FF02A2 $FF02B6 $FFB00A
+0x033396,sys_unk_033396,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x0337D0,sys_unk_0337d0,0,auto: touches $FF02A2
 0x0337EE,sys_unk_0337ee,0,auto: touches $FF0120 $FF02B2 $FF02B4 $FF02BE $FF02C0 $FF02C2
 0x034B50,sys_unk_034b50,0,auto: touches $FF02B4
@@ -283,6 +285,8 @@ addr,name,tier,note
 0x03888A,sys_unk_03888a,0,auto: touches $FF02B4
 0x038938,sys_unk_038938,0,auto: touches $FF012A $FFA7FC
 0x038A22,sys_unk_038a22,0,auto: touches none
+0x038A40,sys_unk_038a40,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
+0x038AB2,sys_unk_038ab2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x038B00,sys_unk_038b00,0,auto: touches $FF02B4 $FF02C0 $FF02C2
 0x038B96,sys_unk_038b96,0,auto: touches $FF012A $FF0130 $FF02C0 $FF02C2 $FFC418
 0x038C5A,sys_unk_038c5a,0,auto: touches $FF010E $FF012A $FF02B4 $FF0EAA $FFA7CC
@@ -301,6 +305,9 @@ addr,name,tier,note
 0x039DF4,sys_unk_039df4,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
 0x039E9E,sys_unk_039e9e,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
 0x039F48,sys_unk_039f48,0,auto: touches $FF010E $FF012A $FF012C $FF0130 $FF02B2 $FF02B4
+0x03A062,sys_unk_03a062,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
+0x03A2E4,sys_unk_03a2e4,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
+0x03A4A2,sys_unk_03a4a2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x03AAC4,sys_unk_03aac4,0,auto: touches none
 0x03AACC,sys_unk_03aacc,0,auto: touches $FF00AE $FF010E $FF0112 $FF012E $FFC364
 0x03AB8C,sys_unk_03ab8c,0,auto: touches $FF012A

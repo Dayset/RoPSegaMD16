@@ -92,12 +92,17 @@ def load_names():
     return names
 
 
+EXTRA_RANGES = Path("disasm/ghidra/extra_ranges.txt")
+
+
 def load_ranges():
     rows = []
-    for line in BODIES.read_text().splitlines():
-        if line.startswith("RANGE "):
-            _, entry, start, end = line.split()
-            rows.append((int(start, 16), int(end, 16), int(entry, 16)))
+    sources = [BODIES] + ([EXTRA_RANGES] if EXTRA_RANGES.exists() else [])
+    for src in sources:
+        for line in src.read_text().splitlines():
+            if line.startswith("RANGE "):
+                _, entry, start, end = line.split()
+                rows.append((int(start, 16), int(end, 16), int(entry, 16)))
     rows.sort()
     merged = []
     for start, end, entry in rows:
@@ -240,6 +245,44 @@ def main():
                     abs_refs[addr] = refs
             else:
                 converted[addr] = False
+
+    # 3a. computed-jump targets (#8): a dispatch is
+    #   cmp.l #N,dX ; bcc default ; ... ; move.w T(pc,d0.w),d0 ; jmp *+2(pc,d0.w)
+    # with N table entries at T, each a signed word offset from the jmp's extension word
+    # (jmp address + 2). Each target that lands on a decoded instruction start is labelled.
+    # Entries that do not land on an instruction start are counted and left unlabelled.
+    dispatch_ok, dispatch_bad = set(), 0
+    for start, end, entry, insns, tail in code:
+        for i, (addr, size, mnem, op) in enumerate(insns):
+            if not (mnem == "jmp" and "(pc," in op and size == 4):
+                continue
+            base = count = None
+            for j in range(i - 1, max(-1, i - 8), -1):
+                pa, ps, pm, po = insns[j]
+                pm = pm.split(".")[0]
+                po = po.replace(" ", "")
+                if base is None and pm == "move" and "(pc,d0.w),d0" in po and ps == 4:
+                    m = re.match(r"\$?([0-9A-Fa-f]+)\(pc,d0\.w\),d0", po)
+                    if m:
+                        base = int(m.group(1), 16)
+                elif count is None and pm == "cmp" and po.startswith("#"):
+                    m = re.match(r"#\$?([0-9A-Fa-f]+),d0", po)
+                    if m:
+                        count = int(m.group(1), 16)
+                if base is not None and count is not None:
+                    break
+            if base is None or count is None or count > 256:
+                dispatch_bad += 1
+                continue
+            for k in range(count):
+                w = int.from_bytes(rom[base + 2 * k:base + 2 * k + 2], "big", signed=True)
+                t = addr + 2 + w
+                if t in insn_starts:
+                    dispatch_ok.add(t)
+                else:
+                    dispatch_bad += 1
+    targets |= dispatch_ok
+    print(f"dispatch targets: {len(dispatch_ok)} labelled, {dispatch_bad} unresolved entries")
 
     def name(t):
         for _, _, entry, *_ in code:
