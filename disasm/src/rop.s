@@ -4729,7 +4729,7 @@ L012F9A:
 	move.w #$ff,d0	; $012F9A
 	bra.b L012F96	; $012F9E
 	; code $012FA0-$012FB3
-text_draw:
+error_show:
 	link.w a6,#$0	; $012FA0
 	move.w $8(a6),-(a7)	; $012FA4
 	jsr FUN_012072.l	; $012FA8
@@ -19268,7 +19268,7 @@ L020F6A:
 	cmpi.w #$ffff,-$2(a6)	; $020F6A
 	bne.b L020F7E	; $020F70
 	move.w #$16,-(a7)	; $020F72
-	jsr text_draw.l	; $020F76
+	jsr error_show.l	; $020F76
 	addq.w #$2,a7	; $020F7C
 L020F7E:
 	tst.w $8(a6)	; $020F7E
@@ -19317,7 +19317,7 @@ L02102A:
 	rts	; $02102C
 L02102E:
 	move.w #$15,-(a7)	; $02102E
-	jsr text_draw.l	; $021032
+	jsr error_show.l	; $021032
 	addq.w #$2,a7	; $021038
 	moveq #$ff,d0	; $02103A
 	bra.b L02102A	; $02103C
@@ -19389,7 +19389,7 @@ FUN_0210d8:
 	cmpi.w #$270f,(a0,d0.l)	; $0210EA
 	bne.b L0210FE	; $0210F0
 	move.w #$e7,-(a7)	; $0210F2
-	jsr text_draw.l	; $0210F6
+	jsr error_show.l	; $0210F6
 	addq.w #$2,a7	; $0210FC
 L0210FE:
 	pea.l -$8(a6)	; $0210FE
@@ -19400,7 +19400,7 @@ L0210FE:
 	tst.w -$2(a6)	; $021110
 	bne.b L021122	; $021114
 	move.w #$18,-(a7)	; $021116
-	jsr text_draw.l	; $02111A
+	jsr error_show.l	; $02111A
 	addq.w #$2,a7	; $021120
 L021122:
 	move.w $8(a6),d0	; $021122
@@ -19453,7 +19453,7 @@ L0211B2:
 	cmpi.w #$270f,(a0,d0.l)	; $0211C0
 	bne.b L0211D4	; $0211C6
 	move.w #$e8,-(a7)	; $0211C8
-	jsr text_draw.l	; $0211CC
+	jsr error_show.l	; $0211CC
 	addq.w #$2,a7	; $0211D2
 L0211D4:
 	cmp.w #$4,d6	; $0211D4
@@ -19471,7 +19471,7 @@ L0211E2:
 	tst.w d4	; $0211F2
 	bne.b L021202	; $0211F4
 	move.w #$18,-(a7)	; $0211F6
-	jsr text_draw.l	; $0211FA
+	jsr error_show.l	; $0211FA
 	addq.w #$2,a7	; $021200
 L021202:
 	pea.l -$c(a6)	; $021202
@@ -19560,7 +19560,7 @@ FUN_0212fc:
 	cmpi.w #$270f,(a0,d0.l)	; $021312
 	bne.b L021326	; $021318
 	move.w #$ea,-(a7)	; $02131A
-	jsr text_draw.l	; $02131E
+	jsr error_show.l	; $02131E
 	addq.w #$2,a7	; $021324
 L021326:
 	pea.l -$6(a6)	; $021326
@@ -19571,7 +19571,7 @@ L021326:
 	tst.w d4	; $021336
 	bne.b L021346	; $021338
 	move.w #$18,-(a7)	; $02133A
-	jsr text_draw.l	; $02133E
+	jsr error_show.l	; $02133E
 	addq.w #$2,a7	; $021344
 L021346:
 	move.w $c(a6),-(a7)	; $021346
@@ -19643,7 +19643,7 @@ FUN_02140a:
 	cmpi.w #$270f,(a0,d0.l)	; $02141C
 	bne.b L021430	; $021422
 	move.w #$e9,-(a7)	; $021424
-	jsr text_draw.l	; $021428
+	jsr error_show.l	; $021428
 	addq.w #$2,a7	; $02142E
 L021430:
 	cmpi.w #$ffff,$c(a6)	; $021430
@@ -19670,7 +19670,7 @@ L021468:
 	cmpi.w #$24,(a0,d0.l)	; $021484
 	blt.b L021498	; $02148A
 	move.w #$3c,-(a7)	; $02148C
-	jsr text_draw.l	; $021490
+	jsr error_show.l	; $021490
 	addq.w #$2,a7	; $021496
 L021498:
 	move.w $8(a6),d0	; $021498
@@ -22321,7 +22321,7 @@ L0236C6:
 	bra.w L0236C2	; $02375C
 L023760:
 	move.w #$19,-(a7)	; $023760
-	jsr text_draw.l	; $023764
+	jsr error_show.l	; $023764
 	addq.w #$2,a7	; $02376A
 	bra.w L0236C2	; $02376C
 	; code $023770-$0238B7
@@ -22420,7 +22420,7 @@ L02380E:
 	bra.w L02380A	; $0238A4
 L0238A8:
 	move.w #$19,-(a7)	; $0238A8
-	jsr text_draw.l	; $0238AC
+	jsr error_show.l	; $0238AC
 	addq.w #$2,a7	; $0238B2
 	bra.w L02380A	; $0238B4
 	; code $0238B8-$023937
@@ -22548,7 +22548,7 @@ L023BB2:
 	cmp.w #$ffff,d4	; $023BB2
 	bne.b L023BC4	; $023BB6
 	move.w #$1a,-(a7)	; $023BB8
-	jsr text_draw.l	; $023BBC
+	jsr error_show.l	; $023BBC
 	addq.w #$2,a7	; $023BC2
 L023BC4:
 	cmpi.w #$ffff,$c(a6)	; $023BC4
@@ -22558,7 +22558,7 @@ L023BC4:
 	cmpi.w #$1ce,$c(a6)	; $023BD4
 	blt.b L023BE8	; $023BDA
 	move.w #$1b,-(a7)	; $023BDC
-	jsr text_draw.l	; $023BE0
+	jsr error_show.l	; $023BE0
 	addq.w #$2,a7	; $023BE6
 L023BE8:
 	cmpi.w #$4,$8(a6)	; $023BE8
@@ -22566,7 +22566,7 @@ L023BE8:
 	cmpi.w #$ca,$c(a6)	; $023BF0
 	blt.b L023C04	; $023BF6
 	move.w #$1b,-(a7)	; $023BF8
-	jsr text_draw.l	; $023BFC
+	jsr error_show.l	; $023BFC
 	addq.w #$2,a7	; $023C02
 L023C04:
 	move.w $8(a6),d0	; $023C04
@@ -24120,7 +24120,7 @@ FUN_02513e:
 	tst.w -$e(a6)	; $02516C
 	bne.b L02517E	; $025170
 	move.w #$18,-(a7)	; $025172
-	jsr text_draw.l	; $025176
+	jsr error_show.l	; $025176
 	addq.w #$2,a7	; $02517C
 L02517E:
 	movea.l $ffa7fc.l,a0	; $02517E
@@ -24351,7 +24351,7 @@ FUN_025456:
 	and.w #$f,d1	; $025474
 	bne.b L025486	; $025478
 	move.w #$1c,-(a7)	; $02547A
-	jsr text_draw.l	; $02547E
+	jsr error_show.l	; $02547E
 	addq.w #$2,a7	; $025484
 L025486:
 	cmpi.w #$ffff,$c(a6)	; $025486
@@ -24540,7 +24540,7 @@ FUN_02570a:
 	and.w #$f,d1	; $025724
 	bne.b L025736	; $025728
 	move.w #$1c,-(a7)	; $02572A
-	jsr text_draw.l	; $02572E
+	jsr error_show.l	; $02572E
 	addq.w #$2,a7	; $025734
 L025736:
 	move.w $8(a6),d0	; $025736
@@ -24645,7 +24645,7 @@ FUN_025884:
 	cmpi.w #$270f,(a0,d0.l)	; $025898
 	bne.b L0258AC	; $02589E
 	move.w #$e6,-(a7)	; $0258A0
-	jsr text_draw.l	; $0258A4
+	jsr error_show.l	; $0258A4
 	addq.w #$2,a7	; $0258AA
 L0258AC:
 	moveq #$0,d4	; $0258AC
@@ -24727,7 +24727,7 @@ FUN_02595a:
 	cmp.w #$1,d1	; $02597C
 	beq.b L02598E	; $025980
 	move.w #$1d,-(a7)	; $025982
-	jsr text_draw.l	; $025986
+	jsr error_show.l	; $025986
 	addq.w #$2,a7	; $02598C
 L02598E:
 	move.w $8(a6),d0	; $02598E
@@ -24874,7 +24874,7 @@ FUN_025b4e:
 	cmp.w #$1,d1	; $025B68
 	beq.b L025B7A	; $025B6C
 	move.w #$1e,-(a7)	; $025B6E
-	jsr text_draw.l	; $025B72
+	jsr error_show.l	; $025B72
 	addq.w #$2,a7	; $025B78
 L025B7A:
 	move.w $8(a6),d0	; $025B7A
@@ -25022,7 +25022,7 @@ L025D0E:
 	jmp *+2(pc,d0.w)	; $025D1C
 L025D20:
 	move.w #$190,-(a7)	; $025D20
-	jsr text_draw.l	; $025D24
+	jsr error_show.l	; $025D24
 	addq.w #$2,a7	; $025D2A
 	bra.b L025CDC	; $025D2C
 	; code $025D2E-$025D65
@@ -25064,7 +25064,7 @@ L025D6E:
 	jmp *+2(pc,d0.w)	; $025D7C
 L025D80:
 	move.w #$191,-(a7)	; $025D80
-	jsr text_draw.l	; $025D84
+	jsr error_show.l	; $025D84
 	addq.w #$2,a7	; $025D8A
 	bra.b L025D52	; $025D8C
 	; code $025D8E-$025DBB
@@ -25100,7 +25100,7 @@ L025DC4:
 	jmp *+2(pc,d0.w)	; $025DD2
 L025DD6:
 	move.w #$192,-(a7)	; $025DD6
-	jsr text_draw.l	; $025DDA
+	jsr error_show.l	; $025DDA
 	addq.w #$2,a7	; $025DE0
 	bra.b L025DAC	; $025DE2
 	; code $025DE4-$025E11
@@ -32004,7 +32004,7 @@ L02BCF0:
 	bra.b L02BCFE	; $02BCF0
 L02BCF2:
 	move.w #$32,-(a7)	; $02BCF2
-	jsr text_draw.l	; $02BCF6
+	jsr error_show.l	; $02BCF6
 	addq.w #$2,a7	; $02BCFC
 L02BCFE:
 	cmpi.w #$a,-$2(a6)	; $02BCFE
@@ -32966,7 +32966,7 @@ L02CA18:
 	bra.b L02CA26	; $02CA18
 L02CA1A:
 	move.w #$32,-(a7)	; $02CA1A
-	jsr text_draw.l	; $02CA1E
+	jsr error_show.l	; $02CA1E
 	addq.w #$2,a7	; $02CA24
 L02CA26:
 	cmpi.w #$a,-$2(a6)	; $02CA26
@@ -32979,7 +32979,7 @@ L02CA26:
 	cmp.w -$2(a6),d1	; $02CA44
 	beq.b L02CA56	; $02CA48
 	move.w #$32,-(a7)	; $02CA4A
-	jsr text_draw.l	; $02CA4E
+	jsr error_show.l	; $02CA4E
 	addq.w #$2,a7	; $02CA54
 L02CA56:
 	move.w -$4(a6),-(a7)	; $02CA56
@@ -36460,7 +36460,7 @@ L02F82E:
 	cmpi.w #$3f0,-$2(a6)	; $02F870
 	bls.b L02F884	; $02F876
 	move.w #$c8,-(a7)	; $02F878
-	jsr text_draw.l	; $02F87C
+	jsr error_show.l	; $02F87C
 	addq.w #$2,a7	; $02F882
 L02F884:
 	clr.w -(a7)	; $02F884
@@ -40718,7 +40718,7 @@ L032E00:
 	bra.b L032EB0	; $032E82
 L032E84:
 	move.w #$46,-(a7)	; $032E84
-	jsr text_draw.l	; $032E88
+	jsr error_show.l	; $032E88
 	addq.w #$2,a7	; $032E8E
 	bra.b L032EB0	; $032E90
 L032E92:
@@ -41428,7 +41428,7 @@ L03381A:
 	cmp.w #$c8,d0	; $033840
 	ble.b L033852	; $033844
 	move.w #$71,-(a7)	; $033846
-	jsr text_draw.l	; $03384A
+	jsr error_show.l	; $03384A
 	addq.w #$2,a7	; $033850
 L033852:
 	move.w #$ffff,-(a7)	; $033852
@@ -41474,7 +41474,7 @@ L03388A:
 	cmp.w #$c8,d0	; $0338E2
 	ble.b L0338F4	; $0338E6
 	move.w #$71,-(a7)	; $0338E8
-	jsr text_draw.l	; $0338EC
+	jsr error_show.l	; $0338EC
 	addq.w #$2,a7	; $0338F2
 L0338F4:
 	move.w #$ffff,-(a7)	; $0338F4
@@ -41509,7 +41509,7 @@ L03392E:
 	tst.w d0	; $033958
 	ble.b L033968	; $03395A
 	move.w #$6d,-(a7)	; $03395C
-	jsr text_draw.l	; $033960
+	jsr error_show.l	; $033960
 	addq.w #$2,a7	; $033966
 L033968:
 	move.w #$ffff,-(a7)	; $033968
@@ -42620,7 +42620,7 @@ L0348FC:
 	cmp.w #$c8,d0	; $03496C
 	ble.b L03497E	; $034970
 	move.w #$71,-(a7)	; $034972
-	jsr text_draw.l	; $034976
+	jsr error_show.l	; $034976
 	addq.w #$2,a7	; $03497C
 L03497E:
 	move.w #$ffff,-(a7)	; $03497E
@@ -42693,7 +42693,7 @@ L034A60:
 	cmp.w #$c8,d0	; $034A74
 	ble.b L034A86	; $034A78
 	move.w #$6f,-(a7)	; $034A7A
-	jsr text_draw.l	; $034A7E
+	jsr error_show.l	; $034A7E
 	addq.w #$2,a7	; $034A84
 L034A86:
 	bra.b L034ADA	; $034A86
@@ -42737,7 +42737,7 @@ L034ADA:
 	cmpi.w #$c8,-$2(a6)	; $034B0E
 	ble.b L034B22	; $034B14
 	move.w #$6e,-(a7)	; $034B16
-	jsr text_draw.l	; $034B1A
+	jsr error_show.l	; $034B1A
 	addq.w #$2,a7	; $034B20
 L034B22:
 	tst.w -$2(a6)	; $034B22
@@ -42786,7 +42786,7 @@ L034B84:
 	cmpi.w #$c8,-$2(a6)	; $034BB8
 	ble.b L034BCC	; $034BBE
 	move.w #$70,-(a7)	; $034BC0
-	jsr text_draw.l	; $034BC4
+	jsr error_show.l	; $034BC4
 	addq.w #$2,a7	; $034BCA
 L034BCC:
 	unlk a6	; $034BCC
