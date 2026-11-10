@@ -534,11 +534,61 @@ forces the song at the dispatch itself, so no re-switch can escape it.
 (Builder `.scratch018/build_song_harness.py` is kept for the record.)
 
 Two non-dispatch sounds survive even the song-0 patch (so they do not go
-through the `$173EC` table): a ~10 s music burst at ~20–30 s emulated and
-another at ~65–75 s. They are present in every capture, including the
-silent song-0 run. Their identity is **[open]** — candidates are an SFX
-chain or a direct `$EB88A` song start. They are not any of the 19 dispatch
-songs and do not affect the mapping.
+through the `$173EC` table). Precise timing (per-100 ms envelope, not the
+5 s RMS windows the first draft used — the "~10 s" there was an
+overestimate): **burst 1, ~24.4–28.4 s emulated** — 2.7 s of music, a
+~0.4 s gap, then 0.8 s more (fundamental ~250 Hz); **burst 2, ~67.6–71.1 s
+emulated** — ~3.5 s of music, continuous, no gap (broader spectrum). They
+are present in every capture, including the silent song-0 run. They are
+not any of the 19 dispatch songs and do not affect the mapping.
+
+**Burst resolution — narrowed, not fully solved (SFX/burst follow-up,
+2026-11-10).** The follow-up built a 68k harness
+(`.scratch018/sfx/harness_sfx.s`, `.scratch018/sfx/build_sfx.py`) that
+calls `$17586(i, $FFFF)` for one SFX per ROM, hooked at the attract loop
+`0x35C` (`jsr $FD0CC.l`, 6 bytes replacing `move.w $C00004,d1`, return
+`0x362`), starting silent song 0 via `$173BC` first (driver upload) and
+then waiting 360 VBlank frames while calling `$EB772` once per frame —
+the tempo clock the SFX voice needs, since `$0B22` only services a voice
+when the tempo byte `$00E6` advances, and `$EB772` never runs in the
+attract context (interrupts masked). Twelve SFX were captured this way
+(§8.4). **Every one of those captures contains an identical ~4 s music
+event at ~37.6–41.6 s emulated** (2.7 s + ~0.5 s gap + 0.8 s) — the same
+phrase as burst 1: same two-part envelope, same ~250 Hz spectral cluster,
+lagged cross-correlation 0.44 (moderate — the two renders differ slightly
+in tempo/context, so the correlation is capped; burst 2 scores 0.03
+against the same event, i.e. no match). So burst 1 is a recurring
+attract-context phrase, and burst 2 is a different phrase.
+
+What produces them is **[open]** — narrowed to an attract-mode event, with
+these ruled out by measurement:
+- **Not a direct `$EB88A` start-song call.** All 19 `jsr $EB88A` sites are
+  inside the `$173EC` dispatch region (`0x17400–0x1753C`, the case bodies);
+  there is no `$EB88A` call that bypasses the dispatch.
+- **Not song 0's hidden note data.** Song 0's stream is `00` +
+  `C1 06 78` × 343 + `$FC $80`, and the `$FC $80` seek skips the last 248 B
+  of real note data — but the parser takes 686 s (41,161 ticks, verified
+  with `.scratch018/parse_songs.py`) to reach that seek, so the note data
+  is unreachable in any capture; and a test ROM with those 248 B zeroed
+  (`rom_testA_zeronote.gen`) still plays the event at 37.6–41.6 s
+  unchanged. The note data is dead in practice.
+- **Not any of the 12 captured SFX** (32, 1, 20, 15, 19, 21, 33, 17, 91,
+  92, 94, 95 — including all of the most-used table SFX and four of the
+  seven pointer SFX): lagged cross-correlation of the event against each
+  SFX's loudest second is 0.03–0.07 (no match).
+- **Not a song opening or a complete song.** Lagged correlation against
+  the opening second of all 19 song captures is 0.00–0.05; no song is
+  ~4 s long (song 8 is 1.2 s and ends; the rest loop at 38–172 s).
+
+Remaining candidates: the variable-index `$17586` call at `0x01837E`
+(the fixed-index intro-region sites — SFX 1 at `0x0150EC`, SFX 17 at
+`0x015A44`, SFX 92 at `0x0179AC`, SFX 94 at `0x0129DC` — are all ruled out
+by the capture comparisons), an SFX among the 31 table SFX not yet
+captured, a fragment from the middle of a song, or the `$0967` PSG
+routine. What would settle it: a debugger breakpoint on
+`$17586`/`$173EC`/`$EB88A` in the attract context logging the index at
+the event time (~37 s emulated in a harness ROM, ~24 s in a song-0 ROM),
+or capturing the remaining table SFX. See §12 items 11–12.
 
 All 19 captures are in `.scratch018/songs/songNN.wav` (not committed; the
 `.wav` files are the deliverable audio). The original ROM was re-verified
@@ -600,24 +650,48 @@ per-tick routine `$0B22` services both slots (envelope/decay via `$0A78`).
 Two SFX can therefore overlap; a third while both slots are busy is queued
 in `$FF0236`/`$FF023A` and retried next frame.
 
-### 8.4 Top table SFX by context [static, 2026-11-10]
+### 8.4 Top table SFX by context [static + live, 2026-11-10]
 
 The most-called table SFX, identified by which routines call `$17586`
-with that index (routine names from `disasm/ghidra/functions.txt`). No SFX
-audio was captured for this addendum — the identification is by call-site
-context, not by ear — and the per-byte record semantics are still open
-(§12 item 3), so "what it sounds like" is not claimed here. First 8 record
+with that index (routine names from `disasm/ghidra/functions.txt`). Audio
+was captured for this addendum (harness below) — the "Audio" column gives
+the measured duration and fundamental, plus a plain-language character
+guess from the spectrum; the guess is labelled as such, and the call-site
+context (the "Where it plays" column) is the certain identification. The
+per-byte record semantics are still open (§12 item 3). First 8 record
 bytes are from ROM `$FCAE2 + index*22`.
 
-| SFX | Sites | Record (first 8 B) | Where it plays (context) |
-|---|---|---|---|
-| 32 | 10 | `01 0c 0a 80 0a 7f 09 80` | The ubiquitous action sound. 7 sites in the big combat routine `FUN_0003e2d4` (`$3E2D4–$42E33`), plus command 50 (`FUN_0002619c`, character move/place — reads struct `+0x06`/`+0x0C`/`+0x0E`), the XP/resource routine `FUN_0002dcce`, and combat `FUN_0003a62e`. Most-used SFX; a general action/confirm/hit sound used for movement and combat actions. |
-| 1 | 7 | `08 09 30 f0 28 ff 00 00` | Intro/story (`FUN_00015012`), the song-11 routine `FUN_00017b88` (3 sites), `FUN_00024984`, and the XP routine `FUN_0002dcce`. A transition/UI sound. |
-| 20 | 7 | `00 1c 14 c0 00 00 00 00` | The location-change/arrival chime. 4 sites in the world tick `FUN_0002155e`, each right after the song picker `$32D0E` → `$173BC` (i.e. right after the map song switches on entering a new location) — twice in a row at `0x21A84`/`0x21A94` (a doubled chime) — plus the main loop `FUN_0000d28e` and combat `FUN_0003e2d4`. Short (4 non-zero record bytes). |
-| 15 | 6 | `18 2c 28 05 28 fb 28 05` | XP routine `FUN_0002dcce`, combat `FUN_0003e2d4` (2 sites), and the spell routines `FUN_00038fb8` / `FUN_00039172` / `FUN_000393fa` (`$38xxx–$39xxx` spell area). A spell/XP sound. |
-| 19 | 5 | `14 0c 14 c0 00 00 00 00` | XP routine, `FUN_00032284`, combat `FUN_0003a62e` / `FUN_0003d9f8` / `FUN_0003e2d4`. A combat/XP sound. Short (4 non-zero bytes). |
-| 21 | 5 | `14 0c 14 c0 14 40 14 c0` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (4 sites). A combat sound; the record repeats (`14 c0` twice), a longer effect. |
-| 33 | 4 | `05 0c ff 00 00 00 00 00` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (3 sites). A combat sound; very short (3 non-zero bytes). |
+Audio capture method (`.scratch018/sfx/`): a 68k harness hooked at the
+attract loop `0x35C` starts silent song 0 via `$173BC` (driver upload),
+calls `$17586(i, $FFFF)`, then waits 360 VBlank frames calling `$EB772`
+once per frame — the tempo clock the SFX voice needs, since `$0B22` only
+services a voice when the tempo byte `$00E6` advances. One ROM per SFX
+(`rom_sfxNN.gen`, checksums fixed); BlastEm `SDL_AUDIODRIVER=disk`,
+~60 s emulated per capture, audio in `sfxNN.wav` (NOT committed).
+Harness: `harness_sfx.s`, `build_sfx.py`, `capture_sfx.py`,
+`analyze_sfx.py`, `run_one.py`. All onsets are ~4.4 s emulated (boot +
+song-0 start + `$17586` call); durations are the sounding window.
+
+| SFX | Sites | Record (first 8 B) | Where it plays (context) | Audio (harness capture) |
+|---|---|---|---|---|
+| 32 | 10 | `01 0c 0a 80 0a 7f 09 80` | The ubiquitous action sound. 7 sites in the big combat routine `FUN_0003e2d4` (`$3E2D4–$42E33`), plus command 50 (`FUN_0002619c`, character move/place — reads struct `+0x06`/`+0x0C`/`+0x0E`), the XP/resource routine `FUN_0002dcce`, and combat `FUN_0003a62e`. Most-used SFX; a general action/confirm/hit sound used for movement and combat actions. | 3.5 s (4.4–7.9 s), fundamental ~110–162 Hz, swells to a late peak (6.4 s). [live] A low, swelling thud/boom — character is a guess from the spectrum. |
+| 1 | 7 | `08 09 30 f0 28 ff 00 00` | Intro/story (`FUN_00015012`), the song-11 routine `FUN_00017b88` (3 sites), `FUN_00024984`, and the XP routine `FUN_0002dcce`. A transition/UI sound. | 3.6 s (4.4–8.0 s), fundamental 272 Hz with harmonics at 740/806/1116 Hz. [live] A bright multi-tone chime — character is a guess. |
+| 20 | 7 | `00 1c 14 c0 00 00 00 00` | The location-change/arrival chime. 4 sites in the world tick `FUN_0002155e`, each right after the song picker `$32D0E` → `$173BC` (i.e. right after the map song switches on entering a new location) — twice in a row at `0x21A84`/`0x21A94` (a doubled chime) — plus the main loop `FUN_0000d28e` and combat `FUN_0003e2d4`. Short (4 non-zero record bytes). | 2.8 s (4.4–7.2 s), fundamental ~120–126 Hz (tight, single low tone), clean decay. [live] A deep, low bell/chime — the arrival context is certain by call site; "bell" is a guess from the spectrum. |
+| 15 | 6 | `18 2c 28 05 28 fb 28 05` | XP routine `FUN_0002dcce`, combat `FUN_0003e2d4` (2 sites), and the spell routines `FUN_00038fb8` / `FUN_00039172` / `FUN_000393fa` (`$38xxx–$39xxx` spell area). A spell/XP sound. | 9.6 s (4.4–14.0 s) — the longest table SFX captured — fundamental 384–482 Hz, peak mid-way (7.2 s). [live] A long, sustained mid-range shimmer — character is a guess. |
+| 19 | 5 | `14 0c 14 c0 00 00 00 00` | XP routine, `FUN_00032284`, combat `FUN_0003a62e` / `FUN_0003d9f8` / `FUN_0003e2d4`. A combat/XP sound. Short (4 non-zero bytes). | 1.3 s (4.4–5.7 s), bright (296/560/988/1030 Hz). [live] A short, sharp high zap/ping — character is a guess. |
+| 21 | 5 | `14 0c 14 c0 14 40 14 c0` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (4 sites). A combat sound; the record repeats (`14 c0` twice), a longer effect. | 3.4 s (4.4–7.8 s), spectrum identical to SFX 19 (296/560/988/1030 Hz). [live] The same bright zap as 19, extended/repeated — the spectral identity is measured; the "same sound" reading follows from it and the repeated record. |
+| 33 | 4 | `05 0c ff 00 00 00 00 00` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (3 sites). A combat sound; very short (3 non-zero bytes). | 10.6 s (4.5–15.1 s) — the longest captured — fundamental 260–602 Hz, builds to a late peak (12.5 s). [live] A long, swelling effect, despite the 3-byte record — character is a guess. The record length does not predict the sounding length. |
+
+Also captured for the burst investigation (§7.5) — all ruled out as the
+burst source by lagged cross-correlation (0.03–0.07, no match):
+
+| SFX | Sites | Audio (harness capture) |
+|---|---|---|
+| 17 | 2 (intro picture loop `0x015A44`, main loop `0x00D606`) | 6.6 s (4.4–11.0 s), fundamental 1818/3638 Hz — the highest-pitched SFX captured, a high whistle/sparkle (guess). |
+| 91 | 5 (pointer SFX, `$1394`) | 4.4 s (4.4–8.8 s), fundamental 146–294 Hz, a mid-range tone (guess); plus a single ~0.1 s low blip at ~26.2 s emulated (102–108 Hz), a delayed pulse in the pointer data of unknown origin. |
+| 92 | 1 (pointer SFX) | 1.2 s (4.4–5.6 s), fundamental 108–432 Hz, a short low blip (guess); plus the same ~26 s delayed pulse as 91/95. |
+| 94 | 1 (pointer SFX) | 2.8 s (4.4–7.2 s), fundamental 230–252 Hz, a mid-low tone (guess). |
+| 95 | 3 (pointer SFX, `$9A60`) | 3.5 s (4.4–7.9 s), fundamental ~106–136 Hz, a low tone (guess); plus the same ~26 s delayed pulse as 91/92. |
 
 ## 9. Boot sequence for sound [static + live]
 
@@ -760,6 +834,34 @@ settle delay before the first read, or the read returns stale bus data.
     itself is only reachable via that dead branch. (An earlier draft of this
     document listed `$EB9EE` as having no callers; the re-check found 4 —
     see §3.1 — so that claim was corrected here, not carried forward.)
+11. **SFX audio capture — DONE, 2026-11-10.** The 7 most-used table SFX
+    (32, 1, 20, 15, 19, 21, 33) plus SFX 17 and pointer SFX 91/92/94/95
+    were captured as audio (§8.4) with a 68k harness
+    (`.scratch018/sfx/harness_sfx.s`: `$35C` hook, `$173BC` song-0 start,
+    `$17586(i, $FFFF)`, 360-frame wait calling `$EB772` once per frame as
+    the tempo clock). Durations and fundamentals are measured; the
+    plain-language character per SFX is a spectral guess, labelled as
+    such. Two findings worth keeping: SFX 21's spectrum is identical to
+    SFX 19's (the same bright zap, extended — consistent with its repeated
+    record), and SFX 33 sounds for 10.6 s despite a 3-byte record, so
+    record length does not predict sounding length. Pointer SFX 91/92/95
+    each carry a single ~0.1 s low delayed pulse at ~26 s emulated, of
+    unknown origin. Captures: `.scratch018/sfx/sfxNN.wav` (NOT committed).
+12. **The two non-dispatch bursts — NARROWED, not resolved, 2026-11-10.**
+    Burst 1 (~24.4–28.4 s emulated in a song-0 capture: 2.7 s + ~0.4 s gap
+    + 0.8 s, ~250 Hz) is the same phrase as the ~37.6–41.6 s event in every
+    SFX-harness capture (same two-part envelope, same spectral cluster,
+    lagged correlation 0.44); burst 2 (~67.6–71.1 s, ~3.5 s continuous) is
+    a different phrase (correlation 0.03). Ruled out: a direct `$EB88A`
+    call (all 19 sites are inside the `$173EC` dispatch), song 0's hidden
+    note data (parser takes 686 s to reach the `$FC $80` seek, and a test
+    ROM with the 248 B zeroed still plays the event), all 12 captured SFX,
+    and every song opening / complete song. Remaining candidates: the
+    variable-index `$17586` at `0x01837E`, an SFX among the 31 table SFX
+    not yet captured, a fragment from the middle of a song, or the `$0967`
+    PSG routine. What would settle it: a debugger breakpoint on
+    `$17586`/`$173EC`/`$EB88A` in the attract context logging the index at
+    the event time, or capturing the remaining table SFX. See §7.5.
 
 ## Appendix: files
 
@@ -784,3 +886,15 @@ settle delay before the first read, or the read returns stale bus data.
   committed). Per-song patched ROMs: `.scratch018/songs/rom_songNN.gen`
   (dispatch table patched to song NN; NOT committed). Capture log:
   `.scratch018/songs/capture.log`.
+- SFX/burst follow-up (2026-11-10): `.scratch018/sfx/harness_sfx.s`
+  (68k harness: `$35C` hook, `$173BC` song-0 start, `$17586(i, $FFFF)`,
+  360-frame wait calling `$EB772` per frame),
+  `.scratch018/sfx/build_sfx.py` (per-SFX ROM builder),
+  `.scratch018/sfx/capture_sfx.py` (BlastEm batch capture),
+  `.scratch018/sfx/run_one.py` (single-ROM capture),
+  `.scratch018/sfx/analyze_sfx.py` (per-100 ms envelope + spectrum).
+  Per-SFX audio: `.scratch018/sfx/sfxNN.wav` (NN = 01, 15, 17, 19, 20,
+  21, 32, 33, 91, 92, 94, 95; ~60 s emulated each; NOT committed).
+  Per-SFX ROMs: `.scratch018/sfx/rom_sfxNN.gen` (NOT committed).
+  Burst test ROM: `.scratch018/sfx/rom_testA_zeronote.gen` (song 0's
+  248 B note-data region zeroed; the 37–42 s event survives — Test A).

@@ -44,6 +44,23 @@ path). Top table SFX identified by context in `docs/sound.md` §8.4 (SFX 32
 combat/XP); no SFX audio was captured — that is the remaining follow-up.
 Original ROM re-verified unchanged (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
+**SFX/burst follow-up 2026-11-10 (docs/sound.md §7.5, §8.4, §12 items 11–12):**
+the 7 most-used table SFX (32, 1, 20, 15, 19, 21, 33) plus SFX 17 and
+pointer SFX 91/92/94/95 were captured as audio with a 68k harness
+(`.scratch018/sfx/`, NOT committed) — durations + fundamentals measured,
+character guesses labelled as such (SFX 21's spectrum is identical to
+19's; SFX 33 sounds 10.6 s despite a 3-byte record). The two non-dispatch
+bursts are NARROWED, not solved: burst 1 (~24.4–28.4 s) is the same phrase
+as the ~37.6–41.6 s event in every SFX capture (envelope + 0.44 lagged
+correlation); burst 2 (~67.6–71.1 s) is a different phrase. Ruled out:
+direct `$EB88A` (no callers outside the dispatch), song 0's hidden note
+data (parser takes 686 s to reach the `$FC $80` seek; a test ROM with the
+248 B zeroed still plays the event), all 12 captured SFX, and every song
+opening/complete song. Remaining candidates: the variable-index `$17586`
+at `0x01837E`, one of the 31 uncaptured table SFX, a song fragment, or the
+`$0967` PSG routine. Original ROM re-verified unchanged (MD5
+`30c18fdbe2183f64702ae9f1a45d63f9`).
+
 ## Notes
 - 68000 touches the Z80 only via `$A11100` bus control so far.
   The driver itself lives in Z80 address space — Ghidra m68k will not
