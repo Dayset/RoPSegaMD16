@@ -25,7 +25,7 @@ addr,name,tier,note
 0x00DD5C,sys_unk_00dd5c,0,auto: touches $202020 $FF0EAC
 0x00DE02,sys_unk_00de02,0,auto: touches none
 0x00DE1A,sys_unk_00de1a,0,auto: touches none
-0x00DEDA,sys_unk_00deda,0,auto: touches none
+0x00DEDA,math_rem32_signed,1,"static: takes absolute values, calls math_udiv32, returns remainder in d0"
 0x00DEF4,math_mod32,2,logic.md: $DEF4(arg) = modulo by arg
 0x00DF0A,math_udiv32,2,logic.md: unsigned divide; remainder in d0; core divide
 0x00E358,sys_unk_00e358,0,auto: touches $FF1EC0
@@ -37,14 +37,14 @@ addr,name,tier,note
 0x0112BE,sys_unk_0112be,0,auto: touches $FF8640
 0x011416,sys_unk_011416,0,auto: touches $FF8642
 0x011514,sys_unk_011514,0,auto: touches $FF8640
-0x011588,sys_unk_011588,0,auto: touches none
-0x0115C2,sys_unk_0115c2,0,auto: touches none
+0x011588,text_draw_at,1,static: calls helper 0x11FAE then text_glyph_draw with the caller's coordinates
+0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
 0x011820,sys_unk_011820,0,auto: touches none
 0x0118C8,sys_unk_0118c8,0,auto: touches none
 0x01194A,sys_unk_01194a,0,auto: touches none
 0x011A1A,sys_unk_011a1a,0,auto: touches none
 0x011A7C,sys_unk_011a7c,0,auto: touches $FF0076 $FF1EC0 $FF1EE0
-0x011B58,sys_unk_011b58,0,auto: touches $FF0076 $FF8644
+0x011B58,sys_counter_add,1,static: returns old value of $FF0076; adds its argument to it
 0x011BB8,sys_unk_011bb8,0,auto: touches $FF0E14 $FF8644 $FF8646
 0x011C4A,sprite_set_link,2,graphics.md: $11C4A rewrites word 1 (size/link) of a sprite
 0x011C9A,sprite_grid_write,2,graphics.md: $11C9A writes a rows x cols grid of sprites

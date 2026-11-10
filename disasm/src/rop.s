@@ -2066,7 +2066,7 @@ L00DED2:
 	tst.l d0	; $00DED6
 	rts	; $00DED8
 	; code $00DEDA-$00DEF3
-sys_unk_00deda:
+math_rem32_signed:
 	move.l d1,-(a7)	; $00DEDA
 	move.w d4,-(a7)	; $00DEDC
 	sub.w d4,d4	; $00DEDE
@@ -2715,7 +2715,7 @@ L011582:
 	unlk a6	; $011584
 	rts	; $011586
 	; code $011588-$0115C1
-sys_unk_011588:
+text_draw_at:
 	link.w a6,#$fff6	; $011588
 	move.w $16(a6),-(a7)	; $01158C
 	move.w #$a,-(a7)	; $011590
@@ -2733,7 +2733,7 @@ sys_unk_011588:
 	unlk a6	; $0115BE
 	rts	; $0115C0
 	; code $0115C2-$011623
-sys_unk_0115c2:
+text_draw_centred:
 	link.w a6,#$0	; $0115C2
 	movem.l d4-d7,-(a7)	; $0115C6
 	move.l $8(a6),-(a7)	; $0115CA
@@ -3257,7 +3257,7 @@ tile_upload_at:
 	unlk a6	; $011B54
 	rts	; $011B56
 	; code $011B58-$011B75
-sys_unk_011b58:
+sys_counter_add:
 	link.w a6,#$fffe	; $011B58
 	move.w $ff0076.l,-$2(a6)	; $011B5C
 	move.w $8(a6),d0	; $011B64
@@ -3644,7 +3644,7 @@ L011FC2:
 L011FC4:
 	moveq #$a,d1	; $011FC4
 	move.l $8(a6),d0	; $011FC6
-	jsr sys_unk_00deda.l	; $011FCA
+	jsr math_rem32_signed.l	; $011FCA
 	add.l #$30,d0	; $011FD0
 	move.w d4,d1	; $011FD6
 	addq.w #$1,d4	; $011FD8
@@ -4579,11 +4579,11 @@ world_map_draw:
 	addq.w #$6,a7	; $012D58
 	move.w d0,$ff8676.l	; $012D5A
 	move.w #$24,-(a7)	; $012D60
-	jsr sys_unk_011b58.l	; $012D64
+	jsr sys_counter_add.l	; $012D64
 	addq.w #$2,a7	; $012D6A
 	move.w d0,$ff8648.l	; $012D6C
 	move.w #$33c,-(a7)	; $012D72
-	jsr sys_unk_011b58.l	; $012D76
+	jsr sys_counter_add.l	; $012D76
 	addq.w #$2,a7	; $012D7C
 	move.w d0,$ff8674.l	; $012D7E
 	move.w #$60,-(a7)	; $012D84
@@ -6501,15 +6501,15 @@ gfx_plane_write:
 	addq.w #$6,a7	; $0148B2
 	move.w d0,$ff8676.l	; $0148B4
 	move.w #$24,-(a7)	; $0148BA
-	jsr sys_unk_011b58.l	; $0148BE
+	jsr sys_counter_add.l	; $0148BE
 	addq.w #$2,a7	; $0148C4
 	move.w d0,-$1c(a6)	; $0148C6
 	move.w #$24,-(a7)	; $0148CA
-	jsr sys_unk_011b58.l	; $0148CE
+	jsr sys_counter_add.l	; $0148CE
 	addq.w #$2,a7	; $0148D4
 	move.w d0,-$1a(a6)	; $0148D6
 	move.w #$24,-(a7)	; $0148DA
-	jsr sys_unk_011b58.l	; $0148DE
+	jsr sys_counter_add.l	; $0148DE
 	addq.w #$2,a7	; $0148E4
 	move.w d0,-$18(a6)	; $0148E6
 	move.w #$8208,-(a7)	; $0148EA
@@ -40925,7 +40925,7 @@ L0330DC:
 	move.l #$7d0,d1	; $0330E4
 	move.l d0,-(a7)	; $0330EA
 	move.l -$16(a6),d0	; $0330EC
-	jsr sys_unk_00deda.l	; $0330F0
+	jsr math_rem32_signed.l	; $0330F0
 	move.l (a7)+,d1	; $0330F6
 	add.l d0,d1	; $0330F8
 	move.l d1,-$e(a6)	; $0330FA
