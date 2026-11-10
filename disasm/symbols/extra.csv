@@ -1,0 +1,7 @@
+addr,name,tier,note
+0x0002FA,boot_display_attract,2,docs/architecture.md: 0x2FA checksum; save check; display on; attract loop
+0x00D8BA,struct52_dispatch,2,docs/architecture.md: $D8BA indexes 52-byte structs via $FF0120
+0x020652,save_menu_load,2,docs/logic-audit.md:492 Load; calls $2F896
+0x020670,save_menu_save,2,docs/logic-audit.md:493 Save; calls $2F11A
+0x020758,settings_menu_open,2,RROP rings_settings_sdl.h:153: redirects to $20758 to open Settings; 0x20388 branches to L020758
+0x02C4E2,xp_grant,2,docs/logic.md 2.3: XP grant / level-up handler; inside resource routine $2BBD2

@@ -4,7 +4,7 @@ ROM      := rop-original.gen
 REBUILT  := build/rop-rebuilt.gen
 PY       := python3
 
-.PHONY: help vasm build verify coverage regions gate rom-free check status clean
+.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean
 
 help:
 	@echo "make vasm      install pinned assembler into tools/vasm"
@@ -36,7 +36,10 @@ gate: verify coverage
 rom-free:
 	@if git ls-files | grep -q "\.gen$$"; then echo "ROM image tracked by git:"; git ls-files | grep "\.gen$$"; exit 1; else echo "PASS no tracked ROM images"; fi
 
-check: gate rom-free
+lint:
+	python3 tools/lint_symbols.py
+
+check: lint gate rom-free
 	@python3 tools/status.py
 
 status:

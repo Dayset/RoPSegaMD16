@@ -73,27 +73,23 @@ def abs_operands(op):
     return refs
 
 
-NAMES_FILE = Path("disasm/names.txt")
 
 
 def load_names():
-    """Routine names from disasm/names.txt: 'ADDR NAME  # source'. Each name must be unique."""
+    """Routine names from disasm/symbols/*.csv (addr,name,tier,note). Names must be unique."""
+    import csv
     names = {}
-    if not NAMES_FILE.exists():
-        return names
-    for line in NAMES_FILE.read_text().splitlines():
-        body = line.split("#", 1)[0].strip()
-        if not body:
-            continue
-        addr_s, name = body.split()
-        addr = int(addr_s, 16)
-        if name in names.values():
-            raise SystemExit(f"duplicate routine name {name}")
-        names[addr] = name
+    for path in sorted(Path("disasm/symbols").glob("*.csv")):
+        with path.open(newline="") as fh:
+            for row in csv.DictReader(fh):
+                addr = int(row["addr"], 16)
+                name = row["name"]
+                if name in names.values():
+                    raise SystemExit(f"duplicate routine name {name} ({path})")
+                if addr in names:
+                    raise SystemExit(f"duplicate address 0x{addr:06X} ({path})")
+                names[addr] = name
     return names
-
-
-NAMES = {}
 
 
 def load_ranges():

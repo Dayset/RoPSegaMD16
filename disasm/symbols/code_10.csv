@@ -1,0 +1,16 @@
+addr,name,tier,note
+0x042E34,eeprom_start,2,docs/save.md:154-155 start sequence; eeprom_init calls it; then $42E76
+0x042E76,eeprom_stop,2,docs/save.md:157 closing sequence (write $00;$40;$C0)
+0x042EBA,eeprom_bit_out,2,docs/save.md:165 shifts one bit out; 0x42EBA-0x42EEC
+0x042EEE,eeprom_bit_in,2,docs/save.md:169 shifts one bit in; 0x42EEE-0x42F24
+0x042F96,eeprom_ack_read,2,docs/save.md:172 ACK read; 0x42F96-0x42FC6
+0x042FC8,eeprom_init,2,docs/save.md:151 EEPROM serial init; retry limit $FF014C=10
+0x042FD8,eeprom_delay,2,docs/save.md:161 delay loop move.w #$1964
+0x043012,eeprom_read_block,2,docs/save.md:176 EEPROM READ (block); 0x43012-0x430E0
+0x0430F4,eeprom_write_byte,2,docs/save.md:198 EEPROM WRITE (one byte); 0x430F4-0x43230
+0x04323C,save_validate,2,docs/architecture.md: $4323C serial-EEPROM / save validation
+0x0EB772,sound_tick,2,docs/architecture.md: $EB772 per-frame sound/music tick
+0x0EB7C8,sound_stop,2,sf.b $FF021E (sound-off flag); docs/overview.md: stop-sound; zero callers
+0x0EB806,sound_upload,2,docs/architecture.md: $EB806 sound-driver upload
+0x0EB88A,sound_start_song,2,sound_upload; then song pointer into $FF022C/$FF0230; docs/architecture.md: start-song
+0x0EB92A,z80_bus_request,1,sr=$2700; $A11100=$0100 (bus request); a0=$A00000

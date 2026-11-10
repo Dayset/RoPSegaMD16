@@ -1,0 +1,5 @@
+addr,name,tier,note
+0x02F030,xp_to_level,2,docs/logic.md: level function $2F030 -> level (XP thresholds 100*2^L)
+0x02F11A,save_serialise,2,docs/save.md:336 SAVE serialiser
+0x02F896,save_deserialise,2,docs/logic-audit.md:492 Load path; RROP rings_saves.h hooks the menu at $20652
+0x031946,max_power_for_level,2,docs/logic.md: $31946 max Power = (level+1)*1000

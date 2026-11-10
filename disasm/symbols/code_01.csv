@@ -1,0 +1,16 @@
+addr,name,tier,note
+0x00DE30,strcpy,2,docs/logic.md: formatter helper $DE30 strcpy (checked by direct read)
+0x00DE3E,strcat,2,docs/logic.md: $DE3E strcat
+0x00DE52,strcmp,2,docs/logic.md: $DE52 strcmp
+0x00DE7C,strlen,2,docs/logic.md: $DE7C strlen
+0x00DE8E,mul32,1,32x32 -> low 32 bits: mulu on 16-bit halves; summed (d0*d1 -> d0)
+0x00DEB2,div32_signed,2,docs/logic.md: $DEB2 signed 32/32 divide (quotient in d0)
+0x01113C,text_glyph_draw,2,code: calls vdp_set_write_addr (0x11160) and vdp_data_write (0x1118C); RROP maps its return sites $11192;$11290;$1121C;$11238;$11252;$1126C to char-range writers
+0x011624,text_box,2,docs/logic.md: $11624 display text box
+0x011ABC,tile_upload,2,docs/graphics.md:421: uploads count tiles from src to base
+0x011AE4,tile_record_load,2,docs/graphics.md:394;859: loads a record's 36 tiles to a VRAM tile base
+0x011B2E,tile_upload_at,2,docs/graphics.md:423: same with an explicit base
+0x011B76,clear_sprite_attr,2,docs/graphics.md:229;430: writes 4 zero words; clears one 8-byte sprite attribute
+0x011BD8,sprite_write,2,docs/graphics.md: $11BD8 sprite writer
+0x011DE8,clear_decode_buffer,2,docs/graphics.md:366: clears the $FF1EC0 decode buffer
+0x011F3A,num_to_str,2,docs/logic.md: $11F3A number->string (base 10)

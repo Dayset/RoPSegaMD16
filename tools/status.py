@@ -3,7 +3,7 @@
 
 Writes STATUS.md and replaces the README block between
 <!-- status:start --> and <!-- status:end -->.
-Sources: disasm/names.txt, disasm/ghidra/functions.txt, disasm/src/rop.s,
+Sources: disasm/symbols/*.csv, disasm/ghidra/functions.txt, disasm/src/rop.s,
          rop-original.gen (size, if present).
 Usage: python3 tools/status.py
 """
@@ -22,9 +22,13 @@ def num(t):
 
 
 def measure():
-    names = [l.split()[:2] for l in Path('disasm/names.txt').read_text().splitlines() if l.strip().startswith('0x')]
+    import csv
+    names = []
+    for path in sorted(Path('disasm/symbols').glob('*.csv')):
+        with path.open(newline='') as fh:
+            names += [(r['addr'], r['name']) for r in csv.DictReader(fh)]
     if len({a for a, _ in names}) != len(names) or len({n for _, n in names}) != len(names):
-        sys.exit('status: names.txt has a duplicate address or name')
+        sys.exit('status: symbol files have a duplicate address or name')
     funcs = 0
     f = Path('disasm/ghidra/functions.txt')
     if f.exists():

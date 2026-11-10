@@ -1,0 +1,13 @@
+addr,name,tier,note
+0x012B82,rand_next,1,LCG step on $FF0072: *0x41C64E6D + 0x3039; returns bits 16..30
+0x012C20,world_map_draw,2,docs/architecture.md:185: $12C20 world-map draw
+0x012FA0,error_show,2,1-arg wrapper calling $12072 (bytes 0x12FA0-0x12FB3). Our docs/logic.md:295 call it text draw; RROP docs/diagnostics.md:37 call it the original error handler (fatal screen). Callers pass codes 0x1A/0x1B (docs/architecture.md:228). Disputed; name chosen from callers + RROP.
+0x012FE8,menu_verb_input,2,docs/architecture.md: $12FE8 menu/verb input decoder
+0x01383C,map_decode,2,docs/maps.md: $1383C map decode
+0x01386A,wait_vblank,1,sets $FF0016=$FFFF; spins until the VBlank handler clears it
+0x0138A8,menu_format,2,docs/graphics.md / logic: $138A8 menu-display formatter
+0x016512,column_write,2,docs/graphics.md:465: column writer (scroll)
+0x0170DA,palette_fade,2,docs/graphics.md: $170DA palette cross-fade (mode 2 pal 10<->19)
+0x0173BC,song_request,2,docs/sound.md: $173BC song request; returns early if the song already plays
+0x0179B6,soft_reset,2,docs/architecture.md: $179B6 soft reset (movea.l $FFEC1E;a7; jmp $200)
+0x017B88,scene_draw,2,docs/graphics.md: $17B88 scene-draw driver
