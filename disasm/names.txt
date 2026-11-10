@@ -19,3 +19,10 @@
 0x000EB806 sound_upload         # docs/architecture.md: $EB806 sound-driver upload
 0x000FD07C runtime_checksum     # docs/architecture.md: $FD07C runtime checksum
 0x0004323C save_validate        # docs/architecture.md: $4323C serial-EEPROM / save validation
+# --- named from code (evidence: the routine's own instructions, addresses in the comment) ---
+0x0000DE8E mul32               # 32x32 -> low 32 bits: mulu on 16-bit halves, summed (d0*d1 -> d0)
+0x00012B82 rand_next           # LCG step on $FF0072: *0x41C64E6D + 0x3039; returns bits 16..30
+0x0000D9EE vdp_data_write      # move.w arg,$C00000: one word to the VDP data port
+0x0000D9FA vdp_data_read       # move.w $C00000,d0: one word from the VDP data port
+0x0000DC60 vdp_set_write_addr  # VDP control port: $4000|addr low word, then the 2-bit high part
+0x0001386A wait_vblank         # sets $FF0016=$FFFF, spins until the VBlank handler clears it

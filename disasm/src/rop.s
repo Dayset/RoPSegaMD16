@@ -1133,12 +1133,12 @@ L00D320:
 	beq.b L00D398	; $00D326
 	move.b #$a,-$4(a6)	; $00D328
 	move.w #$8,-(a7)	; $00D32E
-	jsr FUN_012b82.l	; $00D332
+	jsr rand_next.l	; $00D332
 	addq.w #$2,a7	; $00D338
 	tst.w d0	; $00D33A
 	bne.b L00D350	; $00D33C
 	move.w #$5,-(a7)	; $00D33E
-	jsr FUN_012b82.l	; $00D342
+	jsr rand_next.l	; $00D342
 	addq.w #$2,a7	; $00D348
 	move.b d0,-$3(a6)	; $00D34A
 	bra.b L00D366	; $00D34E
@@ -1659,12 +1659,12 @@ FUN_00d9e2:
 	move.w d0,$c00004.l	; $00D9E6
 	rts	; $00D9EC
 	; code $00D9EE-$00D9F9
-FUN_00d9ee:
+vdp_data_write:
 	move.w $4(a7),d0	; $00D9EE
 	move.w d0,$c00000.l	; $00D9F2
 	rts	; $00D9F8
 	; code $00D9FA-$00DA03
-FUN_00d9fa:
+vdp_data_read:
 	moveq #$0,d0	; $00D9FA
 	move.w $c00000.l,d0	; $00D9FC
 	rts	; $00DA02
@@ -1830,7 +1830,7 @@ FUN_00dc16:
 	move.w d3,$c00000.l	; $00DC58
 	rts	; $00DC5E
 	; code $00DC60-$00DC81
-FUN_00dc60:
+vdp_set_write_addr:
 	move.l $4(a7),d0	; $00DC60
 	move.w d0,d1	; $00DC64
 	rol.w #$2,d1	; $00DC66
@@ -2023,7 +2023,7 @@ L00DE82:
 	subq.l #$1,d0	; $00DE8A
 	rts	; $00DE8C
 	; code $00DE8E-$00DEB1
-FUN_00de8e:
+mul32:
 	movem.l d2-d3,-(a7)	; $00DE8E
 	move.w d1,d2	; $00DE92
 	mulu.w d0,d2	; $00DE94
@@ -2268,7 +2268,7 @@ L0110A8:
 	asl.l #$1,d0	; $0110AE
 	movea.l $a(a6),a0	; $0110B0
 	move.w (a0,d0.l),-(a7)	; $0110B4
-	jsr FUN_00d9ee.l	; $0110B8
+	jsr vdp_data_write.l	; $0110B8
 	addq.w #$2,a7	; $0110BE
 	addq.w #$1,-$2(a6)	; $0110C0
 	cmpi.w #$10,-$2(a6)	; $0110C4
@@ -2291,7 +2291,7 @@ FUN_0110d0:
 	jsr FUN_00d9e2.l	; $0110F2
 	addq.w #$2,a7	; $0110F8
 	move.w $c(a6),-(a7)	; $0110FA
-	jsr FUN_00d9ee.l	; $0110FE
+	jsr vdp_data_write.l	; $0110FE
 	addq.w #$2,a7	; $011104
 	unlk a6	; $011106
 	rts	; $011108
@@ -2309,7 +2309,7 @@ FUN_01110a:
 	move.w #$20,-(a7)	; $011126
 	jsr FUN_00d9e2.l	; $01112A
 	addq.w #$2,a7	; $011130
-	jsr FUN_00d9fa.l	; $011132
+	jsr vdp_data_read.l	; $011132
 	unlk a6	; $011138
 	rts	; $01113A
 	; code $01113C-$01119D
@@ -2327,7 +2327,7 @@ FUN_01113c:
 	add.l d1,d0	; $011158
 	add.l $8(a6),d0	; $01115A
 	move.l d0,-(a7)	; $01115E
-	jsr FUN_00dc60.l	; $011160
+	jsr vdp_set_write_addr.l	; $011160
 	addq.w #$4,a7	; $011166
 L011168:
 	movea.l $12(a6),a0	; $011168
@@ -2340,7 +2340,7 @@ L011168:
 	add.w $16(a6),d0	; $011182
 	sub.w #$20,d0	; $011186
 	move.w d0,-(a7)	; $01118A
-	jsr FUN_00d9ee.l	; $01118C
+	jsr vdp_data_write.l	; $01118C
 	addq.w #$2,a7	; $011192
 	addq.w #$1,d4	; $011194
 	bra.b L011168	; $011196
@@ -2363,7 +2363,7 @@ FUN_01119e:
 	add.l d1,d0	; $0111BA
 	add.l $8(a6),d0	; $0111BC
 	move.l d0,-(a7)	; $0111C0
-	jsr FUN_00dc60.l	; $0111C2
+	jsr vdp_set_write_addr.l	; $0111C2
 	addq.w #$4,a7	; $0111C8
 L0111CA:
 	movea.l $12(a6),a0	; $0111CA
@@ -2379,7 +2379,7 @@ L0111CA:
 	asl.l #$1,d0	; $0111EC
 	add.l $8(a6),d0	; $0111EE
 	move.l d0,-(a7)	; $0111F2
-	jsr FUN_00dc60.l	; $0111F4
+	jsr vdp_set_write_addr.l	; $0111F4
 	addq.w #$4,a7	; $0111FA
 L0111FC:
 	movea.l $12(a6),a0	; $0111FC
@@ -2390,7 +2390,7 @@ L01120A:
 	move.w $ff8640.l,d0	; $01120A
 	add.w $16(a6),d0	; $011210
 	move.w d0,-(a7)	; $011214
-	jsr FUN_00d9ee.l	; $011216
+	jsr vdp_data_write.l	; $011216
 	addq.w #$2,a7	; $01121C
 	bra.w L0112B2	; $01121E
 L011222:
@@ -2398,7 +2398,7 @@ L011222:
 	add.w $16(a6),d0	; $011228
 	add.w #$1b,d0	; $01122C
 	move.w d0,-(a7)	; $011230
-	jsr FUN_00d9ee.l	; $011232
+	jsr vdp_data_write.l	; $011232
 	addq.w #$2,a7	; $011238
 	bra.b L0112B2	; $01123A
 L01123C:
@@ -2406,7 +2406,7 @@ L01123C:
 	add.w $16(a6),d0	; $011242
 	add.w #$1c,d0	; $011246
 	move.w d0,-(a7)	; $01124A
-	jsr FUN_00d9ee.l	; $01124C
+	jsr vdp_data_write.l	; $01124C
 	addq.w #$2,a7	; $011252
 	bra.b L0112B2	; $011254
 L011256:
@@ -2414,7 +2414,7 @@ L011256:
 	add.w $16(a6),d0	; $01125C
 	add.w #$1d,d0	; $011260
 	move.w d0,-(a7)	; $011264
-	jsr FUN_00d9ee.l	; $011266
+	jsr vdp_data_write.l	; $011266
 	addq.w #$2,a7	; $01126C
 	bra.b L0112B2	; $01126E
 L011270:
@@ -2425,7 +2425,7 @@ L011270:
 	add.w $16(a6),d0	; $011280
 	sub.w #$40,d0	; $011284
 	move.w d0,-(a7)	; $011288
-	jsr FUN_00d9ee.l	; $01128A
+	jsr vdp_data_write.l	; $01128A
 	addq.w #$2,a7	; $011290
 	bra.b L0112B2	; $011292
 L011294:
@@ -2496,7 +2496,7 @@ L01132C:
 	add.l d1,d0	; $011340
 	add.l $8(a6),d0	; $011342
 	move.l d0,-(a7)	; $011346
-	jsr FUN_00dc60.l	; $011348
+	jsr vdp_set_write_addr.l	; $011348
 	addq.w #$4,a7	; $01134E
 	moveq #$0,d5	; $011350
 	bra.b L011392	; $011352
@@ -2506,7 +2506,7 @@ L011354:
 	asl.l #$1,d0	; $011358
 	lea.l -$50(a6),a0	; $01135A
 	move.w (a0,d0.l),-(a7)	; $01135E
-	jsr FUN_00d9ee.l	; $011362
+	jsr vdp_data_write.l	; $011362
 	addq.w #$2,a7	; $011368
 	lea.l -$78(a6),a0	; $01136A
 	cmpi.b #$2,(a0,d5.w)	; $01136E
@@ -2518,7 +2518,7 @@ L011354:
 	move.w (a0,d0.l),d1	; $011380
 	addq.w #$2,d1	; $011384
 	move.w d1,-(a7)	; $011386
-	jsr FUN_00d9ee.l	; $011388
+	jsr vdp_data_write.l	; $011388
 	addq.w #$2,a7	; $01138E
 L011390:
 	addq.w #$1,d5	; $011390
@@ -2539,7 +2539,7 @@ L011392:
 	add.l d1,d0	; $0113B4
 	add.l $8(a6),d0	; $0113B6
 	move.l d0,-(a7)	; $0113BA
-	jsr FUN_00dc60.l	; $0113BC
+	jsr vdp_set_write_addr.l	; $0113BC
 	addq.w #$4,a7	; $0113C2
 	moveq #$0,d5	; $0113C4
 	bra.b L01140A	; $0113C6
@@ -2551,7 +2551,7 @@ L0113C8:
 	move.w (a0,d0.l),d1	; $0113D2
 	addq.w #$1,d1	; $0113D6
 	move.w d1,-(a7)	; $0113D8
-	jsr FUN_00d9ee.l	; $0113DA
+	jsr vdp_data_write.l	; $0113DA
 	addq.w #$2,a7	; $0113E0
 	lea.l -$78(a6),a0	; $0113E2
 	cmpi.b #$2,(a0,d5.w)	; $0113E6
@@ -2563,7 +2563,7 @@ L0113C8:
 	move.w (a0,d0.l),d1	; $0113F8
 	addq.w #$3,d1	; $0113FC
 	move.w d1,-(a7)	; $0113FE
-	jsr FUN_00d9ee.l	; $011400
+	jsr vdp_data_write.l	; $011400
 	addq.w #$2,a7	; $011406
 L011408:
 	addq.w #$1,d5	; $011408
@@ -2619,7 +2619,7 @@ L01144E:
 	add.l d1,d0	; $011492
 	add.l $8(a6),d0	; $011494
 	move.l d0,-(a7)	; $011498
-	jsr FUN_00dc60.l	; $01149A
+	jsr vdp_set_write_addr.l	; $01149A
 	addq.w #$4,a7	; $0114A0
 	moveq #$0,d4	; $0114A2
 	bra.b L011504	; $0114A4
@@ -2661,7 +2661,7 @@ L0114E2:
 	add.w $ff8642.l,d0	; $0114EA
 	add.w $1c(a6),d0	; $0114F0
 	move.w d0,-(a7)	; $0114F4
-	jsr FUN_00d9ee.l	; $0114F6
+	jsr vdp_data_write.l	; $0114F6
 	addq.w #$2,a7	; $0114FC
 	addq.w #$1,d4	; $0114FE
 	subq.w #$4,d5	; $011500
@@ -2693,7 +2693,7 @@ FUN_011514:
 	add.l d1,d0	; $011542
 	add.l $8(a6),d0	; $011544
 	move.l d0,-(a7)	; $011548
-	jsr FUN_00dc60.l	; $01154A
+	jsr vdp_set_write_addr.l	; $01154A
 	addq.w #$4,a7	; $011550
 L011552:
 	lea.l -$a(a6),a0	; $011552
@@ -2706,7 +2706,7 @@ L011552:
 	add.w $14(a6),d0	; $01156C
 	sub.w #$20,d0	; $011570
 	move.w d0,-(a7)	; $011574
-	jsr FUN_00d9ee.l	; $011576
+	jsr vdp_data_write.l	; $011576
 	addq.w #$2,a7	; $01157C
 	addq.w #$1,d4	; $01157E
 	bra.b L011552	; $011580
@@ -2979,7 +2979,7 @@ L011856:
 	add.l d1,d0	; $011872
 	add.l $8(a6),d0	; $011874
 	move.l d0,-(a7)	; $011878
-	jsr FUN_00dc60.l	; $01187A
+	jsr vdp_set_write_addr.l	; $01187A
 	addq.w #$4,a7	; $011880
 	moveq #$0,d5	; $011882
 	bra.b L0118B2	; $011884
@@ -2999,7 +2999,7 @@ L0118A2:
 	move.w d6,d0	; $0118A2
 L0118A4:
 	move.w d0,-(a7)	; $0118A4
-	jsr FUN_00d9ee.l	; $0118A6
+	jsr vdp_data_write.l	; $0118A6
 	addq.w #$2,a7	; $0118AC
 	addq.w #$1,d5	; $0118AE
 	addq.w #$1,d6	; $0118B0
@@ -3039,13 +3039,13 @@ L0118F2:
 	add.l d1,d0	; $011904
 	add.l $8(a6),d0	; $011906
 	move.l d0,-(a7)	; $01190A
-	jsr FUN_00dc60.l	; $01190C
+	jsr vdp_set_write_addr.l	; $01190C
 	addq.w #$4,a7	; $011912
 	moveq #$0,d5	; $011914
 	bra.b L011926	; $011916
 L011918:
 	move.w d6,-(a7)	; $011918
-	jsr FUN_00d9ee.l	; $01191A
+	jsr vdp_data_write.l	; $01191A
 	addq.w #$2,a7	; $011920
 	addq.w #$1,d5	; $011922
 	addq.w #$1,d6	; $011924
@@ -3098,7 +3098,7 @@ L011982:
 	add.l d1,d0	; $011996
 	add.l $8(a6),d0	; $011998
 	move.l d0,-(a7)	; $01199C
-	jsr FUN_00dc60.l	; $01199E
+	jsr vdp_set_write_addr.l	; $01199E
 	addq.w #$4,a7	; $0119A4
 	moveq #$0,d5	; $0119A6
 	bra.b L011A02	; $0119A8
@@ -3132,7 +3132,7 @@ L0119DC:
 	add.w $16(a6),d0	; $0119F0
 L0119F4:
 	move.w d0,-(a7)	; $0119F4
-	jsr FUN_00d9ee.l	; $0119F6
+	jsr vdp_data_write.l	; $0119F6
 	addq.w #$2,a7	; $0119FC
 	addq.w #$1,d5	; $0119FE
 	addq.w #$1,d6	; $011A00
@@ -3167,13 +3167,13 @@ L011A26:
 	add.l d1,d0	; $011A44
 	add.l $8(a6),d0	; $011A46
 	move.l d0,-(a7)	; $011A4A
-	jsr FUN_00dc60.l	; $011A4C
+	jsr vdp_set_write_addr.l	; $011A4C
 	addq.w #$4,a7	; $011A52
 	moveq #$0,d5	; $011A54
 	bra.b L011A66	; $011A56
 L011A58:
 	move.w $16(a6),-(a7)	; $011A58
-	jsr FUN_00d9ee.l	; $011A5C
+	jsr vdp_data_write.l	; $011A5C
 	addq.w #$2,a7	; $011A62
 	addq.w #$1,d5	; $011A64
 L011A66:
@@ -3271,19 +3271,19 @@ FUN_011b76:
 	moveq #$0,d0	; $011B7A
 	move.w $ff8644.l,d0	; $011B7C
 	move.l d0,-(a7)	; $011B82
-	jsr FUN_00dc60.l	; $011B84
+	jsr vdp_set_write_addr.l	; $011B84
 	addq.w #$4,a7	; $011B8A
 	clr.w -(a7)	; $011B8C
-	jsr FUN_00d9ee.l	; $011B8E
+	jsr vdp_data_write.l	; $011B8E
 	addq.w #$2,a7	; $011B94
 	clr.w -(a7)	; $011B96
-	jsr FUN_00d9ee.l	; $011B98
+	jsr vdp_data_write.l	; $011B98
 	addq.w #$2,a7	; $011B9E
 	clr.w -(a7)	; $011BA0
-	jsr FUN_00d9ee.l	; $011BA2
+	jsr vdp_data_write.l	; $011BA2
 	addq.w #$2,a7	; $011BA8
 	clr.w -(a7)	; $011BAA
-	jsr FUN_00d9ee.l	; $011BAC
+	jsr vdp_data_write.l	; $011BAC
 	addq.w #$2,a7	; $011BB2
 	unlk a6	; $011BB4
 	rts	; $011BB6
@@ -3305,10 +3305,10 @@ FUN_011bd8:
 	moveq #$0,d1	; $011BE8
 	move.w d0,d1	; $011BEA
 	move.l d1,-(a7)	; $011BEC
-	jsr FUN_00dc60.l	; $011BEE
+	jsr vdp_set_write_addr.l	; $011BEE
 	addq.w #$4,a7	; $011BF4
 	move.w $c(a6),-(a7)	; $011BF6
-	jsr FUN_00d9ee.l	; $011BFA
+	jsr vdp_data_write.l	; $011BFA
 	addq.w #$2,a7	; $011C00
 	cmpi.w #$ffff,$12(a6)	; $011C02
 	bne.b L011C0E	; $011C08
@@ -3325,13 +3325,13 @@ L011C12:
 	asl.w d2,d1	; $011C20
 	add.w d1,d0	; $011C22
 	move.w d0,-(a7)	; $011C24
-	jsr FUN_00d9ee.l	; $011C26
+	jsr vdp_data_write.l	; $011C26
 	addq.w #$2,a7	; $011C2C
 	move.w $14(a6),-(a7)	; $011C2E
-	jsr FUN_00d9ee.l	; $011C32
+	jsr vdp_data_write.l	; $011C32
 	addq.w #$2,a7	; $011C38
 	move.w $a(a6),-(a7)	; $011C3A
-	jsr FUN_00d9ee.l	; $011C3E
+	jsr vdp_data_write.l	; $011C3E
 	addq.w #$2,a7	; $011C44
 	unlk a6	; $011C46
 	rts	; $011C48
@@ -3345,7 +3345,7 @@ FUN_011c4a:
 	moveq #$0,d1	; $011C5C
 	move.w d0,d1	; $011C5E
 	move.l d1,-(a7)	; $011C60
-	jsr FUN_00dc60.l	; $011C62
+	jsr vdp_set_write_addr.l	; $011C62
 	addq.w #$4,a7	; $011C68
 	cmpi.w #$ffff,$e(a6)	; $011C6A
 	bne.b L011C76	; $011C70
@@ -3362,7 +3362,7 @@ L011C7A:
 	asl.w d2,d1	; $011C88
 	add.w d1,d0	; $011C8A
 	move.w d0,-(a7)	; $011C8C
-	jsr FUN_00d9ee.l	; $011C8E
+	jsr vdp_data_write.l	; $011C8E
 	addq.w #$2,a7	; $011C94
 	unlk a6	; $011C96
 	rts	; $011C98
@@ -3430,7 +3430,7 @@ L011D2E:
 	moveq #$0,d1	; $011D3E
 	move.w d0,d1	; $011D40
 	move.l d1,-(a7)	; $011D42
-	jsr FUN_00dc60.l	; $011D44
+	jsr vdp_set_write_addr.l	; $011D44
 	addq.w #$4,a7	; $011D4A
 	tst.w -$8(a6)	; $011D4C
 	beq.b L011D5C	; $011D50
@@ -3444,7 +3444,7 @@ L011D5E:
 	muls.w d6,d0	; $011D5E
 	add.w $c(a6),d0	; $011D60
 	move.w d0,-(a7)	; $011D64
-	jsr FUN_00d9ee.l	; $011D66
+	jsr vdp_data_write.l	; $011D66
 	addq.w #$2,a7	; $011D6C
 	move.w $10(a6),d0	; $011D6E
 	asl.w #$8,d0	; $011D72
@@ -3454,7 +3454,7 @@ L011D5E:
 	add.w d1,d0	; $011D7C
 	add.w -$4(a6),d0	; $011D7E
 	move.w d0,-(a7)	; $011D82
-	jsr FUN_00d9ee.l	; $011D84
+	jsr vdp_data_write.l	; $011D84
 	addq.w #$2,a7	; $011D8A
 	move.w a4,d0	; $011D8C
 	muls.w $12(a6),d0	; $011D8E
@@ -3465,7 +3465,7 @@ L011D5E:
 	add.w d2,d0	; $011D9A
 	add.w $18(a6),d0	; $011D9C
 	move.w d0,-(a7)	; $011DA0
-	jsr FUN_00d9ee.l	; $011DA2
+	jsr vdp_data_write.l	; $011DA2
 	addq.w #$2,a7	; $011DA8
 	tst.w -$6(a6)	; $011DAA
 	beq.b L011DBA	; $011DAE
@@ -3479,7 +3479,7 @@ L011DBC:
 	muls.w d4,d0	; $011DBC
 	add.w $a(a6),d0	; $011DBE
 	move.w d0,-(a7)	; $011DC2
-	jsr FUN_00d9ee.l	; $011DC4
+	jsr vdp_data_write.l	; $011DC4
 	addq.w #$2,a7	; $011DCA
 	addq.w #$1,a3	; $011DCC
 L011DCE:
@@ -3552,12 +3552,12 @@ FUN_011e06:
 	jsr FUN_00d9e2.l	; $011EB8
 	addq.w #$2,a7	; $011EBE
 	clr.l -(a7)	; $011EC0
-	jsr FUN_00dc60.l	; $011EC2
+	jsr vdp_set_write_addr.l	; $011EC2
 	addq.w #$4,a7	; $011EC8
 	moveq #$0,d4	; $011ECA
 L011ECC:
 	clr.w -(a7)	; $011ECC
-	jsr FUN_00d9ee.l	; $011ECE
+	jsr vdp_data_write.l	; $011ECE
 	addq.w #$2,a7	; $011ED4
 	addq.l #$1,d4	; $011ED6
 	cmp.l #$8000,d4	; $011ED8
@@ -4003,7 +4003,7 @@ L012520:
 	move.w #$8b00,-(a7)	; $012588
 	jsr FUN_00d9e2.l	; $01258C
 	addq.w #$2,a7	; $012592
-	jsr FUN_01386a.l	; $012594
+	jsr wait_vblank.l	; $012594
 	clr.w -(a7)	; $01259A
 	clr.w -(a7)	; $01259C
 	clr.w -(a7)	; $01259E
@@ -4177,7 +4177,7 @@ L0127BA:
 	addq.w #$1,d0	; $0127C8
 	add.w d0,-$2(a6)	; $0127CA
 L0127CE:
-	jsr FUN_01386a.l	; $0127CE
+	jsr wait_vblank.l	; $0127CE
 	move.w -$2(a6),d0	; $0127D4
 	ext.l d0	; $0127D8
 	divs.w #$4,d0	; $0127DA
@@ -4312,7 +4312,7 @@ L01294E:
 	jsr FUN_011082(pc)	; $01298E
 	addq.w #$6,a7	; $012992
 	move.w #$1,-$10(a6)	; $012994
-	jsr FUN_01386a.l	; $01299A
+	jsr wait_vblank.l	; $01299A
 	move.w $ff8670.l,d0	; $0129A0
 	add.w #$4000,d0	; $0129A6
 	move.w d0,-(a7)	; $0129AA
@@ -4374,7 +4374,7 @@ L012A58:
 	swap d0	; $012A74
 	tst.w d0	; $012A76
 	bne.b L012AC8	; $012A78
-	jsr FUN_01386a.l	; $012A7A
+	jsr wait_vblank.l	; $012A7A
 	pea.l L0CCAF8.l	; $012A80
 	pea.l L0CCA18.l	; $012A86
 	move.w -$c(a6),d0	; $012A8C
@@ -4447,11 +4447,11 @@ L012B40:
 	unlk a6	; $012B7E
 	rts	; $012B80
 	; code $012B82-$012BFB
-FUN_012b82:
+rand_next:
 	link.w a6,#$0	; $012B82
 	move.l #$41c64e6d,d1	; $012B86
 	move.l $ff0072.l,d0	; $012B8C
-	jsr FUN_00de8e.l	; $012B92
+	jsr mul32.l	; $012B92
 	add.l #$3039,d0	; $012B98
 	move.l d0,$ff0072.l	; $012B9E
 	move.l $ff0072.l,d0	; $012BA4
@@ -5437,7 +5437,7 @@ FUN_01383c:
 	unlk a6	; $013866
 	rts	; $013868
 	; code $01386A-$013881
-FUN_01386a:
+wait_vblank:
 	link.w a6,#$0	; $01386A
 	move.w #$ffff,$ff0016.l	; $01386E
 L013876:
@@ -5738,7 +5738,7 @@ L013C62:
 	jsr FUN_011c9a.l	; $013CA0
 	lea.l $12(a7),a7	; $013CA6
 L013CAA:
-	jsr FUN_01386a(pc)	; $013CAA
+	jsr wait_vblank(pc)	; $013CAA
 	tst.w $ff0114.l	; $013CAE
 	bne.b L013D1C	; $013CB4
 	move.w #$2,-(a7)	; $013CB6
@@ -6616,7 +6616,7 @@ L014A5C:
 	swap d0	; $014A66
 	tst.w d0	; $014A68
 	bne.b L014AA6	; $014A6A
-	jsr FUN_01386a.l	; $014A6C
+	jsr wait_vblank.l	; $014A6C
 	pea.l L0CCB58.l	; $014A72
 	pea.l L0CCAD8.l	; $014A78
 	move.w -$2(a6),d0	; $014A7E
@@ -6900,7 +6900,7 @@ L014E54:
 	jsr joypad_queue_pop.l	; $014E54
 	move.b d0,$ff0e14.l	; $014E5A
 	addq.w #$1,-$a(a6)	; $014E60
-	jsr FUN_01386a.l	; $014E64
+	jsr wait_vblank.l	; $014E64
 	moveq #$0,d0	; $014E6A
 	move.b $ff0e14.l,d0	; $014E6C
 	and.w #$f0,d0	; $014E72
@@ -6990,7 +6990,7 @@ L014F54:
 	move.w #$3,-(a7)	; $014F8E
 	jsr FUN_011082.l	; $014F92
 	addq.w #$6,a7	; $014F98
-	jsr FUN_01386a.l	; $014F9A
+	jsr wait_vblank.l	; $014F9A
 	clr.w -(a7)	; $014FA0
 	clr.w -(a7)	; $014FA2
 	clr.w -(a7)	; $014FA4
@@ -7073,7 +7073,7 @@ FUN_015012:
 	jsr FUN_011a7c.l	; $01508A
 	addq.w #$6,a7	; $015090
 	move.w d0,$ff867e.l	; $015092
-	jsr FUN_01386a.l	; $015098
+	jsr wait_vblank.l	; $015098
 	pea.l L0CCAF8.l	; $01509E
 	clr.w -(a7)	; $0150A4
 	jsr FUN_011082.l	; $0150A6
@@ -7324,7 +7324,7 @@ L015422:
 	move.w -$10(a6),d0	; $015422
 	add.w d0,-$c(a6)	; $015426
 L01542A:
-	jsr FUN_01386a.l	; $01542A
+	jsr wait_vblank.l	; $01542A
 	move.w -$e(a6),-(a7)	; $015430
 	move.w -$c(a6),-(a7)	; $015434
 	move.w -$14(a6),d0	; $015438
@@ -7338,7 +7338,7 @@ L01542A:
 	lea.l $a(a7),a7	; $01544E
 	bra.b L015474	; $015452
 L015454:
-	jsr FUN_01386a.l	; $015454
+	jsr wait_vblank.l	; $015454
 	clr.w -(a7)	; $01545A
 	move.w -$14(a6),d0	; $01545C
 	neg.w d0	; $015460
@@ -7403,7 +7403,7 @@ L0154D4:
 	addq.w #$2,a7	; $01553E
 	jsr soft_reset(pc)	; $015540
 L015544:
-	jsr FUN_01386a.l	; $015544
+	jsr wait_vblank.l	; $015544
 	move.w #$8b00,-(a7)	; $01554A
 	jsr FUN_00d9e2.l	; $01554E
 	addq.w #$2,a7	; $015554
@@ -7756,7 +7756,7 @@ L015A70:
 L015A80:
 	clr.w $ff0108.l	; $015A80
 L015A86:
-	jsr FUN_01386a.l	; $015A86
+	jsr wait_vblank.l	; $015A86
 	jsr FUN_011b76.l	; $015A8C
 	move.w $ff8640.l,-(a7)	; $015A92
 	move.w #$40,-(a7)	; $015A98
@@ -7771,7 +7771,7 @@ L015A86:
 	move.w #$2710,-$16(a6)	; $015ABC
 	bra.w L015B98	; $015AC2
 L015AC6:
-	jsr FUN_01386a.l	; $015AC6
+	jsr wait_vblank.l	; $015AC6
 	clr.w -(a7)	; $015ACC
 	clr.w -(a7)	; $015ACE
 	move.w -$2(a6),-(a7)	; $015AD0
@@ -8234,7 +8234,7 @@ L0161AA:
 	jsr joypad_queue_pop.l	; $0161AA
 	move.b d0,$ff0e14.l	; $0161B0
 	addq.w #$4,-$2(a6)	; $0161B6
-	jsr FUN_01386a.l	; $0161BA
+	jsr wait_vblank.l	; $0161BA
 	clr.w -(a7)	; $0161C0
 	clr.w -(a7)	; $0161C2
 	move.w -$2(a6),d0	; $0161C4
@@ -8343,7 +8343,7 @@ L0162B4:
 	; code $0162FE-$0163ED
 FUN_0162fe:
 	link.w a6,#$0	; $0162FE
-	jsr FUN_01386a.l	; $016302
+	jsr wait_vblank.l	; $016302
 	jsr FUN_0138a8.l	; $016308
 	move.w $ff8674.l,-(a7)	; $01630E
 	move.w #$17,-(a7)	; $016314
@@ -8416,7 +8416,7 @@ FUN_0163ee:
 	add.w d1,d0	; $016402
 	ext.l d0	; $016404
 	move.l d0,-(a7)	; $016406
-	jsr FUN_00dc60.l	; $016408
+	jsr vdp_set_write_addr.l	; $016408
 	addq.w #$4,a7	; $01640E
 	moveq #$0,d4	; $016410
 L016412:
@@ -8448,7 +8448,7 @@ L016412:
 	asl.w #$7,d0	; $01645C
 	ext.l d0	; $01645E
 	move.l d0,-(a7)	; $016460
-	jsr FUN_00dc60.l	; $016462
+	jsr vdp_set_write_addr.l	; $016462
 	addq.w #$4,a7	; $016468
 L01646A:
 	lea.l -$2(a6),a0	; $01646A
@@ -8482,7 +8482,7 @@ L01649C:
 	add.w d0,d1	; $0164A8
 	add.w $ff8678.l,d1	; $0164AA
 	move.w d1,-(a7)	; $0164B0
-	jsr FUN_00d9ee.l	; $0164B2
+	jsr vdp_data_write.l	; $0164B2
 	addq.w #$2,a7	; $0164B8
 	bra.b L016500	; $0164BA
 L0164BC:
@@ -8513,7 +8513,7 @@ L0164E2:
 	add.w d0,d1	; $0164EE
 	add.w $ff8678.l,d1	; $0164F0
 	move.w d1,-(a7)	; $0164F6
-	jsr FUN_00d9ee.l	; $0164F8
+	jsr vdp_data_write.l	; $0164F8
 	addq.w #$2,a7	; $0164FE
 L016500:
 	addq.w #$1,d4	; $016500
@@ -8536,7 +8536,7 @@ FUN_016512:
 	add.w d1,d0	; $016532
 	ext.l d0	; $016534
 	move.l d0,-(a7)	; $016536
-	jsr FUN_00dc60.l	; $016538
+	jsr vdp_set_write_addr.l	; $016538
 	addq.w #$4,a7	; $01653E
 	moveq #$0,d4	; $016540
 L016542:
@@ -8568,7 +8568,7 @@ L016542:
 	asl.w #$1,d0	; $01658C
 	ext.l d0	; $01658E
 	move.l d0,-(a7)	; $016590
-	jsr FUN_00dc60.l	; $016592
+	jsr vdp_set_write_addr.l	; $016592
 	addq.w #$4,a7	; $016598
 L01659A:
 	lea.l -$2(a6),a0	; $01659A
@@ -8602,7 +8602,7 @@ L0165CC:
 	add.w d0,d1	; $0165D8
 	add.w $ff8678.l,d1	; $0165DA
 	move.w d1,-(a7)	; $0165E0
-	jsr FUN_00d9ee.l	; $0165E2
+	jsr vdp_data_write.l	; $0165E2
 	addq.w #$2,a7	; $0165E8
 	bra.b L016630	; $0165EA
 L0165EC:
@@ -8633,7 +8633,7 @@ L016612:
 	add.w d0,d1	; $01661E
 	add.w $ff8678.l,d1	; $016620
 	move.w d1,-(a7)	; $016626
-	jsr FUN_00d9ee.l	; $016628
+	jsr vdp_data_write.l	; $016628
 	addq.w #$2,a7	; $01662E
 L016630:
 	addq.w #$1,d4	; $016630
@@ -8686,7 +8686,7 @@ L0166C8:
 	sub.w #$e,d7	; $0166D4
 	jsr joypad_queue_pop.l	; $0166D8
 	move.b d0,$ff0e14.l	; $0166DE
-	jsr FUN_01386a.l	; $0166E4
+	jsr wait_vblank.l	; $0166E4
 	move.w -$4(a6),-(a7)	; $0166EA
 	move.w -$4(a6),-(a7)	; $0166EE
 	move.w -$6(a6),-(a7)	; $0166F2
@@ -8883,7 +8883,7 @@ L0169D4:
 	asl.w #$7,d0	; $0169D6
 	ext.l d0	; $0169D8
 	move.l d0,-(a7)	; $0169DA
-	jsr FUN_00dc60.l	; $0169DC
+	jsr vdp_set_write_addr.l	; $0169DC
 	addq.w #$4,a7	; $0169E2
 	moveq #$0,d5	; $0169E4
 L0169E6:
@@ -8940,7 +8940,7 @@ L016A52:
 	add.w d0,d1	; $016A5E
 	add.w $ff8678.l,d1	; $016A60
 	move.w d1,-(a7)	; $016A66
-	jsr FUN_00d9ee.l	; $016A68
+	jsr vdp_data_write.l	; $016A68
 	addq.w #$2,a7	; $016A6E
 	bra.b L016AB6	; $016A70
 L016A72:
@@ -8971,7 +8971,7 @@ L016A98:
 	add.w d0,d1	; $016AA4
 	add.w $ff8678.l,d1	; $016AA6
 	move.w d1,-(a7)	; $016AAC
-	jsr FUN_00d9ee.l	; $016AAE
+	jsr vdp_data_write.l	; $016AAE
 	addq.w #$2,a7	; $016AB4
 L016AB6:
 	addq.w #$1,d5	; $016AB6
@@ -9161,7 +9161,7 @@ L016CB0:
 	andi.w #$ff0f,(a0)	; $016D2A
 	ori.w #$80,(a0)	; $016D2E
 L016D32:
-	jsr FUN_01386a.l	; $016D32
+	jsr wait_vblank.l	; $016D32
 	tst.w -$8(a6)	; $016D38
 	beq.b L016D74	; $016D3C
 	clr.w -$8(a6)	; $016D3E
@@ -9379,7 +9379,7 @@ L016FBA:
 	move.w #$1,-(a7)	; $017010
 	jsr FUN_011bd8.l	; $017014
 	lea.l $e(a7),a7	; $01701A
-	jsr FUN_01386a.l	; $01701E
+	jsr wait_vblank.l	; $01701E
 	clr.w -(a7)	; $017024
 	clr.w -(a7)	; $017026
 	clr.w -(a7)	; $017028
@@ -9517,7 +9517,7 @@ FUN_0171d6:
 	move.w $10(a6),-$6(a6)	; $0171DA
 	move.w #$1,-$8(a6)	; $0171E0
 	move.l #$4000,-(a7)	; $0171E6
-	jsr FUN_00dc60.l	; $0171EC
+	jsr vdp_set_write_addr.l	; $0171EC
 	addq.w #$4,a7	; $0171F2
 	clr.w -$2(a6)	; $0171F4
 L0171F8:
@@ -9531,7 +9531,7 @@ L0171FC:
 	bge.b L017220	; $017210
 L017212:
 	move.w $8(a6),-(a7)	; $017212
-	jsr FUN_00d9ee.l	; $017216
+	jsr vdp_data_write.l	; $017216
 	addq.w #$2,a7	; $01721C
 	bra.b L01725E	; $01721E
 L017220:
@@ -9545,7 +9545,7 @@ L017220:
 	add.w $e(a6),d0	; $017234
 	add.w -$6(a6),d0	; $017238
 	move.w d0,-(a7)	; $01723C
-	jsr FUN_00d9ee.l	; $01723E
+	jsr vdp_data_write.l	; $01723E
 	addq.w #$2,a7	; $017244
 	bra.b L01725E	; $017246
 L017248:
@@ -9553,7 +9553,7 @@ L017248:
 	sub.w $e(a6),d0	; $01724C
 	sub.w -$6(a6),d0	; $017250
 	move.w d0,-(a7)	; $017254
-	jsr FUN_00d9ee.l	; $017256
+	jsr vdp_data_write.l	; $017256
 	addq.w #$2,a7	; $01725C
 L01725E:
 	tst.w -$4(a6)	; $01725E
@@ -9646,7 +9646,7 @@ L01737E:
 	jmp *+2(pc,d0.w)	; $01738C
 L017390:
 	move.w -$a(a6),-(a7)	; $017390
-	jsr FUN_00d9ee.l	; $017394
+	jsr vdp_data_write.l	; $017394
 	addq.w #$2,a7	; $01739A
 	addq.w #$1,-$4(a6)	; $01739C
 	cmpi.w #$8,-$4(a6)	; $0173A0
@@ -10116,7 +10116,7 @@ FUN_0179ca:
 	link.w a6,#$0	; $0179CA
 	movem.l d4-d5,-(a7)	; $0179CE
 	move.l #$4000,-(a7)	; $0179D2
-	jsr FUN_00dc60.l	; $0179D8
+	jsr vdp_set_write_addr.l	; $0179D8
 	addq.w #$4,a7	; $0179DE
 	moveq #$0,d4	; $0179E0
 L0179E2:
@@ -10129,7 +10129,7 @@ L0179E4:
 	ext.l d0	; $0179F4
 	divs.w #$20,d0	; $0179F6
 	move.w d0,-(a7)	; $0179FA
-	jsr FUN_00d9ee.l	; $0179FC
+	jsr vdp_data_write.l	; $0179FC
 	addq.w #$2,a7	; $017A02
 	moveq #$1c,d0	; $017A04
 	sub.w d4,d0	; $017A06
@@ -10140,7 +10140,7 @@ L0179E4:
 	ext.l d1	; $017A18
 	divs.w #$40,d1	; $017A1A
 	move.w d1,-(a7)	; $017A1E
-	jsr FUN_00d9ee.l	; $017A20
+	jsr vdp_data_write.l	; $017A20
 	addq.w #$2,a7	; $017A26
 	addq.w #$1,d5	; $017A28
 	cmp.w #$8,d5	; $017A2A
@@ -10343,7 +10343,7 @@ FUN_017b88:
 	move.w #$9100,-(a7)	; $017CE2
 	jsr FUN_00d9e2.l	; $017CE6
 	addq.w #$2,a7	; $017CEC
-	jsr FUN_01386a.l	; $017CEE
+	jsr wait_vblank.l	; $017CEE
 	clr.w -(a7)	; $017CF4
 	clr.w -(a7)	; $017CF6
 	clr.w -(a7)	; $017CF8
@@ -10356,7 +10356,7 @@ FUN_017b88:
 	clr.w -(a7)	; $017D10
 	jsr FUN_0179ca(pc)	; $017D12
 	addq.w #$2,a7	; $017D16
-	jsr FUN_01386a.l	; $017D18
+	jsr wait_vblank.l	; $017D18
 	jsr FUN_011b76.l	; $017D1E
 	move.w $ff8684.l,d0	; $017D24
 	add.w #$4000,d0	; $017D2A
@@ -10635,7 +10635,7 @@ L0180E4:
 	addq.w #$7,d6	; $018128
 	cmp.w #$1c,d6	; $01812A
 	bcs.b L0180E2	; $01812E
-	jsr FUN_01386a.l	; $018130
+	jsr wait_vblank.l	; $018130
 	pea.l L0CCCF8.l	; $018136
 	clr.w -(a7)	; $01813C
 	jsr FUN_011082.l	; $01813E
@@ -10777,13 +10777,13 @@ L018270:
 	move.w #$ff81,-$2(a6)	; $0182B2
 	move.w $ff8642.l,-$6(a6)	; $0182B8
 L0182C0:
-	jsr FUN_01386a.l	; $0182C0
+	jsr wait_vblank.l	; $0182C0
 	move.w d4,d0	; $0182C6
 	neg.w d0	; $0182C8
 	move.w d0,-(a7)	; $0182CA
 	jsr FUN_0179ca(pc)	; $0182CC
 	addq.w #$2,a7	; $0182D0
-	jsr FUN_01386a.l	; $0182D2
+	jsr wait_vblank.l	; $0182D2
 	cmp.w #$32,d4	; $0182D8
 	ble.b L01831E	; $0182DC
 	cmp.w #$96,d4	; $0182DE
@@ -10834,7 +10834,7 @@ L018384:
 	cmp.w #$1db,d4	; $018384
 	bne.w L018460	; $018388
 	movea.w #$3c,a4	; $01838C
-	jsr FUN_01386a.l	; $018390
+	jsr wait_vblank.l	; $018390
 	pea.l L0CCAF8.l	; $018396
 	clr.w -(a7)	; $01839C
 	jsr FUN_011082.l	; $01839E
@@ -10977,7 +10977,7 @@ L0184E6:
 L01857A:
 	cmp.w #$226,d4	; $01857A
 	bne.w L018632	; $01857E
-	jsr FUN_01386a.l	; $018582
+	jsr wait_vblank.l	; $018582
 	pea.l L0CCAF8.l	; $018588
 	clr.w -(a7)	; $01858E
 	jsr FUN_011082.l	; $018590
@@ -11051,7 +11051,7 @@ L01865A:
 	move.w #$3,-(a7)	; $01869C
 	jsr FUN_011082.l	; $0186A0
 	addq.w #$6,a7	; $0186A6
-	jsr FUN_01386a.l	; $0186A8
+	jsr wait_vblank.l	; $0186A8
 	move.w #$8b00,-(a7)	; $0186AE
 	jsr FUN_00d9e2.l	; $0186B2
 	addq.w #$2,a7	; $0186B8
@@ -11201,7 +11201,7 @@ L0188AC:
 	ext.l d0	; $0188B0
 	divs.w #$3,d0	; $0188B2
 	move.w d0,-$2(a6)	; $0188B6
-	jsr FUN_01386a.l	; $0188BA
+	jsr wait_vblank.l	; $0188BA
 	clr.w -(a7)	; $0188C0
 	clr.w -(a7)	; $0188C2
 	move.w d4,-(a7)	; $0188C4
@@ -11454,7 +11454,7 @@ L018AF6:
 	move.w #$8f02,-(a7)	; $018C48
 	jsr FUN_00d9e2.l	; $018C4C
 	addq.w #$2,a7	; $018C52
-	jsr FUN_01386a.l	; $018C54
+	jsr wait_vblank.l	; $018C54
 	clr.w -(a7)	; $018C5A
 	move.w #$140,-(a7)	; $018C5C
 	clr.w -(a7)	; $018C60
@@ -11575,7 +11575,7 @@ L018DEA:
 L018DEE:
 	move.w d0,d5	; $018DEE
 L018DF0:
-	jsr FUN_01386a.l	; $018DF0
+	jsr wait_vblank.l	; $018DF0
 	clr.w -(a7)	; $018DF6
 	clr.w -(a7)	; $018DF8
 	move.w d4,d0	; $018DFA
@@ -11587,7 +11587,7 @@ L018DF0:
 	clr.w -(a7)	; $018E06
 	jsr FUN_0171d6(pc)	; $018E08
 	lea.l $a(a7),a7	; $018E0C
-	jsr FUN_01386a.l	; $018E10
+	jsr wait_vblank.l	; $018E10
 	move.w $ff867e.l,d0	; $018E16
 	add.w #$6000,d0	; $018E1C
 	move.w d0,-(a7)	; $018E20
@@ -11711,7 +11711,7 @@ L018DF0:
 	move.w #$3,-(a7)	; $018FEA
 	jsr FUN_011082.l	; $018FEE
 	addq.w #$6,a7	; $018FF4
-	jsr FUN_01386a.l	; $018FF6
+	jsr wait_vblank.l	; $018FF6
 	move.w #$8b00,-(a7)	; $018FFC
 	jsr FUN_00d9e2.l	; $019000
 	addq.w #$2,a7	; $019006
@@ -11858,7 +11858,7 @@ L0191B2:
 	ext.l d0	; $019202
 	divs.w #$3,d0	; $019204
 	move.w d0,-$2(a6)	; $019208
-	jsr FUN_01386a.l	; $01920C
+	jsr wait_vblank.l	; $01920C
 	clr.w -(a7)	; $019212
 	clr.w -(a7)	; $019214
 	move.w d4,-(a7)	; $019216
@@ -11901,7 +11901,7 @@ L01927C:
 	cmpi.w #$ffff,(a0,d0.l)	; $019286
 	bne.w L019330	; $01928C
 	move.w #$3,-(a7)	; $019290
-	jsr FUN_012b82.l	; $019294
+	jsr rand_next.l	; $019294
 	addq.w #$2,a7	; $01929A
 	tst.w d0	; $01929C
 	bne.w L01932E	; $01929E
@@ -11917,7 +11917,7 @@ L01927C:
 	move.l d0,-(a7)	; $0192BA
 	move.l a0,-(a7)	; $0192BC
 	move.w #$dc,-(a7)	; $0192BE
-	jsr FUN_012b82.l	; $0192C2
+	jsr rand_next.l	; $0192C2
 	addq.w #$2,a7	; $0192C8
 	movea.l (a7)+,a0	; $0192CA
 	move.l (a7)+,d1	; $0192CC
@@ -11930,7 +11930,7 @@ L01927C:
 	move.l d0,-(a7)	; $0192E0
 	move.l a0,-(a7)	; $0192E2
 	move.w #$64,-(a7)	; $0192E4
-	jsr FUN_012b82.l	; $0192E8
+	jsr rand_next.l	; $0192E8
 	addq.w #$2,a7	; $0192EE
 	movea.l (a7)+,a0	; $0192F0
 	move.l (a7)+,d1	; $0192F2
@@ -11943,7 +11943,7 @@ L01927C:
 	move.l d0,-(a7)	; $019306
 	move.l a0,-(a7)	; $019308
 	move.w #$2,-(a7)	; $01930A
-	jsr FUN_012b82.l	; $01930E
+	jsr rand_next.l	; $01930E
 	addq.w #$2,a7	; $019314
 	movea.l (a7)+,a0	; $019316
 	move.l (a7)+,d1	; $019318
@@ -11982,7 +11982,7 @@ L019370:
 	cmp.w #$3,d7	; $019372
 	bcs.w L01927C	; $019376
 L01937A:
-	jsr FUN_01386a.l	; $01937A
+	jsr wait_vblank.l	; $01937A
 	move.w $ff867e.l,d0	; $019380
 	add.w a4,d0	; $019386
 	moveq #$0,d1	; $019388
@@ -12530,11 +12530,11 @@ FUN_01b5d6:
 	bra.b L01B81A	; $01B7AA
 L01B7AC:
 	move.w #$160,-(a7)	; $01B7AC
-	jsr FUN_012b82.l	; $01B7B0
+	jsr rand_next.l	; $01B7B0
 	addq.w #$2,a7	; $01B7B6
 	move.w d0,-$4(a6)	; $01B7B8
 	move.w #$e0,-(a7)	; $01B7BC
-	jsr FUN_012b82.l	; $01B7C0
+	jsr rand_next.l	; $01B7C0
 	addq.w #$2,a7	; $01B7C6
 	move.w d0,-$6(a6)	; $01B7C8
 	move.w -$6(a6),-(a7)	; $01B7CC
@@ -12545,7 +12545,7 @@ L01B7AC:
 	move.w -$6(a6),-(a7)	; $01B7DE
 	move.w -$4(a6),-(a7)	; $01B7E2
 	move.w #$4,-(a7)	; $01B7E6
-	jsr FUN_012b82.l	; $01B7EA
+	jsr rand_next.l	; $01B7EA
 	addq.w #$2,a7	; $01B7F0
 	move.w d0,-(a7)	; $01B7F2
 	move.w #$4,-(a7)	; $01B7F4
@@ -12962,7 +12962,7 @@ L01BC56:
 	moveq #$0,d0	; $01BD32
 	move.b -$1c(a6),d0	; $01BD34
 	moveq #$c,d1	; $01BD38
-	jsr FUN_00de8e.l	; $01BD3A
+	jsr mul32.l	; $01BD3A
 	lea.l $ffb0cc.l,a0	; $01BD40
 	add.l a0,d0	; $01BD46
 	move.l d0,-$1a(a6)	; $01BD48
@@ -13084,7 +13084,7 @@ L01BEA0:
 	moveq #$0,d0	; $01BEAE
 	move.b -$1b(a6),d0	; $01BEB0
 	moveq #$c,d1	; $01BEB4
-	jsr FUN_00de8e.l	; $01BEB6
+	jsr mul32.l	; $01BEB6
 	lea.l $ffb0cc.l,a0	; $01BEBC
 	add.l a0,d0	; $01BEC2
 	move.l d0,-$1a(a6)	; $01BEC4
@@ -16144,7 +16144,7 @@ FUN_01e5a0:
 	movea.l $ffbb82.l,a0	; $01E5F4
 	cmpi.b #$42,$a(a0)	; $01E5FA
 	beq.b L01E630	; $01E600
-	jsr FUN_01386a.l	; $01E602
+	jsr wait_vblank.l	; $01E602
 	move.w $ff8640.l,-(a7)	; $01E608
 	move.w #$9,-(a7)	; $01E60E
 	move.w #$a,-(a7)	; $01E612
@@ -16453,7 +16453,7 @@ L01E942:
 L01E946:
 	cmp.w d0,d4	; $01E946
 	blt.w L01E892	; $01E948
-	jsr FUN_01386a.l	; $01E94C
+	jsr wait_vblank.l	; $01E94C
 	move.w $ff8640.l,-(a7)	; $01E952
 	move.w #$9,-(a7)	; $01E958
 	move.w #$a,-(a7)	; $01E95C
@@ -16695,13 +16695,13 @@ L01EBD2:
 	moveq #$0,d0	; $01EBD6
 	move.b $ffbb6f.l,d0	; $01EBD8
 	moveq #$a,d1	; $01EBDE
-	jsr FUN_00de8e.l	; $01EBE0
+	jsr mul32.l	; $01EBE0
 	lea.l L0D66A4.l,a0	; $01EBE6
 	cmpi.w #$1,(a0,d0.l)	; $01EBEC
 	sgt.b d0	; $01EBF2
 	and.w #$1,d0	; $01EBF4
 	move.w d0,-$4(a6)	; $01EBF8
-	jsr FUN_01386a.l	; $01EBFC
+	jsr wait_vblank.l	; $01EBFC
 	move.w $ff8640.l,-(a7)	; $01EC02
 	move.w #$9,-(a7)	; $01EC08
 	move.w #$a,-(a7)	; $01EC0C
@@ -16722,7 +16722,7 @@ L01EBD2:
 	moveq #$0,d0	; $01EC4E
 	move.b $ffbb6f.l,d0	; $01EC50
 	moveq #$a,d1	; $01EC56
-	jsr FUN_00de8e.l	; $01EC58
+	jsr mul32.l	; $01EC58
 	lea.l L0D66A4.l,a0	; $01EC5E
 	cmpi.w #$1,(a0,d0.l)	; $01EC64
 	ble.b L01EC8E	; $01EC6A
@@ -17326,7 +17326,7 @@ L01F45E:
 	moveq #$0,d0	; $01F46E
 	move.b $ffbb72.l,d0	; $01F470
 	moveq #$e,d1	; $01F476
-	jsr FUN_00de8e.l	; $01F478
+	jsr mul32.l	; $01F478
 	movea.l d0,a0	; $01F47E
 	adda.l -$4(a6),a0	; $01F480
 	cmpi.b #$17,$b(a0)	; $01F484
@@ -17350,7 +17350,7 @@ L01F4C8:
 	moveq #$0,d0	; $01F4C8
 	move.b $ffbb72.l,d0	; $01F4CA
 	moveq #$e,d1	; $01F4D0
-	jsr FUN_00de8e.l	; $01F4D2
+	jsr mul32.l	; $01F4D2
 	movea.l d0,a0	; $01F4D8
 	adda.l -$4(a6),a0	; $01F4DA
 	cmpi.b #$32,$b(a0)	; $01F4DE
@@ -17366,7 +17366,7 @@ L01F4C8:
 	moveq #$0,d0	; $01F514
 	move.b $ffbb72.l,d0	; $01F516
 	moveq #$e,d1	; $01F51C
-	jsr FUN_00de8e.l	; $01F51E
+	jsr mul32.l	; $01F51E
 	movea.l d0,a0	; $01F524
 	adda.l -$4(a6),a0	; $01F526
 	moveq #$0,d0	; $01F52A
@@ -17376,7 +17376,7 @@ L01F532:
 	moveq #$0,d0	; $01F532
 	move.b $ffbb72.l,d0	; $01F534
 	moveq #$e,d1	; $01F53A
-	jsr FUN_00de8e.l	; $01F53C
+	jsr mul32.l	; $01F53C
 	movea.l d0,a0	; $01F542
 	adda.l -$4(a6),a0	; $01F544
 	move.b $c(a0),$ffbb6c.l	; $01F548
@@ -17385,7 +17385,7 @@ L01F552:
 	moveq #$0,d0	; $01F552
 	move.b $ffbb72.l,d0	; $01F554
 	moveq #$e,d1	; $01F55A
-	jsr FUN_00de8e.l	; $01F55C
+	jsr mul32.l	; $01F55C
 	movea.l d0,a0	; $01F562
 	adda.l -$4(a6),a0	; $01F564
 	move.b $c(a0),$ffbb6f.l	; $01F568
@@ -17399,7 +17399,7 @@ L01F57A:
 	moveq #$0,d0	; $01F57A
 	move.b $ffbb72.l,d0	; $01F57C
 	moveq #$e,d1	; $01F582
-	jsr FUN_00de8e.l	; $01F584
+	jsr mul32.l	; $01F584
 	movea.l d0,a0	; $01F58A
 	adda.l -$4(a6),a0	; $01F58C
 	move.b $b(a0),$ffa7f8.l	; $01F590
@@ -17438,7 +17438,7 @@ L01F60C:
 	moveq #$0,d0	; $01F61C
 	move.b $ffbb72.l,d0	; $01F61E
 	moveq #$e,d1	; $01F624
-	jsr FUN_00de8e.l	; $01F626
+	jsr mul32.l	; $01F626
 	movea.l d0,a0	; $01F62C
 	adda.l -$4(a6),a0	; $01F62E
 	cmpi.b #$5,$b(a0)	; $01F632
@@ -17490,7 +17490,7 @@ L01F6DC:
 	moveq #$0,d0	; $01F6DC
 	move.b $ffbb72.l,d0	; $01F6DE
 	moveq #$e,d1	; $01F6E4
-	jsr FUN_00de8e.l	; $01F6E6
+	jsr mul32.l	; $01F6E6
 	movea.l d0,a0	; $01F6EC
 	adda.l -$4(a6),a0	; $01F6EE
 	cmpi.b #$a,$b(a0)	; $01F6F2
@@ -17542,7 +17542,7 @@ L01F79C:
 	moveq #$0,d0	; $01F79C
 	move.b $ffbb72.l,d0	; $01F79E
 	moveq #$e,d1	; $01F7A4
-	jsr FUN_00de8e.l	; $01F7A6
+	jsr mul32.l	; $01F7A6
 	movea.l d0,a0	; $01F7AC
 	adda.l -$4(a6),a0	; $01F7AE
 	cmpi.b #$1,$b(a0)	; $01F7B2
@@ -17577,7 +17577,7 @@ L01F814:
 	moveq #$0,d0	; $01F814
 	move.b $ffbb72.l,d0	; $01F816
 	moveq #$e,d1	; $01F81C
-	jsr FUN_00de8e.l	; $01F81E
+	jsr mul32.l	; $01F81E
 	movea.l d0,a0	; $01F824
 	adda.l -$4(a6),a0	; $01F826
 	cmpi.b #$32,$b(a0)	; $01F82A
@@ -17585,7 +17585,7 @@ L01F814:
 	moveq #$0,d0	; $01F834
 	move.b $ffbb72.l,d0	; $01F836
 	moveq #$e,d1	; $01F83C
-	jsr FUN_00de8e.l	; $01F83E
+	jsr mul32.l	; $01F83E
 	movea.l d0,a0	; $01F844
 	adda.l -$4(a6),a0	; $01F846
 	moveq #$0,d0	; $01F84A
@@ -17595,7 +17595,7 @@ L01F852:
 	moveq #$0,d0	; $01F852
 	move.b $ffbb72.l,d0	; $01F854
 	moveq #$e,d1	; $01F85A
-	jsr FUN_00de8e.l	; $01F85C
+	jsr mul32.l	; $01F85C
 	movea.l d0,a0	; $01F862
 	adda.l -$4(a6),a0	; $01F864
 	move.b $c(a0),$ffbb6c.l	; $01F868
@@ -17604,7 +17604,7 @@ L01F872:
 	moveq #$0,d0	; $01F872
 	move.b $ffbb72.l,d0	; $01F874
 	moveq #$e,d1	; $01F87A
-	jsr FUN_00de8e.l	; $01F87C
+	jsr mul32.l	; $01F87C
 	movea.l d0,a0	; $01F882
 	adda.l -$4(a6),a0	; $01F884
 	move.b $c(a0),$ffbb6f.l	; $01F888
@@ -17618,7 +17618,7 @@ L01F89A:
 	moveq #$0,d0	; $01F89A
 	move.b $ffbb72.l,d0	; $01F89C
 	moveq #$e,d1	; $01F8A2
-	jsr FUN_00de8e.l	; $01F8A4
+	jsr mul32.l	; $01F8A4
 	movea.l d0,a0	; $01F8AA
 	adda.l -$4(a6),a0	; $01F8AC
 	moveq #$0,d0	; $01F8B0
@@ -17637,7 +17637,7 @@ L01F89A:
 	moveq #$0,d0	; $01F8EC
 	move.b $ffbb72.l,d0	; $01F8EE
 	moveq #$e,d1	; $01F8F4
-	jsr FUN_00de8e.l	; $01F8F6
+	jsr mul32.l	; $01F8F6
 	movea.l d0,a0	; $01F8FC
 	adda.l -$4(a6),a0	; $01F8FE
 	move.b $b(a0),$ffa7f8.l	; $01F902
@@ -17667,7 +17667,7 @@ L01F92A:
 	moveq #$0,d0	; $01F966
 	move.b $ffbb72.l,d0	; $01F968
 	moveq #$e,d1	; $01F96E
-	jsr FUN_00de8e.l	; $01F970
+	jsr mul32.l	; $01F970
 	movea.l d0,a0	; $01F976
 	adda.l -$4(a6),a0	; $01F978
 	cmpi.b #$1,$d(a0)	; $01F97C
@@ -17675,7 +17675,7 @@ L01F92A:
 	moveq #$0,d0	; $01F984
 	move.b $ffbb72.l,d0	; $01F986
 	moveq #$e,d1	; $01F98C
-	jsr FUN_00de8e.l	; $01F98E
+	jsr mul32.l	; $01F98E
 	movea.l d0,a0	; $01F994
 	adda.l -$4(a6),a0	; $01F996
 	move.b $c(a0),$ffbb6c.l	; $01F99A
@@ -17683,7 +17683,7 @@ L01F9A2:
 	moveq #$0,d0	; $01F9A2
 	move.b $ffbb72.l,d0	; $01F9A4
 	moveq #$e,d1	; $01F9AA
-	jsr FUN_00de8e.l	; $01F9AC
+	jsr mul32.l	; $01F9AC
 	movea.l d0,a0	; $01F9B2
 	adda.l -$4(a6),a0	; $01F9B4
 	move.b $b(a0),$ffa7f8.l	; $01F9B8
@@ -17705,7 +17705,7 @@ L01F9D0:
 	moveq #$0,d0	; $01FA0C
 	move.b $ffbb72.l,d0	; $01FA0E
 	moveq #$e,d1	; $01FA14
-	jsr FUN_00de8e.l	; $01FA16
+	jsr mul32.l	; $01FA16
 	movea.l d0,a0	; $01FA1C
 	adda.l -$4(a6),a0	; $01FA1E
 	moveq #$0,d0	; $01FA22
@@ -17714,7 +17714,7 @@ L01F9D0:
 	moveq #$0,d0	; $01FA2C
 	move.b $ffbb72.l,d0	; $01FA2E
 	moveq #$e,d1	; $01FA34
-	jsr FUN_00de8e.l	; $01FA36
+	jsr mul32.l	; $01FA36
 	movea.l d0,a0	; $01FA3C
 	adda.l -$4(a6),a0	; $01FA3E
 	move.b $c(a0),$ffbb6c.l	; $01FA42
@@ -17731,7 +17731,7 @@ L01F9D0:
 	moveq #$0,d0	; $01FA70
 	move.b $ffbb72.l,d0	; $01FA72
 	moveq #$e,d1	; $01FA78
-	jsr FUN_00de8e.l	; $01FA7A
+	jsr mul32.l	; $01FA7A
 	movea.l d0,a0	; $01FA80
 	adda.l -$4(a6),a0	; $01FA82
 	move.b $c(a0),$ffbb6d.l	; $01FA86
@@ -17771,7 +17771,7 @@ L01FB00:
 	moveq #$0,d0	; $01FB00
 	move.b $ffbb72.l,d0	; $01FB02
 	moveq #$e,d1	; $01FB08
-	jsr FUN_00de8e.l	; $01FB0A
+	jsr mul32.l	; $01FB0A
 	movea.l d0,a0	; $01FB10
 	adda.l -$4(a6),a0	; $01FB12
 	move.b $b(a0),$ffa7f8.l	; $01FB16
@@ -20127,7 +20127,7 @@ L021A9C:
 	move.w $ff0e8e.l,d7	; $021AA4
 	movea.w $ff0e90.l,a3	; $021AAA
 	move.w #$4,-(a7)	; $021AB0
-	jsr FUN_012b82.l	; $021AB4
+	jsr rand_next.l	; $021AB4
 	addq.w #$2,a7	; $021ABA
 	ext.l d0	; $021ABC
 	bra.w L021B54	; $021ABE
@@ -20188,17 +20188,17 @@ L021B66:
 	moveq #$0,d5	; $021B66
 L021B68:
 	move.w #$4,-(a7)	; $021B68
-	jsr FUN_012b82.l	; $021B6C
+	jsr rand_next.l	; $021B6C
 	addq.w #$2,a7	; $021B72
 	move.w d0,d4	; $021B74
 	addq.w #$1,d4	; $021B76
 	move.w #$9,-(a7)	; $021B78
-	jsr FUN_012b82.l	; $021B7C
+	jsr rand_next.l	; $021B7C
 	addq.w #$2,a7	; $021B82
 	subq.w #$4,d0	; $021B84
 	move.w d0,-$2(a6)	; $021B86
 	move.w #$9,-(a7)	; $021B8A
-	jsr FUN_012b82.l	; $021B8E
+	jsr rand_next.l	; $021B8E
 	addq.w #$2,a7	; $021B94
 	subq.w #$4,d0	; $021B96
 	move.w d0,-$4(a6)	; $021B98
@@ -20221,7 +20221,7 @@ L021B68:
 	bra.b L021C3A	; $021BCE
 L021BD0:
 	move.w #$3e8,-(a7)	; $021BD0
-	jsr FUN_012b82.l	; $021BD4
+	jsr rand_next.l	; $021BD4
 	addq.w #$2,a7	; $021BDA
 	move.w d6,d1	; $021BDC
 	muls.w #$18,d1	; $021BDE
@@ -20236,7 +20236,7 @@ L021BF6:
 	add.w d1,d0	; $021BF6
 	beq.b L021C08	; $021BF8
 	move.w #$1f4,-(a7)	; $021BFA
-	jsr FUN_012b82.l	; $021BFE
+	jsr rand_next.l	; $021BFE
 	addq.w #$2,a7	; $021C04
 	bra.b L021C0A	; $021C06
 L021C08:
@@ -20305,7 +20305,7 @@ L021CB8:
 	blt.w L021B68	; $021CBE
 L021CC2:
 	move.w #$6,-(a7)	; $021CC2
-	jsr FUN_012b82.l	; $021CC6
+	jsr rand_next.l	; $021CC6
 	addq.w #$2,a7	; $021CCC
 	tst.w d0	; $021CCE
 	bne.w L021FDE	; $021CD0
@@ -20365,7 +20365,7 @@ L021D6C:
 	bra.w L021ED4	; $021D8A
 L021D8E:
 	move.w #$3e8,-(a7)	; $021D8E
-	jsr FUN_012b82.l	; $021D92
+	jsr rand_next.l	; $021D92
 	addq.w #$2,a7	; $021D98
 	move.w d0,-$a(a6)	; $021D9A
 	move.w d6,d0	; $021D9E
@@ -20379,7 +20379,7 @@ L021D8E:
 	bne.b L021DCA	; $021DB8
 L021DBA:
 	move.w #$4b0,-(a7)	; $021DBA
-	jsr FUN_012b82.l	; $021DBE
+	jsr rand_next.l	; $021DBE
 	addq.w #$2,a7	; $021DC4
 	add.w d0,-$a(a6)	; $021DC6
 L021DCA:
@@ -21383,12 +21383,12 @@ L022AF0:
 L022AF6:
 	bra.w L022F34	; $022AF6
 	move.w #$8,-(a7)	; $022AFA
-	jsr FUN_012b82.l	; $022AFE
+	jsr rand_next.l	; $022AFE
 	addq.w #$2,a7	; $022B04
 	tst.w d0	; $022B06
 	bne.b L022B1C	; $022B08
 	move.w #$5,-(a7)	; $022B0A
-	jsr FUN_012b82.l	; $022B0E
+	jsr rand_next.l	; $022B0E
 	addq.w #$2,a7	; $022B14
 	move.w d0,-$e(a6)	; $022B16
 	bra.b L022B2E	; $022B1A
@@ -21420,7 +21420,7 @@ L022B64:
 	lea.l $ff02be.l,a0	; $022B6E
 	move.w (a0,d0.l),-$e(a6)	; $022B74
 	move.w #$3,-(a7)	; $022B7A
-	jsr FUN_012b82.l	; $022B7E
+	jsr rand_next.l	; $022B7E
 	addq.w #$2,a7	; $022B84
 	move.w d0,-$2(a6)	; $022B86
 	pea.l -$c(a6)	; $022B8A
@@ -21570,7 +21570,7 @@ L022D98:
 	cmpi.w #$ff,(a0,d0.l)	; $022DAC
 	bne.b L022DC4	; $022DB2
 	move.w #$3,-(a7)	; $022DB4
-	jsr FUN_012b82.l	; $022DB8
+	jsr rand_next.l	; $022DB8
 	addq.w #$2,a7	; $022DBE
 	tst.w d0	; $022DC0
 	bne.b L022DD2	; $022DC2
@@ -21586,7 +21586,7 @@ L022DD2:
 	lea.l $ff02be.l,a0	; $022DDC
 	move.w (a0,d0.l),-$e(a6)	; $022DE2
 	move.w #$3,-(a7)	; $022DE8
-	jsr FUN_012b82.l	; $022DEC
+	jsr rand_next.l	; $022DEC
 	addq.w #$2,a7	; $022DF2
 	move.w d0,-$2(a6)	; $022DF4
 	pea.l -$c(a6)	; $022DF8
@@ -21614,7 +21614,7 @@ L022DD2:
 	tst.w -$2(a6)	; $022E56
 	beq.b L022E8E	; $022E5A
 	move.w #$2,-(a7)	; $022E5C
-	jsr FUN_012b82.l	; $022E60
+	jsr rand_next.l	; $022E60
 	addq.w #$2,a7	; $022E66
 	tst.w d0	; $022E68
 	beq.b L022E7E	; $022E6A
@@ -21637,7 +21637,7 @@ L022E8E:
 	cmpi.w #$ff,(a0,d0.l)	; $022EA2
 	bne.b L022EBA	; $022EA8
 	move.w #$3,-(a7)	; $022EAA
-	jsr FUN_012b82.l	; $022EAE
+	jsr rand_next.l	; $022EAE
 	addq.w #$2,a7	; $022EB4
 	tst.w d0	; $022EB6
 	bne.b L022EC8	; $022EB8
@@ -22083,7 +22083,7 @@ FUN_02343a:
 	cmp.w #$4,d4	; $02344A
 	bne.b L023462	; $02344E
 	move.w #$8,-(a7)	; $023450
-	jsr FUN_012b82.l	; $023454
+	jsr rand_next.l	; $023454
 	addq.w #$2,a7	; $02345A
 	tst.w d0	; $02345C
 	bne.b L023462	; $02345E
@@ -23992,7 +23992,7 @@ L024FB2:
 	cmpi.w #$3,-$1a(a6)	; $024FB8
 	bne.b L024FF2	; $024FBE
 	move.w #$9,-(a7)	; $024FC0
-	jsr FUN_012b82.l	; $024FC4
+	jsr rand_next.l	; $024FC4
 	addq.w #$2,a7	; $024FCA
 	tst.w d0	; $024FCC
 	bne.b L024FF2	; $024FCE
@@ -26290,7 +26290,7 @@ L026DCE:
 	; code $026DD2-$026E43
 FUN_026dd2:
 	link.w a6,#$0	; $026DD2
-	jsr FUN_01386a.l	; $026DD6
+	jsr wait_vblank.l	; $026DD6
 	move.w $ff8640.l,-(a7)	; $026DDC
 	move.w #$a,-(a7)	; $026DE2
 	move.w #$9,-(a7)	; $026DE6
@@ -26320,7 +26320,7 @@ FUN_026dd2:
 	; code $026E44-$027471
 FUN_026e44:
 	link.w a6,#$ffde	; $026E44
-	jsr FUN_01386a.l	; $026E48
+	jsr wait_vblank.l	; $026E48
 	tst.w $ff00ac.l	; $026E4E
 	bne.b L026EB4	; $026E54
 	move.w $ff8640.l,-(a7)	; $026E56
@@ -26856,7 +26856,7 @@ FUN_0275b0:
 	link.w a6,#$ff10	; $0275B0
 	movem.l d4-d7/a3-a4,-(a7)	; $0275B4
 	suba.l a4,a4	; $0275B8
-	jsr FUN_01386a.l	; $0275BA
+	jsr wait_vblank.l	; $0275BA
 	tst.w $ff0114.l	; $0275C0
 	beq.b L027616	; $0275C6
 	cmpi.w #$7,$ff0e7e.l	; $0275C8
@@ -27122,7 +27122,7 @@ L0278D8:
 	moveq #$0,d0	; $02796E
 	move.b $27(a3),d0	; $027970
 	moveq #$34,d1	; $027974
-	jsr FUN_00de8e.l	; $027976
+	jsr mul32.l	; $027976
 	lea.l $ff02d6.l,a0	; $02797C
 	move.w (a0,d0.l),d1	; $027982
 	add.w #$a,d1	; $027986
@@ -27134,7 +27134,7 @@ L027994:
 	moveq #$0,d0	; $027994
 	move.b $27(a3),d0	; $027996
 	moveq #$34,d1	; $02799A
-	jsr FUN_00de8e.l	; $02799C
+	jsr mul32.l	; $02799C
 	lea.l $ff02d6.l,a0	; $0279A2
 	move.w (a0,d0.l),d1	; $0279A8
 	add.w #$a,d1	; $0279AC
@@ -27146,7 +27146,7 @@ L0279B8:
 	moveq #$0,d0	; $0279B8
 	move.b $27(a3),d0	; $0279BA
 	moveq #$34,d1	; $0279BE
-	jsr FUN_00de8e.l	; $0279C0
+	jsr mul32.l	; $0279C0
 	lea.l $ff02d6.l,a0	; $0279C6
 	move.l d0,d1	; $0279CC
 	move.w (a0,d1.l),d0	; $0279CE
@@ -27541,7 +27541,7 @@ L027F26:
 	move.b $25(a3),d0	; $027F82
 	move.l d1,-(a7)	; $027F86
 	moveq #$6,d1	; $027F88
-	jsr FUN_00de8e.l	; $027F8A
+	jsr mul32.l	; $027F8A
 	move.l (a7)+,d1	; $027F90
 	movea.l (a0,d1.l),a1	; $027F92
 	adda.l d0,a1	; $027F96
@@ -29436,7 +29436,7 @@ L029990:
 	moveq #$0,d0	; $02999E
 	move.b $27(a0),d0	; $0299A0
 	moveq #$34,d1	; $0299A4
-	jsr FUN_00de8e.l	; $0299A6
+	jsr mul32.l	; $0299A6
 	lea.l $ff02d6.l,a0	; $0299AC
 	move.w (a0,d0.l),-(a7)	; $0299B2
 	movea.l -$a(a6),a0	; $0299B6
@@ -29447,7 +29447,7 @@ L029990:
 	moveq #$0,d0	; $0299C6
 	move.b $27(a0),d0	; $0299C8
 	moveq #$34,d1	; $0299CC
-	jsr FUN_00de8e.l	; $0299CE
+	jsr mul32.l	; $0299CE
 	lea.l $ff02d4.l,a0	; $0299D4
 	move.w (a0,d0.l),-(a7)	; $0299DA
 	movea.l -$a(a6),a0	; $0299DE
@@ -29503,7 +29503,7 @@ L029A56:
 	moveq #$0,d0	; $029A9A
 	move.b (a0,d1.l),d0	; $029A9C
 	moveq #$34,d1	; $029AA0
-	jsr FUN_00de8e.l	; $029AA2
+	jsr mul32.l	; $029AA2
 	lea.l $ff02c8.l,a0	; $029AA8
 	move.w (a0,d0.l),-(a7)	; $029AAE
 	move.w $ff0e82.l,-(a7)	; $029AB2
@@ -30097,7 +30097,7 @@ L02A27C:
 	muls.w #$34,d0	; $02A280
 	move.l d0,-(a7)	; $02A284
 	move.w #$6,-(a7)	; $02A286
-	jsr FUN_012b82.l	; $02A28A
+	jsr rand_next.l	; $02A28A
 	addq.w #$2,a7	; $02A290
 	ext.l d0	; $02A292
 	asl.l #$1,d0	; $02A294
@@ -34716,7 +34716,7 @@ L02E112:
 	tst.w d0	; $02E130
 	bne.b L02E186	; $02E132
 	move.w #$8,-(a7)	; $02E134
-	jsr FUN_012b82.l	; $02E138
+	jsr rand_next.l	; $02E138
 	addq.w #$2,a7	; $02E13E
 	move.w d0,-$a(a6)	; $02E140
 	move.w -$a(a6),d0	; $02E144
@@ -35163,12 +35163,12 @@ L02E76E:
 L02E772:
 	bra.w L02E866	; $02E772
 	move.w #$f,-(a7)	; $02E776
-	jsr FUN_012b82.l	; $02E77A
+	jsr rand_next.l	; $02E77A
 	addq.w #$2,a7	; $02E780
 	tst.w d0	; $02E782
 	bne.b L02E7FA	; $02E784
 	move.w #$42,-(a7)	; $02E786
-	jsr FUN_012b82.l	; $02E78A
+	jsr rand_next.l	; $02E78A
 	addq.w #$2,a7	; $02E790
 	tst.w d0	; $02E792
 	bne.b L02E7C2	; $02E794
@@ -35724,7 +35724,7 @@ L02EE48:
 	clr.w $ff0118.l	; $02EE48
 	move.w #$2,$ff011a.l	; $02EE4E
 L02EE56:
-	jsr FUN_01386a.l	; $02EE56
+	jsr wait_vblank.l	; $02EE56
 	jsr FUN_013d84.l	; $02EE5C
 	jsr FUN_0138a8.l	; $02EE62
 	unlk a6	; $02EE68
@@ -37089,12 +37089,12 @@ FUN_03019a:
 	jsr FUN_026a8c.l	; $0301A8
 L0301AE:
 	move.w #$3,-(a7)	; $0301AE
-	jsr FUN_012b82.l	; $0301B2
+	jsr rand_next.l	; $0301B2
 	addq.w #$2,a7	; $0301B8
 	tst.w d0	; $0301BA
 	bne.w L03025C	; $0301BC
 	move.w #$3,-(a7)	; $0301C0
-	jsr FUN_012b82.l	; $0301C4
+	jsr rand_next.l	; $0301C4
 	addq.w #$2,a7	; $0301CA
 	ext.l d0	; $0301CC
 	bra.b L0301E8	; $0301CE
@@ -37116,7 +37116,7 @@ L0301E8:
 	beq.b L0301E0	; $0301F2
 L0301F4:
 	move.w #$1e,-(a7)	; $0301F4
-	jsr FUN_012b82.l	; $0301F8
+	jsr rand_next.l	; $0301F8
 	addq.w #$2,a7	; $0301FE
 	tst.w d0	; $030200
 	bne.b L03020A	; $030202
@@ -37448,7 +37448,7 @@ L030680:
 	move.w $8(a6),d0	; $030690
 	muls.w #$14,d0	; $030694
 	move.w d0,-(a7)	; $030698
-	jsr FUN_012b82.l	; $03069A
+	jsr rand_next.l	; $03069A
 	addq.w #$2,a7	; $0306A0
 	addq.w #$1,d0	; $0306A2
 	move.w d0,$ffc40c.l	; $0306A4
@@ -37466,12 +37466,12 @@ L0306B2:
 	jsr FUN_02cbea.l	; $0306D2
 	addq.w #$2,a7	; $0306D8
 	move.w d0,-(a7)	; $0306DA
-	jsr FUN_012b82.l	; $0306DC
+	jsr rand_next.l	; $0306DC
 	addq.w #$2,a7	; $0306E2
 	add.w #$380,d0	; $0306E4
 	move.w d0,$ffc410.l	; $0306E8
 	move.w #$5,-(a7)	; $0306EE
-	jsr FUN_012b82.l	; $0306F2
+	jsr rand_next.l	; $0306F2
 	addq.w #$2,a7	; $0306F8
 	addq.w #$1,d0	; $0306FA
 	move.w d0,$ffc412.l	; $0306FC
@@ -37513,7 +37513,7 @@ L03075E:
 	lea.l $ff00c0.l,a0	; $030766
 	move.w d0,(a0,d1.l)	; $03076C
 	move.w #$2,-(a7)	; $030770
-	jsr FUN_012b82.l	; $030774
+	jsr rand_next.l	; $030774
 	addq.w #$2,a7	; $03077A
 	tst.w d0	; $03077C
 	beq.b L030788	; $03077E
@@ -37538,7 +37538,7 @@ L030788:
 	move.w d1,$ffc410.l	; $0307BA
 L0307C0:
 	move.w #$5,-(a7)	; $0307C0
-	jsr FUN_012b82.l	; $0307C4
+	jsr rand_next.l	; $0307C4
 	addq.w #$2,a7	; $0307CA
 	tst.w d0	; $0307CC
 	beq.b L0307D8	; $0307CE
@@ -39726,7 +39726,7 @@ FUN_032284:
 	ext.l d0	; $0322BA
 	bra.w L032678	; $0322BC
 	move.w #$2,-(a7)	; $0322C0
-	jsr FUN_012b82.l	; $0322C4
+	jsr rand_next.l	; $0322C4
 	addq.w #$2,a7	; $0322CA
 	tst.w d0	; $0322CC
 	bne.b L03231E	; $0322CE
@@ -39737,7 +39737,7 @@ L0322DC:
 	move.w -$4(a6),-(a7)	; $0322DC
 	move.w -$2(a6),-(a7)	; $0322E0
 	move.w #$3,-(a7)	; $0322E4
-	jsr FUN_012b82.l	; $0322E8
+	jsr rand_next.l	; $0322E8
 	addq.w #$2,a7	; $0322EE
 	tst.w d0	; $0322F0
 	beq.b L0322FA	; $0322F2
@@ -39908,7 +39908,7 @@ L0324BC:
 L032520:
 	bra.w L03268A	; $032520
 	move.w #$8,-(a7)	; $032524
-	jsr FUN_012b82.l	; $032528
+	jsr rand_next.l	; $032528
 	addq.w #$2,a7	; $03252E
 	tst.w d0	; $032530
 	bne.b L032572	; $032532
@@ -39984,7 +39984,7 @@ L0325D4:
 	blt.w L03257A	; $032614
 	bra.b L03268A	; $032618
 	move.w #$8,-(a7)	; $03261A
-	jsr FUN_012b82.l	; $03261E
+	jsr rand_next.l	; $03261E
 	addq.w #$2,a7	; $032624
 	tst.w d0	; $032626
 	bne.b L032668	; $032628
@@ -41262,7 +41262,7 @@ L033612:
 	tst.l -$1e(a6)	; $033624
 	bls.b L03363C	; $033628
 	move.w #$400,-(a7)	; $03362A
-	jsr FUN_012b82.l	; $03362E
+	jsr rand_next.l	; $03362E
 	addq.w #$2,a7	; $033634
 	ext.l d0	; $033636
 	add.l d0,-$1e(a6)	; $033638
@@ -41778,7 +41778,7 @@ L033C88:
 L033D84:
 	bra.w L03472A	; $033D84
 	move.w #$8,-(a7)	; $033D88
-	jsr FUN_012b82.l	; $033D8C
+	jsr rand_next.l	; $033D8C
 	addq.w #$2,a7	; $033D92
 	move.w d0,-$6(a6)	; $033D94
 	cmpi.w #$4,-$6(a6)	; $033D98
@@ -41821,12 +41821,12 @@ L033DA6:
 L033E2C:
 	bra.w L03472A	; $033E2C
 	move.w #$8,-(a7)	; $033E30
-	jsr FUN_012b82.l	; $033E34
+	jsr rand_next.l	; $033E34
 	addq.w #$2,a7	; $033E3A
 	tst.w d0	; $033E3C
 	bne.b L033E52	; $033E3E
 	move.w #$5,-(a7)	; $033E40
-	jsr FUN_012b82.l	; $033E44
+	jsr rand_next.l	; $033E44
 	addq.w #$2,a7	; $033E4A
 	move.w d0,-$6(a6)	; $033E4C
 	bra.b L033E66	; $033E50
@@ -41896,7 +41896,7 @@ L033EF6:
 	tst.w -$4(a6)	; $033F4C
 	ble.b L033F84	; $033F50
 	move.w #$5,-(a7)	; $033F52
-	jsr FUN_012b82.l	; $033F56
+	jsr rand_next.l	; $033F56
 	addq.w #$2,a7	; $033F5C
 	addq.w #$1,d0	; $033F5E
 	lsl.w #$2,d0	; $033F60
@@ -41921,7 +41921,7 @@ L033F84:
 	and.w #$ff,d0	; $033FA4
 	bne.b L033FFA	; $033FA8
 	move.w #$9,-(a7)	; $033FAA
-	jsr FUN_012b82.l	; $033FAE
+	jsr rand_next.l	; $033FAE
 	addq.w #$2,a7	; $033FB4
 	movea.l -$22(a6),a0	; $033FB6
 	move.w d0,$a(a0)	; $033FBA
@@ -41932,7 +41932,7 @@ L033F84:
 	move.w #$4,$a(a0)	; $033FCE
 L033FD4:
 	move.w #$5,-(a7)	; $033FD4
-	jsr FUN_012b82.l	; $033FD8
+	jsr rand_next.l	; $033FD8
 	addq.w #$2,a7	; $033FDE
 	addq.w #$1,d0	; $033FE0
 	lsl.w #$2,d0	; $033FE2
@@ -41979,7 +41979,7 @@ L034064:
 	andi.w #$fbff,(a0)	; $03406E
 	ori.w #$400,(a0)	; $034072
 	move.w #$5,-(a7)	; $034076
-	jsr FUN_012b82.l	; $03407A
+	jsr rand_next.l	; $03407A
 	addq.w #$2,a7	; $034080
 	addq.w #$1,d0	; $034082
 	lsl.w #$2,d0	; $034084
@@ -42473,7 +42473,7 @@ L03475E:
 	moveq #$0,d0	; $034786
 	move.b -$1d(a6),d0	; $034788
 	moveq #$c,d1	; $03478C
-	jsr FUN_00de8e.l	; $03478E
+	jsr mul32.l	; $03478E
 	moveq #$0,d1	; $034794
 	move.b -$1e(a6),d1	; $034796
 	asl.l #$1,d1	; $03479A
@@ -42485,7 +42485,7 @@ L03475E:
 	moveq #$0,d0	; $0347AE
 	move.b -$1d(a6),d0	; $0347B0
 	moveq #$c,d1	; $0347B4
-	jsr FUN_00de8e.l	; $0347B6
+	jsr mul32.l	; $0347B6
 	moveq #$0,d1	; $0347BC
 	move.b -$1e(a6),d1	; $0347BE
 	asl.l #$1,d1	; $0347C2
@@ -42498,7 +42498,7 @@ L03475E:
 	moveq #$0,d0	; $0347DA
 	move.b -$1d(a6),d0	; $0347DC
 	moveq #$c,d1	; $0347E0
-	jsr FUN_00de8e.l	; $0347E2
+	jsr mul32.l	; $0347E2
 	moveq #$0,d1	; $0347E8
 	move.b -$1e(a6),d1	; $0347EA
 	asl.l #$1,d1	; $0347EE
@@ -42510,7 +42510,7 @@ L03475E:
 	moveq #$0,d0	; $034802
 	move.b -$1d(a6),d0	; $034804
 	moveq #$c,d1	; $034808
-	jsr FUN_00de8e.l	; $03480A
+	jsr mul32.l	; $03480A
 	moveq #$0,d1	; $034810
 	move.b -$1e(a6),d1	; $034812
 	asl.l #$1,d1	; $034816
@@ -42524,7 +42524,7 @@ L03475E:
 	moveq #$0,d0	; $034830
 	move.b -$1d(a6),d0	; $034832
 	moveq #$c,d1	; $034836
-	jsr FUN_00de8e.l	; $034838
+	jsr mul32.l	; $034838
 	moveq #$0,d1	; $03483E
 	move.b -$1e(a6),d1	; $034840
 	asl.l #$1,d1	; $034844
@@ -42537,7 +42537,7 @@ L03475E:
 	moveq #$0,d0	; $03485A
 	move.b -$1d(a6),d0	; $03485C
 	moveq #$c,d1	; $034860
-	jsr FUN_00de8e.l	; $034862
+	jsr mul32.l	; $034862
 	moveq #$0,d1	; $034868
 	move.b -$1e(a6),d1	; $03486A
 	asl.l #$1,d1	; $03486E
@@ -42551,7 +42551,7 @@ L03475E:
 	moveq #$0,d0	; $034886
 	move.b -$1d(a6),d0	; $034888
 	moveq #$c,d1	; $03488C
-	jsr FUN_00de8e.l	; $03488E
+	jsr mul32.l	; $03488E
 	moveq #$0,d1	; $034894
 	move.b -$1e(a6),d1	; $034896
 	asl.l #$1,d1	; $03489A
@@ -42563,7 +42563,7 @@ L03475E:
 	moveq #$0,d0	; $0348AE
 	move.b -$1d(a6),d0	; $0348B0
 	moveq #$c,d1	; $0348B4
-	jsr FUN_00de8e.l	; $0348B6
+	jsr mul32.l	; $0348B6
 	moveq #$0,d1	; $0348BC
 	move.b -$1e(a6),d1	; $0348BE
 	asl.l #$1,d1	; $0348C2
@@ -42794,7 +42794,7 @@ L034BCC:
 FUN_034bd0:
 	link.w a6,#$fff8	; $034BD0
 	move.w #$18,-(a7)	; $034BD4
-	jsr FUN_012b82.l	; $034BD8
+	jsr rand_next.l	; $034BD8
 	addq.w #$2,a7	; $034BDE
 	move.w d0,-$6(a6)	; $034BE0
 	clr.w -$8(a6)	; $034BE4
@@ -43120,7 +43120,7 @@ L03502A:
 	moveq #$0,d0	; $035066
 	move.b -$15(a6),d0	; $035068
 	moveq #$c,d1	; $03506C
-	jsr FUN_00de8e.l	; $03506E
+	jsr mul32.l	; $03506E
 	move.w -$4(a6),d1	; $035074
 	muls.w #$34,d1	; $035078
 	lea.l $ff02d8.l,a0	; $03507C
@@ -43135,7 +43135,7 @@ L03502A:
 	moveq #$0,d0	; $03509C
 	move.b -$15(a6),d0	; $03509E
 	moveq #$c,d1	; $0350A2
-	jsr FUN_00de8e.l	; $0350A4
+	jsr mul32.l	; $0350A4
 	move.w -$4(a6),d1	; $0350AA
 	muls.w #$34,d1	; $0350AE
 	lea.l $ff02d8.l,a0	; $0350B2
@@ -43151,7 +43151,7 @@ L03502A:
 	moveq #$0,d0	; $0350D6
 	move.b -$15(a6),d0	; $0350D8
 	moveq #$c,d1	; $0350DC
-	jsr FUN_00de8e.l	; $0350DE
+	jsr mul32.l	; $0350DE
 	move.w -$4(a6),d1	; $0350E4
 	muls.w #$34,d1	; $0350E8
 	lea.l $ff02d8.l,a0	; $0350EC
@@ -43166,7 +43166,7 @@ L03502A:
 	moveq #$0,d0	; $03510C
 	move.b -$15(a6),d0	; $03510E
 	moveq #$c,d1	; $035112
-	jsr FUN_00de8e.l	; $035114
+	jsr mul32.l	; $035114
 	move.w -$4(a6),d1	; $03511A
 	muls.w #$34,d1	; $03511E
 	lea.l $ff02d8.l,a0	; $035122
@@ -43183,7 +43183,7 @@ L03502A:
 	moveq #$0,d0	; $035148
 	move.b -$15(a6),d0	; $03514A
 	moveq #$c,d1	; $03514E
-	jsr FUN_00de8e.l	; $035150
+	jsr mul32.l	; $035150
 	move.w -$4(a6),d1	; $035156
 	muls.w #$34,d1	; $03515A
 	lea.l $ff02d8.l,a0	; $03515E
@@ -43199,7 +43199,7 @@ L03502A:
 	moveq #$0,d0	; $035180
 	move.b -$15(a6),d0	; $035182
 	moveq #$c,d1	; $035186
-	jsr FUN_00de8e.l	; $035188
+	jsr mul32.l	; $035188
 	move.w -$4(a6),d1	; $03518E
 	muls.w #$34,d1	; $035192
 	lea.l $ff02d8.l,a0	; $035196
@@ -43215,7 +43215,7 @@ L03502A:
 	moveq #$0,d0	; $0351BA
 	move.b -$15(a6),d0	; $0351BC
 	moveq #$c,d1	; $0351C0
-	jsr FUN_00de8e.l	; $0351C2
+	jsr mul32.l	; $0351C2
 	move.w -$4(a6),d1	; $0351C8
 	muls.w #$34,d1	; $0351CC
 	lea.l $ff02d8.l,a0	; $0351D0
@@ -43230,7 +43230,7 @@ L03502A:
 	moveq #$0,d0	; $0351F0
 	move.b -$15(a6),d0	; $0351F2
 	moveq #$c,d1	; $0351F6
-	jsr FUN_00de8e.l	; $0351F8
+	jsr mul32.l	; $0351F8
 	move.w -$4(a6),d1	; $0351FE
 	muls.w #$34,d1	; $035202
 	lea.l $ff02d8.l,a0	; $035206
@@ -43714,7 +43714,7 @@ L035816:
 	tst.w -$4(a6)	; $035834
 	beq.b L035898	; $035838
 	move.w #$13,-(a7)	; $03583A
-	jsr FUN_012b82.l	; $03583E
+	jsr rand_next.l	; $03583E
 	addq.w #$2,a7	; $035844
 	add.w #$b,d0	; $035846
 	move.w -$4(a6),d1	; $03584A
@@ -43726,7 +43726,7 @@ L035816:
 	mulu.w d2,d0	; $035862
 	add.w d0,$ffc40c.l	; $035864
 	move.w #$7,-(a7)	; $03586A
-	jsr FUN_012b82.l	; $03586E
+	jsr rand_next.l	; $03586E
 	addq.w #$2,a7	; $035874
 	addq.w #$5,d0	; $035876
 	move.w -$4(a6),d1	; $035878
@@ -44813,7 +44813,7 @@ L0367EC:
 	lea.l $ff02d6.l,a0	; $03685E
 	move.w #$ffa6,(a0,d0.l)	; $036864
 	move.w #$2,-(a7)	; $03686A
-	jsr FUN_012b82.l	; $03686E
+	jsr rand_next.l	; $03686E
 	addq.w #$2,a7	; $036874
 	tst.w d0	; $036876
 	beq.b L036894	; $036878
@@ -44857,7 +44857,7 @@ FUN_0368e4:
 	moveq #$0,d0	; $0368FA
 	move.b (a0,d1.l),d0	; $0368FC
 	moveq #$34,d1	; $036900
-	jsr FUN_00de8e.l	; $036902
+	jsr mul32.l	; $036902
 	lea.l $ff02b6.l,a0	; $036908
 	move.w (a0,d0.l),d1	; $03690E
 	muls.w #$18,d1	; $036912
@@ -44900,7 +44900,7 @@ FUN_036954:
 	asl.w #$2,d1	; $03698C
 	move.w d1,-(a7)	; $03698E
 	move.w #$28,-(a7)	; $036990
-	jsr FUN_012b82.l	; $036994
+	jsr rand_next.l	; $036994
 	addq.w #$2,a7	; $03699A
 	move.w (a7)+,d1	; $03699C
 	add.w d0,d1	; $03699E
@@ -45351,7 +45351,7 @@ L036F30:
 	move.b $25(a4),d0	; $036F60
 	move.l d1,-(a7)	; $036F64
 	moveq #$6,d1	; $036F66
-	jsr FUN_00de8e.l	; $036F68
+	jsr mul32.l	; $036F68
 	move.l (a7)+,d1	; $036F6E
 	movea.l (a0,d1.l),a1	; $036F70
 	adda.l d0,a1	; $036F74
@@ -45371,7 +45371,7 @@ L036F8E:
 	and.w #$1,d0	; $036F9C
 	beq.b L036FBE	; $036FA0
 	move.w #$3,-(a7)	; $036FA2
-	jsr FUN_012b82.l	; $036FA6
+	jsr rand_next.l	; $036FA6
 	addq.w #$2,a7	; $036FAC
 	tst.w d0	; $036FAE
 	bne.b L036FBE	; $036FB0
@@ -45651,7 +45651,7 @@ L037326:
 	jsr FUN_01e18a.l	; $037384
 	lea.l $c(a7),a7	; $03738A
 	move.w #$2,-(a7)	; $03738E
-	jsr FUN_012b82.l	; $037392
+	jsr rand_next.l	; $037392
 	addq.w #$2,a7	; $037398
 	tst.w d0	; $03739A
 	bne.b L0373A8	; $03739C
@@ -45700,7 +45700,7 @@ L0373EA:
 	bra.w L036F18	; $037430
 L037434:
 	move.w #$3,-(a7)	; $037434
-	jsr FUN_012b82.l	; $037438
+	jsr rand_next.l	; $037438
 	addq.w #$2,a7	; $03743E
 	add.w d7,d0	; $037440
 	move.w d0,-(a7)	; $037442
@@ -45852,7 +45852,7 @@ L03758A:
 	and.w #$3,d0	; $037622
 	beq.b L037638	; $037626
 	move.w #$2,-(a7)	; $037628
-	jsr FUN_012b82.l	; $03762C
+	jsr rand_next.l	; $03762C
 	addq.w #$2,a7	; $037632
 	tst.w d0	; $037634
 	bne.b L037654	; $037636
@@ -45888,7 +45888,7 @@ L037654:
 	and.w #$3,d0	; $037690
 	beq.b L0376A6	; $037694
 	move.w #$2,-(a7)	; $037696
-	jsr FUN_012b82.l	; $03769A
+	jsr rand_next.l	; $03769A
 	addq.w #$2,a7	; $0376A0
 	tst.w d0	; $0376A2
 	bne.b L0376B2	; $0376A4
@@ -45947,7 +45947,7 @@ L03776C:
 	addq.w #$1,$ff0ea8.l	; $03776C
 L037772:
 	move.w #$4,-(a7)	; $037772
-	jsr FUN_012b82.l	; $037776
+	jsr rand_next.l	; $037776
 	addq.w #$2,a7	; $03777C
 	bra.w L036F18	; $03777E
 L037782:
@@ -46116,7 +46116,7 @@ L037966:
 FUN_037976:
 	link.w a6,#$fff8	; $037976
 	move.w #$18,-(a7)	; $03797A
-	jsr FUN_012b82.l	; $03797E
+	jsr rand_next.l	; $03797E
 	addq.w #$2,a7	; $037984
 	move.w d0,-$6(a6)	; $037986
 	clr.w -$8(a6)	; $03798A
@@ -46413,7 +46413,7 @@ L037D36:
 	move.b $25(a1),d0	; $037D6A
 	move.l d1,-(a7)	; $037D6E
 	moveq #$6,d1	; $037D70
-	jsr FUN_00de8e.l	; $037D72
+	jsr mul32.l	; $037D72
 	move.l (a7)+,d1	; $037D78
 	movea.l (a0,d1.l),a1	; $037D7A
 	adda.l d0,a1	; $037D7E
@@ -46873,7 +46873,7 @@ L0382C8:
 	bra.b L03833A	; $0382DC
 L0382DE:
 	move.w #$3,-(a7)	; $0382DE
-	jsr FUN_012b82.l	; $0382E2
+	jsr rand_next.l	; $0382E2
 	addq.w #$2,a7	; $0382E8
 	tst.w d0	; $0382EA
 	bne.b L038302	; $0382EC
@@ -46886,7 +46886,7 @@ L038302:
 	bra.b L03833A	; $038302
 L038304:
 	move.w #$3,-(a7)	; $038304
-	jsr FUN_012b82.l	; $038308
+	jsr rand_next.l	; $038308
 	addq.w #$2,a7	; $03830E
 	tst.w d0	; $038310
 	bne.b L038328	; $038312
@@ -46922,7 +46922,7 @@ L038364:
 	moveq #$1,d5	; $038364
 L038366:
 	move.w #$3,-(a7)	; $038366
-	jsr FUN_012b82.l	; $03836A
+	jsr rand_next.l	; $03836A
 	addq.w #$2,a7	; $038370
 	tst.w d0	; $038372
 	bne.b L0383C2	; $038374
@@ -47095,7 +47095,7 @@ FUN_038512:
 	moveq #$0,d0	; $03855C
 	move.b $25(a0),d0	; $03855E
 	moveq #$6,d1	; $038562
-	jsr FUN_00de8e.l	; $038564
+	jsr mul32.l	; $038564
 	adda.l d0,a1	; $03856A
 	move.w $2(a1),d0	; $03856C
 	and.w #$f,d0	; $038570
@@ -47135,7 +47135,7 @@ FUN_038512:
 	moveq #$0,d0	; $0385EE
 	move.b $25(a0),d0	; $0385F0
 	moveq #$6,d1	; $0385F4
-	jsr FUN_00de8e.l	; $0385F6
+	jsr mul32.l	; $0385F6
 	movea.l d0,a0	; $0385FC
 	move.l (a7)+,d0	; $0385FE
 	move.w (a0,d0.l),d1	; $038600
@@ -47197,7 +47197,7 @@ FUN_03865c:
 	moveq #$0,d0	; $0386A6
 	move.b $25(a0),d0	; $0386A8
 	moveq #$6,d1	; $0386AC
-	jsr FUN_00de8e.l	; $0386AE
+	jsr mul32.l	; $0386AE
 	adda.l d0,a1	; $0386B4
 	move.w $2(a1),d0	; $0386B6
 	and.w #$f,d0	; $0386BA
@@ -47245,7 +47245,7 @@ L038712:
 	moveq #$0,d0	; $038750
 	move.b $25(a0),d0	; $038752
 	moveq #$6,d1	; $038756
-	jsr FUN_00de8e.l	; $038758
+	jsr mul32.l	; $038758
 	movea.l d0,a0	; $03875E
 	move.l (a7)+,d0	; $038760
 	move.w (a0,d0.l),d1	; $038762
@@ -47287,13 +47287,13 @@ FUN_0387ae:
 	moveq #$0,d0	; $0387C4
 	move.b (a0,d1.l),d0	; $0387C6
 	moveq #$34,d1	; $0387CA
-	jsr FUN_00de8e.l	; $0387CC
+	jsr mul32.l	; $0387CC
 	lea.l $ff02dd.l,a0	; $0387D2
 	move.l d0,d1	; $0387D8
 	moveq #$0,d0	; $0387DA
 	move.b (a0,d1.l),d0	; $0387DC
 	moveq #$34,d1	; $0387E0
-	jsr FUN_00de8e.l	; $0387E2
+	jsr mul32.l	; $0387E2
 	lea.l $ff02b4.l,a0	; $0387E8
 	movea.l d0,a3	; $0387EE
 	adda.l a0,a3	; $0387F0
@@ -47354,7 +47354,7 @@ L0388A8:
 	tst.w -$4(a6)	; $0388CC
 	beq.b L038922	; $0388D0
 	move.w #$5,-(a7)	; $0388D2
-	jsr FUN_012b82.l	; $0388D6
+	jsr rand_next.l	; $0388D6
 	addq.w #$2,a7	; $0388DC
 	cmp.w #$2,d0	; $0388DE
 	blt.b L038922	; $0388E2
@@ -47566,7 +47566,7 @@ L038B86:
 FUN_038b96:
 	link.w a6,#$fffc	; $038B96
 	move.w #$5,-(a7)	; $038B9A
-	jsr FUN_012b82.l	; $038B9E
+	jsr rand_next.l	; $038B9E
 	addq.w #$2,a7	; $038BA4
 	move.w d0,-$2(a6)	; $038BA6
 	cmpi.w #$4,-$2(a6)	; $038BAA
@@ -47645,7 +47645,7 @@ FUN_038c5a:
 	move.b $25(a1),d0	; $038CB0
 	move.l d1,-(a7)	; $038CB4
 	moveq #$6,d1	; $038CB6
-	jsr FUN_00de8e.l	; $038CB8
+	jsr mul32.l	; $038CB8
 	move.l (a7)+,d1	; $038CBE
 	movea.l (a0,d1.l),a1	; $038CC0
 	adda.l d0,a1	; $038CC4
@@ -47661,12 +47661,12 @@ FUN_038c5a:
 	move.w d0,-$e(a6)	; $038CE8
 L038CEC:
 	move.w #$a,-(a7)	; $038CEC
-	jsr FUN_012b82.l	; $038CF0
+	jsr rand_next.l	; $038CF0
 	addq.w #$2,a7	; $038CF6
 	addq.w #$1,d0	; $038CF8
 	move.w d0,-$6(a6)	; $038CFA
 	move.w #$a,-(a7)	; $038CFE
-	jsr FUN_012b82.l	; $038D02
+	jsr rand_next.l	; $038D02
 	addq.w #$2,a7	; $038D08
 	addq.w #$1,d0	; $038D0A
 	move.w d0,-$8(a6)	; $038D0C
@@ -47765,7 +47765,7 @@ FUN_038dea:
 	move.b $25(a1),d0	; $038E40
 	move.l d1,-(a7)	; $038E44
 	moveq #$6,d1	; $038E46
-	jsr FUN_00de8e.l	; $038E48
+	jsr mul32.l	; $038E48
 	move.l (a7)+,d1	; $038E4E
 	movea.l (a0,d1.l),a1	; $038E50
 	adda.l d0,a1	; $038E54
@@ -47781,17 +47781,17 @@ FUN_038dea:
 	move.w d0,-$e(a6)	; $038E78
 L038E7C:
 	move.w #$2,-(a7)	; $038E7C
-	jsr FUN_012b82.l	; $038E80
+	jsr rand_next.l	; $038E80
 	addq.w #$2,a7	; $038E86
 	tst.w d0	; $038E88
 	beq.b L038EB6	; $038E8A
 	move.w #$a,-(a7)	; $038E8C
-	jsr FUN_012b82.l	; $038E90
+	jsr rand_next.l	; $038E90
 	addq.w #$2,a7	; $038E96
 	addq.w #$1,d0	; $038E98
 	move.w d0,-$6(a6)	; $038E9A
 	move.w #$2,-(a7)	; $038E9E
-	jsr FUN_012b82.l	; $038EA2
+	jsr rand_next.l	; $038EA2
 	addq.w #$2,a7	; $038EA8
 	muls.w #$9,d0	; $038EAA
 	addq.w #$1,d0	; $038EAE
@@ -47799,13 +47799,13 @@ L038E7C:
 	bra.b L038EDE	; $038EB4
 L038EB6:
 	move.w #$2,-(a7)	; $038EB6
-	jsr FUN_012b82.l	; $038EBA
+	jsr rand_next.l	; $038EBA
 	addq.w #$2,a7	; $038EC0
 	muls.w #$9,d0	; $038EC2
 	addq.w #$1,d0	; $038EC6
 	move.w d0,-$6(a6)	; $038EC8
 	move.w #$a,-(a7)	; $038ECC
-	jsr FUN_012b82.l	; $038ED0
+	jsr rand_next.l	; $038ED0
 	addq.w #$2,a7	; $038ED6
 	addq.w #$1,d0	; $038ED8
 	move.w d0,-$8(a6)	; $038EDA
@@ -47905,7 +47905,7 @@ FUN_038fb8:
 	move.b $25(a1),d0	; $03900E
 	move.l d1,-(a7)	; $039012
 	moveq #$6,d1	; $039014
-	jsr FUN_00de8e.l	; $039016
+	jsr mul32.l	; $039016
 	move.l (a7)+,d1	; $03901C
 	movea.l (a0,d1.l),a1	; $03901E
 	adda.l d0,a1	; $039022
@@ -48032,7 +48032,7 @@ FUN_039172:
 	move.b $25(a1),d0	; $0391BC
 	move.l d1,-(a7)	; $0391C0
 	moveq #$6,d1	; $0391C2
-	jsr FUN_00de8e.l	; $0391C4
+	jsr mul32.l	; $0391C4
 	move.l (a7)+,d1	; $0391CA
 	movea.l (a0,d1.l),a1	; $0391CC
 	adda.l d0,a1	; $0391D0
@@ -48048,7 +48048,7 @@ FUN_039172:
 	moveq #$0,d0	; $0391F4
 	move.b $27(a0),d0	; $0391F6
 	moveq #$34,d1	; $0391FA
-	jsr FUN_00de8e.l	; $0391FC
+	jsr mul32.l	; $0391FC
 	move.w $ff012a.l,d1	; $039202
 	subq.w #$1,d1	; $039208
 	ext.l d1	; $03920A
@@ -48067,13 +48067,13 @@ L03922C:
 	moveq #$0,d0	; $039230
 	move.b $27(a0),d0	; $039232
 	moveq #$34,d1	; $039236
-	jsr FUN_00de8e.l	; $039238
+	jsr mul32.l	; $039238
 	lea.l $ff02dd.l,a0	; $03923E
 	move.l d0,d1	; $039244
 	moveq #$0,d0	; $039246
 	move.b (a0,d1.l),d0	; $039248
 	moveq #$34,d1	; $03924C
-	jsr FUN_00de8e.l	; $03924E
+	jsr mul32.l	; $03924E
 	move.w $ff012a.l,d1	; $039254
 	subq.w #$1,d1	; $03925A
 	ext.l d1	; $03925C
@@ -48277,7 +48277,7 @@ L0394D8:
 	cmpi.w #$1e,$ff012a.l	; $0394D8
 	bgt.w L03971A	; $0394E0
 	move.w #$6,-(a7)	; $0394E4
-	jsr FUN_012b82.l	; $0394E8
+	jsr rand_next.l	; $0394E8
 	addq.w #$2,a7	; $0394EE
 	cmp.w #$3,d0	; $0394F0
 	bne.b L03951C	; $0394F4
@@ -48285,7 +48285,7 @@ L0394D8:
 	clr.w -(a7)	; $0394FC
 	jsr FUN_011082.l	; $0394FE
 	addq.w #$6,a7	; $039504
-	jsr FUN_01386a.l	; $039506
+	jsr wait_vblank.l	; $039506
 	pea.l L0CCB18.l	; $03950C
 	clr.w -(a7)	; $039512
 	jsr FUN_011082.l	; $039514
@@ -48295,13 +48295,13 @@ L03951C:
 	moveq #$0,d0	; $039520
 	move.b $27(a0),d0	; $039522
 	moveq #$34,d1	; $039526
-	jsr FUN_00de8e.l	; $039528
+	jsr mul32.l	; $039528
 	lea.l $ff02dd.l,a0	; $03952E
 	move.l d0,d1	; $039534
 	moveq #$0,d0	; $039536
 	move.b (a0,d1.l),d0	; $039538
 	moveq #$34,d1	; $03953C
-	jsr FUN_00de8e.l	; $03953E
+	jsr mul32.l	; $03953E
 	move.w $ff012a.l,d1	; $039544
 	subq.w #$6,d1	; $03954A
 	ext.l d1	; $03954C
@@ -48339,7 +48339,7 @@ L03951C:
 	move.b $25(a1),d0	; $0395BA
 	move.l d1,-(a7)	; $0395BE
 	moveq #$6,d1	; $0395C0
-	jsr FUN_00de8e.l	; $0395C2
+	jsr mul32.l	; $0395C2
 	move.l (a7)+,d1	; $0395C8
 	movea.l (a0,d1.l),a1	; $0395CA
 	adda.l d0,a1	; $0395CE
@@ -48749,7 +48749,7 @@ L039AD2:
 	moveq #$0,d0	; $039AD2
 	move.b $27(a3),d0	; $039AD4
 	moveq #$34,d1	; $039AD8
-	jsr FUN_00de8e.l	; $039ADA
+	jsr mul32.l	; $039ADA
 	lea.l $ff02dd.l,a0	; $039AE0
 	moveq #$0,d1	; $039AE6
 	move.b (a0,d0.l),d1	; $039AE8
@@ -48804,7 +48804,7 @@ L039B9C:
 	moveq #$0,d0	; $039BA0
 	move.b $27(a3),d0	; $039BA2
 	moveq #$34,d1	; $039BA6
-	jsr FUN_00de8e.l	; $039BA8
+	jsr mul32.l	; $039BA8
 	lea.l $ff02dd.l,a0	; $039BAE
 	moveq #$0,d1	; $039BB4
 	move.b (a0,d0.l),d1	; $039BB6
@@ -48837,7 +48837,7 @@ L039C10:
 	moveq #$0,d0	; $039C1A
 	move.b $27(a3),d0	; $039C1C
 	moveq #$34,d1	; $039C20
-	jsr FUN_00de8e.l	; $039C22
+	jsr mul32.l	; $039C22
 	lea.l $ff02dd.l,a0	; $039C28
 	moveq #$0,d1	; $039C2E
 	move.b (a0,d0.l),d1	; $039C30
@@ -48851,7 +48851,7 @@ L039C44:
 	moveq #$0,d0	; $039C48
 	move.b $27(a3),d0	; $039C4A
 	moveq #$34,d1	; $039C4E
-	jsr FUN_00de8e.l	; $039C50
+	jsr mul32.l	; $039C50
 	lea.l $ff02dd.l,a0	; $039C56
 	moveq #$0,d1	; $039C5C
 	move.b (a0,d0.l),d1	; $039C5E
@@ -48887,7 +48887,7 @@ L039CBA:
 	moveq #$0,d0	; $039CC4
 	move.b $27(a3),d0	; $039CC6
 	moveq #$34,d1	; $039CCA
-	jsr FUN_00de8e.l	; $039CCC
+	jsr mul32.l	; $039CCC
 	lea.l $ff02dd.l,a0	; $039CD2
 	moveq #$0,d1	; $039CD8
 	move.b (a0,d0.l),d1	; $039CDA
@@ -48901,7 +48901,7 @@ L039CEE:
 	moveq #$0,d0	; $039CF2
 	move.b $27(a3),d0	; $039CF4
 	moveq #$34,d1	; $039CF8
-	jsr FUN_00de8e.l	; $039CFA
+	jsr mul32.l	; $039CFA
 	lea.l $ff02dd.l,a0	; $039D00
 	moveq #$0,d1	; $039D06
 	move.b (a0,d0.l),d1	; $039D08
@@ -48944,7 +48944,7 @@ L039D7A:
 	moveq #$0,d0	; $039D84
 	move.b $27(a3),d0	; $039D86
 	moveq #$34,d1	; $039D8A
-	jsr FUN_00de8e.l	; $039D8C
+	jsr mul32.l	; $039D8C
 	lea.l $ff02dd.l,a0	; $039D92
 	moveq #$0,d1	; $039D98
 	move.b (a0,d0.l),d1	; $039D9A
@@ -48958,7 +48958,7 @@ L039DAE:
 	moveq #$0,d0	; $039DB2
 	move.b $27(a3),d0	; $039DB4
 	moveq #$34,d1	; $039DB8
-	jsr FUN_00de8e.l	; $039DBA
+	jsr mul32.l	; $039DBA
 	lea.l $ff02dd.l,a0	; $039DC0
 	moveq #$0,d1	; $039DC6
 	move.b (a0,d0.l),d1	; $039DC8
@@ -48994,7 +48994,7 @@ L039E24:
 	moveq #$0,d0	; $039E2E
 	move.b $27(a3),d0	; $039E30
 	moveq #$34,d1	; $039E34
-	jsr FUN_00de8e.l	; $039E36
+	jsr mul32.l	; $039E36
 	lea.l $ff02dd.l,a0	; $039E3C
 	moveq #$0,d1	; $039E42
 	move.b (a0,d0.l),d1	; $039E44
@@ -49008,7 +49008,7 @@ L039E58:
 	moveq #$0,d0	; $039E5C
 	move.b $27(a3),d0	; $039E5E
 	moveq #$34,d1	; $039E62
-	jsr FUN_00de8e.l	; $039E64
+	jsr mul32.l	; $039E64
 	lea.l $ff02dd.l,a0	; $039E6A
 	moveq #$0,d1	; $039E70
 	move.b (a0,d0.l),d1	; $039E72
@@ -49044,7 +49044,7 @@ L039ECE:
 	moveq #$0,d0	; $039ED8
 	move.b $27(a3),d0	; $039EDA
 	moveq #$34,d1	; $039EDE
-	jsr FUN_00de8e.l	; $039EE0
+	jsr mul32.l	; $039EE0
 	lea.l $ff02dd.l,a0	; $039EE6
 	moveq #$0,d1	; $039EEC
 	move.b (a0,d0.l),d1	; $039EEE
@@ -49058,7 +49058,7 @@ L039F02:
 	moveq #$0,d0	; $039F06
 	move.b $27(a3),d0	; $039F08
 	moveq #$34,d1	; $039F0C
-	jsr FUN_00de8e.l	; $039F0E
+	jsr mul32.l	; $039F0E
 	lea.l $ff02dd.l,a0	; $039F14
 	moveq #$0,d1	; $039F1A
 	move.b (a0,d0.l),d1	; $039F1C
@@ -49096,7 +49096,7 @@ L039F6E:
 	moveq #$0,d0	; $039F86
 	move.b $27(a0),d0	; $039F88
 	moveq #$34,d1	; $039F8C
-	jsr FUN_00de8e.l	; $039F8E
+	jsr mul32.l	; $039F8E
 	lea.l $ff02b4.l,a0	; $039F94
 	add.l a0,d0	; $039F9A
 	move.l d0,-$20a(a6)	; $039F9C
@@ -49104,7 +49104,7 @@ L039F6E:
 	moveq #$0,d0	; $039FA4
 	move.b $29(a0),d0	; $039FA6
 	moveq #$34,d1	; $039FAA
-	jsr FUN_00de8e.l	; $039FAC
+	jsr mul32.l	; $039FAC
 	lea.l $ff02b4.l,a0	; $039FB2
 	add.l a0,d0	; $039FB8
 	move.l d0,-$20e(a6)	; $039FBA
@@ -49219,7 +49219,7 @@ L03A23C:
 	move.b $25(a1),d0	; $03A2AE
 	move.l d1,-(a7)	; $03A2B2
 	moveq #$6,d1	; $03A2B4
-	jsr FUN_00de8e.l	; $03A2B6
+	jsr mul32.l	; $03A2B6
 	move.l (a7)+,d1	; $03A2BC
 	movea.l (a0,d1.l),a1	; $03A2BE
 	adda.l d0,a1	; $03A2C2
@@ -49715,7 +49715,7 @@ L03AA30:
 	ext.l d0	; $03AA60
 	divs.w #$2,d0	; $03AA62
 	move.w d0,-(a7)	; $03AA66
-	jsr FUN_012b82.l	; $03AA68
+	jsr rand_next.l	; $03AA68
 	addq.w #$2,a7	; $03AA6E
 	move.w d0,-(a7)	; $03AA70
 	jsr FUN_0318c6.l	; $03AA72
@@ -49723,7 +49723,7 @@ L03AA30:
 	bra.b L03AAAE	; $03AA7A
 L03AA7C:
 	move.w #$64,-(a7)	; $03AA7C
-	jsr FUN_012b82.l	; $03AA80
+	jsr rand_next.l	; $03AA80
 	addq.w #$2,a7	; $03AA86
 	movea.l -$4(a6),a0	; $03AA88
 	cmp.w $20(a0),d0	; $03AA8C
@@ -50175,7 +50175,7 @@ FUN_03af92:
 	move.b $25(a1),d0	; $03AFFE
 	move.l d1,-(a7)	; $03B002
 	moveq #$6,d1	; $03B004
-	jsr FUN_00de8e.l	; $03B006
+	jsr mul32.l	; $03B006
 	move.l (a7)+,d1	; $03B00C
 	movea.l (a0,d1.l),a1	; $03B00E
 	adda.l d0,a1	; $03B012
@@ -50279,7 +50279,7 @@ L03B14E:
 FUN_03b152:
 	link.w a6,#$fffc	; $03B152
 	move.w #$d,-(a7)	; $03B156
-	jsr FUN_012b82.l	; $03B15A
+	jsr rand_next.l	; $03B15A
 	addq.w #$2,a7	; $03B160
 	move.w $8(a6),d1	; $03B162
 	muls.w #$34,d1	; $03B166
@@ -50291,7 +50291,7 @@ FUN_03b152:
 	subq.w #$6,d0	; $03B17C
 	move.w d0,-$2(a6)	; $03B17E
 	move.w #$d,-(a7)	; $03B182
-	jsr FUN_012b82.l	; $03B186
+	jsr rand_next.l	; $03B186
 	addq.w #$2,a7	; $03B18C
 	move.w $a(a6),d1	; $03B18E
 	muls.w #$34,d1	; $03B192
@@ -50451,7 +50451,7 @@ L03B36E:
 	moveq #$0,d0	; $03B372
 	move.b $27(a0),d0	; $03B374
 	moveq #$34,d1	; $03B378
-	jsr FUN_00de8e.l	; $03B37A
+	jsr mul32.l	; $03B37A
 	lea.l $ff02b6.l,a0	; $03B380
 	cmpi.w #$4d,(a0,d0.l)	; $03B386
 	beq.b L03B3BA	; $03B38C
@@ -50459,7 +50459,7 @@ L03B36E:
 	moveq #$0,d0	; $03B392
 	move.b $27(a0),d0	; $03B394
 	moveq #$34,d1	; $03B398
-	jsr FUN_00de8e.l	; $03B39A
+	jsr mul32.l	; $03B39A
 	lea.l $ff02b6.l,a0	; $03B3A0
 	cmpi.w #$4d,(a0,d0.l)	; $03B3A6
 	beq.b L03B3BA	; $03B3AC
@@ -50513,12 +50513,12 @@ FUN_03b43e:
 	clr.w -$6(a6)	; $03B442
 L03B446:
 	move.w #$a,-(a7)	; $03B446
-	jsr FUN_012b82.l	; $03B44A
+	jsr rand_next.l	; $03B44A
 	addq.w #$2,a7	; $03B450
 	addq.w #$1,d0	; $03B452
 	move.w d0,-$2(a6)	; $03B454
 	move.w #$a,-(a7)	; $03B458
-	jsr FUN_012b82.l	; $03B45C
+	jsr rand_next.l	; $03B45C
 	addq.w #$2,a7	; $03B462
 	addq.w #$1,d0	; $03B464
 	move.w d0,-$4(a6)	; $03B466
@@ -50610,7 +50610,7 @@ L03B562:
 	move.b $25(a3),d0	; $03B5A2
 	move.l d1,-(a7)	; $03B5A6
 	moveq #$6,d1	; $03B5A8
-	jsr FUN_00de8e.l	; $03B5AA
+	jsr mul32.l	; $03B5AA
 	move.l (a7)+,d1	; $03B5B0
 	movea.l (a0,d1.l),a1	; $03B5B2
 	adda.l d0,a1	; $03B5B6
@@ -50706,13 +50706,13 @@ FUN_03b6c0:
 	moveq #$0,d0	; $03B6D4
 	move.b (a0,d1.l),d0	; $03B6D6
 	moveq #$34,d1	; $03B6DA
-	jsr FUN_00de8e.l	; $03B6DC
+	jsr mul32.l	; $03B6DC
 	lea.l $ff02dd.l,a0	; $03B6E2
 	move.l d0,d1	; $03B6E8
 	moveq #$0,d0	; $03B6EA
 	move.b (a0,d1.l),d0	; $03B6EC
 	moveq #$34,d1	; $03B6F0
-	jsr FUN_00de8e.l	; $03B6F2
+	jsr mul32.l	; $03B6F2
 	lea.l $ff02c8.l,a0	; $03B6F8
 	move.w (a0,d0.l),d1	; $03B6FE
 	muls.w #$34,d1	; $03B702
@@ -50771,7 +50771,7 @@ FUN_03b748:
 	move.b $25(a3),d0	; $03B7AC
 	move.l d1,-(a7)	; $03B7B0
 	moveq #$6,d1	; $03B7B2
-	jsr FUN_00de8e.l	; $03B7B4
+	jsr mul32.l	; $03B7B4
 	move.l (a7)+,d1	; $03B7BA
 	movea.l (a0,d1.l),a1	; $03B7BC
 	adda.l d0,a1	; $03B7C0
@@ -50838,7 +50838,7 @@ L03B83A:
 	bne.b L03B8B2	; $03B8A0
 L03B8A2:
 	move.w #$3,-(a7)	; $03B8A2
-	jsr FUN_012b82.l	; $03B8A6
+	jsr rand_next.l	; $03B8A6
 	addq.w #$2,a7	; $03B8AC
 	sub.w d0,-$10(a6)	; $03B8AE
 L03B8B2:
@@ -51067,7 +51067,7 @@ L03BB7C:
 	mulu.w #$14,d0	; $03BB96
 	move.w d0,-$2(a6)	; $03BB9A
 	move.w #$64,-(a7)	; $03BB9E
-	jsr FUN_012b82.l	; $03BBA2
+	jsr rand_next.l	; $03BBA2
 	addq.w #$2,a7	; $03BBA8
 	cmp.w -$2(a6),d0	; $03BBAA
 	bge.b L03BBC0	; $03BBAE
@@ -51078,7 +51078,7 @@ L03BB7C:
 	bra.b L03BC08	; $03BBBE
 L03BBC0:
 	move.w #$64,-(a7)	; $03BBC0
-	jsr FUN_012b82.l	; $03BBC4
+	jsr rand_next.l	; $03BBC4
 	addq.w #$2,a7	; $03BBCA
 	move.w $18(a3),d1	; $03BBCC
 	and.w #$f,d1	; $03BBD0
@@ -51121,7 +51121,7 @@ L03BC20:
 	moveq #$0,d0	; $03BC3C
 	move.b $25(a3),d0	; $03BC3E
 	moveq #$6,d1	; $03BC42
-	jsr FUN_00de8e.l	; $03BC44
+	jsr mul32.l	; $03BC44
 	movea.l d0,a0	; $03BC4A
 	move.l (a7)+,d0	; $03BC4C
 	move.w (a0,d0.l),d1	; $03BC4E
@@ -51174,7 +51174,7 @@ L03BCBA:
 	moveq #$0,d0	; $03BCDC
 	move.b $25(a3),d0	; $03BCDE
 	moveq #$6,d1	; $03BCE2
-	jsr FUN_00de8e.l	; $03BCE4
+	jsr mul32.l	; $03BCE4
 	adda.l d0,a1	; $03BCEA
 	move.w $2(a1),d0	; $03BCEC
 	lsr.w #$4,d0	; $03BCF0
@@ -51227,7 +51227,7 @@ FUN_03bd3a:
 	addq.w #$1,d0	; $03BD7E
 	move.w d0,-$4(a6)	; $03BD80
 	move.w #$5,-(a7)	; $03BD84
-	jsr FUN_012b82.l	; $03BD88
+	jsr rand_next.l	; $03BD88
 	addq.w #$2,a7	; $03BD8E
 	move.w d0,-$10(a6)	; $03BD90
 	move.w -$4(a6),-(a7)	; $03BD94
@@ -51336,7 +51336,7 @@ FUN_03be8e:
 	move.b $25(a3),d0	; $03BECA
 	move.l d1,-(a7)	; $03BECE
 	moveq #$6,d1	; $03BED0
-	jsr FUN_00de8e.l	; $03BED2
+	jsr mul32.l	; $03BED2
 	move.l (a7)+,d1	; $03BED8
 	move.l (a0,d1.l),d5	; $03BEDA
 	add.l d0,d5	; $03BEDE
@@ -51380,7 +51380,7 @@ L03BF34:
 	moveq #$0,d0	; $03BF50
 	move.b (a0,d1.l),d0	; $03BF52
 	moveq #$34,d1	; $03BF56
-	jsr FUN_00de8e.l	; $03BF58
+	jsr mul32.l	; $03BF58
 	lea.l $ff02b4.l,a0	; $03BF5E
 	move.l d0,d4	; $03BF64
 	add.l a0,d4	; $03BF66
@@ -51864,7 +51864,7 @@ L03C460:
 	mulu.w #$64,d0	; $03C4D8
 	move.w d0,-(a7)	; $03C4DC
 	move.w #$12d,-(a7)	; $03C4DE
-	jsr FUN_012b82.l	; $03C4E2
+	jsr rand_next.l	; $03C4E2
 	addq.w #$2,a7	; $03C4E8
 	move.w (a7)+,d1	; $03C4EA
 	add.w d0,d1	; $03C4EC
@@ -52350,7 +52350,7 @@ L03CAE0:
 	rts	; $03CAE2
 L03CAE4:
 	move.w $8(a6),-(a7)	; $03CAE4
-	jsr FUN_012b82.l	; $03CAE8
+	jsr rand_next.l	; $03CAE8
 	addq.w #$2,a7	; $03CAEE
 	bra.b L03CAE0	; $03CAF0
 	; code $03CAF2-$03CB65
@@ -52961,7 +52961,7 @@ FUN_03d13e:
 	jsr FUN_00e358.l	; $03D2BE
 	addq.w #$8,a7	; $03D2C4
 	move.w #$4,-(a7)	; $03D2C6
-	jsr FUN_012b82.l	; $03D2CA
+	jsr rand_next.l	; $03D2CA
 	addq.w #$2,a7	; $03D2D0
 	tst.w d0	; $03D2D2
 	bne.b L03D32A	; $03D2D4
@@ -53753,12 +53753,12 @@ L03DCAA:
 	swap d0	; $03DCB6
 	move.w d0,-(a7)	; $03DCB8
 	move.w #$5,-(a7)	; $03DCBA
-	jsr FUN_012b82.l	; $03DCBE
+	jsr rand_next.l	; $03DCBE
 	addq.w #$2,a7	; $03DCC4
 	addq.w #$8,d0	; $03DCC6
 	move.w d0,-(a7)	; $03DCC8
 	move.w #$5,-(a7)	; $03DCCA
-	jsr FUN_012b82.l	; $03DCCE
+	jsr rand_next.l	; $03DCCE
 	addq.w #$2,a7	; $03DCD4
 	add.w #$b4,d0	; $03DCD6
 	move.w d0,-(a7)	; $03DCDA
@@ -53793,7 +53793,7 @@ L03DD24:
 L03DD26:
 	move.w d0,-(a7)	; $03DD26
 	move.w #$5,-(a7)	; $03DD28
-	jsr FUN_012b82.l	; $03DD2C
+	jsr rand_next.l	; $03DD2C
 	addq.w #$2,a7	; $03DD32
 	add.w #$9,d0	; $03DD34
 	move.w d0,-(a7)	; $03DD38
@@ -53810,12 +53810,12 @@ L03DD26:
 	move.w d0,-(a7)	; $03DD5A
 	clr.w -(a7)	; $03DD5C
 	move.w #$a,-(a7)	; $03DD5E
-	jsr FUN_012b82.l	; $03DD62
+	jsr rand_next.l	; $03DD62
 	addq.w #$2,a7	; $03DD68
 	add.w #$44,d0	; $03DD6A
 	move.w d0,-(a7)	; $03DD6E
 	move.w #$5,-(a7)	; $03DD70
-	jsr FUN_012b82.l	; $03DD74
+	jsr rand_next.l	; $03DD74
 	addq.w #$2,a7	; $03DD7A
 	move.w d5,d1	; $03DD7C
 	asl.w #$2,d1	; $03DD7E
@@ -53831,12 +53831,12 @@ L03DD26:
 	move.w d0,-(a7)	; $03DD9C
 	move.w #$1,-(a7)	; $03DD9E
 	move.w #$a,-(a7)	; $03DDA2
-	jsr FUN_012b82.l	; $03DDA6
+	jsr rand_next.l	; $03DDA6
 	addq.w #$2,a7	; $03DDAC
 	add.w #$44,d0	; $03DDAE
 	move.w d0,-(a7)	; $03DDB2
 	move.w #$5,-(a7)	; $03DDB4
-	jsr FUN_012b82.l	; $03DDB8
+	jsr rand_next.l	; $03DDB8
 	addq.w #$2,a7	; $03DDBE
 	move.w d5,d1	; $03DDC0
 	asl.w #$2,d1	; $03DDC2
@@ -53849,7 +53849,7 @@ L03DD26:
 	tst.w d0	; $03DDD8
 	bne.b L03DDFC	; $03DDDA
 	move.w #$5,-(a7)	; $03DDDC
-	jsr FUN_012b82.l	; $03DDE0
+	jsr rand_next.l	; $03DDE0
 	addq.w #$2,a7	; $03DDE6
 	tst.w d0	; $03DDE8
 	bne.b L03DDFC	; $03DDEA
@@ -53890,7 +53890,7 @@ L03DE44:
 	tst.w d6	; $03DE46
 	beq.b L03DE5C	; $03DE48
 	move.w #$15,-(a7)	; $03DE4A
-	jsr FUN_012b82.l	; $03DE4E
+	jsr rand_next.l	; $03DE4E
 	addq.w #$2,a7	; $03DE54
 	sub.w #$a,d0	; $03DE56
 	bra.b L03DE5E	; $03DE5A
@@ -53899,7 +53899,7 @@ L03DE5C:
 L03DE5E:
 	move.w d0,-(a7)	; $03DE5E
 	move.w #$2,-(a7)	; $03DE60
-	jsr FUN_012b82.l	; $03DE64
+	jsr rand_next.l	; $03DE64
 	addq.w #$2,a7	; $03DE6A
 	move.w (a7)+,d1	; $03DE6C
 	add.w d0,d1	; $03DE6E
@@ -53908,7 +53908,7 @@ L03DE5E:
 	tst.w d6	; $03DE76
 	beq.b L03DE8C	; $03DE78
 	move.w #$15,-(a7)	; $03DE7A
-	jsr FUN_012b82.l	; $03DE7E
+	jsr rand_next.l	; $03DE7E
 	addq.w #$2,a7	; $03DE84
 	sub.w #$a,d0	; $03DE86
 	bra.b L03DE8E	; $03DE8A
@@ -53952,7 +53952,7 @@ L03DEF4:
 	move.w d4,d5	; $03DEF4
 L03DEF6:
 	move.w #$5,-(a7)	; $03DEF6
-	jsr FUN_012b82.l	; $03DEFA
+	jsr rand_next.l	; $03DEFA
 	addq.w #$2,a7	; $03DF00
 	add.w #$9,d0	; $03DF02
 	move.w d0,-(a7)	; $03DF06
@@ -54004,7 +54004,7 @@ L03DF86:
 L03DF88:
 	move.w d0,-(a7)	; $03DF88
 	move.w #$2,-(a7)	; $03DF8A
-	jsr FUN_012b82.l	; $03DF8E
+	jsr rand_next.l	; $03DF8E
 	addq.w #$2,a7	; $03DF94
 	add.w #$f,d0	; $03DF96
 	move.w d0,-(a7)	; $03DF9A
@@ -54015,7 +54015,7 @@ L03DF88:
 	jsr FUN_03d990(pc)	; $03DFA8
 	addq.w #$6,a7	; $03DFAC
 	move.w #$4,-(a7)	; $03DFAE
-	jsr FUN_012b82.l	; $03DFB2
+	jsr rand_next.l	; $03DFB2
 	addq.w #$2,a7	; $03DFB8
 	tst.w d0	; $03DFBA
 	bne.b L03DFE6	; $03DFBC
@@ -54052,7 +54052,7 @@ L03E000:
 	move.w d5,-(a7)	; $03E02E
 	move.w d4,-(a7)	; $03E030
 	move.w #$2,-(a7)	; $03E032
-	jsr FUN_012b82.l	; $03E036
+	jsr rand_next.l	; $03E036
 	addq.w #$2,a7	; $03E03C
 	add.w #$180,d0	; $03E03E
 	move.w d0,-(a7)	; $03E042
@@ -54424,7 +54424,7 @@ L03E500:
 	moveq #$0,d0	; $03E540
 	move.b (a0,d1.l),d0	; $03E542
 	moveq #$6,d1	; $03E546
-	jsr FUN_00de8e.l	; $03E548
+	jsr mul32.l	; $03E548
 	adda.l d0,a1	; $03E54E
 	move.w $2(a1),d0	; $03E550
 	and.w #$f,d0	; $03E554
@@ -54644,7 +54644,7 @@ L03E7CC:
 	moveq #$0,d0	; $03E83E
 	move.b $25(a0),d0	; $03E840
 	moveq #$6,d1	; $03E844
-	jsr FUN_00de8e.l	; $03E846
+	jsr mul32.l	; $03E846
 	adda.l d0,a1	; $03E84C
 	move.w $2(a1),d0	; $03E84E
 	and.w #$f,d0	; $03E852
@@ -54788,7 +54788,7 @@ L03EA12:
 	moveq #$0,d0	; $03EA82
 	move.b $25(a0),d0	; $03EA84
 	moveq #$6,d1	; $03EA88
-	jsr FUN_00de8e.l	; $03EA8A
+	jsr mul32.l	; $03EA8A
 	adda.l d0,a1	; $03EA90
 	move.w $2(a1),d0	; $03EA92
 	and.w #$f,d0	; $03EA96
@@ -54958,7 +54958,7 @@ L03ED1A:
 	add.l a0,d0	; $03ED30
 	move.l d0,-$20(a6)	; $03ED32
 	move.w #$4,-(a7)	; $03ED36
-	jsr FUN_012b82.l	; $03ED3A
+	jsr rand_next.l	; $03ED3A
 	addq.w #$2,a7	; $03ED40
 	move.w d0,-$a(a6)	; $03ED42
 	pea.l -$26(a6)	; $03ED46
@@ -55047,7 +55047,7 @@ L03EE60:
 	moveq #$0,d0	; $03EE90
 	move.b $25(a0),d0	; $03EE92
 	moveq #$6,d1	; $03EE96
-	jsr FUN_00de8e.l	; $03EE98
+	jsr mul32.l	; $03EE98
 	adda.l d0,a1	; $03EE9E
 	move.w $2(a1),d0	; $03EEA0
 	and.w #$f,d0	; $03EEA4
@@ -55064,7 +55064,7 @@ L03EE60:
 	moveq #$0,d0	; $03EED6
 	move.b (a0,d1.l),d0	; $03EED8
 	moveq #$34,d1	; $03EEDC
-	jsr FUN_00de8e.l	; $03EEDE
+	jsr mul32.l	; $03EEDE
 	lea.l $ff02b4.l,a0	; $03EEE4
 	add.l a0,d0	; $03EEEA
 	move.l d0,-$20(a6)	; $03EEEC
@@ -55082,7 +55082,7 @@ L03EEF4:
 	cmp.w $ffc418.l,d0	; $03EF12
 	beq.b L03EF50	; $03EF18
 	move.w #$3,-(a7)	; $03EF1A
-	jsr FUN_012b82.l	; $03EF1E
+	jsr rand_next.l	; $03EF1E
 	addq.w #$2,a7	; $03EF24
 	tst.w d0	; $03EF26
 	bne.b L03EF50	; $03EF28
@@ -55127,7 +55127,7 @@ L03EF8A:
 	moveq #$0,d0	; $03EFBA
 	move.b $25(a0),d0	; $03EFBC
 	moveq #$6,d1	; $03EFC0
-	jsr FUN_00de8e.l	; $03EFC2
+	jsr mul32.l	; $03EFC2
 	adda.l d0,a1	; $03EFC8
 	move.w $2(a1),d0	; $03EFCA
 	and.w #$f,d0	; $03EFCE
@@ -55144,7 +55144,7 @@ L03EF8A:
 	moveq #$0,d0	; $03F000
 	move.b (a0,d1.l),d0	; $03F002
 	moveq #$34,d1	; $03F006
-	jsr FUN_00de8e.l	; $03F008
+	jsr mul32.l	; $03F008
 	lea.l $ff02b4.l,a0	; $03F00E
 	add.l a0,d0	; $03F014
 	move.l d0,-$20(a6)	; $03F016
@@ -55162,7 +55162,7 @@ L03F01E:
 	cmp.w $ffc418.l,d0	; $03F03C
 	beq.b L03F07A	; $03F042
 	move.w #$3,-(a7)	; $03F044
-	jsr FUN_012b82.l	; $03F048
+	jsr rand_next.l	; $03F048
 	addq.w #$2,a7	; $03F04E
 	tst.w d0	; $03F050
 	bne.b L03F07A	; $03F052
@@ -55207,7 +55207,7 @@ L03F0B4:
 	moveq #$0,d0	; $03F0E4
 	move.b $25(a0),d0	; $03F0E6
 	moveq #$6,d1	; $03F0EA
-	jsr FUN_00de8e.l	; $03F0EC
+	jsr mul32.l	; $03F0EC
 	adda.l d0,a1	; $03F0F2
 	move.w $2(a1),d0	; $03F0F4
 	and.w #$f,d0	; $03F0F8
@@ -55231,7 +55231,7 @@ L03F0B4:
 	moveq #$0,d0	; $03F146
 	move.b (a0,d1.l),d0	; $03F148
 	moveq #$34,d1	; $03F14C
-	jsr FUN_00de8e.l	; $03F14E
+	jsr mul32.l	; $03F14E
 	lea.l $ff02b4.l,a0	; $03F154
 	add.l a0,d0	; $03F15A
 	move.l d0,-$20(a6)	; $03F15C
@@ -55249,7 +55249,7 @@ L03F164:
 	cmp.w $ffc418.l,d0	; $03F182
 	beq.b L03F1DA	; $03F188
 	move.w #$3,-(a7)	; $03F18A
-	jsr FUN_012b82.l	; $03F18E
+	jsr rand_next.l	; $03F18E
 	addq.w #$2,a7	; $03F194
 	tst.w d0	; $03F196
 	bne.b L03F1DA	; $03F198
@@ -55298,7 +55298,7 @@ L03F208:
 	moveq #$0,d0	; $03F238
 	move.b $25(a0),d0	; $03F23A
 	moveq #$6,d1	; $03F23E
-	jsr FUN_00de8e.l	; $03F240
+	jsr mul32.l	; $03F240
 	adda.l d0,a1	; $03F246
 	move.w $2(a1),d0	; $03F248
 	and.w #$f,d0	; $03F24C
@@ -55321,7 +55321,7 @@ L03F208:
 	moveq #$0,d0	; $03F296
 	move.b (a0,d1.l),d0	; $03F298
 	moveq #$34,d1	; $03F29C
-	jsr FUN_00de8e.l	; $03F29E
+	jsr mul32.l	; $03F29E
 	lea.l $ff02b4.l,a0	; $03F2A4
 	add.l a0,d0	; $03F2AA
 	move.l d0,-$20(a6)	; $03F2AC
@@ -55339,7 +55339,7 @@ L03F2B4:
 	cmp.w $ffc418.l,d0	; $03F2D2
 	beq.b L03F326	; $03F2D8
 	move.w #$2,-(a7)	; $03F2DA
-	jsr FUN_012b82.l	; $03F2DE
+	jsr rand_next.l	; $03F2DE
 	addq.w #$2,a7	; $03F2E4
 	tst.w d0	; $03F2E6
 	bne.b L03F326	; $03F2E8
@@ -55391,7 +55391,7 @@ L03F352:
 	moveq #$0,d0	; $03F390
 	move.b $25(a0),d0	; $03F392
 	moveq #$6,d1	; $03F396
-	jsr FUN_00de8e.l	; $03F398
+	jsr mul32.l	; $03F398
 	adda.l d0,a1	; $03F39E
 	move.w $2(a1),d0	; $03F3A0
 	and.w #$f,d0	; $03F3A4
@@ -55409,7 +55409,7 @@ L03F352:
 	moveq #$0,d0	; $03F3DA
 	move.b (a0,d1.l),d0	; $03F3DC
 	moveq #$34,d1	; $03F3E0
-	jsr FUN_00de8e.l	; $03F3E2
+	jsr mul32.l	; $03F3E2
 	lea.l $ff02b4.l,a0	; $03F3E8
 	add.l a0,d0	; $03F3EE
 	move.l d0,-$20(a6)	; $03F3F0
@@ -55427,7 +55427,7 @@ L03F3F8:
 	cmp.w $ffc418.l,d0	; $03F416
 	beq.b L03F458	; $03F41C
 	move.w #$3,-(a7)	; $03F41E
-	jsr FUN_012b82.l	; $03F422
+	jsr rand_next.l	; $03F422
 	addq.w #$2,a7	; $03F428
 	tst.w d0	; $03F42A
 	bne.b L03F458	; $03F42C
@@ -55479,7 +55479,7 @@ L03F492:
 	moveq #$0,d0	; $03F4D8
 	move.b $25(a0),d0	; $03F4DA
 	moveq #$6,d1	; $03F4DE
-	jsr FUN_00de8e.l	; $03F4E0
+	jsr mul32.l	; $03F4E0
 	adda.l d0,a1	; $03F4E6
 	move.w $2(a1),d0	; $03F4E8
 	and.w #$f,d0	; $03F4EC
@@ -55578,7 +55578,7 @@ L03F622:
 	cmpi.w #$9,$ff012a.l	; $03F622
 	bge.b L03F65E	; $03F62A
 	move.w #$3,-(a7)	; $03F62C
-	jsr FUN_012b82.l	; $03F630
+	jsr rand_next.l	; $03F630
 	addq.w #$2,a7	; $03F636
 	ext.l d0	; $03F638
 	bra.b L03F64A	; $03F63A
@@ -55608,7 +55608,7 @@ L03F676:
 	cmpi.w #$9,$ff012a.l	; $03F676
 	bge.b L03F6CA	; $03F67E
 	move.w #$5,-(a7)	; $03F680
-	jsr FUN_012b82.l	; $03F684
+	jsr rand_next.l	; $03F684
 	addq.w #$2,a7	; $03F68A
 	ext.l d0	; $03F68C
 	bra.b L03F6AE	; $03F68E
@@ -55676,7 +55676,7 @@ L03F6E2:
 	moveq #$0,d0	; $03F74E
 	move.b $25(a0),d0	; $03F750
 	moveq #$6,d1	; $03F754
-	jsr FUN_00de8e.l	; $03F756
+	jsr mul32.l	; $03F756
 	adda.l d0,a1	; $03F75C
 	move.w $2(a1),d0	; $03F75E
 	and.w #$f,d0	; $03F762
@@ -55689,12 +55689,12 @@ L03F776:
 	move.w #$1,-$4(a6)	; $03F776
 L03F77C:
 	move.w -$e(a6),-(a7)	; $03F77C
-	jsr FUN_012b82.l	; $03F780
+	jsr rand_next.l	; $03F780
 	addq.w #$2,a7	; $03F786
 	tst.w d0	; $03F788
 	bne.b L03F7E8	; $03F78A
 	move.w #$80,-(a7)	; $03F78C
-	jsr FUN_012b82.l	; $03F790
+	jsr rand_next.l	; $03F790
 	addq.w #$2,a7	; $03F796
 	ext.l d0	; $03F798
 	divs.w #$2,d0	; $03F79A
@@ -55775,7 +55775,7 @@ L03F86C:
 	moveq #$0,d0	; $03F8B8
 	move.b $25(a0),d0	; $03F8BA
 	moveq #$6,d1	; $03F8BE
-	jsr FUN_00de8e.l	; $03F8C0
+	jsr mul32.l	; $03F8C0
 	adda.l d0,a1	; $03F8C6
 	move.w $2(a1),d0	; $03F8C8
 	and.w #$f,d0	; $03F8CC
@@ -56034,7 +56034,7 @@ L03FC30:
 	moveq #$0,d0	; $03FC90
 	move.b $25(a0),d0	; $03FC92
 	moveq #$6,d1	; $03FC96
-	jsr FUN_00de8e.l	; $03FC98
+	jsr mul32.l	; $03FC98
 	adda.l d0,a1	; $03FC9E
 	move.w $2(a1),d0	; $03FCA0
 	and.w #$f,d0	; $03FCA4
@@ -56070,7 +56070,7 @@ L03FCCE:
 	cmp.w d0,d1	; $03FD0A
 	bge.w L03FD90	; $03FD0C
 	move.w #$3,-(a7)	; $03FD10
-	jsr FUN_012b82.l	; $03FD14
+	jsr rand_next.l	; $03FD14
 	addq.w #$2,a7	; $03FD1A
 	tst.w d0	; $03FD1C
 	bne.b L03FD90	; $03FD1E
@@ -56144,7 +56144,7 @@ L03FDD8:
 	cmp.w d0,d1	; $03FE14
 	bge.b L03FE86	; $03FE16
 	move.w #$3,-(a7)	; $03FE18
-	jsr FUN_012b82.l	; $03FE1C
+	jsr rand_next.l	; $03FE1C
 	addq.w #$2,a7	; $03FE22
 	tst.w d0	; $03FE24
 	bne.b L03FE86	; $03FE26
@@ -56341,7 +56341,7 @@ L0400A0:
 	moveq #$0,d0	; $0400C0
 	move.b $27(a0),d0	; $0400C2
 	moveq #$34,d1	; $0400C6
-	jsr FUN_00de8e.l	; $0400C8
+	jsr mul32.l	; $0400C8
 	lea.l $ff02dd.l,a0	; $0400CE
 	moveq #$0,d1	; $0400D4
 	move.b (a0,d0.l),d1	; $0400D6
@@ -56466,7 +56466,7 @@ L04028C:
 	cmp.w -$8(a6),d0	; $040294
 	bne.b L0402E0	; $040298
 	move.w #$3,-(a7)	; $04029A
-	jsr FUN_012b82.l	; $04029E
+	jsr rand_next.l	; $04029E
 	addq.w #$2,a7	; $0402A4
 	tst.w d0	; $0402A6
 	bne.b L0402E0	; $0402A8
@@ -56521,7 +56521,7 @@ L040346:
 	moveq #$0,d0	; $04035A
 	move.b (a0,d1.l),d0	; $04035C
 	moveq #$34,d1	; $040360
-	jsr FUN_00de8e.l	; $040362
+	jsr mul32.l	; $040362
 	lea.l $ff02dd.l,a0	; $040368
 	moveq #$0,d1	; $04036E
 	move.b (a0,d0.l),d1	; $040370
@@ -56549,7 +56549,7 @@ L04039C:
 	moveq #$0,d0	; $0403BE
 	move.b $25(a0),d0	; $0403C0
 	moveq #$6,d1	; $0403C4
-	jsr FUN_00de8e.l	; $0403C6
+	jsr mul32.l	; $0403C6
 	adda.l d0,a1	; $0403CC
 	move.w $2(a1),d0	; $0403CE
 	and.w #$f,d0	; $0403D2
@@ -56716,7 +56716,7 @@ L0405F0:
 	moveq #$0,d0	; $04060C
 	move.b $27(a0),d0	; $04060E
 	moveq #$34,d1	; $040612
-	jsr FUN_00de8e.l	; $040614
+	jsr mul32.l	; $040614
 	lea.l $ff02dd.l,a0	; $04061A
 	moveq #$0,d1	; $040620
 	move.b (a0,d0.l),d1	; $040622
@@ -56728,7 +56728,7 @@ L040636:
 	move.w #$1,-$8(a6)	; $040636
 L04063C:
 	move.w #$3,-(a7)	; $04063C
-	jsr FUN_012b82.l	; $040640
+	jsr rand_next.l	; $040640
 	addq.w #$2,a7	; $040646
 	add.w -$6(a6),d0	; $040648
 	subq.w #$1,d0	; $04064C
@@ -56739,7 +56739,7 @@ L04063C:
 	cmp.w d2,d0	; $04065A
 	blt.w L04071C	; $04065C
 	move.w #$3,-(a7)	; $040660
-	jsr FUN_012b82.l	; $040664
+	jsr rand_next.l	; $040664
 	addq.w #$2,a7	; $04066A
 	add.w -$6(a6),d0	; $04066C
 	subq.w #$1,d0	; $040670
@@ -56773,7 +56773,7 @@ L0406CC:
 	move.w -$8(a6),-(a7)	; $0406E0
 	move.w -$6(a6),-(a7)	; $0406E4
 	move.w #$2,-(a7)	; $0406E8
-	jsr FUN_012b82.l	; $0406EC
+	jsr rand_next.l	; $0406EC
 	addq.w #$2,a7	; $0406F2
 	move.w d0,-(a7)	; $0406F4
 	move.w #$5,-(a7)	; $0406F6
@@ -56819,7 +56819,7 @@ L040760:
 	moveq #$0,d0	; $04078C
 	move.b $27(a0),d0	; $04078E
 	moveq #$34,d1	; $040792
-	jsr FUN_00de8e.l	; $040794
+	jsr mul32.l	; $040794
 	lea.l $ff02dd.l,a0	; $04079A
 	moveq #$0,d1	; $0407A0
 	move.b (a0,d0.l),d1	; $0407A2
@@ -56839,7 +56839,7 @@ L0407D8:
 	move.w #$1,-$4(a6)	; $0407D8
 L0407DE:
 	move.w #$3,-(a7)	; $0407DE
-	jsr FUN_012b82.l	; $0407E2
+	jsr rand_next.l	; $0407E2
 	addq.w #$2,a7	; $0407E8
 	tst.w d0	; $0407EA
 	bne.b L040830	; $0407EC
@@ -56911,7 +56911,7 @@ L04087E:
 	moveq #$0,d0	; $0408E8
 	move.b $25(a0),d0	; $0408EA
 	moveq #$6,d1	; $0408EE
-	jsr FUN_00de8e.l	; $0408F0
+	jsr mul32.l	; $0408F0
 	movea.l d0,a0	; $0408F6
 	move.l (a7)+,d0	; $0408F8
 	move.w (a0,d0.l),d1	; $0408FA
@@ -57055,7 +57055,7 @@ L040A72:
 	moveq #$0,d0	; $040ADA
 	move.b $25(a0),d0	; $040ADC
 	moveq #$6,d1	; $040AE0
-	jsr FUN_00de8e.l	; $040AE2
+	jsr mul32.l	; $040AE2
 	adda.l d0,a1	; $040AE8
 	move.w $2(a1),d0	; $040AEA
 	and.w #$f,d0	; $040AEE
@@ -57130,7 +57130,7 @@ L040BAA:
 	moveq #$0,d0	; $040BDC
 	move.b $25(a0),d0	; $040BDE
 	moveq #$6,d1	; $040BE2
-	jsr FUN_00de8e.l	; $040BE4
+	jsr mul32.l	; $040BE4
 	adda.l d0,a1	; $040BEA
 	move.w $2(a1),d0	; $040BEC
 	and.w #$f,d0	; $040BF0
@@ -57154,7 +57154,7 @@ L040C16:
 	moveq #$0,d0	; $040C3A
 	move.b (a0,d1.l),d0	; $040C3C
 	moveq #$34,d1	; $040C40
-	jsr FUN_00de8e.l	; $040C42
+	jsr mul32.l	; $040C42
 	lea.l $ff02b4.l,a0	; $040C48
 	add.l a0,d0	; $040C4E
 	move.l d0,-$20(a6)	; $040C50
@@ -57172,7 +57172,7 @@ L040C58:
 	cmp.w $ffc418.l,d0	; $040C76
 	beq.b L040CB8	; $040C7C
 	move.w #$3,-(a7)	; $040C7E
-	jsr FUN_012b82.l	; $040C82
+	jsr rand_next.l	; $040C82
 	addq.w #$2,a7	; $040C88
 	tst.w d0	; $040C8A
 	bne.b L040CB8	; $040C8C
@@ -57215,7 +57215,7 @@ L040CDC:
 	moveq #$0,d0	; $040D0E
 	move.b $25(a0),d0	; $040D10
 	moveq #$6,d1	; $040D14
-	jsr FUN_00de8e.l	; $040D16
+	jsr mul32.l	; $040D16
 	adda.l d0,a1	; $040D1C
 	move.w $2(a1),d0	; $040D1E
 	and.w #$f,d0	; $040D22
@@ -57276,7 +57276,7 @@ L040DD4:
 	and.w #$ff,d1	; $040DF2
 	move.w d1,$ffc418.l	; $040DF6
 	move.w #$7,-(a7)	; $040DFC
-	jsr FUN_012b82.l	; $040E00
+	jsr rand_next.l	; $040E00
 	addq.w #$2,a7	; $040E06
 	add.w #$18,d0	; $040E08
 	move.w d0,-(a7)	; $040E0C
@@ -57300,7 +57300,7 @@ L040E22:
 	moveq #$0,d0	; $040E48
 	move.b $25(a0),d0	; $040E4A
 	moveq #$6,d1	; $040E4E
-	jsr FUN_00de8e.l	; $040E50
+	jsr mul32.l	; $040E50
 	movea.l d0,a0	; $040E56
 	move.l (a7)+,d0	; $040E58
 	move.w (a0,d0.l),d1	; $040E5A
@@ -57352,13 +57352,13 @@ L040EDC:
 	moveq #$0,d0	; $040EFC
 	move.b $27(a0),d0	; $040EFE
 	moveq #$34,d1	; $040F02
-	jsr FUN_00de8e.l	; $040F04
+	jsr mul32.l	; $040F04
 	lea.l $ff02dd.l,a0	; $040F0A
 	move.l d0,d1	; $040F10
 	moveq #$0,d0	; $040F12
 	move.b (a0,d1.l),d0	; $040F14
 	moveq #$34,d1	; $040F18
-	jsr FUN_00de8e.l	; $040F1A
+	jsr mul32.l	; $040F1A
 	move.w $ff012a.l,d1	; $040F20
 	subq.w #$1,d1	; $040F26
 	ext.l d1	; $040F28
@@ -57394,7 +57394,7 @@ L040EDC:
 	move.b $25(a1),d0	; $040F90
 	move.l d1,-(a7)	; $040F94
 	moveq #$6,d1	; $040F96
-	jsr FUN_00de8e.l	; $040F98
+	jsr mul32.l	; $040F98
 	move.l (a7)+,d1	; $040F9E
 	movea.l (a0,d1.l),a1	; $040FA0
 	adda.l d0,a1	; $040FA4
@@ -57614,7 +57614,7 @@ L041230:
 	moveq #$0,d0	; $0412AA
 	move.b $25(a0),d0	; $0412AC
 	moveq #$6,d1	; $0412B0
-	jsr FUN_00de8e.l	; $0412B2
+	jsr mul32.l	; $0412B2
 	adda.l d0,a1	; $0412B8
 	move.w $2(a1),d0	; $0412BA
 	and.w #$f,d0	; $0412BE
@@ -57691,7 +57691,7 @@ L041364:
 	asl.w #$1,d0	; $0413BA
 	move.w d0,-(a7)	; $0413BC
 	move.w #$5,-(a7)	; $0413BE
-	jsr FUN_012b82.l	; $0413C2
+	jsr rand_next.l	; $0413C2
 	addq.w #$2,a7	; $0413C8
 	move.w (a7)+,d1	; $0413CA
 	add.w d0,d1	; $0413CC
@@ -57708,7 +57708,7 @@ L0413DA:
 	asl.w #$1,d0	; $0413EA
 	move.w d0,-(a7)	; $0413EC
 	move.w #$5,-(a7)	; $0413EE
-	jsr FUN_012b82.l	; $0413F2
+	jsr rand_next.l	; $0413F2
 	addq.w #$2,a7	; $0413F8
 	move.w (a7)+,d1	; $0413FA
 	add.w d0,d1	; $0413FC
@@ -57725,7 +57725,7 @@ L04140A:
 	asl.w #$1,d0	; $04141A
 	move.w d0,-(a7)	; $04141C
 	move.w #$5,-(a7)	; $04141E
-	jsr FUN_012b82.l	; $041422
+	jsr rand_next.l	; $041422
 	addq.w #$2,a7	; $041428
 	move.w d0,d1	; $04142A
 	move.w (a7)+,d0	; $04142C
@@ -57883,7 +57883,7 @@ L0415E2:
 	moveq #$0,d0	; $04166C
 	move.b $25(a0),d0	; $04166E
 	moveq #$6,d1	; $041672
-	jsr FUN_00de8e.l	; $041674
+	jsr mul32.l	; $041674
 	adda.l d0,a1	; $04167A
 	move.w $2(a1),d0	; $04167C
 	and.w #$f,d0	; $041680
@@ -58044,7 +58044,7 @@ L041844:
 	move.w -$a(a6),d0	; $0418A2
 	addq.w #$3,d0	; $0418A6
 	move.w d0,-(a7)	; $0418A8
-	jsr FUN_012b82.l	; $0418AA
+	jsr rand_next.l	; $0418AA
 	addq.w #$2,a7	; $0418B0
 	move.w d0,-(a7)	; $0418B2
 	cmpi.w #$7,$ff012a.l	; $0418B4
@@ -58079,7 +58079,7 @@ L0418FC:
 	move.w -$a(a6),d0	; $0418FC
 	addq.w #$3,d0	; $041900
 	move.w d0,-(a7)	; $041902
-	jsr FUN_012b82.l	; $041904
+	jsr rand_next.l	; $041904
 	addq.w #$2,a7	; $04190A
 	tst.w d0	; $04190C
 	bge.b L041914	; $04190E
@@ -58089,7 +58089,7 @@ L041914:
 	move.w -$a(a6),d0	; $041914
 	addq.w #$3,d0	; $041918
 	move.w d0,-(a7)	; $04191A
-	jsr FUN_012b82.l	; $04191C
+	jsr rand_next.l	; $04191C
 	addq.w #$2,a7	; $041922
 L041924:
 	move.w d0,-(a7)	; $041924
@@ -58120,7 +58120,7 @@ L041970:
 	moveq #$0,d0	; $04198C
 	move.b $27(a0),d0	; $04198E
 	moveq #$34,d1	; $041992
-	jsr FUN_00de8e.l	; $041994
+	jsr mul32.l	; $041994
 	lea.l $ff02dd.l,a0	; $04199A
 	moveq #$0,d1	; $0419A0
 	move.b (a0,d0.l),d1	; $0419A2
@@ -58221,7 +58221,7 @@ L041B10:
 	move.w -$8(a6),-(a7)	; $041B10
 	move.w -$6(a6),-(a7)	; $041B14
 	move.w #$5,-(a7)	; $041B18
-	jsr FUN_012b82.l	; $041B1C
+	jsr rand_next.l	; $041B1C
 	addq.w #$2,a7	; $041B22
 	addq.w #$2,d0	; $041B24
 	move.w d0,-(a7)	; $041B26
@@ -58236,7 +58236,7 @@ L041B36:
 	move.w -$a(a6),d0	; $041B3E
 	addq.w #$3,d0	; $041B42
 	move.w d0,-(a7)	; $041B44
-	jsr FUN_012b82.l	; $041B46
+	jsr rand_next.l	; $041B46
 	addq.w #$2,a7	; $041B4C
 	cmp.w #$7,d0	; $041B4E
 	ble.b L041B58	; $041B52
@@ -58246,7 +58246,7 @@ L041B58:
 	move.w -$a(a6),d0	; $041B58
 	addq.w #$3,d0	; $041B5C
 	move.w d0,-(a7)	; $041B5E
-	jsr FUN_012b82.l	; $041B60
+	jsr rand_next.l	; $041B60
 	addq.w #$2,a7	; $041B66
 	tst.w d0	; $041B68
 	bge.b L041B70	; $041B6A
@@ -58256,7 +58256,7 @@ L041B70:
 	move.w -$a(a6),d0	; $041B70
 	addq.w #$3,d0	; $041B74
 	move.w d0,-(a7)	; $041B76
-	jsr FUN_012b82.l	; $041B78
+	jsr rand_next.l	; $041B78
 	addq.w #$2,a7	; $041B7E
 L041B80:
 	move.w d0,-(a7)	; $041B80
@@ -58287,7 +58287,7 @@ L041BA6:
 	moveq #$0,d0	; $041BE4
 	move.b (a0,d1.l),d0	; $041BE6
 	moveq #$34,d1	; $041BEA
-	jsr FUN_00de8e.l	; $041BEC
+	jsr mul32.l	; $041BEC
 	lea.l $ff02dd.l,a0	; $041BF2
 	moveq #$0,d1	; $041BF8
 	move.b (a0,d0.l),d1	; $041BFA
@@ -58342,7 +58342,7 @@ L041CB8:
 	move.w -$4(a6),-(a7)	; $041CB8
 	move.w -$2(a6),-(a7)	; $041CBC
 	move.w #$4,-(a7)	; $041CC0
-	jsr FUN_012b82.l	; $041CC4
+	jsr rand_next.l	; $041CC4
 	addq.w #$2,a7	; $041CCA
 	moveq #$15,d1	; $041CCC
 	sub.w $ff012a.l,d1	; $041CCE
@@ -58353,7 +58353,7 @@ L041CB8:
 	bra.b L041D02	; $041CE0
 L041CE2:
 	move.w #$4,-(a7)	; $041CE2
-	jsr FUN_012b82.l	; $041CE6
+	jsr rand_next.l	; $041CE6
 	addq.w #$2,a7	; $041CEC
 	tst.w d0	; $041CEE
 	bge.b L041CF6	; $041CF0
@@ -58361,7 +58361,7 @@ L041CE2:
 	bra.b L041D02	; $041CF4
 L041CF6:
 	move.w #$4,-(a7)	; $041CF6
-	jsr FUN_012b82.l	; $041CFA
+	jsr rand_next.l	; $041CFA
 	addq.w #$2,a7	; $041D00
 L041D02:
 	move.w d0,-(a7)	; $041D02
@@ -58455,7 +58455,7 @@ L041E38:
 	move.w #$1,-$4(a6)	; $041E38
 L041E3E:
 	move.w #$3,-(a7)	; $041E3E
-	jsr FUN_012b82.l	; $041E42
+	jsr rand_next.l	; $041E42
 	addq.w #$2,a7	; $041E48
 	tst.w d0	; $041E4A
 	bne.b L041E62	; $041E4C
@@ -58504,7 +58504,7 @@ L041EB4:
 	move.b $25(a1),d0	; $041EF8
 	move.l d1,-(a7)	; $041EFC
 	moveq #$6,d1	; $041EFE
-	jsr FUN_00de8e.l	; $041F00
+	jsr mul32.l	; $041F00
 	move.l (a7)+,d1	; $041F06
 	movea.l (a0,d1.l),a1	; $041F08
 	adda.l d0,a1	; $041F0C
@@ -58690,7 +58690,7 @@ L0421EA:
 	moveq #$0,d0	; $042210
 	move.b (a0,d1.l),d0	; $042212
 	moveq #$34,d1	; $042216
-	jsr FUN_00de8e.l	; $042218
+	jsr mul32.l	; $042218
 	lea.l $ff02c8.l,a0	; $04221E
 	move.w (a0,d0.l),$ff0294.l	; $042224
 	addq.w #$1,$ff012a.l	; $04222C
@@ -58719,13 +58719,13 @@ L04223E:
 	moveq #$0,d0	; $042292
 	move.b (a0,d1.l),d0	; $042294
 	moveq #$34,d1	; $042298
-	jsr FUN_00de8e.l	; $04229A
+	jsr mul32.l	; $04229A
 	lea.l $ff02dd.l,a0	; $0422A0
 	move.l d0,d1	; $0422A6
 	moveq #$0,d0	; $0422A8
 	move.b (a0,d1.l),d0	; $0422AA
 	moveq #$34,d1	; $0422AE
-	jsr FUN_00de8e.l	; $0422B0
+	jsr mul32.l	; $0422B0
 	lea.l $ff02c8.l,a0	; $0422B6
 	move.w (a0,d0.l),$ff0294.l	; $0422BC
 	move.w $ff0294.l,d0	; $0422C4
@@ -58756,7 +58756,7 @@ L0422E0:
 	moveq #$0,d0	; $04232A
 	move.b $25(a0),d0	; $04232C
 	moveq #$6,d1	; $042330
-	jsr FUN_00de8e.l	; $042332
+	jsr mul32.l	; $042332
 	adda.l d0,a1	; $042338
 	move.w $2(a1),d0	; $04233A
 	and.w #$f,d0	; $04233E
@@ -58857,7 +58857,7 @@ L042460:
 	moveq #$0,d0	; $0424AA
 	move.b (a0,d1.l),d0	; $0424AC
 	moveq #$34,d1	; $0424B0
-	jsr FUN_00de8e.l	; $0424B2
+	jsr mul32.l	; $0424B2
 	lea.l $ff02dd.l,a0	; $0424B8
 	moveq #$0,d1	; $0424BE
 	move.b (a0,d0.l),d1	; $0424C0
@@ -59285,7 +59285,7 @@ L042AF0:
 	moveq #$0,d0	; $042B56
 	move.b $25(a0),d0	; $042B58
 	moveq #$6,d1	; $042B5C
-	jsr FUN_00de8e.l	; $042B5E
+	jsr mul32.l	; $042B5E
 	adda.l d0,a1	; $042B64
 	move.w $2(a1),d0	; $042B66
 	and.w #$f,d0	; $042B6A
@@ -59308,7 +59308,7 @@ L042B7C:
 	moveq #$0,d0	; $042B9E
 	move.b $25(a0),d0	; $042BA0
 	moveq #$6,d1	; $042BA4
-	jsr FUN_00de8e.l	; $042BA6
+	jsr mul32.l	; $042BA6
 	adda.l d0,a1	; $042BAC
 	move.w $2(a1),d0	; $042BAE
 	and.w #$f,d0	; $042BB2
@@ -59331,7 +59331,7 @@ L042BC0:
 	moveq #$0,d0	; $042BE2
 	move.b $25(a0),d0	; $042BE4
 	moveq #$6,d1	; $042BE8
-	jsr FUN_00de8e.l	; $042BEA
+	jsr mul32.l	; $042BEA
 	adda.l d0,a1	; $042BF0
 	move.w $2(a1),d0	; $042BF2
 	and.w #$f,d0	; $042BF6
