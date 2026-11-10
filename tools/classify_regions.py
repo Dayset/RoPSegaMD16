@@ -6,8 +6,14 @@ disasm/regions.csv: start,end,class,name,doc_ref,tier.
 Classes from bytes alone: padding, ascii, pointer-table (big-endian longs inside ROM,
 even), word-offset-table, zero-fill, high-entropy, unknown. Documented regions
 (disasm/region-classes.txt) keep their class and doc_ref at tier 2.
+Doc-proven regions (disasm/doc_regions.csv, Phase 1A T-10/T-12/T-13) take
+priority: each incbin span is split at their boundaries, so a doc row becomes
+its own regions.csv row with its class, name, doc_ref and tier. doc_regions.csv
+ends are EXCLUSIVE ([start, end)), matching disasm/text/inventory.json (end of
+one range = start of the next); regions.csv ends are INCLUSIVE.
 Usage: python3 tools/classify_regions.py
 """
+import csv
 import math
 import re
 from collections import Counter
@@ -62,6 +68,21 @@ def load_doc_classes():
     return out
 
 
+def load_doc_regions():
+    """disasm/doc_regions.csv: start,end,class,name,doc_ref,tier.
+    Ends are EXCLUSIVE ([start, end)). Returns (start, end_excl, class, name,
+    doc_ref, tier) sorted by start."""
+    out = []
+    p = Path('disasm/doc_regions.csv')
+    if p.exists():
+        with p.open(newline='') as fh:
+            for r in csv.DictReader(fh):
+                out.append((int(r['start'], 16), int(r['end'], 16),
+                            r['class'], r['name'], r['doc_ref'], r['tier']))
+    out.sort()
+    return out
+
+
 def main():
     spans = []
     for line in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
@@ -76,15 +97,35 @@ def main():
         else:
             merged.append([s, n])
     doc = load_doc_classes()
+    regions = load_doc_regions()
     rows = []
     for s, n in merged:
         e = s + n - 1
-        doc_hits = [(cs, ce, c) for cs, ce, c in doc if cs <= s and e <= ce]
-        if doc_hits:
-            cls, tier, ref = doc_hits[0][2], '2', 'disasm/region-classes.txt'
-        else:
-            cls, tier, ref = classify(ROM[s:e + 1]), '1', ''
-        rows.append((s, e, cls, f'region_{s:06x}', ref, tier))
+        # Split the span at doc-region boundaries (doc ends are exclusive).
+        cuts = {s, e + 1}
+        for ds, de, *_ in regions:
+            if ds < e + 1 and s < de:
+                cuts.add(max(ds, s))
+                cuts.add(min(de, e + 1))
+        cuts = sorted(cuts)
+        for a, b in zip(cuts, cuts[1:]):
+            pe = b - 1
+            hit = None
+            for ds, de, cls, name, ref, tier in regions:
+                if ds <= a and b <= de:
+                    hit = (cls, name, ref, tier)
+                    break
+            if hit:
+                cls, name, ref, tier = hit
+                rows.append((a, pe, cls, name, ref, tier))
+            else:
+                doc_hits = [(cs, ce, c) for cs, ce, c in doc if cs <= a and pe <= ce]
+                if doc_hits:
+                    cls, tier, ref = doc_hits[0][2], '2', 'disasm/region-classes.txt'
+                else:
+                    cls, tier, ref = classify(ROM[a:pe + 1]), '1', ''
+                rows.append((a, pe, cls, f'region_{a:06x}', ref, tier))
+    rows.sort()
     with Path('disasm/regions.csv').open('w') as fh:
         fh.write('start,end,class,name,doc_ref,tier\n')
         for s, e, cls, name, ref, tier in rows:

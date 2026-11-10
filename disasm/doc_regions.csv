@@ -1,9 +1,9 @@
 start,end,class,name,doc_ref,tier
-0x0D6EBA,0x0DC0C0,text-dictionary-blob,dict_blob,disasm/text/inventory.json:dictionary_blob (3,466 words),2
-0x0DDBD8,0x0E0A18,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1,184 records),2
+0x0D6EBA,0x0DC0C0,text-dictionary-blob,dict_blob,disasm/text/inventory.json:dictionary_blob (3466 words),2
+0x0DDBD8,0x0E0A18,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1184 records),2
 0x0E0A18,0x0EB772,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
 0x0EBB6E,0x0ED0E4,z80-driver-blob,snd_z80_driver,docs/sound.md:10 (0x1576 bytes uploaded to Z80 RAM),2
 0x00692E,0x09B2E,snd-song-11,snd_song_11,docs/sound.md:386 (song 11),2
-0x0ED0E8,0x0FCB7C,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10, 12-17, 20),2
-0x0FCAE2,0x0FD036,snd-sfx-records,snd_sfx_records,docs/sound.md:623 (69 records x 22 bytes; overlaps song 17 tail),2
-0x0197B0,0x019F8F,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
+0x0ED0E8,0x0FCAE2,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records),2
+0x0FCAE2,0x0FD036,snd-sfx-records,snd_sfx_records,docs/sound.md:623 (69 records x 22 bytes; wins $FCAE2-$FCB7C over song 17 tail — SFX 1 record live-verified; song 17 parser also consumes these bytes via running-status; docs/sound.md:385),2
+0x0197B0,0x019F90,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
