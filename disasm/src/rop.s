@@ -1669,7 +1669,7 @@ vdp_data_read:
 	move.w $c00000.l,d0	; $00D9FC
 	rts	; $00DA02
 	; code $00DA04-$00DA91
-FUN_00da04:
+dma_upload:
 	move.l $4(a7),d0	; $00DA04
 	move.l $8(a7),d1	; $00DA08
 	move.w $c(a7),d2	; $00DA0C
@@ -3197,7 +3197,7 @@ FUN_011a7c:
 	asl.l #$5,d0	; $011A90
 	move.l d0,-(a7)	; $011A92
 	move.l $8(a6),-(a7)	; $011A94
-	jsr FUN_00da04.l	; $011A98
+	jsr dma_upload.l	; $011A98
 	lea.l $a(a7),a7	; $011A9E
 	move.w $ff0076.l,-$2(a6)	; $011AA2
 	move.w $c(a6),d0	; $011AAA
@@ -3206,7 +3206,7 @@ FUN_011a7c:
 	unlk a6	; $011AB8
 	rts	; $011ABA
 	; code $011ABC-$011AE3
-FUN_011abc:
+tile_upload:
 	link.w a6,#$0	; $011ABC
 	move.w $e(a6),d0	; $011AC0
 	asl.w #$4,d0	; $011AC4
@@ -3216,12 +3216,12 @@ FUN_011abc:
 	asl.l #$5,d0	; $011ACE
 	move.l d0,-(a7)	; $011AD0
 	move.l $8(a6),-(a7)	; $011AD2
-	jsr FUN_00da04.l	; $011AD6
+	jsr dma_upload.l	; $011AD6
 	lea.l $a(a7),a7	; $011ADC
 	unlk a6	; $011AE0
 	rts	; $011AE2
 	; code $011AE4-$011B2D
-FUN_011ae4:
+tile_record_load:
 	link.w a6,#$0	; $011AE4
 	pea.l $ff1ec0.l	; $011AE8
 	move.w $8(a6),-(a7)	; $011AEE
@@ -3232,7 +3232,7 @@ FUN_011ae4:
 	move.w $a(a6),-(a7)	; $011B08
 	move.w #$24,-(a7)	; $011B0C
 	pea.l $ff1ee0.l	; $011B10
-	bsr.b FUN_011b2e	; $011B16
+	bsr.b tile_upload_at	; $011B16
 	addq.w #$8,a7	; $011B18
 	pea.l $ff1ec0.l	; $011B1A
 	move.w $c(a6),-(a7)	; $011B20
@@ -3241,7 +3241,7 @@ FUN_011ae4:
 	unlk a6	; $011B2A
 	rts	; $011B2C
 	; code $011B2E-$011B57
-FUN_011b2e:
+tile_upload_at:
 	link.w a6,#$0	; $011B2E
 	move.w $c(a6),d0	; $011B32
 	asl.w #$4,d0	; $011B36
@@ -3252,7 +3252,7 @@ FUN_011b2e:
 	move.w d0,d1	; $011B42
 	move.l d1,-(a7)	; $011B44
 	move.l $8(a6),-(a7)	; $011B46
-	jsr FUN_00da04.l	; $011B4A
+	jsr dma_upload.l	; $011B4A
 	lea.l $a(a7),a7	; $011B50
 	unlk a6	; $011B54
 	rts	; $011B56
@@ -3266,7 +3266,7 @@ FUN_011b58:
 	unlk a6	; $011B72
 	rts	; $011B74
 	; code $011B76-$011BB7
-FUN_011b76:
+clear_sprite_attr:
 	link.w a6,#$0	; $011B76
 	moveq #$0,d0	; $011B7A
 	move.w $ff8644.l,d0	; $011B7C
@@ -3493,7 +3493,7 @@ L011DD8:
 	unlk a6	; $011DE4
 	rts	; $011DE6
 	; code $011DE8-$011E05
-FUN_011de8:
+clear_decode_buffer:
 	link.w a6,#$0	; $011DE8
 	lea.l $ff1ec0.l,a0	; $011DEC
 	move.l #$19df,d0	; $011DF2
@@ -3576,7 +3576,7 @@ L011ECC:
 	move.w #$8700,-(a7)	; $011F0A
 	jsr vdp_ctrl_write.l	; $011F0E
 	addq.w #$2,a7	; $011F14
-	jsr FUN_011b76(pc)	; $011F16
+	jsr clear_sprite_attr(pc)	; $011F16
 	clr.w -(a7)	; $011F1A
 	clr.w -(a7)	; $011F1C
 	clr.w -(a7)	; $011F1E
@@ -3732,7 +3732,7 @@ FUN_012072:
 	move.w #$3,-(a7)	; $0120DE
 	move.w $ff8648.l,-(a7)	; $0120E2
 	move.w #$26,-(a7)	; $0120E8
-	jsr FUN_011ae4(pc)	; $0120EC
+	jsr tile_record_load(pc)	; $0120EC
 	addq.w #$6,a7	; $0120F0
 	pea.l L01215E(pc)	; $0120F2
 	pea.l -$f0(a6)	; $0120F6
@@ -4010,7 +4010,7 @@ L012520:
 	clr.w -(a7)	; $0125A0
 	jsr FUN_00dbcc.l	; $0125A2
 	addq.w #$8,a7	; $0125A8
-	jsr FUN_011b76(pc)	; $0125AA
+	jsr clear_sprite_attr(pc)	; $0125AA
 	move.w $ff8640.l,-(a7)	; $0125AE
 	move.w #$1c,-(a7)	; $0125B4
 	move.w #$40,-(a7)	; $0125B8
@@ -4497,7 +4497,7 @@ FUN_012bfc:
 	unlk a6	; $012C1C
 	rts	; $012C1E
 	; code $012C20-$012F47
-FUN_012c20:
+world_map_draw:
 	link.w a6,#$fffc	; $012C20
 	pea.l L0CCAD8.l	; $012C24
 	clr.w -(a7)	; $012C2A
@@ -4546,7 +4546,7 @@ FUN_012c20:
 	move.w #$9001,-(a7)	; $012CDE
 	jsr vdp_ctrl_write.l	; $012CE2
 	addq.w #$2,a7	; $012CE8
-	jsr FUN_011b76.l	; $012CEA
+	jsr clear_sprite_attr.l	; $012CEA
 	clr.w -(a7)	; $012CF0
 	clr.w -(a7)	; $012CF2
 	clr.w -(a7)	; $012CF4
@@ -4662,7 +4662,7 @@ FUN_012c20:
 	clr.l -(a7)	; $012E9E
 	jsr FUN_01194a.l	; $012EA0
 	lea.l $14(a7),a7	; $012EA6
-	jsr FUN_011de8.l	; $012EAA
+	jsr clear_decode_buffer.l	; $012EAA
 	move.w #$33c0,-(a7)	; $012EB0
 	move.w $ff8674.l,d0	; $012EB4
 	asl.w #$5,d0	; $012EBA
@@ -4670,7 +4670,7 @@ FUN_012c20:
 	move.w d0,d1	; $012EBE
 	move.l d1,-(a7)	; $012EC0
 	pea.l $ff1ec0.l	; $012EC2
-	jsr FUN_00da04.l	; $012EC8
+	jsr dma_upload.l	; $012EC8
 	lea.l $a(a7),a7	; $012ECE
 	move.w #$8174,-(a7)	; $012ED2
 	jsr vdp_ctrl_write.l	; $012ED6
@@ -4679,7 +4679,7 @@ FUN_012c20:
 	move.w #$3,-(a7)	; $012EE4
 	move.w $ff8648.l,-(a7)	; $012EE8
 	move.w #$17,-(a7)	; $012EEE
-	jsr FUN_011ae4.l	; $012EF2
+	jsr tile_record_load.l	; $012EF2
 	addq.w #$6,a7	; $012EF8
 	pea.l L0CCB18.l	; $012EFA
 	clr.w -(a7)	; $012F00
@@ -4729,7 +4729,7 @@ L012F9A:
 	move.w #$ff,d0	; $012F9A
 	bra.b L012F96	; $012F9E
 	; code $012FA0-$012FB3
-FUN_012fa0:
+text_draw:
 	link.w a6,#$0	; $012FA0
 	move.w $8(a6),-(a7)	; $012FA4
 	jsr FUN_012072.l	; $012FA8
@@ -5806,7 +5806,7 @@ L013D80:
 	; code $013D84-$0147CF
 FUN_013d84:
 	link.w a6,#$fffc	; $013D84
-	jsr FUN_011b76.l	; $013D88
+	jsr clear_sprite_attr.l	; $013D88
 	move.w $ff8640.l,-(a7)	; $013D8E
 	clr.w -(a7)	; $013D94
 	clr.w -(a7)	; $013D96
@@ -6537,7 +6537,7 @@ FUN_0147d0:
 	move.w #$9011,-(a7)	; $014946
 	jsr vdp_ctrl_write.l	; $01494A
 	addq.w #$2,a7	; $014950
-	jsr FUN_011b76.l	; $014952
+	jsr clear_sprite_attr.l	; $014952
 	move.w #$8b00,-(a7)	; $014958
 	jsr vdp_ctrl_write.l	; $01495C
 	addq.w #$2,a7	; $014962
@@ -6835,7 +6835,7 @@ L014CC6:
 	move.w -$16(a6),d0	; $014D7C
 	sub.w #$a,d0	; $014D80
 	move.w d0,-(a7)	; $014D84
-	jsr FUN_011ae4.l	; $014D86
+	jsr tile_record_load.l	; $014D86
 	addq.w #$6,a7	; $014D8C
 	move.w $ff8640.l,-(a7)	; $014D8E
 	move.w #$8,-(a7)	; $014D94
@@ -7035,7 +7035,7 @@ L014FEE:
 L015002:
 	tst.w -$2(a6)	; $015002
 	bne.b L014FC0	; $015006
-	jsr FUN_012c20.l	; $015008
+	jsr world_map_draw.l	; $015008
 	unlk a6	; $01500E
 	rts	; $015010
 	; code $015012-$015BB7
@@ -7396,7 +7396,7 @@ L0154D4:
 	clr.w $ff0132.l	; $01551A
 	jsr FUN_012bfc.l	; $015520
 	jsr new_game_init.l	; $015526
-	jsr FUN_012c20.l	; $01552C
+	jsr world_map_draw.l	; $01552C
 	jsr main_loop.l	; $015532
 	clr.w -(a7)	; $015538
 	jsr FUN_015c08(pc)	; $01553A
@@ -7413,7 +7413,7 @@ L015544:
 	clr.w -(a7)	; $01555E
 	jsr FUN_00dbcc.l	; $015560
 	addq.w #$8,a7	; $015566
-	jsr FUN_011b76.l	; $015568
+	jsr clear_sprite_attr.l	; $015568
 	pea.l L0CCAD8.l	; $01556E
 	clr.w -(a7)	; $015574
 	jsr FUN_011082.l	; $015576
@@ -7757,7 +7757,7 @@ L015A80:
 	clr.w $ff0108.l	; $015A80
 L015A86:
 	jsr wait_vblank.l	; $015A86
-	jsr FUN_011b76.l	; $015A8C
+	jsr clear_sprite_attr.l	; $015A8C
 	move.w $ff8640.l,-(a7)	; $015A92
 	move.w #$40,-(a7)	; $015A98
 	move.w #$40,-(a7)	; $015A9C
@@ -7955,7 +7955,7 @@ FUN_015c08:
 	move.w #$8f02,-(a7)	; $015D76
 	jsr vdp_ctrl_write.l	; $015D7A
 	addq.w #$2,a7	; $015D80
-	jsr FUN_011b76.l	; $015D82
+	jsr clear_sprite_attr.l	; $015D82
 	clr.w -(a7)	; $015D88
 	move.w #$140,-(a7)	; $015D8A
 	clr.w -(a7)	; $015D8E
@@ -8523,7 +8523,7 @@ L016500:
 	unlk a6	; $01650E
 	rts	; $016510
 	; code $016512-$01664D
-FUN_016512:
+column_write:
 	link.w a6,#$fffe	; $016512
 	movem.l d4/a3,-(a7)	; $016516
 	move.w #$8f80,-(a7)	; $01651A
@@ -8714,7 +8714,7 @@ L0166C8:
 	jsr map_decode.l	; $016746
 	addq.w #$2,a7	; $01674C
 	move.l d0,-(a7)	; $01674E
-	jsr FUN_011abc.l	; $016750
+	jsr tile_upload.l	; $016750
 	addq.w #$8,a7	; $016756
 	move.w #$148,-(a7)	; $016758
 	move.w $ff8676.l,-(a7)	; $01675C
@@ -8722,7 +8722,7 @@ L0166C8:
 	jsr map_decode.l	; $016766
 	addq.w #$2,a7	; $01676C
 	move.l d0,-(a7)	; $01676E
-	jsr FUN_011abc.l	; $016770
+	jsr tile_upload.l	; $016770
 	addq.w #$8,a7	; $016776
 	moveq #$0,d0	; $016778
 	move.w $ff8676.l,d0	; $01677A
@@ -9083,7 +9083,7 @@ L016BCE:
 	lsr.w #$3,d0	; $016C12
 	and.w #$1f,d0	; $016C14
 	move.w d0,-(a7)	; $016C18
-	jsr FUN_016512(pc)	; $016C1A
+	jsr column_write(pc)	; $016C1A
 	addq.w #$8,a7	; $016C1E
 L016C20:
 	btst #$2,$ff0e14.l	; $016C20
@@ -9109,7 +9109,7 @@ L016C20:
 	lsr.w #$3,d0	; $016C62
 	and.w #$1f,d0	; $016C64
 	move.w d0,-(a7)	; $016C68
-	jsr FUN_016512(pc)	; $016C6A
+	jsr column_write(pc)	; $016C6A
 	addq.w #$8,a7	; $016C6E
 L016C70:
 	moveq #$0,d0	; $016C70
@@ -9392,7 +9392,7 @@ L016FBA:
 	jsr map_decode.l	; $017042
 	addq.w #$2,a7	; $017048
 	move.l d0,-(a7)	; $01704A
-	jsr FUN_011abc.l	; $01704C
+	jsr tile_upload.l	; $01704C
 	addq.w #$8,a7	; $017052
 	move.w #$1b6,-(a7)	; $017054
 	move.w $ff8676.l,-(a7)	; $017058
@@ -9400,7 +9400,7 @@ L016FBA:
 	jsr map_decode.l	; $017062
 	addq.w #$2,a7	; $017068
 	move.l d0,-(a7)	; $01706A
-	jsr FUN_011abc.l	; $01706C
+	jsr tile_upload.l	; $01706C
 	addq.w #$8,a7	; $017072
 	move.w $ff8640.l,-(a7)	; $017074
 	move.w #$1c,-(a7)	; $01707A
@@ -10038,7 +10038,7 @@ FUN_017860:
 	jsr map_decode.l	; $0178BE
 	addq.w #$2,a7	; $0178C4
 	move.l d0,-(a7)	; $0178C6
-	jsr FUN_011abc.l	; $0178C8
+	jsr tile_upload.l	; $0178C8
 	addq.w #$8,a7	; $0178CE
 	move.w #$9,-(a7)	; $0178D0
 	jsr map_decode.l	; $0178D4
@@ -10063,7 +10063,7 @@ L017908:
 	jsr map_decode.l	; $017916
 	addq.w #$2,a7	; $01791C
 	move.l d0,-(a7)	; $01791E
-	jsr FUN_011abc.l	; $017920
+	jsr tile_upload.l	; $017920
 	addq.w #$8,a7	; $017926
 	move.w #$23,-(a7)	; $017928
 	jsr map_decode.l	; $01792C
@@ -10084,7 +10084,7 @@ L01795E:
 	move.w #$3,-(a7)	; $01795E
 	move.w $ff8648.l,-(a7)	; $017962
 	move.w $ff0e78.l,-(a7)	; $017968
-	jsr FUN_011ae4.l	; $01796E
+	jsr tile_record_load.l	; $01796E
 	addq.w #$6,a7	; $017974
 	jsr palette_fade(pc)	; $017976
 	pea.l L0CCB38.l	; $01797A
@@ -10357,7 +10357,7 @@ scene_draw:
 	jsr FUN_0179ca(pc)	; $017D12
 	addq.w #$2,a7	; $017D16
 	jsr wait_vblank.l	; $017D18
-	jsr FUN_011b76.l	; $017D1E
+	jsr clear_sprite_attr.l	; $017D1E
 	move.w $ff8684.l,d0	; $017D24
 	add.w #$4000,d0	; $017D2A
 	moveq #$0,d1	; $017D2E
@@ -11061,7 +11061,7 @@ L01865A:
 	clr.w -(a7)	; $0186C0
 	jsr FUN_00dbcc.l	; $0186C2
 	addq.w #$8,a7	; $0186C8
-	jsr FUN_011b76.l	; $0186CA
+	jsr clear_sprite_attr.l	; $0186CA
 	move.w #$9011,-(a7)	; $0186D0
 	jsr vdp_ctrl_write.l	; $0186D4
 	addq.w #$2,a7	; $0186DA
@@ -11461,7 +11461,7 @@ L018AF6:
 	clr.w -(a7)	; $018C62
 	jsr FUN_00dbcc.l	; $018C64
 	addq.w #$8,a7	; $018C6A
-	jsr FUN_011b76.l	; $018C6C
+	jsr clear_sprite_attr.l	; $018C6C
 	move.w $ff8640.l,-(a7)	; $018C72
 	move.w #$20,-(a7)	; $018C78
 	move.w #$80,-(a7)	; $018C7C
@@ -11721,7 +11721,7 @@ L018DF0:
 	clr.w -(a7)	; $01900E
 	jsr FUN_00dbcc.l	; $019010
 	addq.w #$8,a7	; $019016
-	jsr FUN_011b76.l	; $019018
+	jsr clear_sprite_attr.l	; $019018
 	move.w #$9011,-(a7)	; $01901E
 	jsr vdp_ctrl_write.l	; $019022
 	addq.w #$2,a7	; $019028
@@ -12143,7 +12143,7 @@ L0195A6:
 	move.w #$1,-(a7)	; $0195BA
 	jsr FUN_015c08(pc)	; $0195BE
 	addq.w #$2,a7	; $0195C2
-	jsr FUN_012c20.l	; $0195C4
+	jsr world_map_draw.l	; $0195C4
 	move.w $ff8648.l,d0	; $0195CA
 	add.w #$6000,d0	; $0195D0
 	moveq #$0,d1	; $0195D4
@@ -12463,7 +12463,7 @@ new_game_init:
 	pea.l $ffa880.l	; $01B68A
 	jsr FUN_01961a.l	; $01B690
 	addq.w #$6,a7	; $01B696
-	jsr FUN_01c0ec(pc)	; $01B698
+	jsr grid_fill(pc)	; $01B698
 	pea.l $ff0e8e.l	; $01B69C
 	jsr FUN_01d9bc(pc)	; $01B6A2
 	addq.w #$4,a7	; $01B6A6
@@ -12646,7 +12646,7 @@ L01B94C:
 L01B950:
 	tst.w $ff0098.l	; $01B950
 	beq.b L01B970	; $01B956
-	jsr FUN_011de8.l	; $01B958
+	jsr clear_decode_buffer.l	; $01B958
 	move.w $ff0e90.l,-(a7)	; $01B95E
 	move.w $ff0e8e.l,-(a7)	; $01B964
 	jsr FUN_01ba4e(pc)	; $01B96A
@@ -12683,7 +12683,7 @@ L01B9B0:
 	move.w d0,d1	; $01B9DE
 	move.l d1,-(a7)	; $01B9E0
 	pea.l $ff1ec0.l	; $01B9E2
-	jsr FUN_00da04.l	; $01B9E8
+	jsr dma_upload.l	; $01B9E8
 	lea.l $a(a7),a7	; $01B9EE
 L01B9F2:
 	cmpi.w #$ffff,$ff009e.l	; $01B9F2
@@ -13262,7 +13262,7 @@ L01C0E4:
 	unlk a6	; $01C0E8
 	rts	; $01C0EA
 	; code $01C0EC-$01C175
-FUN_01c0ec:
+grid_fill:
 	link.w a6,#$fffc	; $01C0EC
 	clr.w -$2(a6)	; $01C0F0
 L01C0F4:
@@ -19268,7 +19268,7 @@ L020F6A:
 	cmpi.w #$ffff,-$2(a6)	; $020F6A
 	bne.b L020F7E	; $020F70
 	move.w #$16,-(a7)	; $020F72
-	jsr FUN_012fa0.l	; $020F76
+	jsr text_draw.l	; $020F76
 	addq.w #$2,a7	; $020F7C
 L020F7E:
 	tst.w $8(a6)	; $020F7E
@@ -19317,7 +19317,7 @@ L02102A:
 	rts	; $02102C
 L02102E:
 	move.w #$15,-(a7)	; $02102E
-	jsr FUN_012fa0.l	; $021032
+	jsr text_draw.l	; $021032
 	addq.w #$2,a7	; $021038
 	moveq #$ff,d0	; $02103A
 	bra.b L02102A	; $02103C
@@ -19389,7 +19389,7 @@ FUN_0210d8:
 	cmpi.w #$270f,(a0,d0.l)	; $0210EA
 	bne.b L0210FE	; $0210F0
 	move.w #$e7,-(a7)	; $0210F2
-	jsr FUN_012fa0.l	; $0210F6
+	jsr text_draw.l	; $0210F6
 	addq.w #$2,a7	; $0210FC
 L0210FE:
 	pea.l -$8(a6)	; $0210FE
@@ -19400,7 +19400,7 @@ L0210FE:
 	tst.w -$2(a6)	; $021110
 	bne.b L021122	; $021114
 	move.w #$18,-(a7)	; $021116
-	jsr FUN_012fa0.l	; $02111A
+	jsr text_draw.l	; $02111A
 	addq.w #$2,a7	; $021120
 L021122:
 	move.w $8(a6),d0	; $021122
@@ -19453,7 +19453,7 @@ L0211B2:
 	cmpi.w #$270f,(a0,d0.l)	; $0211C0
 	bne.b L0211D4	; $0211C6
 	move.w #$e8,-(a7)	; $0211C8
-	jsr FUN_012fa0.l	; $0211CC
+	jsr text_draw.l	; $0211CC
 	addq.w #$2,a7	; $0211D2
 L0211D4:
 	cmp.w #$4,d6	; $0211D4
@@ -19471,7 +19471,7 @@ L0211E2:
 	tst.w d4	; $0211F2
 	bne.b L021202	; $0211F4
 	move.w #$18,-(a7)	; $0211F6
-	jsr FUN_012fa0.l	; $0211FA
+	jsr text_draw.l	; $0211FA
 	addq.w #$2,a7	; $021200
 L021202:
 	pea.l -$c(a6)	; $021202
@@ -19560,7 +19560,7 @@ FUN_0212fc:
 	cmpi.w #$270f,(a0,d0.l)	; $021312
 	bne.b L021326	; $021318
 	move.w #$ea,-(a7)	; $02131A
-	jsr FUN_012fa0.l	; $02131E
+	jsr text_draw.l	; $02131E
 	addq.w #$2,a7	; $021324
 L021326:
 	pea.l -$6(a6)	; $021326
@@ -19571,7 +19571,7 @@ L021326:
 	tst.w d4	; $021336
 	bne.b L021346	; $021338
 	move.w #$18,-(a7)	; $02133A
-	jsr FUN_012fa0.l	; $02133E
+	jsr text_draw.l	; $02133E
 	addq.w #$2,a7	; $021344
 L021346:
 	move.w $c(a6),-(a7)	; $021346
@@ -19643,7 +19643,7 @@ FUN_02140a:
 	cmpi.w #$270f,(a0,d0.l)	; $02141C
 	bne.b L021430	; $021422
 	move.w #$e9,-(a7)	; $021424
-	jsr FUN_012fa0.l	; $021428
+	jsr text_draw.l	; $021428
 	addq.w #$2,a7	; $02142E
 L021430:
 	cmpi.w #$ffff,$c(a6)	; $021430
@@ -19670,7 +19670,7 @@ L021468:
 	cmpi.w #$24,(a0,d0.l)	; $021484
 	blt.b L021498	; $02148A
 	move.w #$3c,-(a7)	; $02148C
-	jsr FUN_012fa0.l	; $021490
+	jsr text_draw.l	; $021490
 	addq.w #$2,a7	; $021496
 L021498:
 	move.w $8(a6),d0	; $021498
@@ -22321,7 +22321,7 @@ L0236C6:
 	bra.w L0236C2	; $02375C
 L023760:
 	move.w #$19,-(a7)	; $023760
-	jsr FUN_012fa0.l	; $023764
+	jsr text_draw.l	; $023764
 	addq.w #$2,a7	; $02376A
 	bra.w L0236C2	; $02376C
 	; code $023770-$0238B7
@@ -22420,7 +22420,7 @@ L02380E:
 	bra.w L02380A	; $0238A4
 L0238A8:
 	move.w #$19,-(a7)	; $0238A8
-	jsr FUN_012fa0.l	; $0238AC
+	jsr text_draw.l	; $0238AC
 	addq.w #$2,a7	; $0238B2
 	bra.w L02380A	; $0238B4
 	; code $0238B8-$023937
@@ -22548,7 +22548,7 @@ L023BB2:
 	cmp.w #$ffff,d4	; $023BB2
 	bne.b L023BC4	; $023BB6
 	move.w #$1a,-(a7)	; $023BB8
-	jsr FUN_012fa0.l	; $023BBC
+	jsr text_draw.l	; $023BBC
 	addq.w #$2,a7	; $023BC2
 L023BC4:
 	cmpi.w #$ffff,$c(a6)	; $023BC4
@@ -22558,7 +22558,7 @@ L023BC4:
 	cmpi.w #$1ce,$c(a6)	; $023BD4
 	blt.b L023BE8	; $023BDA
 	move.w #$1b,-(a7)	; $023BDC
-	jsr FUN_012fa0.l	; $023BE0
+	jsr text_draw.l	; $023BE0
 	addq.w #$2,a7	; $023BE6
 L023BE8:
 	cmpi.w #$4,$8(a6)	; $023BE8
@@ -22566,7 +22566,7 @@ L023BE8:
 	cmpi.w #$ca,$c(a6)	; $023BF0
 	blt.b L023C04	; $023BF6
 	move.w #$1b,-(a7)	; $023BF8
-	jsr FUN_012fa0.l	; $023BFC
+	jsr text_draw.l	; $023BFC
 	addq.w #$2,a7	; $023C02
 L023C04:
 	move.w $8(a6),d0	; $023C04
@@ -24120,7 +24120,7 @@ FUN_02513e:
 	tst.w -$e(a6)	; $02516C
 	bne.b L02517E	; $025170
 	move.w #$18,-(a7)	; $025172
-	jsr FUN_012fa0.l	; $025176
+	jsr text_draw.l	; $025176
 	addq.w #$2,a7	; $02517C
 L02517E:
 	movea.l $ffa7fc.l,a0	; $02517E
@@ -24351,7 +24351,7 @@ FUN_025456:
 	and.w #$f,d1	; $025474
 	bne.b L025486	; $025478
 	move.w #$1c,-(a7)	; $02547A
-	jsr FUN_012fa0.l	; $02547E
+	jsr text_draw.l	; $02547E
 	addq.w #$2,a7	; $025484
 L025486:
 	cmpi.w #$ffff,$c(a6)	; $025486
@@ -24540,7 +24540,7 @@ FUN_02570a:
 	and.w #$f,d1	; $025724
 	bne.b L025736	; $025728
 	move.w #$1c,-(a7)	; $02572A
-	jsr FUN_012fa0.l	; $02572E
+	jsr text_draw.l	; $02572E
 	addq.w #$2,a7	; $025734
 L025736:
 	move.w $8(a6),d0	; $025736
@@ -24645,7 +24645,7 @@ FUN_025884:
 	cmpi.w #$270f,(a0,d0.l)	; $025898
 	bne.b L0258AC	; $02589E
 	move.w #$e6,-(a7)	; $0258A0
-	jsr FUN_012fa0.l	; $0258A4
+	jsr text_draw.l	; $0258A4
 	addq.w #$2,a7	; $0258AA
 L0258AC:
 	moveq #$0,d4	; $0258AC
@@ -24727,7 +24727,7 @@ FUN_02595a:
 	cmp.w #$1,d1	; $02597C
 	beq.b L02598E	; $025980
 	move.w #$1d,-(a7)	; $025982
-	jsr FUN_012fa0.l	; $025986
+	jsr text_draw.l	; $025986
 	addq.w #$2,a7	; $02598C
 L02598E:
 	move.w $8(a6),d0	; $02598E
@@ -24874,7 +24874,7 @@ FUN_025b4e:
 	cmp.w #$1,d1	; $025B68
 	beq.b L025B7A	; $025B6C
 	move.w #$1e,-(a7)	; $025B6E
-	jsr FUN_012fa0.l	; $025B72
+	jsr text_draw.l	; $025B72
 	addq.w #$2,a7	; $025B78
 L025B7A:
 	move.w $8(a6),d0	; $025B7A
@@ -25022,7 +25022,7 @@ L025D0E:
 	jmp *+2(pc,d0.w)	; $025D1C
 L025D20:
 	move.w #$190,-(a7)	; $025D20
-	jsr FUN_012fa0.l	; $025D24
+	jsr text_draw.l	; $025D24
 	addq.w #$2,a7	; $025D2A
 	bra.b L025CDC	; $025D2C
 	; code $025D2E-$025D65
@@ -25064,7 +25064,7 @@ L025D6E:
 	jmp *+2(pc,d0.w)	; $025D7C
 L025D80:
 	move.w #$191,-(a7)	; $025D80
-	jsr FUN_012fa0.l	; $025D84
+	jsr text_draw.l	; $025D84
 	addq.w #$2,a7	; $025D8A
 	bra.b L025D52	; $025D8C
 	; code $025D8E-$025DBB
@@ -25100,7 +25100,7 @@ L025DC4:
 	jmp *+2(pc,d0.w)	; $025DD2
 L025DD6:
 	move.w #$192,-(a7)	; $025DD6
-	jsr FUN_012fa0.l	; $025DDA
+	jsr text_draw.l	; $025DDA
 	addq.w #$2,a7	; $025DE0
 	bra.b L025DAC	; $025DE2
 	; code $025DE4-$025E11
@@ -26264,7 +26264,7 @@ L026D02:
 	move.w #$3,-(a7)	; $026D60
 	move.w $ff8648.l,-(a7)	; $026D64
 	move.w -$4(a6),-(a7)	; $026D6A
-	jsr FUN_011ae4.l	; $026D6E
+	jsr tile_record_load.l	; $026D6E
 	addq.w #$6,a7	; $026D74
 	move.w #$ffff,$ff009a.l	; $026D76
 L026D7E:
@@ -32004,7 +32004,7 @@ L02BCF0:
 	bra.b L02BCFE	; $02BCF0
 L02BCF2:
 	move.w #$32,-(a7)	; $02BCF2
-	jsr FUN_012fa0.l	; $02BCF6
+	jsr text_draw.l	; $02BCF6
 	addq.w #$2,a7	; $02BCFC
 L02BCFE:
 	cmpi.w #$a,-$2(a6)	; $02BCFE
@@ -32966,7 +32966,7 @@ L02CA18:
 	bra.b L02CA26	; $02CA18
 L02CA1A:
 	move.w #$32,-(a7)	; $02CA1A
-	jsr FUN_012fa0.l	; $02CA1E
+	jsr text_draw.l	; $02CA1E
 	addq.w #$2,a7	; $02CA24
 L02CA26:
 	cmpi.w #$a,-$2(a6)	; $02CA26
@@ -32979,7 +32979,7 @@ L02CA26:
 	cmp.w -$2(a6),d1	; $02CA44
 	beq.b L02CA56	; $02CA48
 	move.w #$32,-(a7)	; $02CA4A
-	jsr FUN_012fa0.l	; $02CA4E
+	jsr text_draw.l	; $02CA4E
 	addq.w #$2,a7	; $02CA54
 L02CA56:
 	move.w -$4(a6),-(a7)	; $02CA56
@@ -36460,7 +36460,7 @@ L02F82E:
 	cmpi.w #$3f0,-$2(a6)	; $02F870
 	bls.b L02F884	; $02F876
 	move.w #$c8,-(a7)	; $02F878
-	jsr FUN_012fa0.l	; $02F87C
+	jsr text_draw.l	; $02F87C
 	addq.w #$2,a7	; $02F882
 L02F884:
 	clr.w -(a7)	; $02F884
@@ -40718,7 +40718,7 @@ L032E00:
 	bra.b L032EB0	; $032E82
 L032E84:
 	move.w #$46,-(a7)	; $032E84
-	jsr FUN_012fa0.l	; $032E88
+	jsr text_draw.l	; $032E88
 	addq.w #$2,a7	; $032E8E
 	bra.b L032EB0	; $032E90
 L032E92:
@@ -41428,7 +41428,7 @@ L03381A:
 	cmp.w #$c8,d0	; $033840
 	ble.b L033852	; $033844
 	move.w #$71,-(a7)	; $033846
-	jsr FUN_012fa0.l	; $03384A
+	jsr text_draw.l	; $03384A
 	addq.w #$2,a7	; $033850
 L033852:
 	move.w #$ffff,-(a7)	; $033852
@@ -41474,7 +41474,7 @@ L03388A:
 	cmp.w #$c8,d0	; $0338E2
 	ble.b L0338F4	; $0338E6
 	move.w #$71,-(a7)	; $0338E8
-	jsr FUN_012fa0.l	; $0338EC
+	jsr text_draw.l	; $0338EC
 	addq.w #$2,a7	; $0338F2
 L0338F4:
 	move.w #$ffff,-(a7)	; $0338F4
@@ -41509,7 +41509,7 @@ L03392E:
 	tst.w d0	; $033958
 	ble.b L033968	; $03395A
 	move.w #$6d,-(a7)	; $03395C
-	jsr FUN_012fa0.l	; $033960
+	jsr text_draw.l	; $033960
 	addq.w #$2,a7	; $033966
 L033968:
 	move.w #$ffff,-(a7)	; $033968
@@ -42620,7 +42620,7 @@ L0348FC:
 	cmp.w #$c8,d0	; $03496C
 	ble.b L03497E	; $034970
 	move.w #$71,-(a7)	; $034972
-	jsr FUN_012fa0.l	; $034976
+	jsr text_draw.l	; $034976
 	addq.w #$2,a7	; $03497C
 L03497E:
 	move.w #$ffff,-(a7)	; $03497E
@@ -42693,7 +42693,7 @@ L034A60:
 	cmp.w #$c8,d0	; $034A74
 	ble.b L034A86	; $034A78
 	move.w #$6f,-(a7)	; $034A7A
-	jsr FUN_012fa0.l	; $034A7E
+	jsr text_draw.l	; $034A7E
 	addq.w #$2,a7	; $034A84
 L034A86:
 	bra.b L034ADA	; $034A86
@@ -42737,7 +42737,7 @@ L034ADA:
 	cmpi.w #$c8,-$2(a6)	; $034B0E
 	ble.b L034B22	; $034B14
 	move.w #$6e,-(a7)	; $034B16
-	jsr FUN_012fa0.l	; $034B1A
+	jsr text_draw.l	; $034B1A
 	addq.w #$2,a7	; $034B20
 L034B22:
 	tst.w -$2(a6)	; $034B22
@@ -42786,7 +42786,7 @@ L034B84:
 	cmpi.w #$c8,-$2(a6)	; $034BB8
 	ble.b L034BCC	; $034BBE
 	move.w #$70,-(a7)	; $034BC0
-	jsr FUN_012fa0.l	; $034BC4
+	jsr text_draw.l	; $034BC4
 	addq.w #$2,a7	; $034BCA
 L034BCC:
 	unlk a6	; $034BCC

@@ -59,3 +59,14 @@
 0x0001383C map_decode           # docs/maps.md: $1383C map decode
 0x000138A8 menu_format          # docs/graphics.md / logic: $138A8 menu-display formatter
 0x000173BC song_request         # docs/sound.md: $173BC song request; returns early if the song already plays
+# --- batch 3: 68k graphics/text routines with documented roles ---
+0x00011B76 clear_sprite_attr    # docs/graphics.md:229,430: writes 4 zero words, clears one 8-byte sprite attribute
+0x00011ABC tile_upload          # docs/graphics.md:421: uploads count tiles from src to base
+0x00011B2E tile_upload_at       # docs/graphics.md:423: same with an explicit base
+0x00011AE4 tile_record_load     # docs/graphics.md:394,859: loads a record's 36 tiles to a VRAM tile base
+0x00011DE8 clear_decode_buffer  # docs/graphics.md:366: clears the $FF1EC0 decode buffer
+0x0000DA04 dma_upload           # docs/graphics.md:366,687: DMA copy to VRAM
+0x00012C20 world_map_draw       # docs/architecture.md:185: $12C20 world-map draw
+0x00012FA0 text_draw            # docs/logic.md:295: VDP/text drawing routine
+0x0001C0EC grid_fill            # docs/architecture.md:204: 10x10 grid fill, not party init
+0x00016512 column_write         # docs/graphics.md:465: column writer (scroll)
