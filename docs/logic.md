@@ -390,15 +390,17 @@ merchant = $FF02A0
 if merchant != 0x00FF:                     # NOTE: compares against 0xFF, NOT 0xFFFF
     m20 = merchant_struct.+0x20           # word at $FF02D4 + merchant*0x34
     m22 = merchant_struct.+0x22 - 50      # word at $FF02D6 + merchant*0x34
-    if m20 == 32 and ($FF0E92 & 0x3FF) == 367:  # 367 = 0x16F
+    if m20 == 32 or ($FF0E92 & 0x3FF) == 367:   # 367 = 0x16F; OR, not AND
         v *= 2
     price = v - m22*v/140                  # divs, truncates toward zero
     price = clamp(price, 2, 9000)
 else:
     price = clamp(v, 2, 9000)
 if item == 14:                             # goods category only
-    if $1B298[m20*2] == modifier:          # byte table $1B298
+    if $1B298[m20*2] == modifier:          # byte table $1B298 (high byte)
         price = clamp(price/2, 2, 9000)
+    if $1B299[m20*2] == modifier:          # byte table $1B299 (low byte)
+        price = clamp(price*2, 2, 9000)
 ```
 
 Notes:
@@ -414,8 +416,14 @@ Notes:
   doubling is active at Commerce). `$FF0E92` itself has no direct writes
   in the linear sweep (written via pointer or in mis-decoded code) —
   unknown, #020.
-- Item 14 special: if `$1B298[m20*2] == modifier` → price /= 2.
-  `$1B298` is a byte table; `m20` is the merchant's +0x20 word.
+- Item 14 special: `$1B298`/`$1B299` are the two bytes of one word
+  table indexed by `m20` (one word per merchant index 0–35): the high
+  byte (`$1B298[m20*2]`) is the merchant's halving slot (price /= 2
+  if it equals the modifier), the low byte (`$1B299[m20*2]`) is the
+  doubling slot (price *= 2 if it equals the modifier). E.g. m20=32
+  (Commerce) is `0xFF02`: never halves, doubles slot 2 (Gems) — this
+  second multiplier was missed in the earlier analysis and is what
+  makes the guide's Gems sell 428 attainable (see §3.5).
 - Callers: `0x1E908`, `0x1FB94` (sell), `0x1FD00` (buy check), `0x1FDD2`
   (buy), `0x287A4` (buy display), `0x2897A` (sell display).
 
@@ -425,7 +433,13 @@ Harness-proven: `$2EA92(item 23, mod 0)` → no merchant 350, att 100 →
 and returns 2 in all cases (its v is 0 → floor clamp) — it does not
 discriminate the merchant paths.
 
-### 3.5 Trading — guide vs ROM — verified (one disagreement)
+Live (2026-11-10, `.scratch024/`, 6/6, test ROM
+`41f2207211bc5f9f5dfce43e36812030`): `$2EA92(14, 2)` at Commerce
+(m20=32, loc 367) = 856 @ att 40, 1084 @ att 0, 516 @ att 100,
+800 @ att 50; control (m20=0, loc 0, att 40) = 214; buy
+(m20=2, loc 0, att 70) = 86.
+
+### 3.5 Trading — guide vs ROM — verified (no disagreements)
 
 The ringsofpower.co.uk trading guide's 21 goods all exist in the ROM
 (price records 186–216). Full per-good table in
@@ -447,7 +461,7 @@ mod 0, no merchant):
 | Flip Stones | 190 | 50 | 27 | 54 |
 | Flowers | 194 | 10 | 5 | 10 |
 | Gate Stones | 197 | 30 | 13 | 30 |
-| Gems | 188 | 200 | 86 | **428** |
+| Gems | 188 | 200 | 86 | 428 |
 | Jewellery | 201 | 320 | 197 | 315 |
 | Lottery Tickets | 193 | 20 | 10 | 20 |
 | Mana | 203 | 40 | 18 | 42 |
@@ -460,15 +474,32 @@ mod 0, no merchant):
   halving active, attitude 15–94 depending on the merchant). The 3 Mesa
   stones fit `base·attitude` (no halving at Mesa). Nectar fits
   `2·base·attitude` (doubling active at Commerce).
-- **Sell:** 17/18 guide sell prices fit the ×2 band: sell =
+- **Sell:** 17/17 guide sell prices fit: sell =
   `$2EA92(14, slot)/2` with the doubling active, so sell ≈ base
-  (attitude near neutral). This implies the doubling condition
-  (`m20==32` and location 367) holds at Commerce, the sell city for
-  most goods.
-- **Gems sell 428 is impossible.** Sell = `$2EA92/2`, so 428 implies a
-  `$2EA92` value of 856 = 4.28× the base 200; the maximum with doubling
-  is 2.72×. The guide's Gems sell price is wrong, or Gems sells through
-  a different path (unknown — #021).
+  (attitude near neutral) — except Gems, whose slot (2) is the
+  Commerce merchant's doubling slot, so sell ≈ 2× base there (see
+  below). This implies the doubling condition (`m20==32` **or**
+  location 367) holds at Commerce, the sell city for most goods.
+- **Gems sell 428 is CORRECT — the guide was right, the earlier
+  "impossible" verdict was wrong.** The earlier analysis missed the
+  second slot multiplier in `$2EA92` (§3.4): the `$1B299` doubling
+  table. Gems is record 188 (bytes `01 2e 00 38`, raw 56 → base 200),
+  slot 2 (record − 186), and the Commerce merchant (m20=32) has
+  `$1B298` word `0xFF02` — doubling slot 2, halving slot never (0xFF).
+  So at Commerce `$2EA92(14, 2)` = 200 × 2 (m20/location doubling)
+  × attitude × 2 (slot doubling), then sell = `$2EA92/2`. At live
+  attitude 40: 400 − (−10·400/140) = 428, ×2 = 856, /2 = **428**
+  exactly. Sell range at Commerce over att 0–100 is 258–542.
+  **Live (2026-11-10, `.scratch024/`, 6/6):** `$2EA92(14, 2)` =
+  856 @ att 40 (sell 428), 1084 @ att 0 (sell 542), 516 @ att 100
+  (sell 258), 800 @ att 50 (sell 400); control (m20=0, loc 0,
+  att 40) = 214 (sell 107). The guide's buy 86 is likewise exact:
+  `$2EA92(14, 2)` = 86 at the m20=2 merchant (halving slot 2, no
+  doubling), live attitude 70. No second sell path is needed —
+  the traced sell path (`$1FB88`) produces both guide numbers.
+  (Correction of the "impossible, max 2.72×" claim, which omitted
+  the slot doubling; the true max `$2EA92` for a slot-doubled good
+  is 5.43× base.)
 - City names: "Fenopolis" is in the ROM (plain ASCII at `0xD7842`,
   `0xD7873`) despite missing from the guide's 20-city list; "Shard" is
   in the ROM (`0xD773E`); the guide's "Protect" is an abbreviation of
@@ -484,8 +515,10 @@ mod 0, no merchant):
   modifier=slot)`; deduct via `$2BBD2(1, −price, 0x400, leader)`; add
   item via `$2BBD2(1, 1, item*64+slot, leader)`. Shop menu state machine
   at `0x1FA60`–`0x1FB60` (jump table on menu choice 0–9).
-- **Sell `0x1FB88`:** price = `$2EA92(14, slot)/2` — first arg is the
-  literal 14 (the goods category); receive via `$2BBD2(1, price/2,
+- **Sell `0x1FB88`:** price = `$2EA92(14, slot)` — first arg is the
+  literal 14 (the goods category); gold received = `price/2` (the
+  single halving at `$01FB9E`, `divs.w #$2`; the sell display at
+  `$02897A` shows the same halved price); receive via `$2BBD2(1, price/2,
   0x400, leader)`; remove item via `$2BBD2(1, −1, item*64+slot, leader)`;
   `$26B58` sold message; `$FFBB72` stock byte decremented. Sell slot
   chosen via `$2CC62(leader, $FFBB6F, $FFBB72+1)`; if result < 2 → exit
@@ -1266,8 +1299,10 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    0–35) is the backing store (see `docs/save.md`). Merchant
    attitude is confirmed in the price formula and the Bribe action
    that changes it is now located. (#021.)
-4. **Gems sell price 428** — impossible under `$2EA92` (§3.5). Guide
-   wrong, or a different sell path. (#021.)
+4. **Gems sell price 428** — RESOLVED (2026-11-10) [live]: the guide
+   was right; `$2EA92(14, 2)` = 856 at Commerce, att 40 (the
+   slot-doubling table `$1B299` was missed in the earlier analysis),
+   sell 428. See §3.5. (#021.)
 5. **`$FF012C` action-code meanings** (`0x07`, `0x7D`, `0x7F`,
    `0x8E`–`0x92`, `0x97`) — map from the message routine's cases. (#021.)
 6. **+0x02 codes** (`0x4D` immunity, `0xFE` in the `$3A62E` caller) and

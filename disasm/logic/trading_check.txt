@@ -2,16 +2,18 @@ Rings of Power — trading guide (ringsofpower.co.uk) vs ROM price table
 Guide prices are player-observed; the ROM code wins on disagreement.
 ROM base = scaled value of the good's price record (mod 0, no merchant).
 $2EA92 buy price = base adjusted by merchant attitude (att 0-100 ->
-  x0.64..x1.36), x2 if m20==32 and location==367, /2 if item==14 and
-  $1B298[m20*2]==modifier. Sell price = $2EA92(14, slot)/2, so a guide
+  x0.64..x1.36), x2 if m20==32 or location==367, /2 if item==14 and
+  $1B298[m20*2]==modifier, x2 if item==14 and $1B299[m20*2]==modifier.
+  Sell price = $2EA92(14, slot)/2, so a guide
   sell price S implies a $2EA92 value of 2*S; that must lie in the
-  $2EA92 bands [0.64,1.36]xbase (no multiplier) or [1.28,2.72]xbase (x2).
+  $2EA92 bands [0.64,1.36]xbase (no multiplier), [1.28,2.72]xbase (x2
+  m20/location), or [2.56,5.43]xbase (x2 m20/location and x2 slot).
 Buy guide prices fit (base/2)*attitude for 17/21 goods (halving active);
 the 3 Mesa stones fit base*attitude (no halving); Nectar fits 2*base*
-attitude (doubling active at Commerce). Sell guide prices fit the x2
-band (doubling active, then /2) for 17/18 goods; Gems 428 is IMPOSSIBLE
-(implies $2EA92 = 856 = 4.28x base; max with doubling is 2.72x) — the
-guide's Gems sell price is wrong, or Gems sells through a different path.
+attitude (doubling active at Commerce). Sell guide prices fit for 17/17
+goods; Gems 428 is CORRECT (implies $2EA92 = 856 = 4.28x base, inside the
+slot-doubled band — Gems is the Commerce merchant's doubling slot, see
+docs/logic.md §3.5).
 
  goods          | ROM rec | ROM base | guide buy | guide sell | verdict
 ----------------+---------+----------+-----------+------------+--------
@@ -28,7 +30,7 @@ guide's Gems sell price is wrong, or Gems sells through a different path.
  Flip Stones    |  190    |     50    |      27   |      54    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2
  Flowers        |  194    |     10    |       5   |      10    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2
  Gate Stones    |  197    |     30    |      13   |      30    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2
- Gems           |  188    |    200    |      86   |     428    | buy=(base/2)*att; sell OUT OF RANGE
+ Gems           |  188    |    200    |      86   |     428    | buy=(base/2)*att; sell: $2EA92=4*base*att, /2
  Jewellery      |  201    |    320    |     197   |     315    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2
  Lottery Tickets |  193    |     20    |      10   |      20    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2
  Mana           |  203    |     40    |      18   |      42    | buy=(base/2)*att; sell: $2EA92=2*base*att, /2

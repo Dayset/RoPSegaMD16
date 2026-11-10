@@ -694,13 +694,20 @@ different +0x26 byte (via the merchant's +0x27). See
 (player-observed claim from the walkthrough; no routine found that
 checks gold ≥ 1000 at a Doggonia entry).
 
-**Gems sell 428 — guide wrong or a different sell path.**
-#007 §3.5: Gems sell 428 implies `$2EA92` = 856 = 4.28× base 200;
-max with doubling is 2.72× → impossible through the traced sell
-path (`$1FB88`, sell = `$2EA92(14, slot)/2`). Either the guide
-price is wrong or a different sell path exists. **Unresolved,
-carried as open** (needs a second sell-path candidate; none found
-in the `$2BBD2` handlers traced so far).
+**Gems sell 428 — RESOLVED: the guide was right (2026-11-10)
+[live].** #007 §3.5: the earlier "impossible, max 2.72×" verdict
+missed the second slot multiplier in `$2EA92` (§3.4): the `$1B299`
+doubling table. Gems (rec 188, base 200, slot 2) is the Commerce
+merchant's (m20=32) doubling slot (`$1B298` word `0xFF02`), so at
+Commerce `$2EA92(14, 2)` = 200 × 2 × attitude × 2; at att 40 that
+is 856, and sell = `$2EA92/2` = **428** exactly. **Live
+(2026-11-10, `.scratch024/`, 6/6):** `$2EA92(14, 2)` = 856 @ att 40
+(sell 428), 1084 @ att 0 (sell 542), 516 @ att 100 (sell 258),
+800 @ att 50 (sell 400); control (m20=0, loc 0, att 40) = 214;
+buy (m20=2, att 70) = 86 (the guide's buy number). No second sell
+path exists or is needed — the traced sell path (`$1FB88`) produces
+both guide numbers. True max `$2EA92` for a slot-doubled good is
+5.43× base (sell max 542 for Gems at Commerce).
 
 **+0x02 (CODE-VERIFIED).** Set by `$23B84` from its 3rd arg
 (`$C(a6)`, `0x23D28`: `move.w $C(a6), (a0,d0.l)` at `$FF02B6`);
@@ -951,7 +958,7 @@ disassembly line; registers must be read explicitly.
 | Food/water consumption routine | OPEN | `$FF0E16` step-counter consumers in the `$2155E` tick path other than save code; `$32C56` callers (§13) |
 | Bribe 10-gold code path | LOCATED + delta mechanism PINNED (2026-11-10) [static] | Verb "Bribe" (ROM `0xCD38C`, C 25) → handler `$020466`: gold ≥ 10, deduct 10 via `$2BBD2`, raise attitude via `$02A22A` → `$02CE74` (§16). `$02CE74`: live +0x22 += full delta, persistent `$FF00C0` += (pct × delta)/100, both clamped [−100,+100]. 11 event-8 records in `$0D3102`; type-1 deltas 50/99/15, type-3 −1. Which record matches is the merchant's +0x02 (RNG tie-break) — not a single universal number. Live confirmation [open] (`.scratch023/` harness blocked by VM replacement removing the emulator toolchain). |
 | Doggonia 1,000-gold fee | OPEN | Player-observed only; no routine found (§16) |
-| Gems sell 428 | OPEN | Guide wrong or a second sell path; none found in the `$2BBD2` handlers traced (§16) |
+| Gems sell 428 | RESOLVED (2026-11-10) [live] | Guide was right; `$2EA92` slot-doubling table `$1B299` was missed. `$2EA92(14,2)` = 856 @ Commerce att 40, sell 428 (§16) |
 | Discipline↔spell-block mapping | OPEN | Names only suggest it; not proven from code (§14) |
 | `$2BBD2` handlers `$2C0A6`/`$2C0BE`/`$2C0EE`/`$2C212`/`$2C0D6` | OPEN | Not traced (§16) |
 | Item-record +4..+9 byte meanings | OPEN | Dumped; consumers in shop/message code listed (§16) |
