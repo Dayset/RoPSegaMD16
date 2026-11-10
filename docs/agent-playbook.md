@@ -10,7 +10,7 @@ so issue numbers below are placeholders (`T-…`); the lead files them.
 |---|---|
 | Finished work is not landing | 11 branches hold unmerged commits. The tools that would speed everyone up — pinned toolchain, `make` gate, coverage for `rop.s`, symbol DB, region inventory — are each 1–3 commits, sitting 6 behind `main`. |
 | The same task is done several times | Three naming branches (`gh-routine-names`, `gh-11-routine-names`, `gh-11-routine-naming`), two dispatch-label branches. `agent/all-open-issues` is 52 ahead / 48 behind with 131 files. |
-| Names exist but not on `main` | 54 of 446 routines named, all on a branch. `main` has 0. |
+| Names exist but not on `main` | 80 of 446 routines named, all on a branch. `main` has 0. |
 | Status is typed by hand in four places | README bars, `PROGRESS.md` (39 KB), `issues/*.md`, GitHub. The longest section of `CLAUDE.md` is about keeping them in sync. |
 | The rules contradict the tree | `CLAUDE.md` says GNU as and `0x` hex; the build uses vasm and `$` hex. `tools/coverage.py` cannot read `rop.s`. README and `CLAUDE.md` give different branch names. |
 | Work drifted off the goal | The last ~25 commits on `main` are game-mechanics research (merchant table, SFX bursts, day/night clock, terrain animation), each live-verified. None moves M5, M8, M9 or M11. |
@@ -62,7 +62,7 @@ All produced by `tools/status.py`. No hand counts.
 | Metric | Definition | Now | Done |
 |---|---|---|---|
 | Bytes accounted | bytes in code or a non-`unknown` region class ÷ 1,048,576 | ~25% (260,430) | 100% |
-| Routines named | rows with tier ≥ 1 ÷ 446 | 0 on `main` (54 on a branch) | 100%, with ≥ 60% at tier 2 |
+| Routines named | rows with tier ≥ 1 ÷ 446 | 0 on `main` (80 on a branch) | 100%, with ≥ 60% at tier 2 |
 | Raw fallbacks | `dc.w` instruction fallbacks in `rop.s` | 102 | 0 |
 | RAM named | named ÷ distinct `$FFxxxx` operands | measure on first run | top 200 by reference count |
 | Typed data | bytes emitted as `dc.*`/labels instead of `incbin`, for regions that hold pointers | 0 | every pointer-bearing region |
@@ -91,13 +91,10 @@ parallel. Each card is sized for one session.
 
 **T-01 Branch triage.** Rebase, run the gate, merge, delete. Order:
 1. `gh-4-pin-toolchain`, `gh-5-make-gate`, `gh-6-coverage-rop`
-2. `gh-7-jump-dispatch`, then `gh-8-dispatch-labels-2`; diff
-   `gh-8-dispatch-labels` against it, cherry-pick anything unique, delete
+2. `gh-7-jump-dispatch`, then `gh-8-dispatch-labels-2`. (`gh-8-dispatch-labels` was already deleted 2026-11-10; its tip `8a03208` is recorded for recovery — cherry-pick anything unique from it first.)
 3. `gh-15-unclassified-regions`, `gh-20-symbol-db`
-4. Naming: take `gh-routine-names` (14 commits, 54 names) as the base;
-   add any unique names from the two `gh-11-*` branches; delete all three
-5. `gh-12-split-rebuildable` (3 ahead): confirm its diff is already on
-   `main`, then delete
+4. Naming: take `gh-11-routine-naming` (80 names, PR #37) as the base; add any unique names from `gh-11-routine-names`; delete both. (`gh-routine-names` was already deleted 2026-11-10; its tip `caa4f81` is recorded for recovery.)
+5. `gh-12-split-rebuildable`: already deleted 2026-11-10 (tip `eabef89` recorded for recovery); PR #35 closed when its head branch was deleted. Its bit-ops/jump-table content is recoverable from `eabef89`.
 6. Delete the zero-ahead branches: `advisor/workflow-coverage`,
    `gh-14-hardware-limits`, `gh-9-rebuildable-skeleton`
 7. `agent/all-open-issues`: do not merge. List files that do not exist on
@@ -106,10 +103,10 @@ parallel. Each card is sized for one session.
 - Done when: `git branch -r` shows `main` plus at most the one parked branch.
 
 **T-02 Symbol pipeline.** `tools/gen_src.py` reads `disasm/symbols/*.csv`
-and `disasm/regions.csv`; convert the 54 names into shard files; emit
+and `disasm/regions.csv`; convert the 80 names into shard files; emit
 `emu.sym`. Lint: grammar regex, unique names, address is a real label,
 tier present.
-- Done when: `rop.s` on `main` carries the 54 names and the gate passes.
+- Done when: `rop.s` on `main` carries the 80 names and the gate passes.
 
 **T-03 `make check` + `tools/status.py`.** One command for build, verify,
 lint, status. `status.py` prints every metric in §3 and rewrites the
