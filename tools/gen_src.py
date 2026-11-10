@@ -319,7 +319,7 @@ def main():
         pieces.append((start, "code", (end, entry, insns, tail)))
     pieces.sort()
     pos = 0
-    label_addrs = targets | entry_names
+    label_addrs = targets | entry_names | set(NAMES)  # every named address gets a label
     labelled = set()
 
     def emit_data(a, b):

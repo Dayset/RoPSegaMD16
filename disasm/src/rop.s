@@ -1217,7 +1217,7 @@ L00D426:
 	move.w d0,$ff0030.l	; $00D426
 L00D42C:
 	pea.l $ff0e18.l	; $00D42C
-	jsr FUN_01e49a.l	; $00D432
+	jsr queue_depth.l	; $00D432
 	addq.w #$4,a7	; $00D438
 	tst.w d0	; $00D43A
 	beq.b L00D478	; $00D43C
@@ -1270,7 +1270,7 @@ L00D4C6:
 	moveq #$0,d0	; $00D4DA
 	move.b -$3(a6),d0	; $00D4DC
 	move.w d0,-(a7)	; $00D4E0
-	jsr FUN_01e3b0.l	; $00D4E2
+	jsr queue_push.l	; $00D4E2
 	addq.w #$6,a7	; $00D4E8
 	move.w d0,-$6(a6)	; $00D4EA
 L00D4EE:
@@ -1397,7 +1397,7 @@ L00D662:
 	bra.w L00D7A2	; $00D662
 L00D666:
 	pea.l $ff0e18.l	; $00D666
-	jsr FUN_01e49a.l	; $00D66C
+	jsr queue_depth.l	; $00D66C
 	addq.w #$4,a7	; $00D672
 	tst.w d0	; $00D674
 	bne.b L00D68E	; $00D676
@@ -1421,7 +1421,7 @@ L00D6B0:
 	tst.w $ff0114.l	; $00D6B0
 	beq.b L00D6E6	; $00D6B6
 	pea.l $ff0e18.l	; $00D6B8
-	jsr FUN_01e49a.l	; $00D6BE
+	jsr queue_depth.l	; $00D6BE
 	addq.w #$4,a7	; $00D6C4
 	tst.w d0	; $00D6C6
 	beq.b L00D6E6	; $00D6C8
@@ -1967,7 +1967,7 @@ L00DE28:
 	dbra d0,L00DE28	; $00DE2A
 	rts	; $00DE2E
 	; code $00DE30-$00DE3D
-FUN_00de30:
+strcpy:
 	movem.l $4(a7),a0-a1	; $00DE30
 	move.l a0,d0	; $00DE36
 L00DE38:
@@ -1975,7 +1975,7 @@ L00DE38:
 	bne.b L00DE38	; $00DE3A
 	rts	; $00DE3C
 	; code $00DE3E-$00DE51
-FUN_00de3e:
+strcat:
 	movem.l $4(a7),a0-a1	; $00DE3E
 	move.l a0,d0	; $00DE44
 L00DE46:
@@ -1987,7 +1987,7 @@ L00DE4C:
 	bne.b L00DE4C	; $00DE4E
 	rts	; $00DE50
 	; code $00DE52-$00DE7B
-FUN_00de52:
+strcmp:
 	movem.l $4(a7),a0-a1	; $00DE52
 	move.b (a0)+,d0	; $00DE58
 	beq.b L00DE74	; $00DE5A
@@ -2012,7 +2012,7 @@ L00DE78:
 	ext.w d0	; $00DE78
 	rts	; $00DE7A
 	; code $00DE7C-$00DE8D
-FUN_00de7c:
+strlen:
 	movea.l $4(a7),a0	; $00DE7C
 	move.l a0,d0	; $00DE80
 L00DE82:
@@ -2041,7 +2041,7 @@ mul32:
 	movem.l (a7)+,d2-d3	; $00DEAC
 	rts	; $00DEB0
 	; code $00DEB2-$00DED9
-FUN_00deb2:
+div32_signed:
 	move.l d1,-(a7)	; $00DEB2
 	move.w d4,-(a7)	; $00DEB4
 	sub.w d4,d4	; $00DEB6
@@ -2599,7 +2599,7 @@ L01144E:
 	asl.l #$2,d0	; $011456
 	move.w $16(a6),d1	; $011458
 	ext.l d1	; $01145C
-	jsr FUN_00deb2.l	; $01145E
+	jsr div32_signed.l	; $01145E
 	move.w d0,d5	; $011464
 	move.w $14(a6),d0	; $011466
 	ext.l d0	; $01146A
@@ -2607,7 +2607,7 @@ L01144E:
 	asl.l #$2,d0	; $01146E
 	move.w $18(a6),d1	; $011470
 	ext.l d1	; $011474
-	jsr FUN_00deb2.l	; $011476
+	jsr div32_signed.l	; $011476
 	move.w d0,d6	; $01147C
 	move.w $10(a6),d0	; $01147E
 	muls.w $c(a6),d0	; $011482
@@ -2681,7 +2681,7 @@ FUN_011514:
 	move.w #$a,-(a7)	; $01151C
 	pea.l -$a(a6)	; $011520
 	move.w $12(a6),-(a7)	; $011524
-	jsr FUN_011f3a(pc)	; $011528
+	jsr num_to_str(pc)	; $011528
 	addq.w #$8,a7	; $01152C
 	move.w $10(a6),d0	; $01152E
 	muls.w $c(a6),d0	; $011532
@@ -2737,7 +2737,7 @@ FUN_0115c2:
 	link.w a6,#$0	; $0115C2
 	movem.l d4-d7,-(a7)	; $0115C6
 	move.l $8(a6),-(a7)	; $0115CA
-	jsr FUN_00de7c.l	; $0115CE
+	jsr strlen.l	; $0115CE
 	addq.w #$4,a7	; $0115D4
 	move.b d0,d4	; $0115D6
 	moveq #$0,d0	; $0115D8
@@ -2768,12 +2768,12 @@ FUN_0115c2:
 	unlk a6	; $011620
 	rts	; $011622
 	; code $011624-$01181F
-FUN_011624:
+text_box:
 	link.w a6,#$ffd2	; $011624
 	movem.l d4-d7/a3-a4,-(a7)	; $011628
 	clr.w -$4(a6)	; $01162C
 	move.l $8(a6),-(a7)	; $011630
-	jsr FUN_00de7c.l	; $011634
+	jsr strlen.l	; $011634
 	addq.w #$4,a7	; $01163A
 	movea.w d0,a3	; $01163C
 	move.w $10(a6),d4	; $01163E
@@ -3590,7 +3590,7 @@ L011ECC:
 	unlk a6	; $011F36
 	rts	; $011F38
 	; code $011F3A-$011FAD
-FUN_011f3a:
+num_to_str:
 	link.w a6,#$0	; $011F3A
 	movem.l d4-d5,-(a7)	; $011F3E
 	move.w $8(a6),d5	; $011F42
@@ -3652,7 +3652,7 @@ L011FC4:
 	move.b d0,(a0,d1.w)	; $011FDE
 	moveq #$a,d1	; $011FE2
 	move.l $8(a6),d0	; $011FE4
-	jsr FUN_00deb2.l	; $011FE8
+	jsr div32_signed.l	; $011FE8
 	move.l d0,$8(a6)	; $011FEE
 	tst.l d0	; $011FF2
 	bgt.b L011FC4	; $011FF4
@@ -3678,7 +3678,7 @@ FUN_012024:
 	movem.l d4-d6,-(a7)	; $012028
 	moveq #$0,d5	; $01202C
 	move.l $8(a6),-(a7)	; $01202E
-	jsr FUN_00de7c.l	; $012032
+	jsr strlen.l	; $012032
 	addq.w #$4,a7	; $012038
 	move.w d0,d6	; $01203A
 	subq.w #$1,d6	; $01203C
@@ -3736,27 +3736,27 @@ FUN_012072:
 	addq.w #$6,a7	; $0120F0
 	pea.l L01215E(pc)	; $0120F2
 	pea.l -$f0(a6)	; $0120F6
-	jsr FUN_00de30.l	; $0120FA
+	jsr strcpy.l	; $0120FA
 	addq.w #$8,a7	; $012100
 	move.w #$a,-(a7)	; $012102
 	pea.l -$28(a6)	; $012106
 	move.w $8(a6),-(a7)	; $01210A
-	jsr FUN_011f3a(pc)	; $01210E
+	jsr num_to_str(pc)	; $01210E
 	addq.w #$8,a7	; $012112
 	move.l d0,-(a7)	; $012114
 	pea.l -$f0(a6)	; $012116
-	jsr FUN_00de3e.l	; $01211A
+	jsr strcat.l	; $01211A
 	addq.w #$8,a7	; $012120
 	pea.l L0121B2(pc)	; $012122
 	pea.l -$f0(a6)	; $012126
-	jsr FUN_00de3e.l	; $01212A
+	jsr strcat.l	; $01212A
 	addq.w #$8,a7	; $012130
 	move.w #$c7,-(a7)	; $012132
 	move.w #$136,-(a7)	; $012136
 	move.w #$92,-(a7)	; $01213A
 	move.w #$44,-(a7)	; $01213E
 	pea.l -$f0(a6)	; $012142
-	jsr FUN_011624(pc)	; $012146
+	jsr text_box(pc)	; $012146
 	lea.l $c(a7),a7	; $01214A
 	jsr FUN_012fb4.l	; $01214E
 	jsr soft_reset.l	; $012154
@@ -5589,7 +5589,7 @@ L013A66:
 	and.w #$1,d0	; $013A80
 	bne.b L013AF2	; $013A84
 	pea.l $ff0e18.l	; $013A86
-	jsr FUN_01e49a.l	; $013A8C
+	jsr queue_depth.l	; $013A8C
 	addq.w #$4,a7	; $013A92
 	tst.w d0	; $013A94
 	bne.b L013AF8	; $013A96
@@ -6637,7 +6637,7 @@ L014AA6:
 	blt.b L014A5C	; $014AB0
 	pea.l L014FB4(pc)	; $014AB2
 	pea.l -$50(a6)	; $014AB6
-	jsr FUN_00de30.l	; $014ABA
+	jsr strcpy.l	; $014ABA
 	addq.w #$8,a7	; $014AC0
 L014AC2:
 	moveq #$0,d0	; $014AC2
@@ -6786,7 +6786,7 @@ L014C94:
 L014CC6:
 	pea.l L014FB5(pc)	; $014CC6
 	pea.l -$50(a6)	; $014CCA
-	jsr FUN_00de30.l	; $014CCE
+	jsr strcpy.l	; $014CCE
 	addq.w #$8,a7	; $014CD4
 	clr.w -$8(a6)	; $014CD6
 	clr.w -$12(a6)	; $014CDA
@@ -9283,15 +9283,15 @@ L016E76:
 	ext.l d0	; $016EB8
 	divs.w #$a,d0	; $016EBA
 	move.w d0,-(a7)	; $016EBE
-	jsr FUN_011f3a.l	; $016EC0
+	jsr num_to_str.l	; $016EC0
 	addq.w #$8,a7	; $016EC6
 	move.l d0,-(a7)	; $016EC8
 	pea.l -$52(a6)	; $016ECA
-	jsr FUN_00de30.l	; $016ECE
+	jsr strcpy.l	; $016ECE
 	addq.w #$8,a7	; $016ED4
 	pea.l L0170CE(pc)	; $016ED6
 	pea.l -$52(a6)	; $016EDA
-	jsr FUN_00de3e.l	; $016EDE
+	jsr strcat.l	; $016EDE
 	addq.w #$8,a7	; $016EE4
 	move.w #$a,-(a7)	; $016EE6
 	pea.l -$5c(a6)	; $016EEA
@@ -9300,15 +9300,15 @@ L016E76:
 	divs.w #$a,d0	; $016EF4
 	swap d0	; $016EF8
 	move.w d0,-(a7)	; $016EFA
-	jsr FUN_011f3a.l	; $016EFC
+	jsr num_to_str.l	; $016EFC
 	addq.w #$8,a7	; $016F02
 	move.l d0,-(a7)	; $016F04
 	pea.l -$52(a6)	; $016F06
-	jsr FUN_00de3e.l	; $016F0A
+	jsr strcat.l	; $016F0A
 	addq.w #$8,a7	; $016F10
 	pea.l L0170D0(pc)	; $016F12
 	pea.l -$52(a6)	; $016F16
-	jsr FUN_00de3e.l	; $016F1A
+	jsr strcat.l	; $016F1A
 	addq.w #$8,a7	; $016F20
 	move.w #$a,-(a7)	; $016F22
 	pea.l -$5c(a6)	; $016F26
@@ -9316,15 +9316,15 @@ L016E76:
 	ext.l d0	; $016F2E
 	divs.w #$a,d0	; $016F30
 	move.w d0,-(a7)	; $016F34
-	jsr FUN_011f3a.l	; $016F36
+	jsr num_to_str.l	; $016F36
 	addq.w #$8,a7	; $016F3C
 	move.l d0,-(a7)	; $016F3E
 	pea.l -$52(a6)	; $016F40
-	jsr FUN_00de3e.l	; $016F44
+	jsr strcat.l	; $016F44
 	addq.w #$8,a7	; $016F4A
 	pea.l L0170D3(pc)	; $016F4C
 	pea.l -$52(a6)	; $016F50
-	jsr FUN_00de3e.l	; $016F54
+	jsr strcat.l	; $016F54
 	addq.w #$8,a7	; $016F5A
 	move.w #$a,-(a7)	; $016F5C
 	pea.l -$5c(a6)	; $016F60
@@ -9333,15 +9333,15 @@ L016E76:
 	divs.w #$a,d0	; $016F6A
 	swap d0	; $016F6E
 	move.w d0,-(a7)	; $016F70
-	jsr FUN_011f3a.l	; $016F72
+	jsr num_to_str.l	; $016F72
 	addq.w #$8,a7	; $016F78
 	move.l d0,-(a7)	; $016F7A
 	pea.l -$52(a6)	; $016F7C
-	jsr FUN_00de3e.l	; $016F80
+	jsr strcat.l	; $016F80
 	addq.w #$8,a7	; $016F86
 	pea.l L0170D5(pc)	; $016F88
 	pea.l -$52(a6)	; $016F8C
-	jsr FUN_00de3e.l	; $016F90
+	jsr strcat.l	; $016F90
 	addq.w #$8,a7	; $016F96
 	move.w #$a000,-(a7)	; $016F98
 	pea.l -$52(a6)	; $016F9C
@@ -9671,11 +9671,11 @@ L0173D6:
 L0173DA:
 	move.w $8(a6),$ff012e.l	; $0173DA
 	move.w $8(a6),-(a7)	; $0173E2
-	bsr.b FUN_0173ec	; $0173E6
+	bsr.b jingle_play	; $0173E6
 	addq.w #$2,a7	; $0173E8
 	bra.b L0173D6	; $0173EA
 	; code $0173EC-$017545
-FUN_0173ec:
+jingle_play:
 	link.w a6,#$0	; $0173EC
 	move.w $8(a6),d0	; $0173F0
 	ext.l d0	; $0173F4
@@ -10674,7 +10674,7 @@ L018192:
 	sub.w #$32,d0	; $0181A0
 	muls.w #$1a8,d0	; $0181A4
 	moveq #$64,d1	; $0181A8
-	jsr FUN_00deb2.l	; $0181AA
+	jsr div32_signed.l	; $0181AA
 	move.l #$1c0,d1	; $0181B0
 	sub.l d0,d1	; $0181B6
 	move.l d1,-$24(a6)	; $0181B8
@@ -15348,7 +15348,7 @@ L01DC14:
 	addq.w #$6,a7	; $01DC42
 	clr.w $ff009e.l	; $01DC44
 	move.w #$14,-(a7)	; $01DC4A
-	jsr FUN_0173ec.l	; $01DC4E
+	jsr jingle_play.l	; $01DC4E
 	addq.w #$2,a7	; $01DC54
 	move.w $a(a6),d0	; $01DC56
 	ext.l d0	; $01DC5A
@@ -15953,7 +15953,7 @@ FUN_01e390:
 	unlk a6	; $01E3AC
 	rts	; $01E3AE
 	; code $01E3B0-$01E425
-FUN_01e3b0:
+queue_push:
 	link.w a6,#$fff8	; $01E3B0
 	move.l $a(a6),-$4(a6)	; $01E3B4
 	movea.l $a(a6),a0	; $01E3BA
@@ -16035,7 +16035,7 @@ L01E45C:
 	moveq #$1,d0	; $01E496
 	bra.b L01E458	; $01E498
 	; code $01E49A-$01E4E5
-FUN_01e49a:
+queue_depth:
 	link.w a6,#$0	; $01E49A
 	movea.l $8(a6),a0	; $01E49E
 	moveq #$0,d0	; $01E4A2
@@ -16418,7 +16418,7 @@ L01E8AE:
 	lea.l -$60(a6),a0	; $01E8F0
 	add.l a0,d0	; $01E8F4
 	move.l d0,-(a7)	; $01E8F6
-	jsr FUN_00de30.l	; $01E8F8
+	jsr strcpy.l	; $01E8F8
 	addq.w #$8,a7	; $01E8FE
 	move.w a4,d0	; $01E900
 	add.w d4,d0	; $01E902
@@ -16642,7 +16642,7 @@ L01EAF8:
 	lea.l -$60(a6),a0	; $01EB5E
 	add.l a0,d0	; $01EB62
 	move.l d0,-(a7)	; $01EB64
-	jsr FUN_00de30.l	; $01EB66
+	jsr strcpy.l	; $01EB66
 	addq.w #$8,a7	; $01EB6C
 	moveq #$0,d0	; $01EB6E
 	move.b $ffbb6f.l,d0	; $01EB70
@@ -18416,7 +18416,7 @@ L02040C:
 	bra.w L020758	; $02042C
 L020430:
 	pea.l $ff0e18.l	; $020430
-	jsr FUN_01e49a(pc)	; $020436
+	jsr queue_depth(pc)	; $020436
 	addq.w #$4,a7	; $02043A
 	tst.w d0	; $02043C
 	bne.b L02045E	; $02043E
@@ -18434,7 +18434,7 @@ L020462:
 	bra.w L020758	; $020462
 L020466:
 	pea.l $ff0e18.l	; $020466
-	jsr FUN_01e49a(pc)	; $02046C
+	jsr queue_depth(pc)	; $02046C
 	addq.w #$4,a7	; $020470
 	tst.w d0	; $020472
 	bne.b L0204C6	; $020474
@@ -18468,7 +18468,7 @@ L0204CE:
 	bra.w L020758	; $0204D8
 L0204DC:
 	pea.l $ff0e18.l	; $0204DC
-	jsr FUN_01e49a(pc)	; $0204E2
+	jsr queue_depth(pc)	; $0204E2
 	addq.w #$4,a7	; $0204E6
 	tst.w d0	; $0204E8
 	bne.b L020510	; $0204EA
@@ -18485,7 +18485,7 @@ L020510:
 	bra.w L020758	; $020510
 L020514:
 	pea.l $ff0e18.l	; $020514
-	jsr FUN_01e49a(pc)	; $02051A
+	jsr queue_depth(pc)	; $02051A
 	addq.w #$4,a7	; $02051E
 	tst.w d0	; $020520
 	bne.b L020548	; $020522
@@ -18502,7 +18502,7 @@ L020548:
 	bra.w L020758	; $020548
 L02054C:
 	pea.l $ff0e18.l	; $02054C
-	jsr FUN_01e49a(pc)	; $020552
+	jsr queue_depth(pc)	; $020552
 	addq.w #$4,a7	; $020556
 	tst.w d0	; $020558
 	bne.b L020580	; $02055A
@@ -18519,7 +18519,7 @@ L020580:
 	bra.w L020758	; $020580
 L020584:
 	pea.l $ff0e18.l	; $020584
-	jsr FUN_01e49a(pc)	; $02058A
+	jsr queue_depth(pc)	; $02058A
 	addq.w #$4,a7	; $02058E
 	tst.w d0	; $020590
 	bne.b L0205B8	; $020592
@@ -18575,7 +18575,7 @@ L02063C:
 	moveq #$0,d0	; $02063C
 	move.b $ffbb6f.l,d0	; $02063E
 	move.w d0,-(a7)	; $020644
-	jsr FUN_0173ec.l	; $020646
+	jsr jingle_play.l	; $020646
 	addq.w #$2,a7	; $02064C
 	bra.w L020758	; $02064E
 L020652:
@@ -19800,7 +19800,7 @@ L0215FC:
 	tst.w d0	; $02160E
 	bne.b L021620	; $021610
 	move.w $ff012e.l,-(a7)	; $021612
-	jsr FUN_0173ec.l	; $021618
+	jsr jingle_play.l	; $021618
 	addq.w #$2,a7	; $02161E
 L021620:
 	cmpi.w #$1,$ff00ae.l	; $021620
@@ -21654,7 +21654,7 @@ L022EC8:
 	cmpi.w #$fe,(a0,d0.l)	; $022ED6
 	bne.b L022EEA	; $022EDC
 	move.w d4,-(a7)	; $022EDE
-	jsr FUN_03a62e.l	; $022EE0
+	jsr attack_dispatch.l	; $022EE0
 	addq.w #$2,a7	; $022EE6
 	bra.b L022F04	; $022EE8
 L022EEA:
@@ -21822,7 +21822,7 @@ L0230AA:
 	bra.b L023140	; $023134
 L023136:
 	move.w d4,-(a7)	; $023136
-	jsr FUN_03a62e.l	; $023138
+	jsr attack_dispatch.l	; $023138
 	addq.w #$2,a7	; $02313E
 L023140:
 	bra.b L0231C0	; $023140
@@ -22888,7 +22888,7 @@ L023FA8:
 	lsr.w #$4,d1	; $024066
 	and.w #$f,d1	; $024068
 	move.w d1,-(a7)	; $02406C
-	jsr FUN_031958.l	; $02406E
+	jsr max_hp_for_level.l	; $02406E
 	addq.w #$2,a7	; $024074
 	move.w d4,d1	; $024076
 	muls.w #$34,d1	; $024078
@@ -22908,7 +22908,7 @@ L023FA8:
 	lsr.w #$4,d1	; $0240B4
 	and.w #$f,d1	; $0240B6
 	move.w d1,-(a7)	; $0240BA
-	jsr FUN_031946.l	; $0240BC
+	jsr max_power_for_level.l	; $0240BC
 	addq.w #$2,a7	; $0240C2
 	move.w d4,d1	; $0240C4
 	muls.w #$34,d1	; $0240C6
@@ -23743,7 +23743,7 @@ L024C12:
 	bne.b L024C66	; $024C50
 L024C52:
 	move.w -$34(a6),-(a7)	; $024C52
-	jsr FUN_03a62e.l	; $024C56
+	jsr attack_dispatch.l	; $024C56
 	addq.w #$2,a7	; $024C5C
 	move.w #$e6,d0	; $024C5E
 	bra.w L0249EE	; $024C62
@@ -26171,7 +26171,7 @@ L026B80:
 	muls.w #$d2,d0	; $026BD8
 	lea.l $ffbc96.l,a0	; $026BDC
 	move.l (a0,d0.l),-(a7)	; $026BE2
-	jsr FUN_00de52.l	; $026BE6
+	jsr strcmp.l	; $026BE6
 	addq.w #$8,a7	; $026BEC
 	tst.w d0	; $026BEE
 	bne.b L026BFA	; $026BF0
@@ -26186,7 +26186,7 @@ L026BFA:
 	move.w d0,-$4(a6)	; $026C0A
 	pea.l $ff0e18.l	; $026C0E
 	move.w -$4(a6),-(a7)	; $026C14
-	jsr FUN_01e3b0.l	; $026C18
+	jsr queue_push.l	; $026C18
 	addq.w #$6,a7	; $026C1E
 	move.w d0,-$2(a6)	; $026C20
 	tst.w -$2(a6)	; $026C24
@@ -26221,7 +26221,7 @@ L026C2E:
 	lea.l $ffbc9e.l,a0	; $026CB4
 	add.l a0,d0	; $026CBA
 	move.l d0,-(a7)	; $026CBC
-	jsr FUN_00de30.l	; $026CBE
+	jsr strcpy.l	; $026CBE
 	addq.w #$8,a7	; $026CC4
 	bra.w L026B7C	; $026CC6
 	; code $026CCA-$026DD1
@@ -26721,22 +26721,22 @@ L0273E8:
 	bra.b L02747A	; $027428
 	pea.l L027584(pc)	; $02742A
 	pea.l -$22(a6)	; $02742E
-	jsr FUN_00de30.l	; $027432
+	jsr strcpy.l	; $027432
 	addq.w #$8,a7	; $027438
 	bra.b L02748C	; $02743A
 	pea.l L027589(pc)	; $02743C
 	pea.l -$22(a6)	; $027440
-	jsr FUN_00de30.l	; $027444
+	jsr strcpy.l	; $027444
 	addq.w #$8,a7	; $02744A
 	bra.b L02748C	; $02744C
 	pea.l L02758E(pc)	; $02744E
 	pea.l -$22(a6)	; $027452
-	jsr FUN_00de30.l	; $027456
+	jsr strcpy.l	; $027456
 	addq.w #$8,a7	; $02745C
 	bra.b L02748C	; $02745E
 	pea.l L027595(pc)	; $027460
 	pea.l -$22(a6)	; $027464
-	jsr FUN_00de30.l	; $027468
+	jsr strcpy.l	; $027468
 	addq.w #$8,a7	; $02746E
 	bra.b L02748C	; $027470
 L027472:
@@ -26925,7 +26925,7 @@ L02764C:
 	lea.l $10(a7),a7	; $0276D4
 L0276D8:
 	pea.l $ff0e18.l	; $0276D8
-	jsr FUN_01e49a.l	; $0276DE
+	jsr queue_depth.l	; $0276DE
 	addq.w #$4,a7	; $0276E4
 	tst.w d0	; $0276E6
 	bne.b L0276F2	; $0276E8
@@ -26982,7 +26982,7 @@ L02777C:
 	move.w #$92,-(a7)	; $027790
 	move.w #$44,-(a7)	; $027794
 	move.l $ff0e7a.l,-(a7)	; $027798
-	jsr FUN_011624.l	; $02779E
+	jsr text_box.l	; $02779E
 	lea.l $c(a7),a7	; $0277A4
 	bra.w L029368	; $0277A8
 	move.w $ff0e80.l,d0	; $0277AC
@@ -27006,11 +27006,11 @@ L0277D4:
 	add.l a0,d0	; $0277E2
 	move.l d0,-(a7)	; $0277E4
 	pea.l -$d2(a6)	; $0277E6
-	jsr FUN_00de30.l	; $0277EA
+	jsr strcpy.l	; $0277EA
 	addq.w #$8,a7	; $0277F0
 	pea.l L029378(pc)	; $0277F2
 	pea.l -$d2(a6)	; $0277F6
-	jsr FUN_00de3e.l	; $0277FA
+	jsr strcat.l	; $0277FA
 	addq.w #$8,a7	; $027800
 	move.w d6,d0	; $027802
 	ext.l d0	; $027804
@@ -27019,11 +27019,11 @@ L0277D4:
 	add.l a0,d0	; $02780E
 	move.l d0,-(a7)	; $027810
 	pea.l -$d2(a6)	; $027812
-	jsr FUN_00de3e.l	; $027816
+	jsr strcat.l	; $027816
 	addq.w #$8,a7	; $02781C
 	pea.l L02937B(pc)	; $02781E
 	pea.l -$d2(a6)	; $027822
-	jsr FUN_00de3e.l	; $027826
+	jsr strcat.l	; $027826
 	addq.w #$8,a7	; $02782C
 	move.w $18(a3),d0	; $02782E
 	and.w #$f,d0	; $027832
@@ -27032,7 +27032,7 @@ L0277D4:
 	add.l a0,d0	; $027840
 	move.l d0,-(a7)	; $027842
 	pea.l -$d2(a6)	; $027844
-	jsr FUN_00de3e.l	; $027848
+	jsr strcat.l	; $027848
 	addq.w #$8,a7	; $02784E
 	move.w $18(a3),d0	; $027850
 	and.w #$f,d0	; $027854
@@ -27040,7 +27040,7 @@ L0277D4:
 	bhi.b L0278A2	; $02785C
 	pea.l L02937D(pc)	; $02785E
 	pea.l -$d2(a6)	; $027862
-	jsr FUN_00de3e.l	; $027866
+	jsr strcat.l	; $027866
 	addq.w #$8,a7	; $02786C
 	move.w $18(a3),d0	; $02786E
 	and.w #$f,d0	; $027872
@@ -27055,18 +27055,18 @@ L0277D4:
 	add.l a0,d0	; $027892
 	move.l d0,-(a7)	; $027894
 	pea.l -$d2(a6)	; $027896
-	jsr FUN_00de3e.l	; $02789A
+	jsr strcat.l	; $02789A
 	addq.w #$8,a7	; $0278A0
 L0278A2:
 	pea.l L02938F(pc)	; $0278A2
 	pea.l -$d2(a6)	; $0278A6
-	jsr FUN_00de3e.l	; $0278AA
+	jsr strcat.l	; $0278AA
 	addq.w #$8,a7	; $0278B0
 	move.w $1c(a3),d0	; $0278B2
 	muls.w #$b,d0	; $0278B6
 	move.w $20(a3),d1	; $0278BA
 	ext.l d1	; $0278BE
-	jsr FUN_00deb2.l	; $0278C0
+	jsr div32_signed.l	; $0278C0
 	move.w d0,d7	; $0278C6
 	addq.w #$1,d7	; $0278C8
 	move.w $2c(a3),d0	; $0278CA
@@ -27082,13 +27082,13 @@ L0278D8:
 	add.l a0,d0	; $0278E4
 	move.l d0,-(a7)	; $0278E6
 	pea.l -$d2(a6)	; $0278E8
-	jsr FUN_00de3e.l	; $0278EC
+	jsr strcat.l	; $0278EC
 	addq.w #$8,a7	; $0278F2
 	cmp.w #$1,d7	; $0278F4
 	ble.w L027AD6	; $0278F8
 	pea.l L029395(pc)	; $0278FC
 	pea.l -$d2(a6)	; $027900
-	jsr FUN_00de3e.l	; $027904
+	jsr strcat.l	; $027904
 	addq.w #$8,a7	; $02790A
 	move.w d6,d0	; $02790C
 	addq.w #$2,d0	; $02790E
@@ -27098,24 +27098,24 @@ L0278D8:
 	add.l a0,d0	; $02791A
 	move.l d0,-(a7)	; $02791C
 	pea.l -$d2(a6)	; $02791E
-	jsr FUN_00de3e.l	; $027922
+	jsr strcat.l	; $027922
 	addq.w #$8,a7	; $027928
 	pea.l L02939B(pc)	; $02792A
 	pea.l -$d2(a6)	; $02792E
-	jsr FUN_00de3e.l	; $027932
+	jsr strcat.l	; $027932
 	addq.w #$8,a7	; $027938
 	move.w $1e(a3),d0	; $02793A
 	muls.w #$c,d0	; $02793E
 	move.w $22(a3),d1	; $027942
 	ext.l d1	; $027946
-	jsr FUN_00deb2.l	; $027948
+	jsr div32_signed.l	; $027948
 	ext.l d0	; $02794E
 	asl.l #$4,d0	; $027950
 	lea.l L01A8C0.l,a0	; $027952
 	add.l a0,d0	; $027958
 	move.l d0,-(a7)	; $02795A
 	pea.l -$d2(a6)	; $02795C
-	jsr FUN_00de3e.l	; $027960
+	jsr strcat.l	; $027960
 	addq.w #$8,a7	; $027966
 	tst.w d6	; $027968
 	beq.w L027A56	; $02796A
@@ -27156,11 +27156,11 @@ L0279D6:
 	move.w d5,d0	; $0279D8
 	muls.w #$c,d0	; $0279DA
 	moveq #$64,d1	; $0279DE
-	jsr FUN_00deb2.l	; $0279E0
+	jsr div32_signed.l	; $0279E0
 	move.w d0,d7	; $0279E6
 	pea.l L02939D(pc)	; $0279E8
 	pea.l -$d2(a6)	; $0279EC
-	jsr FUN_00de3e.l	; $0279F0
+	jsr strcat.l	; $0279F0
 	addq.w #$8,a7	; $0279F6
 	move.w $14(a3),d0	; $0279F8
 	ext.l d0	; $0279FC
@@ -27169,15 +27169,15 @@ L0279D6:
 	add.l a0,d0	; $027A06
 	move.l d0,-(a7)	; $027A08
 	pea.l -$f0(a6)	; $027A0A
-	jsr FUN_00de30.l	; $027A0E
+	jsr strcpy.l	; $027A0E
 	addq.w #$8,a7	; $027A14
 	pea.l -$f0(a6)	; $027A16
 	pea.l -$d2(a6)	; $027A1A
-	jsr FUN_00de3e.l	; $027A1E
+	jsr strcat.l	; $027A1E
 	addq.w #$8,a7	; $027A24
 	pea.l L0293A0(pc)	; $027A26
 	pea.l -$d2(a6)	; $027A2A
-	jsr FUN_00de3e.l	; $027A2E
+	jsr strcat.l	; $027A2E
 	addq.w #$8,a7	; $027A34
 	move.w d7,d0	; $027A36
 	ext.l d0	; $027A38
@@ -27186,13 +27186,13 @@ L0279D6:
 	add.l a0,d0	; $027A42
 	move.l d0,-(a7)	; $027A44
 	pea.l -$d2(a6)	; $027A46
-	jsr FUN_00de3e.l	; $027A4A
+	jsr strcat.l	; $027A4A
 	addq.w #$8,a7	; $027A50
 	bra.w L027AD6	; $027A52
 L027A56:
 	pea.l L0293AC(pc)	; $027A56
 	pea.l -$d2(a6)	; $027A5A
-	jsr FUN_00de3e.l	; $027A5E
+	jsr strcat.l	; $027A5E
 	addq.w #$8,a7	; $027A64
 	move.w $14(a3),d0	; $027A66
 	ext.l d0	; $027A6A
@@ -27201,40 +27201,40 @@ L027A56:
 	add.l a0,d0	; $027A74
 	move.l d0,-(a7)	; $027A76
 	pea.l -$f0(a6)	; $027A78
-	jsr FUN_00de30.l	; $027A7C
+	jsr strcpy.l	; $027A7C
 	addq.w #$8,a7	; $027A82
 	pea.l -$f0(a6)	; $027A84
 	pea.l -$d2(a6)	; $027A88
-	jsr FUN_00de3e.l	; $027A8C
+	jsr strcat.l	; $027A8C
 	addq.w #$8,a7	; $027A92
 	pea.l L0293AF(pc)	; $027A94
 	pea.l -$d2(a6)	; $027A98
-	jsr FUN_00de3e.l	; $027A9C
+	jsr strcat.l	; $027A9C
 	addq.w #$8,a7	; $027AA2
 	move.w #$a,-(a7)	; $027AA4
 	pea.l -$f0(a6)	; $027AA8
 	move.w $1a(a3),-(a7)	; $027AAC
-	jsr FUN_011f3a.l	; $027AB0
+	jsr num_to_str.l	; $027AB0
 	addq.w #$8,a7	; $027AB6
 	move.l d0,-(a7)	; $027AB8
 	pea.l -$d2(a6)	; $027ABA
-	jsr FUN_00de3e.l	; $027ABE
+	jsr strcat.l	; $027ABE
 	addq.w #$8,a7	; $027AC4
 	pea.l L0293BC(pc)	; $027AC6
 	pea.l -$d2(a6)	; $027ACA
-	jsr FUN_00de3e.l	; $027ACE
+	jsr strcat.l	; $027ACE
 	addq.w #$8,a7	; $027AD4
 L027AD6:
 	pea.l L0293CF(pc)	; $027AD6
 	pea.l -$d2(a6)	; $027ADA
-	jsr FUN_00de3e.l	; $027ADE
+	jsr strcat.l	; $027ADE
 	addq.w #$8,a7	; $027AE4
 	move.w #$c7,-(a7)	; $027AE6
 	move.w #$136,-(a7)	; $027AEA
 	move.w #$92,-(a7)	; $027AEE
 	move.w #$44,-(a7)	; $027AF2
 	pea.l -$d2(a6)	; $027AF6
-	jsr FUN_011624.l	; $027AFA
+	jsr text_box.l	; $027AFA
 	lea.l $c(a7),a7	; $027B00
 	bra.w L029368	; $027B04
 	move.w $ff0e80.l,d0	; $027B08
@@ -27244,7 +27244,7 @@ L027AD6:
 	adda.l a0,a3	; $027B1A
 	pea.l L0293D1(pc)	; $027B1C
 	pea.l -$d2(a6)	; $027B20
-	jsr FUN_00de30.l	; $027B24
+	jsr strcpy.l	; $027B24
 	addq.w #$8,a7	; $027B2A
 	move.w $14(a3),d0	; $027B2C
 	ext.l d0	; $027B30
@@ -27253,28 +27253,28 @@ L027AD6:
 	add.l a0,d0	; $027B3A
 	move.l d0,-(a7)	; $027B3C
 	pea.l -$f0(a6)	; $027B3E
-	jsr FUN_00de30.l	; $027B42
+	jsr strcpy.l	; $027B42
 	addq.w #$8,a7	; $027B48
 	pea.l -$f0(a6)	; $027B4A
 	pea.l -$d2(a6)	; $027B4E
-	jsr FUN_00de3e.l	; $027B52
+	jsr strcat.l	; $027B52
 	addq.w #$8,a7	; $027B58
 	pea.l L0293E3(pc)	; $027B5A
 	pea.l -$d2(a6)	; $027B5E
-	jsr FUN_00de3e.l	; $027B62
+	jsr strcat.l	; $027B62
 	addq.w #$8,a7	; $027B68
 	move.w #$a,-(a7)	; $027B6A
 	pea.l -$f0(a6)	; $027B6E
 	move.w $1a(a3),-(a7)	; $027B72
-	jsr FUN_011f3a.l	; $027B76
+	jsr num_to_str.l	; $027B76
 	addq.w #$8,a7	; $027B7C
 	move.l d0,-(a7)	; $027B7E
 	pea.l -$d2(a6)	; $027B80
-	jsr FUN_00de3e.l	; $027B84
+	jsr strcat.l	; $027B84
 	addq.w #$8,a7	; $027B8A
 	pea.l L0293F0(pc)	; $027B8C
 	pea.l -$d2(a6)	; $027B90
-	jsr FUN_00de3e.l	; $027B94
+	jsr strcat.l	; $027B94
 	addq.w #$8,a7	; $027B9A
 	move.w $18(a3),d0	; $027B9C
 	and.w #$f,d0	; $027BA0
@@ -27289,44 +27289,44 @@ L027AD6:
 	add.l a0,d0	; $027BC0
 	move.l d0,-(a7)	; $027BC2
 	pea.l -$d2(a6)	; $027BC4
-	jsr FUN_00de3e.l	; $027BC8
+	jsr strcat.l	; $027BC8
 	addq.w #$8,a7	; $027BCE
 	pea.l L029424(pc)	; $027BD0
 	pea.l -$d2(a6)	; $027BD4
-	jsr FUN_00de3e.l	; $027BD8
+	jsr strcat.l	; $027BD8
 	addq.w #$8,a7	; $027BDE
 	move.w #$a,-(a7)	; $027BE0
 	pea.l -$f0(a6)	; $027BE4
 	move.w $20(a3),-(a7)	; $027BE8
-	jsr FUN_011f3a.l	; $027BEC
+	jsr num_to_str.l	; $027BEC
 	addq.w #$8,a7	; $027BF2
 	move.l d0,-(a7)	; $027BF4
 	pea.l -$d2(a6)	; $027BF6
-	jsr FUN_00de3e.l	; $027BFA
+	jsr strcat.l	; $027BFA
 	addq.w #$8,a7	; $027C00
 	pea.l L02943D(pc)	; $027C02
 	pea.l -$d2(a6)	; $027C06
-	jsr FUN_00de3e.l	; $027C0A
+	jsr strcat.l	; $027C0A
 	addq.w #$8,a7	; $027C10
 	move.w #$a,-(a7)	; $027C12
 	pea.l -$f0(a6)	; $027C16
 	move.w $22(a3),-(a7)	; $027C1A
-	jsr FUN_011f3a.l	; $027C1E
+	jsr num_to_str.l	; $027C1E
 	addq.w #$8,a7	; $027C24
 	move.l d0,-(a7)	; $027C26
 	pea.l -$d2(a6)	; $027C28
-	jsr FUN_00de3e.l	; $027C2C
+	jsr strcat.l	; $027C2C
 	addq.w #$8,a7	; $027C32
 	pea.l L02945B(pc)	; $027C34
 	pea.l -$d2(a6)	; $027C38
-	jsr FUN_00de3e.l	; $027C3C
+	jsr strcat.l	; $027C3C
 	addq.w #$8,a7	; $027C42
 	move.w #$c7,-(a7)	; $027C44
 	move.w #$136,-(a7)	; $027C48
 	move.w #$92,-(a7)	; $027C4C
 	move.w #$44,-(a7)	; $027C50
 	pea.l -$d2(a6)	; $027C54
-	jsr FUN_011624.l	; $027C58
+	jsr text_box.l	; $027C58
 	lea.l $c(a7),a7	; $027C5E
 	bra.w L029368	; $027C62
 	tst.w $ffc40a.l	; $027C66
@@ -27336,43 +27336,43 @@ L027AD6:
 	move.w #$92,-(a7)	; $027C78
 	move.w #$44,-(a7)	; $027C7C
 	pea.l L029464(pc)	; $027C80
-	jsr FUN_011624.l	; $027C84
+	jsr text_box.l	; $027C84
 	lea.l $c(a7),a7	; $027C8A
 	pea.l L029477(pc)	; $027C8E
 	pea.l -$d2(a6)	; $027C92
-	jsr FUN_00de30.l	; $027C96
+	jsr strcpy.l	; $027C96
 	addq.w #$8,a7	; $027C9C
 	move.w #$a,-(a7)	; $027C9E
 	pea.l -$f0(a6)	; $027CA2
 	move.w $ffc40e.l,-(a7)	; $027CA6
-	jsr FUN_011f3a.l	; $027CAC
+	jsr num_to_str.l	; $027CAC
 	addq.w #$8,a7	; $027CB2
 	move.l d0,-(a7)	; $027CB4
 	pea.l -$d2(a6)	; $027CB6
-	jsr FUN_00de3e.l	; $027CBA
+	jsr strcat.l	; $027CBA
 	addq.w #$8,a7	; $027CC0
 	pea.l L029483(pc)	; $027CC2
 	pea.l -$d2(a6)	; $027CC6
-	jsr FUN_00de3e.l	; $027CCA
+	jsr strcat.l	; $027CCA
 	addq.w #$8,a7	; $027CD0
 	move.w #$a,-(a7)	; $027CD2
 	pea.l -$f0(a6)	; $027CD6
 	move.w $ffc40c.l,-(a7)	; $027CDA
-	jsr FUN_011f3a.l	; $027CE0
+	jsr num_to_str.l	; $027CE0
 	addq.w #$8,a7	; $027CE6
 	move.l d0,-(a7)	; $027CE8
 	pea.l -$d2(a6)	; $027CEA
-	jsr FUN_00de3e.l	; $027CEE
+	jsr strcat.l	; $027CEE
 	addq.w #$8,a7	; $027CF4
 	pea.l L0294AE(pc)	; $027CF6
 	pea.l -$d2(a6)	; $027CFA
-	jsr FUN_00de3e.l	; $027CFE
+	jsr strcat.l	; $027CFE
 	addq.w #$8,a7	; $027D04
 	cmpi.w #$7530,$ffc410.l	; $027D06
 	beq.w L027DEA	; $027D0E
 	pea.l L0294BB(pc)	; $027D12
 	pea.l -$d2(a6)	; $027D16
-	jsr FUN_00de3e.l	; $027D1A
+	jsr strcat.l	; $027D1A
 	addq.w #$8,a7	; $027D20
 	move.w $ffc410.l,d0	; $027D22
 	lsr.w #$6,d0	; $027D28
@@ -27398,15 +27398,15 @@ L027AD6:
 	add.l a0,d0	; $027D6E
 	move.l d0,-(a7)	; $027D70
 	pea.l -$f0(a6)	; $027D72
-	jsr FUN_00de30.l	; $027D76
+	jsr strcpy.l	; $027D76
 	addq.w #$8,a7	; $027D7C
 	pea.l -$f0(a6)	; $027D7E
 	pea.l -$d2(a6)	; $027D82
-	jsr FUN_00de3e.l	; $027D86
+	jsr strcat.l	; $027D86
 	addq.w #$8,a7	; $027D8C
 	pea.l L0294C3(pc)	; $027D8E
 	pea.l -$d2(a6)	; $027D92
-	jsr FUN_00de3e.l	; $027D96
+	jsr strcat.l	; $027D96
 	addq.w #$8,a7	; $027D9C
 	move.w -$2(a6),d0	; $027D9E
 	muls.w #$a,d0	; $027DA2
@@ -27418,20 +27418,20 @@ L027AD6:
 	add.l a0,d1	; $027DBA
 	move.l d1,-(a7)	; $027DBC
 	pea.l -$f0(a6)	; $027DBE
-	jsr FUN_00de30.l	; $027DC2
+	jsr strcpy.l	; $027DC2
 	addq.w #$8,a7	; $027DC8
 	pea.l -$f0(a6)	; $027DCA
 	pea.l -$d2(a6)	; $027DCE
-	jsr FUN_00de3e.l	; $027DD2
+	jsr strcat.l	; $027DD2
 	addq.w #$8,a7	; $027DD8
 	pea.l L0294C6(pc)	; $027DDA
 	pea.l -$d2(a6)	; $027DDE
-	jsr FUN_00de3e.l	; $027DE2
+	jsr strcat.l	; $027DE2
 	addq.w #$8,a7	; $027DE8
 L027DEA:
 	pea.l L0294C8(pc)	; $027DEA
 	pea.l -$d2(a6)	; $027DEE
-	jsr FUN_00de3e.l	; $027DF2
+	jsr strcat.l	; $027DF2
 	addq.w #$8,a7	; $027DF8
 	bra.w L027F26	; $027DFA
 L027DFE:
@@ -27440,48 +27440,48 @@ L027DFE:
 	move.w #$92,-(a7)	; $027E06
 	move.w #$44,-(a7)	; $027E0A
 	pea.l L0294CA(pc)	; $027E0E
-	jsr FUN_011624.l	; $027E12
+	jsr text_box.l	; $027E12
 	lea.l $c(a7),a7	; $027E18
 	tst.w $ffc40c.l	; $027E1C
 	bne.b L027E36	; $027E22
 	pea.l L0294D5(pc)	; $027E24
 	pea.l -$d2(a6)	; $027E28
-	jsr FUN_00de30.l	; $027E2C
+	jsr strcpy.l	; $027E2C
 	addq.w #$8,a7	; $027E32
 	bra.b L027E5A	; $027E34
 L027E36:
 	move.w #$a,-(a7)	; $027E36
 	pea.l -$f0(a6)	; $027E3A
 	move.w $ffc40c.l,-(a7)	; $027E3E
-	jsr FUN_011f3a.l	; $027E44
+	jsr num_to_str.l	; $027E44
 	addq.w #$8,a7	; $027E4A
 	move.l d0,-(a7)	; $027E4C
 	pea.l -$d2(a6)	; $027E4E
-	jsr FUN_00de30.l	; $027E52
+	jsr strcpy.l	; $027E52
 	addq.w #$8,a7	; $027E58
 L027E5A:
 	pea.l L0294D8(pc)	; $027E5A
 	pea.l -$d2(a6)	; $027E5E
-	jsr FUN_00de3e.l	; $027E62
+	jsr strcat.l	; $027E62
 	addq.w #$8,a7	; $027E68
 	cmpi.w #$7530,$ffc410.l	; $027E6A
 	beq.w L027F26	; $027E72
 	pea.l L0294E5(pc)	; $027E76
 	pea.l -$d2(a6)	; $027E7A
-	jsr FUN_00de3e.l	; $027E7E
+	jsr strcat.l	; $027E7E
 	addq.w #$8,a7	; $027E84
 	move.w #$a,-(a7)	; $027E86
 	pea.l -$f0(a6)	; $027E8A
 	move.w $ffc412.l,-(a7)	; $027E8E
-	jsr FUN_011f3a.l	; $027E94
+	jsr num_to_str.l	; $027E94
 	addq.w #$8,a7	; $027E9A
 	move.l d0,-(a7)	; $027E9C
 	pea.l -$d2(a6)	; $027E9E
-	jsr FUN_00de3e.l	; $027EA2
+	jsr strcat.l	; $027EA2
 	addq.w #$8,a7	; $027EA8
 	pea.l L0294EB(pc)	; $027EAA
 	pea.l -$d2(a6)	; $027EAE
-	jsr FUN_00de3e.l	; $027EB2
+	jsr strcat.l	; $027EB2
 	addq.w #$8,a7	; $027EB8
 	move.w $ffc410.l,d0	; $027EBA
 	lsr.w #$6,d0	; $027EC0
@@ -27507,11 +27507,11 @@ L027E5A:
 	add.l a0,d0	; $027F06
 	move.l d0,-(a7)	; $027F08
 	pea.l -$f0(a6)	; $027F0A
-	jsr FUN_00de30.l	; $027F0E
+	jsr strcpy.l	; $027F0E
 	addq.w #$8,a7	; $027F14
 	pea.l -$f0(a6)	; $027F16
 	pea.l -$d2(a6)	; $027F1A
-	jsr FUN_00de3e.l	; $027F1E
+	jsr strcat.l	; $027F1E
 	addq.w #$8,a7	; $027F24
 L027F26:
 	move.w #$c7,-(a7)	; $027F26
@@ -27519,7 +27519,7 @@ L027F26:
 	move.w #$a2,-(a7)	; $027F2E
 	move.w #$44,-(a7)	; $027F32
 	pea.l -$d2(a6)	; $027F36
-	jsr FUN_011624.l	; $027F3A
+	jsr text_box.l	; $027F3A
 	lea.l $c(a7),a7	; $027F40
 	bra.w L029368	; $027F44
 	jsr FUN_030da4.l	; $027F48
@@ -27562,7 +27562,7 @@ L027FB0:
 	add.l a0,d0	; $027FBE
 	move.l d0,-(a7)	; $027FC0
 	pea.l -$d2(a6)	; $027FC2
-	jsr FUN_00de30.l	; $027FC6
+	jsr strcpy.l	; $027FC6
 	addq.w #$8,a7	; $027FCC
 	lea.l $ff010e.l,a0	; $027FCE
 	move.w (a0),d0	; $027FD4
@@ -27582,7 +27582,7 @@ L027FB0:
 	bra.w L02815C	; $02800A
 	pea.l L0294ED(pc)	; $02800E
 	pea.l -$d2(a6)	; $028012
-	jsr FUN_00de30.l	; $028016
+	jsr strcpy.l	; $028016
 	addq.w #$8,a7	; $02801C
 	move.w #$a000,-(a7)	; $02801E
 	pea.l L0294FB(pc)	; $028022
@@ -27595,7 +27595,7 @@ L027FB0:
 	bra.w L028174	; $028040
 	pea.l L029505(pc)	; $028044
 	pea.l -$d2(a6)	; $028048
-	jsr FUN_00de30.l	; $02804C
+	jsr strcpy.l	; $02804C
 	addq.w #$8,a7	; $028052
 	move.w #$a000,-(a7)	; $028054
 	pea.l L029514(pc)	; $028058
@@ -27608,37 +27608,37 @@ L027FB0:
 	bra.w L028174	; $028076
 	pea.l L02951E(pc)	; $02807A
 	pea.l -$d2(a6)	; $02807E
-	jsr FUN_00de30.l	; $028082
+	jsr strcpy.l	; $028082
 	addq.w #$8,a7	; $028088
 	bra.w L028174	; $02808A
 	pea.l L02952B(pc)	; $02808E
 	pea.l -$d2(a6)	; $028092
-	jsr FUN_00de30.l	; $028096
+	jsr strcpy.l	; $028096
 	addq.w #$8,a7	; $02809C
 	bra.w L028174	; $02809E
 	pea.l L029538(pc)	; $0280A2
 	pea.l -$d2(a6)	; $0280A6
-	jsr FUN_00de30.l	; $0280AA
+	jsr strcpy.l	; $0280AA
 	addq.w #$8,a7	; $0280B0
 	bra.w L028174	; $0280B2
 	pea.l L029547(pc)	; $0280B6
 	pea.l -$d2(a6)	; $0280BA
-	jsr FUN_00de30.l	; $0280BE
+	jsr strcpy.l	; $0280BE
 	addq.w #$8,a7	; $0280C4
 	bra.w L028174	; $0280C6
 	pea.l L029555(pc)	; $0280CA
 	pea.l -$d2(a6)	; $0280CE
-	jsr FUN_00de30.l	; $0280D2
+	jsr strcpy.l	; $0280D2
 	addq.w #$8,a7	; $0280D8
 	bra.w L028174	; $0280DA
 	pea.l L029564(pc)	; $0280DE
 	pea.l -$d2(a6)	; $0280E2
-	jsr FUN_00de30.l	; $0280E6
+	jsr strcpy.l	; $0280E6
 	addq.w #$8,a7	; $0280EC
 	bra.w L028174	; $0280EE
 	pea.l L029573(pc)	; $0280F2
 	pea.l -$d2(a6)	; $0280F6
-	jsr FUN_00de30.l	; $0280FA
+	jsr strcpy.l	; $0280FA
 	addq.w #$8,a7	; $028100
 	move.w #$a000,-(a7)	; $028102
 	pea.l L02957E(pc)	; $028106
@@ -27652,7 +27652,7 @@ L027FB0:
 L028126:
 	pea.l L029588(pc)	; $028126
 	pea.l -$d2(a6)	; $02812A
-	jsr FUN_00de30.l	; $02812E
+	jsr strcpy.l	; $02812E
 	addq.w #$8,a7	; $028134
 	bra.b L028174	; $028136
 L028138:
@@ -27776,13 +27776,13 @@ L0282BC:
 	add.l a0,d0	; $0282F2
 	move.l d0,-(a7)	; $0282F4
 	pea.l -$f0(a6)	; $0282F6
-	jsr FUN_00de30.l	; $0282FA
+	jsr strcpy.l	; $0282FA
 	addq.w #$8,a7	; $028300
 	cmpi.b #$33,$16(a3)	; $028302
 	bne.b L02831A	; $028308
 	pea.l L0295AC(pc)	; $02830A
 	pea.l -$f0(a6)	; $02830E
-	jsr FUN_00de30.l	; $028312
+	jsr strcpy.l	; $028312
 	addq.w #$8,a7	; $028318
 L02831A:
 	move.w #$a000,-(a7)	; $02831A
@@ -27847,7 +27847,7 @@ L0283BC:
 	beq.b L028410	; $0283FC
 	pea.l L0295C8(pc)	; $0283FE
 	pea.l -$d2(a6)	; $028402
-	jsr FUN_00de30.l	; $028406
+	jsr strcpy.l	; $028406
 	addq.w #$8,a7	; $02840C
 	bra.b L028442	; $02840E
 L028410:
@@ -27863,7 +27863,7 @@ L028410:
 	add.l a0,d0	; $028432
 	move.l d0,-(a7)	; $028434
 	pea.l -$d2(a6)	; $028436
-	jsr FUN_00de30.l	; $02843A
+	jsr strcpy.l	; $02843A
 	addq.w #$8,a7	; $028440
 L028442:
 	tst.w $ffc380.l	; $028442
@@ -27877,46 +27877,46 @@ L028460:
 	bne.b L02847C	; $028468
 	pea.l L0295CE(pc)	; $02846A
 	pea.l -$d2(a6)	; $02846E
-	jsr FUN_00de3e.l	; $028472
+	jsr strcat.l	; $028472
 	addq.w #$8,a7	; $028478
 	bra.b L02848C	; $02847A
 L02847C:
 	pea.l L0295D5(pc)	; $02847C
 	pea.l -$d2(a6)	; $028480
-	jsr FUN_00de3e.l	; $028484
+	jsr strcat.l	; $028484
 	addq.w #$8,a7	; $02848A
 L02848C:
 	move.w #$a,-(a7)	; $02848C
 	pea.l -$f0(a6)	; $028490
 	move.w $ffc380.l,-(a7)	; $028494
-	jsr FUN_011f3a.l	; $02849A
+	jsr num_to_str.l	; $02849A
 	addq.w #$8,a7	; $0284A0
 	move.l d0,-(a7)	; $0284A2
 	pea.l -$d2(a6)	; $0284A4
-	jsr FUN_00de3e.l	; $0284A8
+	jsr strcat.l	; $0284A8
 	addq.w #$8,a7	; $0284AE
 	pea.l L0295DB(pc)	; $0284B0
 	pea.l -$d2(a6)	; $0284B4
-	jsr FUN_00de3e.l	; $0284B8
+	jsr strcat.l	; $0284B8
 	addq.w #$8,a7	; $0284BE
 	bra.b L028506	; $0284C0
 L0284C2:
 	pea.l L0295E4(pc)	; $0284C2
 	pea.l -$d2(a6)	; $0284C6
-	jsr FUN_00de3e.l	; $0284CA
+	jsr strcat.l	; $0284CA
 	addq.w #$8,a7	; $0284D0
 	move.w #$a,-(a7)	; $0284D2
 	pea.l -$f0(a6)	; $0284D6
 	move.w $ffc380.l,-(a7)	; $0284DA
-	jsr FUN_011f3a.l	; $0284E0
+	jsr num_to_str.l	; $0284E0
 	addq.w #$8,a7	; $0284E6
 	move.l d0,-(a7)	; $0284E8
 	pea.l -$d2(a6)	; $0284EA
-	jsr FUN_00de3e.l	; $0284EE
+	jsr strcat.l	; $0284EE
 	addq.w #$8,a7	; $0284F4
 	pea.l L0295EB(pc)	; $0284F6
 	pea.l -$d2(a6)	; $0284FA
-	jsr FUN_00de3e.l	; $0284FE
+	jsr strcat.l	; $0284FE
 	addq.w #$8,a7	; $028504
 L028506:
 	move.w #$d7,-(a7)	; $028506
@@ -27924,35 +27924,35 @@ L028506:
 	move.w #$b6,-(a7)	; $02850E
 	move.w #$7a,-(a7)	; $028512
 	pea.l -$d2(a6)	; $028516
-	jsr FUN_011624.l	; $02851A
+	jsr text_box.l	; $02851A
 	lea.l $c(a7),a7	; $028520
 	bra.b L02858C	; $028524
 L028526:
 	pea.l L0295F4(pc)	; $028526
 	pea.l -$d2(a6)	; $02852A
-	jsr FUN_00de3e.l	; $02852E
+	jsr strcat.l	; $02852E
 	addq.w #$8,a7	; $028534
 	move.w #$a,-(a7)	; $028536
 	pea.l -$f0(a6)	; $02853A
 	move.w $ffc380.l,d0	; $02853E
 	neg.w d0	; $028544
 	move.w d0,-(a7)	; $028546
-	jsr FUN_011f3a.l	; $028548
+	jsr num_to_str.l	; $028548
 	addq.w #$8,a7	; $02854E
 	move.l d0,-(a7)	; $028550
 	pea.l -$d2(a6)	; $028552
-	jsr FUN_00de3e.l	; $028556
+	jsr strcat.l	; $028556
 	addq.w #$8,a7	; $02855C
 	pea.l L0295FA(pc)	; $02855E
 	pea.l -$d2(a6)	; $028562
-	jsr FUN_00de3e.l	; $028566
+	jsr strcat.l	; $028566
 	addq.w #$8,a7	; $02856C
 	move.w #$d7,-(a7)	; $02856E
 	move.w #$fc,-(a7)	; $028572
 	move.w #$b6,-(a7)	; $028576
 	move.w #$7a,-(a7)	; $02857A
 	pea.l -$d2(a6)	; $02857E
-	jsr FUN_011624.l	; $028582
+	jsr text_box.l	; $028582
 	lea.l $c(a7),a7	; $028588
 L02858C:
 	bra.w L028612	; $02858C
@@ -27978,18 +27978,18 @@ L028590:
 	add.l a0,d0	; $0285D4
 	move.l d0,-(a7)	; $0285D6
 	pea.l -$d2(a6)	; $0285D8
-	jsr FUN_00de30.l	; $0285DC
+	jsr strcpy.l	; $0285DC
 	addq.w #$8,a7	; $0285E2
 	pea.l L029603(pc)	; $0285E4
 	pea.l -$d2(a6)	; $0285E8
-	jsr FUN_00de3e.l	; $0285EC
+	jsr strcat.l	; $0285EC
 	addq.w #$8,a7	; $0285F2
 	move.w #$d7,-(a7)	; $0285F4
 	move.w #$fc,-(a7)	; $0285F8
 	move.w #$b6,-(a7)	; $0285FC
 	move.w #$7a,-(a7)	; $028600
 	pea.l -$d2(a6)	; $028604
-	jsr FUN_011624.l	; $028608
+	jsr text_box.l	; $028608
 	lea.l $c(a7),a7	; $02860E
 L028612:
 	move.w $ff0eaa.l,-(a7)	; $028612
@@ -28013,7 +28013,7 @@ L028612:
 	bra.w L029368	; $028660
 	pea.l L02960C(pc)	; $028664
 	pea.l -$d2(a6)	; $028668
-	jsr FUN_00de30.l	; $02866C
+	jsr strcpy.l	; $02866C
 	addq.w #$8,a7	; $028672
 	move.w #$a,-(a7)	; $028674
 	pea.l -$f0(a6)	; $028678
@@ -28021,15 +28021,15 @@ L028612:
 	muls.w #$34,d0	; $028682
 	lea.l $ff02de.l,a0	; $028686
 	move.w (a0,d0.l),-(a7)	; $02868C
-	jsr FUN_011f3a.l	; $028690
+	jsr num_to_str.l	; $028690
 	addq.w #$8,a7	; $028696
 	pea.l -$f0(a6)	; $028698
 	pea.l -$d2(a6)	; $02869C
-	jsr FUN_00de3e.l	; $0286A0
+	jsr strcat.l	; $0286A0
 	addq.w #$8,a7	; $0286A6
 	pea.l L029616(pc)	; $0286A8
 	pea.l -$d2(a6)	; $0286AC
-	jsr FUN_00de3e.l	; $0286B0
+	jsr strcat.l	; $0286B0
 	addq.w #$8,a7	; $0286B6
 	move.w $ff02a8.l,d0	; $0286B8
 	mulu.w #$a,d0	; $0286BE
@@ -28041,15 +28041,15 @@ L028612:
 	add.l a0,d1	; $0286D6
 	move.l d1,-(a7)	; $0286D8
 	pea.l -$f0(a6)	; $0286DA
-	jsr FUN_00de30.l	; $0286DE
+	jsr strcpy.l	; $0286DE
 	addq.w #$8,a7	; $0286E4
 	pea.l -$f0(a6)	; $0286E6
 	pea.l -$d2(a6)	; $0286EA
-	jsr FUN_00de3e.l	; $0286EE
+	jsr strcat.l	; $0286EE
 	addq.w #$8,a7	; $0286F4
 	pea.l L02963B(pc)	; $0286F6
 	pea.l -$d2(a6)	; $0286FA
-	jsr FUN_00de3e.l	; $0286FE
+	jsr strcat.l	; $0286FE
 	addq.w #$8,a7	; $028704
 	tst.w $ff00ac.l	; $028706
 	beq.w L0287D6	; $02870C
@@ -28078,15 +28078,15 @@ L028612:
 	add.l a0,d0	; $028764
 	move.l d0,-(a7)	; $028766
 	pea.l -$f0(a6)	; $028768
-	jsr FUN_00de30.l	; $02876C
+	jsr strcpy.l	; $02876C
 	addq.w #$8,a7	; $028772
 	pea.l -$f0(a6)	; $028774
 	pea.l -$d2(a6)	; $028778
-	jsr FUN_00de3e.l	; $02877C
+	jsr strcat.l	; $02877C
 	addq.w #$8,a7	; $028782
 	pea.l L02963E(pc)	; $028784
 	pea.l -$d2(a6)	; $028788
-	jsr FUN_00de3e.l	; $02878C
+	jsr strcat.l	; $02878C
 	addq.w #$8,a7	; $028792
 	move.w #$a,-(a7)	; $028794
 	pea.l -$f0(a6)	; $028798
@@ -28095,15 +28095,15 @@ L028612:
 	jsr FUN_02ea92.l	; $0287A4
 	addq.w #$4,a7	; $0287AA
 	move.w d0,-(a7)	; $0287AC
-	jsr FUN_011f3a.l	; $0287AE
+	jsr num_to_str.l	; $0287AE
 	addq.w #$8,a7	; $0287B4
 	pea.l -$f0(a6)	; $0287B6
 	pea.l -$d2(a6)	; $0287BA
-	jsr FUN_00de3e.l	; $0287BE
+	jsr strcat.l	; $0287BE
 	addq.w #$8,a7	; $0287C4
 	pea.l L02964A(pc)	; $0287C6
 	pea.l -$d2(a6)	; $0287CA
-	jsr FUN_00de3e.l	; $0287CE
+	jsr strcat.l	; $0287CE
 	addq.w #$8,a7	; $0287D4
 L0287D6:
 	move.w #$c7,-(a7)	; $0287D6
@@ -28111,7 +28111,7 @@ L0287D6:
 	move.w #$92,-(a7)	; $0287DE
 	move.w #$44,-(a7)	; $0287E2
 	pea.l -$d2(a6)	; $0287E6
-	jsr FUN_011624.l	; $0287EA
+	jsr text_box.l	; $0287EA
 	lea.l $c(a7),a7	; $0287F0
 	move.w $ff0e80.l,d0	; $0287F4
 	ext.l d0	; $0287FA
@@ -28121,33 +28121,33 @@ L028800:
 L028804:
 	pea.l L029651(pc)	; $028804
 	pea.l -$d2(a6)	; $028808
-	jsr FUN_00de30.l	; $02880C
+	jsr strcpy.l	; $02880C
 	addq.w #$8,a7	; $028812
 	move.w #$c7,-(a7)	; $028814
 	move.w #$136,-(a7)	; $028818
 	move.w #$b2,-(a7)	; $02881C
 	move.w #$44,-(a7)	; $028820
 	pea.l -$d2(a6)	; $028824
-	jsr FUN_011624.l	; $028828
+	jsr text_box.l	; $028828
 	lea.l $c(a7),a7	; $02882E
 	bra.w L028922	; $028832
 L028836:
 	pea.l L029681(pc)	; $028836
 	pea.l -$d2(a6)	; $02883A
-	jsr FUN_00de30.l	; $02883E
+	jsr strcpy.l	; $02883E
 	addq.w #$8,a7	; $028844
 	move.w #$c7,-(a7)	; $028846
 	move.w #$136,-(a7)	; $02884A
 	move.w #$b2,-(a7)	; $02884E
 	move.w #$44,-(a7)	; $028852
 	pea.l -$d2(a6)	; $028856
-	jsr FUN_011624.l	; $02885A
+	jsr text_box.l	; $02885A
 	lea.l $c(a7),a7	; $028860
 	bra.w L028922	; $028864
 L028868:
 	pea.l L0296AB(pc)	; $028868
 	pea.l -$d2(a6)	; $02886C
-	jsr FUN_00de30.l	; $028870
+	jsr strcpy.l	; $028870
 	addq.w #$8,a7	; $028876
 	lea.l -$6(a6),a0	; $028878
 	move.w $ff02a8.l,d0	; $02887C
@@ -28168,22 +28168,22 @@ L028868:
 	add.l a0,d0	; $0288B4
 	move.l d0,-(a7)	; $0288B6
 	pea.l -$f0(a6)	; $0288B8
-	jsr FUN_00de30.l	; $0288BC
+	jsr strcpy.l	; $0288BC
 	addq.w #$8,a7	; $0288C2
 	pea.l -$f0(a6)	; $0288C4
 	pea.l -$d2(a6)	; $0288C8
-	jsr FUN_00de3e.l	; $0288CC
+	jsr strcat.l	; $0288CC
 	addq.w #$8,a7	; $0288D2
 	pea.l L0296AE(pc)	; $0288D4
 	pea.l -$d2(a6)	; $0288D8
-	jsr FUN_00de3e.l	; $0288DC
+	jsr strcat.l	; $0288DC
 	addq.w #$8,a7	; $0288E2
 	move.w #$c7,-(a7)	; $0288E4
 	move.w #$136,-(a7)	; $0288E8
 	move.w #$b2,-(a7)	; $0288EC
 	move.w #$44,-(a7)	; $0288F0
 	pea.l -$d2(a6)	; $0288F4
-	jsr FUN_011624.l	; $0288F8
+	jsr text_box.l	; $0288F8
 	lea.l $c(a7),a7	; $0288FE
 	bra.b L028922	; $028902
 L028904:
@@ -28210,7 +28210,7 @@ L028922:
 	move.l (a1)+,(a0)+	; $02894C
 	pea.l L0296BA(pc)	; $02894E
 	pea.l -$d2(a6)	; $028952
-	jsr FUN_00de30.l	; $028956
+	jsr strcpy.l	; $028956
 	addq.w #$8,a7	; $02895C
 	move.w #$a,-(a7)	; $02895E
 	pea.l -$f0(a6)	; $028962
@@ -28225,15 +28225,15 @@ L028922:
 	ext.l d0	; $028982
 	divs.w #$2,d0	; $028984
 	move.w d0,-(a7)	; $028988
-	jsr FUN_011f3a.l	; $02898A
+	jsr num_to_str.l	; $02898A
 	addq.w #$8,a7	; $028990
 	pea.l -$f0(a6)	; $028992
 	pea.l -$d2(a6)	; $028996
-	jsr FUN_00de3e.l	; $02899A
+	jsr strcat.l	; $02899A
 	addq.w #$8,a7	; $0289A0
 	pea.l L0296C9(pc)	; $0289A2
 	pea.l -$d2(a6)	; $0289A6
-	jsr FUN_00de3e.l	; $0289AA
+	jsr strcat.l	; $0289AA
 	addq.w #$8,a7	; $0289B0
 	move.w -$6(a6),d0	; $0289B2
 	ext.l d0	; $0289B6
@@ -28242,15 +28242,15 @@ L028922:
 	add.l a0,d0	; $0289C0
 	move.l d0,-(a7)	; $0289C2
 	pea.l -$f0(a6)	; $0289C4
-	jsr FUN_00de30.l	; $0289C8
+	jsr strcpy.l	; $0289C8
 	addq.w #$8,a7	; $0289CE
 	pea.l -$f0(a6)	; $0289D0
 	pea.l -$d2(a6)	; $0289D4
-	jsr FUN_00de3e.l	; $0289D8
+	jsr strcat.l	; $0289D8
 	addq.w #$8,a7	; $0289DE
 	pea.l L0296D9(pc)	; $0289E0
 	pea.l -$d2(a6)	; $0289E4
-	jsr FUN_00de3e.l	; $0289E8
+	jsr strcat.l	; $0289E8
 	addq.w #$8,a7	; $0289EE
 	move.w #$a,-(a7)	; $0289F0
 	pea.l -$f0(a6)	; $0289F4
@@ -28258,22 +28258,22 @@ L028922:
 	muls.w #$34,d0	; $0289FE
 	lea.l $ff02de.l,a0	; $028A02
 	move.w (a0,d0.l),-(a7)	; $028A08
-	jsr FUN_011f3a.l	; $028A0C
+	jsr num_to_str.l	; $028A0C
 	addq.w #$8,a7	; $028A12
 	pea.l -$f0(a6)	; $028A14
 	pea.l -$d2(a6)	; $028A18
-	jsr FUN_00de3e.l	; $028A1C
+	jsr strcat.l	; $028A1C
 	addq.w #$8,a7	; $028A22
 	pea.l L0296E5(pc)	; $028A24
 	pea.l -$d2(a6)	; $028A28
-	jsr FUN_00de3e.l	; $028A2C
+	jsr strcat.l	; $028A2C
 	addq.w #$8,a7	; $028A32
 	move.w #$c7,-(a7)	; $028A34
 	move.w #$136,-(a7)	; $028A38
 	move.w #$92,-(a7)	; $028A3C
 	move.w #$44,-(a7)	; $028A40
 	pea.l -$d2(a6)	; $028A44
-	jsr FUN_011624.l	; $028A48
+	jsr text_box.l	; $028A48
 	lea.l $c(a7),a7	; $028A4E
 	move.w $ff0e80.l,d0	; $028A52
 	ext.l d0	; $028A58
@@ -28285,7 +28285,7 @@ L028A64:
 L028A68:
 	pea.l L0296F0(pc)	; $028A68
 	pea.l -$d2(a6)	; $028A6C
-	jsr FUN_00de30.l	; $028A70
+	jsr strcpy.l	; $028A70
 	addq.w #$8,a7	; $028A76
 	lea.l -$6(a6),a0	; $028A78
 	move.w $ff0e80.l,d0	; $028A7C
@@ -28306,35 +28306,35 @@ L028A68:
 	add.l a0,d0	; $028AAE
 	move.l d0,-(a7)	; $028AB0
 	pea.l -$f0(a6)	; $028AB2
-	jsr FUN_00de30.l	; $028AB6
+	jsr strcpy.l	; $028AB6
 	addq.w #$8,a7	; $028ABC
 	pea.l -$f0(a6)	; $028ABE
 	pea.l -$d2(a6)	; $028AC2
-	jsr FUN_00de3e.l	; $028AC6
+	jsr strcat.l	; $028AC6
 	addq.w #$8,a7	; $028ACC
 	pea.l L0296F3(pc)	; $028ACE
 	pea.l -$d2(a6)	; $028AD2
-	jsr FUN_00de3e.l	; $028AD6
+	jsr strcat.l	; $028AD6
 	addq.w #$8,a7	; $028ADC
 	move.w #$c7,-(a7)	; $028ADE
 	move.w #$136,-(a7)	; $028AE2
 	move.w #$b2,-(a7)	; $028AE6
 	move.w #$44,-(a7)	; $028AEA
 	pea.l -$d2(a6)	; $028AEE
-	jsr FUN_011624.l	; $028AF2
+	jsr text_box.l	; $028AF2
 	lea.l $c(a7),a7	; $028AF8
 	bra.b L028B3E	; $028AFC
 L028AFE:
 	pea.l L0296FA(pc)	; $028AFE
 	pea.l -$d2(a6)	; $028B02
-	jsr FUN_00de30.l	; $028B06
+	jsr strcpy.l	; $028B06
 	addq.w #$8,a7	; $028B0C
 	move.w #$c7,-(a7)	; $028B0E
 	move.w #$136,-(a7)	; $028B12
 	move.w #$b2,-(a7)	; $028B16
 	move.w #$44,-(a7)	; $028B1A
 	pea.l -$d2(a6)	; $028B1E
-	jsr FUN_011624.l	; $028B22
+	jsr text_box.l	; $028B22
 	lea.l $c(a7),a7	; $028B28
 	bra.b L028B3E	; $028B2C
 L028B2E:
@@ -28373,11 +28373,11 @@ L028B3E:
 	add.l a0,d0	; $028B96
 	move.l d0,-(a7)	; $028B98
 	pea.l -$d2(a6)	; $028B9A
-	jsr FUN_00de30.l	; $028B9E
+	jsr strcpy.l	; $028B9E
 	addq.w #$8,a7	; $028BA4
 	pea.l L029719(pc)	; $028BA6
 	pea.l -$d2(a6)	; $028BAA
-	jsr FUN_00de3e.l	; $028BAE
+	jsr strcat.l	; $028BAE
 	addq.w #$8,a7	; $028BB4
 	move.w -$2(a6),d0	; $028BB6
 	muls.w #$a,d0	; $028BBA
@@ -28389,22 +28389,22 @@ L028B3E:
 	add.l a0,d1	; $028BD2
 	move.l d1,-(a7)	; $028BD4
 	pea.l -$f0(a6)	; $028BD6
-	jsr FUN_00de30.l	; $028BDA
+	jsr strcpy.l	; $028BDA
 	addq.w #$8,a7	; $028BE0
 	pea.l -$f0(a6)	; $028BE2
 	pea.l -$d2(a6)	; $028BE6
-	jsr FUN_00de3e.l	; $028BEA
+	jsr strcat.l	; $028BEA
 	addq.w #$8,a7	; $028BF0
 	pea.l L029722(pc)	; $028BF2
 	pea.l -$d2(a6)	; $028BF6
-	jsr FUN_00de3e.l	; $028BFA
+	jsr strcat.l	; $028BFA
 	addq.w #$8,a7	; $028C00
 	move.w #$c7,-(a7)	; $028C02
 	move.w #$136,-(a7)	; $028C06
 	move.w #$92,-(a7)	; $028C0A
 	move.w #$44,-(a7)	; $028C0E
 	pea.l -$d2(a6)	; $028C12
-	jsr FUN_011624.l	; $028C16
+	jsr text_box.l	; $028C16
 	lea.l $c(a7),a7	; $028C1C
 	bra.w L029368	; $028C20
 	move.w $ff0e80.l,d0	; $028C24
@@ -28434,11 +28434,11 @@ L028B3E:
 	add.l a0,d0	; $028C78
 	move.l d0,-(a7)	; $028C7A
 	pea.l -$d2(a6)	; $028C7C
-	jsr FUN_00de30.l	; $028C80
+	jsr strcpy.l	; $028C80
 	addq.w #$8,a7	; $028C86
 	pea.l L029724(pc)	; $028C88
 	pea.l -$d2(a6)	; $028C8C
-	jsr FUN_00de3e.l	; $028C90
+	jsr strcat.l	; $028C90
 	addq.w #$8,a7	; $028C96
 	move.w -$2(a6),d0	; $028C98
 	muls.w #$a,d0	; $028C9C
@@ -28450,22 +28450,22 @@ L028B3E:
 	add.l a0,d1	; $028CB4
 	move.l d1,-(a7)	; $028CB6
 	pea.l -$f0(a6)	; $028CB8
-	jsr FUN_00de30.l	; $028CBC
+	jsr strcpy.l	; $028CBC
 	addq.w #$8,a7	; $028CC2
 	pea.l -$f0(a6)	; $028CC4
 	pea.l -$d2(a6)	; $028CC8
-	jsr FUN_00de3e.l	; $028CCC
+	jsr strcat.l	; $028CCC
 	addq.w #$8,a7	; $028CD2
 	pea.l L02972E(pc)	; $028CD4
 	pea.l -$d2(a6)	; $028CD8
-	jsr FUN_00de3e.l	; $028CDC
+	jsr strcat.l	; $028CDC
 	addq.w #$8,a7	; $028CE2
 	move.w #$c7,-(a7)	; $028CE4
 	move.w #$136,-(a7)	; $028CE8
 	move.w #$92,-(a7)	; $028CEC
 	move.w #$44,-(a7)	; $028CF0
 	pea.l -$d2(a6)	; $028CF4
-	jsr FUN_011624.l	; $028CF8
+	jsr text_box.l	; $028CF8
 	lea.l $c(a7),a7	; $028CFE
 	bra.w L029368	; $028D02
 	move.w $ff0e80.l,d0	; $028D06
@@ -28495,11 +28495,11 @@ L028B3E:
 	add.l a0,d0	; $028D5A
 	move.l d0,-(a7)	; $028D5C
 	pea.l -$d2(a6)	; $028D5E
-	jsr FUN_00de30.l	; $028D62
+	jsr strcpy.l	; $028D62
 	addq.w #$8,a7	; $028D68
 	pea.l L029730(pc)	; $028D6A
 	pea.l -$d2(a6)	; $028D6E
-	jsr FUN_00de3e.l	; $028D72
+	jsr strcat.l	; $028D72
 	addq.w #$8,a7	; $028D78
 	move.w -$2(a6),d0	; $028D7A
 	muls.w #$a,d0	; $028D7E
@@ -28511,22 +28511,22 @@ L028B3E:
 	add.l a0,d1	; $028D96
 	move.l d1,-(a7)	; $028D98
 	pea.l -$f0(a6)	; $028D9A
-	jsr FUN_00de30.l	; $028D9E
+	jsr strcpy.l	; $028D9E
 	addq.w #$8,a7	; $028DA4
 	pea.l -$f0(a6)	; $028DA6
 	pea.l -$d2(a6)	; $028DAA
-	jsr FUN_00de3e.l	; $028DAE
+	jsr strcat.l	; $028DAE
 	addq.w #$8,a7	; $028DB4
 	pea.l L02973A(pc)	; $028DB6
 	pea.l -$d2(a6)	; $028DBA
-	jsr FUN_00de3e.l	; $028DBE
+	jsr strcat.l	; $028DBE
 	addq.w #$8,a7	; $028DC4
 	move.w #$c7,-(a7)	; $028DC6
 	move.w #$136,-(a7)	; $028DCA
 	move.w #$92,-(a7)	; $028DCE
 	move.w #$44,-(a7)	; $028DD2
 	pea.l -$d2(a6)	; $028DD6
-	jsr FUN_011624.l	; $028DDA
+	jsr text_box.l	; $028DDA
 	lea.l $c(a7),a7	; $028DE0
 	bra.w L029368	; $028DE4
 	move.w $ff0e80.l,d0	; $028DE8
@@ -28556,11 +28556,11 @@ L028B3E:
 	add.l a0,d0	; $028E3C
 	move.l d0,-(a7)	; $028E3E
 	pea.l -$d2(a6)	; $028E40
-	jsr FUN_00de30.l	; $028E44
+	jsr strcpy.l	; $028E44
 	addq.w #$8,a7	; $028E4A
 	pea.l L02973C(pc)	; $028E4C
 	pea.l -$d2(a6)	; $028E50
-	jsr FUN_00de3e.l	; $028E54
+	jsr strcat.l	; $028E54
 	addq.w #$8,a7	; $028E5A
 	move.w -$2(a6),d0	; $028E5C
 	muls.w #$a,d0	; $028E60
@@ -28572,22 +28572,22 @@ L028B3E:
 	add.l a0,d1	; $028E78
 	move.l d1,-(a7)	; $028E7A
 	pea.l -$f0(a6)	; $028E7C
-	jsr FUN_00de30.l	; $028E80
+	jsr strcpy.l	; $028E80
 	addq.w #$8,a7	; $028E86
 	pea.l -$f0(a6)	; $028E88
 	pea.l -$d2(a6)	; $028E8C
-	jsr FUN_00de3e.l	; $028E90
+	jsr strcat.l	; $028E90
 	addq.w #$8,a7	; $028E96
 	pea.l L029745(pc)	; $028E98
 	pea.l -$d2(a6)	; $028E9C
-	jsr FUN_00de3e.l	; $028EA0
+	jsr strcat.l	; $028EA0
 	addq.w #$8,a7	; $028EA6
 	move.w #$c7,-(a7)	; $028EA8
 	move.w #$136,-(a7)	; $028EAC
 	move.w #$92,-(a7)	; $028EB0
 	move.w #$44,-(a7)	; $028EB4
 	pea.l -$d2(a6)	; $028EB8
-	jsr FUN_011624.l	; $028EBC
+	jsr text_box.l	; $028EBC
 	lea.l $c(a7),a7	; $028EC2
 	bra.w L029368	; $028EC6
 	move.w $ff0e80.l,d0	; $028ECA
@@ -28632,7 +28632,7 @@ L028F26:
 	add.l a0,d0	; $028F3A
 	move.l d0,-(a7)	; $028F3C
 	pea.l -$d2(a6)	; $028F3E
-	jsr FUN_00de30.l	; $028F42
+	jsr strcpy.l	; $028F42
 	addq.w #$8,a7	; $028F48
 	bra.b L028F7A	; $028F4A
 L028F4C:
@@ -28644,24 +28644,24 @@ L028F4C:
 	add.l a0,d0	; $028F5A
 	move.l d0,-(a7)	; $028F5C
 	pea.l -$d2(a6)	; $028F5E
-	jsr FUN_00de30.l	; $028F62
+	jsr strcpy.l	; $028F62
 	addq.w #$8,a7	; $028F68
 	pea.l L029747(pc)	; $028F6A
 	pea.l -$d2(a6)	; $028F6E
-	jsr FUN_00de3e.l	; $028F72
+	jsr strcat.l	; $028F72
 	addq.w #$8,a7	; $028F78
 L028F7A:
 	tst.w d7	; $028F7A
 	beq.b L028F90	; $028F7C
 	pea.l L02974E(pc)	; $028F7E
 	pea.l -$d2(a6)	; $028F82
-	jsr FUN_00de3e.l	; $028F86
+	jsr strcat.l	; $028F86
 	addq.w #$8,a7	; $028F8C
 	bra.b L028FA0	; $028F8E
 L028F90:
 	pea.l L029757(pc)	; $028F90
 	pea.l -$d2(a6)	; $028F94
-	jsr FUN_00de3e.l	; $028F98
+	jsr strcat.l	; $028F98
 	addq.w #$8,a7	; $028F9E
 L028FA0:
 	move.w d5,d0	; $028FA0
@@ -28674,23 +28674,23 @@ L028FA0:
 	add.l a0,d1	; $028FBA
 	move.l d1,-(a7)	; $028FBC
 	pea.l -$f0(a6)	; $028FBE
-	jsr FUN_00de30.l	; $028FC2
+	jsr strcpy.l	; $028FC2
 	addq.w #$8,a7	; $028FC8
 	pea.l -$f0(a6)	; $028FCA
 	pea.l -$d2(a6)	; $028FCE
-	jsr FUN_00de3e.l	; $028FD2
+	jsr strcat.l	; $028FD2
 	addq.w #$8,a7	; $028FD8
 	tst.w d7	; $028FDA
 	beq.b L028FF0	; $028FDC
 	pea.l L029763(pc)	; $028FDE
 	pea.l -$d2(a6)	; $028FE2
-	jsr FUN_00de3e.l	; $028FE6
+	jsr strcat.l	; $028FE6
 	addq.w #$8,a7	; $028FEC
 	bra.b L029000	; $028FEE
 L028FF0:
 	pea.l L029765(pc)	; $028FF0
 	pea.l -$d2(a6)	; $028FF4
-	jsr FUN_00de3e.l	; $028FF8
+	jsr strcat.l	; $028FF8
 	addq.w #$8,a7	; $028FFE
 L029000:
 	move.w #$c7,-(a7)	; $029000
@@ -28698,7 +28698,7 @@ L029000:
 	move.w #$92,-(a7)	; $029008
 	move.w #$44,-(a7)	; $02900C
 	pea.l -$d2(a6)	; $029010
-	jsr FUN_011624.l	; $029014
+	jsr text_box.l	; $029014
 	lea.l $c(a7),a7	; $02901A
 	tst.w d7	; $02901E
 	bne.w L029368	; $029020
@@ -28715,7 +28715,7 @@ L029000:
 	move.w #$a2,-(a7)	; $029048
 	move.w #$4c,-(a7)	; $02904C
 	pea.l L029767(pc)	; $029050
-	jsr FUN_011624.l	; $029054
+	jsr text_box.l	; $029054
 	lea.l $c(a7),a7	; $02905A
 	bra.w L029368	; $02905E
 L029062:
@@ -28752,7 +28752,7 @@ L029068:
 	add.l a0,d0	; $0290B8
 	move.l d0,-(a7)	; $0290BA
 	pea.l -$d2(a6)	; $0290BC
-	jsr FUN_00de30.l	; $0290C0
+	jsr strcpy.l	; $0290C0
 	addq.w #$8,a7	; $0290C6
 	move.w a4,d0	; $0290C8
 	beq.b L0290D0	; $0290CA
@@ -28833,7 +28833,7 @@ L029178:
 	muls.w #$34,d0	; $0291CE
 	lea.l $ff02de.l,a0	; $0291D2
 	move.w (a0,d0.l),-(a7)	; $0291D8
-	jsr FUN_011f3a.l	; $0291DC
+	jsr num_to_str.l	; $0291DC
 	addq.w #$8,a7	; $0291E2
 	move.l d0,-(a7)	; $0291E4
 	move.w #$15,-(a7)	; $0291E6
@@ -28866,11 +28866,11 @@ L029178:
 	swap d0	; $02924C
 	addq.w #$1,d0	; $02924E
 	move.w d0,-(a7)	; $029250
-	jsr FUN_011f3a.l	; $029252
+	jsr num_to_str.l	; $029252
 	addq.w #$8,a7	; $029258
 	move.l d0,-(a7)	; $02925A
 	pea.l -$d2(a6)	; $02925C
-	jsr FUN_00de30.l	; $029260
+	jsr strcpy.l	; $029260
 	addq.w #$8,a7	; $029266
 	cmp.w #$b,d7	; $029268
 	blt.b L029274	; $02926C
@@ -28879,13 +28879,13 @@ L029178:
 L029274:
 	pea.l L029788(pc)	; $029274
 	pea.l -$d2(a6)	; $029278
-	jsr FUN_00de3e.l	; $02927C
+	jsr strcat.l	; $02927C
 	addq.w #$8,a7	; $029282
 	bra.b L029296	; $029284
 L029286:
 	pea.l L02978D(pc)	; $029286
 	pea.l -$d2(a6)	; $02928A
-	jsr FUN_00de3e.l	; $02928E
+	jsr strcat.l	; $02928E
 	addq.w #$8,a7	; $029294
 L029296:
 	move.w #$a000,-(a7)	; $029296
@@ -29582,7 +29582,7 @@ L029B4E:
 	jsr FUN_026b58.l	; $029B9E
 	lea.l $a(a7),a7	; $029BA4
 	move.w #$8,-(a7)	; $029BA8
-	jsr FUN_0173ec.l	; $029BAC
+	jsr jingle_play.l	; $029BAC
 	addq.w #$2,a7	; $029BB2
 	bra.w L029FBA	; $029BB4
 	clr.w -(a7)	; $029BB8
@@ -29665,7 +29665,7 @@ L029C36:
 	move.w d1,d0	; $029CA2
 	bra.w L029DB4	; $029CA4
 	move.w #$8,-(a7)	; $029CA8
-	jsr FUN_0173ec.l	; $029CAC
+	jsr jingle_play.l	; $029CAC
 	addq.w #$2,a7	; $029CB2
 	bra.w L029DC6	; $029CB4
 	move.w #$ff,-(a7)	; $029CB8
@@ -29767,7 +29767,7 @@ L029E0E:
 	cmpi.w #$6,-$12(a6)	; $029E12
 	blt.b L029DCE	; $029E18
 	move.w #$8,-(a7)	; $029E1A
-	jsr FUN_0173ec.l	; $029E1E
+	jsr jingle_play.l	; $029E1E
 	addq.w #$2,a7	; $029E24
 	bra.w L029FBA	; $029E26
 	cmpi.w #$ffff,$a(a6)	; $029E2A
@@ -30025,7 +30025,7 @@ L029FBA:
 	bra.b L02A1D6	; $02A1AA
 L02A1AC:
 	move.w #$8,-(a7)	; $02A1AC
-	jsr FUN_0173ec.l	; $02A1B0
+	jsr jingle_play.l	; $02A1B0
 	addq.w #$2,a7	; $02A1B6
 	bra.b L02A1DE	; $02A1B8
 L02A1BA:
@@ -30427,7 +30427,7 @@ L02A72A:
 	jsr FUN_026b58.l	; $02A750
 	lea.l $a(a7),a7	; $02A756
 	move.w #$8,-(a7)	; $02A75A
-	jsr FUN_0173ec.l	; $02A75E
+	jsr jingle_play.l	; $02A75E
 	addq.w #$2,a7	; $02A764
 L02A766:
 	bra.w L02AD60	; $02A766
@@ -30684,7 +30684,7 @@ L02A9BC:
 	jsr FUN_026b58.l	; $02AABA
 	lea.l $a(a7),a7	; $02AAC0
 	move.w #$8,-(a7)	; $02AAC4
-	jsr FUN_0173ec.l	; $02AAC8
+	jsr jingle_play.l	; $02AAC8
 	addq.w #$2,a7	; $02AACE
 	clr.w -$14(a6)	; $02AAD0
 L02AAD4:
@@ -30828,7 +30828,7 @@ L02AC2E:
 	jsr FUN_026b58.l	; $02ACD8
 	lea.l $a(a7),a7	; $02ACDE
 	move.w #$8,-(a7)	; $02ACE2
-	jsr FUN_0173ec.l	; $02ACE6
+	jsr jingle_play.l	; $02ACE6
 	addq.w #$2,a7	; $02ACEC
 	clr.w -(a7)	; $02ACEE
 	move.w -$10(a6),-(a7)	; $02ACF0
@@ -32595,6 +32595,7 @@ L02C4CC:
 	lea.l $ff02de.l,a0	; $02C4D4
 	move.w d0,(a0,d1.l)	; $02C4DA
 	bra.w L02C8AA	; $02C4DE
+xp_grant:
 	move.w $8(a6),d0	; $02C4E2
 	muls.w #$34,d0	; $02C4E6
 	lea.l $ff02b4.l,a0	; $02C4EA
@@ -32637,7 +32638,7 @@ L02C558:
 	muls.w #$34,d0	; $02C56E
 	lea.l $ff02ce.l,a0	; $02C572
 	move.w (a0,d0.l),-(a7)	; $02C578
-	jsr FUN_02f030.l	; $02C57C
+	jsr xp_to_level.l	; $02C57C
 	addq.w #$2,a7	; $02C582
 	move.w d0,-$a(a6)	; $02C584
 	move.w $8(a6),d0	; $02C588
@@ -32659,14 +32660,14 @@ L02C558:
 	andi.w #$ff0f,(a0)	; $02C5C4
 	or.w d0,(a0)	; $02C5C8
 	move.w -$a(a6),-(a7)	; $02C5CA
-	jsr FUN_031946.l	; $02C5CE
+	jsr max_power_for_level.l	; $02C5CE
 	addq.w #$2,a7	; $02C5D4
 	move.w $8(a6),d1	; $02C5D6
 	muls.w #$34,d1	; $02C5DA
 	lea.l $ff02d6.l,a0	; $02C5DE
 	move.w d0,(a0,d1.l)	; $02C5E4
 	move.w -$a(a6),-(a7)	; $02C5E8
-	jsr FUN_031958.l	; $02C5EC
+	jsr max_hp_for_level.l	; $02C5EC
 	addq.w #$2,a7	; $02C5F2
 	move.w $8(a6),d1	; $02C5F4
 	muls.w #$34,d1	; $02C5F8
@@ -32684,7 +32685,7 @@ L02C558:
 	jsr FUN_026b58.l	; $02C626
 	lea.l $a(a7),a7	; $02C62C
 	move.w #$8,-(a7)	; $02C630
-	jsr FUN_0173ec.l	; $02C634
+	jsr jingle_play.l	; $02C634
 	addq.w #$2,a7	; $02C63A
 L02C63C:
 	bra.w L02C8AA	; $02C63C
@@ -32707,7 +32708,7 @@ L02C644:
 	lsr.w #$4,d0	; $02C67A
 	and.w #$f,d0	; $02C67C
 	move.w d0,-(a7)	; $02C680
-	jsr FUN_031958.l	; $02C682
+	jsr max_hp_for_level.l	; $02C682
 	addq.w #$2,a7	; $02C688
 	move.w -$8(a6),d1	; $02C68A
 	ext.l d1	; $02C68E
@@ -32806,7 +32807,7 @@ L02C76C:
 	lsr.w #$4,d1	; $02C7FA
 	and.w #$f,d1	; $02C7FC
 	move.w d1,-(a7)	; $02C800
-	jsr FUN_031958.l	; $02C802
+	jsr max_hp_for_level.l	; $02C802
 	addq.w #$2,a7	; $02C808
 	move.w -$a(a6),d1	; $02C80A
 	muls.w #$34,d1	; $02C80E
@@ -32819,7 +32820,7 @@ L02C76C:
 	lsr.w #$4,d1	; $02C82E
 	and.w #$f,d1	; $02C830
 	move.w d1,-(a7)	; $02C834
-	jsr FUN_031946.l	; $02C836
+	jsr max_power_for_level.l	; $02C836
 	addq.w #$2,a7	; $02C83C
 	move.w -$a(a6),d1	; $02C83E
 	muls.w #$34,d1	; $02C842
@@ -32840,7 +32841,7 @@ L02C870:
 	tst.w -$a(a6)	; $02C87A
 	beq.b L02C88C	; $02C87E
 	move.w #$8,-(a7)	; $02C880
-	jsr FUN_0173ec.l	; $02C884
+	jsr jingle_play.l	; $02C884
 	addq.w #$2,a7	; $02C88A
 L02C88C:
 	bra.b L02C8AA	; $02C88C
@@ -34597,7 +34598,7 @@ L02DE8A:
 	jsr FUN_026b58.l	; $02DF5A
 	lea.l $a(a7),a7	; $02DF60
 	move.w #$8,-(a7)	; $02DF64
-	jsr FUN_0173ec.l	; $02DF68
+	jsr jingle_play.l	; $02DF68
 	addq.w #$2,a7	; $02DF6E
 	move.w #$e5,-(a7)	; $02DF70
 	jsr FUN_02d50c(pc)	; $02DF74
@@ -35196,7 +35197,7 @@ L02E7C2:
 	addq.w #$8,a7	; $02E7EA
 L02E7EC:
 	move.w #$8,-(a7)	; $02E7EC
-	jsr FUN_0173ec.l	; $02E7F0
+	jsr jingle_play.l	; $02E7F0
 	addq.w #$2,a7	; $02E7F6
 	bra.b L02E81C	; $02E7F8
 L02E7FA:
@@ -35853,7 +35854,7 @@ L02EF6C:
 	lea.l $10(a7),a7	; $02F028
 	bra.w L02EF64	; $02F02C
 	; code $02F030-$02F059
-FUN_02f030:
+xp_to_level:
 	link.w a6,#$fffe	; $02F030
 	clr.w -$2(a6)	; $02F034
 L02F038:
@@ -36683,7 +36684,7 @@ L02FBCC:
 	lea.l $ff02ce.l,a0	; $02FBE8
 	move.w -$8(a6),(a0,d0.l)	; $02FBEE
 	move.w -$8(a6),-(a7)	; $02FBF4
-	jsr FUN_02f030(pc)	; $02FBF8
+	jsr xp_to_level(pc)	; $02FBF8
 	addq.w #$2,a7	; $02FBFC
 	move.w d0,-$a(a6)	; $02FBFE
 	move.w -$a(a6),d0	; $02FC02
@@ -36697,14 +36698,14 @@ L02FBCC:
 	andi.w #$ff0f,(a0)	; $02FC1E
 	or.w d0,(a0)	; $02FC22
 	move.w -$a(a6),-(a7)	; $02FC24
-	jsr FUN_031958.l	; $02FC28
+	jsr max_hp_for_level.l	; $02FC28
 	addq.w #$2,a7	; $02FC2E
 	move.w -$c(a6),d1	; $02FC30
 	mulu.w #$34,d1	; $02FC34
 	lea.l $ff02d4.l,a0	; $02FC38
 	move.w d0,(a0,d1.l)	; $02FC3E
 	move.w -$a(a6),-(a7)	; $02FC42
-	jsr FUN_031946.l	; $02FC46
+	jsr max_power_for_level.l	; $02FC46
 	addq.w #$2,a7	; $02FC4C
 	move.w -$c(a6),d1	; $02FC4E
 	mulu.w #$34,d1	; $02FC52
@@ -38090,49 +38091,49 @@ L030EAC:
 	move.w #$a,-(a7)	; $030EC2
 	pea.l -$48(a6)	; $030EC6
 	move.w -$4e(a6),-(a7)	; $030ECA
-	jsr FUN_011f3a.l	; $030ECE
+	jsr num_to_str.l	; $030ECE
 	addq.w #$8,a7	; $030ED4
 	move.l d0,-(a7)	; $030ED6
 	pea.l -$3e(a6)	; $030ED8
-	jsr FUN_00de30.l	; $030EDC
+	jsr strcpy.l	; $030EDC
 	addq.w #$8,a7	; $030EE2
 	cmpi.w #$1,-$4e(a6)	; $030EE4
 	bne.b L030EFE	; $030EEA
 	pea.l L0317F5(pc)	; $030EEC
 	pea.l -$3e(a6)	; $030EF0
-	jsr FUN_00de3e.l	; $030EF4
+	jsr strcat.l	; $030EF4
 	addq.w #$8,a7	; $030EFA
 	bra.b L030F0E	; $030EFC
 L030EFE:
 	pea.l L0317FD(pc)	; $030EFE
 	pea.l -$3e(a6)	; $030F02
-	jsr FUN_00de3e.l	; $030F06
+	jsr strcat.l	; $030F06
 	addq.w #$8,a7	; $030F0C
 L030F0E:
 	pea.l L031805(pc)	; $030F0E
 	pea.l -$3e(a6)	; $030F12
-	jsr FUN_00de3e.l	; $030F16
+	jsr strcat.l	; $030F16
 	addq.w #$8,a7	; $030F1C
 	move.w #$a,-(a7)	; $030F1E
 	pea.l -$48(a6)	; $030F22
 	move.w -$4c(a6),-(a7)	; $030F26
-	jsr FUN_011f3a.l	; $030F2A
+	jsr num_to_str.l	; $030F2A
 	addq.w #$8,a7	; $030F30
 	move.l d0,-(a7)	; $030F32
 	pea.l -$3e(a6)	; $030F34
-	jsr FUN_00de3e.l	; $030F38
+	jsr strcat.l	; $030F38
 	addq.w #$8,a7	; $030F3E
 	cmpi.w #$1,-$4c(a6)	; $030F40
 	ble.b L030F5A	; $030F46
 	pea.l L03180A(pc)	; $030F48
 	pea.l -$3e(a6)	; $030F4C
-	jsr FUN_00de3e.l	; $030F50
+	jsr strcat.l	; $030F50
 	addq.w #$8,a7	; $030F56
 	bra.b L030F6A	; $030F58
 L030F5A:
 	pea.l L031813(pc)	; $030F5A
 	pea.l -$3e(a6)	; $030F5E
-	jsr FUN_00de3e.l	; $030F62
+	jsr strcat.l	; $030F62
 	addq.w #$8,a7	; $030F68
 L030F6A:
 	move.w #$a000,-(a7)	; $030F6A
@@ -38171,22 +38172,22 @@ L030FCC:
 	move.w #$a,-(a7)	; $030FDE
 	pea.l -$48(a6)	; $030FE2
 	move.w -$52(a6),-(a7)	; $030FE6
-	jsr FUN_011f3a.l	; $030FEA
+	jsr num_to_str.l	; $030FEA
 	addq.w #$8,a7	; $030FF0
 	move.l d0,-(a7)	; $030FF2
 	pea.l -$3e(a6)	; $030FF4
-	jsr FUN_00de30.l	; $030FF8
+	jsr strcpy.l	; $030FF8
 	addq.w #$8,a7	; $030FFE
 	bra.b L031012	; $031000
 L031002:
 	pea.l L031824(pc)	; $031002
 	pea.l -$3e(a6)	; $031006
-	jsr FUN_00de30.l	; $03100A
+	jsr strcpy.l	; $03100A
 	addq.w #$8,a7	; $031010
 L031012:
 	pea.l L031827(pc)	; $031012
 	pea.l -$3e(a6)	; $031016
-	jsr FUN_00de3e.l	; $03101A
+	jsr strcat.l	; $03101A
 	addq.w #$8,a7	; $031020
 	cmpi.w #$1,-$52(a6)	; $031022
 	bgt.b L031030	; $031028
@@ -38195,7 +38196,7 @@ L031012:
 L031030:
 	pea.l L03182E(pc)	; $031030
 	pea.l -$3e(a6)	; $031034
-	jsr FUN_00de3e.l	; $031038
+	jsr strcat.l	; $031038
 	addq.w #$8,a7	; $03103E
 L031040:
 	move.w #$a000,-(a7)	; $031040
@@ -38219,7 +38220,7 @@ L031040:
 	beq.w L0311F4	; $031084
 	pea.l L031830(pc)	; $031088
 	pea.l -$3e(a6)	; $03108C
-	jsr FUN_00de30.l	; $031090
+	jsr strcpy.l	; $031090
 	addq.w #$8,a7	; $031096
 	move.w #$a,-(a7)	; $031098
 	pea.l -$48(a6)	; $03109C
@@ -38230,15 +38231,15 @@ L031040:
 	ext.l d1	; $0310B4
 	divs.w #$a,d1	; $0310B6
 	move.w d1,-(a7)	; $0310BA
-	jsr FUN_011f3a.l	; $0310BC
+	jsr num_to_str.l	; $0310BC
 	addq.w #$8,a7	; $0310C2
 	move.l d0,-(a7)	; $0310C4
 	pea.l -$3e(a6)	; $0310C6
-	jsr FUN_00de3e.l	; $0310CA
+	jsr strcat.l	; $0310CA
 	addq.w #$8,a7	; $0310D0
 	pea.l L03183E(pc)	; $0310D2
 	pea.l -$3e(a6)	; $0310D6
-	jsr FUN_00de3e.l	; $0310DA
+	jsr strcat.l	; $0310DA
 	addq.w #$8,a7	; $0310E0
 	move.w #$a,-(a7)	; $0310E2
 	pea.l -$48(a6)	; $0310E6
@@ -38250,15 +38251,15 @@ L031040:
 	divs.w #$a,d1	; $031100
 	swap d1	; $031104
 	move.w d1,-(a7)	; $031106
-	jsr FUN_011f3a.l	; $031108
+	jsr num_to_str.l	; $031108
 	addq.w #$8,a7	; $03110E
 	move.l d0,-(a7)	; $031110
 	pea.l -$3e(a6)	; $031112
-	jsr FUN_00de3e.l	; $031116
+	jsr strcat.l	; $031116
 	addq.w #$8,a7	; $03111C
 	pea.l L031840(pc)	; $03111E
 	pea.l -$3e(a6)	; $031122
-	jsr FUN_00de3e.l	; $031126
+	jsr strcat.l	; $031126
 	addq.w #$8,a7	; $03112C
 	move.w #$a,-(a7)	; $03112E
 	pea.l -$48(a6)	; $031132
@@ -38269,15 +38270,15 @@ L031040:
 	ext.l d1	; $03114A
 	divs.w #$a,d1	; $03114C
 	move.w d1,-(a7)	; $031150
-	jsr FUN_011f3a.l	; $031152
+	jsr num_to_str.l	; $031152
 	addq.w #$8,a7	; $031158
 	move.l d0,-(a7)	; $03115A
 	pea.l -$3e(a6)	; $03115C
-	jsr FUN_00de3e.l	; $031160
+	jsr strcat.l	; $031160
 	addq.w #$8,a7	; $031166
 	pea.l L031847(pc)	; $031168
 	pea.l -$3e(a6)	; $03116C
-	jsr FUN_00de3e.l	; $031170
+	jsr strcat.l	; $031170
 	addq.w #$8,a7	; $031176
 	move.w #$a,-(a7)	; $031178
 	pea.l -$48(a6)	; $03117C
@@ -38289,15 +38290,15 @@ L031040:
 	divs.w #$a,d1	; $031196
 	swap d1	; $03119A
 	move.w d1,-(a7)	; $03119C
-	jsr FUN_011f3a.l	; $03119E
+	jsr num_to_str.l	; $03119E
 	addq.w #$8,a7	; $0311A4
 	move.l d0,-(a7)	; $0311A6
 	pea.l -$3e(a6)	; $0311A8
-	jsr FUN_00de3e.l	; $0311AC
+	jsr strcat.l	; $0311AC
 	addq.w #$8,a7	; $0311B2
 	pea.l L031849(pc)	; $0311B4
 	pea.l -$3e(a6)	; $0311B8
-	jsr FUN_00de3e.l	; $0311BC
+	jsr strcat.l	; $0311BC
 	addq.w #$8,a7	; $0311C2
 	move.w #$a000,-(a7)	; $0311C4
 	pea.l -$3e(a6)	; $0311C8
@@ -38320,22 +38321,22 @@ L0311F8:
 	move.w #$a,-(a7)	; $0311FE
 	pea.l -$48(a6)	; $031202
 	move.w -$50(a6),-(a7)	; $031206
-	jsr FUN_011f3a.l	; $03120A
+	jsr num_to_str.l	; $03120A
 	addq.w #$8,a7	; $031210
 	move.l d0,-(a7)	; $031212
 	pea.l -$3e(a6)	; $031214
-	jsr FUN_00de30.l	; $031218
+	jsr strcpy.l	; $031218
 	addq.w #$8,a7	; $03121E
 	bra.b L031232	; $031220
 L031222:
 	pea.l L03184B(pc)	; $031222
 	pea.l -$3e(a6)	; $031226
-	jsr FUN_00de30.l	; $03122A
+	jsr strcpy.l	; $03122A
 	addq.w #$8,a7	; $031230
 L031232:
 	pea.l L03184E(pc)	; $031232
 	pea.l -$3e(a6)	; $031236
-	jsr FUN_00de3e.l	; $03123A
+	jsr strcat.l	; $03123A
 	addq.w #$8,a7	; $031240
 	cmpi.w #$1,-$50(a6)	; $031242
 	bgt.b L031250	; $031248
@@ -38344,7 +38345,7 @@ L031232:
 L031250:
 	pea.l L031854(pc)	; $031250
 	pea.l -$3e(a6)	; $031254
-	jsr FUN_00de3e.l	; $031258
+	jsr strcat.l	; $031258
 	addq.w #$8,a7	; $03125E
 L031260:
 	move.w #$a000,-(a7)	; $031260
@@ -38486,15 +38487,15 @@ L0313FE:
 	move.w -$56(a6),d0	; $031424
 	add.w -$54(a6),d0	; $031428
 	move.w d0,-(a7)	; $03142C
-	jsr FUN_011f3a.l	; $03142E
+	jsr num_to_str.l	; $03142E
 	addq.w #$8,a7	; $031434
 	move.l d0,-(a7)	; $031436
 	pea.l -$3e(a6)	; $031438
-	jsr FUN_00de30.l	; $03143C
+	jsr strcpy.l	; $03143C
 	addq.w #$8,a7	; $031442
 	pea.l L031856(pc)	; $031444
 	pea.l -$3e(a6)	; $031448
-	jsr FUN_00de3e.l	; $03144C
+	jsr strcat.l	; $03144C
 	addq.w #$8,a7	; $031452
 	move.w -$56(a6),d0	; $031454
 	add.w -$54(a6),d0	; $031458
@@ -38502,51 +38503,51 @@ L0313FE:
 	beq.b L031472	; $031460
 	pea.l L03185C(pc)	; $031462
 	pea.l -$3e(a6)	; $031466
-	jsr FUN_00de3e.l	; $03146A
+	jsr strcat.l	; $03146A
 	addq.w #$8,a7	; $031470
 L031472:
 	pea.l L03185E(pc)	; $031472
 	pea.l -$3e(a6)	; $031476
-	jsr FUN_00de3e.l	; $03147A
+	jsr strcat.l	; $03147A
 	addq.w #$8,a7	; $031480
 	move.w #$a,-(a7)	; $031482
 	pea.l -$48(a6)	; $031486
 	move.w -$56(a6),-(a7)	; $03148A
-	jsr FUN_011f3a.l	; $03148E
+	jsr num_to_str.l	; $03148E
 	addq.w #$8,a7	; $031494
 	move.l d0,-(a7)	; $031496
 	pea.l -$3e(a6)	; $031498
-	jsr FUN_00de3e.l	; $03149C
+	jsr strcat.l	; $03149C
 	addq.w #$8,a7	; $0314A2
 	pea.l L031860(pc)	; $0314A4
 	pea.l -$3e(a6)	; $0314A8
-	jsr FUN_00de3e.l	; $0314AC
+	jsr strcat.l	; $0314AC
 	addq.w #$8,a7	; $0314B2
 	move.w #$a,-(a7)	; $0314B4
 	pea.l -$48(a6)	; $0314B8
 	move.w -$54(a6),-(a7)	; $0314BC
-	jsr FUN_011f3a.l	; $0314C0
+	jsr num_to_str.l	; $0314C0
 	addq.w #$8,a7	; $0314C6
 	move.l d0,-(a7)	; $0314C8
 	pea.l -$3e(a6)	; $0314CA
-	jsr FUN_00de3e.l	; $0314CE
+	jsr strcat.l	; $0314CE
 	addq.w #$8,a7	; $0314D4
 	pea.l L031866(pc)	; $0314D6
 	pea.l -$3e(a6)	; $0314DA
-	jsr FUN_00de3e.l	; $0314DE
+	jsr strcat.l	; $0314DE
 	addq.w #$8,a7	; $0314E4
 	move.w #$a,-(a7)	; $0314E6
 	pea.l -$48(a6)	; $0314EA
 	move.w -$58(a6),-(a7)	; $0314EE
-	jsr FUN_011f3a.l	; $0314F2
+	jsr num_to_str.l	; $0314F2
 	addq.w #$8,a7	; $0314F8
 	move.l d0,-(a7)	; $0314FA
 	pea.l -$3e(a6)	; $0314FC
-	jsr FUN_00de3e.l	; $031500
+	jsr strcat.l	; $031500
 	addq.w #$8,a7	; $031506
 	pea.l L03186D(pc)	; $031508
 	pea.l -$3e(a6)	; $03150C
-	jsr FUN_00de3e.l	; $031510
+	jsr strcat.l	; $031510
 	addq.w #$8,a7	; $031516
 	move.w #$a000,-(a7)	; $031518
 	pea.l -$3e(a6)	; $03151C
@@ -38585,15 +38586,15 @@ L03157A:
 	move.w -$5a(a6),d0	; $03158E
 	add.w -$5c(a6),d0	; $031592
 	move.w d0,-(a7)	; $031596
-	jsr FUN_011f3a.l	; $031598
+	jsr num_to_str.l	; $031598
 	addq.w #$8,a7	; $03159E
 	move.l d0,-(a7)	; $0315A0
 	pea.l -$3e(a6)	; $0315A2
-	jsr FUN_00de30.l	; $0315A6
+	jsr strcpy.l	; $0315A6
 	addq.w #$8,a7	; $0315AC
 	pea.l L03187C(pc)	; $0315AE
 	pea.l -$3e(a6)	; $0315B2
-	jsr FUN_00de3e.l	; $0315B6
+	jsr strcat.l	; $0315B6
 	addq.w #$8,a7	; $0315BC
 	move.w -$5a(a6),d0	; $0315BE
 	add.w -$5c(a6),d0	; $0315C2
@@ -38601,51 +38602,51 @@ L03157A:
 	beq.b L0315DC	; $0315CA
 	pea.l L031883(pc)	; $0315CC
 	pea.l -$3e(a6)	; $0315D0
-	jsr FUN_00de3e.l	; $0315D4
+	jsr strcat.l	; $0315D4
 	addq.w #$8,a7	; $0315DA
 L0315DC:
 	pea.l L031885(pc)	; $0315DC
 	pea.l -$3e(a6)	; $0315E0
-	jsr FUN_00de3e.l	; $0315E4
+	jsr strcat.l	; $0315E4
 	addq.w #$8,a7	; $0315EA
 	move.w #$a,-(a7)	; $0315EC
 	pea.l -$48(a6)	; $0315F0
 	move.w -$5a(a6),-(a7)	; $0315F4
-	jsr FUN_011f3a.l	; $0315F8
+	jsr num_to_str.l	; $0315F8
 	addq.w #$8,a7	; $0315FE
 	move.l d0,-(a7)	; $031600
 	pea.l -$3e(a6)	; $031602
-	jsr FUN_00de3e.l	; $031606
+	jsr strcat.l	; $031606
 	addq.w #$8,a7	; $03160C
 	pea.l L031887(pc)	; $03160E
 	pea.l -$3e(a6)	; $031612
-	jsr FUN_00de3e.l	; $031616
+	jsr strcat.l	; $031616
 	addq.w #$8,a7	; $03161C
 	move.w #$a,-(a7)	; $03161E
 	pea.l -$48(a6)	; $031622
 	move.w -$5c(a6),-(a7)	; $031626
-	jsr FUN_011f3a.l	; $03162A
+	jsr num_to_str.l	; $03162A
 	addq.w #$8,a7	; $031630
 	move.l d0,-(a7)	; $031632
 	pea.l -$3e(a6)	; $031634
-	jsr FUN_00de3e.l	; $031638
+	jsr strcat.l	; $031638
 	addq.w #$8,a7	; $03163E
 	pea.l L03188D(pc)	; $031640
 	pea.l -$3e(a6)	; $031644
-	jsr FUN_00de3e.l	; $031648
+	jsr strcat.l	; $031648
 	addq.w #$8,a7	; $03164E
 	move.w #$a,-(a7)	; $031650
 	pea.l -$48(a6)	; $031654
 	move.w -$5e(a6),-(a7)	; $031658
-	jsr FUN_011f3a.l	; $03165C
+	jsr num_to_str.l	; $03165C
 	addq.w #$8,a7	; $031662
 	move.l d0,-(a7)	; $031664
 	pea.l -$3e(a6)	; $031666
-	jsr FUN_00de3e.l	; $03166A
+	jsr strcat.l	; $03166A
 	addq.w #$8,a7	; $031670
 	pea.l L031894(pc)	; $031672
 	pea.l -$3e(a6)	; $031676
-	jsr FUN_00de3e.l	; $03167A
+	jsr strcat.l	; $03167A
 	addq.w #$8,a7	; $031680
 	move.w #$a000,-(a7)	; $031682
 	pea.l -$3e(a6)	; $031686
@@ -38682,39 +38683,39 @@ L0316E4:
 	move.w #$a,-(a7)	; $0316F0
 	pea.l -$48(a6)	; $0316F4
 	move.w -$60(a6),-(a7)	; $0316F8
-	jsr FUN_011f3a.l	; $0316FC
+	jsr num_to_str.l	; $0316FC
 	addq.w #$8,a7	; $031702
 	move.l d0,-(a7)	; $031704
 	pea.l -$3e(a6)	; $031706
-	jsr FUN_00de30.l	; $03170A
+	jsr strcpy.l	; $03170A
 	addq.w #$8,a7	; $031710
 	pea.l L0318A4(pc)	; $031712
 	pea.l -$3e(a6)	; $031716
-	jsr FUN_00de3e.l	; $03171A
+	jsr strcat.l	; $03171A
 	addq.w #$8,a7	; $031720
 	cmpi.w #$1,-$60(a6)	; $031722
 	beq.b L03173A	; $031728
 	pea.l L0318AF(pc)	; $03172A
 	pea.l -$3e(a6)	; $03172E
-	jsr FUN_00de3e.l	; $031732
+	jsr strcat.l	; $031732
 	addq.w #$8,a7	; $031738
 L03173A:
 	pea.l L0318B1(pc)	; $03173A
 	pea.l -$3e(a6)	; $03173E
-	jsr FUN_00de3e.l	; $031742
+	jsr strcat.l	; $031742
 	addq.w #$8,a7	; $031748
 	move.w #$a,-(a7)	; $03174A
 	pea.l -$48(a6)	; $03174E
 	move.w -$62(a6),-(a7)	; $031752
-	jsr FUN_011f3a.l	; $031756
+	jsr num_to_str.l	; $031756
 	addq.w #$8,a7	; $03175C
 	move.l d0,-(a7)	; $03175E
 	pea.l -$3e(a6)	; $031760
-	jsr FUN_00de3e.l	; $031764
+	jsr strcat.l	; $031764
 	addq.w #$8,a7	; $03176A
 	pea.l L0318B4(pc)	; $03176C
 	pea.l -$3e(a6)	; $031770
-	jsr FUN_00de3e.l	; $031774
+	jsr strcat.l	; $031774
 	addq.w #$8,a7	; $03177A
 	move.w #$a000,-(a7)	; $03177C
 	pea.l -$3e(a6)	; $031780
@@ -38898,7 +38899,7 @@ L03192E:
 	unlk a6	; $031942
 	rts	; $031944
 	; code $031946-$031957
-FUN_031946:
+max_power_for_level:
 	link.w a6,#$0	; $031946
 	move.w $8(a6),d0	; $03194A
 	addq.w #$1,d0	; $03194E
@@ -38906,7 +38907,7 @@ FUN_031946:
 	unlk a6	; $031954
 	rts	; $031956
 	; code $031958-$031997
-FUN_031958:
+max_hp_for_level:
 	link.w a6,#$0	; $031958
 	move.w $8(a6),d0	; $03195C
 	muls.w #$f,d0	; $031960
@@ -40505,7 +40506,7 @@ L032BD4:
 	add.l a0,d0	; $032BEA
 	move.l d0,-(a7)	; $032BEC
 	move.w d7,-(a7)	; $032BEE
-	jsr FUN_01e3b0.l	; $032BF0
+	jsr queue_push.l	; $032BF0
 	addq.w #$6,a7	; $032BF6
 	bra.b L032C00	; $032BF8
 L032BFA:
@@ -43819,7 +43820,7 @@ L035984:
 FUN_03599c:
 	link.w a6,#$ffc4	; $03599C
 	move.w #$14,-(a7)	; $0359A0
-	jsr FUN_0173ec.l	; $0359A4
+	jsr jingle_play.l	; $0359A4
 	addq.w #$2,a7	; $0359AA
 	cmpi.w #$ff,$8(a6)	; $0359AC
 	beq.b L0359E8	; $0359B2
@@ -44776,7 +44777,7 @@ L0367BE:
 	tst.w -$6(a6)	; $0367CA
 	bne.w L0368E0	; $0367CE
 	move.w #$10,-(a7)	; $0367D2
-	jsr FUN_0173ec.l	; $0367D6
+	jsr jingle_play.l	; $0367D6
 	addq.w #$2,a7	; $0367DC
 	cmpi.w #$fb,-$4(a6)	; $0367DE
 	beq.w L0368A2	; $0367E4
@@ -49406,7 +49407,7 @@ L03A626:
 	unlk a6	; $03A62A
 	rts	; $03A62C
 	; code $03A62E-$03AAC3
-FUN_03a62e:
+attack_dispatch:
 	link.w a6,#$ffe0	; $03A62E
 	clr.w -$1a(a6)	; $03A632
 	move.w $8(a6),d0	; $03A636
@@ -49546,7 +49547,7 @@ L03A832:
 	move.w -$a(a6),-(a7)	; $03A836
 	movea.l -$4(a6),a0	; $03A83A
 	move.w $22(a0),-(a7)	; $03A83E
-	jsr FUN_03b1ee(pc)	; $03A842
+	jsr damage_calc(pc)	; $03A842
 	addq.w #$6,a7	; $03A846
 	bra.w L03A90E	; $03A848
 L03A84C:
@@ -49785,7 +49786,7 @@ L03AB28:
 	addq.w #$4,a7	; $03AB36
 L03AB38:
 	move.w #$14,-(a7)	; $03AB38
-	jsr FUN_0173ec.l	; $03AB3C
+	jsr jingle_play.l	; $03AB3C
 	addq.w #$2,a7	; $03AB42
 	move.w #$4,$ff012e.l	; $03AB44
 	move.w #$ffff,-(a7)	; $03AB4C
@@ -50219,7 +50220,7 @@ L03B07E:
 	move.w d0,-(a7)	; $03B088
 	move.w $8(a6),-(a7)	; $03B08A
 	move.w $ff0eaa.l,-(a7)	; $03B08E
-	jsr FUN_03b1ee(pc)	; $03B094
+	jsr damage_calc(pc)	; $03B094
 	addq.w #$6,a7	; $03B098
 	move.l -$e(a6),-(a7)	; $03B09A
 	jsr FUN_025de4.l	; $03B09E
@@ -50329,7 +50330,7 @@ L03B1EA:
 	moveq #$0,d0	; $03B1EA
 	bra.b L03B1E6	; $03B1EC
 	; code $03B1EE-$03B407
-FUN_03b1ee:
+damage_calc:
 	link.w a6,#$fff6	; $03B1EE
 	move.w $8(a6),d0	; $03B1F2
 	muls.w #$34,d0	; $03B1F6
@@ -56946,7 +56947,7 @@ L040934:
 	lsr.w #$4,d0	; $04094C
 	and.w #$f,d0	; $04094E
 	move.w d0,-(a7)	; $040952
-	jsr FUN_031958.l	; $040954
+	jsr max_hp_for_level.l	; $040954
 	addq.w #$2,a7	; $04095A
 	move.w (a7)+,d1	; $04095C
 	cmp.w d0,d1	; $04095E
@@ -56956,7 +56957,7 @@ L040934:
 	lsr.w #$4,d0	; $04096A
 	and.w #$f,d0	; $04096C
 	move.w d0,-(a7)	; $040970
-	jsr FUN_031958.l	; $040972
+	jsr max_hp_for_level.l	; $040972
 	addq.w #$2,a7	; $040978
 	bra.b L040996	; $04097A
 L04097C:
@@ -57070,7 +57071,7 @@ L040A72:
 	lsr.w #$4,d0	; $040B0C
 	and.w #$f,d0	; $040B0E
 	move.w d0,-(a7)	; $040B12
-	jsr FUN_031958.l	; $040B14
+	jsr max_hp_for_level.l	; $040B14
 	addq.w #$2,a7	; $040B1A
 	move.w (a7)+,d1	; $040B1C
 	cmp.w d0,d1	; $040B1E
@@ -57080,7 +57081,7 @@ L040A72:
 	lsr.w #$4,d0	; $040B2A
 	and.w #$f,d0	; $040B2C
 	move.w d0,-(a7)	; $040B30
-	jsr FUN_031958.l	; $040B32
+	jsr max_hp_for_level.l	; $040B32
 	addq.w #$2,a7	; $040B38
 	bra.b L040B56	; $040B3A
 L040B3C:
@@ -57101,7 +57102,7 @@ L040B56:
 	lsr.w #$4,d0	; $040B66
 	and.w #$f,d0	; $040B68
 	move.w d0,-(a7)	; $040B6C
-	jsr FUN_031958.l	; $040B6E
+	jsr max_hp_for_level.l	; $040B6E
 	addq.w #$2,a7	; $040B74
 	sub.w -$e(a6),d0	; $040B76
 	move.w d0,$ffc380.l	; $040B7A
