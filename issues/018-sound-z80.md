@@ -28,6 +28,22 @@ gate in the `$3Dxxx` combat routines); `$EB986`/`$EB9A0`/`$EB9B4`/`$EB8E0` are
 dead (no callers); `$17586`'s second argument is `$FFFF` at all 98 call sites.
 **M3 is now complete.**
 
+**Addendum 2026-11-10 (song-mapping, ROM-only):** the 17 fan-site track names
+are mapped to song indices in `docs/sound.md` §7.4 — by code context
+(location table §7.3, `$32D0E` picker, all `$173BC`/`$173EC` call sites),
+parsed song streams, and one BlastEm audio capture per song (dispatch-table
+patch, `SDL_AUDIODRIVER=disk`, `.scratch018/songs/songNN.wav`, NOT
+committed). Certain: song 0 (silent), song 2 (Enchanters), 18/19 (no-ops).
+Strong: song 1 (Main theme), song 8 (unnamed sting). The rest are guesses
+by character/context, stated as such; a live playthrough could upgrade
+them. The §7.3 location→song map is now the full verified 0–151 dump (loc 63
+→ song 3, not 4, was corrected). §12 item 1 (mapping) is marked done; §12
+item 9 is corrected — the PSG IS used (`$0967` writes `$7F11`, pointer-SFX
+path). Top table SFX identified by context in `docs/sound.md` §8.4 (SFX 32
+= ubiquitous action, 20 = arrival chime, 1 = transition, 15/19/21/33 =
+combat/XP); no SFX audio was captured — that is the remaining follow-up.
+Original ROM re-verified unchanged (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
+
 ## Notes
 - 68000 touches the Z80 only via `$A11100` bus control so far.
   The driver itself lives in Z80 address space — Ghidra m68k will not

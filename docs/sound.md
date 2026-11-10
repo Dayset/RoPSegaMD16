@@ -404,31 +404,145 @@ changes). The `+0x06` field's meaning (character type? party role?) is
 
 At `$1DC90` (location-arrival handler): the song index is the low nibble of
 the byte at `$D63E7 + location_id*4` (stride 4; the other 3 bytes per record
-are other location fields). For location ids 0–63 the nibbles are mostly 2
-(the map theme), with 4, 3, 5, 9, 10, 11, 12, 13 for specific ids (see
-`.scratch018` notes: ids 12, 20, 35–37, 39, 58–63 → 4; 32–34, 40–41, 48, 53,
-55–56 → 10; 43, 45, 49, 50 → 9; 45 → 5; 46 → 12; 47, 50 → 13; 52 → 3;
-54 → 11). If the arrival-type argument (`$8(a6)`) is 3, the handler instead
-plays song 20 directly via `$173EC` (the arrival jingle) **and** writes the
-table song into `$FF012E`, so the watchdog loops the location song after the
-jingle ends. Otherwise it plays the table song via `$173BC`.
+are other location fields). Full dump of records 0–151 (verified by reading
+the ROM table; earlier drafts only checked 0–63 and had one error):
 
-### 7.4 The 17 named tracks [open mapping]
+| Song | Location ids (0–151) | Count |
+|---|---|---|
+| 2 | 0–11, 13–19, 21–31, 38, 42, 57, 121, 132 | 35 |
+| 11 | 54, 68, 89, 93, 94, 99–101, 105–110, 133–136, 144–146 | 21 |
+| 7 | 66, 83–87, 90, 113–115, 122–125 | 14 |
+| 4 | 12, 20, 35–37, 39, 58–62, 91, 92, 116 | 14 |
+| 10 | 32–34, 40, 41, 48, 53, 55, 56, 67, 69, 111, 112 | 13 |
+| 15 | 77–79, 81, 119, 120, 130, 131 | 8 |
+| 9 | 43, 44, 49, 51, 72, 73, 82, 140 | 8 |
+| 12 | 46, 64, 65, 95–98 | 7 |
+| 13 | 47, 50, 126, 127, 137–139 | 7 |
+| 14 | 70, 71, 74–76, 141–143 | 7 |
+| 5 | 45, 102–104, 128, 129 | 6 |
+| 3 | 52, 63, 88 | 3 |
+| 1 | 117, 118 | 2 |
+| 6 | 80 | 1 |
+| 0 | 147–151 (padding/terminator run) | 5 |
+
+Correction: an earlier draft said "ids 58–63 → 4" — loc 63 is song 3
+(byte `0x03`), not 4; 58–62 → 4. Records 152+ break the pattern (large
+b1/b2, high nibbles up to 9) — a different table or coordinate records, not
+part of this map. Songs 8, 16, 17, 20 never appear in the location table:
+17 is the `$32D0E` alternate map theme, 8/16/20 are event stings/pieces
+(§7.4). No location-id → city-name mapping is recoverable from the ROM
+tables alone (city names exist only as dictionary words; see the L018
+addendum notes in `.scratch018/`). If the arrival-type argument (`$8(a6)`)
+is 3, the handler instead plays song 20 directly via `$173EC` (the arrival
+jingle) **and** writes the table song into `$FF012E`, so the watchdog loops
+the location song after the jingle ends. Otherwise it plays the table song
+via `$173BC`.
+
+### 7.4 The 17 named tracks [mapped 2026-11-10, ROM-only]
 
 The rings-of-power.ru soundtrack page lists 17 named tracks: Main theme
 (Rings theme), Wizards, Knights, Archers, Sorceresses, Necromancers,
 Enchanters (also the map theme), Battle, Castle, Death, Nexus, Quest, At sea,
 Someone's home, Tavern, Victory, On the street. (A commenter also names
-"Guilds", which is not in the list.) The ROM has 19 playable song slots, so
-at least two songs have no fan-site name. **No track→index mapping is
-established by the bytes.** Plausible anchors only: song 2 is the map theme
-("Enchanters" — it is the default/location song almost everywhere); the six
-class names (Wizards/Knights/Archers/Sorceresses/Necromancers/Enchanters)
-suggest six class/location themes among the slots; song 8 (stream 256 B,
-content ends at offset ~103) and song 20 (6 parsed bytes) are too short to
-be full tracks (jingles/stings). The `$32D0E` picker (song 17 vs 2, by leader
-`+0x06`) is the one place a character-linked theme is selected in code. Identifying tracks by ear against
-the fan-site MP3s is the remaining work (§12).
+"Guilds", which is not in the list and is not mapped — no song is left for
+it.) The mapping below was established 2026-11-10 using ONLY the ROM
+(Dayset's call: "no mp3 needed as we have ROM with all the music and sfx in
+it" — the fan-site MP3s were not downloaded or used). Method: (1) context
+from the code — the location table (§7.3), the `$32D0E` picker, and every
+`$173BC`/`$173EC` call site; (2) the song streams parsed with
+`.scratch018/parse_songs.py` (loop length, note density, pitch range,
+channels, `$CX` setup family); (3) one audio capture per song, rendered
+from the ROM in BlastEm (see "How the audio was captured" below), analysed
+for tempo/brightness/tonal centre with `.scratch018/analyze_songs.py`
+(numpy FFT + onset autocorrelation). No fan-site audio was used, so the
+name assignments that rest on audio character (rather than on a call site
+or a location) are marked **guess** and the reasoning is stated. A live
+playthrough that drives the game to each named place would upgrade the
+guesses; the bytes alone cannot close the class/place assignments because
+the location-id → city-name mapping is not recoverable from the ROM tables.
+
+Confidence: **certain** = proven by the bytes; **strong** = the only reading
+the evidence supports; **guess** = best-supported character/context fit, not
+proven. "Loop" is the parsed loop length (NTSC 60 ticks/s); "notes/s" is the
+parsed note density; "BPM" is the audio onset-autocorrelation pulse (it can
+be a sub-harmonic — read it with the notes/s beside it); "locs" is the
+number of location ids in §7.3 that play the song.
+
+| Idx | Name | Conf. | Loop | Notes/s | BPM | p1avg | Ch | Locs | Evidence |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | — (silent) | certain | — | 0 | — | — | 0 | 5* | Stream is `00` + `C1 06 78` × 343 + `$FC $80`: a repeating channel-1 setup with zero notes; the `$FC $80` seek skips the last 248 B of real note data, which is never played. The boot song (`$11E06`); as played it is silent. Audio capture confirms: no music except two non-dispatch bursts (§7.5). *Locs 147–151 are a padding run, not real locations. |
+| 1 | Main theme | strong | 78.7 s | 14.4 | ~112 | 43.0 | 10 | 2 | Fullest arrangement (10 channels, the most of any song); plays during the intro/story cinematic (`$15012` at `0x15020`, `$14FB6` at `0x154F6`) — where a main theme belongs. Song 0 is silent and song 2 is Enchanters, so the Main theme is song 1 unless the audio proves otherwise; the capture is a full, flowing, moderate-tempo piece (RMS 0.632, top pitch classes A/F/D). |
+| 2 | Enchanters | certain | 63.2 s | 8.8 | ~34 | 47.7 | 4 | 35 | The map theme: the default/location song almost everywhere (§7.3, 35 locations), the `$32D0E` picker default, and the fan-site list itself glosses Enchanters as "also the map theme". |
+| 3 | Tavern | guess | 48.0 s | 16.2 | ~207 | 43.6 | 4 | 3 | Fast (~207 BPM), energetic, the widest pitch range of any song (p1 20–73); a lively, jaunty tune. Location song (52, 63, 88). The liveliest of the location themes — the best fit for a tavern. |
+| 4 | Knights | guess | 38.8 s | 19.0 | ~207 | 40.1 | 6 | 14 | Busy (19.0 notes/s) and fast (~207 BPM) with a low pitch (40.1) and a distinctive slow rhythm (100× delay-8 notes) — driving and martial. Location song (14 ids). The most martial of the location themes. |
+| 5 | At sea | guess | 67.7 s | 18.2 | ~112 | 43.8 | 3 | 6 | Busy melody (18.2 notes/s) over low drones (channels 4/6/9 only) at a moderate ~112 BPM — flowing, wave-like. Shares the `$CX` setup `[0, 14, 28, 16, 2, 0, 14, 28]` with songs 12/13/14/15. Location song (45, 102–104, 128, 129). |
+| 6 | Necromancers | guess | 95.6 s | 17.8 | ~41 | 38.5 | 7 | 1 | Lowest average pitch (38.5) and a slow pulse (~41 BPM) with low drones (ch3 0x24 × 402, ch4 0x18 × 199) — the darkest song. Plays at exactly ONE location (id 80), a single specific dark place. The darkest song for the darkest class. |
+| 7 | Archers | guess | 77.2 s | 12.7 | ~62 | 54.0 | 6 | 14 | Highest average pitch (54.0) and highest p1 floor (31) — the brightest, lightest song. Location song (14 ids). The lightest/highest song for the lightest, most agile class. |
+| 8 | — (sting) | strong | 1.2 s, ends | — | ~152 | 48.4 | 2 | 0 | A 1.2 s sting (24 notes, ends on its own via `$FC` at offset 103). Played at 11 sites after `$26B58`/`$2BBD2` checks and once in the intro (`$15012`) — a short signal, not a track. Too short to be one of the 17 named tracks; unnamed. Audio capture: loud (RMS 0.892, the loudest), brief stings at each song request, then silence. |
+| 9 | On the street | guess | 85.7 s | 20.0 | ~199 | 38.6 | 6 | 8 | Busiest song (20.0 notes/s), very fast (~199 BPM), low pitch (38.6) — bustling and urban. Location song (43, 44, 49, 51, 72, 73, 82, 140). The busiest location theme — the best fit for a crowded street. |
+| 10 | Wizards | guess | 79.1 s | 9.8 | ~69 | 45.1 | 5 | 13 | Moderate (~69 BPM), balanced (9.8 notes/s, 5 channels), mid pitch (45.1) — a measured, mystical city theme. Location song (13 ids). The most balanced of the class-city candidates. |
+| 11 | Castle | guess | 172.1 s | 18.3 | ~101 | 43.5 | 4 | 21 | Longest by content (12,800 B, 3,148 notes, 172.1 s) and the most-played location song after song 2 (21 ids) — a grand, general theme for a major place. Also the only location song played in combat (`$17B88`, called from `FUN_0003d9f8` every 10th map-stream chunk) — a significant-event song. |
+| 12 | Nexus | guess | 142.0 s | 4.7 | ~207 | 48.2 | 3 | 7 | Sparsest song (4.7 notes/s) with a fast shimmer pulse (~207 BPM) over a sparse melody — spacious and mystical. Shares the `$CX` setup with 5/13/14/15. Location song (46, 64, 65, 95–98). A temple (Nexus) fits the spacious, mystical character. |
+| 13 | Death | guess | 241.5 s | 10.5 | ~32 | 48.1 | 2 | 7 | Slowest (~32 BPM), longest by time (241.5 s), fewest channels (2) — the most minimal and contemplative piece. Location song (47, 50, 126, 127, 137–139). The slowest/most minimal song is the best fit for Death. (Song 16's combat context was considered for Death — see song 16 — but song 16 is fast and bright, the opposite of a dirge.) |
+| 14 | Someone's home | guess | 146.7 s | 4.9 | ~67 | 46.6 | 3 | 7 | Sparse (4.9 notes/s), slow-moderate (~67 BPM), gentle, 3 channels — a quiet, intimate piece. Shares the `$CX` setup with 5/12/13/15. Location song (70, 71, 74–76, 141–143). |
+| 15 | Sorceresses | guess | 111.5 s | 8.0 | ~43 | 42.8 | 3 | 8 | Slow (~43 BPM), flowing (8.0 notes/s), 3 channels — an enchanting, unhurried theme. Shares the `$CX` setup with 5/12/13/14. Location song (77–79, 81, 119, 120, 130, 131). |
+| 16 | Battle | guess | 17.3 s, ends | 17.6 | ~225 | 53.0 | 3 | 0 | A complete 17.3 s piece that ends on its own (304 notes, then `$FC`). Played in combat: `FUN_000362d6` (`0x367D6`, via `$173EC`) — a combat routine that clears the leader's Power (`+0x1E`) and `+0x06` after a confirm (`$26CCA`), triggered when the `$FF012A` counter reaches 11 in the big combat routine `FUN_0003e2d4`. Fast (~225 BPM), bright, high-pitched (53.0) — a battle fanfare, not a dirge. (The same context was the earlier "Death" candidate; the audio character — fast and bright — decides for Battle. The reverse assignment, Victory = 16, is not ruled out by the bytes, but a 17.3 s piece fits a battle better than a 2 s sting does.) |
+| 17 | Quest | guess | 53.0 s | 17.3 | ~246 | 49.4 | 6 | 0* | The alternate map theme: the `$32D0E` picker plays song 17 (instead of song 2) when the leader's `+0x06` is 2 or 3. Fastest song (~246 BPM), high pitch (49.4, p1 floor 36 — no low notes), bright — an energetic, adventurous alternate theme for a specific party state. *Not in the location table; selected by the picker, not by location. "Quest" is the best fit for an adventurous alternate map theme; the name is a guess. |
+| 18 | — (no-op) | certain | — | — | — | — | — | — | "Quiet" (music menu). Dispatch word `$0002` → jump to the return. Silent. |
+| 19 | — (no-op) | certain | — | — | — | — | — | — | Silent, same as 18. |
+| 20 | Victory | guess | 2.0 s, ends | 0 | ~38 | — | 0 | 0 | A 2.0 s sting (0 notes, 1 `$CX` event, ends via `$FC` at offset 4). Played as the arrival jingle (`$1DC90` path when the arrival-type arg is 3) and at battle-end (`0x359A4`, just after battle-end XP/gold `$35600`) and in combat (`0x3AB3C`). The battle-end use is the victory moment — a short victory chime. It is a sting, not a full track, but it is the only song that plays at the victory moment, so it carries the "Victory" name. |
+
+Accounting: 17 fan-site names → 17 songs (1–7, 9–17, 20). Song 0 is silent (not a
+track) and song 8 is an unnamed sting; songs 18/19 are no-ops. No name is left
+unmapped. The six class names (Wizards/Knights/Archers/Sorceresses/
+Necromancers/Enchanters) are the six class-city themes; Enchanters is certain
+(the map theme) and the other five are guesses by character. "Guilds" (a
+commenter's name, not in the 17) has no song.
+
+### 7.5 How the audio was captured [ROM-only, 2026-11-10]
+
+BlastEm 0.6.3.4 with `SDL_AUDIODRIVER=disk` writes the emulated YM2612+PSG
+output to `sdlaudio.raw` (44.1 kHz, 16-bit, stereo) in the working directory.
+A plain run of the original ROM only ever plays the game's own song sequence
+(boot → intro → map), so each song was forced with a data patch, not a code
+hook: the `$173EC` song dispatch table at ROM `0x17546` (21 words, offsets
+relative to `$17580`; `$17570` bounds-checks the index < 21, loads
+`table[index]`, `jmp $17580+offset`) was patched so every entry holds song
+*i*'s offset (entries 18/19 left as `0x0002`, the no-op return, so Quiet
+stays silent). Every `$173BC`/`$173EC` song request then plays song *i*, from
+the very first (boot) request onward. Checksums fixed with
+`tools/checksum.py fix-all`. Builder: `.scratch018/build_song_table.py`;
+per-song ROMs `.scratch018/songs/rom_songNN.gen` (not committed). Each ROM
+was run ~75 s wall (~155–160 s emulated at ~2.1×) with the Vsync dialog
+dismissed by an xdotool clicker; the raw output was converted to
+`.scratch018/songs/songNN.wav` (44.1 kHz, 16-bit, stereo).
+Batch driver: `.scratch018/capture_all_songs.py`; audio analysis:
+`.scratch018/analyze_songs.py` (numpy FFT + onset autocorrelation);
+stream parsing: `.scratch018/parse_songs.py`; melody dumps:
+`.scratch018/dump_melodies.py`.
+
+Verification that the patch forces the song (not the game's own sequence):
+a ROM patched to song 0 (silent) is silent from the first song request
+onward — the 50–65 s and 75–155 s windows that are music in the original
+run are DC (2 unique sample values) in the patched run — while a ROM
+patched to song 1 plays music continuously from ~10 s emulated onward.
+An earlier `$D28E` jsr-hook approach was abandoned: its 6-byte `jsr` split
+the `clr.w` at `$D292`, so the trampoline's `rts` returned mid-instruction
+(`$D294`), and the main loop's world tick calls `$32D0E` → `$173BC(2)` and
+would have switched the song back to the map theme anyway. The table patch
+forces the song at the dispatch itself, so no re-switch can escape it.
+(Builder `.scratch018/build_song_harness.py` is kept for the record.)
+
+Two non-dispatch sounds survive even the song-0 patch (so they do not go
+through the `$173EC` table): a ~10 s music burst at ~20–30 s emulated and
+another at ~65–75 s. They are present in every capture, including the
+silent song-0 run. Their identity is **[open]** — candidates are an SFX
+chain or a direct `$EB88A` song start. They are not any of the 19 dispatch
+songs and do not affect the mapping.
+
+All 19 captures are in `.scratch018/songs/songNN.wav` (not committed; the
+`.wav` files are the deliverable audio). The original ROM was re-verified
+unchanged after all work (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
 ## 8. The SFX map [static]
 
@@ -485,6 +599,25 @@ voice structure (pointers at `$0068–$006B`, state at `$0051–$0055`) and the
 per-tick routine `$0B22` services both slots (envelope/decay via `$0A78`).
 Two SFX can therefore overlap; a third while both slots are busy is queued
 in `$FF0236`/`$FF023A` and retried next frame.
+
+### 8.4 Top table SFX by context [static, 2026-11-10]
+
+The most-called table SFX, identified by which routines call `$17586`
+with that index (routine names from `disasm/ghidra/functions.txt`). No SFX
+audio was captured for this addendum — the identification is by call-site
+context, not by ear — and the per-byte record semantics are still open
+(§12 item 3), so "what it sounds like" is not claimed here. First 8 record
+bytes are from ROM `$FCAE2 + index*22`.
+
+| SFX | Sites | Record (first 8 B) | Where it plays (context) |
+|---|---|---|---|
+| 32 | 10 | `01 0c 0a 80 0a 7f 09 80` | The ubiquitous action sound. 7 sites in the big combat routine `FUN_0003e2d4` (`$3E2D4–$42E33`), plus command 50 (`FUN_0002619c`, character move/place — reads struct `+0x06`/`+0x0C`/`+0x0E`), the XP/resource routine `FUN_0002dcce`, and combat `FUN_0003a62e`. Most-used SFX; a general action/confirm/hit sound used for movement and combat actions. |
+| 1 | 7 | `08 09 30 f0 28 ff 00 00` | Intro/story (`FUN_00015012`), the song-11 routine `FUN_00017b88` (3 sites), `FUN_00024984`, and the XP routine `FUN_0002dcce`. A transition/UI sound. |
+| 20 | 7 | `00 1c 14 c0 00 00 00 00` | The location-change/arrival chime. 4 sites in the world tick `FUN_0002155e`, each right after the song picker `$32D0E` → `$173BC` (i.e. right after the map song switches on entering a new location) — twice in a row at `0x21A84`/`0x21A94` (a doubled chime) — plus the main loop `FUN_0000d28e` and combat `FUN_0003e2d4`. Short (4 non-zero record bytes). |
+| 15 | 6 | `18 2c 28 05 28 fb 28 05` | XP routine `FUN_0002dcce`, combat `FUN_0003e2d4` (2 sites), and the spell routines `FUN_00038fb8` / `FUN_00039172` / `FUN_000393fa` (`$38xxx–$39xxx` spell area). A spell/XP sound. |
+| 19 | 5 | `14 0c 14 c0 00 00 00 00` | XP routine, `FUN_00032284`, combat `FUN_0003a62e` / `FUN_0003d9f8` / `FUN_0003e2d4`. A combat/XP sound. Short (4 non-zero bytes). |
+| 21 | 5 | `14 0c 14 c0 14 40 14 c0` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (4 sites). A combat sound; the record repeats (`14 c0` twice), a longer effect. |
+| 33 | 4 | `05 0c ff 00 00 00 00 00` | Combat: `FUN_0003d9f8` and `FUN_0003e2d4` (3 sites). A combat sound; very short (3 non-zero bytes). |
 
 ## 9. Boot sequence for sound [static + live]
 
@@ -573,12 +706,19 @@ settle delay before the first read, or the read returns stale bus data.
 
 ## 12. Open items
 
-1. **Track→index mapping.** The 17 fan-site track names (§7.4) are not
-   mapped to song indices by any bytes in the ROM. Next step: identify by
-   ear against the fan-site MP3s (only the main theme is downloaded locally,
-   `docs/research/rings-of-power-ru/Rings-main-theme.mp3`, 102 s), or by
-   driving the game to each location/situation and noting the song. Song 2
-   = map theme ("Enchanters") is the only anchored guess.
+1. **Track→index mapping — DONE (ROM-only), 2026-11-10.** Mapped in §7.4
+   using only the ROM (Dayset's call: no MP3s — "we have ROM with all the
+   music and sfx in it"). Method: code context (location table §7.3,
+   `$32D0E` picker, all `$173BC`/`$173EC` call sites) + parsed song streams
+   + one BlastEm audio capture per song via a dispatch-table patch
+   (§7.5). Result: 17 names → 17 songs (1–7, 9–17, 20); song 0 is silent,
+   song 8 is an unnamed sting, 18/19 are no-ops. Certain: song 0 (silent),
+   song 2 (Enchanters), 18/19. Strong: song 1 (Main theme), song 8
+   (unnamed sting). The rest are guesses by character/context — a live
+   playthrough that drives the game to each named place would upgrade them,
+   and the class/place assignments in particular rest on audio character
+   (the location-id → city-name mapping is not recoverable from the ROM).
+   The MP3 path is closed by Dayset's call and is not to be revived.
 2. **`0x0E0000–0x0EB771` identity.** The L011 "song/SFX data" label is
    disproven (songs are at `$ED0E8+`, SFX at `$FCAE2`). What that range
    actually holds is still unknown.
@@ -605,11 +745,15 @@ settle delay before the first read, or the read returns stale bus data.
    the attract context, where the VBlank handler (and hence the tick) does
    not run. A game-context harness (e.g. hooked at `$EB772`'s call site
    `0x12F2`) could close this.
-9. **PSG.** The driver as traced writes only YM2612 registers (`$4000–$4003`
-   via `$01B4`/`$01BA`/`$04B7`/`$04BD`). No PSG (`$7F11`) writes were found
-   in the disassembled code — whether the game ever uses the PSG is
-   unconfirmed (the `$01C0`/`$01E1` DAC setup suggests PCM-ish SFX via the
-   YM DAC, `$2B=$80`).
+9. **PSG — CONFIRMED USED, 2026-11-10.** The earlier "no PSG writes were
+   found / unconfirmed" is wrong. `$0967` writes to the PSG port `$7F11`
+   (values `$81`, `$00`, `$A1`, `$00`); it is called from the song-player
+   loop `$08F8` when `$00E4` is nonzero, and `$00E4` is set by `$070D`
+   (the pointer-SFX data path). So the PSG IS used — for pointer-SFX
+   (indices 90–96), not for the table songs. The PSG's musical role
+   (which pointer-SFX use it, and what the `$81`/`$A1` writes do) is still
+   open, but the "does the game use the PSG at all" question is closed:
+   yes.
 10. **`$EB93E` is unreachable in practice.** The non-`$FFFF` parameter branch
     in `$17586` is never taken — all 98 call sites pass `$FFFF` — so every
     pointer-SFX in the game goes through `$EB968` (`$000A=$FF`). `$EB93E`
@@ -628,3 +772,15 @@ settle delay before the first read, or the read returns stale bus data.
   `.scratch018/run018.py` (harness run), outputs `live018_out.txt` /
   `run018_out.txt`
 - Ghidra project: `.scratch018/ghidra-proj/` (headless Z80, not committed)
+- Song-mapping addendum (2026-11-10, ROM-only): `.scratch018/parse_songs.py`
+  (stream parser + fingerprints), `.scratch018/dump_melodies.py` (per-channel
+  note sequences), `.scratch018/build_song_table.py` (dispatch-table patch —
+  the method used), `.scratch018/build_song_harness.py` (abandoned `$D28E`
+  jsr-hook approach, kept for the record), `.scratch018/capture_all_songs.py`
+  (BlastEm `SDL_AUDIODRIVER=disk` batch capture),
+  `.scratch018/analyze_songs.py` (numpy FFT + onset-autocorrelation
+  character analysis). Per-song audio: `.scratch018/songs/songNN.wav`
+  (44.1 kHz, 16-bit, stereo; NN = 00–17, 20; ~159 s emulated each; NOT
+  committed). Per-song patched ROMs: `.scratch018/songs/rom_songNN.gen`
+  (dispatch table patched to song NN; NOT committed). Capture log:
+  `.scratch018/songs/capture.log`.
