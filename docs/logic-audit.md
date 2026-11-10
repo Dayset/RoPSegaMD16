@@ -516,8 +516,16 @@ from the **button pressed + mode flags**:
 
 `$FF00AE` (1/2) is the input mode flag (set 1 at `$D29E` each
 `$D28E` iteration; set 2 at `0x1DC1C`, back to 1 at `0x1DE6A`).
-**Command 23's writer NOT found** (no literal `move.b #$17, -4(a6)`
-in `disasm/rop.s`) — OPEN. `$D28E` switch is on the `$FF0240`
+**Command 23 has no writer anywhere in the ROM** — resolved
+2026-11-10 [static]: no literal `move.b #$17, -4(a6)` in either
+disassembly file, no register write or arithmetic on the command
+slot, and `$FF0240`'s only writers are the reset RAM-clear and
+`$12FE8`'s three exit sites. `$12FE8` produces only 14 distinct
+command values (0, 10, 20, 21, 22, 24, 25, 30, 35, 37, 40, 45, 50,
+55) — 23 is the only switch case with no writer, so the command-23
+dispatch entry (`$D566`, which calls `$1E5A0`) is dead code. The
+handler `$1E5A0` itself is NOT dead (called live from 4 other
+sites). `$D28E` switch is on the `$FF0240`
 command byte (copied into the `$D28E` frame at `-4(a6)`); verb C
 codes are NOT `$D28E` codes — the bridge is `$D28E` case 21 →
 `$1F296`, which dispatches on the selected record's C byte. `$D328`

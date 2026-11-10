@@ -381,10 +381,15 @@ papered over.
   table at `$1B446` by `$FF0136*6` and formats a display
   value).
 - Note: `$12FE8` produces 0, 10, 20, 21, 22, 24, 25, 30,
-  35, 37, 40, 45, 50, 55 (see above) — the `$D28E` switch's
-  15 cases are all reachable from it. The remaining command
-  value, 23, has **no writer found** in the ROM (no literal
-  `move.b #$17` into the command slot) — open. Other writers:
+  35, 37, 40, 45, 50, 55 (see above) — 14 of the `$D28E` switch's
+  15 cases are reachable from it. The remaining command
+  value, 23, has **no writer anywhere in the ROM** — no literal
+  `move.b #$17` into the command slot in either disassembly file,
+  no register write or arithmetic on the slot, and `$FF0240`'s only
+  writers are the reset RAM-clear and `$12FE8`'s three exit sites —
+  so the command-23 dispatch entry (`$D566`, which calls `$1E5A0`)
+  is dead code [static, resolved 2026-11-10]. The handler `$1E5A0`
+  itself is NOT dead (called live from 4 other sites). Other writers:
   `$D328` writes 10 literally in the `$FF0128` branch;
   `$D43E` clears the command to 0 when a message is pending
   (unless the command is 0/37/40) and calls `$17586(-1, 0x14`).

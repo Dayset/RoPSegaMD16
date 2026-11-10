@@ -1065,6 +1065,37 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
 12. **Post-harness PC=0 fault** — the harness run faults after returning
     to the attract loop (see §7.2); root cause unresolved. (#021.)
 
+### 6.1 Command 23 — resolved (2026-11-10) [static]
+
+**There is no writer of command 23; the `$D28E` switch case 23 is dead
+code.** The `$D28E` main-loop command switch (`$D740`) has 15 cases
+(0, 10, 20, 21, 22, 23, 24, 25, 30, 35, 37, 40, 45, 50, 55); case 23
+(`$D566`) calls `$1E5A0` then continues. The command byte lives at
+`$FF0240`, and its only writer is `$12FE8` (`0x12FE8–0x13650`), which
+builds a 4-byte record in its frame (byte0 = command at `-$4(a6)`,
+byte1 = selection at `-$3(a6)`, word = -1 at `-$2(a6)`) and copies it
+to `$FF0240` at three exit sites (`$013154`, `$0131CC`, `$01363C`).
+Exhaustive enumeration of every immediate byte write to the command
+slot `-$4(a6)` in the whole disassembly gives 14 distinct values —
+0, 10, 20, 21, 22, 24, 25, 30, 35, 37, 40, 45, 50, 55 — **never 23**.
+No register byte-write to `-$4(a6)` exists in `$12FE8`, no arithmetic
+on `-$4(a6)` exists anywhere, and all `$FF0240` references in both
+disassembly files are the reset RAM-clear and the `lea.l $ff0240.l,a0`
+sites inside `$12FE8`. `$D28E`'s own frame writes are only 10
+(`$D328`) and 0 (`$D462`, `$D8BA`). The only "23" near the command
+production is `move.b #$17,-$3(a6)` at `$0135CC`, which writes 23 to
+the *selection* byte (`$FF0241`) — and only when the selection index
+`$FFA7F8` is already 23 (a verb-table index), producing command 25.
+The handler `$1E5A0` is NOT dead: it reloads the current menu record
+from `$FFA7F8` (via `$FF01EA` offsets into the `$CCDB8` verb table),
+sets `$FFBB82`, and redraws unless the record's A byte is 'I'/'L'/'B'
+— called live from `$1B994` (world-map redraw), `$209FC`
+(command-24 handler), `$20BBE` (command-25 area), and `$2D4E0` (in
+`$2D3DC`). So only the command-23 dispatch entry is dead, not the
+routine. No live run: the static enumeration covers all code paths
+exhaustively. (The matching "open" notes in `docs/architecture.md`
+and `docs/logic-audit.md` §11 need the same update.)
+
 ## 7. Tests (emulator harness)
 
 ### 7.1 Harness method — verified
