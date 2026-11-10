@@ -66,6 +66,23 @@ Map the numbers behind the game and audit them for logic flaws.
   command-23 dispatch entry is dead, not the routine. No live run:
   the static enumeration covers all code paths exhaustively, so a
   live sample could only confirm a subset of it.
+- **Bribe (10 gold) — LOCATED 2026-11-10 [static].** The merchant-
+  submenu verb "Bribe" (ROM `0xCD38C`, in the Buy/Sell/Show/Bribe/
+  Fight submenu, matching the official manual), record byte 12 =
+  `0x19` = **C 25**; the C-dispatch (`$02068E`) case 25 goes to
+  handler **`$020466`**, which checks the party gold (`$FF02DE`,
+  char struct `+0x2A`) is ≥ 10 (`cmpi.w #$a`, skip if less),
+  deducts **10 gold** via `$2BBD2(char, 0x400, −10, 1)` (`$0204A0`),
+  then raises the attitude via `$02A22A` → `$0298D2` → `$02CE74`
+  (positive delta). The exact attitude delta is data-driven (from
+  the conversation event record loaded by `$032D4C`) and is [open].
+  The handler is gated on `$01E49A($FF0E18)` returning 0 (a
+  message-queue-state precondition). There is **no** Bribe goods
+  code in `$2BBD2` (quotient 16, remainders 0–4 only; remainder ≥ 5
+  exits) — the Bribe is a verb/C-code action, not a goods
+  transaction. (Note: `docs/logic-audit.md` §16 still records the
+  Bribe code path as OPEN — it needs the same update; not edited
+  here.)
 - Q13 SOLVED: post-harness PC=0 fault is a stack leak in the hook
   design (`jsr` + `jmp`, never `rts`) — the hook sits on the attract
   loop's VBlank spin, so the stack plummets into RAM in ~3 s. Fixed

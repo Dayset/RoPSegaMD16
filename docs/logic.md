@@ -496,9 +496,22 @@ mod 0, no merchant):
   indices 0–35, one per merchant identity, each in [−100, +100],
   saved/loaded with a +0x80 bias); CAMP (`$03019a`) raises each entry
   by +3 toward 10 (entry 34 skipped), and `$02CE74` / `$030628` /
-  `$035656` are the attitude adjustments (see `docs/save.md`). The
-  Bribe action itself (10 gold, walkthrough claim) is still **not**
-  located in code (unknown — #021).
+  `$035656` are the attitude adjustments (see `docs/save.md`). **The
+  Bribe action itself is LOCATED (2026-11-10) [static]:** it is the
+  merchant-submenu verb "Bribe" (ROM `0xCD38C`, in the
+  Buy/Sell/Show/Bribe/Fight submenu, matching the official manual),
+  record byte 12 = `0x19` = **C 25**; the C-dispatch (`$02068E`)
+  case 25 goes to handler **`$020466`**, which checks the party
+  gold (`$FF02DE`, char struct `+0x2A`) is ≥ 10 (`cmpi.w #$a`, skip
+  if less), deducts **10 gold** via `$2BBD2(char, 0x400, −10, 1)`
+  (`$0204A0`), then raises the attitude via `$02A22A` →
+  `$0298D2` → `$02CE74` (positive delta). The exact attitude delta
+  is data-driven (from the conversation event record loaded by
+  `$032D4C`) and is [open]. The handler is gated on
+  `$01E49A($FF0E18)` returning 0 (a message-queue-state
+  precondition). There is **no** Bribe goods code in `$2BBD2`
+  (quotient 16, remainders 0–4 only; remainder ≥ 5 exits) — the
+  Bribe is a verb/C-code action, not a goods transaction.
   Merchant attitude levels (WORSHIPFUL…VIOLENT) are player-observed
   only.
 - Shop globals: `$FF02A8` = current item index, `$FF02AA` = ?, `$FF02A0`
@@ -1131,14 +1144,19 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    Leads: decoder `0xE3B4`/`0xE412`, tables `$433C0`–`$436E0`, decoded
    map `$FF1EC0`, location code `$FF0E92`, `$2BBD2` codes `0x380`/`0x381`.
    The guide's rates are the verification target. (#020.)
-3. **Bribe (10 gold)** — the Bribe action itself is still not located
-   in code. **Attitude repair is LOCATED (2026-11-10) [static]:**
+3. **Bribe (10 gold)** — **LOCATED (2026-11-10) [static]:** the
+   merchant-submenu verb "Bribe" (ROM `0xCD38C`), C 25, handler
+   `$020466`: checks gold ≥ 10, deducts 10 gold via `$2BBD2(char,
+   0x400, −10, 1)`, then raises the attitude via `$02A22A` →
+   `$0298D2` → `$02CE74` (positive delta). The exact attitude
+   delta is data-driven (from the conversation event record) and
+   is [open]. **Attitude repair is LOCATED (2026-11-10) [static]:**
    CAMP raises each `$FF00C0` entry by +3 toward 10 (entry 34
    skipped), and `$02CE74` / `$030628` / `$035656` adjust it — the
    persistent merchant-attitude table `$FF00C0` (36 words, indices
    0–35) is the backing store (see `docs/save.md`). Merchant
-   attitude is confirmed in the price formula; the Bribe action that
-   changes it is not. (#021.)
+   attitude is confirmed in the price formula and the Bribe action
+   that changes it is now located. (#021.)
 4. **Gems sell price 428** — impossible under `$2EA92` (§3.5). Guide
    wrong, or a different sell path. (#021.)
 5. **`$FF012C` action-code meanings** (`0x07`, `0x7D`, `0x7F`,

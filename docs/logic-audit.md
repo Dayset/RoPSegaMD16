@@ -653,10 +653,20 @@ context.
 
 ## 16. Q12 misc — mostly answered
 
-**Bribe (text found, code path OPEN).** Text exists — `$DDBD8`
+**Bribe (text found, code path LOCATED 2026-11-10) [static].** Text exists — `$DDBD8`
 rec 140 (ptr `0x00B82`): "How dare you insult my honor by trying
 to bribe me."; dictionary word 'bribe' (`0x00CFD`). The 10-gold
-Bribe mechanic's code path is **not located** — OPEN.
+Bribe mechanic's code path is the merchant-submenu verb "Bribe" (ROM
+`0xCD38C`, record byte 12 = `0x19` = C 25) → C-dispatch case 25 →
+handler `$020466`: gates on `$01E49A($FF0E18)` returning 0, checks
+party gold ≥ 10 (`cmpi.w #$a`), deducts 10 gold via
+`$2BBD2(char, 0x400, −10, 1)` at `$0204A0`, and raises the attitude
+via `$02A22A` → `$0298D2` → `$02CE74` (event id 8). There is no
+Bribe goods code in `$2BBD2` (quotient 16 has remainders 0–4 only) —
+the Bribe is a verb/C-code action, not a goods transaction. The
+exact attitude delta is [open] (data-driven, low 12 bits of the
+conversation event word loaded by `$032D4C`). See `docs/logic.md`
+§3.5/§7.
 
 **Doggonia 1,000-gold entry fee — NOT located in code** — OPEN
 (player-observed claim from the walkthrough; no routine found that
@@ -917,7 +927,7 @@ disassembly line; registers must be read explicitly.
 | Command-23 writer | OPEN | No literal `move.b #$17` into the command slot in `disasm/rop.s` (§11) |
 | +0x14 chain passing 57–62 | OPEN | `$2BBD2` major/minor dispatch + party-join call sites (§14) |
 | Food/water consumption routine | OPEN | `$FF0E16` step-counter consumers in the `$2155E` tick path other than save code; `$32C56` callers (§13) |
-| Bribe 10-gold code path | OPEN | Text rec 140 exists; no routine found (§16) |
+| Bribe 10-gold code path | LOCATED (2026-11-10) [static] | Verb "Bribe" (ROM `0xCD38C`, C 25) → handler `$020466`: gold ≥ 10, deduct 10 via `$2BBD2`, raise attitude via `$02A22A` → `$02CE74` (§16) |
 | Doggonia 1,000-gold fee | OPEN | Player-observed only; no routine found (§16) |
 | Gems sell 428 | OPEN | Guide wrong or a second sell path; none found in the `$2BBD2` handlers traced (§16) |
 | Discipline↔spell-block mapping | OPEN | Names only suggest it; not proven from code (§14) |
