@@ -129,7 +129,21 @@ and combat damage.
   540–557** (18-frame crossfades, factor `(clock%18)/2`). CAMP anchors
   0/540 are the starts of the dusk/dawn transitions (0 leads into
   NIGHT, 540 into DAY). Other modes: 0/3 always DAY, 1 always NIGHT,
-  4 → pal 23.
+  4 → pal 23. **Dusk-blend bit-14 (`$4000`) artifact — RESOLVED
+  (2026-11-10) [live]:** two parts. (1) The blend's unsigned `mulu.w`
+  + logical `lsr.w #3` on negative red diffs sets bit 14 in the RAM
+  buffer `$FF864A` (dusk entries 5, 7, 8, 9, 10, 11, 12, 14, 15) —
+  correctly emulated. (2) The extra `$4000` on the R-diff==0 entries
+  (0, 1, 2, 3, 4, 6, 13) is NOT from the blend (the buffer is clean
+  there); it appears only in the CRAM read-back, and only when the
+  uploaded palette has bit 14 set on **CRAM palette-0 entry 12** —
+  then ALL 16 CRAM entries read back with bit 14 set. Entry 12
+  carries bit 14 in the dusk buffer (red diff −4 → red result
+  `0x2005`, `<<1` = `0x400A`); the dawn buffer has none, so the
+  artifact is dusk-only. `$11082`/`$D9EE` write words verbatim, so the
+  spread is a VDP (BlastEm) CRAM behaviour, not game code. [Open]
+  whether the entry-12 spread is real hardware or a BlastEm quirk.
+  Harnesses `.scratch009/harness_b14*.s` (see docs/logic.md §3.7).
   Harness: `.scratch007/harness_camp.s` + `.scratch007/harness_sleep.s`
   + `.scratch007/harness_temple.s`
   (see docs/logic.md §3.7). → #020.

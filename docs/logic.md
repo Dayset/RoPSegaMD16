@@ -956,14 +956,43 @@ from the cost, and not pursued here.
     always NIGHT (pal 19); 4 (2 locations, 132/133) → palette 23
     (brightest, blue-heavy, brightness 172). `$FF0124` is the
     "palette dirty" flag: CAMP/Sleep/location loads set it to `$FFFF`,
-    `$170DA` clears it after updating the palette. Side note [live]:
-    the dusk blend (DAY→NIGHT) sets bit 14 (`$4000`) on the CRAM
-    words whose R-channel difference is 0 (an artifact of the blend's
-    unsigned `mulu.w` + logical `lsr.w #3` on negative differences);
-    bit 14 is ignored by the VDP for display, and the visible R/G/B
-    fields match the emulated blend exactly in all 15 cases. The dawn
-    blend (NIGHT→DAY, differences non-negative) is exact with no
-    stray bits. `$FF0E18` is not read by `$170DA` itself (it is passed
+    `$170DA` clears it after updating the palette. **Dusk-blend
+    bit-14 (`$4000`) artifact — RESOLVED (2026-11-10) [live].** The
+    artifact has TWO parts, and only the first is blend arithmetic.
+    (1) The blend (`FUN_01225c`) uses unsigned `mulu.w` + logical
+    `lsr.w #3` on the signed per-channel difference `(B−A)`, so a
+    negative difference produces a large garbage value instead of a
+    small negative one; when the red result lands on `0x2000`/`0x2001`,
+    the red `asl.w #1` places it at bit 14. This sets bit 14 in the
+    RAM output buffer `$FF864A` on the entries with **negative red
+    diffs** (dusk: 5, 7, 8, 9, 10, 11, 12, 14, 15) — correctly
+    emulated by the harness runner's model. (2) The EXTRA `$4000` on
+    the R-diff==0 entries (0, 1, 2, 3, 4, 6, 13) is **not** produced
+    by the blend at all: the buffer is clean there
+    (`.scratch009/harness_b14.s`, test ROM
+    `9811d05f7e9599c6b943846103d0c940` — `$FF864A` matches the model
+    exactly in all 4 cases, dusk/dawn/zero). It appears only in the
+    CRAM read-back, and only when the uploaded palette has bit 14 set
+    on **CRAM palette-0 entry 12**: then ALL 16 CRAM entries read
+    back with bit 14 set. When entry 12 lacks bit 14, bit 14 is
+    stripped from every entry on read-back — even from entries that
+    had it in the buffer (`.scratch009/harness_b14b.s` /
+    `harness_b14c.s` / `harness_b14d.s`: single-bit-14 masks on every
+    other entry read back clean; `{12}`, `{5,12}`, `{4,12}` and
+    `{0..15}` all trigger the all-entries spread; `{5}`, `{5,13}`,
+    `{0,7}`, `{1,8}`, `{6,13}` do not). `$11082`/`$D9EE` write the
+    words verbatim to the VDP data port, so the spread is a VDP
+    (BlastEm) CRAM write/read behaviour, not game code. Entry 12
+    carries bit 14 in the dusk buffer because its red diff is −4
+    (day red 7, night red 3): red result `0x2005`, `<<1` = `0x400A`.
+    The dawn blend's buffer has no bit-14 entries at all (entry 12 =
+    `0x042A`), so the spread never triggers there — that is why the
+    artifact is dusk-only. Bit 14 is ignored by the VDP for display,
+    and the visible R/G/B fields match the emulated blend exactly in
+    all 15 cases. [Open] whether the entry-12 spread is real Genesis
+    hardware behaviour or a BlastEm emulation quirk (needs real-hardware
+    testing or BlastEm source inspection); the game-code side is
+    settled. `$FF0E18` is not read by `$170DA` itself (it is passed
     by address to other routines, not part of the palette decision).
   * Also: `$FF0124 = $FFFF` after CAMP (`$030336`) [live].
   * Harness notes: direct `jsr $03019a` from the attract loop
