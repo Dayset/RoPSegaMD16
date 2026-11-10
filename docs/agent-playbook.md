@@ -79,8 +79,17 @@ All produced by `tools/status.py`. No hand counts.
 | Commits on `main` that move a completion metric | low | ≥ 70% |
 
 Milestones map to metrics: M5 = raw fallbacks 0. M11 = routines named +
-RAM named. M8 = bytes accounted 100%. M9 = typed data + shift test.
-M10 = asset round-trip.
+RAM named. M8 = bytes accounted 100% — every byte of the 1,048,576-byte ROM is
+either labelled 68000 assembly in disasm/src/rop.s or an incbin range with a
+non-`unknown` region class in disasm/regions.csv; no code byte hides in incbin
+or in a `dc.*` fallback. M5 (zero fallbacks) is a precondition. `padding-ff`
+(12,084 bytes) counts as accounted. Any non-`unknown` class counts, including
+`high-entropy`, but `high-entropy` is reported as its own status line so M8
+can't read 100% while ~19% of the ROM is still opaque (identified-as-compressed,
+not decoded). Measured by tools/status.py once the region join lands;
+tools/coverage.py as-is can't measure it. Current (2026-11-10): 72.8%
+(763,653 / 1,048,576); unknown 284,923; high-entropy 195,886. M9 = typed data +
+shift test. M10 = asset round-trip.
 
 ## 4. Task queue
 
