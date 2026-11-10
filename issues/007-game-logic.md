@@ -111,7 +111,14 @@ and combat damage.
   (cur HP/Power = 5, maxes recomputed, dead flag `+0x2C` bit 13
   cleared, measured HP 0→5, Power 0→5, HP max 100→95, Power max
   80→6000; no-op on a live member; plays song 8 on a revive
-  [static]). None deducts gold/food/water or flips the clock.
+  [live, 2026-11-10, 1/1, `.scratch007/harness_life_song.s`:
+  `$FF022C`=$F363E (song 8's data), `$FF0230`=$F373E (song 8's end),
+  Z80 `$000B`=$0D (play command), Z80 `$00DA`=$16 (driver uploaded).
+  Note: the Life path bypasses the `$0173C0` wrapper, so `$FF012E` is
+  NOT updated (stays 0) — the watchdog may restart the old song.
+  Audio captures are silent, but song 8's own capture is likewise
+  essentially silent, so that does not contradict the start; whether
+  the sting is audible in real gameplay is [open]]. None deducts gold/food/water or flips the clock.
   **clock flips day↔night by setting `$FF0E16` to 540 (if ≤540) or 0**
   (measured 100→540, 1000→0) — not a +1200 advance. **Day/night
   ranges — located and live-verified (2026-11-10, 15/15 harness

@@ -881,8 +881,25 @@ from the cost, and not pursued here.
     food or water (measured unchanged at 1000), none flips the clock
     (stays 100) or sets `$FF0124` (stays 0) — like Sleep, the payment
     is a separate purchase transaction. If Life revives anyone it plays
-    song 8 (`jsr $173EC` at `$02C884` — [static]; the call was NOP'd in
-    the test ROM only, freeze risk in the attract context). Prices
+    song 8 (`jsr $173EC` at `$02C884`) — **VERIFIED LIVE 2026-11-10**
+    (harness `.scratch007/harness_life_song.s`, test ROM
+    `9179140b088d141c20fd72e9415befee`, 1/1): on a revive, `$FF022C`
+    becomes `$000F363E` (song 8's data — the song-8 dispatch case at
+    `$1748A` pushes `$F363E`, not `$ED0E8`, which is song 0's data) and
+    `$FF0230` becomes `$000F373E` (song 8's end, u32 at `$F363A`); the
+    Z80 driver is uploaded (Z80 `$00DA` = `$16`, signature clobbered)
+    and the play command is written (Z80 `$000B` = `$0D`). A Life call
+    on a live member starts no song (`$FF022C`/`$FF0230` stay 0). Note:
+    the Life path calls the dispatch (`$0173EC`) directly, bypassing
+    the `$0173C0` wrapper, so **`$FF012E` (current song index) is NOT
+    updated** — it stays 0 (measured) — which means the watchdog
+    (`$21608`, which replays `$FF012E`) may restart the old song.
+    Audio captures of the harness run are silent after the boot
+    transient, but song 8's own dedicated capture
+    (`.scratch018/songs/raw_song08.raw`) is likewise essentially
+    silent (RMS 23 after 0.5 s), so the silence does not contradict
+    the start — whether the 1.2 s sting is audible in real gameplay
+    is [open]. Prices
     (price table `$D6768`, raw byte b3; `$2EA92`: raw 20–100 →
     (raw−16)·5, raw >100 → (raw−96)·100): Heal raw 46 → **150 gold**,
     Pow Up raw 46 → **150 gold**, Life raw 103 → **700 gold** (the
