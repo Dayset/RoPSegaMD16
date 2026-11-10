@@ -8,3 +8,6 @@
 - Next: decode each $96120 record and check whether its stream lies inside this block; then class those spans `lzss-stream` with the record id.
 - Per-record check (done): all 62 $96120 records decode with the documented LZSS format to exactly their declared length (decoder validated). Stream starts span 0x09638C-0x0B83A1; zero of them fall inside 0x05F7E4-0x09611F. So the $96120 table does not reference this block.
 - Remaining candidate owners: the terrain streams at $603E4+ (maps.md:371, ends ~$6823B) and the unknown data #017 (graphics.md:884). Next: check whether any $5F524 offset or other pointer table reaches 0x05F7E4-0x09611F before classing it.
+- CORRECTION: the earlier "62/62 decode to declared length" result was vacuous. The decoder always stops at the declared length, so that check could not fail. Ignore it.
+- Valid test (can fail): each stream must end exactly where the next record's stream starts. $96120 with base 0x9638C: 61/61 consecutive, last ends at 0xB86AE. $B86AE with base 0xB8A32: 89/89, last ends at 0xCC9D8.
+- Result: 0x0B86AE-0x0CC9D7 is a 90-record table (0x0B86AE-0x0B8A31) plus its LZSS streams (0x0B8A32-0x0CC9D7). Classed in disasm/doc_regions.csv. Unknown/high-entropy 446,171 -> 363,442.
