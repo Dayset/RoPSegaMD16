@@ -218,46 +218,46 @@ addr,name,tier,note
 0x03090A,sys_unk_03090a,0,auto: touches $FF02B2 $FF02B4 $FF02C8 $FF0E92 $FF0E98 $FFC326
 0x030DA4,sys_unk_030da4,0,auto: touches $FF00AE $FF02B2 $FF02B4 $FF02B8 $FF02C0 $FF02C2
 0x0318C6,sys_unk_0318c6,0,auto: touches $FF009C $FF02B4 $FF02D0 $FF0E82
-0x031998,sys_unk_031998,0,auto: touches $FF02B4 $FF02B6
+0x031998,world_find_char_template,2,finds direct char in 56-char table whose +0x02 template equals arg1; returns index or 0; logic.md:83 type 1 is direct char; callers $02D680 $02E07A
 0x0319EC,world_pos_add_x,1,code: leader pointer FFA7FC + arg a; adds to position word (x)
 0x031A9C,world_pos_add_y,1,code: leader pointer FFA7FC + arg c; adds to position word (y)
-0x031F66,sys_unk_031f66,0,auto: touches $FFA7FC
-0x03213C,sys_unk_03213c,0,auto: touches $FFA7FC
-0x032284,sys_unk_032284,0,auto: touches $FF010E $FF0124 $FF013E $FF02B4 $FF02C0 $FF02C2
-0x03268E,sys_unk_03268e,0,auto: touches $FF02C0 $FF02C2
-0x032730,sys_unk_032730,0,auto: touches $FF0110 $FF013E $FF02C0 $FF02C2 $FF0E82 $FFC326
-0x032922,sys_unk_032922,0,auto: touches $FF0142 $FF02B2 $FF02BA $FF02BE $FF02C0 $FF02C2
-0x032C18,sys_unk_032c18,0,auto: touches $FF02B2 $FF02B4
-0x032C56,sys_unk_032c56,0,auto: touches none
+0x031f66,map_cell_set_field,1,sets a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; via $FFA7FC leader location_divide map_chunk_load_buf
+0x03213c,map_cell_get_field,1,reads a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; returns -1 for index 5+; read counterpart of $031F66
+0x032284,world_ambient_event,1,dispatch on location code $FF013E 0-6; random scatter NPC move palette flash plus SFX and table effects; called when $FF013E nonzero
+0x03268e,world_step_move,1,steps a char one cell in a direction via world_get_step_delta; moves via $024984 if in 10x10 region and not at target; returns -1 if moved else 0
+0x032730,world_step_event,1,dispatch on $FF013E minus 2 after a movement step; position-based location effects for the leader; called from $024F32
+0x032922,world_terrain_direction,1,computes a move direction 0-7 from terrain type under a char plus its facing; queues it via queue_push; called from $00D490
+0x032c18,world_check_other_char,2,checks for another direct char besides $FF02B2; returns 0 if found else -1; logic.md:83 type 1 is direct char; callers $00D70A $013A3E
+0x032c56,npc_spawn_adjacent,1,tries directions 0-3 for a walkable adjacent cell via world_step_apply and map_walk_check; spawns entity via entity_spawn and npc_leader_init
 0x032D0E,snd_location_song_pick,2,sound.md:355 default/location song picker (32D0E)
-0x032D4C,sys_unk_032d4c,0,auto: touches none
-0x032F5E,sys_unk_032f5e,0,auto: touches none
-0x032FFA,sys_unk_032ffa,0,auto: touches $FF0E92
-0x033136,sys_unk_033136,0,auto: touches none
+0x032d4c,text_event_resolve,1,resolves an event to a text record via $032F5E $033136 shop_record_score or $0337D0; fetches via text_record_dispatch and expands 0x26 substitutions
+0x032f5e,text_pick_record,1,scans 58x6 table at $0D2EC2 for records matching arg1 and arg2; returns one picked by arg2 mod count or 0 if none; called only from $032D4C
+0x032ffa,npc_find_best_char,1,scans 396-entry table $0CD430; best score via math_rem32_signed mod 2000; caller $023F7E stores result in group slot
+0x033136,text_record_lookup,1,searches 6-byte table $0D301E 35 entries for key pair; returns index+0x3A or hash fallback; called from $032E28
 0x0331A4,shop_record_score,1,logic.md:576 scores each record for template match
 0x033396,sys_unk_033396,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x0337D0,sys_unk_0337d0,0,auto: touches $FF02A2
-0x0337EE,sys_unk_0337ee,0,auto: touches $FF0120 $FF02B2 $FF02B4 $FF02BE $FF02C0 $FF02C2
-0x034B50,sys_unk_034b50,0,auto: touches $FF02B4
-0x034BD0,sys_unk_034bd0,0,auto: touches $FF02C0 $FF02C2
+0x0337ee,npc_place_char,1,places char with HP and type guards; move via $024984 plus npc_leader_init; sets bit 14; called from $022958
+0x034b50,npc_move_leader,1,moves char via $024984 then npc_leader_init; sets bit 14; called from $034754
+0x034bd0,npc_random_walk_check,1,picks random direction from $01AE38; checks walk via map_walk_check; retries up to 4 times; called from $033F7A
 0x034CA2,sys_unk_034ca2,0,auto: touches $FF02C8 $FF02D8 $FF02DB
-0x034D32,sys_unk_034d32,0,auto: touches $FF02C0 $FF02C2
-0x034DD8,sys_unk_034dd8,0,auto: touches $FF02C0 $FF02C2
+0x034d32,world_move_toward,1,computes direction to target x y via $01E29C; moves char via $024984; called from $0349D4 $034AA0
+0x034dd8,world_check_toward,1,computes direction to target x y via $01E29C; checks walk via map_walk_check; returns walk result; called from $034940
 0x034ED0,sys_unk_034ed0,0,auto: touches $FF02C0 $FF02C2
 0x034FC4,sys_unk_034fc4,0,auto: touches $FF02BE $FF02C0 $FF02C2 $FF02C8 $FF02D8 $FF02DA
-0x0352C4,sys_unk_0352c4,0,auto: touches $FF02C0 $FF02C8 $FF02DA
-0x03536C,sys_unk_03536c,0,auto: touches none
-0x03539A,sys_unk_03539a,0,auto: touches $FF02C0 $FF02C2 $FF02D0
-0x0354A4,sys_unk_0354a4,0,auto: touches $FF02C0 $FF02C2 $FF02D0 $FF02DB
-0x035612,sys_unk_035612,0,auto: touches $FFBB86
+0x0352c4,map_area_walkable,1,checks 6x6 area around char at +0x26 link walkable via map_walk_check; returns 1 if all walkable else 0
+0x03536c,map_same_block,1,returns 1 if two points are in same 4x4 block; args shifted right 2
+0x03539a,world_steps_to_char,1,steps char1 toward char2 along direction via world_get_step_delta; returns steps 0-7 or 7 if unreachable or target dead
+0x0354a4,world_find_char_dir,1,scans along direction for char with +0x27 gate equal arg2 and HP above 0; writes found char via pointer arg4; returns steps
+0x035612,text_show_message,1,composes message via $032D4C into $FFBB86 then enqueues via text_enqueue_message; called from menu code
 0x035656,npc_attitude_adjust,1,logic.md:532 attitude adjustment 35656 (see save.md)
-0x03599C,sys_unk_03599c,0,auto: touches $FF009C $FF010C $FF010E $FF012A $FF012C $FF0130
-0x03620A,sys_unk_03620a,0,auto: touches none
-0x0362D6,sys_unk_0362d6,0,auto: touches $FF010E $FF013C $FF02B2 $FF02B4 $FF02B6 $FF02BA
-0x0368E4,sys_unk_0368e4,0,auto: touches $FF010E $FF02B2 $FF02B6 $FF02DD
-0x036954,sys_unk_036954,0,auto: touches $FF02CC $FF02D0 $FF02DE $FF02E0
-0x036A00,sys_unk_036a00,0,auto: touches $FF02B4 $FF02E0
-0x036A94,sys_unk_036a94,0,auto: touches $FF02B4 $FF02CC $FF02DE $FF02E0
+0x03599c,combat_battle_end,2,battle-end routine; plays Victory song 20; adjusts attitudes; clears combat statuses; sound.md:493
+0x03620a,world_place_char_near,1,spiral-searches for walkable cell near x y via map_walk_check then moves char there via $02570A; called from battle-end
+0x0362d6,combat_battle_start,1,battle-start routine; fills combat grid; sets up leader and party; plays Battle song 16; sound.md:489
+0x0368e4,combat_set_mode,1,sets $FF010E bits 6-8 to group_size/2+1; gated by L0CF1BA table via leader +0x29 char +0x02; skips if table byte $FD; called from spell dispatch $037850
+0x036954,combat_set_member_score,1,at battle-end per live member; value (HP/4+level+7)*4+rand into +0x2A low byte; sets +0x18 bit 9; read by $036A94
+0x036a00,combat_group_alive,1,returns 1 if char index 0-55 and type low nibble 1 and all 6 members in +0x14 list alive; else 0
+0x036a94,combat_find_best_member,1,finds alive member with highest +0x2A low byte across two groups with +0x18 bit 9 clear; clears bit 9 and retries if none
 0x036cfc,combat_calc_range_effect,1,picks effect value from displacement to target; axis-aligned vs diagonal plus $03AF10 check; caller $037124
 0x036de8,world_get_direction,1,computes direction from char to target point via spell_duration_tick; returns direction code
 0x036E2E,spell_damage_calc,1,spells.md:124 reads w0 damage base; damage path
