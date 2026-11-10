@@ -73,6 +73,29 @@ def abs_operands(op):
     return refs
 
 
+NAMES_FILE = Path("disasm/names.txt")
+
+
+def load_names():
+    """Routine names from disasm/names.txt: 'ADDR NAME  # source'. Each name must be unique."""
+    names = {}
+    if not NAMES_FILE.exists():
+        return names
+    for line in NAMES_FILE.read_text().splitlines():
+        body = line.split("#", 1)[0].strip()
+        if not body:
+            continue
+        addr_s, name = body.split()
+        addr = int(addr_s, 16)
+        if name in names.values():
+            raise SystemExit(f"duplicate routine name {name}")
+        names[addr] = name
+    return names
+
+
+NAMES = {}
+
+
 def load_ranges():
     rows = []
     for line in BODIES.read_text().splitlines():
@@ -152,6 +175,8 @@ def verify_all(cands, rom):
 
 
 def main():
+    global NAMES
+    NAMES = load_names()
     rom = ROM.read_bytes()
     assert len(rom) == ROM_SIZE, "rop-original.gen must be the 1 MB dump"
     ranges = load_ranges()
@@ -229,6 +254,8 @@ def main():
 
     def lab(t):
         """One name per address, used for both definitions and references."""
+        if t in NAMES:
+            return NAMES[t]
         return f"FUN_{t:06x}" if t in entry_names else f"L{t:06X}"
 
     # 3b. verify the labelled form of each rewritten non-flow instruction assembles

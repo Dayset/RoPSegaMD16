@@ -1,0 +1,21 @@
+# Routine names for disasm/src/rop.s (issue: naming routines). Format: ADDR NAME  # source
+# A name is used only where a doc in docs/ or the issue notes states the routine's role.
+# Addresses are ROM offsets. The address stays in every label's comment in the generated source.
+0x000200 reset_entry            # docs/architecture.md: 0x200 TMSS check + table-driven hardware init
+0x0002FA boot_display_attract   # docs/architecture.md: 0x2FA checksum, save check, display on, attract loop
+0x00119E main_init              # docs/architecture.md: 0x119E main init, then jmp $D25C
+0x000D25C game_dispatch         # docs/architecture.md: $D25C game-code dispatcher (not the main loop itself)
+0x000D28E main_loop             # docs/architecture.md: $D28E eternal main loop (#020)
+0x000D8BA struct52_dispatch     # docs/architecture.md: $D8BA indexes 52-byte structs via $FF0120
+0x0004E6 attract_scroll         # docs/architecture.md: $4E6 writes H-scroll values for the attract animation
+0x00179B6 soft_reset            # docs/architecture.md: $179B6 soft reset (movea.l $FFEC1E,a7; jmp $200)
+0x0001350 joypad_queue_pop      # docs/architecture.md: $1350 joypad-queue pop
+0x00012FE8 menu_verb_input      # docs/architecture.md: $12FE8 menu/verb input decoder
+0x0001B918 redraw_check         # docs/architecture.md: $1B918 per-frame redraw checker
+0x0001F296 verb_exec            # docs/architecture.md: $1F296 verb executor
+0x0002155E world_tick           # docs/architecture.md: $2155E per-frame world tick (step counter $FF0E16)
+0x00023B84 entity_spawn         # docs/architecture.md: $23B84 entity spawner
+0x000EB772 sound_tick           # docs/architecture.md: $EB772 per-frame sound/music tick
+0x000EB806 sound_upload         # docs/architecture.md: $EB806 sound-driver upload
+0x000FD07C runtime_checksum     # docs/architecture.md: $FD07C runtime checksum
+0x0004323C save_validate        # docs/architecture.md: $4323C serial-EEPROM / save validation

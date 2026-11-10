@@ -16,7 +16,7 @@ L00007E:
 	; data $00007E-$0001FF
 	incbin "rop-original.gen",$00007E,$182
 	; code $000200-$00028D
-FUN_000200:
+reset_entry:
 	tst.l $a10008.l	; $000200
 	bne.b L00020E	; $000206
 	tst.w $a1000c.l	; $000208
@@ -76,17 +76,17 @@ L00027A:
 	movem.l (a6),d0-d7/a0-a6	; $000284
 	move.w #$2700,sr	; $000288
 L00028C:
-	bra.b L0002FA	; $00028C
+	bra.b boot_display_attract	; $00028C
 L00028E:
 	; data $00028E-$0002F9
 	incbin "rop-original.gen",$00028E,$6C
 	; code $0002FA-$0003A9
-L0002FA:
+boot_display_attract:
 	tst.w $c00004.l	; $0002FA
-	jsr FUN_0fd07c.l	; $000300
+	jsr runtime_checksum.l	; $000300
 	nop	; $000306
 	move.w #$2700,sr	; $000308
-	jsr FUN_04323c.l	; $00030C
+	jsr save_validate.l	; $00030C
 	movea.l #$0,a7	; $000312
 L000318:
 	move.w $c00004.l,d1	; $000318
@@ -116,7 +116,7 @@ L000368:
 	bne.b L000392	; $00037C
 	andi.w #$ff,d1	; $00037E
 	bne.b L000392	; $000382
-	bsr.w FUN_0004e6	; $000384
+	bsr.w attract_scroll	; $000384
 	cmpi.w #$0,$ffc000.l	; $000388
 	beq.b L00035C	; $000390
 L000392:
@@ -124,7 +124,7 @@ L000392:
 	btst #$3,d1	; $000398
 	beq.b L000392	; $00039C
 	move.w #$8134,$c00004.l	; $00039E
-	bra.w FUN_00119e	; $0003A6
+	bra.w main_init	; $0003A6
 	; code $0003AA-$00044B
 FUN_0003aa:
 	move.b #$40,$a10009.l	; $0003AA
@@ -241,7 +241,7 @@ L0004D8:
 	movem.w (a7)+,d1-d3	; $0004E0
 	rts	; $0004E4
 	; code $0004E6-$000889
-FUN_0004e6:
+attract_scroll:
 	tst.w $ffc000.l	; $0004E6
 	bne.b L00054C	; $0004EC
 	tst.w $ffc002.l	; $0004EE
@@ -929,7 +929,7 @@ L001000:
 	; data $001000-$00119D
 	incbin "rop-original.gen",$001000,$19E
 	; code $00119E-$00126F
-FUN_00119e:
+main_init:
 	movea.l #$ffec1e,a7	; $00119E
 	move.l $ff0010.l,d7	; $0011A4
 	movea.l #$ff0000,a0	; $0011AA
@@ -970,9 +970,9 @@ L001216:
 	move.b #$0,$ff001b.l	; $00124A
 	move.b #$3,$ff0019.l	; $001252
 	move.l d7,$ff0010.l	; $00125A
-	jsr FUN_0eb806.l	; $001260
+	jsr sound_upload.l	; $001260
 	move.w #$2000,sr	; $001266
-	jmp FUN_00d25c.l	; $00126A
+	jmp game_dispatch.l	; $00126A
 	; code $001270-$001271
 FUN_001270:
 	rte	; $001270
@@ -1003,7 +1003,7 @@ L0012D0:
 	move.w #$0,$a11100.l	; $0012E6
 	or.b d1,d0	; $0012EE
 	not.b d0	; $0012F0
-	jsr FUN_0eb772.l	; $0012F2
+	jsr sound_tick.l	; $0012F2
 	cmp.b $ff0018.l,d0	; $0012F8
 	beq.b L001342	; $0012FE
 	move.b d0,$ff0018.l	; $001300
@@ -1031,7 +1031,7 @@ L001342:
 	movem.l (a7)+,d0-d2/a0	; $00134A
 	rte	; $00134E
 	; code $001350-$001393
-FUN_001350:
+joypad_queue_pop:
 	moveq #$0,d0	; $001350
 	moveq #$0,d1	; $001352
 	move.w #$2700,sr	; $001354
@@ -1078,7 +1078,7 @@ L00AE56:
 	; data $00AE56-$00D25B
 	incbin "rop-original.gen",$00AE56,$2406
 	; code $00D25C-$00D28D
-FUN_00d25c:
+game_dispatch:
 	link.w a6,#$0	; $00D25C
 	jsr FUN_011e06.l	; $00D260
 	jsr FUN_014fb6.l	; $00D266
@@ -1087,12 +1087,12 @@ FUN_00d25c:
 	move.w d0,-(a7)	; $00D278
 	jsr FUN_0173bc.l	; $00D27A
 	addq.w #$2,a7	; $00D280
-	bsr.b FUN_00d28e	; $00D282
-	jsr FUN_0179b6.l	; $00D284
+	bsr.b main_loop	; $00D282
+	jsr soft_reset.l	; $00D284
 	unlk a6	; $00D28A
 	rts	; $00D28C
 	; code $00D28E-$00D9E1
-FUN_00d28e:
+main_loop:
 	link.w a6,#$fff6	; $00D28E
 	clr.w $ff010e.l	; $00D292
 	clr.w $ff00ac.l	; $00D298
@@ -1101,7 +1101,7 @@ FUN_00d28e:
 	jsr FUN_026cca.l	; $00D2AA
 	addq.w #$2,a7	; $00D2B0
 	jsr FUN_01ba26.l	; $00D2B2
-	jsr FUN_01b918.l	; $00D2B8
+	jsr redraw_check.l	; $00D2B8
 L00D2BE:
 	tst.w $ff00ac.l	; $00D2BE
 	beq.b L00D2E0	; $00D2C4
@@ -1113,16 +1113,16 @@ L00D2BE:
 	and.w #$1,d0	; $00D2DA
 	beq.b L00D2E6	; $00D2DE
 L00D2E0:
-	jsr FUN_02155e.l	; $00D2E0
+	jsr world_tick.l	; $00D2E0
 L00D2E6:
 	tst.w $ff011e.l	; $00D2E6
-	bne.w L00D8BA	; $00D2EC
+	bne.w struct52_dispatch	; $00D2EC
 	cmpi.w #$ffff,$ff0120.l	; $00D2F0
-	bne.w L00D8BA	; $00D2F8
+	bne.w struct52_dispatch	; $00D2F8
 	tst.w $ff0094.l	; $00D2FC
 	beq.b L00D30E	; $00D302
 	tst.w $ff00ac.l	; $00D304
-	beq.w L00D8BA	; $00D30A
+	beq.w struct52_dispatch	; $00D30A
 L00D30E:
 	tst.w $ff0128.l	; $00D30E
 	bne.b L00D320	; $00D314
@@ -1148,7 +1148,7 @@ L00D350:
 	lea.l $ff02be.l,a0	; $00D35A
 	move.b $1(a0,d0.l),-$3(a6)	; $00D360
 L00D366:
-	jsr FUN_001350.l	; $00D366
+	jsr joypad_queue_pop.l	; $00D366
 	move.b d0,$ff0e14.l	; $00D36C
 	move.w $ff0e16.l,d0	; $00D372
 	ext.l d0	; $00D378
@@ -1165,19 +1165,19 @@ L00D392:
 L00D396:
 	bra.b L00D3B8	; $00D396
 L00D398:
-	jsr FUN_001350.l	; $00D398
+	jsr joypad_queue_pop.l	; $00D398
 	move.b d0,$ff0e14.l	; $00D39E
 	moveq #$0,d0	; $00D3A4
 	move.b $ff0e14.l,d0	; $00D3A6
 	and.w #$f0,d0	; $00D3AC
 	beq.b L00D3B8	; $00D3B0
-	jsr FUN_0179b6.l	; $00D3B2
+	jsr soft_reset.l	; $00D3B2
 L00D3B8:
 	bra.b L00D3E4	; $00D3B8
 L00D3BA:
 	lea.l -$4(a6),a0	; $00D3BA
 	move.l a0,-(a7)	; $00D3BE
-	jsr FUN_012fe8.l	; $00D3C0
+	jsr menu_verb_input.l	; $00D3C0
 	movea.l d0,a0	; $00D3C6
 	movea.l (a7)+,a1	; $00D3C8
 	move.l (a0)+,(a1)+	; $00D3CA
@@ -1185,7 +1185,7 @@ L00D3BA:
 	bne.b L00D3E4	; $00D3D0
 	lea.l -$4(a6),a0	; $00D3D2
 	move.l a0,-(a7)	; $00D3D6
-	jsr FUN_012fe8.l	; $00D3D8
+	jsr menu_verb_input.l	; $00D3D8
 	movea.l d0,a0	; $00D3DE
 	movea.l (a7)+,a1	; $00D3E0
 	move.l (a0)+,(a1)+	; $00D3E2
@@ -1308,7 +1308,7 @@ L00D544:
 L00D54E:
 	bra.w L00D7A2	; $00D54E
 L00D552:
-	jsr FUN_01f296.l	; $00D552
+	jsr verb_exec.l	; $00D552
 	bra.w L00D7A2	; $00D558
 L00D55C:
 	jsr FUN_0207d8.l	; $00D55C
@@ -1568,7 +1568,7 @@ L00D84C:
 	addq.w #$4,a7	; $00D8B4
 L00D8B6:
 	bra.w L00D95C	; $00D8B6
-L00D8BA:
+struct52_dispatch:
 	clr.b -$4(a6)	; $00D8BA
 	cmpi.w #$ffff,$ff0120.l	; $00D8BE
 	beq.w L00D94E	; $00D8C6
@@ -1649,7 +1649,7 @@ L00D9C2:
 	jsr FUN_026cca.l	; $00D9C6
 	addq.w #$2,a7	; $00D9CC
 L00D9CE:
-	jsr FUN_01b918.l	; $00D9CE
+	jsr redraw_check.l	; $00D9CE
 	tst.w $ff00be.l	; $00D9D4
 	beq.w L00D2BE	; $00D9DA
 	bra.w L00D392	; $00D9DE
@@ -3759,7 +3759,7 @@ FUN_012072:
 	jsr FUN_011624(pc)	; $012146
 	lea.l $c(a7),a7	; $01214A
 	jsr FUN_012fb4.l	; $01214E
-	jsr FUN_0179b6.l	; $012154
+	jsr soft_reset.l	; $012154
 	unlk a6	; $01215A
 	rts	; $01215C
 L01215E:
@@ -4394,7 +4394,7 @@ L012A58:
 	jsr FUN_01225c(pc)	; $012AC0
 	lea.l $c(a7),a7	; $012AC4
 L012AC8:
-	jsr FUN_001350.l	; $012AC8
+	jsr joypad_queue_pop.l	; $012AC8
 	move.b d0,$ff0e14.l	; $012ACE
 	moveq #$0,d0	; $012AD4
 	move.b $ff0e14.l,d0	; $012AD6
@@ -4702,13 +4702,13 @@ FUN_012c20:
 	; code $012F48-$012F7F
 FUN_012f48:
 	link.w a6,#$0	; $012F48
-	jsr FUN_001350.l	; $012F4C
+	jsr joypad_queue_pop.l	; $012F4C
 	move.b d0,$ff0e14.l	; $012F52
 	jsr FUN_00dce2.l	; $012F58
 	move.b d0,$ff8646.l	; $012F5E
 	tst.b $ff0e14.l	; $012F64
 	bne.b L012F78	; $012F6A
-	jsr FUN_001350.l	; $012F6C
+	jsr joypad_queue_pop.l	; $012F6C
 	move.b d0,$ff0e14.l	; $012F72
 L012F78:
 	move.w #$ff,d0	; $012F78
@@ -4747,7 +4747,7 @@ L012FC2:
 	cmpi.w #$9c40,-$2(a6)	; $012FC2
 	bcs.b L012FBE	; $012FC8
 L012FCA:
-	jsr FUN_001350.l	; $012FCA
+	jsr joypad_queue_pop.l	; $012FCA
 	move.b d0,$ff0e14.l	; $012FD0
 	moveq #$0,d0	; $012FD6
 	move.b $ff0e14.l,d0	; $012FD8
@@ -4756,11 +4756,11 @@ L012FCA:
 	unlk a6	; $012FE4
 	rts	; $012FE6
 	; code $012FE8-$013051
-FUN_012fe8:
+menu_verb_input:
 	link.w a6,#$fffc	; $012FE8
 	movem.l d4-d6,-(a7)	; $012FEC
 	moveq #$4,d6	; $012FF0
-	jsr FUN_001350.l	; $012FF2
+	jsr joypad_queue_pop.l	; $012FF2
 	move.b d0,d4	; $012FF8
 	clr.b -$4(a6)	; $012FFA
 	move.b #$ff,-$3(a6)	; $012FFE
@@ -6897,7 +6897,7 @@ L014E3A:
 	cmp.w d0,d1	; $014E4E
 	ble.w L014F0E	; $014E50
 L014E54:
-	jsr FUN_001350.l	; $014E54
+	jsr joypad_queue_pop.l	; $014E54
 	move.b d0,$ff0e14.l	; $014E5A
 	addq.w #$1,-$a(a6)	; $014E60
 	jsr FUN_01386a.l	; $014E64
@@ -6964,7 +6964,7 @@ L014F1A:
 	bcs.b L014F1A	; $014F26
 	clr.l -$58(a6)	; $014F28
 L014F2C:
-	jsr FUN_001350.l	; $014F2C
+	jsr joypad_queue_pop.l	; $014F2C
 	move.b d0,$ff0e14.l	; $014F32
 	addq.l #$1,-$58(a6)	; $014F38
 	moveq #$0,d0	; $014F3C
@@ -7262,7 +7262,7 @@ L01536A:
 	addq.w #$8,-$14(a6)	; $015372
 L015376:
 	addq.l #$1,-$1a(a6)	; $015376
-	jsr FUN_001350.l	; $01537A
+	jsr joypad_queue_pop.l	; $01537A
 	move.b d0,$ff0e14.l	; $015380
 	addq.w #$4,-$2(a6)	; $015386
 	tst.w -$a(a6)	; $01538A
@@ -7397,11 +7397,11 @@ L0154D4:
 	jsr FUN_012bfc.l	; $015520
 	jsr FUN_01b5d6.l	; $015526
 	jsr FUN_012c20.l	; $01552C
-	jsr FUN_00d28e.l	; $015532
+	jsr main_loop.l	; $015532
 	clr.w -(a7)	; $015538
 	jsr FUN_015c08(pc)	; $01553A
 	addq.w #$2,a7	; $01553E
-	jsr FUN_0179b6(pc)	; $015540
+	jsr soft_reset(pc)	; $015540
 L015544:
 	jsr FUN_01386a.l	; $015544
 	move.w #$8b00,-(a7)	; $01554A
@@ -7648,7 +7648,7 @@ L0158D0:
 	jsr FUN_011082.l	; $015916
 	addq.w #$6,a7	; $01591C
 L01591E:
-	jsr FUN_001350.l	; $01591E
+	jsr joypad_queue_pop.l	; $01591E
 	move.b d0,$ff0e14.l	; $015924
 	btst #$0,$ff0e14.l	; $01592A
 	beq.b L015958	; $015932
@@ -8231,7 +8231,7 @@ L016158:
 	jsr FUN_011082.l	; $0161A2
 	addq.w #$6,a7	; $0161A8
 L0161AA:
-	jsr FUN_001350.l	; $0161AA
+	jsr joypad_queue_pop.l	; $0161AA
 	move.b d0,$ff0e14.l	; $0161B0
 	addq.w #$4,-$2(a6)	; $0161B6
 	jsr FUN_01386a.l	; $0161BA
@@ -8684,7 +8684,7 @@ L0166C8:
 	sub.w #$14,d6	; $0166CC
 	move.w $a(a6),d7	; $0166D0
 	sub.w #$e,d7	; $0166D4
-	jsr FUN_001350.l	; $0166D8
+	jsr joypad_queue_pop.l	; $0166D8
 	move.b d0,$ff0e14.l	; $0166DE
 	jsr FUN_01386a.l	; $0166E4
 	move.w -$4(a6),-(a7)	; $0166EA
@@ -8875,7 +8875,7 @@ L016974:
 	jsr FUN_011bd8.l	; $0169BC
 	lea.l $e(a7),a7	; $0169C2
 L0169C6:
-	jsr FUN_001350.l	; $0169C6
+	jsr joypad_queue_pop.l	; $0169C6
 	move.b d0,$ff0e14.l	; $0169CC
 	moveq #$0,d4	; $0169D2
 L0169D4:
@@ -8980,7 +8980,7 @@ L016AB6:
 	addq.w #$1,d4	; $016AC0
 	cmp.w #$20,d4	; $016AC2
 	blt.w L0169D4	; $016AC6
-	jsr FUN_001350.l	; $016ACA
+	jsr joypad_queue_pop.l	; $016ACA
 	move.b d0,$ff0e14.l	; $016AD0
 	pea.l L0CCB18.l	; $016AD6
 	clr.w -(a7)	; $016ADC
@@ -8995,7 +8995,7 @@ L016AB6:
 	addq.w #$2,a7	; $016B00
 	moveq #$0,d4	; $016B02
 L016B04:
-	jsr FUN_001350.l	; $016B04
+	jsr joypad_queue_pop.l	; $016B04
 	move.b d0,$ff0e14.l	; $016B0A
 	jsr FUN_00dce2.l	; $016B10
 	move.b d0,$ff8646.l	; $016B16
@@ -10105,10 +10105,10 @@ L0179B2:
 	unlk a6	; $0179B2
 	rts	; $0179B4
 	; code $0179B6-$0179C5
-FUN_0179b6:
+soft_reset:
 	link.w a6,#$0	; $0179B6
 	movea.l $ffec1e.l,a7	; $0179BA
-	jmp FUN_000200.l	; $0179C0
+	jmp reset_entry.l	; $0179C0
 	; data $0179C6-$0179C9
 	incbin "rop-original.gen",$0179C6,$4
 	; code $0179CA-$017A3F
@@ -12523,7 +12523,7 @@ FUN_01b5d6:
 	clr.w -(a7)	; $01B788
 	move.w #$ffff,-(a7)	; $01B78A
 	move.w #$1,-(a7)	; $01B78E
-	jsr FUN_023b84.l	; $01B792
+	jsr entity_spawn.l	; $01B792
 	lea.l $e(a7),a7	; $01B798
 	move.w d0,$ff02b2.l	; $01B79C
 	move.w #$21c,$ff0e16.l	; $01B7A2
@@ -12552,7 +12552,7 @@ L01B7AC:
 	clr.w -(a7)	; $01B7F8
 	move.w #$ffff,-(a7)	; $01B7FA
 	move.w #$1,-(a7)	; $01B7FE
-	jsr FUN_023b84.l	; $01B802
+	jsr entity_spawn.l	; $01B802
 	lea.l $e(a7),a7	; $01B808
 	move.w d0,$ff02b2.l	; $01B80C
 	move.w #$834,$ff0e16.l	; $01B812
@@ -12621,7 +12621,7 @@ L01B914:
 	unlk a6	; $01B914
 	rts	; $01B916
 	; code $01B918-$01BA15
-FUN_01b918:
+redraw_check:
 	link.w a6,#$fffe	; $01B918
 	tst.w $ff009c.l	; $01B91C
 	bne.b L01B934	; $01B922
@@ -17192,7 +17192,7 @@ L01F292:
 	unlk a6	; $01F292
 	rts	; $01F294
 	; code $01F296-$01FADB
-FUN_01f296:
+verb_exec:
 	link.w a6,#$ffe6	; $01F296
 	clr.w -$c(a6)	; $01F29A
 	clr.w -$10(a6)	; $01F29E
@@ -18875,7 +18875,7 @@ L020A4E:
 	lea.l L0CCDB8.l,a0	; $020A74
 	add.l a0,d1	; $020A7A
 	move.l d1,$ffbb82.l	; $020A7C
-	jsr FUN_01f296(pc)	; $020A82
+	jsr verb_exec(pc)	; $020A82
 	bra.b L020A4A	; $020A86
 	; code $020A88-$020BFD
 FUN_020a88:
@@ -19749,7 +19749,7 @@ L02154A:
 L02155C:
 	bra.b L0214FC	; $02155C
 	; code $02155E-$021B4B
-FUN_02155e:
+world_tick:
 	link.w a6,#$fff4	; $02155E
 	movem.l d4-d7/a3-a4,-(a7)	; $021562
 	movea.l $ffa7fc.l,a0	; $021566
@@ -20285,7 +20285,7 @@ L021C66:
 	move.w -$8(a6),-(a7)	; $021C7C
 	move.w d5,-(a7)	; $021C80
 	move.w #$1,-(a7)	; $021C82
-	jsr FUN_023b84.l	; $021C86
+	jsr entity_spawn.l	; $021C86
 	lea.l $e(a7),a7	; $021C8C
 	movea.w d0,a4	; $021C90
 	move.w #$ffff,-(a7)	; $021C92
@@ -20509,7 +20509,7 @@ L021ED4:
 	move.w -$8(a6),-(a7)	; $021F90
 	move.w #$2,-(a7)	; $021F94
 	move.w #$1,-(a7)	; $021F98
-	jsr FUN_023b84.l	; $021F9C
+	jsr entity_spawn.l	; $021F9C
 	lea.l $e(a7),a7	; $021FA2
 	movea.w d0,a4	; $021FA6
 	move.w #$ffff,-(a7)	; $021FA8
@@ -22526,7 +22526,7 @@ L023B50:
 	unlk a6	; $023B80
 	rts	; $023B82
 	; code $023B84-$0243D5
-FUN_023b84:
+entity_spawn:
 	link.w a6,#$0	; $023B84
 	movem.l d4-d7,-(a7)	; $023B88
 	moveq #$ff,d4	; $023B8C
@@ -24785,7 +24785,7 @@ L0259EC:
 	move.w (a0,d0.l),-(a7)	; $025A2E
 	move.w d7,-(a7)	; $025A32
 	move.w #$4,-(a7)	; $025A34
-	jsr FUN_023b84(pc)	; $025A38
+	jsr entity_spawn(pc)	; $025A38
 	lea.l $e(a7),a7	; $025A3C
 	move.w d0,d6	; $025A40
 	move.w $8(a6),d0	; $025A42
@@ -25546,7 +25546,7 @@ L0263B4:
 	move.w #$ffff,-(a7)	; $0263D2
 	move.w #$2,-(a7)	; $0263D6
 	move.w #$2,-(a7)	; $0263DA
-	jsr FUN_023b84.l	; $0263DE
+	jsr entity_spawn.l	; $0263DE
 	lea.l $e(a7),a7	; $0263E4
 	move.w d0,-$a(a6)	; $0263E8
 	move.w #$ffff,-(a7)	; $0263EC
@@ -31150,7 +31150,7 @@ L02B0A8:
 	move.w d0,-(a7)	; $02B108
 	move.w #$ffff,-(a7)	; $02B10A
 	move.w #$6,-(a7)	; $02B10E
-	jsr FUN_023b84.l	; $02B112
+	jsr entity_spawn.l	; $02B112
 	lea.l $e(a7),a7	; $02B118
 	move.w d0,-$6(a6)	; $02B11C
 	move.w -$6(a6),d0	; $02B120
@@ -31225,7 +31225,7 @@ L02B1CC:
 	move.w d0,-(a7)	; $02B22C
 	move.w #$ffff,-(a7)	; $02B22E
 	move.w #$6,-(a7)	; $02B232
-	jsr FUN_023b84.l	; $02B236
+	jsr entity_spawn.l	; $02B236
 	lea.l $e(a7),a7	; $02B23C
 	move.w d0,d6	; $02B240
 	move.w d6,d0	; $02B242
@@ -31316,7 +31316,7 @@ L02B34A:
 	move.w d0,-(a7)	; $02B382
 	move.w #$ffff,-(a7)	; $02B384
 	move.w #$6,-(a7)	; $02B388
-	jsr FUN_023b84.l	; $02B38C
+	jsr entity_spawn.l	; $02B38C
 	lea.l $e(a7),a7	; $02B392
 	move.w d0,-$6(a6)	; $02B396
 	move.w -$6(a6),d0	; $02B39A
@@ -31380,7 +31380,7 @@ L02B41E:
 	move.w d0,-(a7)	; $02B47A
 	move.w #$ffff,-(a7)	; $02B47C
 	move.w #$6,-(a7)	; $02B480
-	jsr FUN_023b84.l	; $02B484
+	jsr entity_spawn.l	; $02B484
 	lea.l $e(a7),a7	; $02B48A
 	move.w d0,-$2(a6)	; $02B48E
 	move.w -$2(a6),d0	; $02B492
@@ -31449,7 +31449,7 @@ L02B51E:
 	move.w d0,-(a7)	; $02B57A
 	move.w #$ffff,-(a7)	; $02B57C
 	move.w #$6,-(a7)	; $02B580
-	jsr FUN_023b84.l	; $02B584
+	jsr entity_spawn.l	; $02B584
 	lea.l $e(a7),a7	; $02B58A
 	move.w d0,-$2(a6)	; $02B58E
 	move.w -$2(a6),d0	; $02B592
@@ -31751,7 +31751,7 @@ L02B908:
 	move.w d1,-(a7)	; $02B962
 	move.w #$ffff,-(a7)	; $02B964
 	move.w #$5,-(a7)	; $02B968
-	jsr FUN_023b84.l	; $02B96C
+	jsr entity_spawn.l	; $02B96C
 	lea.l $e(a7),a7	; $02B972
 	move.w d0,-$2(a6)	; $02B976
 	move.w -$2(a6),d0	; $02B97A
@@ -31854,7 +31854,7 @@ L02BAE4:
 	move.w -$4(a6),-(a7)	; $02BAEE
 	move.w #$ffff,-(a7)	; $02BAF2
 	move.w #$1,-(a7)	; $02BAF6
-	jsr FUN_023b84.l	; $02BAFA
+	jsr entity_spawn.l	; $02BAFA
 	lea.l $e(a7),a7	; $02BB00
 	move.w d0,-$2(a6)	; $02BB04
 	move.w -$4(a6),d0	; $02BB08
@@ -32477,7 +32477,7 @@ L02C2E0:
 	move.w #$ffff,-(a7)	; $02C326
 	move.w #$2,-(a7)	; $02C32A
 	move.w #$2,-(a7)	; $02C32E
-	jsr FUN_023b84.l	; $02C332
+	jsr entity_spawn.l	; $02C332
 	lea.l $e(a7),a7	; $02C338
 	move.w d0,-$a(a6)	; $02C33C
 	bra.w L02C43E	; $02C340
@@ -32496,7 +32496,7 @@ L02C2E0:
 	move.w #$ffff,-(a7)	; $02C372
 	move.w #$2,-(a7)	; $02C376
 	move.w #$2,-(a7)	; $02C37A
-	jsr FUN_023b84.l	; $02C37E
+	jsr entity_spawn.l	; $02C37E
 	lea.l $e(a7),a7	; $02C384
 	move.w d0,-$a(a6)	; $02C388
 	bra.w L02C43E	; $02C38C
@@ -32515,7 +32515,7 @@ L02C2E0:
 	move.w #$ffff,-(a7)	; $02C3BE
 	move.w #$2,-(a7)	; $02C3C2
 	move.w #$2,-(a7)	; $02C3C6
-	jsr FUN_023b84.l	; $02C3CA
+	jsr entity_spawn.l	; $02C3CA
 	lea.l $e(a7),a7	; $02C3D0
 	move.w d0,-$a(a6)	; $02C3D4
 	bra.b L02C43E	; $02C3D8
@@ -32534,7 +32534,7 @@ L02C2E0:
 	move.w #$ffff,-(a7)	; $02C408
 	move.w #$2,-(a7)	; $02C40C
 	move.w #$2,-(a7)	; $02C410
-	jsr FUN_023b84.l	; $02C414
+	jsr entity_spawn.l	; $02C414
 	lea.l $e(a7),a7	; $02C41A
 	move.w d0,-$a(a6)	; $02C41E
 	bra.b L02C43E	; $02C422
@@ -34124,7 +34124,7 @@ L02D7D2:
 	move.w $4(a0),-(a7)	; $02D8A2
 	move.w #$ffff,-(a7)	; $02D8A6
 	move.w #$1,-(a7)	; $02D8AA
-	jsr FUN_023b84.l	; $02D8AE
+	jsr entity_spawn.l	; $02D8AE
 	lea.l $e(a7),a7	; $02D8B4
 	move.w d0,-$2(a6)	; $02D8B8
 	movea.l $ffc384.l,a0	; $02D8BC
@@ -35003,7 +35003,7 @@ L02E526:
 	move.w #$ffff,-(a7)	; $02E546
 	move.w #$2,-(a7)	; $02E54A
 	move.w #$2,-(a7)	; $02E54E
-	jsr FUN_023b84.l	; $02E552
+	jsr entity_spawn.l	; $02E552
 	lea.l $e(a7),a7	; $02E558
 	move.w d0,-$8(a6)	; $02E55C
 	bra.b L02E58A	; $02E560
@@ -35015,7 +35015,7 @@ L02E562:
 	move.w #$ffff,-(a7)	; $02E570
 	move.w #$2,-(a7)	; $02E574
 	move.w #$2,-(a7)	; $02E578
-	jsr FUN_023b84.l	; $02E57C
+	jsr entity_spawn.l	; $02E57C
 	lea.l $e(a7),a7	; $02E582
 	move.w d0,-$8(a6)	; $02E586
 L02E58A:
@@ -35741,7 +35741,7 @@ FUN_02ee6c:
 	move.w d0,-(a7)	; $02EE80
 	move.w #$1,-(a7)	; $02EE82
 	move.w #$4,-(a7)	; $02EE86
-	jsr FUN_023b84.l	; $02EE8A
+	jsr entity_spawn.l	; $02EE8A
 	lea.l $e(a7),a7	; $02EE90
 	move.w d0,-$2(a6)	; $02EE94
 	move.w $ff02b2.l,d0	; $02EE98
@@ -36543,7 +36543,7 @@ L02F8E6:
 	clr.w -(a7)	; $02F9A4
 	move.w #$ffff,-(a7)	; $02F9A6
 	move.w #$1,-(a7)	; $02F9AA
-	jsr FUN_023b84.l	; $02F9AE
+	jsr entity_spawn.l	; $02F9AE
 	lea.l $e(a7),a7	; $02F9B4
 	move.w d0,$ff02b2.l	; $02F9B8
 	move.w #$ffff,-(a7)	; $02F9BE
@@ -36776,7 +36776,7 @@ L02FD3A:
 	move.w #$ffff,-(a7)	; $02FD4C
 	move.w #$2,-(a7)	; $02FD50
 	move.w #$2,-(a7)	; $02FD54
-	jsr FUN_023b84.l	; $02FD58
+	jsr entity_spawn.l	; $02FD58
 	lea.l $e(a7),a7	; $02FD5E
 	move.w d0,-$6(a6)	; $02FD62
 	move.w #$ffff,-(a7)	; $02FD66
@@ -37834,7 +37834,7 @@ L030B58:
 	move.w d6,-(a7)	; $030B62
 	move.w #$ffff,-(a7)	; $030B64
 	move.w #$1,-(a7)	; $030B68
-	jsr FUN_023b84.l	; $030B6C
+	jsr entity_spawn.l	; $030B6C
 	lea.l $e(a7),a7	; $030B72
 	move.w d0,d7	; $030B76
 	move.w d6,d0	; $030B78
@@ -37969,7 +37969,7 @@ L030CCC:
 	move.w d1,-(a7)	; $030D24
 	move.w #$ffff,-(a7)	; $030D26
 	move.w #$5,-(a7)	; $030D2A
-	jsr FUN_023b84.l	; $030D2E
+	jsr entity_spawn.l	; $030D2E
 	lea.l $e(a7),a7	; $030D34
 	move.w d0,d7	; $030D38
 	move.w d7,d0	; $030D3A
@@ -40583,7 +40583,7 @@ L032CB4:
 	move.w #$1d,-(a7)	; $032CCA
 	move.w #$d,-(a7)	; $032CCE
 	move.w #$1,-(a7)	; $032CD2
-	jsr FUN_023b84.l	; $032CD6
+	jsr entity_spawn.l	; $032CD6
 	lea.l $e(a7),a7	; $032CDC
 	move.w d0,-$2(a6)	; $032CE0
 	move.w #$ffff,-(a7)	; $032CE4
@@ -59053,7 +59053,7 @@ L04276E:
 	move.w #$1a9,-(a7)	; $0427BC
 	move.w #$ffff,-(a7)	; $0427C0
 	move.w #$1,-(a7)	; $0427C4
-	jsr FUN_023b84.l	; $0427C8
+	jsr entity_spawn.l	; $0427C8
 	lea.l $e(a7),a7	; $0427CE
 	move.w d0,$ff0294.l	; $0427D2
 	move.w $ff0294.l,-(a7)	; $0427D8
@@ -59828,7 +59828,7 @@ L043232:
 	move.w #$ffff,$ff014e.l	; $043232
 	bra.b L043222	; $04323A
 	; code $04323C-$043313
-FUN_04323c:
+save_validate:
 	movem.l d0-d1,-(a7)	; $04323C
 	clr.w $ff0168.l	; $043240
 	jsr FUN_042fc8(pc)	; $043246
@@ -60263,7 +60263,7 @@ L0E0A18:
 	; data $0E0A18-$0EB771
 	incbin "rop-original.gen",$0E0A18,$AD5A
 	; code $0EB772-$0EB7C7
-FUN_0eb772:
+sound_tick:
 	movem.l d0-d7/a0-a6,-(a7)	; $0EB772
 	tst.b $ff0222.l	; $0EB776
 	beq.b L0EB786	; $0EB77C
@@ -60301,7 +60301,7 @@ L0EB7F2:
 	movem.l (a7)+,d0/a0	; $0EB800
 	rts	; $0EB804
 	; code $0EB806-$0EB889
-FUN_0eb806:
+sound_upload:
 	move.w sr,-(a7)	; $0EB806
 	sf.b $ff021e.l	; $0EB808
 	movem.l d0-d2/a0-a2,-(a7)	; $0EB80E
@@ -60338,7 +60338,7 @@ L0EB87A:
 FUN_0eb88a:
 	move.l $4(a7),d0	; $0EB88A
 	movem.l d0-d1/a0-a1,-(a7)	; $0EB88E
-	bsr.w FUN_0eb806	; $0EB892
+	bsr.w sound_upload	; $0EB892
 	move.l d0,$ff022c.l	; $0EB896
 	movea.l d0,a0	; $0EB89C
 	move.l -$4(a0),$ff0230.l	; $0EB89E
@@ -60541,7 +60541,7 @@ FUN_0ebb04:
 L0EBB08:
 	tst.b $ff021e.l	; $0EBB08
 	bne.b L0EBB14	; $0EBB0E
-	bsr.w FUN_0eb806	; $0EBB10
+	bsr.w sound_upload	; $0EBB10
 L0EBB14:
 	movem.l d0/d3/a1-a2,-(a7)	; $0EBB14
 	move.w sr,-(a7)	; $0EBB18
@@ -60629,7 +60629,7 @@ L0FCAE2:
 	; data $0FCAE2-$0FD07B
 	incbin "rop-original.gen",$0FCAE2,$59A
 	; code $0FD07C-$0FD0CB
-FUN_0fd07c:
+runtime_checksum:
 	moveq #$0,d0	; $0FD07C
 	suba.l a0,a0	; $0FD07E
 	move.l #$3f41f,d1	; $0FD080
