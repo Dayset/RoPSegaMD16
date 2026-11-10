@@ -393,13 +393,31 @@ cats 1–6; `$D6707` = 11 rings; `$D671B` = 15 keys; `$D6725` = 33
 items; `$D674D` = 33 papers; `$D672F` = 25 goods — these ARE the
 `$D66A6` record +7 bytes).
 
-**`$FF00C0` 36-word table: meaning OPEN.** Saved as 36×4-bit values
-of (`$FF00C0[i]` + `0x80`); `$FF00C0` is also read by `$23DF6`,
-`$2CE8E`, `$2CF96`, `$2F842`, `$300C8`, `$30268`, `$30286`,
-`$302A4`, `$302C2`, `$302D8`, `$30714`, `$30732`, `$30750`,
-`$30766`, `$35682`, `$356A2`, `$356C2`, `$356DA` (and `$23B84`'s
-tail uses `table[$FF00C0 + template-word-6×2]`). Describe as a
-36-word game table, stored +`0x80` mod 16.
+**`$FF00C0` 36-word table: RESOLVED (2026-11-10) [static] — the
+persistent merchant-attitude table.** 36 words, indices 0–35, one
+per merchant identity; each entry is a value in [−100, +100],
+saved as 36×4-bit values of (`$FF00C0[i]` + `0x80`). The entry is
+indexed by the entity struct's `+0x20` field (the merchant's
+identity, 0–35 — set at spawn from template word 6 (`$CF1B8`), or
+from the global `$FFC408` when that word is `0x24` = 36, the
+out-of-range sentinel). The merchant struct's `+0x22` is the LIVE
+attitude (0–100, used by the price function `$2EA92`: `m22 =
+att−50`, `price = v − m22·v/140`); `+0x22` is initialised at spawn
+(`$23B84` tail) from the persistent entry —
+`clamp(ROM base `$CF1BC` + (byte `$CF1BE` × `$FF00C0[idx]`) / 100,
+−100, +100)` — and `$FF00C0` is the persistent backing store,
+saved to / loaded from EEPROM. Writers: CAMP (`$03019a`) raises
+each entry by +3 toward 10 (entry 34 skipped) — the attitude
+recovery; battle-end (`$035656`) lowers an entry by 40; `$030628`
+lowers an entry by 5; `$02CE74` (called from conversation code
+`$029C66`/`$029C8A`/`$02A04C`/`$02A076`) adjusts an entry by a
+percentage of the event delta and the live `+0x22` by the full
+delta. Readers: spawn (`$23DF6`), `$02CE74`, the save serialiser
+(`$02F842`) and loader (`$0300C8`/`$0300DE`). The `+0x20 == 32`
+price-doubling check in `$2EA92` is merchant identity 32 (the
+Commerce merchant). Template indices read from ROM confirm the
+range: the first 40 templates use indices {1, 2, 10, 15, 19, 29,
+32, 34}, max 34 — all within 0–35.
 
 **`$2C8F2` inventory count (`0x2C8F2–0x2CA16`, fully traced):**
 `$2C8F2(char_idx, code)` returns the inventory count of item

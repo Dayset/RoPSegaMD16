@@ -723,11 +723,13 @@ graph to 446 functions / 1,449 edges; exports are under
   `0x1B` verified by independent recomputation). Real Load/Save are
   `$2068E` cases **81/82** (corrects the #021 "C=14" label — case 14
   is the 'Goods' shop verb). Open: chip identity (93C46 family
-  unproven), `$FF00C0` table meaning, `$FFBB6C` setter, `$2F896`'s
+  unproven), `$FFBB6C` setter, `$2F896`'s
   `0x4E` acceptance. BlastEm notes: fresh EEPROM reads as `0x00`
   (not `0xFF`); it writes `save.eeprom` on exit but does not reload
   it, so a live boot-from-save was not observed — persistence is
-  proven at the file level + via `$43012`. M2 is now COMPLETE.
+  proven at the file level + via `$43012`. `$FF00C0` is the
+  persistent merchant-attitude table (36 words, resolved 2026-11-10;
+  see `docs/save.md`). M2 is now COMPLETE.
 - **#020 (main loop / state machine): DONE 2026-11-09** — see the
   "Main loop + game state machine" section above. What it left
   open for #021: the exact mapping from the `0xCCDB8` verb-table

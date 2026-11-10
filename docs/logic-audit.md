@@ -718,6 +718,13 @@ table[`$FF00C0` + template-word-6×2] / 100, clamped to [−100,
 below −100) stored at struct.+0x22; template bytes
 `$CF1BA`/`$CF1BB`/`$CF1BE` → +0x24/+0x25/+0x26; +0x20 from
 template word 6 (`$CF1B8`) or `$FFC408` if that word == `0x24`.
+`$FF00C0` itself is the persistent merchant-attitude table (36
+words, indices 0–35, values [−100, +100], saved to EEPROM with a
++0x80 bias; resolved 2026-11-10 — see `docs/save.md`): `+0x20` is
+the merchant's index into it, `+0x22` is the live attitude used by
+the price function `$2EA92`, and CAMP (`$03019a`, +3 toward 10),
+battle-end (`$035656`, −40), `$030628` (−5) and `$02CE74`
+(percentage-based) are the attitude adjustments.
 Note: +0x22 is written by **three** systems (template stat at
 spawn, max Power by `$2BBD2` on level-up, self-index by `$2B240`
 in combat) — field-reuse hazard, safe in combat only because
