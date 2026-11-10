@@ -81,15 +81,15 @@ addr,name,tier,note
 0x01960A,sys_unk_01960a,0,auto: touches $FF0078
 0x01961A,sys_unk_01961a,0,auto: touches none
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
-0x01BA16,sys_unk_01ba16,0,auto: touches $FF0098 $FF009A $FF009C $FFB08A
+0x01BA16,redraw_flag_set,1,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26
 0x01BA4E,map_chunk_pos,2,graphics.md:366 $1BA4E map-chunk position math
 0x01C176,map_chunk_cache_read,2,logic.md: destination tile read via $1C176 chunk cache
 0x01C21A,leader_spawn,2,architecture.md: leader spawn via $1C21A(6; 0x6F; 0x7D)
-0x01C802,sys_unk_01c802,0,auto: touches $FFA896
-0x01C83E,sys_unk_01c83e,0,auto: touches $FF0E98 $FFA7FC
+0x01C802,map_chunk_load_buf,2,graphics.md: map-chunk loader ($19692/$1C802; buffers $FF868C + slot*2048)
+0x01C83E,location_divide,2,save.md: mode 6 divides by the location record words via $1C83E
 0x01C892,sys_unk_01c892,0,auto: touches $FF00A4 $FF00AE $FF010E $FF02B2 $FF02B4 $FF02BA
-0x01D9BC,sys_unk_01d9bc,0,auto: touches none
-0x01DA10,sys_unk_01da10,0,auto: touches none
+0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
+0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
 0x01DA6C,sys_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
 0x01E022,sys_unk_01e022,0,auto: touches none
 0x01E0A4,sys_unk_01e0a4,0,auto: touches none
@@ -110,7 +110,7 @@ addr,name,tier,note
 0x020A88,sys_unk_020a88,0,auto: touches $FF009A $FF009C $FF00AC $FF010E $FF0138 $FF02B2
 0x020BFE,sys_unk_020bfe,0,auto: touches none
 0x020C5E,sys_unk_020c5e,0,auto: touches none
-0x020C6A,sys_unk_020c6a,0,auto: touches $FFB36C $FFB76C
+0x020C6A,table_fill_ff,2,maps.md: $FFB36C+1024 initialised to $FF (empty) by $20C6A
 0x020CCA,sys_unk_020cca,0,auto: touches $FFB0CC
 0x020CF6,sys_unk_020cf6,0,auto: touches $FF0096
 0x020D0A,sys_unk_020d0a,0,auto: touches $FFB0CC $FFB0D2

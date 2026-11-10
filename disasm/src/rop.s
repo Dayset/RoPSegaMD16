@@ -12465,7 +12465,7 @@ new_game_init:
 	addq.w #$6,a7	; $01B696
 	jsr grid_fill(pc)	; $01B698
 	pea.l $ff0e8e.l	; $01B69C
-	jsr sys_unk_01d9bc(pc)	; $01B6A2
+	jsr table_init_a(pc)	; $01B6A2
 	addq.w #$4,a7	; $01B6A6
 	move.w #$1,-(a7)	; $01B6A8
 	move.w #$1,-(a7)	; $01B6AC
@@ -12473,7 +12473,7 @@ new_game_init:
 	move.w #$e0,-(a7)	; $01B6B4
 	move.w #$160,-(a7)	; $01B6B8
 	pea.l $ffb08c.l	; $01B6BC
-	jsr sys_unk_01da10(pc)	; $01B6C2
+	jsr table_init_b(pc)	; $01B6C2
 	lea.l $e(a7),a7	; $01B6C6
 	clr.w -(a7)	; $01B6CA
 	move.w #$1,-(a7)	; $01B6CC
@@ -12481,7 +12481,7 @@ new_game_init:
 	move.w #$b,-(a7)	; $01B6D4
 	move.w #$b,-(a7)	; $01B6D8
 	pea.l $ffb09c.l	; $01B6DC
-	jsr sys_unk_01da10(pc)	; $01B6E2
+	jsr table_init_b(pc)	; $01B6E2
 	lea.l $e(a7),a7	; $01B6E6
 	clr.w -(a7)	; $01B6EA
 	move.w #$1,-(a7)	; $01B6EC
@@ -12489,7 +12489,7 @@ new_game_init:
 	move.w #$20,-(a7)	; $01B6F4
 	move.w #$20,-(a7)	; $01B6F8
 	pea.l $ffb0ac.l	; $01B6FC
-	jsr sys_unk_01da10(pc)	; $01B702
+	jsr table_init_b(pc)	; $01B702
 	lea.l $e(a7),a7	; $01B706
 	clr.w -(a7)	; $01B70A
 	move.w #$4,-(a7)	; $01B70C
@@ -12497,7 +12497,7 @@ new_game_init:
 	move.w #$b,-(a7)	; $01B714
 	move.w #$b,-(a7)	; $01B718
 	pea.l $ffb0bc.l	; $01B71C
-	jsr sys_unk_01da10(pc)	; $01B722
+	jsr table_init_b(pc)	; $01B722
 	lea.l $e(a7),a7	; $01B726
 	move.w #$ff,-(a7)	; $01B72A
 	jsr sys_unk_02a454.l	; $01B72E
@@ -12695,7 +12695,7 @@ L01B9F2:
 L01BA12:
 	bra.w L01B94C	; $01BA12
 	; code $01BA16-$01BA25
-sys_unk_01ba16:
+redraw_flag_set:
 	link.w a6,#$0	; $01BA16
 	move.w #$ffff,$ff0098.l	; $01BA1A
 	unlk a6	; $01BA22
@@ -13326,10 +13326,10 @@ map_chunk_cache_read:
 	swap d4	; $01C1B4
 	move.w d5,-(a7)	; $01C1B6
 	move.w d4,-(a7)	; $01C1B8
-	jsr sys_unk_01c83e(pc)	; $01C1BA
+	jsr location_divide(pc)	; $01C1BA
 	addq.w #$4,a7	; $01C1BE
 	move.w d0,-(a7)	; $01C1C0
-	jsr sys_unk_01c802(pc)	; $01C1C2
+	jsr map_chunk_load_buf(pc)	; $01C1C2
 	addq.w #$2,a7	; $01C1C6
 	move.l d0,-$4(a6)	; $01C1C8
 	lea.l $ff0248.l,a0	; $01C1CC
@@ -13844,16 +13844,16 @@ L01C7D4:
 L01C7DA:
 	move.w $ff0e90.l,-(a7)	; $01C7DA
 	move.w $ff0e8e.l,-(a7)	; $01C7E0
-	bsr.b sys_unk_01c83e	; $01C7E6
+	bsr.b location_divide	; $01C7E6
 	addq.w #$4,a7	; $01C7E8
 	move.w d0,$ff0e94.l	; $01C7EA
-	jsr sys_unk_01ba16(pc)	; $01C7F0
+	jsr redraw_flag_set(pc)	; $01C7F0
 	clr.l $ff00ba.l	; $01C7F4
 	movem.l (a7)+,d4-d5	; $01C7FA
 	unlk a6	; $01C7FE
 	rts	; $01C800
 	; code $01C802-$01C83D
-sys_unk_01c802:
+map_chunk_load_buf:
 	link.w a6,#$0	; $01C802
 	move.w $8(a6),d0	; $01C806
 	ext.l d0	; $01C80A
@@ -13874,7 +13874,7 @@ L01C826:
 	unlk a6	; $01C83A
 	rts	; $01C83C
 	; code $01C83E-$01C891
-sys_unk_01c83e:
+location_divide:
 	link.w a6,#$0	; $01C83E
 	move.w $a(a6),d0	; $01C842
 	movea.l $ffa7fc.l,a0	; $01C846
@@ -15187,7 +15187,7 @@ L01D9B6:
 	moveq #$1,d0	; $01D9B6
 	bra.w L01C984	; $01D9B8
 	; code $01D9BC-$01DA0F
-sys_unk_01d9bc:
+table_init_a:
 	link.w a6,#$0	; $01D9BC
 	movea.l $8(a6),a0	; $01D9C0
 	clr.w (a0)	; $01D9C4
@@ -15212,7 +15212,7 @@ sys_unk_01d9bc:
 	unlk a6	; $01DA0C
 	rts	; $01DA0E
 	; code $01DA10-$01DA6B
-sys_unk_01da10:
+table_init_b:
 	link.w a6,#$0	; $01DA10
 	movea.l $8(a6),a0	; $01DA14
 	move.w $c(a6),(a0)	; $01DA18
@@ -19014,7 +19014,7 @@ sys_unk_020c5e:
 	unlk a6	; $020C66
 	rts	; $020C68
 	; code $020C6A-$020CC9
-sys_unk_020c6a:
+table_fill_ff:
 	link.w a6,#$fffc	; $020C6A
 	clr.w -$2(a6)	; $020C6E
 L020C72:
@@ -19062,7 +19062,7 @@ L020CD2:
 sys_unk_020cf6:
 	link.w a6,#$0	; $020CF6
 	clr.w $ff0096.l	; $020CFA
-	jsr sys_unk_020c6a(pc)	; $020D00
+	jsr table_fill_ff(pc)	; $020D00
 	bsr.b sys_unk_020cca	; $020D04
 	unlk a6	; $020D06
 	rts	; $020D08
@@ -20323,7 +20323,7 @@ L021CC2:
 	muls.w #$34,d0	; $021D0C
 	lea.l $ff02c0.l,a0	; $021D10
 	move.w (a0,d0.l),-(a7)	; $021D16
-	jsr sys_unk_01c83e.l	; $021D1A
+	jsr location_divide.l	; $021D1A
 	addq.w #$4,a7	; $021D20
 	move.w d0,d7	; $021D22
 	moveq #$0,d6	; $021D24
@@ -21867,7 +21867,7 @@ L0231C0:
 	cmp.w #$38,d4	; $0231C2
 	blt.w L0230AA	; $0231C6
 L0231CA:
-	jsr sys_unk_01ba16.l	; $0231CA
+	jsr redraw_flag_set.l	; $0231CA
 	movem.l (a7)+,d4-d7/a3-a4	; $0231D0
 	unlk a6	; $0231D4
 	rts	; $0231D6
@@ -38980,11 +38980,11 @@ sys_unk_0319ec:
 	move.w d0,$c(a6)	; $031A28
 	move.w $c(a6),-(a7)	; $031A2C
 	move.w $a(a6),-(a7)	; $031A30
-	jsr sys_unk_01c83e.l	; $031A34
+	jsr location_divide.l	; $031A34
 	addq.w #$4,a7	; $031A3A
 	move.w d0,-$6(a6)	; $031A3C
 	move.w -$6(a6),-(a7)	; $031A40
-	jsr sys_unk_01c802.l	; $031A44
+	jsr map_chunk_load_buf.l	; $031A44
 	addq.w #$2,a7	; $031A4A
 	move.l d0,-$4(a6)	; $031A4C
 	move.w $8(a6),d0	; $031A50
@@ -39031,11 +39031,11 @@ sys_unk_031a9c:
 	move.w d0,$e(a6)	; $031AD8
 	move.w $e(a6),-(a7)	; $031ADC
 	move.w $c(a6),-(a7)	; $031AE0
-	jsr sys_unk_01c83e.l	; $031AE4
+	jsr location_divide.l	; $031AE4
 	addq.w #$4,a7	; $031AEA
 	move.w d0,-$6(a6)	; $031AEC
 	move.w -$6(a6),-(a7)	; $031AF0
-	jsr sys_unk_01c802.l	; $031AF4
+	jsr map_chunk_load_buf.l	; $031AF4
 	addq.w #$2,a7	; $031AFA
 	move.l d0,-$4(a6)	; $031AFC
 	movea.l $ffa7fc.l,a0	; $031B00
@@ -39460,11 +39460,11 @@ sys_unk_031f66:
 	move.w d0,$e(a6)	; $031FA2
 	move.w $e(a6),-(a7)	; $031FA6
 	move.w $c(a6),-(a7)	; $031FAA
-	jsr sys_unk_01c83e.l	; $031FAE
+	jsr location_divide.l	; $031FAE
 	addq.w #$4,a7	; $031FB4
 	move.w d0,-$6(a6)	; $031FB6
 	move.w -$6(a6),-(a7)	; $031FBA
-	jsr sys_unk_01c802.l	; $031FBE
+	jsr map_chunk_load_buf.l	; $031FBE
 	addq.w #$2,a7	; $031FC4
 	move.l d0,-$4(a6)	; $031FC6
 	movea.l $ffa7fc.l,a0	; $031FCA
@@ -39628,11 +39628,11 @@ sys_unk_03213c:
 	move.w d0,$c(a6)	; $032178
 	move.w $c(a6),-(a7)	; $03217C
 	move.w $a(a6),-(a7)	; $032180
-	jsr sys_unk_01c83e.l	; $032184
+	jsr location_divide.l	; $032184
 	addq.w #$4,a7	; $03218A
 	move.w d0,-$6(a6)	; $03218C
 	move.w -$6(a6),-(a7)	; $032190
-	jsr sys_unk_01c802.l	; $032194
+	jsr map_chunk_load_buf.l	; $032194
 	addq.w #$2,a7	; $03219A
 	move.l d0,-$4(a6)	; $03219C
 	movea.l $ffa7fc.l,a0	; $0321A0
@@ -47390,10 +47390,10 @@ sys_unk_038938:
 	movem.l d4-d6,-(a7)	; $03893C
 	move.w #$5,-(a7)	; $038940
 	move.w #$5,-(a7)	; $038944
-	jsr sys_unk_01c83e.l	; $038948
+	jsr location_divide.l	; $038948
 	addq.w #$4,a7	; $03894E
 	move.w d0,-(a7)	; $038950
-	jsr sys_unk_01c802.l	; $038952
+	jsr map_chunk_load_buf.l	; $038952
 	addq.w #$2,a7	; $038958
 	move.l d0,-$4(a6)	; $03895A
 	moveq #$1,d4	; $03895E
@@ -55658,10 +55658,10 @@ L03F6E2:
 	bne.w L03F826	; $03F70A
 	move.w #$5,-(a7)	; $03F70E
 	move.w #$5,-(a7)	; $03F712
-	jsr sys_unk_01c83e.l	; $03F716
+	jsr location_divide.l	; $03F716
 	addq.w #$4,a7	; $03F71C
 	move.w d0,-(a7)	; $03F71E
-	jsr sys_unk_01c802.l	; $03F720
+	jsr map_chunk_load_buf.l	; $03F720
 	addq.w #$2,a7	; $03F726
 	move.l d0,-$2e(a6)	; $03F728
 	movea.l -$1c(a6),a0	; $03F72C
