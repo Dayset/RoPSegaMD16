@@ -571,31 +571,45 @@ Correction: the earlier "ruled out by correlation 0.03–0.07" for SFX 94
 was a window/alignment artefact of comparing the 4 s event against the
 SFX's loudest 1 s; the full-segment spectral match supersedes it.
 
-**Burst 2 is [open], narrowed to a non-`$17586`, non-`$173EC` source.**
-The only `$17586` call at its time is SFX 1 (60.4 s), but burst 2 is not
-SFX 1: its spectral peaks (112–120, 149–153, 191–197, 254–263 Hz) do not
-match SFX 1's harness capture (282, 340, 454, 518, 612 Hz), and the
-waveform correlation is ~0.00–0.06. It is not SFX 20/32/33 either
-(spectrum/correlation mismatch). A second debugger run breaking on
-`$173EC` (`.scratch018/burst_log3.py`) shows no song start at burst 2's
-time — only song 0 at 6.1 s (boot) and song 1 at 45.0 s (cinematic). The
-31 uncaptured table SFX are ruled out as the burst source: `$17586` is
-the only SFX path (no bypass — `$EBAF4`/`$EBAFA` are called only from
-inside `$17586`, no jumps into `$17586`'s interior, `$FF0236`/`$FF023A`
-written only by the driver), and the breakpoint log is exhaustive over
-99 s emulated. The variable-index `$17586` at `0x01837E` did not fire in
-the attract/cinematic context (no third `$17586` hit), so it is ruled out
-for these bursts. What remains: the `$0967` PSG routine is the Z80's PSG
-SFX player (`LD (0x7f11),A` writes, called from the song loop at `$0915`
-when an SFX is queued — it is part of SFX playback, not an autonomous
-sound), so the leading hypothesis is that burst 2 is SFX 1's PSG voice
-sounding while its FM voice is suppressed/masked in the cinematic
-context — weak evidence only (burst 2 and SFX 1 share the same low/high
-band-energy ratio, 0.28–0.29, but their spectral peaks and waveform
-correlation do not match). A Z80-autonomous PSG sound is the other
-candidate. What would settle it: a Z80-side trace of the PSG writes
-around 60.4 s emulated in the song-0 ROM, or capturing SFX 1 with song 1
-playing to test the context-dependent-voicing hypothesis. See §12
+**Burst 2 is SFX 1 [live, SOLVED (NOP test, 2026-11-10)].**
+Correction: the earlier "burst 2 is not SFX 1" (spectrum/correlation
+mismatch) is superseded — the rendering is context-dependent, not a
+different sound. A test ROM with the SFX 1 call at `$0150EC` NOP'd
+(`jsr $17586(pc)`, 4 bytes `4E BA 24 98` → `NOP NOP`, checksums fixed
+via `tools/checksum.py fix-all`) removes burst 2 entirely, while
+burst 1 is sample-identical (correlation 1.000, identical peaks
+[169.8, 193.2, 232.0, 256.2, 277.5, 317.8, 352.8, 490.2], RMS 0.3791
+vs 0.3827) — so NOPing the call did not shift the attract timing at
+all. In the NOP'd run the 67.6–71.1 s window is just the background
+artifact (RMS 0.1623, 20 Hz harmonic series [50.0, 70.3, 90.6, ...]),
+vs the original's burst (RMS 0.3805, peaks 112/153/197/254 Hz); the
+RMS envelope 60–75 s is constant 0.1623 in the NOP'd run (no burst)
+vs the original's jump to 0.39 at 67–71 s. So the SFX 1 call at
+`$0150EC` (`move.w #$1,-(a7); jsr $17586`, return `$0150F0`) is the
+necessary and sufficient cause of burst 2. SFX 1 is deterministic
+within a context: a fresh harness capture reproduces the old peaks
+exactly ([85.0, 282.2, 339.7, 423.9, 454.2, 518.3, 612.5, 764.2]) —
+so the rendering difference between the silent-harness and cinematic
+contexts is real, not run-to-run variation. Burst 2 and the harness
+SFX 1 share some low peaks and have nearly identical band energies
+(80–300 Hz: 5.231e+07 vs 5.207e+07; 300–4000 Hz: 2.947e+08 vs
+3.146e+08) and a similar envelope (corr 0.465), but differ in
+mid/high peak frequencies and have ~0 waveform correlation. The
+background (song 1) at burst 2's window is a quiet artifact (RMS
+~0.16, 20 Hz harmonic series), not musical notes, so burst 2's peaks
+are SFX 1's, not song 1's.
+
+**Mechanism [open]:** why SFX 1 renders with different pitches in
+the cinematic (song 1 playing) context than in the silent harness.
+The earlier "PSG voice only, FM suppressed" hypothesis is weakened:
+burst 2 has nearly as much 300–4000 Hz energy as the harness SFX 1,
+so the FM voice is not simply suppressed. The SFX install path
+(`$0A04`/`$0A32`) reads fixed tables (`$014D` lookup via `$048B`,
+`$079E` via `$09E0`) — no obvious song-dependent transpose there.
+What would settle it: a Z80-side trace of the FM/PSG register writes
+for SFX 1 in both contexts, or decoding the SFX block format and the
+`$0B22`/`$0A78` playback path to find what song state affects the
+voicing. See §12 item 12.
 items 11–12.
 
 All 19 captures are in `.scratch018/songs/songNN.wav` (not committed; the
@@ -858,32 +872,44 @@ settle delay before the first read, or the read returns stale bus data.
     record length does not predict sounding length. Pointer SFX 91/92/95
     each carry a single ~0.1 s low delayed pulse at ~26 s emulated, of
     unknown origin. Captures: `.scratch018/sfx/sfxNN.wav` (NOT committed).
-12. **The two non-dispatch bursts — burst 1 SOLVED (SFX 94), burst 2
-    still open, 2026-11-10 (debugger follow-up).** Burst 1 (~24.4–28.4 s
-    emulated in a song-0 capture: 2.7 s + ~0.4 s gap + 0.8 s, ~250 Hz) is
-    **SFX 94** (pointer SFX, data `$4504`, called from `FUN_0123b0` at
-    `$0129DC`): a BlastEm breakpoint on `$17586` logs exactly two calls in
-    99 s emulated — SFX 94 at 17.2 s, SFX 1 at 60.4 s — with audio events
-    at 17.3 s and 60.4 s in the same run, and the SFX 94 harness capture
-    shares burst 1's spectral peaks (193/232/260–263/318/490 Hz) and band
-    ratio (0.96). It is also the ~37.6–41.6 s event in every SFX-harness
-    capture. Burst 2 (~67.6–71.1 s, ~3.5 s continuous) is a different
-    phrase: not SFX 1 (the only `$17586` call at its time — spectrum and
-    correlation do not match), not a song start (no `$173EC` call at its
-    time — only song 0 at 6.1 s and song 1 at 45.0 s), not SFX 20/32/33.
-    Ruled out as the burst source: a direct `$EB88A` call (all 19 sites
-    are inside the `$173EC` dispatch), song 0's hidden note data (parser
-    takes 686 s to reach the `$FC $80` seek; a test ROM with the 248 B
-    zeroed still plays the event), the 31 uncaptured table SFX (`$17586`
-    is the only SFX path, and the breakpoint log is exhaustive), and the
+12. **The two non-dispatch bursts — BOTH SOLVED, 2026-11-10.** Burst 1
+    (~24.4–28.4 s emulated in a song-0 capture: 2.7 s + ~0.4 s gap +
+    0.8 s, ~250 Hz) is **SFX 94** (pointer SFX, data `$4504`, called
+    from `FUN_0123b0` at `$0129DC`): a BlastEm breakpoint on `$17586`
+    logs exactly two calls in 99 s emulated — SFX 94 at 17.2 s, SFX 1
+    at 60.4 s — with audio events at 17.3 s and 60.4 s in the same run,
+    and the SFX 94 harness capture shares burst 1's spectral peaks
+    (193/232/260–263/318/490 Hz) and band ratio (0.96). It is also the
+    ~37.6–41.6 s event in every SFX-harness capture. Burst 2
+    (~67.6–71.1 s, ~3.5 s continuous) is **SFX 1** [live, NOP test]:
+    a test ROM with the SFX 1 call at `$0150EC` NOP'd (`jsr
+    $17586(pc)` → `NOP NOP`, checksums fixed) removes burst 2
+    entirely while burst 1 is sample-identical (corr 1.000) — the
+    SFX 1 call is the necessary and sufficient cause. The earlier
+    "burst 2 is not SFX 1" (spectrum/correlation mismatch) is
+    superseded: SFX 1 is deterministic within a context (a fresh
+    harness capture reproduces the old peaks exactly), but renders
+    with different pitches in the cinematic (song 1 playing) context
+    than in the silent harness — context-dependent voicing. Burst 2
+    and the harness SFX 1 share some low peaks and have nearly
+    identical band energies, but differ in mid/high peaks with ~0
+    waveform correlation. Ruled out as burst sources: a direct
+    `$EB88A` call (all 19 sites are inside the `$173EC` dispatch),
+    song 0's hidden note data (parser takes 686 s to reach the `$FC
+    $80` seek; a test ROM with the 248 B zeroed still plays the
+    event), the 31 uncaptured table SFX (`$17586` is the only SFX
+    path, and the breakpoint log is exhaustive), and the
     variable-index `$17586` at `0x01837E` (never fires in the
-    attract/cinematic context). Remaining for burst 2: the `$0967` PSG
-    routine (the Z80's PSG SFX player, part of SFX playback) — the
-    leading hypothesis is SFX 1's PSG voice sounding while its FM voice is
-    suppressed/masked in the cinematic context (weak evidence only) — or
-    a Z80-autonomous PSG sound. What would settle it: a Z80-side trace of
-    the PSG writes around 60.4 s emulated, or capturing SFX 1 with song 1
-    playing. See §7.5.
+    attract/cinematic context). **Mechanism [open]:** why SFX 1
+    renders with different pitches in the two contexts. The "PSG
+    voice only, FM suppressed" hypothesis is weakened — burst 2 has
+    nearly as much 300–4000 Hz energy as the harness SFX 1, so the
+    FM voice is not simply suppressed. The SFX install path
+    (`$0A04`/`$0A32`) reads fixed tables (`$014D` via `$048B`,
+    `$079E` via `$09E0`) — no obvious song-dependent transpose.
+    What would settle it: a Z80-side trace of the FM/PSG register
+    writes for SFX 1 in both contexts, or decoding the SFX block
+    format and the `$0B22`/`$0A78` playback path. See §7.5.
 
 ## Appendix: files
 
@@ -928,6 +954,18 @@ settle delay before the first read, or the read returns stale bus data.
   `.scratch018/burst_log2_out.txt`, `.scratch018/burst_log3_out.txt`;
   audio: `.scratch018/raw_burstlog.raw`, `.scratch018/raw_burstlog3.raw`
   (NOT committed).
+- Burst 2 NOP test (2026-11-10, **burst 2 = SFX 1**):
+  `.scratch018/rom_nosfx1.gen` (song-0 ROM with the SFX 1 call at
+  `$0150EC` NOP'd, checksums fixed; original untouched),
+  `.scratch018/capture_rom.py` (plain-run capture, any ROM),
+  `.scratch018/songs/song00_nosfx1.wav` (patched run — burst 2 gone,
+  burst 1 sample-identical), `.scratch018/burst2_compare.py` (RMS /
+  spectra / correlation vs `song00b.wav`),
+  `.scratch018/burst2_analyze.py` (RMS envelope + sliding correlation
+  vs song 1), `.scratch018/burst2_bg.py` (background artifact analysis),
+  `.scratch018/sfx/sfx01_fresh1.wav` (fresh SFX 1 harness re-capture —
+  reproduces the old peaks exactly, so SFX 1 is deterministic in
+  context). Audio NOT committed.
   Per-SFX audio: `.scratch018/sfx/sfxNN.wav` (NN = 01, 15, 17, 19, 20,
   21, 32, 33, 91, 92, 94, 95; ~60 s emulated each; NOT committed).
   Per-SFX ROMs: `.scratch018/sfx/rom_sfxNN.gen` (NOT committed).

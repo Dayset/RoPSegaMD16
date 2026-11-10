@@ -53,15 +53,23 @@ SFX 1 at 60.4 s — with audio events at 17.3 s and 60.4 s in the same run
 capture shares burst 1's spectral peaks (193/232/260–263/318/490 Hz) and
 band ratio (0.96). The earlier "ruled out by correlation 0.03–0.07" for
 SFX 94 was a window/alignment artefact, superseded. Burst 2 (~67.6–71.1 s)
-is **still open**: not SFX 1 (the only `$17586` call at its time — spectrum
-and correlation do not match), not a song start (no `$173EC` call at its
-time), not SFX 20/32/33; the 31 uncaptured table SFX and the variable-index
-`$17586` at `0x01837E` are ruled out (`$17586` is the only SFX path, no
-bypass; the breakpoint log is exhaustive). Remaining: the `$0967` PSG
-routine (the Z80's PSG SFX player — part of SFX playback, not autonomous)
-or a Z80-autonomous PSG sound; leading hypothesis is SFX 1's PSG voice
-with its FM voice suppressed/masked in the cinematic context (weak
-evidence only). Original ROM re-verified unchanged (MD5
+is **SOLVED — SFX 1** [live, NOP test]: a test ROM with the SFX 1 call at
+`$0150EC` NOP'd (`jsr $17586(pc)` → `NOP NOP`, checksums fixed) removes
+burst 2 entirely while burst 1 is sample-identical (corr 1.000) — the
+SFX 1 call is the necessary and sufficient cause. The earlier "burst 2 is
+not SFX 1" (spectrum/correlation mismatch) is superseded: SFX 1 is
+deterministic within a context (a fresh harness capture reproduces the old
+peaks exactly), but renders with different pitches in the cinematic (song 1
+playing) context than in the silent harness — context-dependent voicing.
+Burst 2 and the harness SFX 1 share some low peaks and have nearly
+identical band energies, but differ in mid/high peaks with ~0 waveform
+correlation. **Mechanism [open]:** why SFX 1 renders with different
+pitches in the two contexts. The "PSG voice only, FM suppressed"
+hypothesis is weakened — burst 2 has nearly as much 300–4000 Hz energy as
+the harness SFX 1, so the FM voice is not simply suppressed. What would
+settle it: a Z80-side trace of the FM/PSG register writes for SFX 1 in
+both contexts, or decoding the SFX block format and the `$0B22`/`$0A78`
+playback path. Original ROM re-verified unchanged (MD5
 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
 ## Notes
