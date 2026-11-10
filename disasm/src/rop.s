@@ -15609,8 +15609,27 @@ world_get_step_delta:
 	move.w $8(a6),d0	; $01E026
 	ext.l d0	; $01E02A
 	bra.b L01E08E	; $01E02C
-	; data $01E02E-$01E075
-	incbin "rop-original.gen",$01E02E,$48
+	; code $01E02E-$01E075
+	movea.l $a(a6),a0	; $01E02E
+	clr.w (a0)	; $01E032
+	movea.l $a(a6),a0	; $01E034
+	move.w #$ffff,$2(a0)	; $01E038
+	bra.b L01E0A0	; $01E03E
+	movea.l $a(a6),a0	; $01E040
+	move.w #$1,(a0)	; $01E044
+	movea.l $a(a6),a0	; $01E048
+	clr.w $2(a0)	; $01E04C
+	bra.b L01E0A0	; $01E050
+	movea.l $a(a6),a0	; $01E052
+	clr.w (a0)	; $01E056
+	movea.l $a(a6),a0	; $01E058
+	move.w #$1,$2(a0)	; $01E05C
+	bra.b L01E0A0	; $01E062
+	movea.l $a(a6),a0	; $01E064
+	move.w #$ffff,(a0)	; $01E068
+	movea.l $a(a6),a0	; $01E06C
+	clr.w $2(a0)	; $01E070
+	bra.b L01E0A0	; $01E074
 	; code $01E076-$01E085
 L01E076:
 	movea.l $a(a6),a0	; $01E076
@@ -41139,8 +41158,99 @@ L03337A:
 	moveq #$0,d0	; $03338C
 	move.b -$2b(a6),d0	; $03338E
 	bra.w L0334D6	; $033392
-	; data $033396-$0334C9
-	incbin "rop-original.gen",$033396,$134
+	; code $033396-$0334C9
+	move.w -$2(a6),d0	; $033396
+	muls.w #$c,d0	; $03339A
+	movea.l d0,a0	; $03339E
+	adda.l -$2a(a6),a0	; $0333A0
+	moveq #$0,d0	; $0333A4
+	move.b $4(a0),d0	; $0333A6
+	move.w d0,-(a7)	; $0333AA
+	pea.l $ffc326.l	; $0333AC
+	jsr sys_unk_02b656.l	; $0333B2
+	addq.w #$6,a7	; $0333B8
+	tst.w d0	; $0333BA
+	bne.b L0333C4	; $0333BC
+	move.w #$1,-$a(a6)	; $0333BE
+L0333C4:
+	bra.w L0334EE	; $0333C4
+	move.w -$2(a6),d0	; $0333C8
+	muls.w #$c,d0	; $0333CC
+	movea.l d0,a0	; $0333D0
+	adda.l -$2a(a6),a0	; $0333D2
+	moveq #$0,d0	; $0333D6
+	move.b $4(a0),d0	; $0333D8
+	move.w d0,-(a7)	; $0333DC
+	pea.l $ffc326.l	; $0333DE
+	jsr sys_unk_02b656.l	; $0333E4
+	addq.w #$6,a7	; $0333EA
+	tst.w d0	; $0333EC
+	beq.b L0333F6	; $0333EE
+	move.w #$1,-$a(a6)	; $0333F0
+L0333F6:
+	bra.w L0334EE	; $0333F6
+	move.w -$2(a6),d0	; $0333FA
+	muls.w #$c,d0	; $0333FE
+	movea.l d0,a0	; $033402
+	adda.l -$2a(a6),a0	; $033404
+	moveq #$0,d0	; $033408
+	move.b $4(a0),d0	; $03340A
+	add.w #$a1,d0	; $03340E
+	move.w d0,-(a7)	; $033412
+	pea.l $ffc326.l	; $033414
+	jsr sys_unk_02b656.l	; $03341A
+	addq.w #$6,a7	; $033420
+	tst.w d0	; $033422
+	bne.b L03342C	; $033424
+	move.w #$1,-$a(a6)	; $033426
+L03342C:
+	bra.w L0334EE	; $03342C
+	move.w -$2(a6),d0	; $033430
+	muls.w #$c,d0	; $033434
+	movea.l d0,a0	; $033438
+	adda.l -$2a(a6),a0	; $03343A
+	moveq #$0,d0	; $03343E
+	move.b $4(a0),d0	; $033440
+	add.w #$a1,d0	; $033444
+	move.w d0,-(a7)	; $033448
+	pea.l $ffc326.l	; $03344A
+	jsr sys_unk_02b656.l	; $033450
+	addq.w #$6,a7	; $033456
+	tst.w d0	; $033458
+	beq.b L033462	; $03345A
+	move.w #$1,-$a(a6)	; $03345C
+L033462:
+	bra.w L0334EE	; $033462
+	move.w -$2(a6),d0	; $033466
+	muls.w #$c,d0	; $03346A
+	movea.l d0,a0	; $03346E
+	adda.l -$2a(a6),a0	; $033470
+	move.w $8(a0),d0	; $033474
+	and.w #$fff,d0	; $033478
+	move.w d0,-(a7)	; $03347C
+	move.w $ff02b2.l,-(a7)	; $03347E
+	jsr sys_unk_02c8f2.l	; $033484
+	addq.w #$4,a7	; $03348A
+	tst.w d0	; $03348C
+	beq.b L033496	; $03348E
+	move.w #$1,-$a(a6)	; $033490
+L033496:
+	bra.b L0334EE	; $033496
+	move.w -$2(a6),d0	; $033498
+	muls.w #$c,d0	; $03349C
+	movea.l d0,a0	; $0334A0
+	adda.l -$2a(a6),a0	; $0334A2
+	move.w $8(a0),d0	; $0334A6
+	and.w #$fff,d0	; $0334AA
+	move.w d0,-(a7)	; $0334AE
+	move.w $ff02b2.l,-(a7)	; $0334B0
+	jsr sys_unk_02c8f2.l	; $0334B6
+	addq.w #$4,a7	; $0334BC
+	tst.w d0	; $0334BE
+	bne.b L0334C8	; $0334C0
+	move.w #$1,-$a(a6)	; $0334C2
+L0334C8:
+	bra.b L0334EE	; $0334C8
 L0334CA:
 	; data $0334CA-$0334D5
 	incbin "rop-original.gen",$0334CA,$C
@@ -47474,8 +47584,27 @@ sys_unk_038a22:
 	swap d0	; $038A3A
 	ext.l d0	; $038A3C
 	bra.b L038A88	; $038A3E
-	; data $038A40-$038A7F
-	incbin "rop-original.gen",$038A40,$40
+	; code $038A40-$038A7F
+	movea.l $a(a6),a0	; $038A40
+	addi.w #$e,(a0)	; $038A44
+	movea.l $e(a6),a0	; $038A48
+	clr.w (a0)	; $038A4C
+	bra.b L038A9A	; $038A4E
+	movea.l $a(a6),a0	; $038A50
+	addq.w #$6,(a0)	; $038A54
+	movea.l $e(a6),a0	; $038A56
+	clr.w (a0)	; $038A5A
+	bra.b L038A9A	; $038A5C
+	movea.l $a(a6),a0	; $038A5E
+	addq.w #$6,(a0)	; $038A62
+	movea.l $e(a6),a0	; $038A64
+	move.w #$1,(a0)	; $038A68
+	bra.b L038A9A	; $038A6C
+	movea.l $a(a6),a0	; $038A6E
+	addi.w #$e,(a0)	; $038A72
+	movea.l $e(a6),a0	; $038A76
+	move.w #$1,(a0)	; $038A7A
+	bra.b L038A9A	; $038A7E
 L038A80:
 	; data $038A80-$038A87
 	incbin "rop-original.gen",$038A80,$8
@@ -47497,8 +47626,23 @@ L038AAA:
 	move.w $8(a6),d0	; $038AAA
 	ext.l d0	; $038AAE
 	bra.b L038AEA	; $038AB0
-	; data $038AB2-$038AE1
-	incbin "rop-original.gen",$038AB2,$30
+	; code $038AB2-$038AE1
+	movea.l $a(a6),a0	; $038AB2
+	addq.w #$2,(a0)	; $038AB6
+	movea.l $e(a6),a0	; $038AB8
+	move.w #$1,(a0)	; $038ABC
+	bra.b L038AFC	; $038AC0
+	movea.l $e(a6),a0	; $038AC2
+	clr.w (a0)	; $038AC6
+	bra.b L038AFC	; $038AC8
+	movea.l $e(a6),a0	; $038ACA
+	move.w #$1,(a0)	; $038ACE
+	bra.b L038AFC	; $038AD2
+	movea.l $a(a6),a0	; $038AD4
+	addq.w #$2,(a0)	; $038AD8
+	movea.l $e(a6),a0	; $038ADA
+	clr.w (a0)	; $038ADE
+	bra.b L038AFC	; $038AE0
 L038AE2:
 	; data $038AE2-$038AE9
 	incbin "rop-original.gen",$038AE2,$8
@@ -49168,8 +49312,163 @@ L03A030:
 	move.w $12(a6),d0	; $03A058
 	ext.l d0	; $03A05C
 	bra.w L03A228	; $03A05E
-	; data $03A062-$03A21F
-	incbin "rop-original.gen",$03A062,$1BE
+	; code $03A062-$03A21F
+	moveq #$0,d4	; $03A062
+L03A064:
+	move.w d4,d0	; $03A064
+	ext.l d0	; $03A066
+	asl.l #$1,d0	; $03A068
+	movea.l d0,a0	; $03A06A
+	adda.l -$20e(a6),a0	; $03A06C
+	movea.w $14(a0),a3	; $03A070
+	move.w a3,d0	; $03A074
+	muls.w #$34,d0	; $03A076
+	lea.l $ff02b4.l,a0	; $03A07A
+	add.l a0,d0	; $03A080
+	move.l d0,-$212(a6)	; $03A082
+	move.w a3,d0	; $03A086
+	beq.w L03A136	; $03A088
+	movea.l -$212(a6),a0	; $03A08C
+	move.w $2c(a0),d0	; $03A090
+	rol.w #$3,d0	; $03A094
+	and.w #$1,d0	; $03A096
+	bne.w L03A136	; $03A09A
+	movea.l -$212(a6),a0	; $03A09E
+	move.w $c(a0),d5	; $03A0A2
+	movea.l -$212(a6),a0	; $03A0A6
+	move.w $e(a0),d6	; $03A0AA
+	movea.l -$212(a6),a0	; $03A0AE
+	move.w $18(a0),d0	; $03A0B2
+	and.w #$f,d0	; $03A0B6
+	subq.w #$1,d0	; $03A0BA
+	moveq #$0,d1	; $03A0BC
+	move.w d0,d1	; $03A0BE
+	asl.l #$2,d1	; $03A0C0
+	lea.l $ffa7cc.l,a0	; $03A0C2
+	movea.l -$212(a6),a1	; $03A0C8
+	moveq #$0,d0	; $03A0CC
+	move.b $25(a1),d0	; $03A0CE
+	move.l d1,-(a7)	; $03A0D2
+	moveq #$6,d1	; $03A0D4
+	jsr mul32.l	; $03A0D6
+	move.l (a7)+,d1	; $03A0DC
+	movea.l (a0,d1.l),a1	; $03A0DE
+	adda.l d0,a1	; $03A0E2
+	move.l a1,-$216(a6)	; $03A0E4
+	movea.l -$216(a6),a0	; $03A0E8
+	move.w (a0),d0	; $03A0EC
+	lsr.w #$8,d0	; $03A0EE
+	and.w #$7,d0	; $03A0F0
+	move.w d0,d7	; $03A0F4
+	tst.w d7	; $03A0F6
+	bne.b L03A0FC	; $03A0F8
+	moveq #$8,d7	; $03A0FA
+L03A0FC:
+	move.w d5,d0	; $03A0FC
+	addq.w #$1,d0	; $03A0FE
+	muls.w #$1a,d0	; $03A100
+	move.w d6,d1	; $03A104
+	addq.w #$1,d1	; $03A106
+	ext.l d1	; $03A108
+	asl.l #$1,d1	; $03A10A
+	add.l d1,d0	; $03A10C
+	lea.l -$152(a6),a0	; $03A10E
+	adda.l d0,a0	; $03A112
+	move.w d7,d0	; $03A114
+	muls.w #$3e8,d0	; $03A116
+	add.w d0,(a0)	; $03A11A
+	move.w d5,d0	; $03A11C
+	addq.w #$1,d0	; $03A11E
+	muls.w #$d,d0	; $03A120
+	move.w d6,d1	; $03A124
+	addq.w #$1,d1	; $03A126
+	ext.l d1	; $03A128
+	add.l d1,d0	; $03A12A
+	lea.l -$1ff(a6),a0	; $03A12C
+	move.b #$1,(a0,d0.l)	; $03A130
+L03A136:
+	addq.w #$1,d4	; $03A136
+	cmp.w #$6,d4	; $03A138
+	blt.w L03A064	; $03A13C
+	bra.w L03A23A	; $03A140
+	movea.l -$206(a6),a0	; $03A144
+	move.w $18(a0),d0	; $03A148
+	and.w #$f,d0	; $03A14C
+	subq.w #$1,d0	; $03A150
+	moveq #$0,d1	; $03A152
+	move.w d0,d1	; $03A154
+	asl.l #$2,d1	; $03A156
+	lea.l $ffa7cc.l,a0	; $03A158
+	movea.l -$206(a6),a1	; $03A15E
+	moveq #$0,d0	; $03A162
+	move.b $25(a1),d0	; $03A164
+	move.l d1,-(a7)	; $03A168
+	moveq #$6,d1	; $03A16A
+	jsr mul32.l	; $03A16C
+	move.l (a7)+,d1	; $03A172
+	movea.l (a0,d1.l),a1	; $03A174
+	adda.l d0,a1	; $03A178
+	move.l a1,-$216(a6)	; $03A17A
+	movea.l -$216(a6),a0	; $03A17E
+	move.w (a0),d0	; $03A182
+	lsr.w #$8,d0	; $03A184
+	and.w #$7,d0	; $03A186
+	move.w d0,d7	; $03A18A
+	tst.w d7	; $03A18C
+	bne.b L03A192	; $03A18E
+	moveq #$8,d7	; $03A190
+L03A192:
+	moveq #$0,d4	; $03A192
+L03A194:
+	move.w d4,d0	; $03A194
+	ext.l d0	; $03A196
+	asl.l #$1,d0	; $03A198
+	movea.l d0,a0	; $03A19A
+	adda.l -$20e(a6),a0	; $03A19C
+	movea.w $14(a0),a3	; $03A1A0
+	move.w a3,d0	; $03A1A4
+	muls.w #$34,d0	; $03A1A6
+	lea.l $ff02b4.l,a0	; $03A1AA
+	add.l a0,d0	; $03A1B0
+	move.l d0,-$212(a6)	; $03A1B2
+	move.w a3,d0	; $03A1B6
+	beq.b L03A214	; $03A1B8
+	movea.l -$212(a6),a0	; $03A1BA
+	move.w $2c(a0),d0	; $03A1BE
+	rol.w #$3,d0	; $03A1C2
+	and.w #$1,d0	; $03A1C4
+	bne.b L03A214	; $03A1C8
+	movea.l -$212(a6),a0	; $03A1CA
+	move.w $c(a0),d5	; $03A1CE
+	movea.l -$212(a6),a0	; $03A1D2
+	move.w $e(a0),d6	; $03A1D6
+	move.w d5,d0	; $03A1DA
+	addq.w #$1,d0	; $03A1DC
+	muls.w #$1a,d0	; $03A1DE
+	move.w d6,d1	; $03A1E2
+	addq.w #$1,d1	; $03A1E4
+	ext.l d1	; $03A1E6
+	asl.l #$1,d1	; $03A1E8
+	add.l d1,d0	; $03A1EA
+	lea.l -$152(a6),a0	; $03A1EC
+	adda.l d0,a0	; $03A1F0
+	move.w d7,d0	; $03A1F2
+	muls.w #$3e8,d0	; $03A1F4
+	add.w d0,(a0)	; $03A1F8
+	move.w d5,d0	; $03A1FA
+	addq.w #$1,d0	; $03A1FC
+	muls.w #$d,d0	; $03A1FE
+	move.w d6,d1	; $03A202
+	addq.w #$1,d1	; $03A204
+	ext.l d1	; $03A206
+	add.l d1,d0	; $03A208
+	lea.l -$1ff(a6),a0	; $03A20A
+	move.b #$1,(a0,d0.l)	; $03A20E
+L03A214:
+	addq.w #$1,d4	; $03A214
+	cmp.w #$6,d4	; $03A216
+	blt.w L03A194	; $03A21A
+	bra.b L03A23A	; $03A21E
 L03A220:
 	; data $03A220-$03A227
 	incbin "rop-original.gen",$03A220,$8
@@ -49237,8 +49536,49 @@ L03A2DC:
 	move.w $12(a6),d0	; $03A2DC
 	ext.l d0	; $03A2E0
 	bra.b L03A35C	; $03A2E2
-	; data $03A2E4-$03A353
-	incbin "rop-original.gen",$03A2E4,$70
+	; code $03A2E4-$03A353
+	move.w d5,d0	; $03A2E4
+	addq.w #$1,d0	; $03A2E6
+	muls.w #$1a,d0	; $03A2E8
+	move.w d6,d1	; $03A2EC
+	addq.w #$1,d1	; $03A2EE
+	ext.l d1	; $03A2F0
+	asl.l #$1,d1	; $03A2F2
+	add.l d1,d0	; $03A2F4
+	lea.l -$152(a6),a0	; $03A2F6
+	adda.l d0,a0	; $03A2FA
+	addi.w #$3e8,(a0)	; $03A2FC
+	move.w d5,d0	; $03A300
+	addq.w #$1,d0	; $03A302
+	muls.w #$d,d0	; $03A304
+	move.w d6,d1	; $03A308
+	addq.w #$1,d1	; $03A30A
+	ext.l d1	; $03A30C
+	add.l d1,d0	; $03A30E
+	lea.l -$1ff(a6),a0	; $03A310
+	move.b #$1,(a0,d0.l)	; $03A314
+	bra.b L03A36E	; $03A31A
+	move.w d5,d0	; $03A31C
+	addq.w #$1,d0	; $03A31E
+	muls.w #$1a,d0	; $03A320
+	move.w d6,d1	; $03A324
+	addq.w #$1,d1	; $03A326
+	ext.l d1	; $03A328
+	asl.l #$1,d1	; $03A32A
+	add.l d1,d0	; $03A32C
+	lea.l -$152(a6),a0	; $03A32E
+	adda.l d0,a0	; $03A332
+	subi.w #$3e8,(a0)	; $03A334
+	move.w d5,d0	; $03A338
+	addq.w #$1,d0	; $03A33A
+	muls.w #$d,d0	; $03A33C
+	move.w d6,d1	; $03A340
+	addq.w #$1,d1	; $03A342
+	ext.l d1	; $03A344
+	add.l d1,d0	; $03A346
+	lea.l -$1ff(a6),a0	; $03A348
+	move.b #$1,(a0,d0.l)	; $03A34C
+	bra.b L03A36E	; $03A352
 L03A354:
 	; data $03A354-$03A35B
 	incbin "rop-original.gen",$03A354,$8
@@ -49366,8 +49706,117 @@ L03A47A:
 	move.w $12(a6),d0	; $03A498
 	ext.l d0	; $03A49C
 	bra.w L03A5D8	; $03A49E
-	; data $03A4A2-$03A5CF
-	incbin "rop-original.gen",$03A4A2,$12E
+	; code $03A4A2-$03A5CF
+	moveq #$0,d5	; $03A4A2
+L03A4A4:
+	moveq #$0,d6	; $03A4A4
+L03A4A6:
+	movea.l -$206(a6),a0	; $03A4A6
+	movea.w $c(a0),a4	; $03A4AA
+	suba.w d5,a4	; $03A4AE
+	movea.l -$206(a6),a0	; $03A4B0
+	move.w $e(a0),d0	; $03A4B4
+	sub.w d6,d0	; $03A4B8
+	move.w d0,-$202(a6)	; $03A4BA
+	move.w d5,d0	; $03A4BE
+	addq.w #$1,d0	; $03A4C0
+	muls.w #$1a,d0	; $03A4C2
+	move.w d6,d1	; $03A4C6
+	addq.w #$1,d1	; $03A4C8
+	ext.l d1	; $03A4CA
+	asl.l #$1,d1	; $03A4CC
+	add.l d1,d0	; $03A4CE
+	lea.l -$152(a6),a0	; $03A4D0
+	move.w (a0,d0.l),d1	; $03A4D4
+	cmp.w -$154(a6),d1	; $03A4D8
+	bge.b L03A522	; $03A4DC
+	move.w a4,d0	; $03A4DE
+	move.w a4,d1	; $03A4E0
+	muls.w d1,d0	; $03A4E2
+	move.w -$202(a6),d1	; $03A4E4
+	muls.w -$202(a6),d1	; $03A4E8
+	add.w d1,d0	; $03A4EC
+	move.w $14(a6),d1	; $03A4EE
+	muls.w $14(a6),d1	; $03A4F2
+	cmp.w d1,d0	; $03A4F6
+	bge.b L03A522	; $03A4F8
+	movea.l $a(a6),a0	; $03A4FA
+	move.w d5,(a0)	; $03A4FE
+	movea.l $e(a6),a0	; $03A500
+	move.w d6,(a0)	; $03A504
+	move.w d5,d0	; $03A506
+	addq.w #$1,d0	; $03A508
+	muls.w #$1a,d0	; $03A50A
+	move.w d6,d1	; $03A50E
+	addq.w #$1,d1	; $03A510
+	ext.l d1	; $03A512
+	asl.l #$1,d1	; $03A514
+	add.l d1,d0	; $03A516
+	lea.l -$152(a6),a0	; $03A518
+	move.w (a0,d0.l),-$154(a6)	; $03A51C
+L03A522:
+	addq.w #$1,d6	; $03A522
+	cmp.w #$b,d6	; $03A524
+	blt.w L03A4A6	; $03A528
+	addq.w #$1,d5	; $03A52C
+	cmp.w #$b,d5	; $03A52E
+	blt.w L03A4A4	; $03A532
+	bra.w L03A5EA	; $03A536
+	moveq #$0,d5	; $03A53A
+L03A53C:
+	moveq #$0,d6	; $03A53C
+L03A53E:
+	movea.l -$206(a6),a0	; $03A53E
+	movea.w $c(a0),a4	; $03A542
+	suba.w d5,a4	; $03A546
+	movea.l -$206(a6),a0	; $03A548
+	move.w $e(a0),d0	; $03A54C
+	sub.w d6,d0	; $03A550
+	move.w d0,-$202(a6)	; $03A552
+	move.w d5,d0	; $03A556
+	addq.w #$1,d0	; $03A558
+	muls.w #$1a,d0	; $03A55A
+	move.w d6,d1	; $03A55E
+	addq.w #$1,d1	; $03A560
+	ext.l d1	; $03A562
+	asl.l #$1,d1	; $03A564
+	add.l d1,d0	; $03A566
+	lea.l -$152(a6),a0	; $03A568
+	move.w (a0,d0.l),d1	; $03A56C
+	cmp.w -$156(a6),d1	; $03A570
+	ble.b L03A5BA	; $03A574
+	move.w a4,d0	; $03A576
+	move.w a4,d1	; $03A578
+	muls.w d1,d0	; $03A57A
+	move.w -$202(a6),d1	; $03A57C
+	muls.w -$202(a6),d1	; $03A580
+	add.w d1,d0	; $03A584
+	move.w $14(a6),d1	; $03A586
+	muls.w $14(a6),d1	; $03A58A
+	cmp.w d1,d0	; $03A58E
+	bge.b L03A5BA	; $03A590
+	movea.l $a(a6),a0	; $03A592
+	move.w d5,(a0)	; $03A596
+	movea.l $e(a6),a0	; $03A598
+	move.w d6,(a0)	; $03A59C
+	move.w d5,d0	; $03A59E
+	addq.w #$1,d0	; $03A5A0
+	muls.w #$1a,d0	; $03A5A2
+	move.w d6,d1	; $03A5A6
+	addq.w #$1,d1	; $03A5A8
+	ext.l d1	; $03A5AA
+	asl.l #$1,d1	; $03A5AC
+	add.l d1,d0	; $03A5AE
+	lea.l -$152(a6),a0	; $03A5B0
+	move.w (a0,d0.l),-$156(a6)	; $03A5B4
+L03A5BA:
+	addq.w #$1,d6	; $03A5BA
+	cmp.w #$b,d6	; $03A5BC
+	blt.w L03A53E	; $03A5C0
+	addq.w #$1,d5	; $03A5C4
+	cmp.w #$b,d5	; $03A5C6
+	blt.w L03A53C	; $03A5CA
+	bra.b L03A5EA	; $03A5CE
 L03A5D0:
 	; data $03A5D0-$03A5D7
 	incbin "rop-original.gen",$03A5D0,$8
