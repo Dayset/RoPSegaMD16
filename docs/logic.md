@@ -484,39 +484,190 @@ mod 0, no merchant):
   " purchased!" / "I'll give you " / " gold for each " / ". You have " /
   " gold now." / " sold!" / "Sorry I can't buy that back."
 
-### 3.7 Transport / food & water — NOT verified (open)
+### 3.7 Transport / food & water — routine LOCATED (static)
 
-Food and Water are goods (price records 186/187: Food raw 12, Water raw
-8). The guide's per-step rates (player-observed) are the verification
-target:
+**[live]** Food and Water are goods (price records 186/187: Food raw 12,
+Water raw 8). **[static]** Their live counts are the words at
+**`$FFC364` (food)** and **`$FFC366` (water)** — proven from the
+inventory-count getter `$2C8F2`: goods code `$380` (food) returns
+`$FFC364`, code `$381` (water) returns `$FFC366` (group 14 = code/64,
+remainder = code%64; the save serialiser `$2F11A`/`$2F896` uses
+`add.w #$380` for the same two slots). The goods-adjust routine is
+`$2BBD2`; the per-step consumption does **not** go through it — it is a
+direct RAM write (below).
 
-| Way | Food | Water |
-|-----|------|-------|
-| On foot — Path | 1 | 1 |
-| On foot — Grass | 4 | 2 |
-| On foot — Desert | 7 | 5 |
-| On foot — Swamp | 8 | 4 |
-| On foot — Ice waste | 4 | 3 |
-| Boat, shallow water | 1 | 1 |
-| Boat, deep water | 5 | 20 |
-| Ship | 1 | 1 |
-| Dino, on road | 1 | 1 |
-| Dino, any other terrain | 3 | 1 |
-| Dragon | 40 | 40 |
+#### The consumption routine [static]
 
-**Not verified in code.** Searches found no plain byte table
-`[1,4,7,8,4]` / `[1,2,5,4,3]`, no word table, and no interleaved table
-in the ROM — the rates are computed in code, or stored under different
-terrain indices, or the table is compressed. Leads for #020 (main loop):
-the threaded map decoder `0xE3B4`/`0xE412` (nibble tables `$433C0`–
-`$436E0`, decoded map at `$FF1EC0`); the location code `$FF0E92`
-(masked `& 0x3FF`, compared to 188 and 367 in event/price code);
-food/water are goods slots 0/1, i.e. `$2BBD2` codes `0x380`/`0x381`
-(the `add.w #$380` sites at `0x2F782`/`0x3001E`/`0x306E4`/`0x307B6` are
-`$2C8F2` inventory **counts**, not consumption; the `0x3D846` site is
-map drawing with `$E358`, not consumption). The consumption routine
-itself is still unlocated. The guide's rates stay hypotheses until the
-movement code is traced.
+The per-step deduction is in the movement dispatcher
+**`FUN_024984` (`$024984`)**, at **`$024F38`–`$024FB2`**, gated by
+`cmpi.w #$1,$ff00ae.l` (only runs when **`$FF00AE == 1`**):
+
+```
+$024F38: cmpi.w #$1,$ff00ae.l ; gate
+$024F44: food  = $FFC364 - struct+0x1A   ; struct = FUN_024984 local at -$22(a6)
+$024F78: $FFC364 = clamp(food, 1, $7530) ; 30000
+$024F7E: water = $FFC366 - struct+0x1C
+$024FB2: $FFC366 = clamp(water, 1, $7530)
+```
+
+So the per-step cost is the struct's **`+0x1A` (food)** and **`+0x1C`
+(water)**. Those two words are computed by the step routine
+**`FUN_01c892` (`$01C892`)**, called from `FUN_024984` at `$024B6E`
+(`pea.l -$22(a6); jsr FUN_01c892` — the struct is the local at
+`-$22(a6)`, so struct+0x1A = `-$8(a6)`, struct+0x1C = `-$6(a6)`).
+`FUN_024984` callers: **39 `jsr` sites in 12 functions** —
+`FUN_02241c` (2), `FUN_0226bc` (9), `FUN_0265be` (1), `FUN_02d56a` (1),
+`FUN_03268e` (1), `FUN_0337ee` (14), `FUN_034b50` (1), `FUN_034d32` (2),
+`FUN_037976` (1), `FUN_038b96` (1), `FUN_03ae40` (1), `FUN_03e2d4` (5).
+(An earlier draft listed only the 12 sites in the movement area; the
+full count is 39.)
+`$1C892` also reads the destination tile via `$1C176` (chunk cache) and
+the `$5EDC4` terrain word, and returns a step status in `d0`.
+
+#### The formula [static]
+
+`$1C892` computes the cost as **base(mode) + terrain addition**, plus a
+**height term on food only**:
+
+```
+food  = base_food(mode)  + terrain_food(type, mode) + height_delta/2
+water = base_water(mode) + terrain_water(type, mode)
+```
+
+* **Base — `$01C8C6`–`$01C928`, on the struct's `+0x08` (the "mode"):**
+
+  | mode | food | water |
+  |------|------|-------|
+  | 0 | 2 | 2 |
+  | 1 | 3 | 1 |
+  | 4 | 38 (`$26`) | 38 (`$26`) |
+  | anything else (2, 3, 5, 6, 7) | 1 | 1 |
+
+* **Mode — `$025D8E`**, called from `FUN_024984` at `$024B26` with the
+  moving character's **`+0x06`** word, stored to the struct's `+0x08`
+  (`move.w d0,-$1a(a6)`). It divides `+0x06` by `$100` (256) and
+  dispatches on the high byte (jump table `$25DBC`, 4 entries):
+  high byte 0 → returns the low byte; 1 → 6; 2 → 5; 3 → 7; ≥ 4 → error
+  `$12FA0($192)`. So `+0x06` is a packed vessel/mount value: high byte
+  = category, low byte = sub-value. `+0x06` is set by the
+  character-spawn/setup routine **`FUN_023b84` (`$023B84`)** from its
+  arguments (`$8(a6)` = type 1/2/4/5/6, `$e(a6)`, `$c(a6)`): type 6 →
+  `+0x06 = $c(a6)+$300` (high byte 3 → mode 7); type 5 → `+0x06 =
+  …+$200` (high byte 2 → mode 5); type 1 with `$e==$FFFF` →
+  `+0x06 = 0`, `+0x08 = 4`; type 4 → `+0x08 = 4`. `+0x06` is otherwise
+  0 (cleared at `$024264`, `$0367B4`), so **plain on-foot walking is
+  mode 0, base (2,2)**.
+* **Terrain addition — jump table at `$01D73E`** (35 entries, terrain
+  types 0–34, offsets relative to `$01D794`; dispatch at `$01D784`,
+  `cmp.l #$23,d0` bounds-checks, out-of-range → `$01D736` sets the
+  blocked flag). The terrain type is `$5EDC4` bits 10–15 (the same
+  field the walkability gate `$02dc0c` tests). The **only** `$1A`/`$1C`
+  modifications in `$1C892` besides the base are:
+
+  | `$5EDC4` type | condition (mode) | food | water | notes |
+  |---|---|---|---|---|
+  | 0 | mode 2 or 7 | +4 | +19 (`$13`) | `$01CFAA`/`$01CFB2` |
+  | 9 | mode 0, 1, 6, 7 | **set 1** | **set 1** | `$01D134`/`$01D13E`, `$01D156`/`$01D160` |
+  | 17 | mode 0, 6, 7 | +4 | +4 | `$01D2E2`/`$01D2EA`; also sets `-$22(a6)=10` |
+  | 17 | mode 2 | +2 | +2 | `$01D30E`/`$01D316` |
+  | 18 | mode 0 | +2 | +4 | `$01D33E`/`$01D346` |
+  | 19 | mode 0 | +3 | +4 | `$01D37C`/`$01D384` |
+  | 19 | mode 1 | +3 | +6 | `$01D394`/`$01D39C` |
+
+  All other types leave the base unchanged. Most handlers also set the
+  step-blocked flag `-$a(a6)` (1 = blocked, 0 = free); types 4, 12–16,
+  29, 31–34 clear it unconditionally, the rest test the mode and the
+  step-direction deltas (struct `+0x0A`/`+0x0C`).
+* **Height term — `$01D800`–`$01D8B4`:** after the dispatch, `$1C892`
+  computes a height delta `-$10(a6)` from the source/destination tile
+  words' bit fields (tile bits 13–15, `$5EDC4` bits 7–8 — the same
+  fields the `$E358` row-count formula uses), then
+  `food += height_delta / 2` (`move.w -$10(a6),d0; divs.w #$2,d0;
+  add.w d0,$1a(a0)` at `$01D8A6`–`$01D8B4`). Water gets no height term.
+  This is the multilevel-terrain cost: walking uphill costs extra food.
+
+#### Rates: manual vs code [static for the code column; open for the mapping]
+
+The official manual (see `docs/research/official-manual-transcript.md`)
+gives rates per mile, party of 6. The code column is the flat-terrain
+(`height_delta = 0`) cost from the formula above. The **terrain-type →
+terrain-name mapping is the open item** — the manual's five on-foot
+terrains have not been pinned to `$5EDC4` types yet, so the code column
+below is given by type, not by name.
+
+| Manual (per mile) | Food | Water | Code match |
+|---|---|---|---|
+| On foot — Road | 1 | 1 | **type 9, mode 0: set (1,1) ✓** |
+| On foot — Grass | 4 | 2 | no mode-0 type gives (4,2) — [open] |
+| On foot — Desert | 7 | 5 | no mode-0 type gives (7,5) — [open] |
+| On foot — Swamp | 8 | 4 | no mode-0 type gives (8,4) — [open] |
+| On foot — Ice waste | 4 | 3 | no mode-0 type gives (4,3) — [open] |
+| Boat, shallow | 1 | 1 | base (1,1) ✓ (no addition) |
+| Boat, deep | 5 | 20 | **type 0, mode 7: (1,1)+(4,19) = (5,20) ✓** |
+| Ship, deep | 1 | 1 | base (1,1) ✓ |
+| Dino, road | 1 | 1 | type 9, mode 1: set (1,1) ✓ |
+| Dino, other | 3 | 1 | **mode 1 base (3,1) ✓** |
+| Dragon, all | 40 | 40 | mode 4 base (38,38) — **off by 2** [open] |
+
+Code costs actually attainable on flat terrain: mode 0 → (1,1), (2,2),
+(6,6), (4,6), (5,6); mode 1 → (3,1), (1,1), (6,7); mode 4 → (38,38);
+mode 7 → (1,1), (5,20), (5,5). The manual's on-foot Grass/Desert/
+Swamp/Ice water values (2, 5, 4, 3) are not all attainable as mode-0
+water costs (mode 0 water is only 1, 2 or 6), so either the manual's
+rates are approximate, or the on-foot terrain mapping involves the
+height term and/or a mode other than 0 — **this needs a live harness**
+that calls `$1C892` with a controlled mode and terrain and reads the
+resulting struct `+0x1A`/`+0x1C` (see below). The Dragon's 40/40 vs the
+code's 38/38 is likewise open (a +2/+2 addition for mode 4 was not
+found; the manual may round, or a terrain addition applies).
+
+**No plain rate table exists in the ROM** (searched byte sequences
+`[1,8,7,4,4]`/`[1,4,5,3,2]`, fan order, interleaved pairs, word tables
+— all 0 hits). The rates are computed in code as above.
+
+#### Related [static]
+
+* **`$FF0E16` is a clock, not a step counter** (increments every frame
+  in `$2155E`, wraps at 2400; `$170DA` displays time from
+  `$FF0E16`/`$FF0E18`). The consumption is not driven by it; it is
+  driven by the movement dispatcher `FUN_024984`.
+* **Low-supplies regen penalty:** in the `$2155E` tick, the HP/Power
+  regen loop uses `d7 = +5` normally (`$021712`); if food or water
+  `≤ 500` (`cmpi.w #$1f4,$ffc364.l` / `$ffc366.l` at `$021714`/
+  `$02171E`) it enters the low-supplies path, and if either is `≤ 1`
+  it shows a message (`$35612($44)`) and sets `d7 = $FC = −4`
+  (`$02176E`) — regen becomes a drain when supplies run out.
+* **CAMP** (manual: rest regains 50% strength/magic, costs 100 food +
+  100 water) — the 100/100 deduction has **not** been located in code
+  yet [open].
+* **Random event in the same function:** after the consumption block,
+  if struct `+0x08` (`-$1a(a6)`) `== 3` and a 1/9 RNG roll (`$12B82`
+  with 9) is 0, `FUN_024984` calls `$2BBD2(char, $400, −4, 1)` and sets
+  `$FF009A=$FFFF` (`$024FB8`–`$024FE0`) — a separate random loss
+  (code `$400` is likely gold), not the per-step consumption.
+* **Vessel state:** the vessel/mount is the character's `+0x06` word
+  (packed, see above), decoded by `$25D8E` into the mode. The
+  character's `+0x08` is a separate field (set to 4 or 0 by
+  `FUN_023b84`); it is **not** the `$1C892` mode.
+* The `$5EDC4` terrain type is loaded by only 5 functions: `$01ba4e`
+  (per-cell driver), `$01c892` (this step routine), `$02619c`/`$0265be`
+  (NPC/AI), `$02dc0c` (walkability gate).
+
+#### What would settle the open rates [open]
+
+A BlastEm harness hooked at the attract loop (`0x35C`, hook exits with
+`rts`): build a step struct in scratch RAM, set `+0x08` to the mode
+(0 = on foot, 1 = Dino, 4 = Dragon, 7 = Boat) and `+0x00`/`+0x02` to
+coordinates on a known terrain (chunk cache pre-loaded via the chunk
+loader `$19692`), call `$1C892`, read struct `+0x1A`/`+0x1C`. That
+pins each manual terrain name to its `$5EDC4` type and checks the
+Dragon 40/40 and the Grass/Desert/Swamp/Ice water values. The same
+harness can confirm the deduction end-to-end by reading `$FFC364`/
+`$FFC366` before/after a real step.
+
+The guide's rates stay hypotheses until that live check; the routine,
+the formula shape, the base costs, the terrain additions and the height
+term are code-verified (static).
 
 ## 4. Combat action routine `$3A62E` — verified (static)
 
@@ -660,7 +811,11 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    spell/max-HP path; what `$FFC418`/`$FFC41A` contain in real combat;
    the `$3B1EE` arg puzzle (+0x1E/+0x22 as indices). Needs a live-combat
    breakpoint run (#008).
-2. **Transport/food-water consumption routine** — unlocated (§3.7).
+2. **Transport/food-water consumption routine** — located (static):
+   `FUN_024984` `$024F38`–`$024FB2` + `FUN_01c892` `$01C892` (§3.7).
+   Open: terrain-type → terrain-name mapping for Grass/Desert/Swamp/
+   Ice, Dragon 40/40 vs code 38/38, CAMP 100/100 — needs a live
+   `$1C892` harness.
    Leads: decoder `0xE3B4`/`0xE412`, tables `$433C0`–`$436E0`, decoded
    map `$FF1EC0`, location code `$FF0E92`, `$2BBD2` codes `0x380`/`0x381`.
    The guide's rates are the verification target. (#020.)
