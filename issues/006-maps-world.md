@@ -47,10 +47,13 @@ terrain-type test (type ∈ {5, 9, 18} or tile `$24`) via `$02dc0c`
 (13/13 harness cases); the `$FFB36C` / `$FFB76C` byte meanings and
 the `$FFB0CC` 12-byte record layout are live-confirmed (harness
 B1/B2, incl. the `$2343A` promotion); the `$197B0` 36-byte record
-layout is determined. Still open: the `$197B0` group 1–3 selection,
-the `$253FE` mode-`$17` walkability path, the player's arrow-key
-step gate, and the chunk tileset/palette pairing (blocks full tile
-renders of the 252 chunks). Also open: which screen rec 35 is,
+layout is determined, its group 1–3 selection resolved
+2026-11-10 (per-frame `geom+$A` animation counter, 0–3 — live),
+and the `$253FE` mode-`$17` walkability path pinned live the
+same day (a bounds check, not a terrain check). Still open: the
+player's arrow-key step gate, and the chunk tileset/palette
+pairing (blocks full tile renders of the 252 chunks). Also open:
+which screen rec 35 is,
 title layer 2's purpose, rec 39's display palette + its scene's
 top half, city markers on the world map, `$1194A` flip-path
 arithmetic.
@@ -127,11 +130,35 @@ pinned live** (harnesses in `.scratch006/`, hook at the attract loop
   (created by `$0243d6`; the character slot's +`0x04` holds its index).
 - **`$2343A` promotion [live]**: in `$1BA4E`'s `$FFB36C` dispatch,
   a dispatch-1 record moves to `$FFB76C` when that cell is `$FF`.
-- **`$197B0` (36 B × 56)**: 4 groups of 8 bytes + 4-byte tail;
-  group 0 = (stream-index offset, `$E358` param, x-offset, y-offset);
-  index = `$FFB0CC` record's (+2 + +4). Groups 1–3 are variants
-  (selection open). Harness B2 exercised `$197B0` records 12 and 24
-  through `$1BA4E` with valid streams (18, 28).
+- **`$197B0` (36 B × 56) — group selection RESOLVED 2026-11-10**:
+  4 groups of 8 bytes + 4-byte tail; group 0 = (stream-index
+  offset, `$E358` param, x-offset, y-offset); index = `$FFB0CC`
+  record's (+2 + +4). The group used is **`geom+$A`** — the
+  +`$A` word of the geometry struct (`$FFB08C`): `$231D8`/`$2343A`
+  compute the byte offset as `record × 36 + geom+$A × 8`
+  [static], and `geom+$A` is a **per-frame animation counter
+  (0–3)**, set to 0 at map load by `$1DA10` and incremented mod 4
+  every frame by the world tick `FUN_02155e` — **live** (harness C,
+  `.scratch006/harness_m17.s`: 5 `$2155E` calls from 0 gave
+  `geom+$A` = 1, 2, 3, 0, 1). So groups 0–3 are the 4 animation
+  frames of one template, one per frame in rotation; the x/y
+  offsets form a small cross (record 12: (2,0)/(0,1)/(−2,0)/(0,−1)).
+  **Tail = (dispatch case, variant) [static]**: tail word 1 is a
+  jump-table dispatch index (0–5) for `FUN_0226bc`, tail word 2 is
+  the frame the record belongs to; `FUN_0226bc` dispatches when
+  `geom+$A` == tail word 2 (or record+4 == `$28` and `geom+$A` == 3).
+  Harness B2 exercised `$197B0` records 12 and 24 through `$1BA4E`
+  with valid streams (18, 28).
+- **Mode `$17` walkability — PINNED LIVE 2026-11-10** (harness C):
+  `$02dc0c` mode-`$17` delegates to `$253FE(x, y, 2, 4, 0)` and
+  returns NOT(`$253FE`); `$253FE` returns `$1C892`'s blocked flag
+  for the position itself (no step, mode=2): `$FE` iff `$FF00AE`==2
+  and (x, y) out of bounds (352×224), else 0. **Mode `$17` is a
+  bounds check, not a terrain check** — walkable (1) for every
+  in-bounds coordinate regardless of `$5EDC4` type, 0 for
+  out-of-bounds when `$FF00AE`==2. Live 19/19 (8 in-bounds coords
+  × 2 phases + 3 out-of-bounds coords); mode17 == NOT(s253fe) in
+  all cases.
 - **Attract-context gotcha**: the grids/records are cold (zeroed)
   RAM before any map load, so `$20C5E` must run before `$20E7E`
   or it errors via `$12FA0` (which hangs waiting for input).

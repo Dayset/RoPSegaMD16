@@ -409,8 +409,26 @@ tilemaps + `$5EDC4` table: **13/13 match** — types 5, 9, 18 →
 0. The discriminating pair is `(0,0)` tile `$24` (type 6) → 1
 versus `(156,0)` tile `$57` (type 6) → 0: same type, different
 tile index — the `$24` rule is real, and type 6 alone is not
-walkable. (The mode=`$17` path delegates to `$253FE` with an
-inverted result and is not live-tested. The player's arrow-key
+walkable. **Mode `$17` — PINNED LIVE 2026-11-10** (harness C,
+`.scratch006/harness_m17.s`, test ROM
+`8956d2b48e23ff815f07da51aae88011`): `$02dc0c(x, y, mode=$17)`
+delegates to `$253FE(x, y, 2, 4, 0)` and returns NOT(`$253FE`).
+`$253FE` returns `$1C892`'s step-blocked flag (struct+`0x18`) for
+the position itself — no step, since `$1E022` with direction 4
+clears dx=dy=0, and mode=2. The flag is `$FE` iff `$FF00AE`==2
+and (x, y) is out of bounds (352×224 map), `$E7` iff mode==7
+(not here), else 0. So **mode `$17` is a bounds check, not a
+terrain check**: it returns walkable (1) for every in-bounds
+coordinate regardless of `$5EDC4` type, and 0 for out-of-bounds
+coordinates when `$FF00AE`==2. Live 19/19: 8 in-bounds coords
+(types 0, 4, 5, 6, 9, 18) in both phases (`$FF00AE`=0 and 2) all
+mode17=1, s253fe=0; 3 out-of-bounds coords (352,100), (100,224),
+(400,300) with `$FF00AE`=2 all mode17=0, s253fe=`$FE`;
+mode17 == NOT(s253fe) in all 19 cases, and the mode-0 results
+re-confirmed 6/6 in the same run. (When `$FF00AE`!=2 the bounds
+gate is skipped, so mode `$17` is walkable even out of bounds
+[static] — out-of-bounds was only live-tested with `$FF00AE`=2,
+to avoid `$1C176` on an out-of-bounds tile.) The player's arrow-key
 step, `FUN_01c892`, does not itself gate on `$5EDC4`; the same
 type set {5, 9, 18} is also tested by the NPC/AI routines
 `$2619c`/`$265be`.) Overworld type distribution (352×224):
@@ -494,22 +512,56 @@ record 1 (disp=2) stayed in `$FFB76C[198]`; `$FF0096` stayed
 
 **`$197B0` 36-byte record layout.** 56 records (0x7E0 bytes,
 `$197B0–$19F8F`), indexed by a `$FFB0CC` record's (+`2` + +`4`)
-in `$231D8`/`$2343A` (plus `geom+$A` × 8, which is 0 in
-practice). Each record is **4 groups of 8 bytes + a 4-byte tail**
-— the tail is 0 in 32 records and non-zero in 24 (recs 16–19
-and 36–55; values (1–5, 1–2); meaning [open]). Group 0 — the only group the handlers read — is
+in `$231D8`/`$2343A`. Each record is **4 groups of 8 bytes + a 4-byte tail**.
+**Group selection — RESOLVED 2026-11-10.** The group is selected by
+**`geom+$A`** — the +`$A` word of the geometry struct (`$FFB08C`,
+pointed to by `$FFA7FC`). `$231D8`/`$2343A` compute the `$197B0`
+byte offset as `record × 36 + geom+$A × 8` (`asl.l #$3` on
+`geom+$A`, `$0231F6`/`$02345E` [static]), so the group used is
+`geom+$A`. And **`geom+$A` is a per-frame animation counter
+(0–3)**: it is set to 0 by `$1DA10` at map load (`clr.w $a(a0)`,
+`$01DA50` — the only other writer of any geometry struct's
++`$A`), then incremented mod 4 **every frame** by `FUN_02155e`
+(the world tick, `$021566–$021580`: `geom+$A = (geom+$A + 1) mod 4`),
+which the main loop `$D28E` calls at `$00D2E0` when `$FF02A2`
+bit 1 is set. **Live** (harness C, `.scratch006/harness_m17.s`):
+calling `$2155E` 5 times from a 0 start gave `geom+$A` = 1, 2, 3,
+0, 1 (5/5), with the clock `$FF0E16` = 1–5 and `$FF0092` toggling
+1, 0, 1, 0, 1. So **groups 0–3 are the 4 animation frames of one
+template, selected one per frame in rotation** — groups 1–3 ARE
+read, one per frame; the earlier "0 in practice" was the B2
+harness setting `geom+$A`=0 by hand and running `$1BA4E` once.
+The 4 groups' x/y offsets form a small cross (record 12:
+(2,0)/(0,1)/(−2,0)/(0,−1)) — the sprite wobbles in a diamond
+across the 4 frames. The group-offset code is [static]; the
+counter cycling is [live]; a direct per-group `$E358`-stream
+capture was not done. Each group is
 (`$E358` stream-index offset, `$E358` 4th-arg param, x-offset,
 y-offset) as 4 words: +`0` is added to the `$FFB0CC` record's
 +`0` to form the `$E358` stream index; +`2` is passed to
 `$E358`; +`4`/`+6` are added to the screen x / (y + row).
-Groups 1–3 have the same shape but different stream offsets
-(and occasionally non-zero x/y offsets, e.g. record 12's
-(2,0)/(0,1)/(−2,0)/(0,−1) cross) — 4 variants of one template
-(frame or facing); which variant is selected is [open]. Group-0
-stream offsets range 0–14; the param is 0 or 1 (28 records each).
+Group-0 stream offsets range 0–14; the param is 0 or 1 (28 records each).
 Live support: harness B2 ran `$1BA4E` with records indexing
 `$197B0` records 12 and 24, and the dispatch handlers computed
 valid `$E358` streams (18 and 28) without faulting.
+**The 4-byte tail is (dispatch case, variant) [static].** Tail
+word 1 (+`$20`) is a jump-table dispatch index (0–5) for
+`FUN_0226bc` (jump table at `$023076`, `cmp.l #$6,d0; bcc` skips
+≥6); tail word 2 (+`$22`) is the variant/frame the record
+belongs to. `FUN_0226bc` dispatches a record when `geom+$A` ==
+tail word 2 (`cmp.w $22(a4),d0; beq`), or when record+4 == `$28`
+and `geom+$A` == 3. Tail data: 32 records (0,0) — dispatch case 0
+on frame 0; recs 16–19 (5,1) — case 5 on frame 1; recs 36–55
+(1–4, 1–2) — cases 1–4 on frame 1 or 2. No record has tail word
+2 == 3, so frame 3 dispatches only via the record+4==`$28`
+special case. `FUN_0226bc` also gates periodic actions on
+`geom+$A` == 0 (every 4th frame): the `$02D56A` call
+(`$022772`) and the `$24984` food/water step call (`$022B50`)
+only run on frame 0. The 6th `$197B0` lea site is `$022F8E`
+in `FUN_0226bc` (the tail-dispatch routine). `$232D2`
+(dispatch 3) uses `geom+$A` differently: it reads `$197B0`
+record (`geom+$A` + 8) — i.e. records 8–11, one per frame —
+or (record+2 + 8) when the record's +`0` is `$21C`/`$216`/`$22A`.
 
 **`$FF1EC0` is shared scratch, NOT a persistent grid** (settled):
 9 references — the `$E3B4`/`$E412` decoder writes there
@@ -532,11 +584,12 @@ handlers are `$2343A` (dispatch 1; also the promotion path),
 `$232AC` (dispatch 2), and `$232D2` (dispatch 3, which checks
 the record's +`0` against `$210`/`$218`/`$228`/`$21C`/`$216`/`$22A`).
 
-Still open on the terrain grid: the `$197B0` group 1–3 selection
-(frame vs facing); the `$253FE` mode-`$17` walkability path
-(not live-tested); how the player's arrow-key step gates on
+Still open on the terrain grid: how the player's arrow-key step gates on
 terrain (it does not use `$02dc0c`); the chunk tileset/palette
-pairing (blocks full tile renders of the 252 chunks).
+pairing (blocks full tile renders of the 252 chunks). Resolved
+2026-11-10: the `$197B0` group 1–3 selection (per-frame animation
+counter `geom+$A`, 0–3) and the `$253FE` mode-`$17` walkability
+path (a bounds check, not a terrain check) — see above.
 
 ## Open questions (for #020 / #011 / #015)
 
@@ -547,9 +600,11 @@ pairing (blocks full tile renders of the 252 chunks).
    via `$02dc0c` (13/13 harness cases); the `$FFB36C`/`$FFB76C`
    byte meanings and the `$FFB0CC` 12-byte record layout are
    live-confirmed (harness B1/B2, incl. the `$2343A` promotion);
-   the `$197B0` 36-byte record layout is determined. Still open:
-   the `$197B0` group 1–3 selection, the `$253FE` mode-`$17`
-   path, the player's arrow-key step gate, and the chunk
+   the `$197B0` 36-byte record layout is determined, its group
+   1–3 selection resolved (per-frame `geom+$A` counter, live
+   2026-11-10), and the `$253FE` mode-`$17` path pinned live
+   the same day (a bounds check, not a terrain check). Still open:
+   the player's arrow-key step gate, and the chunk
    tileset/palette pairing (blocks full tile renders of the
    252 chunks).
 2. **Which screen is rec 35?** Starfield + grey diamond, selected by
