@@ -50,7 +50,7 @@ addr,name,tier,note
 0x011C9A,sprite_grid_write,2,graphics.md: $11C9A writes a rows x cols grid of sprites
 0x011E06,gfx_layout_game,2,graphics.md:262 Layout G installed by $11E06
 0x011FAE,sys_unk_011fae,0,auto: touches none
-0x012024,sys_unk_012024,0,auto: touches none
+0x012024,str_reverse,1,static: strlen then pairwise byte swap in place
 0x012072,text_blit,2,logic.md: $12072 VDP/text drawing routine; blits $11820/$11A1A/$11AE4
 0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
 0x0123B0,window_down,2,architecture.md: $123B0 window down
@@ -58,7 +58,7 @@ addr,name,tier,note
 0x012F48,sys_unk_012f48,0,auto: touches $FF0E14 $FF8646
 0x012F80,sys_unk_012f80,0,auto: touches $FF0E14 $FF8646
 0x012FB4,sys_unk_012fb4,0,auto: touches $FF0086 $FF00AC $FF00AE $FF010E $FF0110 $FF0112
-0x013654,sys_unk_013654,0,auto: touches none
+0x013654,text_record_dispatch,2,disasm/text/inventory.json: decoder_routine 0x13654 record dispatcher
 0x0136FC,text_word_expand,2,disasm/text/inventory.json: decoder_routine 0x136FC word expander
 0x013882,sys_unk_013882,0,auto: touches $FF00AC $FF00AE $FF010E $FF0114 $FF0132 $FF0136
 0x013D84,sys_unk_013d84,0,auto: touches $FF0116 $FF8640 $FF867A $FF867C $FF867E
@@ -76,7 +76,7 @@ addr,name,tier,note
 0x017706,sys_unk_017706,0,auto: touches $FF014E $FFA800
 0x0177B4,save_validate_magic,2,save.md: real save validation is $177B4 magic byte
 0x017860,location_pic_draw,2,graphics.md: jsr $17860($FF009E) location-picture draw
-0x0179CA,sys_unk_0179ca,0,auto: touches none
+0x0179CA,vdp_scaled_table_write,1,static: table L01B4D2 scaled by arg/32; written to VDP data after set_write_addr $4000
 0x017A40,sys_unk_017a40,0,auto: touches $FF0076 $FF007A $FF8640 $FF8642 $FF8644 $FF8648
 0x01960A,sys_unk_01960a,0,auto: touches $FF0078
 0x01961A,sys_unk_01961a,0,auto: touches none
