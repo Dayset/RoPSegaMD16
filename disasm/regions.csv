@@ -23,8 +23,8 @@ start,end,class,name,doc_ref,tier
 0x017546,0x01756F,word-offset-table,region_017546,,1
 0x01764E,0x01765B,unknown,region_01764e,,1
 0x0179C6,0x0179C9,ascii,region_0179c6,,1
-0x0197B0,0x019F8F,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
-0x019F90,0x01B5D5,unknown,region_019f90,,1
+0x0197B0,0x019F8E,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
+0x019F8F,0x01B5D5,unknown,region_019f8f,,1
 0x01BE86,0x01BE8D,unknown,region_01be86,,1
 0x01C0A8,0x01C0AF,unknown,region_01c0a8,,1
 0x01C7BA,0x01C7C1,unknown,region_01c7ba,,1
@@ -101,22 +101,22 @@ start,end,class,name,doc_ref,tier
 0x0429FA,0x042A01,unknown,region_0429fa,,1
 0x043314,0x043315,unknown,region_043314,,1
 0x0433C0,0x05EDC3,high-entropy,region_0433c0,,1
-0x05EDC4,0x05F1C3,map-terrain-grid,map_terrain_grid,docs/maps.md (512 words per-tile properties),2
-0x05F1C4,0x05F523,unknown,region_05f1c4,,1
-0x05F524,0x05F7E3,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets),2
-0x05F7E4,0x09611F,unknown,region_05f7e4,,1
+0x05EDC4,0x05F1C2,map-terrain-grid,map_terrain_grid,docs/maps.md (512 words per-tile properties),2
+0x05F1C3,0x05F523,unknown,region_05f1c3,,1
+0x05F524,0x05F7E2,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets),2
+0x05F7E3,0x09611F,unknown,region_05f7e3,,1
 0x096120,0x0B86AD,gfx-tile-table,gfx_tile_table_96120,docs/graphics.md (62 records; streams 0x09638C-0x0B86AE),2
 0x0B86AE,0x0CC9D7,high-entropy,region_0b86ae,,1
-0x0CC9D8,0x0CCDB7,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8),2
-0x0CCDB8,0x0D63E6,unknown,region_0ccdb8,,1
-0x0D63E7,0x0D6646,table-location-song,table_location_song,docs/sound.md (152 locations x 4 bytes stride 4),2
-0x0D6647,0x0D6767,unknown,region_0d6647,,1
-0x0D6768,0x0D6B6B,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
-0x0D6B6C,0x0D6EB9,unknown,region_0d6b6c,,1
+0x0CC9D8,0x0CCDB6,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8),2
+0x0CCDB7,0x0D63E6,unknown,region_0ccdb7,,1
+0x0D63E7,0x0D6645,table-location-song,table_location_song,docs/sound.md (152 locations x 4 bytes stride 4),2
+0x0D6646,0x0D6767,unknown,region_0d6646,,1
+0x0D6768,0x0D6B6A,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
+0x0D6B6B,0x0D6EB9,unknown,region_0d6b6b,,1
 0x0D6EBA,0x0DC0BF,text-dictionary-blob,dict_blob,disasm/text/inventory.json:dictionary_blob (3466 words),2
 0x0DC0C0,0x0DC0C1,unknown,region_0dc0c0,,1
-0x0DC0C2,0x0DDBD5,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3466 words x 2 bytes),2
-0x0DDBD6,0x0DDBD7,unknown,region_0ddbd6,,1
+0x0DC0C2,0x0DDBD4,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3466 words x 2 bytes),2
+0x0DDBD5,0x0DDBD7,unknown,region_0ddbd5,,1
 0x0DDBD8,0x0E0A17,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1184 records),2
 0x0E0A18,0x0EB771,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
 0x0EB9A0,0x0EB9C3,unknown,region_0eb9a0,,1

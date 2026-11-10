@@ -56,6 +56,21 @@ def main():
                 seen_name.setdefault(name, f'{path}:{n}')
                 if starts and a not in starts:
                     warns.append(f'{path}:{n}: {addr} {name} is not a Ghidra routine start')
+    for rp in [Path('disasm/regions.csv'), Path('disasm/doc_regions.csv')]:
+        if not rp.exists():
+            continue
+        with rp.open(newline='') as fh:
+            rd = csv.reader(fh)
+            head = next(rd, [])
+            for n, row in enumerate(rd, 2):
+                if not row:
+                    continue
+                if len(row) != 6:
+                    errors.append(f'{rp}:{n}: {len(row)} columns, want 6 (unquoted commas break the tier column)')
+                    continue
+                s, e = int(row[0], 16), int(row[1], 16)
+                if e < s:
+                    errors.append(f'{rp}:{n}: end before start')
     for w in warns:
         print('warn:', w)
     for e in errors:
