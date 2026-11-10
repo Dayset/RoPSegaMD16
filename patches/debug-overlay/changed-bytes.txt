@@ -1,0 +1,19 @@
+debug overlay: original -> patched ROM (rop-debug-overlay.gen)
+hook: 0x01272 33fc000000ff0016 -> 4ef9000fd2004e71 (jmp $FD200.l ; nop)
+trampoline: 0xFD200-0xFD2CF (208 bytes, overlay.s)
+checksums: fixed with tools/checksum.py fix-all (runtime 0xFD098, header 0x18E)
+0x0018E: 2 bytes changed
+0x01272: 2 bytes changed
+0x01275: 5 bytes changed
+0xFD098: 4 bytes changed
+0xFD200: 5 bytes changed
+0xFD206: 11 bytes changed
+0xFD212: 9 bytes changed
+0xFD21C: 41 bytes changed
+0xFD246: 5 bytes changed
+0xFD24C: 17 bytes changed
+0xFD25E: 19 bytes changed
+0xFD272: 19 bytes changed
+0xFD286: 5 bytes changed
+0xFD28C: 64 bytes changed
+0xFD2CD: 3 bytes changed
