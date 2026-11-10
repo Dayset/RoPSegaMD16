@@ -69,7 +69,24 @@ and combat damage.
   handler `$1D65A` adds nothing); the height term is skipped for mode
   4 (dispatch bypass → `L01D9B6` → `L01C984` return) — live: mode 4 on
   a +4 slope still gives (38,38). So (40,40) cannot be produced by any
-  code path; the manual rounds 38 to 40. Harness:
+  code path; the manual rounds 38 to 40.
+  **World-map pin 2026-11-10 (focused `$1C892` harness, 9/9 types
+  live-confirmed, test ROM `47964be7dd96170794817b85f66120f3`):
+  Grass = type 1, Swamp = type 8, Ice = type 6** (see docs/logic.md
+  §3.7 for method + evidence). Ice is high confidence (type 6 is
+  bimodal polar — 4,924 north + 5,120 south cells — and the dialogue
+  puts the polar plains / south ice plane in the far south; live at
+  (48,5), (96,202), (100,200)). Grass is moderate (type 1 is the
+  most common non-polar land, uniform across latitudes; live at
+  (25,100); type 4 is the runner-up / possible second grass variant).
+  Swamp is moderate (type 8 dominates the Fire Swamp region south of
+  Hideous, sextant 12°–13°; live at (127,130)). The fan world map was
+  tested and rejected as a geometric source (sea-mask IoU 0.085–
+  0.117, chance — artistic render, rough geography only). The 2 food
+  mismatches in the 9-case run are a blocked step (type 4) and a +2
+  height slope (type 8), not type errors. Desert coordinate corrected:
+  the type-17 cell is the harness destination (59,81), not (58,81).
+  Harness:
   `.scratch007/harness_c892.s` (see docs/logic.md §3.7). **CAMP — located and
   live-verified (2026-11-10, 3/3 harness cases):** handler
   `FUN_03019a` `$03019a`, called as C=28 from the verb executor

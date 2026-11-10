@@ -629,16 +629,20 @@ water = base_water(mode) + terrain_water(type, mode)
 The official manual (see `docs/research/official-manual-transcript.md`)
 gives rates per mile, party of 6. The code column is the flat-terrain
 (`height_delta = 0`) cost, **measured live** by the `$1C892` harness
-(below). The **terrain-type → terrain-name mapping is partly open** —
-Road and Desert are now pinned; Grass, Swamp and Ice are not.
+(below). The **terrain-type → terrain-name mapping is now pinned by a
+world-map pin (2026-11-10, see below)** — Road, Desert, Grass, Swamp
+and Ice all have a `$5EDC4` type. The manual's rates for
+Grass/Swamp/Ice remain approximate (see the verdict below); the pins
+are mapping claims (which type is which terrain on the world map),
+not rate claims.
 
 | Manual (per mile) | Food | Water | Code match |
 |---|---|---|---|
 | On foot — Road | 1 | 1 | **type 9, mode 0: set (1,1) ✓ [live]** |
-| On foot — Grass | 4 | 2 | **manual approximate — water 2 is unattainable in any mode [live/static, resolved]** |
+| On foot — Grass | 4 | 2 | **type 1 [live, world-map pin]** — manual approximate, water 2 unattainable in any mode [live/static, resolved] |
 | On foot — Desert | 7 | 5 | **type 17, mode 0: (3,1)+(4,4) = (7,5) ✓ [live]** |
-| On foot — Swamp | 8 | 4 | **manual approximate — water 4 is unattainable in any mode [live/static, resolved]** |
-| On foot — Ice waste | 4 | 3 | **manual approximate — (4,3) is unattainable as a flat cost [live/static, resolved]** |
+| On foot — Swamp | 8 | 4 | **type 8 [live, world-map pin]** — manual approximate, water 4 unattainable in any mode [live/static, resolved] |
+| On foot — Ice waste | 4 | 3 | **type 6 [live, world-map pin]** — manual approximate, (4,3) unattainable as a flat cost [live/static, resolved] |
 | Boat, shallow | 1 | 1 | base (1,1) ✓ (no addition) [live] |
 | Boat, deep | 5 | 20 | **type 0, mode 7: (1,1)+(4,19) = (5,20) ✓ [live]** |
 | Ship, deep | 1 | 1 | base (1,1) ✓ [live] |
@@ -665,9 +669,70 @@ cannot be produced by any code path. Desert and Road match exactly,
 so the manual is generally accurate — but these three terrains do not
 correspond to any per-step cost the code can produce. **Desert is the
 one manual on-foot terrain that matches exactly: type 17 gives (7,5)
-on foot.** Which world-map terrain type 17 *is* (desert, by the rate)
-is a mapping claim, not a code claim — the type's identity still needs
-a world-map pin (overworld coordinate (58,81) is a type-17 cell).
+on foot.** The type identities are mapping claims, not code claims —
+they were pinned by a world-map pin (below), not by the rates.
+
+#### World-map pin: Grass = type 1, Swamp = type 8, Ice = type 6 [live, 2026-11-10]
+
+The manual's rates cannot pin these three (see the verdict above —
+water 2/4/3 are unattainable), so they were pinned by matching
+overworld coordinates to terrains named in the game itself
+(dialogue + the fan world map), then reading the live `$5EDC4` type
+at those coordinates with a focused `$1C892` harness
+(`.scratch007/harness_types.s`, test ROM
+`47964be7dd96170794817b85f66120f3`, **9/9 types live-confirmed**;
+the 2 food mismatches are a blocked step and a +2 height slope, not
+type errors — see the harness note below).
+
+- **Ice = type 6 [live, high confidence].** Type 6 is the only
+  strongly **bimodal** terrain: 4,924 cells in the far north
+  (y 0–56) and 5,120 in the far south (y 168–224), sparse in the
+  middle (983 / 617) — a polar distribution, the ice caps at both
+  poles. It is the dominant far-south land type. The dialogue
+  places the ice in the far south explicitly: *"a town in the far
+  south on the polar plains … at about 3' 22'"* (Sunrise) and
+  *"around 6' 21' on the south ice plane"* (the Conjurers' skull
+  cave). The fan world map shows its pale/white terrain at the
+  diamond's poles. Live: type 6 at (48,5) far north, (96,202) and
+  (100,200) far south.
+- **Grass = type 1 [live, moderate confidence].** Type 1 is the most
+  common non-polar land type (8,231 cells) and is uniformly spread
+  across all latitudes (bands 1830 / 2228 / 2071 / 2102) — the
+  default ground cover. Live: type 1 at (25,100). **Runner-up:
+  type 4** (6,933 cells, also widespread and uniform) — it may be a
+  second grass variant, or a distinct terrain (forest/hills) the
+  manual does not list separately; the two cannot be told apart by
+  cost (both give base (3,1) on flat ground).
+- **Swamp = type 8 [live, moderate confidence].** The Fire Swamp is
+  where the witch Hideous lives (*"Stay away from the Fire Swamp
+  to the south of here!"*; *"the swamp in front of, and very close
+  to, her home"*). Hideous is listed at sextant 12°–13° (≈
+  overworld (120,130)); the region south of it (x 100–140,
+  y 130–170) is dominated by types 4 and 8, and type 8 is the
+  mid-latitude terrain concentrated there (5,224 cells, bands
+  301 / 1781 / 2442 / 700), while type 4 is ubiquitous. Live:
+  type 8 at (127,130) in that region.
+- **Not used as a pin:** the fan world map
+  (`docs/research/rings-of-power-ru/RingsOfPower-World.png`) was
+  tested as a geometric source and **rejected** — a sea-mask IoU
+  search over the isometric parameters and all 4 orientations
+  peaked at 0.085–0.117 (chance). It is an artistic render, useful
+  only for rough geography (desert south-central, pale terrain at
+  the poles), not for precise coordinates. The sextant→overworld
+  mapping is only approximate (≈ ×10; 7–8 of 20 cities land on
+  type 9 roads at ×10, all 20 on land), so town coordinates from
+  dialogue/the Locations guide were used regionally, not as exact
+  cells.
+- **Harness note:** the 9-case run reports 7/9 OK because two
+  food values differ — case [4] (type 4 at (107,106)) food 0 is a
+  **blocked step** (d0=0, blocked=255; the step did not happen, so
+  no cost was computed), and case [5] (type 8 at (127,130)) food 4
+  is a **+2 height slope** (base 3 + 2/2). Both types still read
+  live-correct. The type column is 9/9.
+- **Desert coordinate correction:** the type-17 cell is the harness
+  destination (59,81) (case x=58, step east), not (58,81) itself —
+  (58,81) is type 1. The earlier "(58,81) is a type-17 cell" was
+  shorthand for the case's x-coordinate.
 
 **Verdict: the Dragon manual rate (40/40) is a rounding of the code's
 (38,38).** Mode 4's cost is **always (38,38)** — no terrain addition
