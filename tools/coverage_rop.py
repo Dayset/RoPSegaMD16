@@ -81,6 +81,25 @@ def main():
         ('struct (labelled dc data)', struct, 'structured data lines (#6)'),
         ('raw .dc/.fill lines', raw, 'instruction fallbacks — must reach 0 (#7)'),
     ]
+    if '--by-class' in sys.argv:
+        per = {}
+        for line in src.read_text(errors='replace').splitlines():
+            m = INC.search(line)
+            if not m:
+                continue
+            start, length = num(m.group(1)), num(m.group(2))
+            end = start + length - 1
+            cls = 'unclassified (no row)'
+            for rs, re_, c in regions:
+                if rs <= start <= re_:
+                    cls = c
+                    break
+            per[cls] = per.get(cls, 0) + length
+        print('| Region class | Bytes |')
+        print('|---|---:|')
+        for cls, n in sorted(per.items(), key=lambda kv: -kv[1]):
+            print(f'| {cls} | {n:,} |')
+        return
     if '--md' in sys.argv:
         print('| Measure | Bytes | Notes |')
         print('|---|---:|---|')
