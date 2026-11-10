@@ -707,13 +707,36 @@ from the cost, and not pursued here.
     **25% of the way toward max** — `new = current +
     (max − current)/4`, per member, only if current < max. Measured:
     HP 10 → 32 (`10 + 90/4`), Power 20 → 35 (`20 + 60/4`). The
-    **50% regain is a different path**: `FUN_03019a(1)` runs loop 2
-    (`$030500`–`$030620`, `divs.w #$2`, `new = current +
-    (max − current)/2`, measured HP 10 → 55, Power 20 → 50) with **no**
-    deduction — it is called from the goods-adjust `$2BBD2`
-    (`$02BE58`, argument 1), i.e. an item use, not the CAMP verb.
-    Which item triggers it is [open] (remainder 0 in the `$2BBD2`
-    dispatch).
+    **50% regain is the inn service Sleep** [live, 2026-11-10]:
+    `FUN_03019a(1)` runs loop 2 (`$030500`–`$030620`, `divs.w #$2`,
+    `new = current + (max − current)/2`, measured HP 10 → 55,
+    Power 20 → 50) with **no** deduction — it is called from the
+    goods-adjust `$2BBD2` (`$02BE58`, argument 1) when the goods code
+    is **704** (`$2C0`). Goods-code formula [static, verified live on
+    food/water/gold]: `goods = item_category × 64 + (price_record −
+    category_w)`. Sleep is item 11 ("services", `w` = 136), price
+    record 136 → `11×64 + 0 = 704`. The `$2BBD2` dispatch splits the
+    code by 64 (quotient → jump table `$02C8C4`, quotient 11 →
+    `$02BE4A`; remainder → `$02BF66`, remainder 0 → `L02BE54` →
+    `FUN_03019a(1)`). Live harness (`.scratch007/harness_sleep.s`,
+    test ROM `3e3ae5380302abcbe3e79a05ec80ded7`, 3/3 cases):
+    `$2BBD2(1, 704, 1, 1)` → HP 10 → 55, Power 20 → 50, food/water/
+    gold unchanged (1000), clock 100 → 540; with HP already at max,
+    HP stays 100 while Power still regains 20 → 50 (per-stat "only if
+    current < max"). The paired service **Meal** (goods 705, item 11,
+    price record 137, 50 gold) gives **+25 HP only** (capped at max,
+    Power untouched, no clock change) — measured HP 10 → 35. Sleep
+    costs **75 gold** (price raw 31 → `(31−16)×5`), Meal 50 gold
+    (raw 26 → `(26−16)×5`); the manual confirms both are inn services
+    ("Inns (Sleep/Meals) are cheaper than Temples (Heal/Power) at low
+    levels"). Sleep is a **service, not a carried item**: it is bought
+    at an inn and the effect applies immediately — the `$2BBD2(704)`
+    call itself deducts no gold/food/water (measured gold unchanged),
+    so the 75-gold payment is a separate transaction by the purchase
+    code, not part of the regain call. The temple counterparts are
+    Heal (goods 1026) / Pow Up (1027) / Life (1028) — same formula,
+    item 16 ("healing", `w` = 215) — but their effects are [open]
+    (quotient-16 dispatch `$02C46A`, not traced).
   * **Clock [live] — day↔night flip, but NOT a +1200 advance.**
     `$0302F0`–`$030318`: if `$FF0E16 ≤ 540` (`$21C`) set it to **540**,
     else set it to **0**. Measured: clock 100 → 540, clock 1000 → 0.
