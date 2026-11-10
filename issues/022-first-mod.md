@@ -33,7 +33,7 @@ moves a few pixels (sub-cell), while walking jumps a whole cell.
 Work breakdown (all under milestone M6 "Patches in between", part of
 GitHub #22 / L037), suggested order #31 → #26 → #27 → #28 → #29/#30 → #32:
 - #26 Diagnose the ~3 Hz update tick: frame-counter wait or redraw cost?
-- #27 Reverse the Buc-cutscene sub-cell offset mechanism (reference for smooth walking)
+- #27 Reverse the Buc-cutscene sub-cell offset mechanism (reference for smooth walking) — the Buc cutscene is one of the few rare cutscenes where sub-cell motion is used, and that sub-cell motion is what's desirable for world navigation too
 - #28 Sub-cell walking: interpolate camera and sprites, commit cell at the end (replaces smooth-move v1)
 - #29 World view: cut the per-step redraw and DMA cost in `$1BA4E` and `$E358`
 - #30 Cell (zoomed) view: smooth stepping and a responsiveness measurement
