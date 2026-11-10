@@ -117,7 +117,13 @@ def is_flow(mnem, op):
     return base in BRANCHES or base in DBRANCHES or "(pc" in op
 
 
+BITOPS = {"btst", "bset", "bclr", "bchg"}
+
+
 def abs_text(mnem, op):
+    # vasm rejects a size suffix on bit operations: the size is implied (.b on memory, .l on Dn)
+    if mnem.split(".")[0] in BITOPS:
+        mnem = mnem.split(".")[0]
     return f"{mnem} {op.replace(', ', ',')}".strip()
 
 
