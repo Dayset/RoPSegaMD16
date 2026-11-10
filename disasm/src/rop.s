@@ -1622,7 +1622,7 @@ L00D95C:
 	and.w #$1,d0	; $00D978
 	beq.b L00D986	; $00D97C
 L00D97E:
-	jsr sys_unk_0226bc.l	; $00D97E
+	jsr combat_turn_run.l	; $00D97E
 	bra.b L00D996	; $00D984
 L00D986:
 	clr.w -$6(a6)	; $00D986
@@ -2138,7 +2138,7 @@ L00DF58:
 	; data $00DF58-$00E357
 	incbin "rop-original.gen",$00DF58,$400
 	; code $00E358-$00E47B
-sys_unk_00e358:
+map_terrain_tile_lookup:
 	moveq #$0,d2	; $00E358
 	move.w $4(a7),d2	; $00E35A
 	move.w $6(a7),d0	; $00E35E
@@ -8690,7 +8690,7 @@ L016678:
 	addq.w #$6,a7	; $0166AA
 	move.w #$347,-(a7)	; $0166AC
 	move.w $ff02b2.l,-(a7)	; $0166B0
-	jsr sys_unk_02c8f2.l	; $0166B6
+	jsr item_category_of.l	; $0166B6
 	addq.w #$4,a7	; $0166BC
 	tst.w d0	; $0166BE
 	beq.b L0166C8	; $0166C0
@@ -12623,7 +12623,7 @@ L01B81A:
 	jsr npc_struct_setup.l	; $01B850
 	addq.w #$2,a7	; $01B856
 	move.w $ff02b2.l,-(a7)	; $01B858
-	jsr sys_unk_02595a.l	; $01B85E
+	jsr sys_struct52_scan.l	; $01B85E
 	addq.w #$2,a7	; $01B864
 	move.w #$20,-(a7)	; $01B866
 	move.w $ff02b2.l,d0	; $01B86A
@@ -12634,7 +12634,7 @@ L01B81A:
 	jsr queue_init.l	; $01B87E
 	addq.w #$6,a7	; $01B884
 	jsr sys_unk_02e9a6.l	; $01B886
-	jsr sys_unk_01e562.l	; $01B88C
+	jsr sys_state_clear.l	; $01B88C
 	clr.l -(a7)	; $01B892
 	clr.w -(a7)	; $01B894
 	move.w #$7,-(a7)	; $01B896
@@ -12921,7 +12921,7 @@ L01BBFC:
 	move.w d1,-(a7)	; $01BC12
 	move.w -$a(a6),-(a7)	; $01BC14
 	move.w a4,-(a7)	; $01BC18
-	jsr sys_unk_00e358.l	; $01BC1A
+	jsr map_terrain_tile_lookup.l	; $01BC1A
 	addq.w #$8,a7	; $01BC20
 	bra.b L01BC44	; $01BC22
 L01BC24:
@@ -12933,7 +12933,7 @@ L01BC24:
 	move.w d1,-(a7)	; $01BC32
 	move.w -$a(a6),-(a7)	; $01BC34
 	move.w #$230,-(a7)	; $01BC38
-	jsr sys_unk_00e358.l	; $01BC3C
+	jsr map_terrain_tile_lookup.l	; $01BC3C
 	addq.w #$8,a7	; $01BC42
 L01BC44:
 	addq.w #$1,d6	; $01BC44
@@ -12960,7 +12960,7 @@ L01BC56:
 	move.w d1,-(a7)	; $01BC7A
 	move.w -$a(a6),-(a7)	; $01BC7C
 	move.w -$2(a6),-(a7)	; $01BC80
-	jsr sys_unk_00e358.l	; $01BC84
+	jsr map_terrain_tile_lookup.l	; $01BC84
 	addq.w #$8,a7	; $01BC8A
 	movea.l $ffa7fc.l,a0	; $01BC8C
 	move.w (a0),d0	; $01BC92
@@ -15339,7 +15339,7 @@ sys_unk_01da6c:
 	movem.l d4-d7/a3-a4,-(a7)	; $01DA70
 	move.w #$ffff,$ff009c.l	; $01DA74
 	clr.w $ff0142.l	; $01DA7C
-	jsr sys_unk_020d0a.l	; $01DA82
+	jsr sys_record12_scan.l	; $01DA82
 	clr.w $ff0092.l	; $01DA88
 	clr.w $ff0094.l	; $01DA8E
 	cmpi.w #$1,$8(a6)	; $01DA94
@@ -15553,7 +15553,7 @@ L01DD7E:
 	and.w #$1,d1	; $01DDAA
 	beq.b L01DDD6	; $01DDAE
 	move.w a4,-(a7)	; $01DDB0
-	jsr sys_unk_025b4e.l	; $01DDB2
+	jsr sys_struct52_nibble_read.l	; $01DDB2
 	addq.w #$2,a7	; $01DDB8
 	cmpi.w #$2,$ff0ea2.l	; $01DDBA
 	bne.b L01DDD0	; $01DDC2
@@ -15652,7 +15652,7 @@ L01DF08:
 	move.w (a0,d0.l),$ff0ea6.l	; $01DF3A
 	move.w $ff0e98.l,$ff0e96.l	; $01DF42
 	move.w $c(a6),-(a7)	; $01DF4C
-	jsr sys_unk_025b4e.l	; $01DF50
+	jsr sys_struct52_nibble_read.l	; $01DF50
 	addq.w #$2,a7	; $01DF56
 	move.w $c(a6),d0	; $01DF58
 	muls.w #$34,d0	; $01DF5C
@@ -16238,7 +16238,7 @@ sys_unk_01e4e6:
 	unlk a6	; $01E55E
 	rts	; $01E560
 	; code $01E562-$01E59F
-sys_unk_01e562:
+sys_state_clear:
 	link.w a6,#$0	; $01E562
 	clr.b $ffa7f8.l	; $01E566
 	clr.b $ffbb72.l	; $01E56C
@@ -16784,7 +16784,7 @@ L01EAF8:
 	add.w d7,d0	; $01EB78
 	move.w d0,-(a7)	; $01EB7A
 	move.w $ff02b2.l,-(a7)	; $01EB7C
-	jsr sys_unk_02c8f2.l	; $01EB82
+	jsr item_category_of.l	; $01EB82
 	addq.w #$4,a7	; $01EB88
 	move.w d4,d1	; $01EB8A
 	sub.w d5,d1	; $01EB8C
@@ -17976,7 +17976,7 @@ L01FB2E:
 	add.w -$e(a6),d0	; $01FC00
 	move.w d0,-(a7)	; $01FC04
 	move.w $ff02b2.l,-(a7)	; $01FC06
-	jsr sys_unk_02c8f2.l	; $01FC0C
+	jsr item_category_of.l	; $01FC0C
 	addq.w #$4,a7	; $01FC12
 	tst.w d0	; $01FC14
 	bne.b L01FC72	; $01FC16
@@ -18053,7 +18053,7 @@ L01FCA4:
 	add.w -$e(a6),d0	; $01FD1E
 	move.w d0,-(a7)	; $01FD22
 	move.w $ff02b2.l,-(a7)	; $01FD24
-	jsr sys_unk_02c8f2.l	; $01FD2A
+	jsr item_category_of.l	; $01FD2A
 	addq.w #$4,a7	; $01FD30
 	move.w d0,-(a7)	; $01FD32
 	move.w $ff02a8.l,d0	; $01FD34
@@ -18479,7 +18479,7 @@ L02031C:
 L020332:
 	move.w #$346,-(a7)	; $020332
 	move.w $ff02b2.l,-(a7)	; $020336
-	jsr sys_unk_02c8f2.l	; $02033C
+	jsr item_category_of.l	; $02033C
 	addq.w #$4,a7	; $020342
 	tst.w d0	; $020344
 	beq.b L02035C	; $020346
@@ -19189,7 +19189,7 @@ L020C76:
 	unlk a6	; $020CC6
 	rts	; $020CC8
 	; code $020CCA-$020CF5
-sys_unk_020cca:
+sys_record12_scan_20cca:
 	link.w a6,#$fffe	; $020CCA
 	clr.w -$2(a6)	; $020CCE
 L020CD2:
@@ -19207,11 +19207,11 @@ shop_merchant_clear_all:
 	link.w a6,#$0	; $020CF6
 	clr.w $ff0096.l	; $020CFA
 	jsr table_fill_ff(pc)	; $020D00
-	bsr.b sys_unk_020cca	; $020D04
+	bsr.b sys_record12_scan_20cca	; $020D04
 	unlk a6	; $020D06
 	rts	; $020D08
 	; code $020D0A-$020D57
-sys_unk_020d0a:
+sys_record12_scan:
 	link.w a6,#$fffe	; $020D0A
 	clr.w -$2(a6)	; $020D0E
 L020D12:
@@ -21224,7 +21224,7 @@ L02268E:
 L0226B8:
 	bra.w L0224EA	; $0226B8
 	; code $0226BC-$022F05
-sys_unk_0226bc:
+combat_turn_run:
 	link.w a6,#$ffe8	; $0226BC
 	movem.l d4-d7/a3-a4,-(a7)	; $0226C0
 	tst.w $ff012a.l	; $0226C4
@@ -22062,7 +22062,7 @@ hero_track:
 	add.w $c(a6),d0	; $02322A
 	move.w d0,-(a7)	; $02322E
 	move.w #$209,-(a7)	; $023230
-	jsr sys_unk_00e358.l	; $023234
+	jsr map_terrain_tile_lookup.l	; $023234
 	addq.w #$8,a7	; $02323A
 	move.w $2(a3),-(a7)	; $02323C
 	move.w $6(a3),d0	; $023240
@@ -22079,7 +22079,7 @@ hero_track:
 	move.w (a0),d0	; $023266
 	add.w (a3),d0	; $023268
 	move.w d0,-(a7)	; $02326A
-	jsr sys_unk_00e358.l	; $02326C
+	jsr map_terrain_tile_lookup.l	; $02326C
 	addq.w #$8,a7	; $023272
 	bra.b L0232A6	; $023274
 L023276:
@@ -22096,7 +22096,7 @@ L023276:
 	move.w (a0),d0	; $023298
 	add.w (a3),d0	; $02329A
 	move.w d0,-(a7)	; $02329C
-	jsr sys_unk_00e358.l	; $02329E
+	jsr map_terrain_tile_lookup.l	; $02329E
 	addq.w #$8,a7	; $0232A4
 L0232A6:
 	movea.l (a7)+,a3	; $0232A6
@@ -22112,7 +22112,7 @@ sys_unk_0232ac:
 	move.w $c(a6),-(a7)	; $0232BC
 	movea.l $8(a6),a0	; $0232C0
 	move.w (a0),-(a7)	; $0232C4
-	jsr sys_unk_00e358.l	; $0232C6
+	jsr map_terrain_tile_lookup.l	; $0232C6
 	addq.w #$8,a7	; $0232CC
 	unlk a6	; $0232CE
 	rts	; $0232D0
@@ -22153,7 +22153,7 @@ L0232FA:
 	move.w (a0),d0	; $023340
 	add.w (a3),d0	; $023342
 	move.w d0,-(a7)	; $023344
-	jsr sys_unk_00e358.l	; $023346
+	jsr map_terrain_tile_lookup.l	; $023346
 	addq.w #$8,a7	; $02334C
 	bra.b L0233AE	; $02334E
 L023350:
@@ -22185,7 +22185,7 @@ L02337A:
 	move.w d0,-(a7)	; $02339E
 	movea.l $8(a6),a0	; $0233A0
 	move.w (a0),-(a7)	; $0233A4
-	jsr sys_unk_00e358.l	; $0233A6
+	jsr map_terrain_tile_lookup.l	; $0233A6
 	addq.w #$8,a7	; $0233AC
 L0233AE:
 	bra.w L023434	; $0233AE
@@ -22230,7 +22230,7 @@ L023404:
 	move.w (a0),d0	; $023426
 	add.w (a3),d0	; $023428
 	move.w d0,-(a7)	; $02342A
-	jsr sys_unk_00e358.l	; $02342C
+	jsr map_terrain_tile_lookup.l	; $02342C
 	addq.w #$8,a7	; $023432
 L023434:
 	movea.l (a7)+,a3	; $023434
@@ -22275,7 +22275,7 @@ L023462:
 	add.w $c(a6),d0	; $0234AA
 	move.w d0,-(a7)	; $0234AE
 	move.w #$208,-(a7)	; $0234B0
-	jsr sys_unk_00e358.l	; $0234B4
+	jsr map_terrain_tile_lookup.l	; $0234B4
 	addq.w #$8,a7	; $0234BA
 	bra.w L023620	; $0234BC
 L0234C0:
@@ -22297,7 +22297,7 @@ L0234C0:
 	add.w #$9,d0	; $0234F4
 	move.w d0,-(a7)	; $0234F8
 	move.w #$201,-(a7)	; $0234FA
-	jsr sys_unk_00e358.l	; $0234FE
+	jsr map_terrain_tile_lookup.l	; $0234FE
 	addq.w #$8,a7	; $023504
 	bra.b L023534	; $023506
 L023508:
@@ -22312,7 +22312,7 @@ L023508:
 	add.w #$9,d0	; $023522
 	move.w d0,-(a7)	; $023526
 	move.w #$200,-(a7)	; $023528
-	jsr sys_unk_00e358.l	; $02352C
+	jsr map_terrain_tile_lookup.l	; $02352C
 	addq.w #$8,a7	; $023532
 L023534:
 	move.w $2(a3),-(a7)	; $023534
@@ -22328,7 +22328,7 @@ L023534:
 	move.w (a0),d0	; $023558
 	add.w (a3),d0	; $02355A
 	move.w d0,-(a7)	; $02355C
-	jsr sys_unk_00e358.l	; $02355E
+	jsr map_terrain_tile_lookup.l	; $02355E
 	addq.w #$8,a7	; $023564
 	movea.l $8(a6),a0	; $023566
 	move.w $8(a0),d5	; $02356A
@@ -22347,7 +22347,7 @@ L023534:
 	move.w $ff0092.l,d0	; $023598
 	add.w #$222,d0	; $02359E
 	move.w d0,-(a7)	; $0235A2
-	jsr sys_unk_00e358.l	; $0235A4
+	jsr map_terrain_tile_lookup.l	; $0235A4
 	addq.w #$8,a7	; $0235AA
 L0235AC:
 	btst #$1,d5	; $0235AC
@@ -22364,7 +22364,7 @@ L0235AC:
 	move.w $ff0092.l,d0	; $0235D2
 	add.w #$224,d0	; $0235D8
 	move.w d0,-(a7)	; $0235DC
-	jsr sys_unk_00e358.l	; $0235DE
+	jsr map_terrain_tile_lookup.l	; $0235DE
 	addq.w #$8,a7	; $0235E4
 L0235E6:
 	btst #$2,d5	; $0235E6
@@ -22381,7 +22381,7 @@ L0235E6:
 	move.w $ff0092.l,d0	; $02360C
 	add.w #$22e,d0	; $023612
 	move.w d0,-(a7)	; $023616
-	jsr sys_unk_00e358.l	; $023618
+	jsr map_terrain_tile_lookup.l	; $023618
 	addq.w #$8,a7	; $02361E
 L023620:
 	movem.l (a7)+,d4-d5/a3	; $023620
@@ -22657,7 +22657,7 @@ combat_attacker_check:
 	cmpi.b #$1,(a0,d0.l)	; $023B0E
 	bne.b L023B20	; $023B14
 	move.w $8(a6),-(a7)	; $023B16
-	jsr sys_unk_025b4e(pc)	; $023B1A
+	jsr sys_struct52_nibble_read(pc)	; $023B1A
 	addq.w #$2,a7	; $023B1E
 L023B20:
 	move.w $8(a6),d0	; $023B20
@@ -24885,7 +24885,7 @@ L02594E:
 	moveq #$ff,d0	; $025956
 	bra.b L025944	; $025958
 	; code $02595A-$025B4D
-sys_unk_02595a:
+sys_struct52_scan:
 	link.w a6,#$0	; $02595A
 	movem.l d4-d7/a3,-(a7)	; $02595E
 	moveq #$0,d5	; $025962
@@ -25035,7 +25035,7 @@ L025B2C:
 	move.b #$1,(a0,d0.l)	; $025B44
 	bra.w L0259A4	; $025B4A
 	; code $025B4E-$025C43
-sys_unk_025b4e:
+sys_struct52_nibble_read:
 	link.w a6,#$fffc	; $025B4E
 	move.w $8(a6),d0	; $025B52
 	muls.w #$34,d0	; $025B56
@@ -31285,7 +31285,7 @@ L02AF82:
 	add.w #$29c,d0	; $02AF8E
 	move.w d0,-(a7)	; $02AF92
 	move.w $8(a6),-(a7)	; $02AF94
-	jsr sys_unk_02c8f2(pc)	; $02AF98
+	jsr item_category_of(pc)	; $02AF98
 	addq.w #$4,a7	; $02AF9C
 	tst.w d0	; $02AF9E
 	beq.b L02AFCA	; $02AFA0
@@ -33145,7 +33145,7 @@ L02C8D6:
 L02C8EE:
 	bra.w L02BCEC	; $02C8EE
 	; code $02C8F2-$02CB79
-sys_unk_02c8f2:
+item_category_of:
 	link.w a6,#$fff6	; $02C8F2
 	move.w $a(a6),d0	; $02C8F6
 	ext.l d0	; $02C8FA
@@ -33217,7 +33217,7 @@ L02C986:
 	add.l d1,d0	; $02C9EC
 	lea.l $ff02c8.l,a0	; $02C9EE
 	move.w (a0,d0.l),-(a7)	; $02C9F4
-	jsr sys_unk_02c8f2(pc)	; $02C9F8
+	jsr item_category_of(pc)	; $02C9F8
 	addq.w #$4,a7	; $02C9FC
 	add.w d0,-$a(a6)	; $02C9FE
 L02CA02:
@@ -33413,7 +33413,7 @@ L02CC2E:
 	add.w -$2(a6),d0	; $02CC34
 	move.w d0,-(a7)	; $02CC38
 	move.w $8(a6),-(a7)	; $02CC3A
-	jsr sys_unk_02c8f2(pc)	; $02CC3E
+	jsr item_category_of(pc)	; $02CC3E
 	addq.w #$4,a7	; $02CC42
 	tst.w d0	; $02CC44
 	beq.b L02CC4C	; $02CC46
@@ -33446,7 +33446,7 @@ L02CC7C:
 	add.w -$2(a6),d0	; $02CC82
 	move.w d0,-(a7)	; $02CC86
 	move.w $8(a6),-(a7)	; $02CC88
-	jsr sys_unk_02c8f2(pc)	; $02CC8C
+	jsr item_category_of(pc)	; $02CC8C
 	addq.w #$4,a7	; $02CC90
 	tst.w d0	; $02CC92
 	beq.b L02CCAA	; $02CC94
@@ -33486,7 +33486,7 @@ L02CCDE:
 	add.w -$2(a6),d0	; $02CCE4
 	move.w d0,-(a7)	; $02CCE8
 	move.w $8(a6),-(a7)	; $02CCEA
-	jsr sys_unk_02c8f2(pc)	; $02CCEE
+	jsr item_category_of(pc)	; $02CCEE
 	addq.w #$4,a7	; $02CCF2
 	tst.w d0	; $02CCF4
 	beq.b L02CCFC	; $02CCF6
@@ -33725,7 +33725,7 @@ sys_unk_02d004:
 	link.w a6,#$ffe8	; $02D004
 	movem.l d4-d6,-(a7)	; $02D008
 	move.w $8(a6),-(a7)	; $02D00C
-	jsr sys_unk_02595a.l	; $02D010
+	jsr sys_struct52_scan.l	; $02D010
 	addq.w #$2,a7	; $02D016
 	move.w $8(a6),d0	; $02D018
 	muls.w #$34,d0	; $02D01C
@@ -34267,13 +34267,13 @@ L02D67C:
 	beq.w L02D740	; $02D68A
 	move.w #$35b,-(a7)	; $02D68E
 	move.w $ff02b2.l,-(a7)	; $02D692
-	jsr sys_unk_02c8f2.l	; $02D698
+	jsr item_category_of.l	; $02D698
 	addq.w #$4,a7	; $02D69E
 	tst.w d0	; $02D6A0
 	beq.b L02D6BC	; $02D6A2
 	move.w #$35c,-(a7)	; $02D6A4
 	move.w $ff02b2.l,-(a7)	; $02D6A8
-	jsr sys_unk_02c8f2.l	; $02D6AE
+	jsr item_category_of.l	; $02D6AE
 	addq.w #$4,a7	; $02D6B4
 	tst.w d0	; $02D6B6
 	bne.w L02D73C	; $02D6B8
@@ -34787,7 +34787,7 @@ L02DDBC:
 	add.w #$280,d0	; $02DDC0
 	move.w d0,-(a7)	; $02DDC4
 	move.w $ff02b2.l,-(a7)	; $02DDC6
-	jsr sys_unk_02c8f2.l	; $02DDCC
+	jsr item_category_of.l	; $02DDCC
 	addq.w #$4,a7	; $02DDD2
 	add.w d0,-$10(a6)	; $02DDD4
 	addq.w #$1,-$e(a6)	; $02DDD8
@@ -34974,7 +34974,7 @@ L02E076:
 	beq.w L02E112	; $02E084
 	move.w #$395,-(a7)	; $02E088
 	move.w $ff02b2.l,-(a7)	; $02E08C
-	jsr sys_unk_02c8f2.l	; $02E092
+	jsr item_category_of.l	; $02E092
 	addq.w #$4,a7	; $02E098
 	cmp.w #$5,d0	; $02E09A
 	blt.b L02E112	; $02E09E
@@ -36557,7 +36557,7 @@ L02F584:
 	add.w -$6(a6),d0	; $02F594
 	move.w d0,-(a7)	; $02F598
 	move.w $ff02b2.l,-(a7)	; $02F59A
-	jsr sys_unk_02c8f2.l	; $02F5A0
+	jsr item_category_of.l	; $02F5A0
 	addq.w #$4,a7	; $02F5A6
 	move.w d0,-(a7)	; $02F5A8
 	pea.l $ffa800.l	; $02F5AA
@@ -36595,7 +36595,7 @@ L02F60C:
 	add.w #$280,d0	; $02F61A
 	move.w d0,-(a7)	; $02F61E
 	move.w $ff02b2.l,-(a7)	; $02F620
-	jsr sys_unk_02c8f2.l	; $02F626
+	jsr item_category_of.l	; $02F626
 	addq.w #$4,a7	; $02F62C
 	move.w d0,-(a7)	; $02F62E
 	pea.l $ffa800.l	; $02F630
@@ -36619,7 +36619,7 @@ L02F65C:
 	add.w #$300,d0	; $02F66A
 	move.w d0,-(a7)	; $02F66E
 	move.w $ff02b2.l,-(a7)	; $02F670
-	jsr sys_unk_02c8f2.l	; $02F676
+	jsr item_category_of.l	; $02F676
 	addq.w #$4,a7	; $02F67C
 	move.w d0,-(a7)	; $02F67E
 	pea.l $ffa800.l	; $02F680
@@ -36648,7 +36648,7 @@ L02F6BC:
 	add.w #$340,d0	; $02F6CA
 	move.w d0,-(a7)	; $02F6CE
 	move.w $ff02b2.l,-(a7)	; $02F6D0
-	jsr sys_unk_02c8f2.l	; $02F6D6
+	jsr item_category_of.l	; $02F6D6
 	addq.w #$4,a7	; $02F6DC
 	move.w d0,-(a7)	; $02F6DE
 	pea.l $ffa800.l	; $02F6E0
@@ -36677,7 +36677,7 @@ L02F71C:
 	add.w #$440,d0	; $02F72A
 	move.w d0,-(a7)	; $02F72E
 	move.w $ff02b2.l,-(a7)	; $02F730
-	jsr sys_unk_02c8f2.l	; $02F736
+	jsr item_category_of.l	; $02F736
 	addq.w #$4,a7	; $02F73C
 	move.w d0,-(a7)	; $02F73E
 	pea.l $ffa800.l	; $02F740
@@ -36703,7 +36703,7 @@ L02F77E:
 	add.w #$380,d0	; $02F782
 	move.w d0,-(a7)	; $02F786
 	move.w $ff02b2.l,-(a7)	; $02F788
-	jsr sys_unk_02c8f2.l	; $02F78E
+	jsr item_category_of.l	; $02F78E
 	addq.w #$4,a7	; $02F794
 	move.w d0,-$4(a6)	; $02F796
 	clr.w -(a7)	; $02F79A
@@ -36869,7 +36869,7 @@ L02F8E6:
 	jsr npc_struct_setup.l	; $02F9EE
 	addq.w #$2,a7	; $02F9F4
 	move.w $ff02b2.l,-(a7)	; $02F9F6
-	jsr sys_unk_02595a.l	; $02F9FC
+	jsr sys_struct52_scan.l	; $02F9FC
 	addq.w #$2,a7	; $02FA02
 	move.w #$ff,-(a7)	; $02FA04
 	jsr sys_unk_02a454.l	; $02FA08
@@ -38522,7 +38522,7 @@ L031040:
 	addq.w #$8,-$4a(a6)	; $03106C
 	move.w #$347,-(a7)	; $031070
 	move.w $ff02b2.l,-(a7)	; $031074
-	jsr sys_unk_02c8f2.l	; $03107A
+	jsr item_category_of.l	; $03107A
 	addq.w #$4,a7	; $031080
 	tst.w d0	; $031082
 	beq.w L0311F4	; $031084
@@ -41574,7 +41574,7 @@ L033466:
 	and.w #$fff,d0	; $033478
 	move.w d0,-(a7)	; $03347C
 	move.w $ff02b2.l,-(a7)	; $03347E
-	jsr sys_unk_02c8f2.l	; $033484
+	jsr item_category_of.l	; $033484
 	addq.w #$4,a7	; $03348A
 	tst.w d0	; $03348C
 	beq.b L033496	; $03348E
@@ -41590,7 +41590,7 @@ L033498:
 	and.w #$fff,d0	; $0334AA
 	move.w d0,-(a7)	; $0334AE
 	move.w $ff02b2.l,-(a7)	; $0334B0
-	jsr sys_unk_02c8f2.l	; $0334B6
+	jsr item_category_of.l	; $0334B6
 	addq.w #$4,a7	; $0334BC
 	tst.w d0	; $0334BE
 	bne.b L0334C8	; $0334C0
@@ -53336,7 +53336,7 @@ L03CC74:
 	move.w $a(a6),-(a7)	; $03CC78
 	move.w $8(a6),-(a7)	; $03CC7C
 	move.w #$330,-(a7)	; $03CC80
-	jsr sys_unk_00e358.l	; $03CC84
+	jsr map_terrain_tile_lookup.l	; $03CC84
 	addq.w #$8,a7	; $03CC8A
 	move.w $c(a6),-(a7)	; $03CC8C
 	move.w $a(a6),d0	; $03CC90
@@ -53346,7 +53346,7 @@ L03CC74:
 	sub.w d4,d0	; $03CC9E
 	move.w d0,-(a7)	; $03CCA0
 	move.w #$331,-(a7)	; $03CCA2
-	jsr sys_unk_00e358.l	; $03CCA6
+	jsr map_terrain_tile_lookup.l	; $03CCA6
 	addq.w #$8,a7	; $03CCAC
 	move.w $c(a6),-(a7)	; $03CCAE
 	move.w $a(a6),d0	; $03CCB2
@@ -53354,7 +53354,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CCBA
 	move.w $8(a6),-(a7)	; $03CCBC
 	move.w #$332,-(a7)	; $03CCC0
-	jsr sys_unk_00e358.l	; $03CCC4
+	jsr map_terrain_tile_lookup.l	; $03CCC4
 	addq.w #$8,a7	; $03CCCA
 	move.w $c(a6),-(a7)	; $03CCCC
 	move.w $a(a6),d0	; $03CCD0
@@ -53364,7 +53364,7 @@ L03CC74:
 	add.w d4,d0	; $03CCDE
 	move.w d0,-(a7)	; $03CCE0
 	move.w #$333,-(a7)	; $03CCE2
-	jsr sys_unk_00e358.l	; $03CCE6
+	jsr map_terrain_tile_lookup.l	; $03CCE6
 	addq.w #$8,a7	; $03CCEC
 	move.w $c(a6),-(a7)	; $03CCEE
 	move.w $a(a6),d0	; $03CCF2
@@ -53374,7 +53374,7 @@ L03CC74:
 	sub.w d4,d0	; $03CD00
 	move.w d0,-(a7)	; $03CD02
 	move.w #$334,-(a7)	; $03CD04
-	jsr sys_unk_00e358.l	; $03CD08
+	jsr map_terrain_tile_lookup.l	; $03CD08
 	addq.w #$8,a7	; $03CD0E
 	move.w $c(a6),-(a7)	; $03CD10
 	move.w $a(a6),d0	; $03CD14
@@ -53382,7 +53382,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CD1C
 	move.w $8(a6),-(a7)	; $03CD1E
 	move.w #$335,-(a7)	; $03CD22
-	jsr sys_unk_00e358.l	; $03CD26
+	jsr map_terrain_tile_lookup.l	; $03CD26
 	addq.w #$8,a7	; $03CD2C
 	move.w $c(a6),-(a7)	; $03CD2E
 	move.w $a(a6),d0	; $03CD32
@@ -53392,7 +53392,7 @@ L03CC74:
 	add.w d4,d0	; $03CD40
 	move.w d0,-(a7)	; $03CD42
 	move.w #$336,-(a7)	; $03CD44
-	jsr sys_unk_00e358.l	; $03CD48
+	jsr map_terrain_tile_lookup.l	; $03CD48
 	addq.w #$8,a7	; $03CD4E
 	move.w $c(a6),-(a7)	; $03CD50
 	move.w $a(a6),d0	; $03CD54
@@ -53400,7 +53400,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CD5C
 	move.w $8(a6),-(a7)	; $03CD5E
 	move.w #$337,-(a7)	; $03CD62
-	jsr sys_unk_00e358.l	; $03CD66
+	jsr map_terrain_tile_lookup.l	; $03CD66
 	addq.w #$8,a7	; $03CD6C
 	move.w $c(a6),-(a7)	; $03CD6E
 	move.w $a(a6),d0	; $03CD72
@@ -53410,7 +53410,7 @@ L03CC74:
 	add.w d4,d0	; $03CD80
 	move.w d0,-(a7)	; $03CD82
 	move.w #$338,-(a7)	; $03CD84
-	jsr sys_unk_00e358.l	; $03CD88
+	jsr map_terrain_tile_lookup.l	; $03CD88
 	addq.w #$8,a7	; $03CD8E
 	move.w $c(a6),-(a7)	; $03CD90
 	move.w $a(a6),d0	; $03CD94
@@ -53420,7 +53420,7 @@ L03CC74:
 	sub.w d4,d0	; $03CDA2
 	move.w d0,-(a7)	; $03CDA4
 	move.w #$339,-(a7)	; $03CDA6
-	jsr sys_unk_00e358.l	; $03CDAA
+	jsr map_terrain_tile_lookup.l	; $03CDAA
 	addq.w #$8,a7	; $03CDB0
 	move.w $c(a6),-(a7)	; $03CDB2
 	move.w $a(a6),d0	; $03CDB6
@@ -53428,7 +53428,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CDBE
 	move.w $8(a6),-(a7)	; $03CDC0
 	move.w #$33a,-(a7)	; $03CDC4
-	jsr sys_unk_00e358.l	; $03CDC8
+	jsr map_terrain_tile_lookup.l	; $03CDC8
 	addq.w #$8,a7	; $03CDCE
 	move.w $c(a6),-(a7)	; $03CDD0
 	move.w $a(a6),d0	; $03CDD4
@@ -53436,7 +53436,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CDDC
 	move.w $8(a6),-(a7)	; $03CDDE
 	move.w #$33b,-(a7)	; $03CDE2
-	jsr sys_unk_00e358.l	; $03CDE6
+	jsr map_terrain_tile_lookup.l	; $03CDE6
 	addq.w #$8,a7	; $03CDEC
 	move.w $c(a6),-(a7)	; $03CDEE
 	move.w $a(a6),d0	; $03CDF2
@@ -53444,7 +53444,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CDFA
 	move.w $8(a6),-(a7)	; $03CDFC
 	move.w #$33c,-(a7)	; $03CE00
-	jsr sys_unk_00e358.l	; $03CE04
+	jsr map_terrain_tile_lookup.l	; $03CE04
 	addq.w #$8,a7	; $03CE0A
 	move.w $c(a6),-(a7)	; $03CE0C
 	move.w $a(a6),d0	; $03CE10
@@ -53452,7 +53452,7 @@ L03CC74:
 	move.w d0,-(a7)	; $03CE18
 	move.w $8(a6),-(a7)	; $03CE1A
 	move.w #$33d,-(a7)	; $03CE1E
-	jsr sys_unk_00e358.l	; $03CE22
+	jsr map_terrain_tile_lookup.l	; $03CE22
 	addq.w #$8,a7	; $03CE28
 	move.l (a7)+,d4	; $03CE2A
 	unlk a6	; $03CE2C
@@ -53475,7 +53475,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CE52
 	move.w d0,-(a7)	; $03CE56
 	move.w #$340,-(a7)	; $03CE58
-	jsr sys_unk_00e358.l	; $03CE5C
+	jsr map_terrain_tile_lookup.l	; $03CE5C
 	addq.w #$8,a7	; $03CE62
 	move.w $c(a6),-(a7)	; $03CE64
 	move.w $a(a6),-(a7)	; $03CE68
@@ -53484,7 +53484,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CE72
 	move.w d0,-(a7)	; $03CE76
 	move.w #$341,-(a7)	; $03CE78
-	jsr sys_unk_00e358.l	; $03CE7C
+	jsr map_terrain_tile_lookup.l	; $03CE7C
 	addq.w #$8,a7	; $03CE82
 	move.w $c(a6),-(a7)	; $03CE84
 	move.w $a(a6),-(a7)	; $03CE88
@@ -53493,7 +53493,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CE92
 	move.w d0,-(a7)	; $03CE96
 	move.w #$342,-(a7)	; $03CE98
-	jsr sys_unk_00e358.l	; $03CE9C
+	jsr map_terrain_tile_lookup.l	; $03CE9C
 	addq.w #$8,a7	; $03CEA2
 	move.w $c(a6),-(a7)	; $03CEA4
 	move.w $a(a6),-(a7)	; $03CEA8
@@ -53502,7 +53502,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CEB2
 	move.w d0,-(a7)	; $03CEB6
 	move.w #$343,-(a7)	; $03CEB8
-	jsr sys_unk_00e358.l	; $03CEBC
+	jsr map_terrain_tile_lookup.l	; $03CEBC
 	addq.w #$8,a7	; $03CEC2
 	move.w $c(a6),-(a7)	; $03CEC4
 	move.w $a(a6),d0	; $03CEC8
@@ -53510,7 +53510,7 @@ L03CE44:
 	move.w d0,-(a7)	; $03CED0
 	move.w $8(a6),-(a7)	; $03CED2
 	move.w #$344,-(a7)	; $03CED6
-	jsr sys_unk_00e358.l	; $03CEDA
+	jsr map_terrain_tile_lookup.l	; $03CEDA
 	addq.w #$8,a7	; $03CEE0
 	move.w $c(a6),-(a7)	; $03CEE2
 	move.w $a(a6),d0	; $03CEE6
@@ -53521,7 +53521,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CEF6
 	move.w d0,-(a7)	; $03CEFA
 	move.w #$345,-(a7)	; $03CEFC
-	jsr sys_unk_00e358.l	; $03CF00
+	jsr map_terrain_tile_lookup.l	; $03CF00
 	addq.w #$8,a7	; $03CF06
 	move.w $c(a6),-(a7)	; $03CF08
 	move.w $a(a6),d0	; $03CF0C
@@ -53532,7 +53532,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CF1C
 	move.w d0,-(a7)	; $03CF20
 	move.w #$346,-(a7)	; $03CF22
-	jsr sys_unk_00e358.l	; $03CF26
+	jsr map_terrain_tile_lookup.l	; $03CF26
 	addq.w #$8,a7	; $03CF2C
 	move.w $c(a6),-(a7)	; $03CF2E
 	move.w $a(a6),d0	; $03CF32
@@ -53543,7 +53543,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CF42
 	move.w d0,-(a7)	; $03CF46
 	move.w #$347,-(a7)	; $03CF48
-	jsr sys_unk_00e358.l	; $03CF4C
+	jsr map_terrain_tile_lookup.l	; $03CF4C
 	addq.w #$8,a7	; $03CF52
 	move.w $c(a6),-(a7)	; $03CF54
 	move.w $a(a6),d0	; $03CF58
@@ -53551,7 +53551,7 @@ L03CE44:
 	move.w d0,-(a7)	; $03CF60
 	move.w $8(a6),-(a7)	; $03CF62
 	move.w #$348,-(a7)	; $03CF66
-	jsr sys_unk_00e358.l	; $03CF6A
+	jsr map_terrain_tile_lookup.l	; $03CF6A
 	addq.w #$8,a7	; $03CF70
 	move.w $c(a6),-(a7)	; $03CF72
 	move.w $a(a6),d0	; $03CF76
@@ -53562,7 +53562,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CF86
 	move.w d0,-(a7)	; $03CF8A
 	move.w #$349,-(a7)	; $03CF8C
-	jsr sys_unk_00e358.l	; $03CF90
+	jsr map_terrain_tile_lookup.l	; $03CF90
 	addq.w #$8,a7	; $03CF96
 	move.w $c(a6),-(a7)	; $03CF98
 	move.w $a(a6),d0	; $03CF9C
@@ -53573,7 +53573,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03CFAC
 	move.w d0,-(a7)	; $03CFB0
 	move.w #$34a,-(a7)	; $03CFB2
-	jsr sys_unk_00e358.l	; $03CFB6
+	jsr map_terrain_tile_lookup.l	; $03CFB6
 	addq.w #$8,a7	; $03CFBC
 	tst.w $e(a6)	; $03CFBE
 	beq.w L03D136	; $03CFC2
@@ -53587,7 +53587,7 @@ L03CE44:
 	sub.w d0,d1	; $03CFDE
 	move.w d1,-(a7)	; $03CFE0
 	move.w #$34b,-(a7)	; $03CFE2
-	jsr sys_unk_00e358.l	; $03CFE6
+	jsr map_terrain_tile_lookup.l	; $03CFE6
 	addq.w #$8,a7	; $03CFEC
 	move.w $c(a6),-(a7)	; $03CFEE
 	move.w $a(a6),d0	; $03CFF2
@@ -53599,7 +53599,7 @@ L03CE44:
 	sub.w d0,d1	; $03D004
 	move.w d1,-(a7)	; $03D006
 	move.w #$34c,-(a7)	; $03D008
-	jsr sys_unk_00e358.l	; $03D00C
+	jsr map_terrain_tile_lookup.l	; $03D00C
 	addq.w #$8,a7	; $03D012
 	move.w $c(a6),-(a7)	; $03D014
 	move.w $a(a6),d0	; $03D018
@@ -53610,7 +53610,7 @@ L03CE44:
 	add.w $8(a6),d0	; $03D028
 	move.w d0,-(a7)	; $03D02C
 	move.w #$34d,-(a7)	; $03D02E
-	jsr sys_unk_00e358.l	; $03D032
+	jsr map_terrain_tile_lookup.l	; $03D032
 	addq.w #$8,a7	; $03D038
 	move.w $c(a6),-(a7)	; $03D03A
 	move.w $a(a6),d0	; $03D03E
@@ -53622,7 +53622,7 @@ L03CE44:
 	sub.w d0,d1	; $03D052
 	move.w d1,-(a7)	; $03D054
 	move.w #$34e,-(a7)	; $03D056
-	jsr sys_unk_00e358.l	; $03D05A
+	jsr map_terrain_tile_lookup.l	; $03D05A
 	addq.w #$8,a7	; $03D060
 	move.w $c(a6),-(a7)	; $03D062
 	move.w $a(a6),d0	; $03D066
@@ -53634,7 +53634,7 @@ L03CE44:
 	sub.w d0,d1	; $03D078
 	move.w d1,-(a7)	; $03D07A
 	move.w #$34f,-(a7)	; $03D07C
-	jsr sys_unk_00e358.l	; $03D080
+	jsr map_terrain_tile_lookup.l	; $03D080
 	addq.w #$8,a7	; $03D086
 	moveq #$1,d5	; $03D088
 	bra.w L03D12A	; $03D08A
@@ -53653,7 +53653,7 @@ L03D08E:
 	sub.w d0,d1	; $03D0B2
 	move.w d1,-(a7)	; $03D0B4
 	move.w #$34b,-(a7)	; $03D0B6
-	jsr sys_unk_00e358.l	; $03D0BA
+	jsr map_terrain_tile_lookup.l	; $03D0BA
 	addq.w #$8,a7	; $03D0C0
 	move.w $c(a6),-(a7)	; $03D0C2
 	move.w d5,d0	; $03D0C6
@@ -53669,7 +53669,7 @@ L03D08E:
 	sub.w d0,d1	; $03D0E6
 	move.w d1,-(a7)	; $03D0E8
 	move.w #$34e,-(a7)	; $03D0EA
-	jsr sys_unk_00e358.l	; $03D0EE
+	jsr map_terrain_tile_lookup.l	; $03D0EE
 	addq.w #$8,a7	; $03D0F4
 	move.w $c(a6),-(a7)	; $03D0F6
 	move.w d5,d0	; $03D0FA
@@ -53685,7 +53685,7 @@ L03D08E:
 	sub.w d0,d1	; $03D118
 	move.w d1,-(a7)	; $03D11A
 	move.w #$34f,-(a7)	; $03D11C
-	jsr sys_unk_00e358.l	; $03D120
+	jsr map_terrain_tile_lookup.l	; $03D120
 	addq.w #$8,a7	; $03D126
 	addq.w #$1,d5	; $03D128
 L03D12A:
@@ -53704,7 +53704,7 @@ sys_unk_03d13e:
 	move.w $a(a6),-(a7)	; $03D144
 	move.w $8(a6),-(a7)	; $03D148
 	move.w #$350,-(a7)	; $03D14C
-	jsr sys_unk_00e358.l	; $03D150
+	jsr map_terrain_tile_lookup.l	; $03D150
 	addq.w #$8,a7	; $03D156
 	clr.w -(a7)	; $03D158
 	move.w $a(a6),-(a7)	; $03D15A
@@ -53712,7 +53712,7 @@ sys_unk_03d13e:
 	add.w #$1c,d0	; $03D162
 	move.w d0,-(a7)	; $03D166
 	move.w #$351,-(a7)	; $03D168
-	jsr sys_unk_00e358.l	; $03D16C
+	jsr map_terrain_tile_lookup.l	; $03D16C
 	addq.w #$8,a7	; $03D172
 	clr.w -(a7)	; $03D174
 	move.w $a(a6),d0	; $03D176
@@ -53722,7 +53722,7 @@ sys_unk_03d13e:
 	sub.w #$1c,d0	; $03D184
 	move.w d0,-(a7)	; $03D188
 	move.w #$352,-(a7)	; $03D18A
-	jsr sys_unk_00e358.l	; $03D18E
+	jsr map_terrain_tile_lookup.l	; $03D18E
 	addq.w #$8,a7	; $03D194
 	clr.w -(a7)	; $03D196
 	move.w $a(a6),d0	; $03D198
@@ -53730,7 +53730,7 @@ sys_unk_03d13e:
 	move.w d0,-(a7)	; $03D1A0
 	move.w $8(a6),-(a7)	; $03D1A2
 	move.w #$353,-(a7)	; $03D1A6
-	jsr sys_unk_00e358.l	; $03D1AA
+	jsr map_terrain_tile_lookup.l	; $03D1AA
 	addq.w #$8,a7	; $03D1B0
 	clr.w -(a7)	; $03D1B2
 	move.w $a(a6),d0	; $03D1B4
@@ -53740,7 +53740,7 @@ sys_unk_03d13e:
 	add.w #$1c,d0	; $03D1C2
 	move.w d0,-(a7)	; $03D1C6
 	move.w #$354,-(a7)	; $03D1C8
-	jsr sys_unk_00e358.l	; $03D1CC
+	jsr map_terrain_tile_lookup.l	; $03D1CC
 	addq.w #$8,a7	; $03D1D2
 	clr.w -(a7)	; $03D1D4
 	move.w $a(a6),d0	; $03D1D6
@@ -53750,7 +53750,7 @@ sys_unk_03d13e:
 	add.w #$38,d0	; $03D1E4
 	move.w d0,-(a7)	; $03D1E8
 	move.w #$355,-(a7)	; $03D1EA
-	jsr sys_unk_00e358.l	; $03D1EE
+	jsr map_terrain_tile_lookup.l	; $03D1EE
 	addq.w #$8,a7	; $03D1F4
 	clr.w -(a7)	; $03D1F6
 	move.w $a(a6),d0	; $03D1F8
@@ -53760,7 +53760,7 @@ sys_unk_03d13e:
 	sub.w #$1c,d0	; $03D206
 	move.w d0,-(a7)	; $03D20A
 	move.w #$356,-(a7)	; $03D20C
-	jsr sys_unk_00e358.l	; $03D210
+	jsr map_terrain_tile_lookup.l	; $03D210
 	addq.w #$8,a7	; $03D216
 	clr.w -(a7)	; $03D218
 	move.w $a(a6),d0	; $03D21A
@@ -53768,7 +53768,7 @@ sys_unk_03d13e:
 	move.w d0,-(a7)	; $03D222
 	move.w $8(a6),-(a7)	; $03D224
 	move.w #$357,-(a7)	; $03D228
-	jsr sys_unk_00e358.l	; $03D22C
+	jsr map_terrain_tile_lookup.l	; $03D22C
 	addq.w #$8,a7	; $03D232
 	clr.w -(a7)	; $03D234
 	move.w $a(a6),d0	; $03D236
@@ -53778,7 +53778,7 @@ sys_unk_03d13e:
 	add.w #$1c,d0	; $03D244
 	move.w d0,-(a7)	; $03D248
 	move.w #$358,-(a7)	; $03D24A
-	jsr sys_unk_00e358.l	; $03D24E
+	jsr map_terrain_tile_lookup.l	; $03D24E
 	addq.w #$8,a7	; $03D254
 	clr.w -(a7)	; $03D256
 	move.w $a(a6),d0	; $03D258
@@ -53788,7 +53788,7 @@ sys_unk_03d13e:
 	add.w #$38,d0	; $03D266
 	move.w d0,-(a7)	; $03D26A
 	move.w #$359,-(a7)	; $03D26C
-	jsr sys_unk_00e358.l	; $03D270
+	jsr map_terrain_tile_lookup.l	; $03D270
 	addq.w #$8,a7	; $03D276
 	move.w $ff0092.l,-(a7)	; $03D278
 	move.w $a(a6),d0	; $03D27E
@@ -53798,7 +53798,7 @@ sys_unk_03d13e:
 	add.w #$e,d0	; $03D28C
 	move.w d0,-(a7)	; $03D290
 	move.w #$35b,-(a7)	; $03D292
-	jsr sys_unk_00e358.l	; $03D296
+	jsr map_terrain_tile_lookup.l	; $03D296
 	addq.w #$8,a7	; $03D29C
 	clr.w -(a7)	; $03D29E
 	move.w $a(a6),d0	; $03D2A0
@@ -53810,7 +53810,7 @@ sys_unk_03d13e:
 	move.w $c(a6),d0	; $03D2B4
 	add.w #$35c,d0	; $03D2B8
 	move.w d0,-(a7)	; $03D2BC
-	jsr sys_unk_00e358.l	; $03D2BE
+	jsr map_terrain_tile_lookup.l	; $03D2BE
 	addq.w #$8,a7	; $03D2C4
 	move.w #$4,-(a7)	; $03D2C6
 	jsr rand_next.l	; $03D2CA
@@ -53825,7 +53825,7 @@ sys_unk_03d13e:
 	add.w #$e,d0	; $03D2E6
 	move.w d0,-(a7)	; $03D2EA
 	move.w #$35f,-(a7)	; $03D2EC
-	jsr sys_unk_00e358.l	; $03D2F0
+	jsr map_terrain_tile_lookup.l	; $03D2F0
 	addq.w #$8,a7	; $03D2F6
 	jsr sys_unk_0eb9ee.l	; $03D2F8
 	tst.w d0	; $03D2FE
@@ -53859,7 +53859,7 @@ L03D348:
 	move.w $a(a6),-(a7)	; $03D34C
 	move.w $8(a6),-(a7)	; $03D350
 	move.w #$360,-(a7)	; $03D354
-	jsr sys_unk_00e358.l	; $03D358
+	jsr map_terrain_tile_lookup.l	; $03D358
 	addq.w #$8,a7	; $03D35E
 	move.w $c(a6),-(a7)	; $03D360
 	move.w $a(a6),-(a7)	; $03D364
@@ -53868,7 +53868,7 @@ L03D348:
 	add.w $8(a6),d0	; $03D36E
 	move.w d0,-(a7)	; $03D372
 	move.w #$361,-(a7)	; $03D374
-	jsr sys_unk_00e358.l	; $03D378
+	jsr map_terrain_tile_lookup.l	; $03D378
 	addq.w #$8,a7	; $03D37E
 	move.w $c(a6),-(a7)	; $03D380
 	move.w $a(a6),d0	; $03D384
@@ -53880,7 +53880,7 @@ L03D348:
 	sub.w d0,d1	; $03D398
 	move.w d1,-(a7)	; $03D39A
 	move.w #$362,-(a7)	; $03D39C
-	jsr sys_unk_00e358.l	; $03D3A0
+	jsr map_terrain_tile_lookup.l	; $03D3A0
 	addq.w #$8,a7	; $03D3A6
 	move.w $c(a6),-(a7)	; $03D3A8
 	move.w $a(a6),d0	; $03D3AC
@@ -53891,7 +53891,7 @@ L03D348:
 	add.w $8(a6),d0	; $03D3BA
 	move.w d0,-(a7)	; $03D3BE
 	move.w #$363,-(a7)	; $03D3C0
-	jsr sys_unk_00e358.l	; $03D3C4
+	jsr map_terrain_tile_lookup.l	; $03D3C4
 	addq.w #$8,a7	; $03D3CA
 	move.w $c(a6),-(a7)	; $03D3CC
 	move.w $a(a6),d0	; $03D3D0
@@ -53902,7 +53902,7 @@ L03D348:
 	add.w $8(a6),d0	; $03D3E0
 	move.w d0,-(a7)	; $03D3E4
 	move.w #$364,-(a7)	; $03D3E6
-	jsr sys_unk_00e358.l	; $03D3EA
+	jsr map_terrain_tile_lookup.l	; $03D3EA
 	addq.w #$8,a7	; $03D3F0
 	move.w $c(a6),-(a7)	; $03D3F2
 	move.w $a(a6),d0	; $03D3F6
@@ -53914,7 +53914,7 @@ L03D348:
 	sub.w d0,d1	; $03D40A
 	move.w d1,-(a7)	; $03D40C
 	move.w #$365,-(a7)	; $03D40E
-	jsr sys_unk_00e358.l	; $03D412
+	jsr map_terrain_tile_lookup.l	; $03D412
 	addq.w #$8,a7	; $03D418
 	move.w $c(a6),-(a7)	; $03D41A
 	move.w $a(a6),d0	; $03D41E
@@ -53925,7 +53925,7 @@ L03D348:
 	add.w $8(a6),d0	; $03D42C
 	move.w d0,-(a7)	; $03D430
 	move.w #$366,-(a7)	; $03D432
-	jsr sys_unk_00e358.l	; $03D436
+	jsr map_terrain_tile_lookup.l	; $03D436
 	addq.w #$8,a7	; $03D43C
 	move.w $c(a6),-(a7)	; $03D43E
 	move.w $a(a6),d0	; $03D442
@@ -53936,7 +53936,7 @@ L03D348:
 	add.w $8(a6),d0	; $03D452
 	move.w d0,-(a7)	; $03D456
 	move.w #$367,-(a7)	; $03D458
-	jsr sys_unk_00e358.l	; $03D45C
+	jsr map_terrain_tile_lookup.l	; $03D45C
 	addq.w #$8,a7	; $03D462
 	movem.l (a7)+,d4-d5	; $03D464
 	unlk a6	; $03D468
@@ -53962,7 +53962,7 @@ L03D48C:
 	move.w $e(a6),d0	; $03D498
 	add.w #$368,d0	; $03D49C
 	move.w d0,-(a7)	; $03D4A0
-	jsr sys_unk_00e358.l	; $03D4A2
+	jsr map_terrain_tile_lookup.l	; $03D4A2
 	addq.w #$8,a7	; $03D4A8
 	move.w $c(a6),-(a7)	; $03D4AA
 	move.w $a(a6),-(a7)	; $03D4AE
@@ -53973,7 +53973,7 @@ L03D48C:
 	move.w $e(a6),d0	; $03D4BE
 	add.w #$369,d0	; $03D4C2
 	move.w d0,-(a7)	; $03D4C6
-	jsr sys_unk_00e358.l	; $03D4C8
+	jsr map_terrain_tile_lookup.l	; $03D4C8
 	addq.w #$8,a7	; $03D4CE
 	move.w $c(a6),-(a7)	; $03D4D0
 	move.w $a(a6),d0	; $03D4D4
@@ -53983,7 +53983,7 @@ L03D48C:
 	move.w $e(a6),d0	; $03D4E2
 	add.w #$36a,d0	; $03D4E6
 	move.w d0,-(a7)	; $03D4EA
-	jsr sys_unk_00e358.l	; $03D4EC
+	jsr map_terrain_tile_lookup.l	; $03D4EC
 	addq.w #$8,a7	; $03D4F2
 	move.w $c(a6),-(a7)	; $03D4F4
 	move.w $a(a6),d0	; $03D4F8
@@ -53996,7 +53996,7 @@ L03D48C:
 	move.w $e(a6),d0	; $03D50E
 	add.w #$36b,d0	; $03D512
 	move.w d0,-(a7)	; $03D516
-	jsr sys_unk_00e358.l	; $03D518
+	jsr map_terrain_tile_lookup.l	; $03D518
 	addq.w #$8,a7	; $03D51E
 	movem.l (a7)+,d4-d5	; $03D520
 	unlk a6	; $03D524
@@ -54008,7 +54008,7 @@ sys_unk_03d528:
 	move.w $a(a6),-(a7)	; $03D52E
 	move.w $8(a6),-(a7)	; $03D532
 	move.w #$370,-(a7)	; $03D536
-	jsr sys_unk_00e358.l	; $03D53A
+	jsr map_terrain_tile_lookup.l	; $03D53A
 	addq.w #$8,a7	; $03D540
 	clr.w -(a7)	; $03D542
 	move.w $a(a6),-(a7)	; $03D544
@@ -54016,7 +54016,7 @@ sys_unk_03d528:
 	add.w #$1c,d0	; $03D54C
 	move.w d0,-(a7)	; $03D550
 	move.w #$371,-(a7)	; $03D552
-	jsr sys_unk_00e358.l	; $03D556
+	jsr map_terrain_tile_lookup.l	; $03D556
 	addq.w #$8,a7	; $03D55C
 	clr.w -(a7)	; $03D55E
 	move.w $a(a6),-(a7)	; $03D560
@@ -54024,7 +54024,7 @@ sys_unk_03d528:
 	add.w #$38,d0	; $03D568
 	move.w d0,-(a7)	; $03D56C
 	move.w #$372,-(a7)	; $03D56E
-	jsr sys_unk_00e358.l	; $03D572
+	jsr map_terrain_tile_lookup.l	; $03D572
 	addq.w #$8,a7	; $03D578
 	clr.w -(a7)	; $03D57A
 	move.w $a(a6),-(a7)	; $03D57C
@@ -54032,7 +54032,7 @@ sys_unk_03d528:
 	add.w #$54,d0	; $03D584
 	move.w d0,-(a7)	; $03D588
 	move.w #$373,-(a7)	; $03D58A
-	jsr sys_unk_00e358.l	; $03D58E
+	jsr map_terrain_tile_lookup.l	; $03D58E
 	addq.w #$8,a7	; $03D594
 	clr.w -(a7)	; $03D596
 	move.w $a(a6),d0	; $03D598
@@ -54040,7 +54040,7 @@ sys_unk_03d528:
 	move.w d0,-(a7)	; $03D5A0
 	move.w $8(a6),-(a7)	; $03D5A2
 	move.w #$374,-(a7)	; $03D5A6
-	jsr sys_unk_00e358.l	; $03D5AA
+	jsr map_terrain_tile_lookup.l	; $03D5AA
 	addq.w #$8,a7	; $03D5B0
 	clr.w -(a7)	; $03D5B2
 	move.w $a(a6),d0	; $03D5B4
@@ -54050,7 +54050,7 @@ sys_unk_03d528:
 	add.w #$1c,d0	; $03D5C2
 	move.w d0,-(a7)	; $03D5C6
 	move.w #$375,-(a7)	; $03D5C8
-	jsr sys_unk_00e358.l	; $03D5CC
+	jsr map_terrain_tile_lookup.l	; $03D5CC
 	addq.w #$8,a7	; $03D5D2
 	clr.w -(a7)	; $03D5D4
 	move.w $a(a6),d0	; $03D5D6
@@ -54060,7 +54060,7 @@ sys_unk_03d528:
 	add.w #$38,d0	; $03D5E4
 	move.w d0,-(a7)	; $03D5E8
 	move.w #$376,-(a7)	; $03D5EA
-	jsr sys_unk_00e358.l	; $03D5EE
+	jsr map_terrain_tile_lookup.l	; $03D5EE
 	addq.w #$8,a7	; $03D5F4
 	clr.w -(a7)	; $03D5F6
 	move.w $a(a6),d0	; $03D5F8
@@ -54070,7 +54070,7 @@ sys_unk_03d528:
 	add.w #$54,d0	; $03D606
 	move.w d0,-(a7)	; $03D60A
 	move.w #$377,-(a7)	; $03D60C
-	jsr sys_unk_00e358.l	; $03D610
+	jsr map_terrain_tile_lookup.l	; $03D610
 	addq.w #$8,a7	; $03D616
 	clr.w -(a7)	; $03D618
 	move.w $a(a6),d0	; $03D61A
@@ -54078,7 +54078,7 @@ sys_unk_03d528:
 	move.w d0,-(a7)	; $03D622
 	move.w $8(a6),-(a7)	; $03D624
 	move.w #$378,-(a7)	; $03D628
-	jsr sys_unk_00e358.l	; $03D62C
+	jsr map_terrain_tile_lookup.l	; $03D62C
 	addq.w #$8,a7	; $03D632
 	clr.w -(a7)	; $03D634
 	move.w $a(a6),d0	; $03D636
@@ -54088,7 +54088,7 @@ sys_unk_03d528:
 	add.w #$1c,d0	; $03D644
 	move.w d0,-(a7)	; $03D648
 	move.w #$379,-(a7)	; $03D64A
-	jsr sys_unk_00e358.l	; $03D64E
+	jsr map_terrain_tile_lookup.l	; $03D64E
 	addq.w #$8,a7	; $03D654
 	clr.w -(a7)	; $03D656
 	move.w $a(a6),d0	; $03D658
@@ -54098,7 +54098,7 @@ sys_unk_03d528:
 	add.w #$38,d0	; $03D666
 	move.w d0,-(a7)	; $03D66A
 	move.w #$37a,-(a7)	; $03D66C
-	jsr sys_unk_00e358.l	; $03D670
+	jsr map_terrain_tile_lookup.l	; $03D670
 	addq.w #$8,a7	; $03D676
 	clr.w -(a7)	; $03D678
 	move.w $a(a6),d0	; $03D67A
@@ -54108,7 +54108,7 @@ sys_unk_03d528:
 	add.w #$54,d0	; $03D688
 	move.w d0,-(a7)	; $03D68C
 	move.w #$37b,-(a7)	; $03D68E
-	jsr sys_unk_00e358.l	; $03D692
+	jsr map_terrain_tile_lookup.l	; $03D692
 	addq.w #$8,a7	; $03D698
 	tst.w $c(a6)	; $03D69A
 	beq.b L03D6A8	; $03D69E
@@ -54126,7 +54126,7 @@ L03D6A8:
 	asl.w #$1,d0	; $03D6C2
 	add.w #$37c,d0	; $03D6C4
 	move.w d0,-(a7)	; $03D6C8
-	jsr sys_unk_00e358.l	; $03D6CA
+	jsr map_terrain_tile_lookup.l	; $03D6CA
 	addq.w #$8,a7	; $03D6D0
 	clr.w -(a7)	; $03D6D2
 	move.w $a(a6),d0	; $03D6D4
@@ -54139,7 +54139,7 @@ L03D6A8:
 	asl.w #$1,d0	; $03D6EC
 	add.w #$37d,d0	; $03D6EE
 	move.w d0,-(a7)	; $03D6F2
-	jsr sys_unk_00e358.l	; $03D6F4
+	jsr map_terrain_tile_lookup.l	; $03D6F4
 	addq.w #$8,a7	; $03D6FA
 	bra.b L03D756	; $03D6FC
 L03D6FE:
@@ -54154,7 +54154,7 @@ L03D6FE:
 	asl.w #$1,d0	; $03D71A
 	add.w #$37d,d0	; $03D71C
 	move.w d0,-(a7)	; $03D720
-	jsr sys_unk_00e358.l	; $03D722
+	jsr map_terrain_tile_lookup.l	; $03D722
 	addq.w #$8,a7	; $03D728
 	move.w #$1,-(a7)	; $03D72A
 	move.w $a(a6),d0	; $03D72E
@@ -54167,7 +54167,7 @@ L03D6FE:
 	asl.w #$1,d0	; $03D746
 	add.w #$37c,d0	; $03D748
 	move.w d0,-(a7)	; $03D74C
-	jsr sys_unk_00e358.l	; $03D74E
+	jsr map_terrain_tile_lookup.l	; $03D74E
 	addq.w #$8,a7	; $03D754
 L03D756:
 	unlk a6	; $03D756
@@ -54193,7 +54193,7 @@ L03D776:
 	add.w $8(a6),d0	; $03D78C
 	move.w d0,-(a7)	; $03D790
 	move.w #$389,-(a7)	; $03D792
-	jsr sys_unk_00e358.l	; $03D796
+	jsr map_terrain_tile_lookup.l	; $03D796
 	addq.w #$8,a7	; $03D79C
 	move.w $ff0092.l,-(a7)	; $03D79E
 	move.w $a(a6),d0	; $03D7A4
@@ -54204,7 +54204,7 @@ L03D776:
 	add.w $8(a6),d0	; $03D7B4
 	move.w d0,-(a7)	; $03D7B8
 	move.w #$38a,-(a7)	; $03D7BA
-	jsr sys_unk_00e358.l	; $03D7BE
+	jsr map_terrain_tile_lookup.l	; $03D7BE
 	addq.w #$8,a7	; $03D7C4
 	tst.w $ff0092.l	; $03D7C6
 	bne.b L03D7D2	; $03D7CC
@@ -54223,7 +54223,7 @@ L03D7D4:
 	sub.w d0,d1	; $03D7EA
 	move.w d1,-(a7)	; $03D7EC
 	move.w #$389,-(a7)	; $03D7EE
-	jsr sys_unk_00e358.l	; $03D7F2
+	jsr map_terrain_tile_lookup.l	; $03D7F2
 	addq.w #$8,a7	; $03D7F8
 	tst.w $ff0092.l	; $03D7FA
 	bne.b L03D806	; $03D800
@@ -54242,7 +54242,7 @@ L03D808:
 	sub.w d0,d1	; $03D81E
 	move.w d1,-(a7)	; $03D820
 	move.w #$38a,-(a7)	; $03D822
-	jsr sys_unk_00e358.l	; $03D826
+	jsr map_terrain_tile_lookup.l	; $03D826
 	addq.w #$8,a7	; $03D82C
 	move.w $ff0092.l,-(a7)	; $03D82E
 	move.w $a(a6),-(a7)	; $03D834
@@ -54252,7 +54252,7 @@ L03D808:
 	sub.w d0,d1	; $03D842
 	move.w d1,-(a7)	; $03D844
 	move.w #$380,-(a7)	; $03D846
-	jsr sys_unk_00e358.l	; $03D84A
+	jsr map_terrain_tile_lookup.l	; $03D84A
 	addq.w #$8,a7	; $03D850
 	move.w $ff0092.l,-(a7)	; $03D852
 	move.w $a(a6),-(a7)	; $03D858
@@ -54262,7 +54262,7 @@ L03D808:
 	sub.w d0,d1	; $03D866
 	move.w d1,-(a7)	; $03D868
 	move.w #$381,-(a7)	; $03D86A
-	jsr sys_unk_00e358.l	; $03D86E
+	jsr map_terrain_tile_lookup.l	; $03D86E
 	addq.w #$8,a7	; $03D874
 	move.w $ff0092.l,-(a7)	; $03D876
 	move.w $a(a6),-(a7)	; $03D87C
@@ -54271,7 +54271,7 @@ L03D808:
 	add.w $8(a6),d0	; $03D886
 	move.w d0,-(a7)	; $03D88A
 	move.w #$382,-(a7)	; $03D88C
-	jsr sys_unk_00e358.l	; $03D890
+	jsr map_terrain_tile_lookup.l	; $03D890
 	addq.w #$8,a7	; $03D896
 	move.w $ff0092.l,-(a7)	; $03D898
 	move.w $a(a6),d0	; $03D89E
@@ -54283,7 +54283,7 @@ L03D808:
 	sub.w d0,d1	; $03D8B2
 	move.w d1,-(a7)	; $03D8B4
 	move.w #$383,-(a7)	; $03D8B6
-	jsr sys_unk_00e358.l	; $03D8BA
+	jsr map_terrain_tile_lookup.l	; $03D8BA
 	addq.w #$8,a7	; $03D8C0
 	move.w $ff0092.l,-(a7)	; $03D8C2
 	move.w $a(a6),d0	; $03D8C8
@@ -54295,7 +54295,7 @@ L03D808:
 	sub.w d0,d1	; $03D8DC
 	move.w d1,-(a7)	; $03D8DE
 	move.w #$384,-(a7)	; $03D8E0
-	jsr sys_unk_00e358.l	; $03D8E4
+	jsr map_terrain_tile_lookup.l	; $03D8E4
 	addq.w #$8,a7	; $03D8EA
 	move.w $ff0092.l,-(a7)	; $03D8EC
 	move.w $a(a6),d0	; $03D8F2
@@ -54306,7 +54306,7 @@ L03D808:
 	add.w $8(a6),d0	; $03D902
 	move.w d0,-(a7)	; $03D906
 	move.w #$385,-(a7)	; $03D908
-	jsr sys_unk_00e358.l	; $03D90C
+	jsr map_terrain_tile_lookup.l	; $03D90C
 	addq.w #$8,a7	; $03D912
 	move.w $ff0092.l,-(a7)	; $03D914
 	move.w $a(a6),d0	; $03D91A
@@ -54318,7 +54318,7 @@ L03D808:
 	sub.w d0,d1	; $03D92E
 	move.w d1,-(a7)	; $03D930
 	move.w #$386,-(a7)	; $03D932
-	jsr sys_unk_00e358.l	; $03D936
+	jsr map_terrain_tile_lookup.l	; $03D936
 	addq.w #$8,a7	; $03D93C
 	move.w $ff0092.l,-(a7)	; $03D93E
 	move.w $a(a6),d0	; $03D944
@@ -54326,7 +54326,7 @@ L03D808:
 	move.w d0,-(a7)	; $03D94C
 	move.w $8(a6),-(a7)	; $03D94E
 	move.w #$387,-(a7)	; $03D952
-	jsr sys_unk_00e358.l	; $03D956
+	jsr map_terrain_tile_lookup.l	; $03D956
 	addq.w #$8,a7	; $03D95C
 	move.w $ff0092.l,-(a7)	; $03D95E
 	move.w $a(a6),d0	; $03D964
@@ -54338,7 +54338,7 @@ L03D808:
 	sub.w d0,d1	; $03D978
 	move.w d1,-(a7)	; $03D97A
 	move.w #$388,-(a7)	; $03D97C
-	jsr sys_unk_00e358.l	; $03D980
+	jsr map_terrain_tile_lookup.l	; $03D980
 	addq.w #$8,a7	; $03D986
 	movem.l (a7)+,d4-d5	; $03D988
 	unlk a6	; $03D98C
@@ -54374,7 +54374,7 @@ L03D9AE:
 	add.w d5,d0	; $03D9D0
 	add.w #$390,d0	; $03D9D2
 	move.w d0,-(a7)	; $03D9D6
-	jsr sys_unk_00e358.l	; $03D9D8
+	jsr map_terrain_tile_lookup.l	; $03D9D8
 	addq.w #$8,a7	; $03D9DE
 	addq.w #$1,d5	; $03D9E0
 	cmp.w #$4,d5	; $03D9E2
@@ -54908,7 +54908,7 @@ L03E000:
 	addq.w #$2,a7	; $03E03C
 	add.w #$180,d0	; $03E03E
 	move.w d0,-(a7)	; $03E042
-	jsr sys_unk_00e358.l	; $03E044
+	jsr map_terrain_tile_lookup.l	; $03E044
 	addq.w #$8,a7	; $03E04A
 	addq.w #$1,$ffc41c.l	; $03E04C
 	cmpi.w #$a,$ffc41c.l	; $03E052
@@ -55012,7 +55012,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E1B2
 	add.w #$212,d0	; $03E1B6
 	move.w d0,-(a7)	; $03E1BA
-	jsr sys_unk_00e358.l	; $03E1BC
+	jsr map_terrain_tile_lookup.l	; $03E1BC
 	addq.w #$8,a7	; $03E1C2
 	clr.w -(a7)	; $03E1C4
 	move.w $a(a6),d0	; $03E1C6
@@ -55024,7 +55024,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E1DA
 	add.w #$212,d0	; $03E1DE
 	move.w d0,-(a7)	; $03E1E2
-	jsr sys_unk_00e358.l	; $03E1E4
+	jsr map_terrain_tile_lookup.l	; $03E1E4
 	addq.w #$8,a7	; $03E1EA
 	clr.w -(a7)	; $03E1EC
 	move.w $a(a6),d0	; $03E1EE
@@ -55036,7 +55036,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E202
 	add.w #$212,d0	; $03E206
 	move.w d0,-(a7)	; $03E20A
-	jsr sys_unk_00e358.l	; $03E20C
+	jsr map_terrain_tile_lookup.l	; $03E20C
 	addq.w #$8,a7	; $03E212
 	clr.w -(a7)	; $03E214
 	move.w $a(a6),-(a7)	; $03E216
@@ -55044,7 +55044,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E21E
 	add.w #$212,d0	; $03E222
 	move.w d0,-(a7)	; $03E226
-	jsr sys_unk_00e358.l	; $03E228
+	jsr map_terrain_tile_lookup.l	; $03E228
 	addq.w #$8,a7	; $03E22E
 	clr.w -(a7)	; $03E230
 	move.w $a(a6),d0	; $03E232
@@ -55056,7 +55056,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E246
 	add.w #$212,d0	; $03E24A
 	move.w d0,-(a7)	; $03E24E
-	jsr sys_unk_00e358.l	; $03E250
+	jsr map_terrain_tile_lookup.l	; $03E250
 	addq.w #$8,a7	; $03E256
 	clr.w -(a7)	; $03E258
 	move.w $a(a6),d0	; $03E25A
@@ -55068,7 +55068,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E26E
 	add.w #$212,d0	; $03E272
 	move.w d0,-(a7)	; $03E276
-	jsr sys_unk_00e358.l	; $03E278
+	jsr map_terrain_tile_lookup.l	; $03E278
 	addq.w #$8,a7	; $03E27E
 	clr.w -(a7)	; $03E280
 	move.w $a(a6),d0	; $03E282
@@ -55080,7 +55080,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E296
 	add.w #$212,d0	; $03E29A
 	move.w d0,-(a7)	; $03E29E
-	jsr sys_unk_00e358.l	; $03E2A0
+	jsr map_terrain_tile_lookup.l	; $03E2A0
 	addq.w #$8,a7	; $03E2A6
 	clr.w -(a7)	; $03E2A8
 	move.w $a(a6),d0	; $03E2AA
@@ -55092,7 +55092,7 @@ sys_unk_03e198:
 	move.w $c(a6),d0	; $03E2BE
 	add.w #$212,d0	; $03E2C2
 	move.w d0,-(a7)	; $03E2C6
-	jsr sys_unk_00e358.l	; $03E2C8
+	jsr map_terrain_tile_lookup.l	; $03E2C8
 	addq.w #$8,a7	; $03E2CE
 	unlk a6	; $03E2D0
 	rts	; $03E2D2
@@ -59909,7 +59909,7 @@ L04276E:
 	lea.l $e(a7),a7	; $0427CE
 	move.w d0,$ff0294.l	; $0427D2
 	move.w $ff0294.l,-(a7)	; $0427D8
-	jsr sys_unk_02595a.l	; $0427DE
+	jsr sys_struct52_scan.l	; $0427DE
 	addq.w #$2,a7	; $0427E4
 	move.w $ff0294.l,d0	; $0427E6
 	muls.w #$34,d0	; $0427EC
@@ -59941,7 +59941,7 @@ L042866:
 	cmpi.w #$f,$ff012a.l	; $042866
 	blt.b L0428A0	; $04286E
 	move.w $ff0294.l,-(a7)	; $042870
-	jsr sys_unk_025b4e.l	; $042876
+	jsr sys_struct52_nibble_read.l	; $042876
 	addq.w #$2,a7	; $04287C
 	move.w $ff0294.l,-(a7)	; $04287E
 	jsr combat_attacker_check.l	; $042884
