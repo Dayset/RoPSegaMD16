@@ -599,17 +599,57 @@ background (song 1) at burst 2's window is a quiet artifact (RMS
 ~0.16, 20 Hz harmonic series), not musical notes, so burst 2's peaks
 are SFX 1's, not song 1's.
 
-**Mechanism [open]:** why SFX 1 renders with different pitches in
-the cinematic (song 1 playing) context than in the silent harness.
-The earlier "PSG voice only, FM suppressed" hypothesis is weakened:
-burst 2 has nearly as much 300–4000 Hz energy as the harness SFX 1,
-so the FM voice is not simply suppressed. The SFX install path
-(`$0A04`/`$0A32`) reads fixed tables (`$014D` lookup via `$048B`,
-`$079E` via `$09E0`) — no obvious song-dependent transpose there.
-What would settle it: a Z80-side trace of the FM/PSG register writes
-for SFX 1 in both contexts, or decoding the SFX block format and the
-`$0B22`/`$0A78` playback path to find what song state affects the
-voicing. See §12 item 12.
+**Mechanism — ROOT CAUSE FOUND [live], pitch translation [open]
+(2026-11-10).** SFX 1 renders on a **different FM channel** depending
+on song context, because the song occupies FM voices. Decoded path
+[static, `.scratch018/z80_listing.txt`]: the SFX block is installed by
+`$0A04` into slot 0 (data area `$006C`); per-frame playback `$0B22` →
+`$0A78` steps (duration, offset) pairs from the block and writes the
+running frequency to the slot (`IX+0x1a/1b`) and to the channel struct
+(`IY+0x28/29`, IY from the `$0382` table for channel E); the voice is
+allocated by `$067B`, which searches the `$FD` table (16 rows × 5 bytes,
+`$FF` = free) for the SFX's note byte, and `$04C3` maps the returned
+voice index to an FM channel via table `$EB` (`0→$00, 1→$01, 2→$02,
+3→$80, 4→$81, 5→$82`). SFX 1's record (ROM `$FCAF8`) is
+`08 09 30 f0 28 ff`: note `$09`, then pairs (48, −16), (40, −1), end —
+88 steps. **Live** (slot snapshot harness,
+`.scratch018/harness_slotonly.s` + `harness_slotonly_abs.s`,
+`run_bonly_sonly_out.txt`, `run_s1f_out.txt`, `run_cs_out.txt`;
+absolute-address Z80 reads — see harness caveat below): SFX 1 is
+installed and playing in both contexts (`$003A=$08, $003B=$09,
+$003D=$F0, $000C=$00`, slot0 data `$08/$09`, duration `$1C`, offset
+`$FF` at 60 frames), and its frequency state is **identical** — slot
+freq `$0930` at 60 frames, `$0C2C` at 1 frame; channel-struct freq
+(`$12E4+0x28/29`) `$043C`; `$00A6` `$120C` — in both contexts. The
+**base-frequency hypothesis is ruled out**: the pre-trigger base
+(`$00A6` channel freq) differs (`$4DED` silent vs `$1DA7` song 1,
+ratio 3.8×), but the install-time base is `$0C3C` (note 9) in **both**
+runs (slot freq at 1 frame + 1 offset), i.e. SFX 1's own note byte
+`$09` sets the base, not the song's last note. **What differs is the
+voice allocation [live]:** the `$FD` row for channel E=`$0E`
+(`$0143–$0147`) holds SFX 1's note `$09` at **index 0** when silent
+(`09 FF FF FF FF`) but at **index 2** when song 1 plays
+(`FF FF 09 FF FF`) — song 1 occupies voices 0–1, so SFX 1 is pushed
+to voice 2. Via `$EB`, that is **FM channel 0 (silent) vs FM channel 2
+(song 1)**. So the context-dependent step is the voice/channel
+allocation, not the SFX's frequency computation. **PSG ruled out
+[static]:** every PSG (`$7F11`) write is in `$0967–$09AA`, called
+only from the song loop (`$0915`); the SFX path (`$0B22`/`$0A78`)
+never writes the PSG — SFX 1 is FM-only, so the earlier "PSG voice
+only, FM suppressed" hypothesis is dead, not just weakened. **Still
+[open]:** the exact pitch translation — how sounding on FM ch 2 vs
+ch 0 moves the heard peaks from 282–612 Hz to 112–254 Hz (candidates:
+the song's own notes on ch 2 overwriting the SFX's frequency
+registers between SFX steps, or a per-channel operator setup
+difference). What would settle it: a Z80-side trace of the YM2612
+register writes (F-number `$A0–$A6`, key `$28`) for SFX 1 in both
+contexts. Also [open]: the 88-step data stream predicts ~1.5 s but
+SFX 1 sounds ~3.6 s (step rate or release decay). Harness caveat:
+multi-byte `(a0)+` Z80 dumps return an identical byte pattern for
+different addresses (unreliable — the `$22/$EE/$BB` pattern is not in
+`driver.bin`); all voice-row/channel-struct numbers above are from
+**absolute-address** reads, which a single-read sanity check
+(`$003A` → `$08`) confirms. See §12 item 12.
 items 11–12.
 
 All 19 captures are in `.scratch018/songs/songNN.wav` (not committed; the
@@ -900,16 +940,25 @@ settle delay before the first read, or the read returns stale bus data.
     event), the 31 uncaptured table SFX (`$17586` is the only SFX
     path, and the breakpoint log is exhaustive), and the
     variable-index `$17586` at `0x01837E` (never fires in the
-    attract/cinematic context). **Mechanism [open]:** why SFX 1
-    renders with different pitches in the two contexts. The "PSG
-    voice only, FM suppressed" hypothesis is weakened — burst 2 has
-    nearly as much 300–4000 Hz energy as the harness SFX 1, so the
-    FM voice is not simply suppressed. The SFX install path
-    (`$0A04`/`$0A32`) reads fixed tables (`$014D` via `$048B`,
-    `$079E` via `$09E0`) — no obvious song-dependent transpose.
-    What would settle it: a Z80-side trace of the FM/PSG register
-    writes for SFX 1 in both contexts, or decoding the SFX block
-    format and the `$0B22`/`$0A78` playback path. See §7.5.
+    attract/cinematic context). **Mechanism — root cause found
+    [live], pitch translation [open] (2026-11-10):** SFX 1's note
+    `$09` is allocated a different FM voice by song context: the
+    `$FD` voice-table row for channel E=`$0E` (`$0143–$0147`) holds
+    `$09` at index 0 when silent (`09 FF FF FF FF`) but at index 2
+    when song 1 plays (`FF FF 09 FF FF`); via the `$EB` map that is
+    **FM channel 0 vs FM channel 2**. The SFX's frequency state is
+    identical in both contexts (slot freq `$0930` at 60 frames,
+    `$0C2C` at 1 frame; channel-struct freq `$043C`; `$00A6`
+    `$120C`), so the base-frequency hypothesis is ruled out (the
+    install-time base is `$0C3C`, note 9, in both — SFX 1's own note
+    byte sets it). PSG is ruled out [static] (all `$7F11` writes are
+    in `$0967–$09AA`, song loop only; SFX 1 is FM-only). Still
+    [open]: how ch 2 vs ch 0 moves the heard peaks (282–612 Hz →
+    112–254 Hz) — candidates: the song's notes on ch 2 overwriting
+    the SFX's frequency registers, or a per-channel operator
+    difference; a YM2612 write trace for SFX 1 in both contexts
+    would settle it. Also [open]: 88 data steps (~1.5 s) vs ~3.6 s
+    audible. See §7.5.
 
 ## Appendix: files
 

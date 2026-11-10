@@ -63,13 +63,30 @@ peaks exactly), but renders with different pitches in the cinematic (song 1
 playing) context than in the silent harness — context-dependent voicing.
 Burst 2 and the harness SFX 1 share some low peaks and have nearly
 identical band energies, but differ in mid/high peaks with ~0 waveform
-correlation. **Mechanism [open]:** why SFX 1 renders with different
-pitches in the two contexts. The "PSG voice only, FM suppressed"
-hypothesis is weakened — burst 2 has nearly as much 300–4000 Hz energy as
-the harness SFX 1, so the FM voice is not simply suppressed. What would
-settle it: a Z80-side trace of the FM/PSG register writes for SFX 1 in
-both contexts, or decoding the SFX block format and the `$0B22`/`$0A78`
-playback path. Original ROM re-verified unchanged (MD5
+correlation. **Mechanism follow-up 2026-11-10 (docs/sound.md §7.5, §12 item 12) —
+root cause found [live], pitch translation [open]:** SFX 1's note `$09`
+is allocated a different FM voice by song context. The `$FD`
+voice-table row for channel E=`$0E` (`$0143–$0147`) holds `$09` at
+index 0 when silent (`09 FF FF FF FF`) but at index 2 when song 1
+plays (`FF FF 09 FF FF`); via the `$EB` voice→FM-channel map
+(`0→ch0, 2→ch2`) SFX 1 sounds on **FM channel 0 (silent) vs FM
+channel 2 (song 1)**. The SFX's frequency state is identical in both
+contexts (slot freq `$0930` at 60 frames, `$0C2C` at 1 frame;
+channel-struct freq `$043C`; `$00A6` `$120C`), so the
+base-frequency hypothesis is ruled out — the install-time base is
+`$0C3C` (note 9) in both, set by SFX 1's own note byte, not the song.
+PSG is ruled out [static]: all `$7F11` writes are in `$0967–$09AA`
+(song loop only); SFX 1 is FM-only. Still [open]: how ch 2 vs ch 0
+moves the heard peaks (282–612 Hz → 112–254 Hz) — candidates are the
+song's notes on ch 2 overwriting the SFX's frequency registers, or a
+per-channel operator difference; a YM2612 write trace for SFX 1 in
+both contexts would settle it. Also [open]: 88 data steps (~1.5 s)
+vs ~3.6 s audible. Harness caveat: multi-byte `(a0)+` Z80 dumps
+return an identical pattern for different addresses (unreliable);
+the voice-row numbers above are from absolute-address reads (sanity
+checked). Harnesses in `.scratch018/` (`harness_slotonly*.s`,
+`run_bonly_sonly.py`, `run_s1f.py`, `run_cs.py`, `run_vt.py`,
+`harness_sanity.s`). Original ROM re-verified unchanged (MD5
 `30c18fdbe2183f64702ae9f1a45d63f9`).
 
 ## Notes
