@@ -290,7 +290,7 @@ display (`0x28664`) reads `struct[leader].+0x2A`.
 
 ### 3.2 The resource routine `$2BBD2` — verified (decoded in full)
 
-`0x2BBD2`–`0x2C8F2`, 3,324 bytes, 40+ callers. Signature
+`0x2BBD2`–`0x2C8F2`, 3,360 bytes, 40+ callers. Signature
 `$2BBD2(char_idx, code, value, flag)`: `$8(a6)`=char index, `$A(a6)`=code,
 `$C(a6)`=value, `$E(a6)`=flag (1 in battle-end calls). Locals: −$2 =
 code/64, −$4 = code%64, −$6 = effective char (`struct+0x00&0xF==4` →
