@@ -93,7 +93,7 @@ addr,name,tier,note
 0x01DA6C,sys_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
 0x01E02E,sys_unk_01e02e,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
-0x01E18A,spell_duration_tick,2,spells.md: duration nibble decremented each step
+0x01E18A,world_decompose_direction,1,decomposes dx/dy into direction-component codes via two output pointers; called from world_get_direction $036DE8
 0x01E29C,sys_unk_01e29c,0,auto: touches none
 0x01E390,queue_init,1,architecture.md:198 and spells.md:653 queue init (capacity byte[2]=8)
 0x01E426,queue_pop,1,logic.md:259 pop/dequeue; tail==head returns -1
@@ -259,7 +259,7 @@ addr,name,tier,note
 0x036a00,combat_group_alive,1,returns 1 if char index 0-55 and type low nibble 1 and all 6 members in +0x14 list alive; else 0
 0x036a94,combat_find_best_member,1,finds alive member with highest +0x2A low byte across two groups with +0x18 bit 9 clear; clears bit 9 and retries if none
 0x036cfc,combat_calc_range_effect,1,picks effect value from displacement to target; axis-aligned vs diagonal plus $03AF10 check; caller $037124
-0x036de8,world_get_direction,1,computes direction from char to target point via spell_duration_tick; returns direction code
+0x036de8,world_get_direction,1,computes direction from char to target point via world_decompose_direction; returns direction code
 0x036E2E,spell_damage_calc,1,spells.md:124 reads w0 damage base; damage path
 0x03778E,world_distance,2,logic.md:87;1228 distance 3778E (proven)
 0x0377FE,math_isqrt,2,logic.md:1228 integer sqrt 377FE verified
@@ -284,7 +284,7 @@ addr,name,tier,note
 0x0387ae,combat_set_target,1,Sets a char status-word low byte to another char name index following a chain via +0x27 and +0x29; called from spell_damage_calc $036E2E
 0x03888a,spell_apply_group,1,Applies effect 24 via $02140A to each live member of a char 6-entry list; random gate and $025DE4 check; called by five spell-effect routines
 0x038938,map_animate_tiles,1,Animates map chunk tiles in 10x10 grid; toggles tile low bit by $FF012A parity skipping tiles 495 and 213; called from $03E2D4 when $FF012A below 20
-0x038a22,spell_step_duration,1,Advances a spell duration counter by 6 or 14 and sets a flag 0 or 1 by arg0 mod 4; threshold 448; called after spell_duration_tick
+0x038a22,spell_step_duration,1,Advances a spell duration counter by 6 or 14 and sets a flag 0 or 1 by arg0 mod 4; threshold 448; called after world_decompose_direction
 0x038A40,sys_unk_038a40,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x038AB2,sys_unk_038ab2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x038b00,map_load_group_chunks,1,loads map chunks at each group member X/Y via $0319ec $031a9c; called from $03F8FE $03FACA
