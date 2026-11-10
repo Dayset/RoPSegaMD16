@@ -75,3 +75,8 @@
 # --- batch 5: from RROP hook addresses (kruzeman/rrop genesis_recompiler/rings_wide_render.h:78, rings_settings_sdl.h:151-153) ---
 0x00231D8 hero_track            # RROP rings_wide_render.h:78: sets tracking when arg at a7+4 == $FFB0CC (hero object); code: link a6 at 0x231D8
 0x00020758 settings_menu_open   # RROP rings_settings_sdl.h:153: redirects to $20758 to open Settings; 0x20388 branches to L020758
+# --- batch 6: save/load menu entries (docs/logic-audit.md:492-493 Load=$20652 calls $2F896, Save=$20670 calls $2F11A; docs/save.md:336 SAVE serialiser) ---
+0x00020652 save_menu_load       # docs/logic-audit.md:492 Load; calls $2F896
+0x00020670 save_menu_save       # docs/logic-audit.md:493 Save; calls $2F11A
+0x0002F11A save_serialise       # docs/save.md:336 SAVE serialiser
+0x0002F896 save_deserialise     # docs/logic-audit.md:492 Load path; RROP rings_saves.h hooks the menu at $20652

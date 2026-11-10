@@ -12608,7 +12608,7 @@ L01B8E0:
 	tst.w $ff0108.l	; $01B8E0
 	beq.b L01B914	; $01B8E6
 	clr.w $ff0108.l	; $01B8E8
-	jsr FUN_02f896.l	; $01B8EE
+	jsr save_deserialise.l	; $01B8EE
 	move.w d0,-$2(a6)	; $01B8F4
 	move.w -$2(a6),-(a7)	; $01B8F8
 	move.w #$51,-(a7)	; $01B8FC
@@ -18578,16 +18578,16 @@ L02063C:
 	jsr FUN_0173ec.l	; $020646
 	addq.w #$2,a7	; $02064C
 	bra.w settings_menu_open	; $02064E
-L020652:
-	jsr FUN_02f896.l	; $020652
+save_menu_load:
+	jsr save_deserialise.l	; $020652
 	move.w d0,-$e(a6)	; $020658
 	move.w -$e(a6),-(a7)	; $02065C
 	move.w #$51,-(a7)	; $020660
 	jsr FUN_035612.l	; $020664
 	addq.w #$4,a7	; $02066A
 	bra.w settings_menu_open	; $02066C
-L020670:
-	jsr FUN_02f11a.l	; $020670
+save_menu_save:
+	jsr save_serialise.l	; $020670
 	move.w d0,-$e(a6)	; $020676
 	move.w -$e(a6),-(a7)	; $02067A
 	move.w #$51,-(a7)	; $02067E
@@ -18644,9 +18644,9 @@ L02068E:
 	sub.l #$18,d0	; $02071C
 	beq.w L02063C	; $020722
 	subq.l #$1,d0	; $020726
-	beq.w L020652	; $020728
+	beq.w save_menu_load	; $020728
 	subq.l #$1,d0	; $02072C
-	beq.w L020670	; $02072E
+	beq.w save_menu_save	; $02072E
 	sub.l #$12,d0	; $020732
 	beq.w L020194	; $020738
 	subq.l #$1,d0	; $02073C
@@ -35944,7 +35944,7 @@ L02F106:
 	unlk a6	; $02F116
 	rts	; $02F118
 	; code $02F11A-$02F895
-FUN_02f11a:
+save_serialise:
 	link.w a6,#$fff6	; $02F11A
 	clr.w -$2(a6)	; $02F11E
 	cmpi.w #$1,$ff00ae.l	; $02F122
@@ -36469,7 +36469,7 @@ L02F884:
 	addq.w #$4,a7	; $02F890
 	bra.w L02F12E	; $02F892
 	; code $02F896-$03010F
-FUN_02f896:
+save_deserialise:
 	link.w a6,#$fff2	; $02F896
 	clr.w -$2(a6)	; $02F89A
 	cmpi.w #$1,$ff00ae.l	; $02F89E
