@@ -107,6 +107,14 @@ implementing it — useful as a contrast, not as a source for the EEPROM format.
   routines (no routine names, no logic docs) — its value to us is the
   *behavioural* evidence (smooth-camera shape, Void error codes, table
   occupancy rules) and the confirmed ROM revision.
+- **RROP is not compatible with original Sega hardware** (Dayset 2026-11-10).
+  It produces a native Linux/Windows executable that runs on a modern PC; it
+  does not produce a ROM that runs on a Genesis/Mega Drive. So its
+  presentation features (smooth camera, widescreen, saves) cannot be ported
+  back to the original hardware as-is — only the *design* (e.g. the
+  presentation-layer tween shape for L037) and the *behavioural* findings
+  (Void error codes) transfer to the ROM/RE path. This is why the project
+  stays on the previous (ROM/RE) path, not the RROP direction.
 - The Void error codes are "confirmed calls" per RROP; the docs note they do
   not yet prove which one causes a reported failure after extended gameplay.
 - The smooth-camera tween is a host-side presentation feature; it cannot be
