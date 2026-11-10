@@ -24,13 +24,13 @@ Updated 2026-11-10 (remote main `9736dbd`). Counts are local issues
 Agents: keep this section and PROGRESS.md in sync — see the status rule in
 [CLAUDE.md](CLAUDE.md).
 
-Overall: **20 of 37 issues done** — `███████████░░░░░░░░░ 54%`
+Overall: **19 of 37 issues done** — `██████████░░░░░░░░░░ 51%`
 
 | Epic | Done | Progress |
 |---|---|---|
 | 1 Rebuildable ROM | 6/7 | `█████████████████░░░ 86%` |
 | 2 Game structure & logic | 6/6 | `████████████████████ 100%` |
-| 3 Graphics & audio pipeline | 8/8 | `████████████████████ 100%` |
+| 3 Graphics & audio pipeline | 7/8 | `██████████████████░░ 88%` |
 | 4 Mods | 0/2 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
 | 5 Tribute remake | 0/9 | `░░░░░░░░░░░░░░░░░░░░ 0%` (on hold) |
 | 6 Research & history | 0/5 | `░░░░░░░░░░░░░░░░░░░░ 0%` |

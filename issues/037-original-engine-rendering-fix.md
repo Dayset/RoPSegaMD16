@@ -2,8 +2,11 @@
 
 **Epic 3**
 **Milestone:** M3
-**Status:** done 2026-11-09 (items 2–5); item 1 (multilevel terrain) is
-design-only — see Notes.
+**Status:** in progress — patch shipped 2026-11-09 (items 2–5) and
+verified by measurement (H-scroll 1 px/frame, no snap), but Dayset did
+**not** accept the initial fix (visual check, 2026-11-10). A follow-up
+investigation into framerate and sub-cell animations with Claude
+stalled. Item 1 (multilevel terrain) is design-only — see Notes.
 
 ## Goal
 Fix the two rendering weaknesses of the original Mega Drive engine, both
