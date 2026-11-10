@@ -484,7 +484,7 @@ mod 0, no merchant):
   " purchased!" / "I'll give you " / " gold for each " / ". You have " /
   " gold now." / " sold!" / "Sorry I can't buy that back."
 
-### 3.7 Transport / food & water — routine LOCATED (static)
+### 3.7 Transport / food & water — routine LOCATED, live-verified (2026-11-10)
 
 **[live]** Food and Water are goods (price records 186/187: Food raw 12,
 Water raw 8). **[static]** Their live counts are the words at
@@ -538,10 +538,18 @@ water = base_water(mode) + terrain_water(type, mode)
 
   | mode | food | water |
   |------|------|-------|
-  | 0 | 2 | 2 |
+  | 0 | **3** | **1** |
   | 1 | 3 | 1 |
   | 4 | 38 (`$26`) | 38 (`$26`) |
   | anything else (2, 3, 5, 6, 7) | 1 | 1 |
+
+  **[live — correction to the static reading]** The mode-0 base is
+  **(3,1), not (2,2)**. The `$01C8C6` block writes (2,2) and then
+  **falls through** into the mode-1 block at `$01C8DA`, which overwrites
+  it with (3,1) — there is no branch between them. So the (2,2)
+  assignment is dead code and modes 0 and 1 share the base (3,1). The
+  live harness (below) measured mode 0 on 25 distinct terrain types:
+  every type with no addition returned exactly (3,1), never (2,2).
 
 * **Mode — `$025D8E`**, called from `FUN_024984` at `$024B26` with the
   moving character's **`+0x06`** word, stored to the struct's `+0x08`
@@ -556,7 +564,7 @@ water = base_water(mode) + terrain_water(type, mode)
   …+$200` (high byte 2 → mode 5); type 1 with `$e==$FFFF` →
   `+0x06 = 0`, `+0x08 = 4`; type 4 → `+0x08 = 4`. `+0x06` is otherwise
   0 (cleared at `$024264`, `$0367B4`), so **plain on-foot walking is
-  mode 0, base (2,2)**.
+  mode 0, base (3,1)** — live, see the fall-through correction above.
 * **Terrain addition — jump table at `$01D73E`** (35 entries, terrain
   types 0–34, offsets relative to `$01D794`; dispatch at `$01D784`,
   `cmp.l #$23,d0` bounds-checks, out-of-range → `$01D736` sets the
@@ -585,41 +593,80 @@ water = base_water(mode) + terrain_water(type, mode)
   `food += height_delta / 2` (`move.w -$10(a6),d0; divs.w #$2,d0;
   add.w d0,$1a(a0)` at `$01D8A6`–`$01D8B4`). Water gets no height term.
   This is the multilevel-terrain cost: walking uphill costs extra food.
+  **[live]** Confirmed by the harness on type 9 (delta +4 → food 3,
+  +2 → 2, −4 → −1): the term applies in both directions, and food can
+  go negative (the `FUN_024984` clamp [1, 30000] applies afterwards, to
+  the party totals, not to this per-step cost).
 
-#### Rates: manual vs code [static for the code column; open for the mapping]
+#### Rates: manual vs code [live for the code column; mapping partly open]
 
 The official manual (see `docs/research/official-manual-transcript.md`)
 gives rates per mile, party of 6. The code column is the flat-terrain
-(`height_delta = 0`) cost from the formula above. The **terrain-type →
-terrain-name mapping is the open item** — the manual's five on-foot
-terrains have not been pinned to `$5EDC4` types yet, so the code column
-below is given by type, not by name.
+(`height_delta = 0`) cost, **measured live** by the `$1C892` harness
+(below). The **terrain-type → terrain-name mapping is partly open** —
+Road and Desert are now pinned; Grass, Swamp and Ice are not.
 
 | Manual (per mile) | Food | Water | Code match |
 |---|---|---|---|
-| On foot — Road | 1 | 1 | **type 9, mode 0: set (1,1) ✓** |
+| On foot — Road | 1 | 1 | **type 9, mode 0: set (1,1) ✓ [live]** |
 | On foot — Grass | 4 | 2 | no mode-0 type gives (4,2) — [open] |
-| On foot — Desert | 7 | 5 | no mode-0 type gives (7,5) — [open] |
+| On foot — Desert | 7 | 5 | **type 17, mode 0: (3,1)+(4,4) = (7,5) ✓ [live]** |
 | On foot — Swamp | 8 | 4 | no mode-0 type gives (8,4) — [open] |
 | On foot — Ice waste | 4 | 3 | no mode-0 type gives (4,3) — [open] |
-| Boat, shallow | 1 | 1 | base (1,1) ✓ (no addition) |
-| Boat, deep | 5 | 20 | **type 0, mode 7: (1,1)+(4,19) = (5,20) ✓** |
-| Ship, deep | 1 | 1 | base (1,1) ✓ |
-| Dino, road | 1 | 1 | type 9, mode 1: set (1,1) ✓ |
-| Dino, other | 3 | 1 | **mode 1 base (3,1) ✓** |
-| Dragon, all | 40 | 40 | mode 4 base (38,38) — **off by 2** [open] |
+| Boat, shallow | 1 | 1 | base (1,1) ✓ (no addition) [live] |
+| Boat, deep | 5 | 20 | **type 0, mode 7: (1,1)+(4,19) = (5,20) ✓ [live]** |
+| Ship, deep | 1 | 1 | base (1,1) ✓ [live] |
+| Dino, road | 1 | 1 | type 9, mode 1: set (1,1) ✓ [live] |
+| Dino, other | 3 | 1 | **mode 1 base (3,1) ✓ [live]** |
+| Dragon, all | 40 | 40 | mode 4 base (38,38) — **off by 2, confirmed live** [open] |
 
-Code costs actually attainable on flat terrain: mode 0 → (1,1), (2,2),
-(6,6), (4,6), (5,6); mode 1 → (3,1), (1,1), (6,7); mode 4 → (38,38);
-mode 7 → (1,1), (5,20), (5,5). The manual's on-foot Grass/Desert/
-Swamp/Ice water values (2, 5, 4, 3) are not all attainable as mode-0
-water costs (mode 0 water is only 1, 2 or 6), so either the manual's
-rates are approximate, or the on-foot terrain mapping involves the
-height term and/or a mode other than 0 — **this needs a live harness**
-that calls `$1C892` with a controlled mode and terrain and reads the
-resulting struct `+0x1A`/`+0x1C` (see below). The Dragon's 40/40 vs the
-code's 38/38 is likewise open (a +2/+2 addition for mode 4 was not
-found; the manual may round, or a terrain addition applies).
+Code costs actually attainable on flat terrain **[live]**: mode 0 →
+(1,1), (3,1), (7,5), (5,5), (6,5); mode 1 → (3,1), (1,1), (6,7);
+mode 4 → (38,38); mode 7 → (1,1), (5,20), (5,5); mode 2 → (5,20)
+on type 0; mode 6 → (5,5) on type 17. Mode-0 water is only **1 or 5**
+(live) — never 2, 3 or 4 — so the manual's Grass (2), Swamp (4) and
+Ice (3) water values cannot be flat mode-0 costs. Either the manual's
+rates are approximate (per "mile" may not be one step, or the rates
+are rounded), or those terrains are reached via a different mode or a
+height component. **Desert is the one manual on-foot terrain that
+matches exactly: type 17 gives (7,5) on foot.** Which world-map
+terrain type 17 *is* (desert, by the rate) is a mapping claim, not a
+code claim — the type's identity still needs a world-map pin
+(overworld coordinate (58,81) is a type-17 cell).
+
+#### Live harness — `$1C892` (2026-11-10, 44/44 cases)
+
+`.scratch007/harness_c892.s` + `build_c892.py` + `run_c892.py`
+(test ROM `.scratch007/test007.gen`, MD5
+`bc40401378c482c182f1ba379466eb4d`). Hook at the attract loop `0x35C`
+(`jsr $FD0CC.l`, trampoline at `0xFD0CC`, exits with `rts`), results
+in `$FFD000+` (7 words/case: mode, live type, dest tile, food, water,
+d0, blocked). Each case sets the struct at `$FFD300` (mode at `+0x08`,
+dx = 1, dy = 0, `+0x1E = $FFFF`, `+0x20 = 2`), positions the party at
+a chosen overworld (x,y), loads the real chunk via `$19692`, calls
+`$1C892`, and records the struct `+0x1A`/`+0x1C` plus the live
+`$5EDC4` type (`rol.w #$6` extraction, as `$02dc0c` does it) and the
+destination tile from `$FF0248`. `$FF00A4 = 1` is required (the terrain
+dispatch at `$01CF38` is skipped when it is 0). **All 44 cases passed
+against the live-corrected expectations** (ran flag `$FFD000 = $BEEF`,
+canary `$FFDFFE = $5A5A`; every destination tile matched the offline
+chunk decode, proving the chunk-cache positioning is correct). The
+44 cases: mode 0 on 30 `$5EDC4` types (0–23, 25, 27, 28, 30, 31, 33 —
+types 24/26/29 do not exist in `$5EDC4`; 32/34 exist but no flat east
+step onto them was found in the overworld); mode 1 on types 9/0/17/19;
+mode 4 on types 9/0; mode 7 on types 0/9/17; mode 2 on type 0;
+mode 6 on type 17; and three height cases on type 9 (delta +4 → food
+3, delta +2 → food 2, delta −4 → food −1 — **the height term is
+confirmed live, including the negative direction: food can go below
+the type-9 base, to −1**). Two harness bugs were found and fixed
+during the run: the type extraction used `lsr #6` (wrong — it reads
+bits 6–11, not 10–15; fixed to `rol #6` like `$02dc0c`), and the
+`lsr #10` fix attempt was rejected by GAS (immediate shifts are 1–8
+only). `$1C892` also returns a step-blocked flag (`d0` + struct
+`+0x18`): it varies by **coordinate**, not by terrain type (the same
+type 9 gives d0 = 1 at (151,15) and (150,15) but d0 = 0 at (148,15)
+and (266,101)) — likely entity occupancy at the destination, separate
+from the cost, and not pursued here.
 
 **No plain rate table exists in the ROM** (searched byte sequences
 `[1,8,7,4,4]`/`[1,4,5,3,2]`, fan order, interleaved pairs, word tables
@@ -639,7 +686,15 @@ found; the manual may round, or a terrain addition applies).
   (`$02176E`) — regen becomes a drain when supplies run out.
 * **CAMP** (manual: rest regains 50% strength/magic, costs 100 food +
   100 water) — the 100/100 deduction has **not** been located in code
-  yet [open].
+  yet [open]. Static search (2026-11-10): there is **no `sub`
+  instruction on `$FFC364`/`$FFC366` anywhere** in the ROM, and no
+  `#$64` (100) immediate near them except the `muls.w #$64` in the
+  goods-adjust function `$02C188` (adds quantity×100 to food or water,
+  clamps [1, 30000] — it can subtract if the quantity is negative, so
+  it is the candidate mechanism for a −100 call). CAMP is a MAIN-menu
+  verb (verb table at `0xCCDB8`, "Camp" record after "Map"). Driving
+  CAMP through a harness would need the menu system, not just `$1C892`,
+  so it stays open.
 * **Random event in the same function:** after the consumption block,
   if struct `+0x08` (`-$1a(a6)`) `== 3` and a 1/9 RNG roll (`$12B82`
   with 9) is 0, `FUN_024984` calls `$2BBD2(char, $400, −4, 1)` and sets

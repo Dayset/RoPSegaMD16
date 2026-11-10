@@ -44,16 +44,24 @@ and combat damage.
 - Which damage path runs in live combat (`$3B1EE` vs `0x40880` spell path);
   `$FFC418`/`$FFC41A` contents; `$3B1EE` arg puzzle. → #008.
 - Transport / food-water consumption routine — **located (static,
-  2026-11-10)**: deduction in `FUN_024984` `$024F38`–`$024FB2` (gate
-  `$FF00AE==1`, food `$FFC364`, water `$FFC366`, clamp [1, 30000]);
-  cost computed by `FUN_01c892` `$01C892` = base(mode) + terrain
-  addition + height/2 (food only); mode from char `+0x06` via `$25D8E`;
-  terrain dispatch table `$01D73E` (35 types). Verified vs manual:
-  Road 1/1 (type 9), Dino 3/1 (mode 1 base), Boat deep 5/20 (type 0,
-  mode 7). **Open:** terrain-type → terrain-name mapping for
-  Grass/Desert/Swamp/Ice (manual water 2/5/4/3 not attainable as
-  mode-0 water), Dragon 40/40 vs code 38/38, CAMP 100/100 deduction —
-  needs a live `$1C892` harness (see docs/logic.md §3.7). → #020.
+  2026-11-10) and live-verified (2026-11-10, 44/44 harness cases)**:
+  deduction in `FUN_024984` `$024F38`–`$024FB2` (gate `$FF00AE==1`,
+  food `$FFC364`, water `$FFC366`, clamp [1, 30000]); cost computed by
+  `FUN_01c892` `$01C892` = base(mode) + terrain addition + height/2
+  (food only); mode from char `+0x06` via `$25D8E`; terrain dispatch
+  table `$01D73E` (35 types). **Live correction: mode-0 base is (3,1),
+  not (2,2)** — the (2,2) write at `$01C8C6` falls through into the
+  mode-1 (3,1) block. Verified vs manual: Road 1/1 (type 9, mode 0),
+  **Desert 7/5 (type 17, mode 0: (3,1)+(4,4))**, Dino 3/1 (mode 1
+  base), Boat deep 5/20 (type 0, mode 7), **Dragon 38/38 (mode 4 base,
+  confirmed live — manual's 40/40 is off by 2)**; height term
+  confirmed live incl. negative (delta −4 → food −1). **Open:**
+  terrain-type → terrain-name mapping for Grass/Swamp/Ice (manual
+  water 2/4/3 not attainable as flat mode-0 water — live mode-0 water
+  is only 1 or 5), Dragon 40/40 vs live 38/38, CAMP 100/100 deduction
+  (no `sub` on `$FFC364`/`$FFC366` exists; `$02C188` adjust fn is the
+  candidate mechanism). Harness: `.scratch007/harness_c892.s` (see
+  docs/logic.md §3.7). → #020.
 - Bribe/attitude action; Gems sell 428; `$FF012C` meanings; +0x02/+0x27;
   other `$2BBD2` handlers; who initialises `$FF0E18[2]`; item-record
   +4..+9 bytes; Doggonia 1,000-gold fee; post-harness PC=0 fault. → #021.
