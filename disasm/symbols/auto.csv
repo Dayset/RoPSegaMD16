@@ -39,10 +39,10 @@ addr,name,tier,note
 0x011514,sys_unk_011514,0,auto: touches $FF8640
 0x011588,text_draw_at,1,static: calls helper 0x11FAE then text_glyph_draw with the caller's coordinates
 0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
-0x011820,sys_unk_011820,0,auto: touches none
+0x011820,gfx_tilemap_draw,1,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes
 0x0118C8,sys_unk_0118c8,0,auto: touches none
 0x01194A,sys_unk_01194a,0,auto: touches none
-0x011A1A,sys_unk_011a1a,0,auto: touches none
+0x011a1a,gfx_tilemap_fill,1,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16
 0x011A7C,sys_unk_011a7c,0,auto: touches $FF0076 $FF1EC0 $FF1EE0
 0x011B58,sys_counter_add,1,static: returns old value of $FF0076; adds its argument to it
 0x011BB8,sys_unk_011bb8,0,auto: touches $FF0E14 $FF8644 $FF8646
@@ -177,8 +177,8 @@ addr,name,tier,note
 0x02B402,sys_unk_02b402,0,auto: touches $FF02B4
 0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
 0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
-0x02B656,sys_unk_02b656,0,auto: touches none
-0x02B68C,sys_unk_02b68c,0,auto: touches none
+0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
+0x02b68c,sys_bitmap_write,1,code: clears bit (arg&7) in bitmap then ORs in value arg e
 0x02B6E0,sys_unk_02b6e0,0,auto: touches $FF02A0 $FF02B4 $FF02C8 $FF02DB $FF0E82 $FF0E92
 0x02C8F2,sys_unk_02c8f2,0,auto: touches $FF02B2 $FF02B4 $FF02C8 $FF02CC $FF02CE $FF02DB
 0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct

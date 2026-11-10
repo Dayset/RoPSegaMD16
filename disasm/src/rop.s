@@ -2943,7 +2943,7 @@ L0117CA:
 L01181C:
 	bra.w L011676	; $01181C
 	; code $011820-$0118C7
-sys_unk_011820:
+gfx_tilemap_draw:
 	link.w a6,#$0	; $011820
 	movem.l d4-d7/a3,-(a7)	; $011824
 	moveq #$0,d7	; $011828
@@ -3147,7 +3147,7 @@ L011A0A:
 	unlk a6	; $011A16
 	rts	; $011A18
 	; code $011A1A-$011A7B
-sys_unk_011a1a:
+gfx_tilemap_fill:
 	link.w a6,#$0	; $011A1A
 	movem.l d4-d5,-(a7)	; $011A1E
 	moveq #$0,d4	; $011A22
@@ -3718,7 +3718,7 @@ text_blit:
 	move.w #$3,-(a7)	; $0120A4
 	move.w #$40,-(a7)	; $0120A8
 	pea.l L001000.w	; $0120AC
-	jsr sys_unk_011820(pc)	; $0120B0
+	jsr gfx_tilemap_draw(pc)	; $0120B0
 	lea.l $10(a7),a7	; $0120B4
 	move.w $ff8640.l,-(a7)	; $0120B8
 	move.w #$6,-(a7)	; $0120BE
@@ -3727,7 +3727,7 @@ text_blit:
 	move.w #$9,-(a7)	; $0120CA
 	move.w #$40,-(a7)	; $0120CE
 	pea.l L001000.w	; $0120D2
-	jsr sys_unk_011a1a(pc)	; $0120D6
+	jsr gfx_tilemap_fill(pc)	; $0120D6
 	lea.l $10(a7),a7	; $0120DA
 	move.w #$3,-(a7)	; $0120DE
 	move.w $ff8648.l,-(a7)	; $0120E2
@@ -4018,7 +4018,7 @@ L012520:
 	clr.w -(a7)	; $0125BE
 	move.w #$40,-(a7)	; $0125C0
 	pea.l L00F000.l	; $0125C4
-	jsr sys_unk_011a1a(pc)	; $0125CA
+	jsr gfx_tilemap_fill(pc)	; $0125CA
 	lea.l $10(a7),a7	; $0125CE
 	move.w $ff8640.l,-(a7)	; $0125D2
 	move.w #$20,-(a7)	; $0125D8
@@ -4027,7 +4027,7 @@ L012520:
 	clr.w -(a7)	; $0125E2
 	move.w #$80,-(a7)	; $0125E4
 	pea.l L002000.w	; $0125E8
-	jsr sys_unk_011a1a(pc)	; $0125EC
+	jsr gfx_tilemap_fill(pc)	; $0125EC
 	lea.l $10(a7),a7	; $0125F0
 	move.w $ff8640.l,-(a7)	; $0125F4
 	move.w #$20,-(a7)	; $0125FA
@@ -4036,7 +4036,7 @@ L012520:
 	clr.w -(a7)	; $012604
 	move.w #$80,-(a7)	; $012606
 	clr.l -(a7)	; $01260A
-	jsr sys_unk_011a1a(pc)	; $01260C
+	jsr gfx_tilemap_fill(pc)	; $01260C
 	lea.l $10(a7),a7	; $012610
 	clr.w -$2(a6)	; $012614
 L012618:
@@ -4062,7 +4062,7 @@ L01262E:
 	move.w -$2(a6),-(a7)	; $01264A
 	move.w #$80,-(a7)	; $01264E
 	clr.l -(a7)	; $012652
-	jsr sys_unk_011820(pc)	; $012654
+	jsr gfx_tilemap_draw(pc)	; $012654
 	lea.l $10(a7),a7	; $012658
 	addq.w #$1,-$2(a6)	; $01265C
 	cmpi.w #$80,-$2(a6)	; $012660
@@ -4091,7 +4091,7 @@ L012682:
 	move.w -$2(a6),-(a7)	; $01269E
 	move.w #$80,-(a7)	; $0126A2
 	pea.l L002000.w	; $0126A6
-	jsr sys_unk_011820(pc)	; $0126AA
+	jsr gfx_tilemap_draw(pc)	; $0126AA
 	lea.l $10(a7),a7	; $0126AE
 	addq.w #$8,-$2(a6)	; $0126B2
 	cmpi.w #$80,-$2(a6)	; $0126B6
@@ -4618,7 +4618,7 @@ world_map_draw:
 	clr.w -(a7)	; $012DF8
 	move.w #$40,-(a7)	; $012DFA
 	clr.l -(a7)	; $012DFE
-	jsr sys_unk_011a1a.l	; $012E00
+	jsr gfx_tilemap_fill.l	; $012E00
 	lea.l $10(a7),a7	; $012E06
 	move.w $ff8640.l,-(a7)	; $012E0A
 	move.w #$20,-(a7)	; $012E10
@@ -4627,7 +4627,7 @@ world_map_draw:
 	clr.w -(a7)	; $012E1A
 	move.w #$40,-(a7)	; $012E1C
 	clr.l -(a7)	; $012E20
-	jsr sys_unk_011a1a.l	; $012E22
+	jsr gfx_tilemap_fill.l	; $012E22
 	lea.l $10(a7),a7	; $012E28
 	move.w $ff8640.l,-(a7)	; $012E2C
 	move.w #$1c,-(a7)	; $012E32
@@ -4636,7 +4636,7 @@ world_map_draw:
 	clr.w -(a7)	; $012E3C
 	move.w #$40,-(a7)	; $012E3E
 	pea.l L001000.w	; $012E42
-	jsr sys_unk_011a1a.l	; $012E46
+	jsr gfx_tilemap_fill.l	; $012E46
 	lea.l $10(a7),a7	; $012E4C
 	move.w $ff8674.l,-(a7)	; $012E50
 	move.w #$17,-(a7)	; $012E56
@@ -4645,7 +4645,7 @@ world_map_draw:
 	move.w #$2,-(a7)	; $012E60
 	move.w #$40,-(a7)	; $012E64
 	pea.l L001000.w	; $012E68
-	jsr sys_unk_011820.l	; $012E6C
+	jsr gfx_tilemap_draw.l	; $012E6C
 	lea.l $10(a7),a7	; $012E72
 	move.w #$9,-(a7)	; $012E76
 	jsr map_decode(pc)	; $012E7A
@@ -6570,7 +6570,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $014984
 	move.w #$40,-(a7)	; $014986
 	pea.l L00F000.l	; $01498A
-	jsr sys_unk_011a1a.l	; $014990
+	jsr gfx_tilemap_fill.l	; $014990
 	lea.l $10(a7),a7	; $014996
 	move.w $ff8640.l,-(a7)	; $01499A
 	move.w #$40,-(a7)	; $0149A0
@@ -6579,7 +6579,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $0149AA
 	move.w #$40,-(a7)	; $0149AC
 	pea.l L002000.w	; $0149B0
-	jsr sys_unk_011a1a.l	; $0149B4
+	jsr gfx_tilemap_fill.l	; $0149B4
 	lea.l $10(a7),a7	; $0149BA
 	move.w $ff8640.l,-(a7)	; $0149BE
 	move.w #$40,-(a7)	; $0149C4
@@ -6588,7 +6588,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $0149CE
 	move.w #$40,-(a7)	; $0149D0
 	clr.l -(a7)	; $0149D4
-	jsr sys_unk_011a1a.l	; $0149D6
+	jsr gfx_tilemap_fill.l	; $0149D6
 	lea.l $10(a7),a7	; $0149DC
 	clr.w -$2(a6)	; $0149E0
 L0149E4:
@@ -6743,7 +6743,7 @@ L014B7E:
 	clr.w -(a7)	; $014BEE
 	move.w #$40,-(a7)	; $014BF0
 	pea.l L002000.w	; $014BF4
-	jsr sys_unk_011a1a.l	; $014BF8
+	jsr gfx_tilemap_fill.l	; $014BF8
 	lea.l $10(a7),a7	; $014BFE
 	move.w #$1,-$1e(a6)	; $014C02
 	bra.b L014C58	; $014C08
@@ -6820,7 +6820,7 @@ L014CC6:
 	clr.w -(a7)	; $014D06
 	move.w #$40,-(a7)	; $014D08
 	pea.l L002000.w	; $014D0C
-	jsr sys_unk_011a1a.l	; $014D10
+	jsr gfx_tilemap_fill.l	; $014D10
 	lea.l $10(a7),a7	; $014D16
 	addi.w #$10,-$c(a6)	; $014D1A
 	cmpi.w #$a,-$16(a6)	; $014D20
@@ -6838,7 +6838,7 @@ L014CC6:
 	clr.w -(a7)	; $014D4E
 	move.w #$40,-(a7)	; $014D50
 	pea.l L002000.w	; $014D54
-	jsr sys_unk_011a1a.l	; $014D58
+	jsr gfx_tilemap_fill.l	; $014D58
 	lea.l $10(a7),a7	; $014D5E
 	addq.w #$8,-$c(a6)	; $014D62
 	move.w -$e(a6),-(a7)	; $014D66
@@ -6860,7 +6860,7 @@ L014CC6:
 	clr.w -(a7)	; $014DA0
 	move.w #$40,-(a7)	; $014DA2
 	pea.l L002000.w	; $014DA6
-	jsr sys_unk_011a1a.l	; $014DAA
+	jsr gfx_tilemap_fill.l	; $014DAA
 	lea.l $10(a7),a7	; $014DB0
 	move.w -$e(a6),d0	; $014DB4
 	subq.w #$1,d0	; $014DB8
@@ -6879,7 +6879,7 @@ L014CC6:
 	move.w #$11,-(a7)	; $014DDE
 	move.w #$40,-(a7)	; $014DE2
 	pea.l L002000.w	; $014DE6
-	jsr sys_unk_011820.l	; $014DEA
+	jsr gfx_tilemap_draw.l	; $014DEA
 	lea.l $10(a7),a7	; $014DF0
 	move.w -$e(a6),d0	; $014DF4
 	ext.l d0	; $014DF8
@@ -7132,7 +7132,7 @@ intro_helper:
 	clr.w -(a7)	; $015134
 	move.w #$80,-(a7)	; $015136
 	pea.l L002000.w	; $01513A
-	jsr sys_unk_011a1a.l	; $01513E
+	jsr gfx_tilemap_fill.l	; $01513E
 	lea.l $10(a7),a7	; $015144
 	move.w $ff867e.l,d0	; $015148
 	add.w #$4000,d0	; $01514E
@@ -7194,7 +7194,7 @@ intro_helper:
 	clr.w -(a7)	; $01522C
 	move.w #$80,-(a7)	; $01522E
 	pea.l L002000.w	; $015232
-	jsr sys_unk_011820.l	; $015236
+	jsr gfx_tilemap_draw.l	; $015236
 	lea.l $10(a7),a7	; $01523C
 	move.w $ff8684.l,d0	; $015240
 	add.w #$6000,d0	; $015246
@@ -7205,7 +7205,7 @@ intro_helper:
 	move.w #$2,-(a7)	; $015258
 	move.w #$80,-(a7)	; $01525C
 	pea.l L002000.w	; $015260
-	jsr sys_unk_011820.l	; $015264
+	jsr gfx_tilemap_draw.l	; $015264
 	lea.l $10(a7),a7	; $01526A
 	pea.l L0CCBB8.l	; $01526E
 	clr.w -(a7)	; $015274
@@ -7489,7 +7489,7 @@ L015544:
 	clr.w -(a7)	; $015656
 	move.w #$40,-(a7)	; $015658
 	pea.l L002000.w	; $01565C
-	jsr sys_unk_011a1a.l	; $015660
+	jsr gfx_tilemap_fill.l	; $015660
 	lea.l $10(a7),a7	; $015666
 	move.w $ff8640.l,-(a7)	; $01566A
 	move.w #$40,-(a7)	; $015670
@@ -7498,7 +7498,7 @@ L015544:
 	clr.w -(a7)	; $01567A
 	move.w #$40,-(a7)	; $01567C
 	clr.l -(a7)	; $015680
-	jsr sys_unk_011a1a.l	; $015682
+	jsr gfx_tilemap_fill.l	; $015682
 	lea.l $10(a7),a7	; $015688
 	clr.w -$12(a6)	; $01568C
 L015690:
@@ -7781,7 +7781,7 @@ L015A86:
 	clr.w -(a7)	; $015AA2
 	move.w #$40,-(a7)	; $015AA4
 	pea.l L002000.w	; $015AA8
-	jsr sys_unk_011a1a.l	; $015AAC
+	jsr gfx_tilemap_fill.l	; $015AAC
 	lea.l $10(a7),a7	; $015AB2
 	move.w #$120,-$2(a6)	; $015AB6
 	move.w #$2710,-$16(a6)	; $015ABC
@@ -7805,7 +7805,7 @@ L015AC6:
 	move.w #$4,-(a7)	; $015AFE
 	move.w #$40,-(a7)	; $015B02
 	pea.l L002000.w	; $015B06
-	jsr sys_unk_011820.l	; $015B0A
+	jsr gfx_tilemap_draw.l	; $015B0A
 	lea.l $10(a7),a7	; $015B10
 	move.w #$8,-(a7)	; $015B14
 	jsr song_request(pc)	; $015B18
@@ -7987,7 +7987,7 @@ snd_music_start:
 	clr.w -(a7)	; $015DB0
 	move.w #$40,-(a7)	; $015DB2
 	pea.l L00F000.l	; $015DB6
-	jsr sys_unk_011a1a.l	; $015DBC
+	jsr gfx_tilemap_fill.l	; $015DBC
 	lea.l $10(a7),a7	; $015DC2
 	move.w $ff8686.l,d0	; $015DC6
 	add.w #$6000,d0	; $015DCC
@@ -7998,7 +7998,7 @@ snd_music_start:
 	clr.w -(a7)	; $015DDC
 	move.w #$80,-(a7)	; $015DDE
 	clr.l -(a7)	; $015DE2
-	jsr sys_unk_011a1a.l	; $015DE4
+	jsr gfx_tilemap_fill.l	; $015DE4
 	lea.l $10(a7),a7	; $015DEA
 	move.w $ff8686.l,d0	; $015DEE
 	add.w #$6000,d0	; $015DF4
@@ -8009,7 +8009,7 @@ snd_music_start:
 	clr.w -(a7)	; $015E04
 	move.w #$80,-(a7)	; $015E06
 	pea.l L002000.w	; $015E0A
-	jsr sys_unk_011a1a.l	; $015E0E
+	jsr gfx_tilemap_fill.l	; $015E0E
 	lea.l $10(a7),a7	; $015E14
 	clr.w -$6(a6)	; $015E18
 L015E1C:
@@ -8020,7 +8020,7 @@ L015E1C:
 	move.w -$6(a6),-(a7)	; $015E2C
 	move.w #$80,-(a7)	; $015E30
 	clr.l -(a7)	; $015E34
-	jsr sys_unk_011820.l	; $015E36
+	jsr gfx_tilemap_draw.l	; $015E36
 	lea.l $10(a7),a7	; $015E3C
 	addq.w #$4,-$6(a6)	; $015E40
 	cmpi.w #$80,-$6(a6)	; $015E44
@@ -8036,7 +8036,7 @@ L015E50:
 	move.w -$6(a6),-(a7)	; $015E68
 	move.w #$80,-(a7)	; $015E6C
 	clr.l -(a7)	; $015E70
-	jsr sys_unk_011820.l	; $015E72
+	jsr gfx_tilemap_draw.l	; $015E72
 	lea.l $10(a7),a7	; $015E78
 	addi.w #$20,-$6(a6)	; $015E7C
 	cmpi.w #$80,-$6(a6)	; $015E82
@@ -8368,7 +8368,7 @@ sys_unk_0162fe:
 	move.w #$2,-(a7)	; $01631E
 	move.w #$40,-(a7)	; $016322
 	pea.l L001000.w	; $016326
-	jsr sys_unk_011820.l	; $01632A
+	jsr gfx_tilemap_draw.l	; $01632A
 	lea.l $10(a7),a7	; $016330
 	move.w #$9,-(a7)	; $016334
 	jsr map_decode.l	; $016338
@@ -8399,7 +8399,7 @@ sys_unk_0162fe:
 	move.w #$20,-(a7)	; $016394
 	move.w #$40,-(a7)	; $016398
 	pea.l L001000.w	; $01639C
-	jsr sys_unk_011820.l	; $0163A0
+	jsr gfx_tilemap_draw.l	; $0163A0
 	lea.l $10(a7),a7	; $0163A6
 	bra.b L0163E4	; $0163AA
 L0163AC:
@@ -8415,7 +8415,7 @@ L0163AC:
 	move.w #$3,-(a7)	; $0163CE
 	move.w #$40,-(a7)	; $0163D2
 	pea.l L001000.w	; $0163D6
-	jsr sys_unk_011820.l	; $0163DA
+	jsr gfx_tilemap_draw.l	; $0163DA
 	lea.l $10(a7),a7	; $0163E0
 L0163E4:
 	jsr request_full_redraw.l	; $0163E4
@@ -8716,7 +8716,7 @@ L0166C8:
 	clr.w -(a7)	; $016712
 	move.w #$40,-(a7)	; $016714
 	pea.l L001000.w	; $016718
-	jsr sys_unk_011a1a.l	; $01671C
+	jsr gfx_tilemap_fill.l	; $01671C
 	lea.l $10(a7),a7	; $016722
 	move.w #$2,-(a7)	; $016726
 	clr.w -(a7)	; $01672A
@@ -8750,7 +8750,7 @@ L0166C8:
 	clr.w -(a7)	; $016792
 	move.w #$40,-(a7)	; $016794
 	pea.l L001000.w	; $016798
-	jsr sys_unk_011820.l	; $01679C
+	jsr gfx_tilemap_draw.l	; $01679C
 	lea.l $10(a7),a7	; $0167A2
 	moveq #$0,d0	; $0167A6
 	move.w $ff8676.l,d0	; $0167A8
@@ -8762,7 +8762,7 @@ L0166C8:
 	clr.w -(a7)	; $0167C2
 	move.w #$40,-(a7)	; $0167C4
 	pea.l L001000.w	; $0167C8
-	jsr sys_unk_011820.l	; $0167CC
+	jsr gfx_tilemap_draw.l	; $0167CC
 	lea.l $10(a7),a7	; $0167D2
 	moveq #$0,d0	; $0167D6
 	move.w $ff8676.l,d0	; $0167D8
@@ -8774,7 +8774,7 @@ L0166C8:
 	clr.w -(a7)	; $0167F2
 	move.w #$40,-(a7)	; $0167F4
 	pea.l L001000.w	; $0167F8
-	jsr sys_unk_011820.l	; $0167FC
+	jsr gfx_tilemap_draw.l	; $0167FC
 	lea.l $10(a7),a7	; $016802
 	moveq #$0,d0	; $016806
 	move.w $ff8676.l,d0	; $016808
@@ -8786,7 +8786,7 @@ L0166C8:
 	clr.w -(a7)	; $016822
 	move.w #$40,-(a7)	; $016824
 	pea.l L001000.w	; $016828
-	jsr sys_unk_011820.l	; $01682C
+	jsr gfx_tilemap_draw.l	; $01682C
 	lea.l $10(a7),a7	; $016832
 	moveq #$0,d0	; $016836
 	move.w $ff8676.l,d0	; $016838
@@ -8798,7 +8798,7 @@ L0166C8:
 	move.w #$24,-(a7)	; $016852
 	move.w #$40,-(a7)	; $016856
 	pea.l L001000.w	; $01685A
-	jsr sys_unk_011820.l	; $01685E
+	jsr gfx_tilemap_draw.l	; $01685E
 	lea.l $10(a7),a7	; $016864
 	moveq #$0,d0	; $016868
 	move.w $ff8676.l,d0	; $01686A
@@ -8810,7 +8810,7 @@ L0166C8:
 	move.w #$24,-(a7)	; $016884
 	move.w #$40,-(a7)	; $016888
 	pea.l L001000.w	; $01688C
-	jsr sys_unk_011820.l	; $016890
+	jsr gfx_tilemap_draw.l	; $016890
 	lea.l $10(a7),a7	; $016896
 	tst.w -$12(a6)	; $01689A
 	beq.w L016974	; $01689E
@@ -9425,7 +9425,7 @@ L016FBA:
 	clr.w -(a7)	; $017084
 	move.w #$40,-(a7)	; $017086
 	pea.l L001000.w	; $01708A
-	jsr sys_unk_011a1a.l	; $01708E
+	jsr gfx_tilemap_fill.l	; $01708E
 	lea.l $10(a7),a7	; $017094
 	jsr sys_unk_013d84.l	; $017098
 	jsr sys_unk_0162fe(pc)	; $01709E
@@ -10626,7 +10626,7 @@ L017FD2:
 	clr.w -(a7)	; $018062
 	move.w #$80,-(a7)	; $018064
 	clr.l -(a7)	; $018068
-	jsr sys_unk_011a1a.l	; $01806A
+	jsr gfx_tilemap_fill.l	; $01806A
 	lea.l $10(a7),a7	; $018070
 	move.w $ff868a.l,-(a7)	; $018074
 	move.w #$20,-(a7)	; $01807A
@@ -10635,7 +10635,7 @@ L017FD2:
 	clr.w -(a7)	; $018084
 	move.w #$80,-(a7)	; $018086
 	pea.l L002000.w	; $01808A
-	jsr sys_unk_011a1a.l	; $01808E
+	jsr gfx_tilemap_fill.l	; $01808E
 	lea.l $10(a7),a7	; $018094
 	moveq #$1,d6	; $018098
 L01809A:
@@ -11156,7 +11156,7 @@ L01865A:
 	clr.w -(a7)	; $018774
 	move.w #$40,-(a7)	; $018776
 	pea.l L002000.w	; $01877A
-	jsr sys_unk_011a1a.l	; $01877E
+	jsr gfx_tilemap_fill.l	; $01877E
 	lea.l $10(a7),a7	; $018784
 	move.w $ff8640.l,-(a7)	; $018788
 	move.w #$40,-(a7)	; $01878E
@@ -11165,7 +11165,7 @@ L01865A:
 	clr.w -(a7)	; $018798
 	move.w #$40,-(a7)	; $01879A
 	clr.l -(a7)	; $01879E
-	jsr sys_unk_011a1a.l	; $0187A0
+	jsr gfx_tilemap_fill.l	; $0187A0
 	lea.l $10(a7),a7	; $0187A6
 	moveq #$0,d7	; $0187AA
 L0187AC:
@@ -11520,7 +11520,7 @@ L018AF6:
 	clr.w -(a7)	; $018C82
 	move.w #$80,-(a7)	; $018C84
 	clr.l -(a7)	; $018C88
-	jsr sys_unk_011a1a.l	; $018C8A
+	jsr gfx_tilemap_fill.l	; $018C8A
 	lea.l $10(a7),a7	; $018C90
 	move.w $ff8640.l,-(a7)	; $018C94
 	move.w #$20,-(a7)	; $018C9A
@@ -11529,7 +11529,7 @@ L018AF6:
 	clr.w -(a7)	; $018CA4
 	move.w #$80,-(a7)	; $018CA6
 	pea.l L002000.w	; $018CAA
-	jsr sys_unk_011a1a.l	; $018CAE
+	jsr gfx_tilemap_fill.l	; $018CAE
 	lea.l $10(a7),a7	; $018CB4
 	moveq #$0,d6	; $018CB8
 L018CBA:
@@ -11540,7 +11540,7 @@ L018CBA:
 	move.w d6,-(a7)	; $018CCA
 	move.w #$80,-(a7)	; $018CCC
 	clr.l -(a7)	; $018CD0
-	jsr sys_unk_011820.l	; $018CD2
+	jsr gfx_tilemap_draw.l	; $018CD2
 	lea.l $10(a7),a7	; $018CD8
 	addq.w #$4,d6	; $018CDC
 	cmp.w #$80,d6	; $018CDE
@@ -11556,7 +11556,7 @@ L018CE6:
 	move.w d6,-(a7)	; $018CFE
 	move.w #$80,-(a7)	; $018D00
 	clr.l -(a7)	; $018D04
-	jsr sys_unk_011820.l	; $018D06
+	jsr gfx_tilemap_draw.l	; $018D06
 	lea.l $10(a7),a7	; $018D0C
 	add.w #$20,d6	; $018D10
 	cmp.w #$80,d6	; $018D14
@@ -11568,7 +11568,7 @@ L018CE6:
 	clr.w -(a7)	; $018D2A
 	move.w #$80,-(a7)	; $018D2C
 	clr.l -(a7)	; $018D30
-	jsr sys_unk_011a1a.l	; $018D32
+	jsr gfx_tilemap_fill.l	; $018D32
 	lea.l $10(a7),a7	; $018D38
 	move.w #$36,-(a7)	; $018D3C
 	jsr map_decode.l	; $018D40
@@ -11816,7 +11816,7 @@ L018DF0:
 	clr.w -(a7)	; $0190C2
 	move.w #$40,-(a7)	; $0190C4
 	pea.l L002000.w	; $0190C8
-	jsr sys_unk_011a1a.l	; $0190CC
+	jsr gfx_tilemap_fill.l	; $0190CC
 	lea.l $10(a7),a7	; $0190D2
 	move.w $ff8640.l,-(a7)	; $0190D6
 	move.w #$40,-(a7)	; $0190DC
@@ -11825,7 +11825,7 @@ L018DF0:
 	clr.w -(a7)	; $0190E6
 	move.w #$40,-(a7)	; $0190E8
 	clr.l -(a7)	; $0190EC
-	jsr sys_unk_011a1a.l	; $0190EE
+	jsr gfx_tilemap_fill.l	; $0190EE
 	lea.l $10(a7),a7	; $0190F4
 	moveq #$0,d7	; $0190F8
 L0190FA:
@@ -12207,7 +12207,7 @@ L0195A6:
 	move.w #$3,-(a7)	; $0195EC
 	move.w #$40,-(a7)	; $0195F0
 	pea.l L001000.w	; $0195F4
-	jsr sys_unk_011820.l	; $0195F8
+	jsr gfx_tilemap_draw.l	; $0195F8
 	lea.l $10(a7),a7	; $0195FE
 	movem.l (a7)+,d4-d7/a3-a4	; $019602
 	unlk a6	; $019606
@@ -16286,7 +16286,7 @@ menu_record_reload:
 	move.w #$2,-(a7)	; $01E61A
 	move.w #$40,-(a7)	; $01E61E
 	pea.l L001000.w	; $01E622
-	jsr sys_unk_011a1a.l	; $01E626
+	jsr gfx_tilemap_fill.l	; $01E626
 	lea.l $10(a7),a7	; $01E62C
 L01E630:
 	movea.l $ffbb82.l,a0	; $01E630
@@ -16595,7 +16595,7 @@ L01E946:
 	move.w #$2,-(a7)	; $01E964
 	move.w #$40,-(a7)	; $01E968
 	pea.l L001000.w	; $01E96C
-	jsr sys_unk_011a1a.l	; $01E970
+	jsr gfx_tilemap_fill.l	; $01E970
 	lea.l $10(a7),a7	; $01E976
 	move.w #$c000,-(a7)	; $01E97A
 	move.l $ffbb82.l,-(a7)	; $01E97E
@@ -16843,7 +16843,7 @@ L01EBD2:
 	move.w #$2,-(a7)	; $01EC14
 	move.w #$40,-(a7)	; $01EC18
 	pea.l L001000.w	; $01EC1C
-	jsr sys_unk_011a1a.l	; $01EC20
+	jsr gfx_tilemap_fill.l	; $01EC20
 	lea.l $10(a7),a7	; $01EC26
 	move.w #$c000,-(a7)	; $01EC2A
 	move.l $ffbb82.l,-(a7)	; $01EC2E
@@ -26481,7 +26481,7 @@ sys_unk_026dd2:
 	move.w #$3,-(a7)	; $026DEE
 	move.w #$40,-(a7)	; $026DF2
 	pea.l L001000.w	; $026DF6
-	jsr sys_unk_011a1a.l	; $026DFA
+	jsr gfx_tilemap_fill.l	; $026DFA
 	lea.l $10(a7),a7	; $026E00
 	move.w $ff8674.l,-(a7)	; $026E04
 	clr.w -(a7)	; $026E0A
@@ -26513,7 +26513,7 @@ sys_unk_026e44:
 	move.w #$4,-(a7)	; $026E68
 	move.w #$40,-(a7)	; $026E6C
 	pea.l L001000.w	; $026E70
-	jsr sys_unk_011a1a.l	; $026E74
+	jsr gfx_tilemap_fill.l	; $026E74
 	lea.l $10(a7),a7	; $026E7A
 	move.w $ff8674.l,-(a7)	; $026E7E
 	clr.w -(a7)	; $026E84
@@ -26538,7 +26538,7 @@ L026EB4:
 	move.w #$3,-(a7)	; $026EC6
 	move.w #$40,-(a7)	; $026ECA
 	pea.l L001000.w	; $026ECE
-	jsr sys_unk_011a1a.l	; $026ED2
+	jsr gfx_tilemap_fill.l	; $026ED2
 	lea.l $10(a7),a7	; $026ED8
 	lea.l $ff010e.l,a0	; $026EDC
 	move.w (a0),d0	; $026EE2
@@ -27062,7 +27062,7 @@ text_event_message:
 	move.w #$3,-(a7)	; $027600
 	move.w #$40,-(a7)	; $027604
 	pea.l L001000.w	; $027608
-	jsr sys_unk_011820.l	; $02760C
+	jsr gfx_tilemap_draw.l	; $02760C
 	lea.l $10(a7),a7	; $027612
 L027616:
 	cmpi.w #$7,$ff0e7e.l	; $027616
@@ -27074,7 +27074,7 @@ L027616:
 	move.w #$9,-(a7)	; $027632
 	move.w #$40,-(a7)	; $027636
 	pea.l L001000.w	; $02763A
-	jsr sys_unk_011a1a.l	; $02763E
+	jsr gfx_tilemap_fill.l	; $02763E
 	lea.l $10(a7),a7	; $027644
 	bra.w L0276D8	; $027648
 L02764C:
@@ -27087,7 +27087,7 @@ L02764C:
 	move.w #$3,-(a7)	; $027668
 	move.w #$40,-(a7)	; $02766C
 	pea.l L001000.w	; $027670
-	jsr sys_unk_011a1a.l	; $027674
+	jsr gfx_tilemap_fill.l	; $027674
 	lea.l $10(a7),a7	; $02767A
 	move.w $ff8674.l,-(a7)	; $02767E
 	clr.w -(a7)	; $027684
@@ -27108,7 +27108,7 @@ L02764C:
 	move.w #$26,-(a7)	; $0276C2
 	move.w #$40,-(a7)	; $0276C6
 	pea.l L001000.w	; $0276CA
-	jsr sys_unk_011a1a.l	; $0276CE
+	jsr gfx_tilemap_fill.l	; $0276CE
 	lea.l $10(a7),a7	; $0276D4
 L0276D8:
 	pea.l $ff0e18.l	; $0276D8
@@ -28920,7 +28920,7 @@ L029000:
 	bne.b L029062	; $029028
 	move.w #$90,-(a7)	; $02902A
 	pea.l $ffc326.l	; $02902E
-	jsr sys_unk_02b656.l	; $029034
+	jsr sys_bitmap_test.l	; $029034
 	addq.w #$6,a7	; $02903A
 	tst.w d0	; $02903C
 	bne.b L029062	; $02903E
@@ -29022,7 +29022,7 @@ L029128:
 	move.w #$20,-(a7)	; $029162
 	move.w #$40,-(a7)	; $029166
 	pea.l L001000.w	; $02916A
-	jsr sys_unk_011820.l	; $02916E
+	jsr gfx_tilemap_draw.l	; $02916E
 	lea.l $10(a7),a7	; $029174
 L029178:
 	move.w #$a000,-(a7)	; $029178
@@ -29837,7 +29837,7 @@ L029C14:
 	and.w #$fff,d0	; $029C1A
 	move.w d0,-(a7)	; $029C1E
 	pea.l $ffc326.l	; $029C20
-	jsr sys_unk_02b656(pc)	; $029C26
+	jsr sys_bitmap_test(pc)	; $029C26
 	addq.w #$6,a7	; $029C2A
 	tst.w d0	; $029C2C
 	beq.b L029C34	; $029C2E
@@ -30652,7 +30652,7 @@ L02A6DA:
 	clr.w -(a7)	; $02A718
 	move.w -$10(a6),-(a7)	; $02A71A
 	pea.l $ffc326.l	; $02A71E
-	jsr sys_unk_02b68c(pc)	; $02A724
+	jsr sys_bitmap_write(pc)	; $02A724
 	addq.w #$8,a7	; $02A728
 L02A72A:
 	clr.l -(a7)	; $02A72A
@@ -30746,7 +30746,7 @@ L02A844:
 	move.w -$14(a6),-(a7)	; $02A850
 	move.w -$10(a6),-(a7)	; $02A854
 	pea.l $ffc326.l	; $02A858
-	jsr sys_unk_02b68c(pc)	; $02A85E
+	jsr sys_bitmap_write(pc)	; $02A85E
 	addq.w #$8,a7	; $02A862
 L02A864:
 	move.w -$4(a6),-(a7)	; $02A864
@@ -30825,7 +30825,7 @@ L02A942:
 	move.w -$14(a6),-(a7)	; $02A94E
 	move.w -$10(a6),-(a7)	; $02A952
 	pea.l $ffc326.l	; $02A956
-	jsr sys_unk_02b68c(pc)	; $02A95C
+	jsr sys_bitmap_write(pc)	; $02A95C
 	addq.w #$8,a7	; $02A960
 	bra.b L02A97A	; $02A962
 L02A964:
@@ -30870,7 +30870,7 @@ L02A9BC:
 	beq.w L02AAD4	; $02A9EA
 	move.w -$10(a6),-(a7)	; $02A9EE
 	pea.l $ffc326.l	; $02A9F2
-	jsr sys_unk_02b656(pc)	; $02A9F8
+	jsr sys_bitmap_test(pc)	; $02A9F8
 	addq.w #$6,a7	; $02A9FC
 	tst.w d0	; $02A9FE
 	beq.w L02AAD4	; $02AA00
@@ -30893,7 +30893,7 @@ L02A9BC:
 	clr.w -(a7)	; $02AA40
 	move.w -$10(a6),-(a7)	; $02AA42
 	pea.l $ffc326.l	; $02AA46
-	jsr sys_unk_02b68c(pc)	; $02AA4C
+	jsr sys_bitmap_write(pc)	; $02AA4C
 	addq.w #$8,a7	; $02AA50
 	clr.l -(a7)	; $02AA52
 	move.w -$10(a6),d0	; $02AA54
@@ -31033,7 +31033,7 @@ L02AC2E:
 	beq.w L02AD02	; $02AC4C
 	move.w -$10(a6),-(a7)	; $02AC50
 	pea.l $ffc326.l	; $02AC54
-	jsr sys_unk_02b656(pc)	; $02AC5A
+	jsr sys_bitmap_test(pc)	; $02AC5A
 	addq.w #$6,a7	; $02AC5E
 	tst.w d0	; $02AC60
 	beq.w L02AD02	; $02AC62
@@ -31075,7 +31075,7 @@ L02AC2E:
 	clr.w -(a7)	; $02ACEE
 	move.w -$10(a6),-(a7)	; $02ACF0
 	pea.l $ffc326.l	; $02ACF4
-	jsr sys_unk_02b68c(pc)	; $02ACFA
+	jsr sys_bitmap_write(pc)	; $02ACFA
 	addq.w #$8,a7	; $02ACFE
 	bra.b L02AD60	; $02AD00
 L02AD02:
@@ -31737,7 +31737,7 @@ L02B5FC:
 	move.w d1,-(a7)	; $02B614
 	move.w -$2(a6),-(a7)	; $02B616
 	pea.l $ffc326.l	; $02B61A
-	bsr.b sys_unk_02b68c	; $02B620
+	bsr.b sys_bitmap_write	; $02B620
 	addq.w #$8,a7	; $02B622
 	addq.w #$1,-$2(a6)	; $02B624
 	cmpi.w #$a1,-$2(a6)	; $02B628
@@ -31747,7 +31747,7 @@ L02B636:
 	clr.w -(a7)	; $02B636
 	move.w -$2(a6),-(a7)	; $02B638
 	pea.l $ffc326.l	; $02B63C
-	bsr.b sys_unk_02b68c	; $02B642
+	bsr.b sys_bitmap_write	; $02B642
 	addq.w #$8,a7	; $02B644
 	addq.w #$1,-$2(a6)	; $02B646
 	cmpi.w #$b8,-$2(a6)	; $02B64A
@@ -31755,7 +31755,7 @@ L02B636:
 	unlk a6	; $02B652
 	rts	; $02B654
 	; code $02B656-$02B68B
-sys_unk_02b656:
+sys_bitmap_test:
 	link.w a6,#$0	; $02B656
 	move.l d4,-(a7)	; $02B65A
 	move.w $c(a6),d0	; $02B65C
@@ -31780,7 +31780,7 @@ L02B686:
 	unlk a6	; $02B688
 	rts	; $02B68A
 	; code $02B68C-$02B6DF
-sys_unk_02b68c:
+sys_bitmap_write:
 	link.w a6,#$0	; $02B68C
 	move.l d4,-(a7)	; $02B690
 	move.w $c(a6),d0	; $02B692
@@ -31822,7 +31822,7 @@ sys_unk_02b6e0:
 	sub.w #$5f,d0	; $02B6F4
 	move.w d0,-(a7)	; $02B6F8
 	pea.l $ffc326.l	; $02B6FA
-	bsr.b sys_unk_02b68c	; $02B700
+	bsr.b sys_bitmap_write	; $02B700
 	addq.w #$8,a7	; $02B702
 L02B704:
 	unlk a6	; $02B704
@@ -31831,7 +31831,7 @@ L02B708:
 	move.w $a(a6),-(a7)	; $02B708
 	move.w $8(a6),-(a7)	; $02B70C
 	pea.l $ffc326.l	; $02B710
-	jsr sys_unk_02b68c(pc)	; $02B716
+	jsr sys_bitmap_write(pc)	; $02B716
 	addq.w #$8,a7	; $02B71A
 	move.w $8(a6),d0	; $02B71C
 	mulu.w #$6,d0	; $02B720
@@ -32286,7 +32286,7 @@ L02BD4C:
 	lea.l $ff02e2.l,a0	; $02BD5C
 	add.l a0,d0	; $02BD62
 	move.l d0,-(a7)	; $02BD64
-	jsr sys_unk_02b68c(pc)	; $02BD66
+	jsr sys_bitmap_write(pc)	; $02BD66
 	addq.w #$8,a7	; $02BD6A
 	bra.w L02C8EE	; $02BD6C
 L02BD70:
@@ -32299,7 +32299,7 @@ L02BD70:
 	lea.l $ff02e2.l,a0	; $02BD8A
 	add.l a0,d0	; $02BD90
 	move.l d0,-(a7)	; $02BD92
-	jsr sys_unk_02b68c(pc)	; $02BD94
+	jsr sys_bitmap_write(pc)	; $02BD94
 	addq.w #$8,a7	; $02BD98
 	move.w -$4(a6),d0	; $02BD9A
 	ext.l d0	; $02BD9E
@@ -32551,21 +32551,21 @@ L02C0A6:
 	move.w $e(a6),-(a7)	; $02C0A6
 	move.w -$4(a6),-(a7)	; $02C0AA
 	pea.l $ffc33e.l	; $02C0AE
-	jsr sys_unk_02b68c(pc)	; $02C0B4
+	jsr sys_bitmap_write(pc)	; $02C0B4
 	addq.w #$8,a7	; $02C0B8
 	bra.w L02C8EE	; $02C0BA
 L02C0BE:
 	move.w $e(a6),-(a7)	; $02C0BE
 	move.w -$4(a6),-(a7)	; $02C0C2
 	pea.l $ffc340.l	; $02C0C6
-	jsr sys_unk_02b68c(pc)	; $02C0CC
+	jsr sys_bitmap_write(pc)	; $02C0CC
 	addq.w #$8,a7	; $02C0D0
 	bra.w L02C8EE	; $02C0D2
 L02C0D6:
 	move.w $e(a6),-(a7)	; $02C0D6
 	move.w -$4(a6),-(a7)	; $02C0DA
 	pea.l $ffc345.l	; $02C0DE
-	jsr sys_unk_02b68c(pc)	; $02C0E4
+	jsr sys_bitmap_write(pc)	; $02C0E4
 	addq.w #$8,a7	; $02C0E8
 	bra.w L02C8EE	; $02C0EA
 L02C0EE:
@@ -33255,7 +33255,7 @@ L02CA56:
 	lea.l $ff02e2.l,a0	; $02CA62
 	add.l a0,d0	; $02CA68
 	move.l d0,-(a7)	; $02CA6A
-	jsr sys_unk_02b656(pc)	; $02CA6C
+	jsr sys_bitmap_test(pc)	; $02CA6C
 	addq.w #$6,a7	; $02CA70
 	bra.b L02CA14	; $02CA72
 L02CA74:
@@ -33267,7 +33267,7 @@ L02CA74:
 	lea.l $ff02e2.l,a0	; $02CA88
 	add.l a0,d0	; $02CA8E
 	move.l d0,-(a7)	; $02CA90
-	jsr sys_unk_02b656(pc)	; $02CA92
+	jsr sys_bitmap_test(pc)	; $02CA92
 	addq.w #$6,a7	; $02CA96
 	bra.w L02CA14	; $02CA98
 L02CA9C:
@@ -33286,19 +33286,19 @@ L02CAB8:
 L02CABE:
 	move.w -$4(a6),-(a7)	; $02CABE
 	pea.l $ffc33e.l	; $02CAC2
-	jsr sys_unk_02b656(pc)	; $02CAC8
+	jsr sys_bitmap_test(pc)	; $02CAC8
 	addq.w #$6,a7	; $02CACC
 	bra.w L02CA14	; $02CACE
 L02CAD2:
 	move.w -$4(a6),-(a7)	; $02CAD2
 	pea.l $ffc340.l	; $02CAD6
-	jsr sys_unk_02b656(pc)	; $02CADC
+	jsr sys_bitmap_test(pc)	; $02CADC
 	addq.w #$6,a7	; $02CAE0
 	bra.w L02CA14	; $02CAE2
 L02CAE6:
 	move.w -$4(a6),-(a7)	; $02CAE6
 	pea.l $ffc345.l	; $02CAEA
-	jsr sys_unk_02b656(pc)	; $02CAF0
+	jsr sys_bitmap_test(pc)	; $02CAF0
 	addq.w #$6,a7	; $02CAF4
 	bra.w L02CA14	; $02CAF6
 L02CAFA:
@@ -33976,7 +33976,7 @@ L02D290:
 	bne.b L02D2E2	; $02D2CA
 	move.w d4,-(a7)	; $02D2CC
 	pea.l $ffc326.l	; $02D2CE
-	jsr sys_unk_02b656.l	; $02D2D4
+	jsr sys_bitmap_test.l	; $02D2D4
 	addq.w #$6,a7	; $02D2DA
 	tst.w d0	; $02D2DC
 	beq.w L02D378	; $02D2DE
@@ -34328,7 +34328,7 @@ L02D740:
 L02D76E:
 	move.w #$ae,-(a7)	; $02D76E
 	pea.l $ffc326.l	; $02D772
-	jsr sys_unk_02b656.l	; $02D778
+	jsr sys_bitmap_test.l	; $02D778
 	addq.w #$6,a7	; $02D77E
 	tst.w d0	; $02D780
 	bne.b L02D7D2	; $02D782
@@ -34806,7 +34806,7 @@ L02DDDC:
 	blt.b L02DE1A	; $02DE02
 	move.w #$8f,-(a7)	; $02DE04
 	pea.l $ffc326.l	; $02DE08
-	jsr sys_unk_02b656.l	; $02DE0E
+	jsr sys_bitmap_test.l	; $02DE0E
 	addq.w #$6,a7	; $02DE14
 	tst.w d0	; $02DE16
 	beq.b L02DE2E	; $02DE18
@@ -34848,7 +34848,7 @@ L02DE8A:
 	bne.w L02E008	; $02DE9A
 	move.w #$3e,-(a7)	; $02DE9E
 	pea.l $ffc326.l	; $02DEA2
-	jsr sys_unk_02b656.l	; $02DEA8
+	jsr sys_bitmap_test.l	; $02DEA8
 	addq.w #$6,a7	; $02DEAE
 	tst.w d0	; $02DEB0
 	beq.w L02E008	; $02DEB2
@@ -34929,12 +34929,12 @@ L02DE8A:
 	clr.w -(a7)	; $02DFDC
 	move.w #$3e,-(a7)	; $02DFDE
 	pea.l $ffc326.l	; $02DFE2
-	jsr sys_unk_02b68c.l	; $02DFE8
+	jsr sys_bitmap_write.l	; $02DFE8
 	addq.w #$8,a7	; $02DFEE
 	clr.w -(a7)	; $02DFF0
 	move.w #$3f,-(a7)	; $02DFF2
 	pea.l $ffc326.l	; $02DFF6
-	jsr sys_unk_02b68c.l	; $02DFFC
+	jsr sys_bitmap_write.l	; $02DFFC
 	addq.w #$8,a7	; $02E002
 	clr.w $c(a6)	; $02E004
 L02E008:
@@ -34980,14 +34980,14 @@ L02E076:
 	blt.b L02E112	; $02E09E
 	move.w #$b4,-(a7)	; $02E0A0
 	pea.l $ffc326.l	; $02E0A4
-	jsr sys_unk_02b656.l	; $02E0AA
+	jsr sys_bitmap_test.l	; $02E0AA
 	addq.w #$6,a7	; $02E0B0
 	tst.w d0	; $02E0B2
 	bne.b L02E112	; $02E0B4
 	move.w #$1,-(a7)	; $02E0B6
 	move.w #$b4,-(a7)	; $02E0BA
 	pea.l $ffc326.l	; $02E0BE
-	jsr sys_unk_02b68c.l	; $02E0C4
+	jsr sys_bitmap_write.l	; $02E0C4
 	addq.w #$8,a7	; $02E0CA
 	clr.w -(a7)	; $02E0CC
 	move.w #$fffb,-(a7)	; $02E0CE
@@ -35013,7 +35013,7 @@ L02E116:
 	bne.b L02E186	; $02E11E
 	clr.w -(a7)	; $02E120
 	pea.l $ffc326.l	; $02E122
-	jsr sys_unk_02b656.l	; $02E128
+	jsr sys_bitmap_test.l	; $02E128
 	addq.w #$6,a7	; $02E12E
 	tst.w d0	; $02E130
 	bne.b L02E186	; $02E132
@@ -35270,7 +35270,7 @@ L02E4B4:
 	bne.w L02E5F2	; $02E4BC
 	clr.w -(a7)	; $02E4C0
 	pea.l $ffc326.l	; $02E4C2
-	jsr sys_unk_02b656.l	; $02E4C8
+	jsr sys_bitmap_test.l	; $02E4C8
 	addq.w #$6,a7	; $02E4CE
 	tst.w d0	; $02E4D0
 	bne.w L02E5F2	; $02E4D2
@@ -35387,7 +35387,7 @@ L02E64A:
 	bne.w L02E71E	; $02E652
 	clr.w -(a7)	; $02E656
 	pea.l $ffc326.l	; $02E658
-	jsr sys_unk_02b656.l	; $02E65E
+	jsr sys_bitmap_test.l	; $02E65E
 	addq.w #$6,a7	; $02E664
 	tst.w d0	; $02E666
 	bne.w L02E71E	; $02E668
@@ -36215,7 +36215,7 @@ L02F09A:
 	add.w -$4(a6),d0	; $02F0A8
 	move.w d0,-(a7)	; $02F0AC
 	move.l $8(a6),-(a7)	; $02F0AE
-	jsr sys_unk_02b68c.l	; $02F0B2
+	jsr sys_bitmap_write.l	; $02F0B2
 	addq.w #$8,a7	; $02F0B8
 	lsr.w -$2(a6)	; $02F0BA
 	addq.w #$1,-$4(a6)	; $02F0BE
@@ -36239,7 +36239,7 @@ L02F0E4:
 	add.w -$4(a6),d0	; $02F0EC
 	move.w d0,-(a7)	; $02F0F0
 	move.l $8(a6),-(a7)	; $02F0F2
-	jsr sys_unk_02b656.l	; $02F0F6
+	jsr sys_bitmap_test.l	; $02F0F6
 	addq.w #$6,a7	; $02F0FC
 	or.w d0,-$2(a6)	; $02F0FE
 	subq.w #$1,-$4(a6)	; $02F102
@@ -36735,7 +36735,7 @@ L02F7E8:
 	move.w -$2(a6),-(a7)	; $02F7EE
 	move.w -$4(a6),-(a7)	; $02F7F2
 	pea.l $ffc326.l	; $02F7F6
-	jsr sys_unk_02b656.l	; $02F7FC
+	jsr sys_bitmap_test.l	; $02F7FC
 	addq.w #$6,a7	; $02F802
 	move.w d0,-(a7)	; $02F804
 	pea.l $ffa800.l	; $02F806
@@ -37319,7 +37319,7 @@ L030060:
 	move.w d0,-(a7)	; $030078
 	move.w -$4(a6),-(a7)	; $03007A
 	pea.l $ffc326.l	; $03007E
-	jsr sys_unk_02b68c.l	; $030084
+	jsr sys_bitmap_write.l	; $030084
 	addq.w #$8,a7	; $03008A
 	addq.w #$1,-$2(a6)	; $03008C
 	addq.w #$1,-$4(a6)	; $030090
@@ -38107,7 +38107,7 @@ L030AE8:
 	beq.w L030BC2	; $030AEC
 	move.w d7,-(a7)	; $030AF0
 	pea.l $ffc326.l	; $030AF2
-	jsr sys_unk_02b656.l	; $030AF8
+	jsr sys_bitmap_test.l	; $030AF8
 	addq.w #$6,a7	; $030AFE
 	tst.w d0	; $030B00
 	beq.w L030BC2	; $030B02
@@ -38220,7 +38220,7 @@ L030C3C:
 	move.w d1,-(a7)	; $030C62
 	move.w d6,-(a7)	; $030C64
 	pea.l $ffc326.l	; $030C66
-	jsr sys_unk_02b656.l	; $030C6C
+	jsr sys_bitmap_test.l	; $030C6C
 	addq.w #$6,a7	; $030C72
 	add.w #$112,d0	; $030C74
 	move.w d0,-(a7)	; $030C78
@@ -38242,7 +38242,7 @@ L030C84:
 	move.w d1,-(a7)	; $030CAA
 	move.w d6,-(a7)	; $030CAC
 	pea.l $ffc326.l	; $030CAE
-	jsr sys_unk_02b656.l	; $030CB4
+	jsr sys_bitmap_test.l	; $030CB4
 	addq.w #$6,a7	; $030CBA
 	add.w #$107,d0	; $030CBC
 	move.w d0,-(a7)	; $030CC0
@@ -38252,7 +38252,7 @@ L030C84:
 L030CCC:
 	move.w d6,-(a7)	; $030CCC
 	pea.l $ffc326.l	; $030CCE
-	jsr sys_unk_02b656.l	; $030CD4
+	jsr sys_bitmap_test.l	; $030CD4
 	addq.w #$6,a7	; $030CDA
 	tst.w d0	; $030CDC
 	beq.w L030D7A	; $030CDE
@@ -40114,7 +40114,7 @@ L032352:
 L032356:
 	move.w #$44,-(a7)	; $032356
 	pea.l $ffc326.l	; $03235A
-	jsr sys_unk_02b656.l	; $032360
+	jsr sys_bitmap_test.l	; $032360
 	addq.w #$6,a7	; $032366
 	tst.w d0	; $032368
 	beq.w L032520	; $03236A
@@ -40553,7 +40553,7 @@ L0328BC:
 	bgt.b L0328FA	; $0328C0
 	move.w #$90,-(a7)	; $0328C2
 	pea.l $ffc326.l	; $0328C6
-	jsr sys_unk_02b656.l	; $0328CC
+	jsr sys_bitmap_test.l	; $0328CC
 	addq.w #$6,a7	; $0328D2
 	tst.w d0	; $0328D4
 	bne.b L0328FA	; $0328D6
@@ -41508,7 +41508,7 @@ sys_unk_033396:
 	move.b $4(a0),d0	; $0333A6
 	move.w d0,-(a7)	; $0333AA
 	pea.l $ffc326.l	; $0333AC
-	jsr sys_unk_02b656.l	; $0333B2
+	jsr sys_bitmap_test.l	; $0333B2
 	addq.w #$6,a7	; $0333B8
 	tst.w d0	; $0333BA
 	bne.b L0333C4	; $0333BC
@@ -41524,7 +41524,7 @@ L0333C8:
 	move.b $4(a0),d0	; $0333D8
 	move.w d0,-(a7)	; $0333DC
 	pea.l $ffc326.l	; $0333DE
-	jsr sys_unk_02b656.l	; $0333E4
+	jsr sys_bitmap_test.l	; $0333E4
 	addq.w #$6,a7	; $0333EA
 	tst.w d0	; $0333EC
 	beq.b L0333F6	; $0333EE
@@ -41541,7 +41541,7 @@ L0333FA:
 	add.w #$a1,d0	; $03340E
 	move.w d0,-(a7)	; $033412
 	pea.l $ffc326.l	; $033414
-	jsr sys_unk_02b656.l	; $03341A
+	jsr sys_bitmap_test.l	; $03341A
 	addq.w #$6,a7	; $033420
 	tst.w d0	; $033422
 	bne.b L03342C	; $033424
@@ -41558,7 +41558,7 @@ L033430:
 	add.w #$a1,d0	; $033444
 	move.w d0,-(a7)	; $033448
 	pea.l $ffc326.l	; $03344A
-	jsr sys_unk_02b656.l	; $033450
+	jsr sys_bitmap_test.l	; $033450
 	addq.w #$6,a7	; $033456
 	tst.w d0	; $033458
 	beq.b L033462	; $03345A
@@ -41745,7 +41745,7 @@ L033658:
 	beq.b L0336AC	; $033676
 	move.w -$2(a6),-(a7)	; $033678
 	pea.l $ffb00a.l	; $03367C
-	jsr sys_unk_02b656.l	; $033682
+	jsr sys_bitmap_test.l	; $033682
 	addq.w #$6,a7	; $033688
 	tst.w d0	; $03368A
 	beq.b L0336AC	; $03368C
@@ -41796,7 +41796,7 @@ L03371C:
 	move.w #$1,-(a7)	; $033722
 	move.w -$4(a6),-(a7)	; $033726
 	pea.l $ffb00a.l	; $03372A
-	jsr sys_unk_02b68c.l	; $033730
+	jsr sys_bitmap_write.l	; $033730
 	addq.w #$8,a7	; $033736
 L033738:
 	move.w -$4(a6),d0	; $033738
@@ -44112,7 +44112,7 @@ L0356D2:
 	beq.w L0357A0	; $035714
 	move.w -$6(a6),-(a7)	; $035718
 	pea.l $ffc326.l	; $03571C
-	jsr sys_unk_02b656.l	; $035722
+	jsr sys_bitmap_test.l	; $035722
 	addq.w #$6,a7	; $035728
 	tst.w d0	; $03572A
 	beq.b L0357A0	; $03572C
@@ -44135,7 +44135,7 @@ L0356D2:
 	clr.w -(a7)	; $03576E
 	move.w -$6(a6),-(a7)	; $035770
 	pea.l $ffc326.l	; $035774
-	jsr sys_unk_02b68c.l	; $03577A
+	jsr sys_bitmap_write.l	; $03577A
 	addq.w #$8,a7	; $035780
 	move.w -$6(a6),d0	; $035782
 	muls.w #$6,d0	; $035786
@@ -44161,7 +44161,7 @@ L0357A8:
 	clr.w -(a7)	; $0357D2
 	move.w -$6(a6),-(a7)	; $0357D4
 	pea.l $ffc326.l	; $0357D8
-	jsr sys_unk_02b68c.l	; $0357DE
+	jsr sys_bitmap_write.l	; $0357DE
 	addq.w #$8,a7	; $0357E4
 	bra.b L035802	; $0357E6
 L0357E8:
