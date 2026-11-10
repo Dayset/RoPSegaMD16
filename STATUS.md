@@ -4,8 +4,8 @@ Measured from the repo. Issue counts are on GitHub, not here.
 
 | Metric | Now | Target | Share |
 |---|---:|---:|---:|
-| Routines named (tier ≥ 1) | 258 of 446 | 446 | 57% |
-| Routines at tier 0 (structural only) | 201 | — | — |
+| Routines named (tier ≥ 1) | 262 of 446 | 446 | 58% |
+| Routines at tier 0 (structural only) | 197 | — | — |
 | Bytes in code | 202,570 | 1,048,576 | 19.32% |
 | Bytes in incbin data | 846,006 | 0 | 80.68% |
 | Raw fallbacks in code | 0 | 0 | — |
