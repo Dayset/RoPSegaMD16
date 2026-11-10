@@ -18432,7 +18432,7 @@ L02027E:
 	moveq #$0,d0	; $020288
 	move.b $ffbb6f.l,d0	; $02028A
 	move.w d0,-(a7)	; $020290
-	jsr sys_unk_037a9a.l	; $020292
+	jsr spell_assign_by_rank.l	; $020292
 	addq.w #$4,a7	; $020298
 	bra.w settings_menu_open	; $02029A
 L02029E:
@@ -18473,7 +18473,7 @@ L02031C:
 	moveq #$0,d0	; $02031C
 	move.b $ffbb6f.l,d0	; $02031E
 	move.w d0,-(a7)	; $020324
-	jsr sys_unk_037850.l	; $020326
+	jsr spell_dispatch_effect.l	; $020326
 	addq.w #$2,a7	; $02032C
 	bra.w settings_menu_open	; $02032E
 L020332:
@@ -21202,7 +21202,7 @@ L022672:
 	bra.b L02268E	; $022680
 L022682:
 	move.w d5,-(a7)	; $022682
-	jsr sys_unk_037976.l	; $022684
+	jsr world_move_random.l	; $022684
 	addq.w #$2,a7	; $02268A
 	movea.w d0,a3	; $02268C
 L02268E:
@@ -25795,7 +25795,7 @@ L02649A:
 	move.w (a0,d0.l),d2	; $0264D4
 	sub.w (a1,d1.l),d2	; $0264D8
 	move.w d2,-(a7)	; $0264DC
-	jsr sys_unk_037840.l	; $0264DE
+	jsr math_calc_square.l	; $0264DE
 	addq.w #$2,a7	; $0264E4
 	move.w d0,-(a7)	; $0264E6
 	move.w -$c(a6),d0	; $0264E8
@@ -25807,7 +25807,7 @@ L02649A:
 	move.w (a0,d0.l),d2	; $026504
 	sub.w (a1,d1.l),d2	; $026508
 	move.w d2,-(a7)	; $02650C
-	jsr sys_unk_037840.l	; $02650E
+	jsr math_calc_square.l	; $02650E
 	addq.w #$2,a7	; $026514
 	move.w (a7)+,d1	; $026516
 	add.w d0,d1	; $026518
@@ -43185,7 +43185,7 @@ L034A88:
 	cmp.w #$c8,d0	; $034AC4
 	ble.b L034ADA	; $034AC8
 	move.w $8(a6),-(a7)	; $034ACA
-	jsr sys_unk_037976.l	; $034ACE
+	jsr world_move_random.l	; $034ACE
 	addq.w #$2,a7	; $034AD4
 	move.w d0,-$2(a6)	; $034AD6
 L034ADA:
@@ -44931,7 +44931,7 @@ sys_unk_0362d6:
 	lsr.w #$6,d0	; $0362E6
 	and.w #$7,d0	; $0362E8
 	move.w d0,-$6(a6)	; $0362EC
-	jsr sys_unk_0383fe(pc)	; $0362F0
+	jsr combat_fill_grid(pc)	; $0362F0
 	move.w $8(a6),d0	; $0362F4
 	cmp.w $ff02b2.l,d0	; $0362F8
 	beq.b L03630E	; $0362FE
@@ -45629,7 +45629,7 @@ L036CF4:
 	unlk a6	; $036CF8
 	rts	; $036CFA
 	; code $036CFC-$036DE7
-sys_unk_036cfc:
+combat_calc_range_effect:
 	link.w a6,#$fff6	; $036CFC
 	movea.l $8(a6),a0	; $036D00
 	move.w $c(a6),d0	; $036D04
@@ -45714,7 +45714,7 @@ L036DE0:
 	unlk a6	; $036DE4
 	rts	; $036DE6
 	; code $036DE8-$036E2D
-sys_unk_036de8:
+world_get_direction:
 	link.w a6,#$fff2	; $036DE8
 	movea.l $8(a6),a0	; $036DEC
 	move.w $c(a6),d0	; $036DF0
@@ -45792,7 +45792,7 @@ spell_damage_calc:
 	beq.b L036F20	; $036F06
 L036F08:
 	move.w $8(a6),-(a7)	; $036F08
-	jsr sys_unk_0387ae(pc)	; $036F0C
+	jsr combat_set_target(pc)	; $036F0C
 	addq.w #$2,a7	; $036F10
 	tst.w d0	; $036F12
 	bne.b L036F20	; $036F14
@@ -45946,7 +45946,7 @@ L0370EC:
 	move.w $ff024e.l,-(a7)	; $037116
 	move.w $ff024c.l,-(a7)	; $03711C
 	move.l a4,-(a7)	; $037122
-	jsr sys_unk_036cfc(pc)	; $037124
+	jsr combat_calc_range_effect(pc)	; $037124
 	lea.l $e(a7),a7	; $037128
 	move.w d0,d6	; $03712C
 	tst.w $ff024c.l	; $03712E
@@ -46206,14 +46206,14 @@ L037460:
 	move.w $c(a0),d0	; $03748C
 	sub.w $ff024c.l,d0	; $037490
 	move.w d0,-(a7)	; $037496
-	jsr sys_unk_037840(pc)	; $037498
+	jsr math_calc_square(pc)	; $037498
 	addq.w #$2,a7	; $03749C
 	move.w d0,-(a7)	; $03749E
 	movea.l -$4(a6),a0	; $0374A0
 	move.w $e(a0),d0	; $0374A4
 	sub.w $ff024e.l,d0	; $0374A8
 	move.w d0,-(a7)	; $0374AE
-	jsr sys_unk_037840(pc)	; $0374B0
+	jsr math_calc_square(pc)	; $0374B0
 	addq.w #$2,a7	; $0374B4
 	move.w (a7)+,d1	; $0374B6
 	add.w d0,d1	; $0374B8
@@ -46225,14 +46225,14 @@ L037460:
 	move.w $c(a0),d0	; $0374C8
 	sub.w $c(a4),d0	; $0374CC
 	move.w d0,-(a7)	; $0374D0
-	jsr sys_unk_037840(pc)	; $0374D2
+	jsr math_calc_square(pc)	; $0374D2
 	addq.w #$2,a7	; $0374D6
 	move.w d0,-(a7)	; $0374D8
 	movea.l -$4(a6),a0	; $0374DA
 	move.w $e(a0),d0	; $0374DE
 	sub.w $e(a4),d0	; $0374E2
 	move.w d0,-(a7)	; $0374E6
-	jsr sys_unk_037840(pc)	; $0374E8
+	jsr math_calc_square(pc)	; $0374E8
 	addq.w #$2,a7	; $0374EC
 	move.w (a7)+,d1	; $0374EE
 	add.w d0,d1	; $0374F0
@@ -46254,7 +46254,7 @@ L037516:
 	move.w $ff024e.l,-(a7)	; $037520
 	move.w $ff024c.l,-(a7)	; $037526
 	move.l a4,-(a7)	; $03752C
-	jsr sys_unk_036de8(pc)	; $03752E
+	jsr world_get_direction(pc)	; $03752E
 	addq.w #$8,a7	; $037532
 	move.w d0,d6	; $037534
 	clr.w -(a7)	; $037536
@@ -46482,14 +46482,14 @@ L037822:
 	move.w #$ff,d0	; $03783A
 	bra.b L03781E	; $03783E
 	; code $037840-$03784F
-sys_unk_037840:
+math_calc_square:
 	link.w a6,#$0	; $037840
 	move.w $8(a6),d0	; $037844
 	muls.w $8(a6),d0	; $037848
 	unlk a6	; $03784C
 	rts	; $03784E
 	; code $037850-$03788B
-sys_unk_037850:
+spell_dispatch_effect:
 	link.w a6,#$0	; $037850
 	move.w $8(a6),d0	; $037854
 	ext.l d0	; $037858
@@ -46499,7 +46499,7 @@ L03785C:
 	sub.w $8(a6),d0	; $03785E
 	move.w d0,-(a7)	; $037862
 	move.w $ff02b2.l,-(a7)	; $037864
-	bsr.b sys_unk_0378ba	; $03786A
+	bsr.b spell_set_status_lo	; $03786A
 	addq.w #$4,a7	; $03786C
 	bra.b L0378B6	; $03786E
 L037870:
@@ -46510,7 +46510,7 @@ L037876:
 	subq.w #$8,d0	; $03787A
 	move.w d0,-(a7)	; $03787C
 	move.w $ff02b2.l,-(a7)	; $03787E
-	jsr sys_unk_037918(pc)	; $037884
+	jsr spell_set_status_hi(pc)	; $037884
 	addq.w #$4,a7	; $037888
 	bra.b L0378B6	; $03788A
 L03788C:
@@ -46527,7 +46527,7 @@ L0378B6:
 	unlk a6	; $0378B6
 	rts	; $0378B8
 	; code $0378BA-$037917
-sys_unk_0378ba:
+spell_set_status_lo:
 	link.w a6,#$fffc	; $0378BA
 	clr.w -$2(a6)	; $0378BE
 L0378C2:
@@ -46558,7 +46558,7 @@ L037908:
 	unlk a6	; $037914
 	rts	; $037916
 	; code $037918-$037975
-sys_unk_037918:
+spell_set_status_hi:
 	link.w a6,#$fffc	; $037918
 	clr.w -$2(a6)	; $03791C
 L037920:
@@ -46589,7 +46589,7 @@ L037966:
 	unlk a6	; $037972
 	rts	; $037974
 	; code $037976-$037A25
-sys_unk_037976:
+world_move_random:
 	link.w a6,#$fff8	; $037976
 	move.w #$18,-(a7)	; $03797A
 	jsr rand_next.l	; $03797E
@@ -46640,7 +46640,7 @@ L037A0A:
 	unlk a6	; $037A22
 	rts	; $037A24
 	; code $037A26-$037A99
-sys_unk_037a26:
+world_find_char_at:
 	link.w a6,#$fffc	; $037A26
 	clr.w -$2(a6)	; $037A2A
 L037A2E:
@@ -46677,7 +46677,7 @@ L037A8A:
 	moveq #$0,d0	; $037A96
 	bra.b L037A86	; $037A98
 	; code $037A9A-$037B81
-sys_unk_037a9a:
+spell_assign_by_rank:
 	link.w a6,#$fff8	; $037A9A
 	movem.l a3-a4,-(a7)	; $037A9E
 	move.w $ff02b2.l,d0	; $037AA2
@@ -46995,7 +46995,7 @@ sys_unk_037ed6:
 	unlk a6	; $037EE2
 	rts	; $037EE4
 	; code $037EE6-$0381AD
-sys_unk_037ee6:
+spell_blast_area:
 	link.w a6,#$fff4	; $037EE6
 	move.w #$1,-$2(a6)	; $037EEA
 L037EF0:
@@ -47250,7 +47250,7 @@ L03818E:
 	unlk a6	; $0381AA
 	rts	; $0381AC
 	; code $0381AE-$038277
-sys_unk_0381ae:
+spell_set_effect:
 	link.w a6,#$fffe	; $0381AE
 	move.w $a(a6),d0	; $0381B2
 	ext.l d0	; $0381B6
@@ -47311,7 +47311,7 @@ L038274:
 	unlk a6	; $038274
 	rts	; $038276
 	; code $038278-$038359
-sys_unk_038278:
+combat_paint_circle:
 	link.w a6,#$fffc	; $038278
 	move.w #$1,-$2(a6)	; $03827C
 L038282:
@@ -47320,19 +47320,19 @@ L038288:
 	move.w -$2(a6),d0	; $038288
 	sub.w $8(a6),d0	; $03828C
 	move.w d0,-(a7)	; $038290
-	jsr sys_unk_037840(pc)	; $038292
+	jsr math_calc_square(pc)	; $038292
 	addq.w #$2,a7	; $038296
 	move.w d0,-(a7)	; $038298
 	move.w -$4(a6),d0	; $03829A
 	sub.w $a(a6),d0	; $03829E
 	move.w d0,-(a7)	; $0382A2
-	jsr sys_unk_037840(pc)	; $0382A4
+	jsr math_calc_square(pc)	; $0382A4
 	addq.w #$2,a7	; $0382A8
 	move.w (a7)+,d1	; $0382AA
 	add.w d0,d1	; $0382AC
 	move.w d1,-(a7)	; $0382AE
 	move.w $c(a6),-(a7)	; $0382B0
-	jsr sys_unk_037840(pc)	; $0382B4
+	jsr math_calc_square(pc)	; $0382B4
 	addq.w #$2,a7	; $0382B8
 	move.w (a7)+,d1	; $0382BA
 	cmp.w d0,d1	; $0382BC
@@ -47390,7 +47390,7 @@ L03833A:
 	unlk a6	; $038356
 	rts	; $038358
 	; code $03835A-$0383FD
-sys_unk_03835a:
+combat_scatter_grid:
 	link.w a6,#$0	; $03835A
 	movem.l d4-d5,-(a7)	; $03835E
 	moveq #$1,d4	; $038362
@@ -47446,7 +47446,7 @@ L0383F6:
 	unlk a6	; $0383FA
 	rts	; $0383FC
 	; code $0383FE-$03846D
-sys_unk_0383fe:
+combat_fill_grid:
 	link.w a6,#$0	; $0383FE
 	movem.l d4-d5,-(a7)	; $038402
 	moveq #$1,d4	; $038406
@@ -47486,7 +47486,7 @@ L03840A:
 	unlk a6	; $03846A
 	rts	; $03846C
 	; code $03846E-$038511
-sys_unk_03846e:
+combat_paint_ring:
 	link.w a6,#$0	; $03846E
 	movem.l d4-d6,-(a7)	; $038472
 	moveq #$1,d4	; $038476
@@ -47496,26 +47496,26 @@ L03847A:
 	move.w d4,d0	; $03847A
 	sub.w $8(a6),d0	; $03847C
 	move.w d0,-(a7)	; $038480
-	jsr sys_unk_037840(pc)	; $038482
+	jsr math_calc_square(pc)	; $038482
 	addq.w #$2,a7	; $038486
 	move.w d0,-(a7)	; $038488
 	move.w d5,d0	; $03848A
 	sub.w $a(a6),d0	; $03848C
 	move.w d0,-(a7)	; $038490
-	jsr sys_unk_037840(pc)	; $038492
+	jsr math_calc_square(pc)	; $038492
 	addq.w #$2,a7	; $038496
 	move.w (a7)+,d1	; $038498
 	move.w d1,d6	; $03849A
 	add.w d0,d6	; $03849C
 	move.w $e(a6),-(a7)	; $03849E
-	jsr sys_unk_037840(pc)	; $0384A2
+	jsr math_calc_square(pc)	; $0384A2
 	addq.w #$2,a7	; $0384A6
 	cmp.w d0,d6	; $0384A8
 	bge.b L0384F6	; $0384AA
 	move.w $e(a6),d0	; $0384AC
 	subq.w #$2,d0	; $0384B0
 	move.w d0,-(a7)	; $0384B2
-	jsr sys_unk_037840(pc)	; $0384B4
+	jsr math_calc_square(pc)	; $0384B4
 	addq.w #$2,a7	; $0384B8
 	cmp.w d0,d6	; $0384BA
 	ble.b L0384F6	; $0384BC
@@ -47547,7 +47547,7 @@ L0384F6:
 	unlk a6	; $03850E
 	rts	; $038510
 	; code $038512-$038635
-sys_unk_038512:
+spell_get_base:
 	link.w a6,#$fff8	; $038512
 	move.w $8(a6),d0	; $038516
 	muls.w #$34,d0	; $03851A
@@ -47653,7 +47653,7 @@ L038654:
 	unlk a6	; $038658
 	rts	; $03865A
 	; code $03865C-$038787
-sys_unk_03865c:
+spell_get_damage:
 	link.w a6,#$fff8	; $03865C
 	move.w $8(a6),d0	; $038660
 	muls.w #$34,d0	; $038664
@@ -47761,7 +47761,7 @@ L0387A6:
 	unlk a6	; $0387AA
 	rts	; $0387AC
 	; code $0387AE-$03884F
-sys_unk_0387ae:
+combat_set_target:
 	link.w a6,#$fffa	; $0387AE
 	move.l a3,-(a7)	; $0387B2
 	move.w $8(a6),d0	; $0387B4
@@ -47814,7 +47814,7 @@ L038848:
 	; data $038850-$038889
 	incbin "rop-original.gen",$038850,$3A
 	; code $03888A-$038937
-sys_unk_03888a:
+spell_apply_group:
 	link.w a6,#$fffc	; $03888A
 	movem.l a3-a4,-(a7)	; $03888E
 	move.w $8(a6),d0	; $038892
@@ -47868,7 +47868,7 @@ L038922:
 	unlk a6	; $038934
 	rts	; $038936
 	; code $038938-$038A21
-sys_unk_038938:
+map_animate_tiles:
 	link.w a6,#$fffc	; $038938
 	movem.l d4-d6,-(a7)	; $03893C
 	move.w #$5,-(a7)	; $038940
@@ -47946,7 +47946,7 @@ L038A06:
 	unlk a6	; $038A1E
 	rts	; $038A20
 	; code $038A22-$038A3F
-sys_unk_038a22:
+spell_step_duration:
 	link.w a6,#$0	; $038A22
 	movea.l $a(a6),a0	; $038A26
 	cmpi.w #$1c0,(a0)	; $038A2A
@@ -48038,7 +48038,7 @@ L038AFC:
 	unlk a6	; $038AFC
 	rts	; $038AFE
 	; code $038B00-$038B95
-sys_unk_038b00:
+map_load_group_chunks:
 	link.w a6,#$0	; $038B00
 	movem.l d4-d7/a3,-(a7)	; $038B04
 	move.w $8(a6),d0	; $038B08
@@ -48089,7 +48089,7 @@ L038B86:
 	unlk a6	; $038B92
 	rts	; $038B94
 	; code $038B96-$038C59
-sys_unk_038b96:
+npc_wander_move:
 	link.w a6,#$fffc	; $038B96
 	move.w #$5,-(a7)	; $038B9A
 	jsr rand_next.l	; $038B9E
@@ -48145,7 +48145,7 @@ L038C4A:
 	unlk a6	; $038C56
 	rts	; $038C58
 	; code $038C5A-$038DE9
-sys_unk_038c5a:
+spell_multihit_scatter:
 	link.w a6,#$ffd6	; $038C5A
 	move.w #$ffff,-(a7)	; $038C5E
 	move.w #$10,-(a7)	; $038C62
@@ -48182,7 +48182,7 @@ sys_unk_038c5a:
 	addq.w #$3,d0	; $038CD6
 	move.w d0,-$c(a6)	; $038CD8
 	move.w $ff0eaa.l,-(a7)	; $038CDC
-	jsr sys_unk_03865c(pc)	; $038CE2
+	jsr spell_get_damage(pc)	; $038CE2
 	addq.w #$2,a7	; $038CE6
 	move.w d0,-$e(a6)	; $038CE8
 L038CEC:
@@ -48265,7 +48265,7 @@ L038DE6:
 	unlk a6	; $038DE6
 	rts	; $038DE8
 	; code $038DEA-$038FB7
-sys_unk_038dea:
+spell_multihit_cross:
 	link.w a6,#$ffd6	; $038DEA
 	move.w #$ffff,-(a7)	; $038DEE
 	move.w #$d,-(a7)	; $038DF2
@@ -48302,7 +48302,7 @@ sys_unk_038dea:
 	addq.w #$3,d0	; $038E66
 	move.w d0,-$c(a6)	; $038E68
 	move.w $ff0eaa.l,-(a7)	; $038E6C
-	jsr sys_unk_03865c(pc)	; $038E72
+	jsr spell_get_damage(pc)	; $038E72
 	addq.w #$2,a7	; $038E76
 	move.w d0,-$e(a6)	; $038E78
 L038E7C:
@@ -48405,7 +48405,7 @@ L038FB4:
 	unlk a6	; $038FB4
 	rts	; $038FB6
 	; code $038FB8-$039171
-sys_unk_038fb8:
+spell_multihit_grid:
 	link.w a6,#$ffd6	; $038FB8
 	move.w #$ffff,-(a7)	; $038FBC
 	move.w #$f,-(a7)	; $038FC0
@@ -48442,7 +48442,7 @@ sys_unk_038fb8:
 	addq.w #$3,d0	; $039034
 	move.w d0,-$c(a6)	; $039036
 	move.w $ff0eaa.l,-(a7)	; $03903A
-	jsr sys_unk_03865c(pc)	; $039040
+	jsr spell_get_damage(pc)	; $039040
 	addq.w #$2,a7	; $039044
 	move.w d0,-$e(a6)	; $039046
 	move.w #$ffff,-$2(a6)	; $03904A
@@ -48534,7 +48534,7 @@ L03916E:
 	unlk a6	; $03916E
 	rts	; $039170
 	; code $039172-$0393F9
-sys_unk_039172:
+spell_multihit_group:
 	link.w a6,#$ffd6	; $039172
 	move.w #$ffff,-(a7)	; $039176
 	move.w #$f,-(a7)	; $03917A
@@ -48642,7 +48642,7 @@ L0392D0:
 	bra.b L0392F0	; $0392D6
 L0392D8:
 	move.w $ff0eaa.l,-(a7)	; $0392D8
-	jsr sys_unk_03865c(pc)	; $0392DE
+	jsr spell_get_damage(pc)	; $0392DE
 	addq.w #$2,a7	; $0392E2
 	move.w d0,-$e(a6)	; $0392E4
 	bra.b L0392F0	; $0392E8
@@ -48733,7 +48733,7 @@ L0393F6:
 	unlk a6	; $0393F6
 	rts	; $0393F8
 	; code $0393FA-$0394A3
-sys_unk_0393fa:
+spell_group_flash:
 	link.w a6,#$ffd6	; $0393FA
 	move.w #$ffff,-(a7)	; $0393FE
 	move.w #$f,-(a7)	; $039402
@@ -48894,7 +48894,7 @@ L0395FE:
 	bra.b L039626	; $039604
 L039606:
 	move.w $ff0eaa.l,-(a7)	; $039606
-	jsr sys_unk_03865c(pc)	; $03960C
+	jsr spell_get_damage(pc)	; $03960C
 	addq.w #$2,a7	; $039610
 	move.w d0,-$e(a6)	; $039612
 	bra.b L039626	; $039616
@@ -49019,7 +49019,7 @@ L039758:
 L03977C:
 	bra.w L0394D4	; $03977C
 	; code $039780-$0398DF
-sys_unk_039780:
+spell_modify_stat:
 	link.w a6,#$fffc	; $039780
 	move.l a3,-(a7)	; $039784
 	move.w $8(a6),d0	; $039786
@@ -49233,7 +49233,7 @@ sys_unk_0399f4:
 	unlk a6	; $039A30
 	rts	; $039A32
 	; code $039A34-$039BDF
-sys_unk_039a34:
+spell_phased_blast:
 	link.w a6,#$0	; $039A34
 	move.l a3,-(a7)	; $039A38
 	move.w $ff0eaa.l,d0	; $039A3A
@@ -49285,7 +49285,7 @@ L039AD2:
 	moveq #$0,d1	; $039AE6
 	move.b (a0,d0.l),d1	; $039AE8
 	move.w d1,-(a7)	; $039AEC
-	jsr sys_unk_03888a(pc)	; $039AEE
+	jsr spell_apply_group(pc)	; $039AEE
 	addq.w #$2,a7	; $039AF2
 	cmpi.w #$32,$ff012a.l	; $039AF4
 	bge.b L039B08	; $039AFC
@@ -49342,14 +49342,14 @@ L039B9C:
 	move.w d1,-(a7)	; $039BBA
 	jsr sys_unk_03af92.l	; $039BBC
 	addq.w #$4,a7	; $039BC2
-	jsr sys_unk_0383fe(pc)	; $039BC4
+	jsr combat_fill_grid(pc)	; $039BC4
 	clr.w $ff012a.l	; $039BC8
 	lea.l $ff010e.l,a0	; $039BCE
 	andi.w #$dfff,(a0)	; $039BD4
 	ori.w #$2000,(a0)	; $039BD8
 	bra.w L039A78	; $039BDC
 	; code $039BE0-$039C89
-sys_unk_039be0:
+spell_travel_effect:
 	link.w a6,#$0	; $039BE0
 	move.l a3,-(a7)	; $039BE4
 	move.w $ff0eaa.l,d0	; $039BE6
@@ -49373,7 +49373,7 @@ L039C10:
 	moveq #$0,d1	; $039C2E
 	move.b (a0,d0.l),d1	; $039C30
 	move.w d1,-(a7)	; $039C34
-	jsr sys_unk_03888a(pc)	; $039C36
+	jsr spell_apply_group(pc)	; $039C36
 	addq.w #$2,a7	; $039C3A
 	addq.w #$1,$ff012a.l	; $039C3C
 	bra.b L039C84	; $039C42
@@ -49389,7 +49389,7 @@ L039C44:
 	move.w d1,-(a7)	; $039C62
 	jsr sys_unk_03af92.l	; $039C64
 	addq.w #$4,a7	; $039C6A
-	jsr sys_unk_0383fe(pc)	; $039C6C
+	jsr combat_fill_grid(pc)	; $039C6C
 	clr.w $ff012a.l	; $039C70
 	lea.l $ff010e.l,a0	; $039C76
 	andi.w #$dfff,(a0)	; $039C7C
@@ -49423,7 +49423,7 @@ L039CBA:
 	moveq #$0,d1	; $039CD8
 	move.b (a0,d0.l),d1	; $039CDA
 	move.w d1,-(a7)	; $039CDE
-	jsr sys_unk_03888a(pc)	; $039CE0
+	jsr spell_apply_group(pc)	; $039CE0
 	addq.w #$2,a7	; $039CE4
 	addq.w #$1,$ff012a.l	; $039CE6
 	bra.b L039D2E	; $039CEC
@@ -49439,7 +49439,7 @@ L039CEE:
 	move.w d1,-(a7)	; $039D0C
 	jsr sys_unk_03af92.l	; $039D0E
 	addq.w #$4,a7	; $039D14
-	jsr sys_unk_0383fe(pc)	; $039D16
+	jsr combat_fill_grid(pc)	; $039D16
 	clr.w $ff012a.l	; $039D1A
 	lea.l $ff010e.l,a0	; $039D20
 	andi.w #$dfff,(a0)	; $039D26
@@ -49480,7 +49480,7 @@ L039D7A:
 	moveq #$0,d1	; $039D98
 	move.b (a0,d0.l),d1	; $039D9A
 	move.w d1,-(a7)	; $039D9E
-	jsr sys_unk_03888a(pc)	; $039DA0
+	jsr spell_apply_group(pc)	; $039DA0
 	addq.w #$2,a7	; $039DA4
 	addq.w #$1,$ff012a.l	; $039DA6
 	bra.b L039DEE	; $039DAC
@@ -49496,7 +49496,7 @@ L039DAE:
 	move.w d1,-(a7)	; $039DCC
 	jsr sys_unk_03af92.l	; $039DCE
 	addq.w #$4,a7	; $039DD4
-	jsr sys_unk_0383fe(pc)	; $039DD6
+	jsr combat_fill_grid(pc)	; $039DD6
 	clr.w $ff012a.l	; $039DDA
 	lea.l $ff010e.l,a0	; $039DE0
 	andi.w #$dfff,(a0)	; $039DE6
@@ -49530,7 +49530,7 @@ L039E24:
 	moveq #$0,d1	; $039E42
 	move.b (a0,d0.l),d1	; $039E44
 	move.w d1,-(a7)	; $039E48
-	jsr sys_unk_03888a(pc)	; $039E4A
+	jsr spell_apply_group(pc)	; $039E4A
 	addq.w #$2,a7	; $039E4E
 	addq.w #$1,$ff012a.l	; $039E50
 	bra.b L039E98	; $039E56
@@ -49546,7 +49546,7 @@ L039E58:
 	move.w d1,-(a7)	; $039E76
 	jsr sys_unk_03af92.l	; $039E78
 	addq.w #$4,a7	; $039E7E
-	jsr sys_unk_0383fe(pc)	; $039E80
+	jsr combat_fill_grid(pc)	; $039E80
 	clr.w $ff012a.l	; $039E84
 	lea.l $ff010e.l,a0	; $039E8A
 	andi.w #$dfff,(a0)	; $039E90
@@ -49580,7 +49580,7 @@ L039ECE:
 	moveq #$0,d1	; $039EEC
 	move.b (a0,d0.l),d1	; $039EEE
 	move.w d1,-(a7)	; $039EF2
-	jsr sys_unk_03888a(pc)	; $039EF4
+	jsr spell_apply_group(pc)	; $039EF4
 	addq.w #$2,a7	; $039EF8
 	addq.w #$1,$ff012a.l	; $039EFA
 	bra.b L039F42	; $039F00
@@ -49596,7 +49596,7 @@ L039F02:
 	move.w d1,-(a7)	; $039F20
 	jsr sys_unk_03af92.l	; $039F22
 	addq.w #$4,a7	; $039F28
-	jsr sys_unk_0383fe(pc)	; $039F2A
+	jsr combat_fill_grid(pc)	; $039F2A
 	clr.w $ff012a.l	; $039F2E
 	lea.l $ff010e.l,a0	; $039F34
 	andi.w #$dfff,(a0)	; $039F3A
@@ -50905,7 +50905,7 @@ sys_unk_03ae40:
 	bra.b L03AEAE	; $03AE9C
 L03AE9E:
 	move.w $8(a6),-(a7)	; $03AE9E
-	jsr sys_unk_037976.l	; $03AEA2
+	jsr world_move_random.l	; $03AEA2
 	addq.w #$2,a7	; $03AEA8
 	move.w d0,-$2(a6)	; $03AEAA
 L03AEAE:
@@ -55125,10 +55125,10 @@ L03E32A:
 	clr.w $ff012a.l	; $03E32A
 	bra.w L042E30	; $03E330
 L03E334:
-	jsr sys_unk_039a34.l	; $03E334
+	jsr spell_phased_blast.l	; $03E334
 	bra.w L042E30	; $03E33A
 L03E33E:
-	jsr sys_unk_039be0.l	; $03E33E
+	jsr spell_travel_effect.l	; $03E33E
 	bra.w L042E30	; $03E344
 L03E348:
 	jsr sys_unk_039c8a.l	; $03E348
@@ -55140,19 +55140,19 @@ L03E35C:
 	jsr sys_unk_039e9e.l	; $03E35C
 	bra.w L042E30	; $03E362
 L03E366:
-	jsr sys_unk_038c5a.l	; $03E366
+	jsr spell_multihit_scatter.l	; $03E366
 	bra.w L042E30	; $03E36C
 L03E370:
-	jsr sys_unk_038dea.l	; $03E370
+	jsr spell_multihit_cross.l	; $03E370
 	bra.w L042E30	; $03E376
 L03E37A:
-	jsr sys_unk_038fb8.l	; $03E37A
+	jsr spell_multihit_grid.l	; $03E37A
 	bra.w L042E30	; $03E380
 L03E384:
-	jsr sys_unk_039172.l	; $03E384
+	jsr spell_multihit_group.l	; $03E384
 	bra.w L042E30	; $03E38A
 L03E38E:
-	jsr sys_unk_0393fa.l	; $03E38E
+	jsr spell_group_flash.l	; $03E38E
 	bra.w L042E30	; $03E394
 L03E398:
 	lea.l $ff010e.l,a0	; $03E398
@@ -55198,7 +55198,7 @@ L03E41C:
 	lea.l $ff02b4.l,a0	; $03E432
 	add.l a0,d0	; $03E438
 	move.l d0,-$1c(a6)	; $03E43A
-	jsr sys_unk_0383fe.l	; $03E43E
+	jsr combat_fill_grid.l	; $03E43E
 	movea.l -$1c(a6),a0	; $03E444
 	move.w $a(a0),-$a(a6)	; $03E448
 	move.w -$a(a6),-(a7)	; $03E44E
@@ -55453,7 +55453,7 @@ L03E78A:
 	lea.l $ff010e.l,a0	; $03E78A
 	andi.w #$dfff,(a0)	; $03E790
 	ori.w #$2000,(a0)	; $03E794
-	jsr sys_unk_0383fe.l	; $03E798
+	jsr combat_fill_grid.l	; $03E798
 	clr.w -(a7)	; $03E79E
 	move.w $ff0eaa.l,d0	; $03E7A0
 	muls.w #$34,d0	; $03E7A6
@@ -55526,7 +55526,7 @@ L03E896:
 	ble.b L03E8F0	; $03E89E
 	cmpi.w #$8,$ff012a.l	; $03E8A0
 	bgt.b L03E8F0	; $03E8A8
-	jsr sys_unk_0383fe.l	; $03E8AA
+	jsr combat_fill_grid.l	; $03E8AA
 	move.w $ff0296.l,d0	; $03E8B0
 	ext.l d0	; $03E8B6
 	asl.l #$1,d0	; $03E8B8
@@ -55538,7 +55538,7 @@ L03E896:
 	move.w $ff0294.l,-(a7)	; $03E8CE
 	move.w $ffc416.l,-(a7)	; $03E8D4
 	move.w $ffc414.l,-(a7)	; $03E8DA
-	jsr sys_unk_03846e.l	; $03E8E0
+	jsr combat_paint_ring.l	; $03E8E0
 	lea.l $a(a7),a7	; $03E8E6
 	addq.w #$1,$ff012a.l	; $03E8EA
 L03E8F0:
@@ -55587,7 +55587,7 @@ L03E990:
 L03E9AE:
 	cmpi.w #$d,$ff012a.l	; $03E9AE
 	bne.b L03E9C8	; $03E9B6
-	jsr sys_unk_0383fe.l	; $03E9B8
+	jsr combat_fill_grid.l	; $03E9B8
 	addq.w #$1,$ff012a.l	; $03E9BE
 	bra.w L03E418	; $03E9C4
 L03E9C8:
@@ -55674,13 +55674,13 @@ L03EAF8:
 	move.w d0,-(a7)	; $03EAF8
 	move.w $ffc416.l,-(a7)	; $03EAFA
 	move.w $ffc414.l,-(a7)	; $03EB00
-	jsr sys_unk_03846e.l	; $03EB06
+	jsr combat_paint_ring.l	; $03EB06
 	lea.l $a(a7),a7	; $03EB0C
 	addq.w #$1,$ff012a.l	; $03EB10
 L03EB16:
 	cmpi.w #$9,$ff012a.l	; $03EB16
 	bne.b L03EB8E	; $03EB1E
-	jsr sys_unk_0383fe.l	; $03EB20
+	jsr combat_fill_grid.l	; $03EB20
 	move.w $ffc416.l,-(a7)	; $03EB26
 	move.w $ffc414.l,-(a7)	; $03EB2C
 	move.w $ff0294.l,d0	; $03EB32
@@ -55706,7 +55706,7 @@ L03EB16:
 L03EB8E:
 	cmpi.w #$9,$ff012a.l	; $03EB8E
 	ble.b L03EBD6	; $03EB96
-	jsr sys_unk_0383fe.l	; $03EB98
+	jsr combat_fill_grid.l	; $03EB98
 	clr.w -(a7)	; $03EB9E
 	move.w $ff0eaa.l,d0	; $03EBA0
 	muls.w #$34,d0	; $03EBA6
@@ -56250,7 +56250,7 @@ L03F352:
 	move.w d0,-$c(a6)	; $03F3A8
 	move.w -$c(a6),-(a7)	; $03F3AC
 	move.w $ffc418.l,-(a7)	; $03F3B0
-	jsr sys_unk_039780.l	; $03F3B6
+	jsr spell_modify_stat.l	; $03F3B6
 	addq.w #$4,a7	; $03F3BC
 	cmpi.w #$3,-$c(a6)	; $03F3BE
 	blt.w L03F464	; $03F3C4
@@ -56292,7 +56292,7 @@ L03F3F8:
 	bne.b L03F458	; $03F446
 	move.w -$c(a6),-(a7)	; $03F448
 	move.w -$e(a6),-(a7)	; $03F44C
-	jsr sys_unk_039780.l	; $03F450
+	jsr spell_modify_stat.l	; $03F450
 	addq.w #$4,a7	; $03F456
 L03F458:
 	addq.w #$1,-$2(a6)	; $03F458
@@ -56416,7 +56416,7 @@ L03F5F4:
 	cmpi.w #$9,$ff012a.l	; $03F5F4
 	bge.b L03F60A	; $03F5FC
 	clr.w -(a7)	; $03F5FE
-	jsr sys_unk_038b96.l	; $03F600
+	jsr npc_wander_move.l	; $03F600
 	addq.w #$2,a7	; $03F606
 	bra.b L03F610	; $03F608
 L03F60A:
@@ -56446,7 +56446,7 @@ L03F64A:
 	bra.b L03F644	; $03F64E
 L03F650:
 	move.w -$e(a6),-(a7)	; $03F650
-	jsr sys_unk_038b96.l	; $03F654
+	jsr npc_wander_move.l	; $03F654
 	addq.w #$2,a7	; $03F65A
 	bra.b L03F664	; $03F65C
 L03F65E:
@@ -56486,7 +56486,7 @@ L03F6AE:
 	bra.b L03F6A8	; $03F6BA
 L03F6BC:
 	move.w -$e(a6),-(a7)	; $03F6BC
-	jsr sys_unk_038b96.l	; $03F6C0
+	jsr npc_wander_move.l	; $03F6C0
 	addq.w #$2,a7	; $03F6C6
 	bra.b L03F6D0	; $03F6C8
 L03F6CA:
@@ -56590,11 +56590,11 @@ L03F7E8:
 L03F826:
 	cmpi.w #$14,$ff012a.l	; $03F826
 	bge.b L03F840	; $03F82E
-	jsr sys_unk_038938.l	; $03F830
+	jsr map_animate_tiles.l	; $03F830
 	addq.w #$1,$ff012a.l	; $03F836
 	bra.w L03E418	; $03F83C
 L03F840:
-	jsr sys_unk_0383fe.l	; $03F840
+	jsr combat_fill_grid.l	; $03F840
 	lea.l $ff010e.l,a0	; $03F846
 	andi.w #$dfff,(a0)	; $03F84C
 	ori.w #$2000,(a0)	; $03F850
@@ -56642,7 +56642,7 @@ L03F8D6:
 	moveq #$0,d1	; $03F8F6
 	move.b (a0,d0.l),d1	; $03F8F8
 	move.w d1,-(a7)	; $03F8FC
-	jsr sys_unk_038b00.l	; $03F8FE
+	jsr map_load_group_chunks.l	; $03F8FE
 	addq.w #$4,a7	; $03F904
 	addq.w #$1,$ff012a.l	; $03F906
 	bra.w L03E418	; $03F90C
@@ -56669,13 +56669,13 @@ L03F964:
 	move.w -$2(a6),d0	; $03F964
 	sub.w -$6(a6),d0	; $03F968
 	move.w d0,-(a7)	; $03F96C
-	jsr sys_unk_037840.l	; $03F96E
+	jsr math_calc_square.l	; $03F96E
 	addq.w #$2,a7	; $03F974
 	move.w d0,-(a7)	; $03F976
 	move.w -$4(a6),d0	; $03F978
 	sub.w -$8(a6),d0	; $03F97C
 	move.w d0,-(a7)	; $03F980
-	jsr sys_unk_037840.l	; $03F982
+	jsr math_calc_square.l	; $03F982
 	addq.w #$2,a7	; $03F988
 	move.w (a7)+,d1	; $03F98A
 	add.w d0,d1	; $03F98C
@@ -56683,7 +56683,7 @@ L03F964:
 	moveq #$c,d0	; $03F990
 	sub.w $ff012a.l,d0	; $03F992
 	move.w d0,-(a7)	; $03F998
-	jsr sys_unk_037840.l	; $03F99A
+	jsr math_calc_square.l	; $03F99A
 	addq.w #$2,a7	; $03F9A0
 	move.w (a7)+,d1	; $03F9A2
 	cmp.w d0,d1	; $03F9A4
@@ -56714,7 +56714,7 @@ L03F964:
 	pea.l -$c(a6)	; $03FA0A
 	pea.l -$e(a6)	; $03FA0E
 	move.w $ff0298.l,-(a7)	; $03FA12
-	jsr sys_unk_038a22.l	; $03FA18
+	jsr spell_step_duration.l	; $03FA18
 	lea.l $a(a7),a7	; $03FA1E
 	move.w -$4(a6),-(a7)	; $03FA22
 	move.w -$2(a6),-(a7)	; $03FA26
@@ -56747,7 +56747,7 @@ L03FA72:
 	addq.w #$1,-$2(a6)	; $03FA80
 	cmpi.w #$b,-$2(a6)	; $03FA84
 	blt.w L03F95E	; $03FA8A
-	jsr sys_unk_038938.l	; $03FA8E
+	jsr map_animate_tiles.l	; $03FA8E
 	addq.w #$1,$ff012a.l	; $03FA94
 	bra.w L03E418	; $03FA9A
 L03FA9E:
@@ -56762,7 +56762,7 @@ L03FA9E:
 	moveq #$0,d1	; $03FAC2
 	move.b (a0,d0.l),d1	; $03FAC4
 	move.w d1,-(a7)	; $03FAC8
-	jsr sys_unk_038b00.l	; $03FACA
+	jsr map_load_group_chunks.l	; $03FACA
 	addq.w #$4,a7	; $03FAD0
 L03FAD2:
 	cmpi.w #$18,$ff012a.l	; $03FAD2
@@ -56808,13 +56808,13 @@ L03FB6E:
 	move.w -$2(a6),d0	; $03FB6E
 	sub.w -$6(a6),d0	; $03FB72
 	move.w d0,-(a7)	; $03FB76
-	jsr sys_unk_037840.l	; $03FB78
+	jsr math_calc_square.l	; $03FB78
 	addq.w #$2,a7	; $03FB7E
 	move.w d0,-(a7)	; $03FB80
 	move.w -$4(a6),d0	; $03FB82
 	sub.w -$8(a6),d0	; $03FB86
 	move.w d0,-(a7)	; $03FB8A
-	jsr sys_unk_037840.l	; $03FB8C
+	jsr math_calc_square.l	; $03FB8C
 	addq.w #$2,a7	; $03FB92
 	move.w (a7)+,d1	; $03FB94
 	add.w d0,d1	; $03FB96
@@ -56822,7 +56822,7 @@ L03FB6E:
 	moveq #$17,d0	; $03FB9A
 	sub.w $ff012a.l,d0	; $03FB9C
 	move.w d0,-(a7)	; $03FBA2
-	jsr sys_unk_037840.l	; $03FBA4
+	jsr math_calc_square.l	; $03FBA4
 	addq.w #$2,a7	; $03FBAA
 	move.w (a7)+,d1	; $03FBAC
 	cmp.w d0,d1	; $03FBAE
@@ -56839,7 +56839,7 @@ L03FBC6:
 	addq.w #$1,-$2(a6)	; $03FBD2
 	cmpi.w #$b,-$2(a6)	; $03FBD6
 	blt.b L03FB68	; $03FBDC
-	jsr sys_unk_038938.l	; $03FBDE
+	jsr map_animate_tiles.l	; $03FBDE
 	addq.w #$1,$ff012a.l	; $03FBE4
 	bra.w L03E418	; $03FBEA
 L03FBEE:
@@ -56852,7 +56852,7 @@ L03FBEE:
 	move.w d1,-(a7)	; $03FC08
 	jsr sys_unk_03af92.l	; $03FC0A
 	addq.w #$4,a7	; $03FC10
-	jsr sys_unk_0383fe.l	; $03FC12
+	jsr combat_fill_grid.l	; $03FC12
 	lea.l $ff010e.l,a0	; $03FC18
 	andi.w #$dfff,(a0)	; $03FC1E
 	ori.w #$2000,(a0)	; $03FC22
@@ -56904,19 +56904,19 @@ L03FCCE:
 	move.w -$2(a6),d0	; $03FCCE
 	sub.w -$6(a6),d0	; $03FCD2
 	move.w d0,-(a7)	; $03FCD6
-	jsr sys_unk_037840.l	; $03FCD8
+	jsr math_calc_square.l	; $03FCD8
 	addq.w #$2,a7	; $03FCDE
 	move.w d0,-(a7)	; $03FCE0
 	move.w -$4(a6),d0	; $03FCE2
 	sub.w -$8(a6),d0	; $03FCE6
 	move.w d0,-(a7)	; $03FCEA
-	jsr sys_unk_037840.l	; $03FCEC
+	jsr math_calc_square.l	; $03FCEC
 	addq.w #$2,a7	; $03FCF2
 	move.w (a7)+,d1	; $03FCF4
 	add.w d0,d1	; $03FCF6
 	move.w d1,-(a7)	; $03FCF8
 	move.w $ff012a.l,-(a7)	; $03FCFA
-	jsr sys_unk_037840.l	; $03FD00
+	jsr math_calc_square.l	; $03FD00
 	addq.w #$2,a7	; $03FD06
 	move.w (a7)+,d1	; $03FD08
 	cmp.w d0,d1	; $03FD0A
@@ -56931,7 +56931,7 @@ L03FCCE:
 	pea.l -$e(a6)	; $03FD2A
 	movea.l -$1c(a6),a0	; $03FD2E
 	move.w $a(a0),-(a7)	; $03FD32
-	jsr sys_unk_038a22.l	; $03FD36
+	jsr spell_step_duration.l	; $03FD36
 	lea.l $a(a7),a7	; $03FD3C
 	move.w -$4(a6),-(a7)	; $03FD40
 	move.w -$2(a6),-(a7)	; $03FD44
@@ -56964,7 +56964,7 @@ L03FD90:
 	addq.w #$1,-$2(a6)	; $03FD9E
 	cmpi.w #$b,-$2(a6)	; $03FDA2
 	blt.w L03FCC8	; $03FDA8
-	jsr sys_unk_038938.l	; $03FDAC
+	jsr map_animate_tiles.l	; $03FDAC
 	addq.w #$1,$ff012a.l	; $03FDB2
 	bra.w L03E418	; $03FDB8
 L03FDBC:
@@ -56978,19 +56978,19 @@ L03FDD8:
 	move.w -$2(a6),d0	; $03FDD8
 	sub.w -$6(a6),d0	; $03FDDC
 	move.w d0,-(a7)	; $03FDE0
-	jsr sys_unk_037840.l	; $03FDE2
+	jsr math_calc_square.l	; $03FDE2
 	addq.w #$2,a7	; $03FDE8
 	move.w d0,-(a7)	; $03FDEA
 	move.w -$4(a6),d0	; $03FDEC
 	sub.w -$8(a6),d0	; $03FDF0
 	move.w d0,-(a7)	; $03FDF4
-	jsr sys_unk_037840.l	; $03FDF6
+	jsr math_calc_square.l	; $03FDF6
 	addq.w #$2,a7	; $03FDFC
 	move.w (a7)+,d1	; $03FDFE
 	add.w d0,d1	; $03FE00
 	move.w d1,-(a7)	; $03FE02
 	move.w $ff012a.l,-(a7)	; $03FE04
-	jsr sys_unk_037840.l	; $03FE0A
+	jsr math_calc_square.l	; $03FE0A
 	addq.w #$2,a7	; $03FE10
 	move.w (a7)+,d1	; $03FE12
 	cmp.w d0,d1	; $03FE14
@@ -57007,7 +57007,7 @@ L03FDD8:
 	move.w $a(a0),d0	; $03FE3A
 	add.w #$20,d0	; $03FE3E
 	move.w d0,-(a7)	; $03FE42
-	jsr sys_unk_038a22.l	; $03FE44
+	jsr spell_step_duration.l	; $03FE44
 	lea.l $a(a7),a7	; $03FE4A
 	move.w -$4(a6),-(a7)	; $03FE4E
 	move.w -$2(a6),-(a7)	; $03FE52
@@ -57034,7 +57034,7 @@ L03FE86:
 	addq.w #$1,-$2(a6)	; $03FE94
 	cmpi.w #$b,-$2(a6)	; $03FE98
 	blt.w L03FDD2	; $03FE9E
-	jsr sys_unk_038938.l	; $03FEA2
+	jsr map_animate_tiles.l	; $03FEA2
 	addq.w #$1,$ff012a.l	; $03FEA8
 	bra.w L03E418	; $03FEAE
 L03FEB2:
@@ -57154,7 +57154,7 @@ L040008:
 	move.w #$b,-(a7)	; $04001E
 	jsr sys_unk_02b402.l	; $040022
 	lea.l $14(a7),a7	; $040028
-	jsr sys_unk_038938.l	; $04002C
+	jsr map_animate_tiles.l	; $04002C
 	addq.w #$1,$ff012a.l	; $040032
 	bra.w L03E418	; $040038
 L04003C:
@@ -57163,7 +57163,7 @@ L04003C:
 	move.w $ff012a.l,d1	; $040044
 	cmp.w d0,d1	; $04004A
 	bge.b L04005E	; $04004C
-	jsr sys_unk_038938.l	; $04004E
+	jsr map_animate_tiles.l	; $04004E
 	addq.w #$1,$ff012a.l	; $040054
 	bra.w L03E418	; $04005A
 L04005E:
@@ -57176,7 +57176,7 @@ L04005E:
 	move.w d1,-(a7)	; $040078
 	jsr sys_unk_03af92.l	; $04007A
 	addq.w #$4,a7	; $040080
-	jsr sys_unk_0383fe.l	; $040082
+	jsr combat_fill_grid.l	; $040082
 	lea.l $ff010e.l,a0	; $040088
 	andi.w #$dfff,(a0)	; $04008E
 	ori.w #$2000,(a0)	; $040092
@@ -57198,7 +57198,7 @@ L0400A0:
 	moveq #$0,d1	; $0400D4
 	move.b (a0,d0.l),d1	; $0400D6
 	move.w d1,-(a7)	; $0400DA
-	jsr sys_unk_03888a.l	; $0400DC
+	jsr spell_apply_group.l	; $0400DC
 	addq.w #$2,a7	; $0400E2
 	move.w #$1,-$6(a6)	; $0400E4
 L0400EA:
@@ -57362,7 +57362,7 @@ L040310:
 L040334:
 	cmpi.w #$b,$ff012a.l	; $040334
 	bne.b L040346	; $04033C
-	jsr sys_unk_03835a.l	; $04033E
+	jsr combat_scatter_grid.l	; $04033E
 	bra.b L04038A	; $040344
 L040346:
 	clr.w -(a7)	; $040346
@@ -57380,7 +57380,7 @@ L040346:
 	move.w d1,-(a7)	; $040374
 	jsr sys_unk_03af92.l	; $040376
 	addq.w #$4,a7	; $04037C
-	jsr sys_unk_0383fe.l	; $04037E
+	jsr combat_fill_grid.l	; $04037E
 	clr.w $ff012a.l	; $040384
 L04038A:
 	lea.l $ff010e.l,a0	; $04038A
@@ -57467,19 +57467,19 @@ L0404A2:
 	move.w -$2(a6),d0	; $0404A2
 	sub.w -$6(a6),d0	; $0404A6
 	move.w d0,-(a7)	; $0404AA
-	jsr sys_unk_037840.l	; $0404AC
+	jsr math_calc_square.l	; $0404AC
 	addq.w #$2,a7	; $0404B2
 	move.w d0,-(a7)	; $0404B4
 	move.w -$4(a6),d0	; $0404B6
 	sub.w -$8(a6),d0	; $0404BA
 	move.w d0,-(a7)	; $0404BE
-	jsr sys_unk_037840.l	; $0404C0
+	jsr math_calc_square.l	; $0404C0
 	addq.w #$2,a7	; $0404C6
 	move.w (a7)+,d1	; $0404C8
 	add.w d0,d1	; $0404CA
 	move.w d1,-(a7)	; $0404CC
 	move.w $ff012a.l,-(a7)	; $0404CE
-	jsr sys_unk_037840.l	; $0404D4
+	jsr math_calc_square.l	; $0404D4
 	addq.w #$2,a7	; $0404DA
 	move.w (a7)+,d1	; $0404DC
 	cmp.w d0,d1	; $0404DE
@@ -57573,7 +57573,7 @@ L0405F0:
 	moveq #$0,d1	; $040620
 	move.b (a0,d0.l),d1	; $040622
 	move.w d1,-(a7)	; $040626
-	jsr sys_unk_03888a.l	; $040628
+	jsr spell_apply_group.l	; $040628
 	addq.w #$2,a7	; $04062E
 	move.w #$1,-$6(a6)	; $040630
 L040636:
@@ -57727,7 +57727,7 @@ L040852:
 	lea.l $ff010e.l,a0	; $04085C
 	andi.w #$dfff,(a0)	; $040862
 	ori.w #$2000,(a0)	; $040866
-	jsr sys_unk_0383fe.l	; $04086A
+	jsr combat_fill_grid.l	; $04086A
 	clr.w $ff012a.l	; $040870
 	bra.w L03E418	; $040876
 L04087A:
@@ -58163,7 +58163,7 @@ L040E22:
 	and.w #$ff,d0	; $040E6C
 	move.w d0,-(a7)	; $040E70
 	move.w $ff0eaa.l,-(a7)	; $040E72
-	jsr sys_unk_038512.l	; $040E78
+	jsr spell_get_base.l	; $040E78
 	addq.w #$2,a7	; $040E7E
 	move.w d0,-(a7)	; $040E80
 	movea.l -$1c(a6),a0	; $040E82
@@ -58253,7 +58253,7 @@ L040EDC:
 	move.l a1,-$2a(a6)	; $040FA6
 	move.w #$1,-$c(a6)	; $040FAA
 	move.w $ff0eaa.l,-(a7)	; $040FB0
-	jsr sys_unk_038512.l	; $040FB6
+	jsr spell_get_base.l	; $040FB6
 	addq.w #$2,a7	; $040FBC
 	move.w d0,-$e(a6)	; $040FBE
 	move.w #$ffff,-$2(a6)	; $040FC2
@@ -58696,7 +58696,7 @@ L041590:
 	move.w d1,-(a7)	; $0415CE
 	jsr sys_unk_03af92.l	; $0415D0
 	addq.w #$4,a7	; $0415D6
-	jsr sys_unk_0383fe.l	; $0415D8
+	jsr combat_fill_grid.l	; $0415D8
 L0415DE:
 	bra.w L042E30	; $0415DE
 L0415E2:
@@ -58869,19 +58869,19 @@ L041844:
 	move.w -$2(a6),d0	; $041844
 	sub.w -$6(a6),d0	; $041848
 	move.w d0,-(a7)	; $04184C
-	jsr sys_unk_037840.l	; $04184E
+	jsr math_calc_square.l	; $04184E
 	addq.w #$2,a7	; $041854
 	move.w d0,-(a7)	; $041856
 	move.w -$4(a6),d0	; $041858
 	sub.w -$8(a6),d0	; $04185C
 	move.w d0,-(a7)	; $041860
-	jsr sys_unk_037840.l	; $041862
+	jsr math_calc_square.l	; $041862
 	addq.w #$2,a7	; $041868
 	move.w (a7)+,d1	; $04186A
 	add.w d0,d1	; $04186C
 	move.w d1,-(a7)	; $04186E
 	move.w $ff012a.l,-(a7)	; $041870
-	jsr sys_unk_037840.l	; $041876
+	jsr math_calc_square.l	; $041876
 	addq.w #$2,a7	; $04187C
 	move.w (a7)+,d1	; $04187E
 	cmp.w d0,d1	; $041880
@@ -58977,7 +58977,7 @@ L041970:
 	moveq #$0,d1	; $0419A0
 	move.b (a0,d0.l),d1	; $0419A2
 	move.w d1,-(a7)	; $0419A6
-	jsr sys_unk_03888a.l	; $0419A8
+	jsr spell_apply_group.l	; $0419A8
 	addq.w #$2,a7	; $0419AE
 	move.w #$1,-$6(a6)	; $0419B0
 L0419B6:
@@ -59329,7 +59329,7 @@ L041E84:
 	cmpi.w #$1e,$ff012a.l	; $041E84
 	ble.b L041EB0	; $041E8C
 	clr.w $ff012a.l	; $041E8E
-	jsr sys_unk_0383fe.l	; $041E94
+	jsr combat_fill_grid.l	; $041E94
 	move.w #$ffff,$ff0124.l	; $041E9A
 	lea.l $ff010e.l,a0	; $041EA2
 	andi.w #$dfff,(a0)	; $041EA8
@@ -59364,7 +59364,7 @@ L041EB4:
 	move.w $ff0eaa.l,$ffc36a.l	; $041F12
 	move.w #$f,$ffc36e.l	; $041F1C
 	move.w $ff0eaa.l,-(a7)	; $041F24
-	jsr sys_unk_038512.l	; $041F2A
+	jsr spell_get_base.l	; $041F2A
 	addq.w #$2,a7	; $041F30
 	move.w d0,$ffc372.l	; $041F32
 	move.w #$1,$ffc374.l	; $041F38
@@ -59442,7 +59442,7 @@ L042068:
 	move.w $ff0294.l,-(a7)	; $04207A
 	move.w $ffc416.l,-(a7)	; $042080
 	move.w $ffc414.l,-(a7)	; $042086
-	jsr sys_unk_037ee6.l	; $04208C
+	jsr spell_blast_area.l	; $04208C
 	addq.w #$6,a7	; $042092
 	addq.w #$1,$ff012a.l	; $042094
 	move.w $ff012a.l,d0	; $04209A
@@ -59459,7 +59459,7 @@ L0420C0:
 	andi.w #$dfff,(a0)	; $0420C6
 	ori.w #$2000,(a0)	; $0420CA
 	clr.w $ff012a.l	; $0420CE
-	jsr sys_unk_0383fe.l	; $0420D4
+	jsr combat_fill_grid.l	; $0420D4
 	clr.w -(a7)	; $0420DA
 	move.w $ff0eaa.l,d0	; $0420DC
 	muls.w #$34,d0	; $0420E2
@@ -59501,7 +59501,7 @@ L042134:
 	addq.w #$1,$ff012a.l	; $042174
 	bra.b L0421B6	; $04217A
 L04217C:
-	jsr sys_unk_0383fe.l	; $04217C
+	jsr combat_fill_grid.l	; $04217C
 	clr.w $ff012a.l	; $042182
 	clr.w -(a7)	; $042188
 	move.w $ff0eaa.l,d0	; $04218A
@@ -59638,7 +59638,7 @@ L04236E:
 	subq.w #$1,d0	; $042378
 	move.w d0,-(a7)	; $04237A
 	move.w $ff0294.l,-(a7)	; $04237C
-	jsr sys_unk_0381ae.l	; $042382
+	jsr spell_set_effect.l	; $042382
 	addq.w #$6,a7	; $042388
 	addq.w #$1,$ff012a.l	; $04238A
 L042390:
@@ -60226,7 +60226,7 @@ L042C6C:
 	move.w d0,-(a7)	; $042C74
 	move.w $ffc416.l,-(a7)	; $042C76
 	move.w $ffc414.l,-(a7)	; $042C7C
-	jsr sys_unk_037ee6.l	; $042C82
+	jsr spell_blast_area.l	; $042C82
 	addq.w #$6,a7	; $042C88
 	bra.b L042CB8	; $042C8A
 L042C8C:
@@ -60234,7 +60234,7 @@ L042C8C:
 	move.w $ff012a.l,-(a7)	; $042C92
 	move.w $ffc416.l,-(a7)	; $042C98
 	move.w $ffc414.l,-(a7)	; $042C9E
-	jsr sys_unk_038278.l	; $042CA4
+	jsr combat_paint_circle.l	; $042CA4
 	addq.w #$8,a7	; $042CAA
 	bra.b L042CB8	; $042CAC
 L042CAE:
@@ -60247,7 +60247,7 @@ L042CBE:
 	move.w $ff012a.l,d0	; $042CBE
 	cmp.w $ff0294.l,d0	; $042CC4
 	blt.b L042CF6	; $042CCA
-	jsr sys_unk_0383fe.l	; $042CCC
+	jsr combat_fill_grid.l	; $042CCC
 	clr.w -(a7)	; $042CD2
 	move.w $ff0296.l,-(a7)	; $042CD4
 	jsr sys_unk_03af92.l	; $042CDA

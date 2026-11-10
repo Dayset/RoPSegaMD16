@@ -258,48 +258,48 @@ addr,name,tier,note
 0x036954,sys_unk_036954,0,auto: touches $FF02CC $FF02D0 $FF02DE $FF02E0
 0x036A00,sys_unk_036a00,0,auto: touches $FF02B4 $FF02E0
 0x036A94,sys_unk_036a94,0,auto: touches $FF02B4 $FF02CC $FF02DE $FF02E0
-0x036CFC,sys_unk_036cfc,0,auto: touches none
-0x036DE8,sys_unk_036de8,0,auto: touches none
+0x036cfc,combat_calc_range_effect,1,picks effect value from displacement to target; axis-aligned vs diagonal plus $03AF10 check; caller $037124
+0x036de8,world_get_direction,1,computes direction from char to target point via spell_duration_tick; returns direction code
 0x036E2E,spell_damage_calc,1,spells.md:124 reads w0 damage base; damage path
 0x03778E,world_distance,2,logic.md:87;1228 distance 3778E (proven)
 0x0377FE,math_isqrt,2,logic.md:1228 integer sqrt 377FE verified
-0x037840,sys_unk_037840,0,auto: touches none
-0x037850,sys_unk_037850,0,auto: touches $FF02B2
-0x0378BA,sys_unk_0378ba,0,auto: touches $FF02C8 $FF02E0
-0x037918,sys_unk_037918,0,auto: touches $FF02C8 $FF02E0
-0x037976,sys_unk_037976,0,auto: touches $FF02C0 $FF02C2
-0x037A26,sys_unk_037a26,0,auto: touches $FF02C0 $FF02C2 $FF02C8
-0x037A9A,sys_unk_037a9a,0,auto: touches $FF009A $FF010E $FF02B2 $FF02B4 $FF02CC $FF02E0
+0x037840,math_calc_square,1,returns arg squared; called by world_distance and $0264DE
+0x037850,spell_dispatch_effect,1,jump-table dispatch on spell index 0-11; routes to status setters $0378BA $037918; called from menu $020326
+0x0378ba,spell_set_status_lo,1,sets bits 8-9 of status word for up to 6 chars in group table $FF02C8
+0x037918,spell_set_status_hi,1,sets bits 10-12 of status word for up to 6 chars in group table $FF02C8
+0x037976,world_move_random,1,picks random direction from table $01AE38; retries via $0253FE up to 4 times; moves via $024984
+0x037a26,world_find_char_at,1,searches 6-char group for one at given x y; returns char index or 0
+0x037a9a,spell_assign_by_rank,1,finds living group member whose rank equals arg1; sets its spell-table index +0x25 to arg2; menu caller $020292
 0x037B82,combat_target_select,1,logic.md:1202 sets FFC37C target index from target struct
 0x037D0E,spell_effect_apply,1,spells.md:125 tail installs w1>>4 action code; role from doc
 0x037ED6,sys_unk_037ed6,0,auto: touches none
-0x037EE6,sys_unk_037ee6,0,auto: touches none
-0x0381AE,sys_unk_0381ae,0,auto: touches $FF02B8
-0x038278,sys_unk_038278,0,auto: touches none
-0x03835A,sys_unk_03835a,0,auto: touches $FF012A $FF014A
-0x0383FE,sys_unk_0383fe,0,auto: touches none
-0x03846E,sys_unk_03846e,0,auto: touches none
-0x038512,sys_unk_038512,0,auto: touches $FF02B4 $FFA7CC
-0x03865C,sys_unk_03865c,0,auto: touches $FF012C $FF02B4 $FFA7CC
-0x0387AE,sys_unk_0387ae,0,auto: touches $FF02B4 $FF02DB $FF02DD $FF02E0
-0x03888A,sys_unk_03888a,0,auto: touches $FF02B4
-0x038938,sys_unk_038938,0,auto: touches $FF012A $FFA7FC
-0x038A22,sys_unk_038a22,0,auto: touches none
+0x037ee6,spell_blast_area,1,paints spell effect over 10x10 grid around x y; Chebyshev distance; writes map cells via $0319EC $031A9C
+0x0381ae,spell_set_effect,1,Configures $FFB0CC effect record 3 for a char; effect code 517/519 or passed value; called from spell state machine $03E2D4
+0x038278,combat_paint_circle,1,Paints a circle radius arg2 on the 10x10 combat grid; random 1 in 4 per cell; tile by arg3 (82 to 66 83 to 47 84 to 182)
+0x03835a,combat_scatter_grid,1,Random scatter on 10x10 grid 1 in 4 per cell tile 495; advances $FF014A mod 6 and $FF012A on wrap; called when $FF012A is 11
+0x0383fe,combat_fill_grid,1,Fills entire 10x10 grid tile 495 plus flag clears; called by five spell-effect routines $FF012C 142-146 and $03E2D4
+0x03846e,combat_paint_ring,1,Paints a ring radius arg2 thickness 2 on 10x10 grid centred at arg0 arg1; called from $03E2D4 with shrinking radius
+0x038512,spell_get_base,1,Spell base value for actor $FF0EAA via rank tables; passed to damage routine $03B152; called from spell state machine $03E2D4
+0x03865c,spell_get_damage,1,Spell damage value for actor $FF0EAA via rank tables; effect-code-150 special case; passed to damage routine $03B152; called from spell-effect routines
+0x0387ae,combat_set_target,1,Sets a char status-word low byte to another char name index following a chain via +0x27 and +0x29; called from spell_damage_calc $036E2E
+0x03888a,spell_apply_group,1,Applies effect 24 via $02140A to each live member of a char 6-entry list; random gate and $025DE4 check; called by five spell-effect routines
+0x038938,map_animate_tiles,1,Animates map chunk tiles in 10x10 grid; toggles tile low bit by $FF012A parity skipping tiles 495 and 213; called from $03E2D4 when $FF012A below 20
+0x038a22,spell_step_duration,1,Advances a spell duration counter by 6 or 14 and sets a flag 0 or 1 by arg0 mod 4; threshold 448; called after spell_duration_tick
 0x038A40,sys_unk_038a40,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x038AB2,sys_unk_038ab2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
-0x038B00,sys_unk_038b00,0,auto: touches $FF02B4 $FF02C0 $FF02C2
-0x038B96,sys_unk_038b96,0,auto: touches $FF012A $FF0130 $FF02C0 $FF02C2 $FFC418
-0x038C5A,sys_unk_038c5a,0,auto: touches $FF010E $FF012A $FF02B4 $FF0EAA $FFA7CC
-0x038DEA,sys_unk_038dea,0,auto: touches $FF010E $FF012A $FF02B4 $FF0EAA $FFA7CC
-0x038FB8,sys_unk_038fb8,0,auto: touches $FF010E $FF012A $FF02B4 $FF0EAA $FFA7CC
-0x039172,sys_unk_039172,0,auto: touches $FF010E $FF012A $FF02B4 $FF02C8 $FF02DD $FF0EAA
-0x0393FA,sys_unk_0393fa,0,auto: touches $FF010E $FF012A $FF02B4 $FF02C8 $FF02DD $FF0EAA
-0x039780,sys_unk_039780,0,auto: touches $FF012C $FF02B4
+0x038b00,map_load_group_chunks,1,loads map chunks at each group member X/Y via $0319ec $031a9c; called from $03F8FE $03FACA
+0x038b96,npc_wander_move,1,random NPC move via $024984 after $0253fe walkability check; called from $03F600 $03F654 $03F6C0
+0x038c5a,spell_multihit_scatter,1,action code 26 SFX 16; multi-hit random scatter via $03B152 $02B402
+0x038dea,spell_multihit_cross,1,action code 27 SFX 13; multi-hit cross pattern via $03B152 $02B402
+0x038fb8,spell_multihit_grid,1,action code 28 SFX 15; multi-hit 2x2 grid around caster via $03B152 $02B402
+0x039172,spell_multihit_group,1,action code 150 SFX 15; cycles group members as targets with 2x2 grid hits
+0x0393fa,spell_group_flash,1,action code 151 SFX 15; cycles group members; palette flash via pal_load_set
+0x039780,spell_modify_stat,1,modifies +0x28 attack defence or duration counter by $FF012C code; calls $03CB66
 0x0398E0,spell_status_apply,2,spells.md:369 status-effect applier 398E0 verified static
 0x0399AC,sys_unk_0399ac,0,auto: touches $FF02DC $FF02E0
 0x0399F4,sys_unk_0399f4,0,auto: touches $FF02DC $FF02E0
-0x039A34,sys_unk_039a34,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
-0x039BE0,sys_unk_039be0,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
+0x039a34,spell_phased_blast,1,action code 142 flat-70 family; phased cinematic build-up flash travel impact fade
+0x039be0,spell_travel_effect,1,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase
 0x039C8A,sys_unk_039c8a,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
 0x039D34,sys_unk_039d34,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
 0x039DF4,sys_unk_039df4,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
