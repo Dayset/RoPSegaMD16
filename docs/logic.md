@@ -507,7 +507,71 @@ mod 0, no merchant):
   (`$0204A0`), then raises the attitude via `$02A22A` →
   `$0298D2` → `$02CE74` (positive delta). The exact attitude delta
   is data-driven (from the conversation event record loaded by
-  `$032D4C`) and is [open]. The handler is gated on
+  `$032D4C`) and is [open]. **Delta mechanism, PINNED (2026-11-10)
+  [static]:** `$02CE74(char, delta)` (`$02CE74`) applies the delta
+  in two places — the merchant's **live** attitude (`+0x22`) moves
+  by the **full** delta, clamped to [−100, +100] (`$02CEAC`–
+  `$02CF00`); the **persistent** `$FF00C0` entry (indexed by the
+  merchant's `+0x20`) moves by `(char.+0x26 × delta) / 100`, also
+  clamped to [−100, +100] (`$02CF04`–`$02CF80`) — so the live
+  attitude jumps by the whole delta while the saved attitude moves
+  by only the merchant's `+0x26`-percent of it (the `+0x26` byte is
+  the per-merchant "influence" percentage from template byte
+  `$CF1BE`; e.g. 80 for most merchants, 90 for some, 5 for the
+  hostile ones). `$02CE74` is called from `$0298D2` with delta =
+  ±(event word & `0xFFF`) — positive at `$029C66`, negative at
+  `$029C8A` (the sign is the event word's type; see below).
+  **Event records, ENUMERATED (2026-11-10) [static]:** the Bribe
+  event (id 8) lives in the `$0D3102` conversation table (1005
+  12-byte records); 11 records have word0 == 8. The event word is
+  the record's **+10 word**, packed as (type << 12) | delta, so
+  delta = (+10 word) & `0xFFF`. `$0298D2` dispatches on the type
+  (jump table `$029F8A`): type 1 → `$02CE74(+delta)` at `$029C4E`
+  (attitude up), type 3 → `$02CE74(−delta)` at `$029C94`
+  (attitude down), type 0xF → `$025074` (a conversation-continue
+  path, no direct `$02CE74` call). The 11 Bribe records: rec 18
+  (+2=1, +10=`0xF000`, type 0xF, delta 0), rec 19 (same as 18),
+  rec 20 (+2=0, +10=`0x1032`, type 1, **delta 50**), rec 44
+  (+2=0, +10=`0x3001`, type 3, delta 1), rec 75 (+2=0,
+  +10=`0x1063`, type 1, **delta 99**), rec 176 (+2=`0x084C`,
+  +10=`0xC010`, type 0xC, delta 16), rec 189 (+2=`0x0856`,
+  +10=`0xF000`, type 0xF, delta 0), rec 438 (+2=`0x0900`,
+  +10=`0x6356`, type 6, delta 854), rec 548 (+2=`0x00C1`,
+  +10=`0x645D`, type 6, delta 1117), rec 550 (+2=`0x00C2`,
+  +10=`0xF000`, type 0xF, delta 0), rec 603 (+2=0, +10=`0x100F`,
+  type 1, **delta 15**). **Which record matches is the merchant's
+  +0x02 (template index):** `$0331A4` scores each record as
+  `0x4000` (if record+2 == merchant +0x02 and +0x02 ≠ 0) +
+  `0x10000` (event id matches) + `RNG(0x400)`; the highest score
+  wins, RNG breaking ties among equal base scores. Merchant
+  templates are indexed 0–39+, so only +2 = 0 or 1 can match a
+  merchant (the large +2 values are non-merchant characters). For
+  a merchant with +0x02 == 1, recs 18/19 win outright (base
+  `0x14000`) → type 0xF. For +0x02 == 0 or 2–39, all event-8
+  records tie at base `0x10000` and the winner is RNG-dependent —
+  so **the Bribe's delta is not a single universal number; it
+  depends on the merchant, and for most merchants it is
+  RNG-selected among the type-1 records (50, 99, 15) and the
+  type-3 record (−1)**. The +4/+5-byte match flags do not
+  discriminate for a typical merchant (most templates have
+  +0x17 = 0, so the +4-byte flag is skipped; record+5 is 0x00
+  while the attitude index is non-zero). **Live confirmation is
+  [open]** — a BlastEm harness calling `$0331A4` with Bribe args
+  was built (`.scratch023/`) but the live run is blocked: the VM
+  was replaced, removing BlastEm/xdotool/the m68k toolchain, and
+  the `$0331A4` 1005-record scan is very slow in debugger mode.
+  **$02A22A return semantics, PINNED (2026-11-10) [static]:**
+  `$02A22A(char, arg2, event_id)` returns
+  `char[char[arg1].+0x14].+0x26` — the +0x26 byte of the struct
+  indexed by the caller's +0x14 word. For event id 8 (and any id
+  except 0/1) it returns that byte directly; id 1 takes an RNG
+  branch. `$0298D2` uses the return value as a **char index**
+  (into `$FF02B4` + index×52), so in the Bribe context the byte
+  is the merchant's char index — **not** the percentage. The
+  percentage `$02CE74` uses is a *different* +0x26 byte, read
+  from the struct identified via the merchant's +0x27 byte. The
+  two +0x26 uses (char index vs. percentage) come from different
+  structs; do not conflate them. The handler is gated on
   `$01E49A($FF0E18)` returning 0 (a message-queue-state
   precondition). There is **no** Bribe goods code in `$2BBD2`
   (quotient 16, remainders 0–4 only; remainder ≥ 5 exits) — the
@@ -1177,9 +1241,25 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    merchant-submenu verb "Bribe" (ROM `0xCD38C`), C 25, handler
    `$020466`: checks gold ≥ 10, deducts 10 gold via `$2BBD2(char,
    0x400, −10, 1)`, then raises the attitude via `$02A22A` →
-   `$0298D2` → `$02CE74` (positive delta). The exact attitude
-   delta is data-driven (from the conversation event record) and
-   is [open]. **Attitude repair is LOCATED (2026-11-10) [static]:**
+   `$0298D2` → `$02CE74` (positive delta). **Delta mechanism
+   PINNED (2026-11-10) [static]:** `$02CE74(char, delta)` moves
+   the live attitude (`+0x22`) by the full delta and the
+   persistent `$FF00C0` entry by `(char.+0x26 × delta) / 100`,
+   both clamped to [−100, +100]; delta = ±(event word &
+   `0xFFF`), the event word being the matched `$0D3102` record's
+   +10 word (type << 12 | delta). The 11 Bribe event records give
+   type-1 deltas **50** (rec 20), **99** (rec 75), **15** (rec
+   603), a type-3 delta of 1 (rec 44), and type-0xF records
+   (recs 18/19/189/550, delta 0, no direct attitude change).
+   **Which record matches is the merchant's +0x02 (template
+   index)** — `$0331A4` scores `0x4000` for a +2 match +
+   `0x10000` for the event id + `RNG(0x400)`; for +0x02 == 1,
+   recs 18/19 win (type 0xF); for other merchants the winner is
+   RNG-selected among the tied records, so **the Bribe's delta
+   is not a single universal number**. Live confirmation is
+   [open] (harness built in `.scratch023/`, blocked by the VM
+   replacement removing the emulator toolchain). See §3.5 for
+   the full record table and the `$02A22A` return semantics. **Attitude repair is LOCATED (2026-11-10) [static]:**
    CAMP raises each `$FF00C0` entry by +3 toward 10 (entry 34
    skipped), and `$02CE74` / `$030628` / `$035656` adjust it — the
    persistent merchant-attitude table `$FF00C0` (36 words, indices

@@ -74,15 +74,35 @@ Map the numbers behind the game and audit them for logic flaws.
   char struct `+0x2A`) is ≥ 10 (`cmpi.w #$a`, skip if less),
   deducts **10 gold** via `$2BBD2(char, 0x400, −10, 1)` (`$0204A0`),
   then raises the attitude via `$02A22A` → `$0298D2` → `$02CE74`
-  (positive delta). The exact attitude delta is data-driven (from
-  the conversation event record loaded by `$032D4C`) and is [open].
-  The handler is gated on `$01E49A($FF0E18)` returning 0 (a
+  (positive delta). **Delta mechanism PINNED (2026-11-10)
+  [static]:** `$02CE74(char, delta)` moves the live attitude
+  (`+0x22`) by the full delta and the persistent `$FF00C0` entry
+  (indexed by `+0x20`) by `(char.+0x26 × delta) / 100`, both
+  clamped to [−100, +100]; delta = ±(event word & `0xFFF`),
+  positive for type 1, negative for type 3. **Event records
+  ENUMERATED (2026-11-10) [static]:** 11 records in the `$0D3102`
+  table have word0 == 8; the event word is the record's +10 word
+  (type << 12 | delta). Type-1 deltas: **50** (rec 20), **99**
+  (rec 75), **15** (rec 603); type-3: 1 (rec 44); type-0xF: 0
+  (recs 18/19/189/550). **Which record matches is the merchant's
+  +0x02 (template index)** — `$0331A4` scores `0x4000` for a +2
+  match + `0x10000` for the event id + `RNG(0x400)`; for +0x02 ==
+  1, recs 18/19 win (type 0xF); for other merchants the winner is
+  RNG-selected among the tied records, so **the Bribe's delta is
+  not a single universal number**. Live confirmation is [open]
+  (harness in `.scratch023/`, blocked by the VM replacement
+  removing the emulator toolchain). **`$02A22A` return semantics
+  PINNED (2026-11-10) [static]:** it returns
+  `char[char[arg1].+0x14].+0x26`, used by `$0298D2` as a char
+  index — in the Bribe context that byte is the merchant's char
+  index, not a percentage; the percentage `$02CE74` uses is a
+  different +0x26 byte (via the merchant's +0x27). The handler
+  is gated on `$01E49A($FF0E18)` returning 0 (a
   message-queue-state precondition). There is **no** Bribe goods
   code in `$2BBD2` (quotient 16, remainders 0–4 only; remainder ≥ 5
   exits) — the Bribe is a verb/C-code action, not a goods
-  transaction. (Note: `docs/logic-audit.md` §16 still records the
-  Bribe code path as OPEN — it needs the same update; not edited
-  here.)
+  transaction. (Note: `docs/logic-audit.md` §16 has been updated
+  with the same findings.)
 - Q13 SOLVED: post-harness PC=0 fault is a stack leak in the hook
   design (`jsr` + `jmp`, never `rts`) — the hook sits on the attract
   loop's VBlank spin, so the stack plummets into RAM in ~3 s. Fixed
