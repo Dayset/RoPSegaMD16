@@ -1080,8 +1080,8 @@ L00AE56:
 	; code $00D25C-$00D28D
 game_dispatch:
 	link.w a6,#$0	; $00D25C
-	jsr sys_unk_011e06.l	; $00D260
-	jsr sys_unk_014fb6.l	; $00D266
+	jsr gfx_layout_game.l	; $00D260
+	jsr intro_story_driver.l	; $00D266
 	jsr new_game_init.l	; $00D26C
 	jsr sys_unk_032d0e.l	; $00D272
 	move.w d0,-(a7)	; $00D278
@@ -1233,7 +1233,7 @@ L00D42C:
 	clr.b -$4(a6)	; $00D462
 	move.w #$ffff,-(a7)	; $00D466
 	move.w #$14,-(a7)	; $00D46A
-	jsr sys_unk_017586.l	; $00D46E
+	jsr sfx_request.l	; $00D46E
 	addq.w #$4,a7	; $00D474
 	bra.b L00D47C	; $00D476
 L00D478:
@@ -1364,7 +1364,7 @@ L00D5F6:
 	move.w #$64,$ff0030.l	; $00D5F6
 	move.w #$ffff,-(a7)	; $00D5FE
 	move.w #$11,-(a7)	; $00D602
-	jsr sys_unk_017586.l	; $00D606
+	jsr sfx_request.l	; $00D606
 	addq.w #$4,a7	; $00D60C
 L00D60E:
 	bra.w L00D7A2	; $00D60E
@@ -2055,7 +2055,7 @@ L00DEC0:
 	neg.l d1	; $00DEC4
 	eori.w #$1,d4	; $00DEC6
 L00DECA:
-	bsr.b sys_unk_00df0a	; $00DECA
+	bsr.b math_udiv32	; $00DECA
 L00DECC:
 	tst.w d4	; $00DECC
 	beq.b L00DED2	; $00DECE
@@ -2079,13 +2079,13 @@ L00DEE8:
 	bpl.b L00DEEE	; $00DEEA
 	neg.l d1	; $00DEEC
 L00DEEE:
-	bsr.b sys_unk_00df0a	; $00DEEE
+	bsr.b math_udiv32	; $00DEEE
 	move.l d1,d0	; $00DEF0
 	bra.b L00DECC	; $00DEF2
 	; code $00DEF4-$00DEFF
-sys_unk_00def4:
+math_mod32:
 	move.l d1,-(a7)	; $00DEF4
-	bsr.b sys_unk_00df0a	; $00DEF6
+	bsr.b math_udiv32	; $00DEF6
 	move.l d1,d0	; $00DEF8
 	move.l (a7)+,d1	; $00DEFA
 	tst.l d0	; $00DEFC
@@ -2093,7 +2093,7 @@ sys_unk_00def4:
 	; data $00DF00-$00DF09
 	incbin "rop-original.gen",$00DF00,$A
 	; code $00DF0A-$00DF57
-sys_unk_00df0a:
+math_udiv32:
 	swap d1	; $00DF0A
 	tst.w d1	; $00DF0C
 	bne.b L00DF2C	; $00DF0E
@@ -2250,7 +2250,7 @@ sys_unk_01107a:
 	unlk a6	; $01107E
 	rts	; $011080
 	; code $011082-$0110CF
-sys_unk_011082:
+pal_load_set:
 	link.w a6,#$fffe	; $011082
 	move.w $8(a6),d0	; $011086
 	asl.w #$5,d0	; $01108A
@@ -3236,7 +3236,7 @@ tile_record_load:
 	addq.w #$8,a7	; $011B18
 	pea.l $ff1ec0.l	; $011B1A
 	move.w $c(a6),-(a7)	; $011B20
-	jsr sys_unk_011082(pc)	; $011B24
+	jsr pal_load_set(pc)	; $011B24
 	addq.w #$6,a7	; $011B28
 	unlk a6	; $011B2A
 	rts	; $011B2C
@@ -3336,7 +3336,7 @@ L011C12:
 	unlk a6	; $011C46
 	rts	; $011C48
 	; code $011C4A-$011C99
-sys_unk_011c4a:
+sprite_set_link:
 	link.w a6,#$0	; $011C4A
 	move.w $8(a6),d0	; $011C4E
 	asl.w #$3,d0	; $011C52
@@ -3367,7 +3367,7 @@ L011C7A:
 	unlk a6	; $011C96
 	rts	; $011C98
 	; code $011C9A-$011DE7
-sys_unk_011c9a:
+sprite_grid_write:
 	link.w a6,#$fff8	; $011C9A
 	movem.l d4-d7/a3-a4,-(a7)	; $011C9E
 	clr.w -$6(a6)	; $011CA2
@@ -3503,7 +3503,7 @@ L011DF8:
 	unlk a6	; $011E02
 	rts	; $011E04
 	; code $011E06-$011F39
-sys_unk_011e06:
+gfx_layout_game:
 	link.w a6,#$0	; $011E06
 	move.l d4,-(a7)	; $011E0A
 	move.w #$8004,-(a7)	; $011E0C
@@ -3567,11 +3567,11 @@ L011ECC:
 	addq.w #$2,a7	; $011EEA
 	pea.l L0CCB18.l	; $011EEC
 	clr.w -(a7)	; $011EF2
-	jsr sys_unk_011082(pc)	; $011EF4
+	jsr pal_load_set(pc)	; $011EF4
 	addq.w #$6,a7	; $011EF8
 	pea.l L0CC9D8.l	; $011EFA
 	move.w #$1,-(a7)	; $011F00
-	jsr sys_unk_011082(pc)	; $011F04
+	jsr pal_load_set(pc)	; $011F04
 	addq.w #$6,a7	; $011F08
 	move.w #$8700,-(a7)	; $011F0A
 	jsr vdp_ctrl_write.l	; $011F0E
@@ -3702,7 +3702,7 @@ L012066:
 	unlk a6	; $01206E
 	rts	; $012070
 	; code $012072-$01215D
-sys_unk_012072:
+text_blit:
 	link.w a6,#$ff10	; $012072
 	clr.w $ff0114.l	; $012076
 	jsr menu_format.l	; $01207C
@@ -3769,7 +3769,7 @@ L0121B2:
 	; data $0121B2-$01225B
 	incbin "rop-original.gen",$0121B2,$AA
 	; code $01225C-$0123AF
-sys_unk_01225c:
+pal_crossfade:
 	link.w a6,#$ffea	; $01225C
 	cmpi.w #$8,$a(a6)	; $012260
 	bls.b L01226C	; $012266
@@ -3873,12 +3873,12 @@ L012282:
 	blt.w L012282	; $012398
 	pea.l $ff864a.l	; $01239C
 	move.w $8(a6),-(a7)	; $0123A2
-	jsr sys_unk_011082(pc)	; $0123A6
+	jsr pal_load_set(pc)	; $0123A6
 	addq.w #$6,a7	; $0123AA
 	unlk a6	; $0123AC
 	rts	; $0123AE
 	; code $0123B0-$012B81
-sys_unk_0123b0:
+window_down:
 	link.w a6,#$ffe8	; $0123B0
 	move.w #$20,-$4(a6)	; $0123B4
 	move.w #$80,-$6(a6)	; $0123BA
@@ -3891,19 +3891,19 @@ sys_unk_0123b0:
 	clr.w -$18(a6)	; $0123DE
 	pea.l L0CCAD8.l	; $0123E2
 	clr.w -(a7)	; $0123E8
-	jsr sys_unk_011082(pc)	; $0123EA
+	jsr pal_load_set(pc)	; $0123EA
 	addq.w #$6,a7	; $0123EE
 	pea.l L0CCAD8.l	; $0123F0
 	move.w #$1,-(a7)	; $0123F6
-	jsr sys_unk_011082(pc)	; $0123FA
+	jsr pal_load_set(pc)	; $0123FA
 	addq.w #$6,a7	; $0123FE
 	pea.l L0CCAD8.l	; $012400
 	move.w #$2,-(a7)	; $012406
-	jsr sys_unk_011082(pc)	; $01240A
+	jsr pal_load_set(pc)	; $01240A
 	addq.w #$6,a7	; $01240E
 	pea.l L0CCAD8.l	; $012410
 	move.w #$3,-(a7)	; $012416
-	jsr sys_unk_011082(pc)	; $01241A
+	jsr pal_load_set(pc)	; $01241A
 	addq.w #$6,a7	; $01241E
 	jsr pad2_read.l	; $012420
 	move.b d0,$ff8646.l	; $012426
@@ -4109,7 +4109,7 @@ L012682:
 	move.w #$b2,-(a7)	; $0126E4
 	move.w #$80,-(a7)	; $0126E8
 	clr.w -(a7)	; $0126EC
-	jsr sys_unk_011c9a(pc)	; $0126EE
+	jsr sprite_grid_write(pc)	; $0126EE
 	lea.l $12(a7),a7	; $0126F2
 	bra.b L01272A	; $0126F6
 L0126F8:
@@ -4124,24 +4124,24 @@ L0126F8:
 	move.w #$9e,-(a7)	; $012718
 	move.w #$80,-(a7)	; $01271C
 	clr.w -(a7)	; $012720
-	jsr sys_unk_011c9a(pc)	; $012722
+	jsr sprite_grid_write(pc)	; $012722
 	lea.l $12(a7),a7	; $012726
 L01272A:
 	pea.l L0CC9F8.l	; $01272A
 	clr.w -(a7)	; $012730
-	jsr sys_unk_011082(pc)	; $012732
+	jsr pal_load_set(pc)	; $012732
 	addq.w #$6,a7	; $012736
 	pea.l L0CCA18.l	; $012738
 	move.w #$1,-(a7)	; $01273E
-	jsr sys_unk_011082(pc)	; $012742
+	jsr pal_load_set(pc)	; $012742
 	addq.w #$6,a7	; $012746
 	pea.l L0CCAB8.l	; $012748
 	move.w #$2,-(a7)	; $01274E
-	jsr sys_unk_011082(pc)	; $012752
+	jsr pal_load_set(pc)	; $012752
 	addq.w #$6,a7	; $012756
 	pea.l L0CCA38.l	; $012758
 	move.w #$3,-(a7)	; $01275E
-	jsr sys_unk_011082(pc)	; $012762
+	jsr pal_load_set(pc)	; $012762
 	addq.w #$6,a7	; $012766
 	clr.w -$a(a6)	; $012768
 L01276C:
@@ -4216,7 +4216,7 @@ L01282A:
 	move.w #$b2,-(a7)	; $012850
 	move.w -$6(a6),-(a7)	; $012854
 	clr.w -(a7)	; $012858
-	jsr sys_unk_011c9a(pc)	; $01285A
+	jsr sprite_grid_write(pc)	; $01285A
 	lea.l $12(a7),a7	; $01285E
 	bra.b L012896	; $012862
 L012864:
@@ -4231,7 +4231,7 @@ L012864:
 	move.w #$9e,-(a7)	; $012884
 	move.w -$6(a6),-(a7)	; $012888
 	clr.w -(a7)	; $01288C
-	jsr sys_unk_011c9a(pc)	; $01288E
+	jsr sprite_grid_write(pc)	; $01288E
 	lea.l $12(a7),a7	; $012892
 L012896:
 	move.w #$1964,d0	; $012896
@@ -4277,7 +4277,7 @@ L0128E2:
 	move.w #$9e,-(a7)	; $012908
 	move.w -$4(a6),-(a7)	; $01290C
 	clr.w -(a7)	; $012910
-	jsr sys_unk_011c9a(pc)	; $012912
+	jsr sprite_grid_write(pc)	; $012912
 	lea.l $12(a7),a7	; $012916
 	bra.b L01294E	; $01291A
 L01291C:
@@ -4292,7 +4292,7 @@ L01291C:
 	move.w #$b2,-(a7)	; $01293C
 	move.w -$4(a6),-(a7)	; $012940
 	clr.w -(a7)	; $012944
-	jsr sys_unk_011c9a(pc)	; $012946
+	jsr sprite_grid_write(pc)	; $012946
 	lea.l $12(a7),a7	; $01294A
 L01294E:
 	cmpi.w #$1770,-$2(a6)	; $01294E
@@ -4309,7 +4309,7 @@ L01294E:
 	addq.w #$2,a7	; $012982
 	pea.l L0CCA98.l	; $012984
 	move.w #$2,-(a7)	; $01298A
-	jsr sys_unk_011082(pc)	; $01298E
+	jsr pal_load_set(pc)	; $01298E
 	addq.w #$6,a7	; $012992
 	move.w #$1,-$10(a6)	; $012994
 	jsr wait_vblank.l	; $01299A
@@ -4324,17 +4324,17 @@ L01294E:
 	move.w #$bd,-(a7)	; $0129C0
 	move.w #$82,-(a7)	; $0129C4
 	move.w #$10,-(a7)	; $0129C8
-	jsr sys_unk_011c9a(pc)	; $0129CC
+	jsr sprite_grid_write(pc)	; $0129CC
 	lea.l $12(a7),a7	; $0129D0
 	move.w #$ffff,-(a7)	; $0129D4
 	move.w #$5e,-(a7)	; $0129D8
-	jsr sys_unk_017586.l	; $0129DC
+	jsr sfx_request.l	; $0129DC
 	addq.w #$4,a7	; $0129E2
 	tst.w -$e(a6)	; $0129E4
 	beq.b L012A26	; $0129E8
 	pea.l L0CCAB8.l	; $0129EA
 	clr.w -(a7)	; $0129F0
-	jsr sys_unk_011082(pc)	; $0129F2
+	jsr pal_load_set(pc)	; $0129F2
 	addq.w #$6,a7	; $0129F6
 	move.w $ff8672.l,-(a7)	; $0129F8
 	move.w #$10,-(a7)	; $0129FE
@@ -4345,7 +4345,7 @@ L01294E:
 	move.w #$9e,-(a7)	; $012A12
 	move.w #$160,-(a7)	; $012A16
 	clr.w -(a7)	; $012A1A
-	jsr sys_unk_011c9a(pc)	; $012A1C
+	jsr sprite_grid_write(pc)	; $012A1C
 	lea.l $12(a7),a7	; $012A20
 	bra.b L012A58	; $012A24
 L012A26:
@@ -4360,7 +4360,7 @@ L012A26:
 	move.w #$b2,-(a7)	; $012A46
 	move.w #$160,-(a7)	; $012A4A
 	clr.w -(a7)	; $012A4E
-	jsr sys_unk_011c9a(pc)	; $012A50
+	jsr sprite_grid_write(pc)	; $012A50
 	lea.l $12(a7),a7	; $012A54
 L012A58:
 	tst.w -$c(a6)	; $012A58
@@ -4382,7 +4382,7 @@ L012A58:
 	divs.w #$8,d0	; $012A92
 	move.w d0,-(a7)	; $012A96
 	move.w #$1,-(a7)	; $012A98
-	jsr sys_unk_01225c(pc)	; $012A9C
+	jsr pal_crossfade(pc)	; $012A9C
 	lea.l $c(a7),a7	; $012AA0
 	pea.l L0CCAF8.l	; $012AA4
 	pea.l L0CCA38.l	; $012AAA
@@ -4391,7 +4391,7 @@ L012A58:
 	divs.w #$8,d0	; $012AB6
 	move.w d0,-(a7)	; $012ABA
 	move.w #$3,-(a7)	; $012ABC
-	jsr sys_unk_01225c(pc)	; $012AC0
+	jsr pal_crossfade(pc)	; $012AC0
 	lea.l $c(a7),a7	; $012AC4
 L012AC8:
 	jsr joypad_queue_pop.l	; $012AC8
@@ -4430,19 +4430,19 @@ L012B28:
 L012B40:
 	pea.l L0CCAD8.l	; $012B40
 	clr.w -(a7)	; $012B46
-	jsr sys_unk_011082(pc)	; $012B48
+	jsr pal_load_set(pc)	; $012B48
 	addq.w #$6,a7	; $012B4C
 	pea.l L0CCAD8.l	; $012B4E
 	move.w #$1,-(a7)	; $012B54
-	jsr sys_unk_011082(pc)	; $012B58
+	jsr pal_load_set(pc)	; $012B58
 	addq.w #$6,a7	; $012B5C
 	pea.l L0CCAD8.l	; $012B5E
 	move.w #$2,-(a7)	; $012B64
-	jsr sys_unk_011082(pc)	; $012B68
+	jsr pal_load_set(pc)	; $012B68
 	addq.w #$6,a7	; $012B6C
 	pea.l L0CCAD8.l	; $012B6E
 	move.w #$3,-(a7)	; $012B74
-	jsr sys_unk_011082(pc)	; $012B78
+	jsr pal_load_set(pc)	; $012B78
 	addq.w #$6,a7	; $012B7C
 	unlk a6	; $012B7E
 	rts	; $012B80
@@ -4482,7 +4482,7 @@ L012BD6:
 L012BEC:
 	move.w $8(a6),d1	; $012BEC
 	ext.l d1	; $012BF0
-	jsr sys_unk_00def4.l	; $012BF2
+	jsr math_mod32.l	; $012BF2
 	unlk a6	; $012BF8
 	rts	; $012BFA
 	; code $012BFC-$012C1F
@@ -4490,7 +4490,7 @@ sys_unk_012bfc:
 	link.w a6,#$0	; $012BFC
 	move.l #$ffff,d1	; $012C00
 	move.l $ff0010.l,d0	; $012C06
-	jsr sys_unk_00def4.l	; $012C0C
+	jsr math_mod32.l	; $012C0C
 	moveq #$0,d1	; $012C12
 	move.w d0,d1	; $012C14
 	move.l d1,$ff0072.l	; $012C16
@@ -4501,19 +4501,19 @@ world_map_draw:
 	link.w a6,#$fffc	; $012C20
 	pea.l L0CCAD8.l	; $012C24
 	clr.w -(a7)	; $012C2A
-	jsr sys_unk_011082.l	; $012C2C
+	jsr pal_load_set.l	; $012C2C
 	addq.w #$6,a7	; $012C32
 	pea.l L0CCAD8.l	; $012C34
 	move.w #$1,-(a7)	; $012C3A
-	jsr sys_unk_011082.l	; $012C3E
+	jsr pal_load_set.l	; $012C3E
 	addq.w #$6,a7	; $012C44
 	pea.l L0CCAD8.l	; $012C46
 	move.w #$2,-(a7)	; $012C4C
-	jsr sys_unk_011082.l	; $012C50
+	jsr pal_load_set.l	; $012C50
 	addq.w #$6,a7	; $012C56
 	pea.l L0CCAD8.l	; $012C58
 	move.w #$3,-(a7)	; $012C5E
-	jsr sys_unk_011082.l	; $012C62
+	jsr pal_load_set.l	; $012C62
 	addq.w #$6,a7	; $012C68
 	move.w #$8134,-(a7)	; $012C6A
 	jsr vdp_ctrl_write.l	; $012C6E
@@ -4683,15 +4683,15 @@ world_map_draw:
 	addq.w #$6,a7	; $012EF8
 	pea.l L0CCB18.l	; $012EFA
 	clr.w -(a7)	; $012F00
-	jsr sys_unk_011082.l	; $012F02
+	jsr pal_load_set.l	; $012F02
 	addq.w #$6,a7	; $012F08
 	pea.l L0CCB38.l	; $012F0A
 	move.w #$1,-(a7)	; $012F10
-	jsr sys_unk_011082.l	; $012F14
+	jsr pal_load_set.l	; $012F14
 	addq.w #$6,a7	; $012F1A
 	pea.l L0CCD98.l	; $012F1C
 	move.w #$2,-(a7)	; $012F22
-	jsr sys_unk_011082.l	; $012F26
+	jsr pal_load_set.l	; $012F26
 	addq.w #$6,a7	; $012F2C
 	jsr sys_unk_013d84(pc)	; $012F2E
 	clr.w $ff0114.l	; $012F32
@@ -4732,7 +4732,7 @@ L012F9A:
 error_show:
 	link.w a6,#$0	; $012FA0
 	move.w $8(a6),-(a7)	; $012FA4
-	jsr sys_unk_012072.l	; $012FA8
+	jsr text_blit.l	; $012FA8
 	addq.w #$2,a7	; $012FAE
 	unlk a6	; $012FB0
 	rts	; $012FB2
@@ -5273,7 +5273,7 @@ L01367E:
 	movea.l (a0),a1	; $013694
 	adda.l $8(a6),a1	; $013696
 	move.l a1,-(a7)	; $01369A
-	bsr.b sys_unk_0136fc	; $01369C
+	bsr.b text_word_expand	; $01369C
 	lea.l $c(a7),a7	; $01369E
 	ext.l d0	; $0136A2
 	move.l d0,-$8(a6)	; $0136A4
@@ -5310,7 +5310,7 @@ L0136F4:
 	unlk a6	; $0136F8
 	rts	; $0136FA
 	; code $0136FC-$01383B
-sys_unk_0136fc:
+text_word_expand:
 	link.w a6,#$fff6	; $0136FC
 	movem.l d4-d7/a3-a4,-(a7)	; $013700
 	moveq #$1,d4	; $013704
@@ -5735,7 +5735,7 @@ L013C62:
 	move.w #$10b,-(a7)	; $013C94
 	move.w #$189,-(a7)	; $013C98
 	move.w #$45,-(a7)	; $013C9C
-	jsr sys_unk_011c9a.l	; $013CA0
+	jsr sprite_grid_write.l	; $013CA0
 	lea.l $12(a7),a7	; $013CA6
 L013CAA:
 	jsr wait_vblank(pc)	; $013CAA
@@ -5745,7 +5745,7 @@ L013CAA:
 	clr.w -(a7)	; $013CBA
 	clr.w -(a7)	; $013CBC
 	clr.w -(a7)	; $013CBE
-	jsr sys_unk_011c4a.l	; $013CC0
+	jsr sprite_set_link.l	; $013CC0
 	addq.w #$8,a7	; $013CC6
 	tst.w $ff00ac.l	; $013CC8
 	beq.b L013D02	; $013CCE
@@ -5753,13 +5753,13 @@ L013CAA:
 	move.w #$3,-(a7)	; $013CD4
 	move.w #$3,-(a7)	; $013CD8
 	move.w #$15,-(a7)	; $013CDC
-	jsr sys_unk_011c4a.l	; $013CE0
+	jsr sprite_set_link.l	; $013CE0
 	addq.w #$8,a7	; $013CE6
 	move.w -$8(a6),-(a7)	; $013CE8
 	move.w #$3,-(a7)	; $013CEC
 	move.w #$3,-(a7)	; $013CF0
 	move.w #$2e,-(a7)	; $013CF4
-	jsr sys_unk_011c4a.l	; $013CF8
+	jsr sprite_set_link.l	; $013CF8
 	addq.w #$8,a7	; $013CFE
 	bra.b L013D1A	; $013D00
 L013D02:
@@ -5767,7 +5767,7 @@ L013D02:
 	move.w #$3,-(a7)	; $013D06
 	move.w #$3,-(a7)	; $013D0A
 	move.w #$15,-(a7)	; $013D0E
-	jsr sys_unk_011c4a.l	; $013D12
+	jsr sprite_set_link.l	; $013D12
 	addq.w #$8,a7	; $013D18
 L013D1A:
 	bra.b L013D80	; $013D1A
@@ -5776,7 +5776,7 @@ L013D1C:
 	clr.w -(a7)	; $013D20
 	clr.w -(a7)	; $013D22
 	clr.w -(a7)	; $013D24
-	jsr sys_unk_011c4a.l	; $013D26
+	jsr sprite_set_link.l	; $013D26
 	addq.w #$8,a7	; $013D2C
 	tst.w $ff00ac.l	; $013D2E
 	beq.b L013D68	; $013D34
@@ -5784,13 +5784,13 @@ L013D1C:
 	move.w #$3,-(a7)	; $013D3A
 	move.w #$3,-(a7)	; $013D3E
 	move.w #$19,-(a7)	; $013D42
-	jsr sys_unk_011c4a.l	; $013D46
+	jsr sprite_set_link.l	; $013D46
 	addq.w #$8,a7	; $013D4C
 	move.w -$8(a6),-(a7)	; $013D4E
 	move.w #$3,-(a7)	; $013D52
 	move.w #$3,-(a7)	; $013D56
 	move.w #$2e,-(a7)	; $013D5A
-	jsr sys_unk_011c4a.l	; $013D5E
+	jsr sprite_set_link.l	; $013D5E
 	addq.w #$8,a7	; $013D64
 	bra.b L013D80	; $013D66
 L013D68:
@@ -5798,7 +5798,7 @@ L013D68:
 	move.w #$3,-(a7)	; $013D6C
 	move.w #$3,-(a7)	; $013D70
 	move.w #$19,-(a7)	; $013D74
-	jsr sys_unk_011c4a.l	; $013D78
+	jsr sprite_set_link.l	; $013D78
 	addq.w #$8,a7	; $013D7E
 L013D80:
 	unlk a6	; $013D80
@@ -6333,7 +6333,7 @@ sys_unk_013d84:
 	move.w #$84,-(a7)	; $0145F8
 	move.w #$13b,-(a7)	; $0145FC
 	move.w #$2f,-(a7)	; $014600
-	jsr sys_unk_011c9a.l	; $014604
+	jsr sprite_grid_write.l	; $014604
 	lea.l $12(a7),a7	; $01460A
 	tst.w $ff0116.l	; $01460E
 	beq.w L0146D4	; $014614
@@ -6442,12 +6442,12 @@ L01478C:
 	move.w #$10b,-(a7)	; $0147B6
 	move.w #$a8,-(a7)	; $0147BA
 	move.w #$3f,-(a7)	; $0147BE
-	jsr sys_unk_011c9a.l	; $0147C2
+	jsr sprite_grid_write.l	; $0147C2
 	lea.l $12(a7),a7	; $0147C8
 	unlk a6	; $0147CC
 	rts	; $0147CE
 	; code $0147D0-$014FB3
-sys_unk_0147d0:
+gfx_plane_write:
 	link.w a6,#$ffa8	; $0147D0
 	move.w #$7,-$6(a6)	; $0147D4
 	clr.w -$8(a6)	; $0147DA
@@ -6461,19 +6461,19 @@ sys_unk_0147d0:
 	clr.w -$1e(a6)	; $0147FE
 	pea.l L0CCAD8.l	; $014802
 	clr.w -(a7)	; $014808
-	jsr sys_unk_011082.l	; $01480A
+	jsr pal_load_set.l	; $01480A
 	addq.w #$6,a7	; $014810
 	pea.l L0CCAD8.l	; $014812
 	move.w #$1,-(a7)	; $014818
-	jsr sys_unk_011082.l	; $01481C
+	jsr pal_load_set.l	; $01481C
 	addq.w #$6,a7	; $014822
 	pea.l L0CCAD8.l	; $014824
 	move.w #$2,-(a7)	; $01482A
-	jsr sys_unk_011082.l	; $01482E
+	jsr pal_load_set.l	; $01482E
 	addq.w #$6,a7	; $014834
 	pea.l L0CCAD8.l	; $014836
 	move.w #$3,-(a7)	; $01483C
-	jsr sys_unk_011082.l	; $014840
+	jsr pal_load_set.l	; $014840
 	addq.w #$6,a7	; $014846
 	pea.l $ff4ec0.l	; $014848
 	move.w $8(a6),-(a7)	; $01484E
@@ -6624,7 +6624,7 @@ L014A5C:
 	divs.w #$50,d0	; $014A84
 	move.w d0,-(a7)	; $014A88
 	clr.w -(a7)	; $014A8A
-	jsr sys_unk_01225c.l	; $014A8C
+	jsr pal_crossfade.l	; $014A8C
 	lea.l $c(a7),a7	; $014A92
 	clr.w -$4(a6)	; $014A96
 L014A9A:
@@ -6976,19 +6976,19 @@ L014F2C:
 L014F54:
 	pea.l L0CCAD8.l	; $014F54
 	clr.w -(a7)	; $014F5A
-	jsr sys_unk_011082.l	; $014F5C
+	jsr pal_load_set.l	; $014F5C
 	addq.w #$6,a7	; $014F62
 	pea.l L0CCAD8.l	; $014F64
 	move.w #$1,-(a7)	; $014F6A
-	jsr sys_unk_011082.l	; $014F6E
+	jsr pal_load_set.l	; $014F6E
 	addq.w #$6,a7	; $014F74
 	pea.l L0CCAD8.l	; $014F76
 	move.w #$2,-(a7)	; $014F7C
-	jsr sys_unk_011082.l	; $014F80
+	jsr pal_load_set.l	; $014F80
 	addq.w #$6,a7	; $014F86
 	pea.l L0CCAD8.l	; $014F88
 	move.w #$3,-(a7)	; $014F8E
-	jsr sys_unk_011082.l	; $014F92
+	jsr pal_load_set.l	; $014F92
 	addq.w #$6,a7	; $014F98
 	jsr wait_vblank.l	; $014F9A
 	clr.w -(a7)	; $014FA0
@@ -7006,31 +7006,31 @@ L014FB5:
 	; data $014FB5-$014FB5
 	incbin "rop-original.gen",$014FB5,$1
 	; code $014FB6-$015011
-sys_unk_014fb6:
+intro_story_driver:
 	link.w a6,#$fffe	; $014FB6
-	jsr sys_unk_0123b0.l	; $014FBA
+	jsr window_down.l	; $014FBA
 L014FC0:
-	bsr.b sys_unk_015012	; $014FC0
+	bsr.b intro_helper	; $014FC0
 	move.w d0,-$2(a6)	; $014FC2
 	cmpi.w #$1,-$2(a6)	; $014FC6
 	bne.b L014FDA	; $014FCC
 	clr.w -(a7)	; $014FCE
 	move.w #$20,-(a7)	; $014FD0
-	jsr sys_unk_0147d0(pc)	; $014FD4
+	jsr gfx_plane_write(pc)	; $014FD4
 	addq.w #$4,a7	; $014FD8
 L014FDA:
 	cmpi.w #$2,-$2(a6)	; $014FDA
 	bne.b L014FEE	; $014FE0
 	clr.w -(a7)	; $014FE2
 	move.w #$3d,-(a7)	; $014FE4
-	jsr sys_unk_0147d0(pc)	; $014FE8
+	jsr gfx_plane_write(pc)	; $014FE8
 	addq.w #$4,a7	; $014FEC
 L014FEE:
 	cmpi.w #$3,-$2(a6)	; $014FEE
 	bne.b L015002	; $014FF4
 	clr.w -(a7)	; $014FF6
 	move.w #$3b,-(a7)	; $014FF8
-	jsr sys_unk_0147d0(pc)	; $014FFC
+	jsr gfx_plane_write(pc)	; $014FFC
 	addq.w #$4,a7	; $015000
 L015002:
 	tst.w -$2(a6)	; $015002
@@ -7039,7 +7039,7 @@ L015002:
 	unlk a6	; $01500E
 	rts	; $015010
 	; code $015012-$015BB7
-sys_unk_015012:
+intro_helper:
 	link.w a6,#$ffe6	; $015012
 	move.w #$1,-$4(a6)	; $015016
 	move.w #$1,-(a7)	; $01501C
@@ -7076,23 +7076,23 @@ sys_unk_015012:
 	jsr wait_vblank.l	; $015098
 	pea.l L0CCAF8.l	; $01509E
 	clr.w -(a7)	; $0150A4
-	jsr sys_unk_011082.l	; $0150A6
+	jsr pal_load_set.l	; $0150A6
 	addq.w #$6,a7	; $0150AC
 	pea.l L0CCAF8.l	; $0150AE
 	move.w #$1,-(a7)	; $0150B4
-	jsr sys_unk_011082.l	; $0150B8
+	jsr pal_load_set.l	; $0150B8
 	addq.w #$6,a7	; $0150BE
 	pea.l L0CCAF8.l	; $0150C0
 	move.w #$2,-(a7)	; $0150C6
-	jsr sys_unk_011082.l	; $0150CA
+	jsr pal_load_set.l	; $0150CA
 	addq.w #$6,a7	; $0150D0
 	pea.l L0CCAF8.l	; $0150D2
 	move.w #$3,-(a7)	; $0150D8
-	jsr sys_unk_011082.l	; $0150DC
+	jsr pal_load_set.l	; $0150DC
 	addq.w #$6,a7	; $0150E2
 	move.w #$ffff,-(a7)	; $0150E4
 	move.w #$1,-(a7)	; $0150E8
-	jsr sys_unk_017586(pc)	; $0150EC
+	jsr sfx_request(pc)	; $0150EC
 	addq.w #$4,a7	; $0150F0
 	move.w #$9200,-(a7)	; $0150F2
 	jsr vdp_ctrl_write.l	; $0150F6
@@ -7140,7 +7140,7 @@ sys_unk_015012:
 	move.w #$99,-(a7)	; $015194
 	move.w #$135,-(a7)	; $015198
 	move.w #$1,-(a7)	; $01519C
-	jsr sys_unk_011c9a.l	; $0151A0
+	jsr sprite_grid_write.l	; $0151A0
 	lea.l $12(a7),a7	; $0151A6
 	move.w $ff8642.l,d0	; $0151AA
 	add.w #$400c,d0	; $0151B0
@@ -7164,7 +7164,7 @@ sys_unk_015012:
 	move.w #$89,-(a7)	; $0151F4
 	move.w #$14d,-(a7)	; $0151F8
 	move.w #$3,-(a7)	; $0151FC
-	jsr sys_unk_011c9a.l	; $015200
+	jsr sprite_grid_write.l	; $015200
 	lea.l $12(a7),a7	; $015206
 	move.w $ff8680.l,d0	; $01520A
 	add.w #$6000,d0	; $015210
@@ -7193,19 +7193,19 @@ sys_unk_015012:
 	lea.l $10(a7),a7	; $01526A
 	pea.l L0CCBB8.l	; $01526E
 	clr.w -(a7)	; $015274
-	jsr sys_unk_011082.l	; $015276
+	jsr pal_load_set.l	; $015276
 	addq.w #$6,a7	; $01527C
 	pea.l L0CCBD8.l	; $01527E
 	move.w #$1,-(a7)	; $015284
-	jsr sys_unk_011082.l	; $015288
+	jsr pal_load_set.l	; $015288
 	addq.w #$6,a7	; $01528E
 	pea.l L0CCB98.l	; $015290
 	move.w #$2,-(a7)	; $015296
-	jsr sys_unk_011082.l	; $01529A
+	jsr pal_load_set.l	; $01529A
 	addq.w #$6,a7	; $0152A0
 	pea.l L0CCB78.l	; $0152A2
 	move.w #$3,-(a7)	; $0152A8
-	jsr sys_unk_011082.l	; $0152AC
+	jsr pal_load_set.l	; $0152AC
 	addq.w #$6,a7	; $0152B2
 	clr.l -$1a(a6)	; $0152B4
 	clr.w -$14(a6)	; $0152B8
@@ -7217,7 +7217,7 @@ sys_unk_015012:
 L0152D6:
 	move.l #$c8,d1	; $0152D6
 	move.l -$1a(a6),d0	; $0152DC
-	jsr sys_unk_00def4.l	; $0152E0
+	jsr math_mod32.l	; $0152E0
 	move.w d0,-$16(a6)	; $0152E6
 	tst.w -$16(a6)	; $0152EA
 	bne.b L01536A	; $0152EE
@@ -7352,7 +7352,7 @@ L015454:
 L015474:
 	moveq #$c,d1	; $015474
 	move.l -$1a(a6),d0	; $015476
-	jsr sys_unk_00def4.l	; $01547A
+	jsr math_mod32.l	; $01547A
 	lsr.l #$1,d0	; $015480
 	asl.l #$1,d0	; $015482
 	lea.l $ff007a.l,a0	; $015484
@@ -7387,7 +7387,7 @@ L0154D4:
 	addq.w #$2,a7	; $0154FA
 	move.w #$1,-(a7)	; $0154FC
 	move.w #$20,-(a7)	; $015500
-	jsr sys_unk_0147d0(pc)	; $015504
+	jsr gfx_plane_write(pc)	; $015504
 	addq.w #$4,a7	; $015508
 	clr.w -(a7)	; $01550A
 	jsr sys_unk_015c08(pc)	; $01550C
@@ -7416,19 +7416,19 @@ L015544:
 	jsr clear_sprite_attr.l	; $015568
 	pea.l L0CCAD8.l	; $01556E
 	clr.w -(a7)	; $015574
-	jsr sys_unk_011082.l	; $015576
+	jsr pal_load_set.l	; $015576
 	addq.w #$6,a7	; $01557C
 	pea.l L0CCAD8.l	; $01557E
 	move.w #$1,-(a7)	; $015584
-	jsr sys_unk_011082.l	; $015588
+	jsr pal_load_set.l	; $015588
 	addq.w #$6,a7	; $01558E
 	pea.l L0CCAD8.l	; $015590
 	move.w #$2,-(a7)	; $015596
-	jsr sys_unk_011082.l	; $01559A
+	jsr pal_load_set.l	; $01559A
 	addq.w #$6,a7	; $0155A0
 	pea.l L0CCAD8.l	; $0155A2
 	move.w #$3,-(a7)	; $0155A8
-	jsr sys_unk_011082.l	; $0155AC
+	jsr pal_load_set.l	; $0155AC
 	addq.w #$6,a7	; $0155B2
 	move.w #$9011,-(a7)	; $0155B4
 	jsr vdp_ctrl_write.l	; $0155B8
@@ -7633,19 +7633,19 @@ L0158D0:
 	bcs.b L0158CC	; $0158D6
 	pea.l L0CCB38.l	; $0158D8
 	clr.w -(a7)	; $0158DE
-	jsr sys_unk_011082.l	; $0158E0
+	jsr pal_load_set.l	; $0158E0
 	addq.w #$6,a7	; $0158E6
 	pea.l L0CCB78.l	; $0158E8
 	move.w #$1,-(a7)	; $0158EE
-	jsr sys_unk_011082.l	; $0158F2
+	jsr pal_load_set.l	; $0158F2
 	addq.w #$6,a7	; $0158F8
 	pea.l L0CCD98.l	; $0158FA
 	move.w #$2,-(a7)	; $015900
-	jsr sys_unk_011082.l	; $015904
+	jsr pal_load_set.l	; $015904
 	addq.w #$6,a7	; $01590A
 	pea.l L0CCC18.l	; $01590C
 	move.w #$3,-(a7)	; $015912
-	jsr sys_unk_011082.l	; $015916
+	jsr pal_load_set.l	; $015916
 	addq.w #$6,a7	; $01591C
 L01591E:
 	jsr joypad_queue_pop.l	; $01591E
@@ -7730,7 +7730,7 @@ L015A2C:
 	beq.w L01591E	; $015A38
 	move.w #$ffff,-(a7)	; $015A3C
 	move.w #$11,-(a7)	; $015A40
-	jsr sys_unk_017586(pc)	; $015A44
+	jsr sfx_request(pc)	; $015A44
 	addq.w #$4,a7	; $015A48
 	cmpi.w #$2,-$2(a6)	; $015A4A
 	bne.b L015A58	; $015A50
@@ -7822,7 +7822,7 @@ L015B4E:
 	divs.w #$4,d0	; $015B6C
 	move.w d0,-(a7)	; $015B70
 	move.w #$3,-(a7)	; $015B72
-	jsr sys_unk_01225c.l	; $015B76
+	jsr pal_crossfade.l	; $015B76
 	lea.l $c(a7),a7	; $015B7C
 L015B80:
 	clr.w -$12(a6)	; $015B80
@@ -7867,19 +7867,19 @@ sys_unk_015c08:
 	link.w a6,#$fffa	; $015C08
 	pea.l L0CCAD8.l	; $015C0C
 	clr.w -(a7)	; $015C12
-	jsr sys_unk_011082.l	; $015C14
+	jsr pal_load_set.l	; $015C14
 	addq.w #$6,a7	; $015C1A
 	pea.l L0CCAD8.l	; $015C1C
 	move.w #$1,-(a7)	; $015C22
-	jsr sys_unk_011082.l	; $015C26
+	jsr pal_load_set.l	; $015C26
 	addq.w #$6,a7	; $015C2C
 	pea.l L0CCAD8.l	; $015C2E
 	move.w #$2,-(a7)	; $015C34
-	jsr sys_unk_011082.l	; $015C38
+	jsr pal_load_set.l	; $015C38
 	addq.w #$6,a7	; $015C3E
 	pea.l L0CCAD8.l	; $015C40
 	move.w #$3,-(a7)	; $015C46
-	jsr sys_unk_011082.l	; $015C4A
+	jsr pal_load_set.l	; $015C4A
 	addq.w #$6,a7	; $015C50
 	move.w #$234,$ff0076.l	; $015C52
 	move.w #$30,-(a7)	; $015C5A
@@ -8220,15 +8220,15 @@ L016158:
 	addq.w #$2,a7	; $016174
 	pea.l L0CCBB8.l	; $016176
 	clr.w -(a7)	; $01617C
-	jsr sys_unk_011082.l	; $01617E
+	jsr pal_load_set.l	; $01617E
 	addq.w #$6,a7	; $016184
 	pea.l L0CCBD8.l	; $016186
 	move.w #$1,-(a7)	; $01618C
-	jsr sys_unk_011082.l	; $016190
+	jsr pal_load_set.l	; $016190
 	addq.w #$6,a7	; $016196
 	pea.l L0CCB38.l	; $016198
 	move.w #$2,-(a7)	; $01619E
-	jsr sys_unk_011082.l	; $0161A2
+	jsr pal_load_set.l	; $0161A2
 	addq.w #$6,a7	; $0161A8
 L0161AA:
 	jsr joypad_queue_pop.l	; $0161AA
@@ -8324,19 +8324,19 @@ L01629C:
 L0162B4:
 	pea.l L0CCAD8.l	; $0162B4
 	clr.w -(a7)	; $0162BA
-	jsr sys_unk_011082.l	; $0162BC
+	jsr pal_load_set.l	; $0162BC
 	addq.w #$6,a7	; $0162C2
 	pea.l L0CCAD8.l	; $0162C4
 	move.w #$1,-(a7)	; $0162CA
-	jsr sys_unk_011082.l	; $0162CE
+	jsr pal_load_set.l	; $0162CE
 	addq.w #$6,a7	; $0162D4
 	pea.l L0CCAD8.l	; $0162D6
 	move.w #$2,-(a7)	; $0162DC
-	jsr sys_unk_011082.l	; $0162E0
+	jsr pal_load_set.l	; $0162E0
 	addq.w #$6,a7	; $0162E6
 	pea.l L0CCAD8.l	; $0162E8
 	move.w #$3,-(a7)	; $0162EE
-	jsr sys_unk_011082.l	; $0162F2
+	jsr pal_load_set.l	; $0162F2
 	addq.w #$6,a7	; $0162F8
 	unlk a6	; $0162FA
 	rts	; $0162FC
@@ -8426,7 +8426,7 @@ L016412:
 	move.w $c(a6),d0	; $01641C
 	add.w d4,d0	; $016420
 	move.w d0,-(a7)	; $016422
-	jsr sys_unk_01c176.l	; $016424
+	jsr map_chunk_cache_read.l	; $016424
 	addq.w #$4,a7	; $01642A
 	movea.l d0,a0	; $01642C
 	movea.l (a7)+,a1	; $01642E
@@ -8546,7 +8546,7 @@ L016542:
 	add.w d4,d0	; $01654C
 	move.w d0,-(a7)	; $01654E
 	move.w $c(a6),-(a7)	; $016550
-	jsr sys_unk_01c176.l	; $016554
+	jsr map_chunk_cache_read.l	; $016554
 	addq.w #$4,a7	; $01655A
 	movea.l d0,a0	; $01655C
 	movea.l (a7)+,a1	; $01655E
@@ -8662,15 +8662,15 @@ L016670:
 L016678:
 	pea.l L0CCAF8.l	; $016678
 	clr.w -(a7)	; $01667E
-	jsr sys_unk_011082.l	; $016680
+	jsr pal_load_set.l	; $016680
 	addq.w #$6,a7	; $016686
 	pea.l L0CCAF8.l	; $016688
 	move.w #$1,-(a7)	; $01668E
-	jsr sys_unk_011082.l	; $016692
+	jsr pal_load_set.l	; $016692
 	addq.w #$6,a7	; $016698
 	pea.l L0CCAF8.l	; $01669A
 	move.w #$2,-(a7)	; $0166A0
-	jsr sys_unk_011082.l	; $0166A4
+	jsr pal_load_set.l	; $0166A4
 	addq.w #$6,a7	; $0166AA
 	move.w #$347,-(a7)	; $0166AC
 	move.w $ff02b2.l,-(a7)	; $0166B0
@@ -8706,7 +8706,7 @@ L0166C8:
 	clr.w -(a7)	; $01672A
 	clr.w -(a7)	; $01672C
 	clr.w -(a7)	; $01672E
-	jsr sys_unk_011c4a.l	; $016730
+	jsr sprite_set_link.l	; $016730
 	addq.w #$8,a7	; $016736
 	move.w #$40,-(a7)	; $016738
 	move.w $ff8678.l,-(a7)	; $01673C
@@ -8895,7 +8895,7 @@ L0169E6:
 	move.w d6,d0	; $0169F2
 	add.w d5,d0	; $0169F4
 	move.w d0,-(a7)	; $0169F6
-	jsr sys_unk_01c176.l	; $0169F8
+	jsr map_chunk_cache_read.l	; $0169F8
 	addq.w #$4,a7	; $0169FE
 	movea.l d0,a0	; $016A00
 	movea.l (a7)+,a1	; $016A02
@@ -8984,11 +8984,11 @@ L016AB6:
 	move.b d0,$ff0e14.l	; $016AD0
 	pea.l L0CCB18.l	; $016AD6
 	clr.w -(a7)	; $016ADC
-	jsr sys_unk_011082.l	; $016ADE
+	jsr pal_load_set.l	; $016ADE
 	addq.w #$6,a7	; $016AE4
 	pea.l L0CCB58.l	; $016AE6
 	move.w #$1,-(a7)	; $016AEC
-	jsr sys_unk_011082.l	; $016AF0
+	jsr pal_load_set.l	; $016AF0
 	addq.w #$6,a7	; $016AF6
 	move.w #$7,-(a7)	; $016AF8
 	jsr song_request(pc)	; $016AFC
@@ -9241,7 +9241,7 @@ L016D88:
 	clr.w -(a7)	; $016E38
 	move.w #$3,-(a7)	; $016E3A
 	move.w #$5,-(a7)	; $016E3E
-	jsr sys_unk_011c4a.l	; $016E42
+	jsr sprite_set_link.l	; $016E42
 	addq.w #$8,a7	; $016E48
 	bra.b L016E60	; $016E4A
 L016E4C:
@@ -9249,7 +9249,7 @@ L016E4C:
 	clr.w -(a7)	; $016E4E
 	move.w #$3,-(a7)	; $016E50
 	move.w #$5,-(a7)	; $016E54
-	jsr sys_unk_011c4a.l	; $016E58
+	jsr sprite_set_link.l	; $016E58
 	addq.w #$8,a7	; $016E5E
 L016E60:
 	bra.b L016E76	; $016E60
@@ -9258,7 +9258,7 @@ L016E62:
 	clr.w -(a7)	; $016E64
 	move.w #$3,-(a7)	; $016E66
 	move.w #$5,-(a7)	; $016E6A
-	jsr sys_unk_011c4a.l	; $016E6E
+	jsr sprite_set_link.l	; $016E6E
 	addq.w #$8,a7	; $016E74
 L016E76:
 	tst.w -$12(a6)	; $016E76
@@ -9362,11 +9362,11 @@ L016FBA:
 	addq.w #$2,a7	; $016FD6
 	pea.l L0CCAF8.l	; $016FD8
 	clr.w -(a7)	; $016FDE
-	jsr sys_unk_011082.l	; $016FE0
+	jsr pal_load_set.l	; $016FE0
 	addq.w #$6,a7	; $016FE6
 	pea.l L0CCAF8.l	; $016FE8
 	move.w #$1,-(a7)	; $016FEE
-	jsr sys_unk_011082.l	; $016FF2
+	jsr pal_load_set.l	; $016FF2
 	addq.w #$6,a7	; $016FF8
 	move.w $ff8640.l,d0	; $016FFA
 	add.w #$205b,d0	; $017000
@@ -9415,11 +9415,11 @@ L016FBA:
 	jsr sys_unk_0162fe(pc)	; $01709E
 	pea.l L0CCB38.l	; $0170A2
 	move.w #$1,-(a7)	; $0170A8
-	jsr sys_unk_011082.l	; $0170AC
+	jsr pal_load_set.l	; $0170AC
 	addq.w #$6,a7	; $0170B2
 	pea.l L0CCD98.l	; $0170B4
 	move.w #$2,-(a7)	; $0170BA
-	jsr sys_unk_011082.l	; $0170BE
+	jsr pal_load_set.l	; $0170BE
 	addq.w #$6,a7	; $0170C4
 	bsr.b palette_fade	; $0170C6
 	bra.w L016670	; $0170C8
@@ -9461,7 +9461,7 @@ palette_fade:
 	divs.w #$2,d0	; $017126
 	move.w d0,-(a7)	; $01712A
 	clr.w -(a7)	; $01712C
-	jsr sys_unk_01225c.l	; $01712E
+	jsr pal_crossfade.l	; $01712E
 	lea.l $c(a7),a7	; $017134
 L017138:
 	unlk a6	; $017138
@@ -9481,7 +9481,7 @@ L01713C:
 	divs.w #$2,d0	; $017168
 	move.w d0,-(a7)	; $01716C
 	clr.w -(a7)	; $01716E
-	jsr sys_unk_01225c.l	; $017170
+	jsr pal_crossfade.l	; $017170
 	lea.l $c(a7),a7	; $017176
 	bra.b L017138	; $01717A
 L01717C:
@@ -9494,7 +9494,7 @@ L01717C:
 L017194:
 	pea.l L0CCC38.l	; $017194
 	clr.w -(a7)	; $01719A
-	jsr sys_unk_011082.l	; $01719C
+	jsr pal_load_set.l	; $01719C
 	addq.w #$6,a7	; $0171A2
 	bra.b L017138	; $0171A4
 L0171A6:
@@ -9502,13 +9502,13 @@ L0171A6:
 	bne.b L0171C2	; $0171AC
 	pea.l L0CCCB8.l	; $0171AE
 	clr.w -(a7)	; $0171B4
-	jsr sys_unk_011082.l	; $0171B6
+	jsr pal_load_set.l	; $0171B6
 	addq.w #$6,a7	; $0171BC
 	bra.w L017138	; $0171BE
 L0171C2:
 	pea.l L0CCB18.l	; $0171C2
 	clr.w -(a7)	; $0171C8
-	jsr sys_unk_011082.l	; $0171CA
+	jsr pal_load_set.l	; $0171CA
 	addq.w #$6,a7	; $0171D0
 	bra.w L017138	; $0171D2
 	; code $0171D6-$017365
@@ -9671,11 +9671,11 @@ L0173D6:
 L0173DA:
 	move.w $8(a6),$ff012e.l	; $0173DA
 	move.w $8(a6),-(a7)	; $0173E2
-	bsr.b sys_unk_0173ec	; $0173E6
+	bsr.b song_play_direct	; $0173E6
 	addq.w #$2,a7	; $0173E8
 	bra.b L0173D6	; $0173EA
 	; code $0173EC-$017545
-sys_unk_0173ec:
+song_play_direct:
 	link.w a6,#$0	; $0173EC
 	move.w $8(a6),d0	; $0173F0
 	ext.l d0	; $0173F4
@@ -9770,7 +9770,7 @@ L017582:
 	unlk a6	; $017582
 	rts	; $017584
 	; code $017586-$01764D
-sys_unk_017586:
+sfx_request:
 	link.w a6,#$fffc	; $017586
 	cmpi.w #$5a,$8(a6)	; $01758A
 	bge.b L0175EE	; $017590
@@ -9858,7 +9858,7 @@ L01768A:
 L01769E:
 	bra.b L01764A	; $01769E
 	; code $0176A0-$017705
-sys_unk_0176a0:
+save_parity:
 	link.w a6,#$fffe	; $0176A0
 	movem.l d4-d6,-(a7)	; $0176A4
 	clr.b -$1(a6)	; $0176A8
@@ -9913,7 +9913,7 @@ L01772A:
 	unlk a6	; $01772A
 	rts	; $01772C
 L01772E:
-	jsr sys_unk_0176a0(pc)	; $01772E
+	jsr save_parity(pc)	; $01772E
 	move.b d0,-$5(a6)	; $017732
 	pea.l -$5(a6)	; $017736
 	pea.l L000001.w	; $01773A
@@ -9947,7 +9947,7 @@ L01778A:
 	blt.b L01775A	; $017794
 	move.w $a(a6),-(a7)	; $017796
 	move.w $8(a6),-(a7)	; $01779A
-	bsr.b sys_unk_0177b4	; $01779E
+	bsr.b save_validate_magic	; $01779E
 	addq.w #$4,a7	; $0177A0
 	cmp.w #$49,d0	; $0177A2
 	beq.b L0177AE	; $0177A6
@@ -9957,7 +9957,7 @@ L0177AE:
 	moveq #$48,d0	; $0177AE
 	bra.w L01772A	; $0177B0
 	; code $0177B4-$01785F
-sys_unk_0177b4:
+save_validate_magic:
 	link.w a6,#$fff8	; $0177B4
 	clr.w -$8(a6)	; $0177B8
 L0177BC:
@@ -9999,7 +9999,7 @@ L01781E:
 	moveq #$4b,d0	; $017840
 	bra.b L0177F6	; $017842
 L017844:
-	jsr sys_unk_0176a0(pc)	; $017844
+	jsr save_parity(pc)	; $017844
 	move.b -$5(a6),d1	; $017848
 	cmp.b d0,d1	; $01784C
 	bne.b L017858	; $01784E
@@ -10012,23 +10012,23 @@ L01785C:
 	moveq #$49,d0	; $01785C
 	bra.b L0177F6	; $01785E
 	; code $017860-$0179B5
-sys_unk_017860:
+location_pic_draw:
 	link.w a6,#$0	; $017860
 	pea.l L0CCAF8.l	; $017864
 	clr.w -(a7)	; $01786A
-	jsr sys_unk_011082.l	; $01786C
+	jsr pal_load_set.l	; $01786C
 	addq.w #$6,a7	; $017872
 	pea.l L0CCAF8.l	; $017874
 	move.w #$1,-(a7)	; $01787A
-	jsr sys_unk_011082.l	; $01787E
+	jsr pal_load_set.l	; $01787E
 	addq.w #$6,a7	; $017884
 	pea.l L0CCAF8.l	; $017886
 	move.w #$2,-(a7)	; $01788C
-	jsr sys_unk_011082.l	; $017890
+	jsr pal_load_set.l	; $017890
 	addq.w #$6,a7	; $017896
 	pea.l L0CCAF8.l	; $017898
 	move.w #$3,-(a7)	; $01789E
-	jsr sys_unk_011082.l	; $0178A2
+	jsr pal_load_set.l	; $0178A2
 	addq.w #$6,a7	; $0178A8
 	tst.w $8(a6)	; $0178AA
 	bne.b L017908	; $0178AE
@@ -10089,17 +10089,17 @@ L01795E:
 	jsr palette_fade(pc)	; $017976
 	pea.l L0CCB38.l	; $01797A
 	move.w #$1,-(a7)	; $017980
-	jsr sys_unk_011082.l	; $017984
+	jsr pal_load_set.l	; $017984
 	addq.w #$6,a7	; $01798A
 	pea.l L0CCD98.l	; $01798C
 	move.w #$2,-(a7)	; $017992
-	jsr sys_unk_011082.l	; $017996
+	jsr pal_load_set.l	; $017996
 	addq.w #$6,a7	; $01799C
 	tst.w $8(a6)	; $01799E
 	beq.b L0179B2	; $0179A2
 	move.w #$ffff,-(a7)	; $0179A4
 	move.w #$5c,-(a7)	; $0179A8
-	jsr sys_unk_017586(pc)	; $0179AC
+	jsr sfx_request(pc)	; $0179AC
 	addq.w #$4,a7	; $0179B0
 L0179B2:
 	unlk a6	; $0179B2
@@ -10261,7 +10261,7 @@ scene_draw:
 	addq.w #$2,a7	; $017B98
 	clr.w -(a7)	; $017B9A
 	move.w #$37,-(a7)	; $017B9C
-	jsr sys_unk_0147d0(pc)	; $017BA0
+	jsr gfx_plane_write(pc)	; $017BA0
 	addq.w #$4,a7	; $017BA4
 	move.w #$234,$ff0076.l	; $017BA6
 	move.w #$90,-(a7)	; $017BAE
@@ -10372,7 +10372,7 @@ scene_draw:
 	move.w #$148,-(a7)	; $017D4E
 	move.w #$80,-(a7)	; $017D52
 	clr.w -(a7)	; $017D56
-	jsr sys_unk_011c9a.l	; $017D58
+	jsr sprite_grid_write.l	; $017D58
 	lea.l $12(a7),a7	; $017D5E
 	move.w $ff8680.l,d0	; $017D62
 	add.w #$2800,d0	; $017D68
@@ -10385,7 +10385,7 @@ scene_draw:
 	move.w #$9a,-(a7)	; $017D80
 	move.w #$158,-(a7)	; $017D84
 	move.w #$1d,-(a7)	; $017D88
-	jsr sys_unk_011c9a.l	; $017D8C
+	jsr sprite_grid_write.l	; $017D8C
 	lea.l $12(a7),a7	; $017D92
 	move.w $ff8680.l,d0	; $017D96
 	add.w #$2000,d0	; $017D9C
@@ -10398,7 +10398,7 @@ scene_draw:
 	move.w #$9a,-(a7)	; $017DB4
 	move.w #$160,-(a7)	; $017DB8
 	move.w #$20,-(a7)	; $017DBC
-	jsr sys_unk_011c9a.l	; $017DC0
+	jsr sprite_grid_write.l	; $017DC0
 	lea.l $12(a7),a7	; $017DC6
 	move.w $ff8680.l,d0	; $017DCA
 	add.w #$3800,d0	; $017DD0
@@ -10411,7 +10411,7 @@ scene_draw:
 	move.w #$fa,-(a7)	; $017DE8
 	move.w #$158,-(a7)	; $017DEC
 	move.w #$23,-(a7)	; $017DF0
-	jsr sys_unk_011c9a.l	; $017DF4
+	jsr sprite_grid_write.l	; $017DF4
 	lea.l $12(a7),a7	; $017DFA
 	move.w $ff8680.l,d0	; $017DFE
 	add.w #$3000,d0	; $017E04
@@ -10424,7 +10424,7 @@ scene_draw:
 	move.w #$fa,-(a7)	; $017E1C
 	move.w #$160,-(a7)	; $017E20
 	move.w #$26,-(a7)	; $017E24
-	jsr sys_unk_011c9a.l	; $017E28
+	jsr sprite_grid_write.l	; $017E28
 	lea.l $12(a7),a7	; $017E2E
 	move.w $ff8680.l,d0	; $017E32
 	add.w #$280c,d0	; $017E38
@@ -10437,7 +10437,7 @@ scene_draw:
 	move.w #$f2,-(a7)	; $017E50
 	move.w #$118,-(a7)	; $017E54
 	move.w #$29,-(a7)	; $017E58
-	jsr sys_unk_011c9a.l	; $017E5C
+	jsr sprite_grid_write.l	; $017E5C
 	lea.l $12(a7),a7	; $017E62
 	move.w $ff8680.l,d0	; $017E66
 	add.w #$200c,d0	; $017E6C
@@ -10450,7 +10450,7 @@ scene_draw:
 	move.w #$f2,-(a7)	; $017E84
 	move.w #$168,-(a7)	; $017E88
 	move.w #$2b,-(a7)	; $017E8C
-	jsr sys_unk_011c9a.l	; $017E90
+	jsr sprite_grid_write.l	; $017E90
 	lea.l $12(a7),a7	; $017E96
 	move.w $ff8680.l,d0	; $017E9A
 	add.w #$380c,d0	; $017EA0
@@ -10463,7 +10463,7 @@ scene_draw:
 	move.w #$fa,-(a7)	; $017EB8
 	move.w #$118,-(a7)	; $017EBC
 	move.w #$2d,-(a7)	; $017EC0
-	jsr sys_unk_011c9a.l	; $017EC4
+	jsr sprite_grid_write.l	; $017EC4
 	lea.l $12(a7),a7	; $017ECA
 	move.w $ff8680.l,d0	; $017ECE
 	add.w #$300c,d0	; $017ED4
@@ -10476,7 +10476,7 @@ scene_draw:
 	move.w #$fa,-(a7)	; $017EEC
 	move.w #$168,-(a7)	; $017EF0
 	move.w #$2f,-(a7)	; $017EF4
-	jsr sys_unk_011c9a.l	; $017EF8
+	jsr sprite_grid_write.l	; $017EF8
 	lea.l $12(a7),a7	; $017EFE
 	move.w $ff8680.l,d0	; $017F02
 	add.w #$2014,d0	; $017F08
@@ -10512,7 +10512,7 @@ scene_draw:
 	move.w #$94,-(a7)	; $017F82
 	move.w #$1e8,-(a7)	; $017F86
 	move.w #$14,-(a7)	; $017F8A
-	jsr sys_unk_011c9a.l	; $017F8E
+	jsr sprite_grid_write.l	; $017F8E
 	lea.l $12(a7),a7	; $017F94
 	move.w $ff8642.l,d0	; $017F98
 	add.w #$4040,d0	; $017F9E
@@ -10638,15 +10638,15 @@ L0180E4:
 	jsr wait_vblank.l	; $018130
 	pea.l L0CCCF8.l	; $018136
 	clr.w -(a7)	; $01813C
-	jsr sys_unk_011082.l	; $01813E
+	jsr pal_load_set.l	; $01813E
 	addq.w #$6,a7	; $018144
 	pea.l L0CCD18.l	; $018146
 	move.w #$1,-(a7)	; $01814C
-	jsr sys_unk_011082.l	; $018150
+	jsr pal_load_set.l	; $018150
 	addq.w #$6,a7	; $018156
 	pea.l L0CCB98.l	; $018158
 	move.w #$2,-(a7)	; $01815E
-	jsr sys_unk_011082.l	; $018162
+	jsr pal_load_set.l	; $018162
 	addq.w #$6,a7	; $018168
 	moveq #$0,d4	; $01816A
 	moveq #$0,d5	; $01816C
@@ -10800,7 +10800,7 @@ L0182C0:
 	move.w #$94,-(a7)	; $018308
 	move.w -$22(a6),-(a7)	; $01830C
 	move.w #$14,-(a7)	; $018310
-	jsr sys_unk_011c9a.l	; $018314
+	jsr sprite_grid_write.l	; $018314
 	lea.l $12(a7),a7	; $01831A
 L01831E:
 	cmp.w #$a8,d4	; $01831E
@@ -10828,7 +10828,7 @@ L01831E:
 	beq.b L018384	; $018374
 	move.w #$ffff,-(a7)	; $018376
 	move.w -$8(a6),-(a7)	; $01837A
-	jsr sys_unk_017586(pc)	; $01837E
+	jsr sfx_request(pc)	; $01837E
 	addq.w #$4,a7	; $018382
 L018384:
 	cmp.w #$1db,d4	; $018384
@@ -10837,19 +10837,19 @@ L018384:
 	jsr wait_vblank.l	; $018390
 	pea.l L0CCAF8.l	; $018396
 	clr.w -(a7)	; $01839C
-	jsr sys_unk_011082.l	; $01839E
+	jsr pal_load_set.l	; $01839E
 	addq.w #$6,a7	; $0183A4
 	pea.l L0CCAF8.l	; $0183A6
 	move.w #$1,-(a7)	; $0183AC
-	jsr sys_unk_011082.l	; $0183B0
+	jsr pal_load_set.l	; $0183B0
 	addq.w #$6,a7	; $0183B6
 	pea.l L0CCAF8.l	; $0183B8
 	move.w #$2,-(a7)	; $0183BE
-	jsr sys_unk_011082.l	; $0183C2
+	jsr pal_load_set.l	; $0183C2
 	addq.w #$6,a7	; $0183C8
 	move.w #$ffff,-(a7)	; $0183CA
 	move.w #$1,-(a7)	; $0183CE
-	jsr sys_unk_017586(pc)	; $0183D2
+	jsr sfx_request(pc)	; $0183D2
 	addq.w #$4,a7	; $0183D6
 	move.w $ff8684.l,d0	; $0183D8
 	add.w #$4000,d0	; $0183DE
@@ -10868,7 +10868,7 @@ L018384:
 	move.w d0,-(a7)	; $018408
 	move.w #$80,-(a7)	; $01840A
 	clr.w -(a7)	; $01840E
-	jsr sys_unk_011c9a.l	; $018410
+	jsr sprite_grid_write.l	; $018410
 	lea.l $12(a7),a7	; $018416
 	clr.l -$24(a6)	; $01841A
 L01841E:
@@ -10877,15 +10877,15 @@ L01841E:
 	blt.b L01841E	; $01842A
 	pea.l L0CCCF8.l	; $01842C
 	clr.w -(a7)	; $018432
-	jsr sys_unk_011082.l	; $018434
+	jsr pal_load_set.l	; $018434
 	addq.w #$6,a7	; $01843A
 	pea.l L0CCD18.l	; $01843C
 	move.w #$1,-(a7)	; $018442
-	jsr sys_unk_011082.l	; $018446
+	jsr pal_load_set.l	; $018446
 	addq.w #$6,a7	; $01844C
 	pea.l L0CCB98.l	; $01844E
 	move.w #$2,-(a7)	; $018454
-	jsr sys_unk_011082.l	; $018458
+	jsr pal_load_set.l	; $018458
 	addq.w #$6,a7	; $01845E
 L018460:
 	move.w $ff8684.l,d0	; $018460
@@ -10905,7 +10905,7 @@ L018460:
 	move.w d0,-(a7)	; $018490
 	move.w #$80,-(a7)	; $018492
 	clr.w -(a7)	; $018496
-	jsr sys_unk_011c9a.l	; $018498
+	jsr sprite_grid_write.l	; $018498
 	lea.l $12(a7),a7	; $01849E
 	moveq #$a,d6	; $0184A2
 	sub.w a3,d6	; $0184A4
@@ -10980,19 +10980,19 @@ L01857A:
 	jsr wait_vblank.l	; $018582
 	pea.l L0CCAF8.l	; $018588
 	clr.w -(a7)	; $01858E
-	jsr sys_unk_011082.l	; $018590
+	jsr pal_load_set.l	; $018590
 	addq.w #$6,a7	; $018596
 	pea.l L0CCAF8.l	; $018598
 	move.w #$1,-(a7)	; $01859E
-	jsr sys_unk_011082.l	; $0185A2
+	jsr pal_load_set.l	; $0185A2
 	addq.w #$6,a7	; $0185A8
 	pea.l L0CCAF8.l	; $0185AA
 	move.w #$2,-(a7)	; $0185B0
-	jsr sys_unk_011082.l	; $0185B4
+	jsr pal_load_set.l	; $0185B4
 	addq.w #$6,a7	; $0185BA
 	move.w #$ffff,-(a7)	; $0185BC
 	move.w #$1,-(a7)	; $0185C0
-	jsr sys_unk_017586(pc)	; $0185C4
+	jsr sfx_request(pc)	; $0185C4
 	addq.w #$4,a7	; $0185C8
 	move.w $ff8680.l,-(a7)	; $0185CA
 	clr.w -(a7)	; $0185D0
@@ -11010,15 +11010,15 @@ L0185F0:
 	blt.b L0185F0	; $0185FC
 	pea.l L0CCCF8.l	; $0185FE
 	clr.w -(a7)	; $018604
-	jsr sys_unk_011082.l	; $018606
+	jsr pal_load_set.l	; $018606
 	addq.w #$6,a7	; $01860C
 	pea.l L0CCD18.l	; $01860E
 	move.w #$1,-(a7)	; $018614
-	jsr sys_unk_011082.l	; $018618
+	jsr pal_load_set.l	; $018618
 	addq.w #$6,a7	; $01861E
 	pea.l L0CCB98.l	; $018620
 	move.w #$2,-(a7)	; $018626
-	jsr sys_unk_011082.l	; $01862A
+	jsr pal_load_set.l	; $01862A
 	addq.w #$6,a7	; $018630
 L018632:
 	cmp.w #$2a0,d4	; $018632
@@ -11030,26 +11030,26 @@ L018632:
 	subq.w #$1,d0	; $01864A
 	move.w d0,-(a7)	; $01864C
 	clr.w -(a7)	; $01864E
-	jsr sys_unk_01225c.l	; $018650
+	jsr pal_crossfade.l	; $018650
 	lea.l $c(a7),a7	; $018656
 L01865A:
 	cmp.w #$2a8,d4	; $01865A
 	blt.w L018172	; $01865E
 	pea.l L0CCAD8.l	; $018662
 	clr.w -(a7)	; $018668
-	jsr sys_unk_011082.l	; $01866A
+	jsr pal_load_set.l	; $01866A
 	addq.w #$6,a7	; $018670
 	pea.l L0CCAD8.l	; $018672
 	move.w #$1,-(a7)	; $018678
-	jsr sys_unk_011082.l	; $01867C
+	jsr pal_load_set.l	; $01867C
 	addq.w #$6,a7	; $018682
 	pea.l L0CCAD8.l	; $018684
 	move.w #$2,-(a7)	; $01868A
-	jsr sys_unk_011082.l	; $01868E
+	jsr pal_load_set.l	; $01868E
 	addq.w #$6,a7	; $018694
 	pea.l L0CCAD8.l	; $018696
 	move.w #$3,-(a7)	; $01869C
-	jsr sys_unk_011082.l	; $0186A0
+	jsr pal_load_set.l	; $0186A0
 	addq.w #$6,a7	; $0186A6
 	jsr wait_vblank.l	; $0186A8
 	move.w #$8b00,-(a7)	; $0186AE
@@ -11170,7 +11170,7 @@ L0187AC:
 	moveq #$0,d4	; $018862
 	pea.l L0CCD38.l	; $018864
 	clr.w -(a7)	; $01886A
-	jsr sys_unk_011082.l	; $01886C
+	jsr pal_load_set.l	; $01886C
 	addq.w #$6,a7	; $018872
 	moveq #$0,d4	; $018874
 	move.w #$2710,d5	; $018876
@@ -11345,7 +11345,7 @@ L018A96:
 	divs.w #$4,d0	; $018AAE
 	move.w d0,-(a7)	; $018AB2
 	move.w #$3,-(a7)	; $018AB4
-	jsr sys_unk_01225c.l	; $018AB8
+	jsr pal_crossfade.l	; $018AB8
 	lea.l $c(a7),a7	; $018ABE
 L018AC2:
 	moveq #$0,d6	; $018AC2
@@ -11374,19 +11374,19 @@ L018AF6:
 	ble.w L018886	; $018AFA
 	pea.l L0CCAD8.l	; $018AFE
 	clr.w -(a7)	; $018B04
-	jsr sys_unk_011082.l	; $018B06
+	jsr pal_load_set.l	; $018B06
 	addq.w #$6,a7	; $018B0C
 	pea.l L0CCAD8.l	; $018B0E
 	move.w #$1,-(a7)	; $018B14
-	jsr sys_unk_011082.l	; $018B18
+	jsr pal_load_set.l	; $018B18
 	addq.w #$6,a7	; $018B1E
 	pea.l L0CCAD8.l	; $018B20
 	move.w #$2,-(a7)	; $018B26
-	jsr sys_unk_011082.l	; $018B2A
+	jsr pal_load_set.l	; $018B2A
 	addq.w #$6,a7	; $018B30
 	pea.l L0CCAD8.l	; $018B32
 	move.w #$3,-(a7)	; $018B38
-	jsr sys_unk_011082.l	; $018B3C
+	jsr pal_load_set.l	; $018B3C
 	addq.w #$6,a7	; $018B42
 	move.w #$234,$ff0076.l	; $018B44
 	move.w #$30,-(a7)	; $018B4C
@@ -11536,19 +11536,19 @@ L018CE6:
 	lea.l $14(a7),a7	; $018D72
 	pea.l L0CCBB8.l	; $018D76
 	clr.w -(a7)	; $018D7C
-	jsr sys_unk_011082.l	; $018D7E
+	jsr pal_load_set.l	; $018D7E
 	addq.w #$6,a7	; $018D84
 	pea.l L0CCBD8.l	; $018D86
 	move.w #$1,-(a7)	; $018D8C
-	jsr sys_unk_011082.l	; $018D90
+	jsr pal_load_set.l	; $018D90
 	addq.w #$6,a7	; $018D96
 	pea.l L0CCBF8.l	; $018D98
 	move.w #$2,-(a7)	; $018D9E
-	jsr sys_unk_011082.l	; $018DA2
+	jsr pal_load_set.l	; $018DA2
 	addq.w #$6,a7	; $018DA8
 	pea.l L0CCB98.l	; $018DAA
 	move.w #$3,-(a7)	; $018DB0
-	jsr sys_unk_011082.l	; $018DB4
+	jsr pal_load_set.l	; $018DB4
 	addq.w #$6,a7	; $018DBA
 	move.w #$fec0,d4	; $018DBC
 	move.w #$fa,d5	; $018DC0
@@ -11601,7 +11601,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018E3C
 	move.w #$e0,-(a7)	; $018E3E
 	clr.w -(a7)	; $018E42
-	jsr sys_unk_011c9a.l	; $018E44
+	jsr sprite_grid_write.l	; $018E44
 	lea.l $12(a7),a7	; $018E4A
 	move.w $ff867e.l,d0	; $018E4E
 	add.w #$6060,d0	; $018E54
@@ -11616,7 +11616,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018E74
 	move.w #$c0,-(a7)	; $018E76
 	move.w #$6,-(a7)	; $018E7A
-	jsr sys_unk_011c9a.l	; $018E7E
+	jsr sprite_grid_write.l	; $018E7E
 	lea.l $12(a7),a7	; $018E84
 	move.w $ff867e.l,d0	; $018E88
 	add.w #$60c0,d0	; $018E8E
@@ -11631,7 +11631,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018EAE
 	move.w #$100,-(a7)	; $018EB0
 	move.w #$c,-(a7)	; $018EB4
-	jsr sys_unk_011c9a.l	; $018EB8
+	jsr sprite_grid_write.l	; $018EB8
 	lea.l $12(a7),a7	; $018EBE
 	move.w $ff867e.l,d0	; $018EC2
 	add.w #$6100,d0	; $018EC8
@@ -11646,7 +11646,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018EE8
 	move.w #$140,-(a7)	; $018EEA
 	move.w #$10,-(a7)	; $018EEE
-	jsr sys_unk_011c9a.l	; $018EF2
+	jsr sprite_grid_write.l	; $018EF2
 	lea.l $12(a7),a7	; $018EF8
 	move.w $ff867e.l,d0	; $018EFC
 	add.w #$6900,d0	; $018F02
@@ -11661,7 +11661,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018F22
 	move.w #$a0,-(a7)	; $018F24
 	move.w #$13,-(a7)	; $018F28
-	jsr sys_unk_011c9a.l	; $018F2C
+	jsr sprite_grid_write.l	; $018F2C
 	lea.l $12(a7),a7	; $018F32
 	move.w $ff867e.l,d0	; $018F36
 	add.w #$6130,d0	; $018F3C
@@ -11676,7 +11676,7 @@ L018DF0:
 	move.w d0,-(a7)	; $018F5C
 	move.w #$140,-(a7)	; $018F5E
 	move.w #$16,-(a7)	; $018F62
-	jsr sys_unk_011c9a.l	; $018F66
+	jsr sprite_grid_write.l	; $018F66
 	lea.l $12(a7),a7	; $018F6C
 	move.w $ff867e.l,d0	; $018F70
 	add.w #$6930,d0	; $018F76
@@ -11691,25 +11691,25 @@ L018DF0:
 	move.w d0,-(a7)	; $018F94
 	move.w #$80,-(a7)	; $018F96
 	move.w #$1a,-(a7)	; $018F9A
-	jsr sys_unk_011c9a.l	; $018F9E
+	jsr sprite_grid_write.l	; $018F9E
 	lea.l $12(a7),a7	; $018FA4
 	cmp.w #$1ae,d4	; $018FA8
 	blt.w L018DC4	; $018FAC
 	pea.l L0CCAD8.l	; $018FB0
 	clr.w -(a7)	; $018FB6
-	jsr sys_unk_011082.l	; $018FB8
+	jsr pal_load_set.l	; $018FB8
 	addq.w #$6,a7	; $018FBE
 	pea.l L0CCAD8.l	; $018FC0
 	move.w #$1,-(a7)	; $018FC6
-	jsr sys_unk_011082.l	; $018FCA
+	jsr pal_load_set.l	; $018FCA
 	addq.w #$6,a7	; $018FD0
 	pea.l L0CCAD8.l	; $018FD2
 	move.w #$2,-(a7)	; $018FD8
-	jsr sys_unk_011082.l	; $018FDC
+	jsr pal_load_set.l	; $018FDC
 	addq.w #$6,a7	; $018FE2
 	pea.l L0CCAD8.l	; $018FE4
 	move.w #$3,-(a7)	; $018FEA
-	jsr sys_unk_011082.l	; $018FEE
+	jsr pal_load_set.l	; $018FEE
 	addq.w #$6,a7	; $018FF4
 	jsr wait_vblank.l	; $018FF6
 	move.w #$8b00,-(a7)	; $018FFC
@@ -11867,11 +11867,11 @@ L0191B2:
 	addq.w #$8,a7	; $019222
 	pea.l L0CCD58.l	; $019224
 	move.w #$1,-(a7)	; $01922A
-	jsr sys_unk_011082.l	; $01922E
+	jsr pal_load_set.l	; $01922E
 	addq.w #$6,a7	; $019234
 	pea.l L0CCD78.l	; $019236
 	move.w #$2,-(a7)	; $01923C
-	jsr sys_unk_011082.l	; $019240
+	jsr pal_load_set.l	; $019240
 	addq.w #$6,a7	; $019246
 	moveq #$0,d5	; $019248
 	clr.w -$4(a6)	; $01924A
@@ -11951,7 +11951,7 @@ L01927C:
 	move.w d0,(a0,d1.l)	; $01931C
 	move.w #$ffff,-(a7)	; $019320
 	move.w #$1,-(a7)	; $019324
-	jsr sys_unk_017586(pc)	; $019328
+	jsr sfx_request(pc)	; $019328
 	addq.w #$4,a7	; $01932C
 L01932E:
 	bra.b L019370	; $01932E
@@ -12109,7 +12109,7 @@ L01937A:
 	divs.w #$4,d0	; $019552
 	move.w d0,-(a7)	; $019556
 	clr.w -(a7)	; $019558
-	jsr sys_unk_01225c.l	; $01955A
+	jsr pal_crossfade.l	; $01955A
 	lea.l $c(a7),a7	; $019560
 	pea.l L0CCC18.l	; $019564
 	pea.l L0CCAD8.l	; $01956A
@@ -12118,7 +12118,7 @@ L01937A:
 	divs.w #$4,d0	; $019574
 	move.w d0,-(a7)	; $019578
 	move.w #$3,-(a7)	; $01957A
-	jsr sys_unk_01225c.l	; $01957E
+	jsr pal_crossfade.l	; $01957E
 	lea.l $c(a7),a7	; $019584
 L019588:
 	moveq #$0,d6	; $019588
@@ -12138,7 +12138,7 @@ L0195A6:
 	blt.w L019252	; $0195AA
 	clr.w -(a7)	; $0195AE
 	move.w #$3b,-(a7)	; $0195B0
-	jsr sys_unk_0147d0(pc)	; $0195B4
+	jsr gfx_plane_write(pc)	; $0195B4
 	addq.w #$4,a7	; $0195B8
 	move.w #$1,-(a7)	; $0195BA
 	jsr sys_unk_015c08(pc)	; $0195BE
@@ -12207,7 +12207,7 @@ L019670:
 	unlk a6	; $01968E
 	rts	; $019690
 	; code $019692-$0197AF
-sys_unk_019692:
+map_chunk_load:
 	link.w a6,#$fffc	; $019692
 	moveq #$0,d0	; $019696
 	move.b $ffa894.l,d0	; $019698
@@ -12514,7 +12514,7 @@ new_game_init:
 	move.w #$7d,-(a7)	; $01B768
 	move.w #$6f,-(a7)	; $01B76C
 	move.w #$6,-(a7)	; $01B770
-	jsr sys_unk_01c21a(pc)	; $01B774
+	jsr leader_spawn(pc)	; $01B774
 	addq.w #$6,a7	; $01B778
 	move.w #$7d,-(a7)	; $01B77A
 	move.w #$6f,-(a7)	; $01B77E
@@ -12540,7 +12540,7 @@ L01B7AC:
 	move.w -$6(a6),-(a7)	; $01B7CC
 	move.w -$4(a6),-(a7)	; $01B7D0
 	move.w #$6,-(a7)	; $01B7D4
-	jsr sys_unk_01c21a(pc)	; $01B7D8
+	jsr leader_spawn(pc)	; $01B7D8
 	addq.w #$6,a7	; $01B7DC
 	move.w -$6(a6),-(a7)	; $01B7DE
 	move.w -$4(a6),-(a7)	; $01B7E2
@@ -12649,7 +12649,7 @@ L01B950:
 	jsr clear_decode_buffer.l	; $01B958
 	move.w $ff0e90.l,-(a7)	; $01B95E
 	move.w $ff0e8e.l,-(a7)	; $01B964
-	jsr sys_unk_01ba4e(pc)	; $01B96A
+	jsr map_chunk_pos(pc)	; $01B96A
 	addq.w #$4,a7	; $01B96E
 L01B970:
 	tst.w $ff009a.l	; $01B970
@@ -12689,7 +12689,7 @@ L01B9F2:
 	cmpi.w #$ffff,$ff009e.l	; $01B9F2
 	beq.b L01BA12	; $01B9FA
 	move.w $ff009e.l,-(a7)	; $01B9FC
-	jsr sys_unk_017860.l	; $01BA02
+	jsr location_pic_draw.l	; $01BA02
 	addq.w #$2,a7	; $01BA08
 	move.w #$ffff,$ff009e.l	; $01BA0A
 L01BA12:
@@ -12710,7 +12710,7 @@ request_full_redraw:
 	unlk a6	; $01BA4A
 	rts	; $01BA4C
 	; code $01BA4E-$01BE85
-sys_unk_01ba4e:
+map_chunk_pos:
 	link.w a6,#$ffe4	; $01BA4E
 	movem.l d4-d7/a3-a4,-(a7)	; $01BA52
 	pea.l -$16(a6)	; $01BA56
@@ -12732,7 +12732,7 @@ L01BA66:
 	move.l a0,-(a7)	; $01BA7E
 	move.w a3,-(a7)	; $01BA80
 	move.w d7,-(a7)	; $01BA82
-	jsr sys_unk_01c176(pc)	; $01BA84
+	jsr map_chunk_cache_read(pc)	; $01BA84
 	addq.w #$4,a7	; $01BA88
 	movea.l d0,a0	; $01BA8A
 	movea.l (a7)+,a1	; $01BA8C
@@ -13305,7 +13305,7 @@ L01C0F8:
 	unlk a6	; $01C172
 	rts	; $01C174
 	; code $01C176-$01C219
-sys_unk_01c176:
+map_chunk_cache_read:
 	link.w a6,#$fffc	; $01C176
 	movem.l d4-d5,-(a7)	; $01C17A
 	movea.l $ffa7fc.l,a0	; $01C17E
@@ -13357,7 +13357,7 @@ sys_unk_01c176:
 	unlk a6	; $01C216
 	rts	; $01C218
 	; code $01C21A-$01C7B9
-sys_unk_01c21a:
+leader_spawn:
 	link.w a6,#$fff2	; $01C21A
 	movem.l d4-d5,-(a7)	; $01C21E
 	cmpi.w #$6,$8(a6)	; $01C222
@@ -13862,7 +13862,7 @@ sys_unk_01c802:
 	tst.l (a0,d0.l)	; $01C814
 	bne.b L01C826	; $01C818
 	move.w $8(a6),-(a7)	; $01C81A
-	jsr sys_unk_019692.l	; $01C81E
+	jsr map_chunk_load.l	; $01C81E
 	addq.w #$2,a7	; $01C824
 L01C826:
 	move.w $8(a6),d0	; $01C826
@@ -13989,7 +13989,7 @@ L01C98C:
 	move.w $2(a0),-(a7)	; $01C9B2
 	movea.l $8(a6),a0	; $01C9B6
 	move.w (a0),-(a7)	; $01C9BA
-	jsr sys_unk_01c176(pc)	; $01C9BC
+	jsr map_chunk_cache_read(pc)	; $01C9BC
 	addq.w #$4,a7	; $01C9C0
 	movea.l d0,a0	; $01C9C2
 	movea.l (a7)+,a1	; $01C9C4
@@ -14062,7 +14062,7 @@ L01CA66:
 	move.l a0,-(a7)	; $01CA9E
 	move.w d5,-(a7)	; $01CAA0
 	move.w d4,-(a7)	; $01CAA2
-	jsr sys_unk_01c176(pc)	; $01CAA4
+	jsr map_chunk_cache_read(pc)	; $01CAA4
 	addq.w #$4,a7	; $01CAA8
 	movea.l d0,a0	; $01CAAA
 	movea.l (a7)+,a1	; $01CAAC
@@ -14091,7 +14091,7 @@ L01CA66:
 	move.l a0,-(a7)	; $01CB02
 	move.w d5,-(a7)	; $01CB04
 	move.w d4,-(a7)	; $01CB06
-	jsr sys_unk_01c176(pc)	; $01CB08
+	jsr map_chunk_cache_read(pc)	; $01CB08
 	addq.w #$4,a7	; $01CB0C
 	movea.l d0,a0	; $01CB0E
 	movea.l (a7)+,a1	; $01CB10
@@ -15178,7 +15178,7 @@ L01D986:
 L01D99E:
 	move.w #$ffff,-(a7)	; $01D99E
 	move.w -$22(a6),-(a7)	; $01D9A2
-	jsr sys_unk_017586.l	; $01D9A6
+	jsr sfx_request.l	; $01D9A6
 	addq.w #$4,a7	; $01D9AC
 L01D9AE:
 	move.w -$a(a6),d0	; $01D9AE
@@ -15348,7 +15348,7 @@ L01DC14:
 	addq.w #$6,a7	; $01DC42
 	clr.w $ff009e.l	; $01DC44
 	move.w #$14,-(a7)	; $01DC4A
-	jsr sys_unk_0173ec.l	; $01DC4E
+	jsr song_play_direct.l	; $01DC4E
 	addq.w #$2,a7	; $01DC54
 	move.w $a(a6),d0	; $01DC56
 	ext.l d0	; $01DC5A
@@ -15745,7 +15745,7 @@ L01E186:
 	moveq #$4,d0	; $01E186
 	bra.b L01E164	; $01E188
 	; code $01E18A-$01E29B
-sys_unk_01e18a:
+spell_duration_tick:
 	link.w a6,#$0	; $01E18A
 	tst.w $8(a6)	; $01E18E
 	bne.b L01E1AE	; $01E192
@@ -18575,7 +18575,7 @@ L02063C:
 	moveq #$0,d0	; $02063C
 	move.b $ffbb6f.l,d0	; $02063E
 	move.w d0,-(a7)	; $020644
-	jsr sys_unk_0173ec.l	; $020646
+	jsr song_play_direct.l	; $020646
 	addq.w #$2,a7	; $02064C
 	bra.w settings_menu_open	; $02064E
 save_menu_load:
@@ -18679,7 +18679,7 @@ L02077A:
 L02078E:
 	move.w #$ffff,-(a7)	; $02078E
 	move.w -$12(a6),-(a7)	; $020792
-	jsr sys_unk_017586.l	; $020796
+	jsr sfx_request.l	; $020796
 	addq.w #$4,a7	; $02079C
 	move.b #$ff,$ffb08a.l	; $02079E
 	move.w #$ffff,$ff009c.l	; $0207A6
@@ -18724,7 +18724,7 @@ L020824:
 L02082E:
 	move.w #$ffff,-(a7)	; $02082E
 	move.w #$e,-(a7)	; $020832
-	jsr sys_unk_017586.l	; $020836
+	jsr sfx_request.l	; $020836
 	addq.w #$4,a7	; $02083C
 	subq.b #$1,$ffbb80.l	; $02083E
 	moveq #$0,d0	; $020844
@@ -18846,7 +18846,7 @@ L020A16:
 L020A22:
 	move.w #$ffff,-(a7)	; $020A22
 	move.w #$1f,-(a7)	; $020A26
-	jsr sys_unk_017586.l	; $020A2A
+	jsr sfx_request.l	; $020A2A
 	addq.w #$4,a7	; $020A30
 	bra.w L0208BE	; $020A32
 	; code $020A36-$020A87
@@ -18971,7 +18971,7 @@ L020BD8:
 	clr.w $ff0138.l	; $020BE4
 	move.w #$ffff,-(a7)	; $020BEA
 	move.w #$1f,-(a7)	; $020BEE
-	jsr sys_unk_017586.l	; $020BF2
+	jsr sfx_request.l	; $020BF2
 	addq.w #$4,a7	; $020BF8
 	bra.w L020AA4	; $020BFA
 	; code $020BFE-$020C39
@@ -19800,7 +19800,7 @@ L0215FC:
 	tst.w d0	; $02160E
 	bne.b L021620	; $021610
 	move.w $ff012e.l,-(a7)	; $021612
-	jsr sys_unk_0173ec.l	; $021618
+	jsr song_play_direct.l	; $021618
 	addq.w #$2,a7	; $02161E
 L021620:
 	cmpi.w #$1,$ff00ae.l	; $021620
@@ -19823,7 +19823,7 @@ L02165C:
 	beq.b L021674	; $021662
 	move.w #$ffff,-(a7)	; $021664
 	move.w #$24,-(a7)	; $021668
-	jsr sys_unk_017586.l	; $02166C
+	jsr sfx_request.l	; $02166C
 	addq.w #$4,a7	; $021672
 L021674:
 	bra.b L02167A	; $021674
@@ -19902,7 +19902,7 @@ L02175E:
 	moveq #$fc,d7	; $02176E
 	pea.l L0CCC98.l	; $021770
 	clr.w -(a7)	; $021776
-	jsr sys_unk_011082.l	; $021778
+	jsr pal_load_set.l	; $021778
 	addq.w #$6,a7	; $02177E
 	move.w #$ffff,$ff0124.l	; $021780
 	move.w $ff02b2.l,d0	; $021788
@@ -19941,7 +19941,7 @@ L02175E:
 	addq.w #$2,a7	; $02181C
 	move.w #$ffff,-(a7)	; $02181E
 	move.w #$14,-(a7)	; $021822
-	jsr sys_unk_017586.l	; $021826
+	jsr sfx_request.l	; $021826
 	addq.w #$4,a7	; $02182C
 L02182E:
 	bra.b L021840	; $02182E
@@ -19953,7 +19953,7 @@ L021830:
 L021840:
 	move.w #$ffff,-(a7)	; $021840
 	move.w #$14,-(a7)	; $021844
-	jsr sys_unk_017586.l	; $021848
+	jsr sfx_request.l	; $021848
 	addq.w #$4,a7	; $02184E
 L021850:
 	tst.w $ff00ac.l	; $021850
@@ -20116,11 +20116,11 @@ L0219C2:
 	addq.w #$2,a7	; $021A7A
 	move.w #$ffff,-(a7)	; $021A7C
 	move.w #$14,-(a7)	; $021A80
-	jsr sys_unk_017586.l	; $021A84
+	jsr sfx_request.l	; $021A84
 	addq.w #$4,a7	; $021A8A
 	move.w #$ffff,-(a7)	; $021A8C
 	move.w #$14,-(a7)	; $021A90
-	jsr sys_unk_017586.l	; $021A94
+	jsr sfx_request.l	; $021A94
 	addq.w #$4,a7	; $021A9A
 L021A9C:
 	move.w #$ffff,$ff009c.l	; $021A9C
@@ -21443,7 +21443,7 @@ L022B64:
 	move.w (a0,d0.l),d2	; $022BD4
 	sub.w (a1,d1.l),d2	; $022BD8
 	move.w d2,-(a7)	; $022BDC
-	jsr sys_unk_01e18a.l	; $022BDE
+	jsr spell_duration_tick.l	; $022BDE
 	lea.l $c(a7),a7	; $022BE4
 	tst.w -$2(a6)	; $022BE8
 	beq.b L022BF8	; $022BEC
@@ -21609,7 +21609,7 @@ L022DD2:
 	move.w (a0,d0.l),d2	; $022E42
 	sub.w (a1,d1.l),d2	; $022E46
 	move.w d2,-(a7)	; $022E4A
-	jsr sys_unk_01e18a.l	; $022E4C
+	jsr spell_duration_tick.l	; $022E4C
 	lea.l $c(a7),a7	; $022E52
 	tst.w -$2(a6)	; $022E56
 	beq.b L022E8E	; $022E5A
@@ -21747,7 +21747,7 @@ L022FCE:
 	beq.b L023074	; $02301C
 	move.w #$ffff,-(a7)	; $02301E
 	move.w #$3,-(a7)	; $023022
-	jsr sys_unk_017586.l	; $023026
+	jsr sfx_request.l	; $023026
 	addq.w #$4,a7	; $02302C
 	move.w $ffc378.l,-(a7)	; $02302E
 	move.w $ffc376.l,-(a7)	; $023034
@@ -21856,7 +21856,7 @@ L02316C:
 	move.w (a0,d0.l),d1	; $02319E
 	sub.w $c(a1),d1	; $0231A2
 	move.w d1,-(a7)	; $0231A6
-	jsr sys_unk_01e18a.l	; $0231A8
+	jsr spell_duration_tick.l	; $0231A8
 	lea.l $c(a7),a7	; $0231AE
 	move.w -$a(a6),-(a7)	; $0231B2
 	move.w d4,-(a7)	; $0231B6
@@ -23603,7 +23603,7 @@ L0249F6:
 	bne.b L024A6A	; $024A58
 	move.w #$ffff,-(a7)	; $024A5A
 	move.w #$1,-(a7)	; $024A5E
-	jsr sys_unk_017586.l	; $024A62
+	jsr sfx_request.l	; $024A62
 	addq.w #$4,a7	; $024A68
 L024A6A:
 	moveq #$1,d0	; $024A6A
@@ -23777,7 +23777,7 @@ L024C66:
 	bne.b L024CE8	; $024CD6
 	move.w #$ffff,-(a7)	; $024CD8
 	move.w #$1,-(a7)	; $024CDC
-	jsr sys_unk_017586.l	; $024CE0
+	jsr sfx_request.l	; $024CE0
 	addq.w #$4,a7	; $024CE6
 L024CE8:
 	tst.w d4	; $024CE8
@@ -24148,7 +24148,7 @@ L0251C8:
 	move.w -$c(a6),-(a7)	; $0251C8
 	move.w -$a(a6),-(a7)	; $0251CC
 	move.w #$5,-(a7)	; $0251D0
-	jsr sys_unk_01c21a.l	; $0251D4
+	jsr leader_spawn.l	; $0251D4
 	addq.w #$6,a7	; $0251DA
 	addq.w #$1,-$8(a6)	; $0251DC
 L0251E0:
@@ -24272,14 +24272,14 @@ L025364:
 	move.w #$6,-(a7)	; $025372
 	move.w #$6,-(a7)	; $025376
 	move.w #$6,-(a7)	; $02537A
-	jsr sys_unk_01c21a.l	; $02537E
+	jsr leader_spawn.l	; $02537E
 	addq.w #$6,a7	; $025384
 	bra.b L02539C	; $025386
 L025388:
 	move.w -$4(a6),-(a7)	; $025388
 	move.w -$6(a6),-(a7)	; $02538C
 	move.w #$6,-(a7)	; $025390
-	jsr sys_unk_01c21a.l	; $025394
+	jsr leader_spawn.l	; $025394
 	addq.w #$6,a7	; $02539A
 L02539C:
 	bra.b L0253BA	; $02539C
@@ -24301,7 +24301,7 @@ L0253BA:
 	move.w #$6,-(a7)	; $0253C8
 	move.w #$6,-(a7)	; $0253CC
 	move.w #$6,-(a7)	; $0253D0
-	jsr sys_unk_01c21a.l	; $0253D4
+	jsr leader_spawn.l	; $0253D4
 	addq.w #$6,a7	; $0253DA
 	bra.b L0253FA	; $0253DC
 L0253DE:
@@ -24312,7 +24312,7 @@ L0253DE:
 	clr.w -(a7)	; $0253EA
 	clr.w -(a7)	; $0253EC
 	move.w $a(a6),-(a7)	; $0253EE
-	jsr sys_unk_01c21a.l	; $0253F2
+	jsr leader_spawn.l	; $0253F2
 	addq.w #$6,a7	; $0253F8
 L0253FA:
 	unlk a6	; $0253FA
@@ -24604,7 +24604,7 @@ L025804:
 	move.w d5,-(a7)	; $025804
 	move.w d4,-(a7)	; $025806
 	move.w #$6,-(a7)	; $025808
-	jsr sys_unk_01c21a.l	; $02580C
+	jsr leader_spawn.l	; $02580C
 	addq.w #$6,a7	; $025812
 L025814:
 	move.w $8(a6),d0	; $025814
@@ -25454,7 +25454,7 @@ L0262AE:
 	move.l a0,-(a7)	; $0262B2
 	move.w -$8(a6),-(a7)	; $0262B4
 	move.w -$6(a6),-(a7)	; $0262B8
-	jsr sys_unk_01c176.l	; $0262BC
+	jsr map_chunk_cache_read.l	; $0262BC
 	addq.w #$4,a7	; $0262C2
 	movea.l d0,a0	; $0262C4
 	movea.l (a7)+,a1	; $0262C6
@@ -25656,7 +25656,7 @@ L02654C:
 	addq.w #$2,a7	; $026578
 	move.w #$ffff,-(a7)	; $02657A
 	move.w #$20,-(a7)	; $02657E
-	jsr sys_unk_017586.l	; $026582
+	jsr sfx_request.l	; $026582
 	addq.w #$4,a7	; $026588
 L02658A:
 	bra.b L0265AA	; $02658A
@@ -25764,7 +25764,7 @@ L0266DE:
 	move.l a0,-(a7)	; $0266E2
 	move.w -$2(a6),-(a7)	; $0266E4
 	move.w a4,-(a7)	; $0266E8
-	jsr sys_unk_01c176.l	; $0266EA
+	jsr map_chunk_cache_read.l	; $0266EA
 	addq.w #$4,a7	; $0266F0
 	movea.l d0,a0	; $0266F2
 	movea.l (a7)+,a1	; $0266F4
@@ -26056,7 +26056,7 @@ sys_unk_0269f2:
 	move.l a0,-(a7)	; $026A68
 	move.w -$4(a6),-(a7)	; $026A6A
 	move.w -$2(a6),-(a7)	; $026A6E
-	jsr sys_unk_01c176.l	; $026A72
+	jsr map_chunk_cache_read.l	; $026A72
 	addq.w #$4,a7	; $026A78
 	movea.l d0,a0	; $026A7A
 	movea.l (a7)+,a1	; $026A7C
@@ -29582,7 +29582,7 @@ L029B4E:
 	jsr sys_unk_026b58.l	; $029B9E
 	lea.l $a(a7),a7	; $029BA4
 	move.w #$8,-(a7)	; $029BA8
-	jsr sys_unk_0173ec.l	; $029BAC
+	jsr song_play_direct.l	; $029BAC
 	addq.w #$2,a7	; $029BB2
 	bra.w L029FBA	; $029BB4
 	clr.w -(a7)	; $029BB8
@@ -29665,7 +29665,7 @@ L029C36:
 	move.w d1,d0	; $029CA2
 	bra.w L029DB4	; $029CA4
 	move.w #$8,-(a7)	; $029CA8
-	jsr sys_unk_0173ec.l	; $029CAC
+	jsr song_play_direct.l	; $029CAC
 	addq.w #$2,a7	; $029CB2
 	bra.w L029DC6	; $029CB4
 	move.w #$ff,-(a7)	; $029CB8
@@ -29767,7 +29767,7 @@ L029E0E:
 	cmpi.w #$6,-$12(a6)	; $029E12
 	blt.b L029DCE	; $029E18
 	move.w #$8,-(a7)	; $029E1A
-	jsr sys_unk_0173ec.l	; $029E1E
+	jsr song_play_direct.l	; $029E1E
 	addq.w #$2,a7	; $029E24
 	bra.w L029FBA	; $029E26
 	cmpi.w #$ffff,$a(a6)	; $029E2A
@@ -30025,7 +30025,7 @@ L029FBA:
 	bra.b L02A1D6	; $02A1AA
 L02A1AC:
 	move.w #$8,-(a7)	; $02A1AC
-	jsr sys_unk_0173ec.l	; $02A1B0
+	jsr song_play_direct.l	; $02A1B0
 	addq.w #$2,a7	; $02A1B6
 	bra.b L02A1DE	; $02A1B8
 L02A1BA:
@@ -30202,7 +30202,7 @@ L02A386:
 	move.b #$a,$ff02a5.l	; $02A3F2
 	move.w #$ffff,-(a7)	; $02A3FA
 	move.w #$1f,-(a7)	; $02A3FE
-	jsr sys_unk_017586.l	; $02A402
+	jsr sfx_request.l	; $02A402
 	addq.w #$4,a7	; $02A408
 	move.w #$ffff,-$6(a6)	; $02A40A
 L02A410:
@@ -30427,7 +30427,7 @@ L02A72A:
 	jsr sys_unk_026b58.l	; $02A750
 	lea.l $a(a7),a7	; $02A756
 	move.w #$8,-(a7)	; $02A75A
-	jsr sys_unk_0173ec.l	; $02A75E
+	jsr song_play_direct.l	; $02A75E
 	addq.w #$2,a7	; $02A764
 L02A766:
 	bra.w L02AD60	; $02A766
@@ -30518,13 +30518,13 @@ L02A864:
 	beq.b L02A896	; $02A882
 	move.w #$ffff,-(a7)	; $02A884
 	move.w #$18,-(a7)	; $02A888
-	jsr sys_unk_017586.l	; $02A88C
+	jsr sfx_request.l	; $02A88C
 	addq.w #$4,a7	; $02A892
 	bra.b L02A8A6	; $02A894
 L02A896:
 	move.w #$ffff,-(a7)	; $02A896
 	move.w #$b,-(a7)	; $02A89A
-	jsr sys_unk_017586.l	; $02A89E
+	jsr sfx_request.l	; $02A89E
 	addq.w #$4,a7	; $02A8A4
 L02A8A6:
 	bra.w L02AD60	; $02A8A6
@@ -30605,13 +30605,13 @@ L02A97A:
 	beq.b L02A9AC	; $02A998
 	move.w #$ffff,-(a7)	; $02A99A
 	move.w #$18,-(a7)	; $02A99E
-	jsr sys_unk_017586.l	; $02A9A2
+	jsr sfx_request.l	; $02A9A2
 	addq.w #$4,a7	; $02A9A8
 	bra.b L02A9BC	; $02A9AA
 L02A9AC:
 	move.w #$ffff,-(a7)	; $02A9AC
 	move.w #$b,-(a7)	; $02A9B0
-	jsr sys_unk_017586.l	; $02A9B4
+	jsr sfx_request.l	; $02A9B4
 	addq.w #$4,a7	; $02A9BA
 L02A9BC:
 	cmpi.w #$ffff,-$10(a6)	; $02A9BC
@@ -30684,7 +30684,7 @@ L02A9BC:
 	jsr sys_unk_026b58.l	; $02AABA
 	lea.l $a(a7),a7	; $02AAC0
 	move.w #$8,-(a7)	; $02AAC4
-	jsr sys_unk_0173ec.l	; $02AAC8
+	jsr song_play_direct.l	; $02AAC8
 	addq.w #$2,a7	; $02AACE
 	clr.w -$14(a6)	; $02AAD0
 L02AAD4:
@@ -30828,7 +30828,7 @@ L02AC2E:
 	jsr sys_unk_026b58.l	; $02ACD8
 	lea.l $a(a7),a7	; $02ACDE
 	move.w #$8,-(a7)	; $02ACE2
-	jsr sys_unk_0173ec.l	; $02ACE6
+	jsr song_play_direct.l	; $02ACE6
 	addq.w #$2,a7	; $02ACEC
 	clr.w -(a7)	; $02ACEE
 	move.w -$10(a6),-(a7)	; $02ACF0
@@ -31174,7 +31174,7 @@ L02B0A8:
 	addq.w #$2,a7	; $02B17A
 	move.w #$ffff,-(a7)	; $02B17C
 	move.w -$c(a6),-(a7)	; $02B180
-	jsr sys_unk_017586.l	; $02B184
+	jsr sfx_request.l	; $02B184
 	addq.w #$4,a7	; $02B18A
 L02B18C:
 	bra.w L02B096	; $02B18C
@@ -32685,7 +32685,7 @@ L02C558:
 	jsr sys_unk_026b58.l	; $02C626
 	lea.l $a(a7),a7	; $02C62C
 	move.w #$8,-(a7)	; $02C630
-	jsr sys_unk_0173ec.l	; $02C634
+	jsr song_play_direct.l	; $02C634
 	addq.w #$2,a7	; $02C63A
 L02C63C:
 	bra.w L02C8AA	; $02C63C
@@ -32841,7 +32841,7 @@ L02C870:
 	tst.w -$a(a6)	; $02C87A
 	beq.b L02C88C	; $02C87E
 	move.w #$8,-(a7)	; $02C880
-	jsr sys_unk_0173ec.l	; $02C884
+	jsr song_play_direct.l	; $02C884
 	addq.w #$2,a7	; $02C88A
 L02C88C:
 	bra.b L02C8AA	; $02C88C
@@ -34151,7 +34151,7 @@ L02D7D2:
 	move.w d0,-$2(a6)	; $02D904
 	move.w #$ffff,-(a7)	; $02D908
 	move.w #$3,-(a7)	; $02D90C
-	jsr sys_unk_017586.l	; $02D910
+	jsr sfx_request.l	; $02D910
 	addq.w #$4,a7	; $02D916
 	clr.w -(a7)	; $02D918
 	clr.w -(a7)	; $02D91A
@@ -34257,7 +34257,7 @@ L02DA06:
 	ori.w #$2000,(a0)	; $02DA9C
 	move.w #$ffff,-(a7)	; $02DAA0
 	move.w #$5b,-(a7)	; $02DAA4
-	jsr sys_unk_017586.l	; $02DAA8
+	jsr sfx_request.l	; $02DAA8
 	addq.w #$4,a7	; $02DAAE
 	bra.w L02DBEA	; $02DAB0
 	movea.l $ffc384.l,a0	; $02DAB4
@@ -34274,7 +34274,7 @@ L02DA06:
 	addq.w #$2,a7	; $02DAF0
 	move.w #$ffff,-(a7)	; $02DAF2
 	move.w #$c,-(a7)	; $02DAF6
-	jsr sys_unk_017586.l	; $02DAFA
+	jsr sfx_request.l	; $02DAFA
 	addq.w #$4,a7	; $02DB00
 	bra.w L02DBEA	; $02DB02
 	movea.l $ffc384.l,a0	; $02DB06
@@ -34368,7 +34368,7 @@ L02DC42:
 	move.l a0,-(a7)	; $02DC46
 	move.w $a(a6),-(a7)	; $02DC48
 	move.w $8(a6),-(a7)	; $02DC4C
-	jsr sys_unk_01c176.l	; $02DC50
+	jsr map_chunk_cache_read.l	; $02DC50
 	addq.w #$4,a7	; $02DC56
 	movea.l d0,a0	; $02DC58
 	movea.l (a7)+,a1	; $02DC5A
@@ -34528,15 +34528,15 @@ L02DE2E:
 	addq.w #$4,a7	; $02DE4C
 	pea.l L0CCC58.l	; $02DE4E
 	clr.w -(a7)	; $02DE54
-	jsr sys_unk_011082.l	; $02DE56
+	jsr pal_load_set.l	; $02DE56
 	addq.w #$6,a7	; $02DE5C
 	move.w #$ffff,-(a7)	; $02DE5E
 	move.w #$13,-(a7)	; $02DE62
-	jsr sys_unk_017586.l	; $02DE66
+	jsr sfx_request.l	; $02DE66
 	addq.w #$4,a7	; $02DE6C
 	move.w #$ffff,-(a7)	; $02DE6E
 	move.w #$1,-(a7)	; $02DE72
-	jsr sys_unk_017586.l	; $02DE76
+	jsr sfx_request.l	; $02DE76
 	addq.w #$4,a7	; $02DE7C
 	move.w #$ffff,$ff0124.l	; $02DE7E
 L02DE86:
@@ -34598,7 +34598,7 @@ L02DE8A:
 	jsr sys_unk_026b58.l	; $02DF5A
 	lea.l $a(a7),a7	; $02DF60
 	move.w #$8,-(a7)	; $02DF64
-	jsr sys_unk_0173ec.l	; $02DF68
+	jsr song_play_direct.l	; $02DF68
 	addq.w #$2,a7	; $02DF6E
 	move.w #$e5,-(a7)	; $02DF70
 	jsr sys_unk_02d50c(pc)	; $02DF74
@@ -34625,7 +34625,7 @@ L02DE8A:
 	ori.w #$2000,(a0)	; $02DFC8
 	move.w #$ffff,-(a7)	; $02DFCC
 	move.w #$5b,-(a7)	; $02DFD0
-	jsr sys_unk_017586.l	; $02DFD4
+	jsr sfx_request.l	; $02DFD4
 	addq.w #$4,a7	; $02DFDA
 	clr.w -(a7)	; $02DFDC
 	move.w #$3e,-(a7)	; $02DFDE
@@ -34734,7 +34734,7 @@ L02E112:
 	addq.w #$4,a7	; $02E16C
 	move.w #$ffff,-(a7)	; $02E16E
 	move.w #$c,-(a7)	; $02E172
-	jsr sys_unk_017586.l	; $02E176
+	jsr sfx_request.l	; $02E176
 	addq.w #$4,a7	; $02E17C
 	move.w #$ffff,-$c(a6)	; $02E17E
 	bra.b L02E1AC	; $02E184
@@ -34814,7 +34814,7 @@ L02E24A:
 	addq.w #$4,a7	; $02E296
 	move.w #$ffff,-(a7)	; $02E298
 	move.w #$c,-(a7)	; $02E29C
-	jsr sys_unk_017586.l	; $02E2A0
+	jsr sfx_request.l	; $02E2A0
 	addq.w #$4,a7	; $02E2A6
 	move.w #$ffff,-$c(a6)	; $02E2A8
 	bra.b L02E2D6	; $02E2AE
@@ -35032,7 +35032,7 @@ L02E58A:
 	lea.l $10(a7),a7	; $02E5AE
 	move.w #$ffff,-(a7)	; $02E5B2
 	move.w #$f,-(a7)	; $02E5B6
-	jsr sys_unk_017586.l	; $02E5BA
+	jsr sfx_request.l	; $02E5BA
 	addq.w #$4,a7	; $02E5C0
 	bra.b L02E5EA	; $02E5C2
 L02E5C4:
@@ -35119,7 +35119,7 @@ L02E6B2:
 	addq.w #$8,a7	; $02E6DC
 	move.w #$ffff,-(a7)	; $02E6DE
 	move.w #$20,-(a7)	; $02E6E2
-	jsr sys_unk_017586.l	; $02E6E6
+	jsr sfx_request.l	; $02E6E6
 	addq.w #$4,a7	; $02E6EC
 	bra.b L02E716	; $02E6EE
 L02E6F0:
@@ -35197,7 +35197,7 @@ L02E7C2:
 	addq.w #$8,a7	; $02E7EA
 L02E7EC:
 	move.w #$8,-(a7)	; $02E7EC
-	jsr sys_unk_0173ec.l	; $02E7F0
+	jsr song_play_direct.l	; $02E7F0
 	addq.w #$2,a7	; $02E7F6
 	bra.b L02E81C	; $02E7F8
 L02E7FA:
@@ -35820,7 +35820,7 @@ L02EF6C:
 	move.w $c(a4),d0	; $02EFA2
 	sub.w $c(a3),d0	; $02EFA6
 	move.w d0,-(a7)	; $02EFAA
-	jsr sys_unk_01e18a.l	; $02EFAC
+	jsr spell_duration_tick.l	; $02EFAC
 	lea.l $c(a7),a7	; $02EFB2
 	move.w -$2(a6),-(a7)	; $02EFB6
 	move.w #$ffff,-(a7)	; $02EFBA
@@ -35840,7 +35840,7 @@ L02EF6C:
 	move.w $c(a3),d0	; $02EFF0
 	sub.w $c(a4),d0	; $02EFF4
 	move.w d0,-(a7)	; $02EFF8
-	jsr sys_unk_01e18a.l	; $02EFFA
+	jsr spell_duration_tick.l	; $02EFFA
 	lea.l $c(a7),a7	; $02F000
 	move.w -$2(a6),-(a7)	; $02F004
 	move.w #$ffff,-(a7)	; $02F008
@@ -36481,7 +36481,7 @@ L02F8AA:
 L02F8AE:
 	clr.w -(a7)	; $02F8AE
 	move.w #$2,-(a7)	; $02F8B0
-	jsr sys_unk_0177b4.l	; $02F8B4
+	jsr save_validate_magic.l	; $02F8B4
 	addq.w #$4,a7	; $02F8BA
 	move.w d0,-$e(a6)	; $02F8BC
 	cmpi.w #$49,-$e(a6)	; $02F8C0
@@ -36535,7 +36535,7 @@ L02F8E6:
 	move.w -$a(a6),-(a7)	; $02F982
 	move.w -$8(a6),-(a7)	; $02F986
 	move.w #$6,-(a7)	; $02F98A
-	jsr sys_unk_01c21a.l	; $02F98E
+	jsr leader_spawn.l	; $02F98E
 	addq.w #$6,a7	; $02F994
 	move.w -$a(a6),-(a7)	; $02F996
 	move.w -$8(a6),-(a7)	; $02F99A
@@ -37077,7 +37077,7 @@ L030166:
 	ori.w #$2000,(a0)	; $03017C
 	move.w #$ffff,-(a7)	; $030180
 	move.w #$5b,-(a7)	; $030184
-	jsr sys_unk_017586.l	; $030188
+	jsr sfx_request.l	; $030188
 	addq.w #$4,a7	; $03018E
 	jsr sys_unk_03aacc.l	; $030190
 	unlk a6	; $030196
@@ -38387,7 +38387,7 @@ L0312D8:
 	move.l a0,-(a7)	; $0312DC
 	move.w -$66(a6),-(a7)	; $0312DE
 	move.w -$64(a6),-(a7)	; $0312E2
-	jsr sys_unk_01c176.l	; $0312E6
+	jsr map_chunk_cache_read.l	; $0312E6
 	addq.w #$4,a7	; $0312EC
 	movea.l d0,a0	; $0312EE
 	movea.l (a7)+,a1	; $0312F0
@@ -39761,7 +39761,7 @@ L03231E:
 	move.l a0,-(a7)	; $032322
 	move.w -$c(a6),-(a7)	; $032324
 	move.w -$a(a6),-(a7)	; $032328
-	jsr sys_unk_01c176.l	; $03232C
+	jsr map_chunk_cache_read.l	; $03232C
 	addq.w #$4,a7	; $032332
 	movea.l d0,a0	; $032334
 	movea.l (a7)+,a1	; $032336
@@ -39791,7 +39791,7 @@ L03237E:
 	move.l a0,-(a7)	; $032382
 	move.w -$4(a6),-(a7)	; $032384
 	move.w -$2(a6),-(a7)	; $032388
-	jsr sys_unk_01c176.l	; $03238C
+	jsr map_chunk_cache_read.l	; $03238C
 	addq.w #$4,a7	; $032392
 	movea.l d0,a0	; $032394
 	movea.l (a7)+,a1	; $032396
@@ -39844,7 +39844,7 @@ L0323F6:
 	move.w -$a(a6),d0	; $032442
 	sub.w -$e(a6),d0	; $032446
 	move.w d0,-(a7)	; $03244A
-	jsr sys_unk_01e18a.l	; $03244C
+	jsr spell_duration_tick.l	; $03244C
 	lea.l $c(a7),a7	; $032452
 	cmpi.w #$64,-$8(a6)	; $032456
 	bge.b L03247E	; $03245C
@@ -39921,11 +39921,11 @@ L032520:
 	bne.b L032572	; $032548
 	pea.l L0CCC98.l	; $03254A
 	clr.w -(a7)	; $032550
-	jsr sys_unk_011082.l	; $032552
+	jsr pal_load_set.l	; $032552
 	addq.w #$6,a7	; $032558
 	move.w #$ffff,-(a7)	; $03255A
 	move.w #$19,-(a7)	; $03255E
-	jsr sys_unk_017586.l	; $032562
+	jsr sfx_request.l	; $032562
 	addq.w #$4,a7	; $032568
 	move.w #$ffff,$ff0124.l	; $03256A
 L032572:
@@ -39948,7 +39948,7 @@ L03257A:
 	moveq #$0,d1	; $0325A4
 	move.b (a0,d0.l),d1	; $0325A6
 	move.w d1,-(a7)	; $0325AA
-	jsr sys_unk_01c176.l	; $0325AC
+	jsr map_chunk_cache_read.l	; $0325AC
 	addq.w #$4,a7	; $0325B2
 	movea.l d0,a0	; $0325B4
 	movea.l (a7)+,a1	; $0325B6
@@ -39997,11 +39997,11 @@ L0325D4:
 	bne.b L032668	; $03263E
 	pea.l L0CCCD8.l	; $032640
 	clr.w -(a7)	; $032646
-	jsr sys_unk_011082.l	; $032648
+	jsr pal_load_set.l	; $032648
 	addq.w #$6,a7	; $03264E
 	move.w #$ffff,-(a7)	; $032650
 	move.w #$13,-(a7)	; $032654
-	jsr sys_unk_017586.l	; $032658
+	jsr sfx_request.l	; $032658
 	addq.w #$4,a7	; $03265E
 	move.w #$ffff,$ff0124.l	; $032660
 L032668:
@@ -40093,7 +40093,7 @@ sys_unk_032730:
 	move.l a0,-(a7)	; $032788
 	move.w d5,-(a7)	; $03278A
 	move.w d4,-(a7)	; $03278C
-	jsr sys_unk_01c176.l	; $03278E
+	jsr map_chunk_cache_read.l	; $03278E
 	addq.w #$4,a7	; $032794
 	movea.l d0,a0	; $032796
 	movea.l (a7)+,a1	; $032798
@@ -40133,7 +40133,7 @@ L0327EC:
 	move.l a0,-(a7)	; $0327F4
 	move.w d5,-(a7)	; $0327F6
 	move.w d4,-(a7)	; $0327F8
-	jsr sys_unk_01c176.l	; $0327FA
+	jsr map_chunk_cache_read.l	; $0327FA
 	addq.w #$4,a7	; $032800
 	movea.l d0,a0	; $032802
 	movea.l (a7)+,a1	; $032804
@@ -40170,7 +40170,7 @@ L032826:
 	move.l a0,-(a7)	; $032856
 	move.w d5,-(a7)	; $032858
 	move.w d4,-(a7)	; $03285A
-	jsr sys_unk_01c176.l	; $03285C
+	jsr map_chunk_cache_read.l	; $03285C
 	addq.w #$4,a7	; $032862
 	movea.l d0,a0	; $032864
 	movea.l (a7)+,a1	; $032866
@@ -40197,7 +40197,7 @@ L03288C:
 L03289E:
 	move.w #$ffff,-(a7)	; $03289E
 	move.w #$26,-(a7)	; $0328A2
-	jsr sys_unk_017586.l	; $0328A6
+	jsr sfx_request.l	; $0328A6
 	addq.w #$4,a7	; $0328AC
 	bra.b L0328BA	; $0328AE
 L0328B0:
@@ -40261,7 +40261,7 @@ sys_unk_032922:
 	move.l a0,-(a7)	; $032968
 	move.w d5,-(a7)	; $03296A
 	move.w d4,-(a7)	; $03296C
-	jsr sys_unk_01c176.l	; $03296E
+	jsr map_chunk_cache_read.l	; $03296E
 	addq.w #$4,a7	; $032974
 	movea.l d0,a0	; $032976
 	movea.l (a7)+,a1	; $032978
@@ -40328,7 +40328,7 @@ L0329F4:
 	bne.w L032B0A	; $032A22
 	move.w #$ffff,-(a7)	; $032A26
 	move.w #$1f,-(a7)	; $032A2A
-	jsr sys_unk_017586.l	; $032A2E
+	jsr sfx_request.l	; $032A2E
 	addq.w #$4,a7	; $032A34
 	bra.b L032A3C	; $032A36
 L032A38:
@@ -41613,7 +41613,7 @@ L033AA0:
 	move.w (a0,d0.l),d2	; $033AEE
 	sub.w (a1,d1.l),d2	; $033AF2
 	move.w d2,-(a7)	; $033AF6
-	jsr sys_unk_01e18a.l	; $033AF8
+	jsr spell_duration_tick.l	; $033AF8
 	lea.l $c(a7),a7	; $033AFE
 	clr.w -(a7)	; $033B02
 	move.w -$8(a6),-(a7)	; $033B04
@@ -41737,7 +41737,7 @@ L033C88:
 	move.w (a0,d0.l),d2	; $033CDA
 	sub.w (a1,d1.l),d2	; $033CDE
 	move.w d2,-(a7)	; $033CE2
-	jsr sys_unk_01e18a.l	; $033CE4
+	jsr spell_duration_tick.l	; $033CE4
 	lea.l $c(a7),a7	; $033CEA
 	move.w -$a(a6),-(a7)	; $033CEE
 	jsr sys_unk_01e0a4.l	; $033CF2
@@ -43030,7 +43030,7 @@ sys_unk_034ed0:
 	pea.l -$6(a6)	; $034F0C
 	move.w -$4(a6),-(a7)	; $034F10
 	move.w -$2(a6),-(a7)	; $034F14
-	jsr sys_unk_01e18a.l	; $034F18
+	jsr spell_duration_tick.l	; $034F18
 	lea.l $c(a7),a7	; $034F1E
 	cmpi.w #$4,-$6(a6)	; $034F22
 	bne.b L034F30	; $034F28
@@ -43820,7 +43820,7 @@ L035984:
 sys_unk_03599c:
 	link.w a6,#$ffc4	; $03599C
 	move.w #$14,-(a7)	; $0359A0
-	jsr sys_unk_0173ec.l	; $0359A4
+	jsr song_play_direct.l	; $0359A4
 	addq.w #$2,a7	; $0359AA
 	cmpi.w #$ff,$8(a6)	; $0359AC
 	beq.b L0359E8	; $0359B2
@@ -44777,7 +44777,7 @@ L0367BE:
 	tst.w -$6(a6)	; $0367CA
 	bne.w L0368E0	; $0367CE
 	move.w #$10,-(a7)	; $0367D2
-	jsr sys_unk_0173ec.l	; $0367D6
+	jsr song_play_direct.l	; $0367D6
 	addq.w #$2,a7	; $0367DC
 	cmpi.w #$fb,-$4(a6)	; $0367DE
 	beq.w L0368A2	; $0367E4
@@ -45256,7 +45256,7 @@ sys_unk_036de8:
 	pea.l -$c(a6)	; $036E10
 	move.w -$a(a6),-(a7)	; $036E14
 	move.w -$8(a6),-(a7)	; $036E18
-	jsr sys_unk_01e18a.l	; $036E1C
+	jsr spell_duration_tick.l	; $036E1C
 	lea.l $c(a7),a7	; $036E22
 	move.w -$c(a6),d0	; $036E26
 	unlk a6	; $036E2A
@@ -45453,7 +45453,7 @@ L03709C:
 	move.w $c(a0),d0	; $0370BA
 	sub.w $c(a4),d0	; $0370BE
 	move.w d0,-(a7)	; $0370C2
-	jsr sys_unk_01e18a.l	; $0370C4
+	jsr spell_duration_tick.l	; $0370C4
 	lea.l $c(a7),a7	; $0370CA
 	movea.l -$4(a6),a0	; $0370CE
 	move.w $c(a0),$ff024c.l	; $0370D2
@@ -45532,7 +45532,7 @@ L0371B4:
 	move.w $c(a0),d0	; $0371DE
 	sub.w $c(a4),d0	; $0371E2
 	move.w d0,-(a7)	; $0371E6
-	jsr sys_unk_01e18a.l	; $0371E8
+	jsr spell_duration_tick.l	; $0371E8
 	lea.l $c(a7),a7	; $0371EE
 	addq.w #$1,$ff0ea8.l	; $0371F2
 	move.w $2a(a4),d0	; $0371F8
@@ -45610,7 +45610,7 @@ L0372A2:
 	move.w $c(a0),d0	; $0372EA
 	sub.w $c(a4),d0	; $0372EE
 	move.w d0,-(a7)	; $0372F2
-	jsr sys_unk_01e18a.l	; $0372F4
+	jsr spell_duration_tick.l	; $0372F4
 	lea.l $c(a7),a7	; $0372FA
 	addq.w #$1,$ff0ea8.l	; $0372FE
 	move.w $2c(a4),d0	; $037304
@@ -45649,7 +45649,7 @@ L037326:
 	move.w $c(a0),d0	; $03737A
 	sub.w $c(a4),d0	; $03737E
 	move.w d0,-(a7)	; $037382
-	jsr sys_unk_01e18a.l	; $037384
+	jsr spell_duration_tick.l	; $037384
 	lea.l $c(a7),a7	; $03738A
 	move.w #$2,-(a7)	; $03738E
 	jsr rand_next.l	; $037392
@@ -45819,7 +45819,7 @@ L03758A:
 	move.w $c(a0),d0	; $0375A8
 	sub.w $c(a4),d0	; $0375AC
 	move.w d0,-(a7)	; $0375B0
-	jsr sys_unk_01e18a.l	; $0375B2
+	jsr spell_duration_tick.l	; $0375B2
 	lea.l $c(a7),a7	; $0375B8
 	move.w $ff0250.l,-(a7)	; $0375BC
 	move.w #$ffff,-(a7)	; $0375C2
@@ -46336,7 +46336,7 @@ L037C52:
 	ori.w #$2000,(a0)	; $037C60
 	move.w #$ffff,-(a7)	; $037C64
 	move.w #$5b,-(a7)	; $037C68
-	jsr sys_unk_017586.l	; $037C6C
+	jsr sfx_request.l	; $037C6C
 	addq.w #$4,a7	; $037C72
 	movea.l $8(a6),a0	; $037C74
 	moveq #$0,d0	; $037C78
@@ -47624,7 +47624,7 @@ sys_unk_038c5a:
 	link.w a6,#$ffd6	; $038C5A
 	move.w #$ffff,-(a7)	; $038C5E
 	move.w #$10,-(a7)	; $038C62
-	jsr sys_unk_017586.l	; $038C66
+	jsr sfx_request.l	; $038C66
 	addq.w #$4,a7	; $038C6C
 	cmpi.w #$1,$ff012a.l	; $038C6E
 	bne.w L038DC0	; $038C76
@@ -47744,7 +47744,7 @@ sys_unk_038dea:
 	link.w a6,#$ffd6	; $038DEA
 	move.w #$ffff,-(a7)	; $038DEE
 	move.w #$d,-(a7)	; $038DF2
-	jsr sys_unk_017586.l	; $038DF6
+	jsr sfx_request.l	; $038DF6
 	addq.w #$4,a7	; $038DFC
 	cmpi.w #$1,$ff012a.l	; $038DFE
 	bne.w L038F8E	; $038E06
@@ -47884,7 +47884,7 @@ sys_unk_038fb8:
 	link.w a6,#$ffd6	; $038FB8
 	move.w #$ffff,-(a7)	; $038FBC
 	move.w #$f,-(a7)	; $038FC0
-	jsr sys_unk_017586.l	; $038FC4
+	jsr sfx_request.l	; $038FC4
 	addq.w #$4,a7	; $038FCA
 	cmpi.w #$1,$ff012a.l	; $038FCC
 	bne.w L039148	; $038FD4
@@ -48013,7 +48013,7 @@ sys_unk_039172:
 	link.w a6,#$ffd6	; $039172
 	move.w #$ffff,-(a7)	; $039176
 	move.w #$f,-(a7)	; $03917A
-	jsr sys_unk_017586.l	; $03917E
+	jsr sfx_request.l	; $03917E
 	addq.w #$4,a7	; $039184
 	move.w $ff0eaa.l,d0	; $039186
 	muls.w #$34,d0	; $03918C
@@ -48212,7 +48212,7 @@ sys_unk_0393fa:
 	link.w a6,#$ffd6	; $0393FA
 	move.w #$ffff,-(a7)	; $0393FE
 	move.w #$f,-(a7)	; $039402
-	jsr sys_unk_017586.l	; $039406
+	jsr sfx_request.l	; $039406
 	addq.w #$4,a7	; $03940C
 	move.w $ff0eaa.l,d0	; $03940E
 	muls.w #$34,d0	; $039414
@@ -48284,12 +48284,12 @@ L0394D8:
 	bne.b L03951C	; $0394F4
 	pea.l L0CCC58.l	; $0394F6
 	clr.w -(a7)	; $0394FC
-	jsr sys_unk_011082.l	; $0394FE
+	jsr pal_load_set.l	; $0394FE
 	addq.w #$6,a7	; $039504
 	jsr wait_vblank.l	; $039506
 	pea.l L0CCB18.l	; $03950C
 	clr.w -(a7)	; $039512
-	jsr sys_unk_011082.l	; $039514
+	jsr pal_load_set.l	; $039514
 	addq.w #$6,a7	; $03951A
 L03951C:
 	movea.l -$1c(a6),a0	; $03951C
@@ -49616,13 +49616,13 @@ L03A90E:
 	beq.b L03A926	; $03A912
 	move.w #$ffff,-(a7)	; $03A914
 	move.w #$1a,-(a7)	; $03A918
-	jsr sys_unk_017586.l	; $03A91C
+	jsr sfx_request.l	; $03A91C
 	addq.w #$4,a7	; $03A922
 	bra.b L03A936	; $03A924
 L03A926:
 	move.w #$ffff,-(a7)	; $03A926
 	move.w #$9,-(a7)	; $03A92A
-	jsr sys_unk_017586.l	; $03A92E
+	jsr sfx_request.l	; $03A92E
 	addq.w #$4,a7	; $03A934
 L03A936:
 	bra.w L03A9CA	; $03A936
@@ -49631,13 +49631,13 @@ L03A93A:
 	beq.b L03A952	; $03A93E
 	move.w #$ffff,-(a7)	; $03A940
 	move.w #$1a,-(a7)	; $03A944
-	jsr sys_unk_017586.l	; $03A948
+	jsr sfx_request.l	; $03A948
 	addq.w #$4,a7	; $03A94E
 	bra.b L03A962	; $03A950
 L03A952:
 	move.w #$ffff,-(a7)	; $03A952
 	move.w #$13,-(a7)	; $03A956
-	jsr sys_unk_017586.l	; $03A95A
+	jsr sfx_request.l	; $03A95A
 	addq.w #$4,a7	; $03A960
 L03A962:
 	move.l -$8(a6),-(a7)	; $03A962
@@ -49734,7 +49734,7 @@ L03AA7C:
 	addq.w #$2,a7	; $03AA9C
 	move.w #$ffff,-(a7)	; $03AA9E
 	move.w #$20,-(a7)	; $03AAA2
-	jsr sys_unk_017586.l	; $03AAA6
+	jsr sfx_request.l	; $03AAA6
 	addq.w #$4,a7	; $03AAAC
 L03AAAE:
 	tst.w -$1a(a6)	; $03AAAE
@@ -49786,12 +49786,12 @@ L03AB28:
 	addq.w #$4,a7	; $03AB36
 L03AB38:
 	move.w #$14,-(a7)	; $03AB38
-	jsr sys_unk_0173ec.l	; $03AB3C
+	jsr song_play_direct.l	; $03AB3C
 	addq.w #$2,a7	; $03AB42
 	move.w #$4,$ff012e.l	; $03AB44
 	move.w #$ffff,-(a7)	; $03AB4C
 	move.w #$5b,-(a7)	; $03AB50
-	jsr sys_unk_017586.l	; $03AB54
+	jsr sfx_request.l	; $03AB54
 	addq.w #$4,a7	; $03AB5A
 	move.w #$1,$ff0112.l	; $03AB5C
 	move.w #$1,-(a7)	; $03AB64
@@ -52981,12 +52981,12 @@ sys_unk_03d13e:
 	bne.b L03D312	; $03D300
 	move.w #$ffff,-(a7)	; $03D302
 	move.w #$5f,-(a7)	; $03D306
-	jsr sys_unk_017586.l	; $03D30A
+	jsr sfx_request.l	; $03D30A
 	addq.w #$4,a7	; $03D310
 L03D312:
 	pea.l L0CCC98.l	; $03D312
 	clr.w -(a7)	; $03D318
-	jsr sys_unk_011082.l	; $03D31A
+	jsr pal_load_set.l	; $03D31A
 	addq.w #$6,a7	; $03D320
 	move.w #$ffff,$ff0124.l	; $03D322
 L03D32A:
@@ -53556,7 +53556,7 @@ L03DA2A:
 	bne.b L03DA44	; $03DA32
 	move.w #$ffff,-(a7)	; $03DA34
 	move.w #$15,-(a7)	; $03DA38
-	jsr sys_unk_017586.l	; $03DA3C
+	jsr sfx_request.l	; $03DA3C
 	addq.w #$4,a7	; $03DA42
 L03DA44:
 	move.w $ffc41c.l,d0	; $03DA44
@@ -53567,7 +53567,7 @@ L03DA44:
 	bne.b L03DA66	; $03DA54
 	move.w #$ffff,-(a7)	; $03DA56
 	move.w #$1b,-(a7)	; $03DA5A
-	jsr sys_unk_017586.l	; $03DA5E
+	jsr sfx_request.l	; $03DA5E
 	addq.w #$4,a7	; $03DA64
 L03DA66:
 	move.w $ffc41c.l,d0	; $03DA66
@@ -53728,11 +53728,11 @@ L03DC24:
 	bne.b L03DC76	; $03DC4C
 	move.w #$ffff,-(a7)	; $03DC4E
 	move.w #$60,-(a7)	; $03DC52
-	jsr sys_unk_017586.l	; $03DC56
+	jsr sfx_request.l	; $03DC56
 	addq.w #$4,a7	; $03DC5C
 	pea.l L0CCC98.l	; $03DC5E
 	clr.w -(a7)	; $03DC64
-	jsr sys_unk_011082.l	; $03DC66
+	jsr pal_load_set.l	; $03DC66
 	addq.w #$6,a7	; $03DC6C
 	move.w #$ffff,$ff0124.l	; $03DC6E
 L03DC76:
@@ -53856,7 +53856,7 @@ L03DD26:
 	bne.b L03DDFC	; $03DDEA
 	move.w #$ffff,-(a7)	; $03DDEC
 	move.w #$5f,-(a7)	; $03DDF0
-	jsr sys_unk_017586.l	; $03DDF4
+	jsr sfx_request.l	; $03DDF4
 	addq.w #$4,a7	; $03DDFA
 L03DDFC:
 	addq.w #$1,$ffc41c.l	; $03DDFC
@@ -53930,7 +53930,7 @@ L03DE8E:
 	bne.b L03DEC0	; $03DEAE
 	move.w #$ffff,-(a7)	; $03DEB0
 	move.w #$5f,-(a7)	; $03DEB4
-	jsr sys_unk_017586.l	; $03DEB8
+	jsr sfx_request.l	; $03DEB8
 	addq.w #$4,a7	; $03DEBE
 L03DEC0:
 	addq.w #$1,$ffc41c.l	; $03DEC0
@@ -53974,7 +53974,7 @@ L03DEF6:
 	bne.b L03DF46	; $03DF34
 	move.w #$ffff,-(a7)	; $03DF36
 	move.w #$21,-(a7)	; $03DF3A
-	jsr sys_unk_017586.l	; $03DF3E
+	jsr sfx_request.l	; $03DF3E
 	addq.w #$4,a7	; $03DF44
 L03DF46:
 	addq.w #$1,$ffc41c.l	; $03DF46
@@ -54022,11 +54022,11 @@ L03DF88:
 	bne.b L03DFE6	; $03DFBC
 	move.w #$ffff,-(a7)	; $03DFBE
 	move.w #$13,-(a7)	; $03DFC2
-	jsr sys_unk_017586.l	; $03DFC6
+	jsr sfx_request.l	; $03DFC6
 	addq.w #$4,a7	; $03DFCC
 	pea.l L0CCAF8.l	; $03DFCE
 	clr.w -(a7)	; $03DFD4
-	jsr sys_unk_011082.l	; $03DFD6
+	jsr pal_load_set.l	; $03DFD6
 	addq.w #$6,a7	; $03DFDC
 	move.w #$ffff,$ff0124.l	; $03DFDE
 L03DFE6:
@@ -54072,7 +54072,7 @@ L03E000:
 	addq.w #$4,a7	; $03E082
 	move.w #$ffff,-(a7)	; $03E084
 	move.w #$c,-(a7)	; $03E088
-	jsr sys_unk_017586.l	; $03E08C
+	jsr sfx_request.l	; $03E08C
 	addq.w #$4,a7	; $03E092
 	move.w #$1,-(a7)	; $03E094
 	jsr sys_unk_026cca.l	; $03E098
@@ -54309,7 +54309,7 @@ L03E398:
 	ori.w #$2000,(a0)	; $03E3A2
 	move.w #$ffff,-(a7)	; $03E3A6
 	clr.w -(a7)	; $03E3AA
-	jsr sys_unk_017586.l	; $03E3AC
+	jsr sfx_request.l	; $03E3AC
 	addq.w #$4,a7	; $03E3B2
 	cmpi.w #$1,$ff012a.l	; $03E3B4
 	bne.b L03E41C	; $03E3BC
@@ -54617,7 +54617,7 @@ L03E78A:
 L03E7CC:
 	move.w #$ffff,-(a7)	; $03E7CC
 	move.w #$f,-(a7)	; $03E7D0
-	jsr sys_unk_017586.l	; $03E7D4
+	jsr sfx_request.l	; $03E7D4
 	addq.w #$4,a7	; $03E7DA
 	cmpi.w #$1,$ff012a.l	; $03E7DC
 	bne.w L03E896	; $03E7E4
@@ -54761,7 +54761,7 @@ L03EA0E:
 L03EA12:
 	move.w #$ffff,-(a7)	; $03EA12
 	move.w #$f,-(a7)	; $03EA16
-	jsr sys_unk_017586.l	; $03EA1A
+	jsr sfx_request.l	; $03EA1A
 	addq.w #$4,a7	; $03EA20
 	cmpi.w #$1,$ff012a.l	; $03EA22
 	bne.b L03EAA6	; $03EA2A
@@ -55377,7 +55377,7 @@ L03F352:
 	ori.w #$4,(a0)	; $03F35C
 	move.w #$ffff,-(a7)	; $03F360
 	clr.w -(a7)	; $03F364
-	jsr sys_unk_017586.l	; $03F366
+	jsr sfx_request.l	; $03F366
 	addq.w #$4,a7	; $03F36C
 	movea.l -$1c(a6),a0	; $03F36E
 	move.w $18(a0),d0	; $03F372
@@ -55460,7 +55460,7 @@ L03F464:
 L03F492:
 	move.w #$ffff,-(a7)	; $03F492
 	clr.w -(a7)	; $03F496
-	jsr sys_unk_017586.l	; $03F498
+	jsr sfx_request.l	; $03F498
 	addq.w #$4,a7	; $03F49E
 	move.w $ffc418.l,d0	; $03F4A0
 	muls.w #$34,d0	; $03F4A6
@@ -55648,11 +55648,11 @@ L03F6D0:
 L03F6E2:
 	move.w #$ffff,-(a7)	; $03F6E2
 	move.w #$a,-(a7)	; $03F6E6
-	jsr sys_unk_017586.l	; $03F6EA
+	jsr sfx_request.l	; $03F6EA
 	addq.w #$4,a7	; $03F6F0
 	move.w #$ffff,-(a7)	; $03F6F2
 	move.w #$15,-(a7)	; $03F6F6
-	jsr sys_unk_017586.l	; $03F6FA
+	jsr sfx_request.l	; $03F6FA
 	addq.w #$4,a7	; $03F700
 	cmpi.w #$1,$ff012a.l	; $03F702
 	bne.w L03F826	; $03F70A
@@ -55755,11 +55755,11 @@ L03F840:
 L03F86C:
 	move.w #$ffff,-(a7)	; $03F86C
 	move.w #$a,-(a7)	; $03F870
-	jsr sys_unk_017586.l	; $03F874
+	jsr sfx_request.l	; $03F874
 	addq.w #$4,a7	; $03F87A
 	move.w #$ffff,-(a7)	; $03F87C
 	move.w #$15,-(a7)	; $03F880
-	jsr sys_unk_017586.l	; $03F884
+	jsr sfx_request.l	; $03F884
 	addq.w #$4,a7	; $03F88A
 	cmpi.w #$1,$ff012a.l	; $03F88C
 	bne.b L03F8D6	; $03F894
@@ -55853,7 +55853,7 @@ L03F964:
 	move.w -$6(a6),d0	; $03F9E0
 	sub.w -$2(a6),d0	; $03F9E4
 	move.w d0,-(a7)	; $03F9E8
-	jsr sys_unk_01e18a.l	; $03F9EA
+	jsr spell_duration_tick.l	; $03F9EA
 	lea.l $c(a7),a7	; $03F9F0
 	move.w $ff0294.l,d0	; $03F9F4
 	ext.l d0	; $03F9FA
@@ -56010,11 +56010,11 @@ L03FBEE:
 L03FC30:
 	move.w #$ffff,-(a7)	; $03FC30
 	move.w #$a,-(a7)	; $03FC34
-	jsr sys_unk_017586.l	; $03FC38
+	jsr sfx_request.l	; $03FC38
 	addq.w #$4,a7	; $03FC3E
 	move.w #$ffff,-(a7)	; $03FC40
 	move.w #$15,-(a7)	; $03FC44
-	jsr sys_unk_017586.l	; $03FC48
+	jsr sfx_request.l	; $03FC48
 	addq.w #$4,a7	; $03FC4E
 	movea.l -$1c(a6),a0	; $03FC50
 	move.w $c(a0),-$6(a6)	; $03FC54
@@ -56334,7 +56334,7 @@ L04005E:
 L0400A0:
 	move.w #$ffff,-(a7)	; $0400A0
 	move.w #$21,-(a7)	; $0400A4
-	jsr sys_unk_017586.l	; $0400A8
+	jsr sfx_request.l	; $0400A8
 	addq.w #$4,a7	; $0400AE
 	cmpi.w #$b,$ff012a.l	; $0400B0
 	bge.w L040334	; $0400B8
@@ -56579,11 +56579,11 @@ L040408:
 L040412:
 	move.w #$ffff,-(a7)	; $040412
 	move.w #$20,-(a7)	; $040416
-	jsr sys_unk_017586.l	; $04041A
+	jsr sfx_request.l	; $04041A
 	addq.w #$4,a7	; $040420
 	move.w #$ffff,-(a7)	; $040422
 	move.w #$21,-(a7)	; $040426
-	jsr sys_unk_017586.l	; $04042A
+	jsr sfx_request.l	; $04042A
 	addq.w #$4,a7	; $040430
 	move.l -$1c(a6),-(a7)	; $040432
 	jsr sys_unk_025de4.l	; $040436
@@ -56884,7 +56884,7 @@ L04087A:
 L04087E:
 	move.w #$ffff,-(a7)	; $04087E
 	move.w #$20,-(a7)	; $040882
-	jsr sys_unk_017586.l	; $040886
+	jsr sfx_request.l	; $040886
 	addq.w #$4,a7	; $04088C
 	move.w $ffc41a.l,d0	; $04088E
 	muls.w #$34,d0	; $040894
@@ -57006,7 +57006,7 @@ L0409D0:
 L040A0E:
 	move.w #$ffff,-(a7)	; $040A0E
 	move.w #$20,-(a7)	; $040A12
-	jsr sys_unk_017586.l	; $040A16
+	jsr sfx_request.l	; $040A16
 	addq.w #$4,a7	; $040A1C
 	move.w $ffc418.l,d0	; $040A1E
 	muls.w #$34,d0	; $040A24
@@ -57029,7 +57029,7 @@ L040A0E:
 L040A72:
 	move.w #$ffff,-(a7)	; $040A72
 	move.w #$20,-(a7)	; $040A76
-	jsr sys_unk_017586.l	; $040A7A
+	jsr sfx_request.l	; $040A7A
 	addq.w #$4,a7	; $040A80
 	move.w $ffc41a.l,d0	; $040A82
 	muls.w #$34,d0	; $040A88
@@ -57116,7 +57116,7 @@ L040B56:
 L040BAA:
 	move.w #$ffff,-(a7)	; $040BAA
 	move.w #$20,-(a7)	; $040BAE
-	jsr sys_unk_017586.l	; $040BB2
+	jsr sfx_request.l	; $040BB2
 	addq.w #$4,a7	; $040BB8
 	movea.l -$1c(a6),a0	; $040BBA
 	move.w $18(a0),d0	; $040BBE
@@ -57201,7 +57201,7 @@ L040CC4:
 L040CDC:
 	move.w #$ffff,-(a7)	; $040CDC
 	move.w #$20,-(a7)	; $040CE0
-	jsr sys_unk_017586.l	; $040CE4
+	jsr sfx_request.l	; $040CE4
 	addq.w #$4,a7	; $040CEA
 	movea.l -$1c(a6),a0	; $040CEC
 	move.w $18(a0),d0	; $040CF0
@@ -57345,7 +57345,7 @@ L040EB0:
 L040EDC:
 	move.w #$ffff,-(a7)	; $040EDC
 	move.w #$10,-(a7)	; $040EE0
-	jsr sys_unk_017586.l	; $040EE4
+	jsr sfx_request.l	; $040EE4
 	addq.w #$4,a7	; $040EEA
 	cmpi.w #$6,$ff012a.l	; $040EEC
 	bgt.w L0410BA	; $040EF4
@@ -57586,7 +57586,7 @@ L04122C:
 L041230:
 	move.w #$ffff,-(a7)	; $041230
 	move.w #$14,-(a7)	; $041234
-	jsr sys_unk_017586.l	; $041238
+	jsr sfx_request.l	; $041238
 	addq.w #$4,a7	; $04123E
 	move.w $ff0eaa.l,d0	; $041240
 	muls.w #$34,d0	; $041246
@@ -57851,11 +57851,11 @@ L0415DE:
 L0415E2:
 	move.w #$ffff,-(a7)	; $0415E2
 	move.w #$20,-(a7)	; $0415E6
-	jsr sys_unk_017586.l	; $0415EA
+	jsr sfx_request.l	; $0415EA
 	addq.w #$4,a7	; $0415F0
 	move.w #$ffff,-(a7)	; $0415F2
 	move.w #$21,-(a7)	; $0415F6
-	jsr sys_unk_017586.l	; $0415FA
+	jsr sfx_request.l	; $0415FA
 	addq.w #$4,a7	; $041600
 	move.w $ff0eaa.l,d0	; $041602
 	muls.w #$34,d0	; $041608
@@ -57930,7 +57930,7 @@ L0416E8:
 L04170C:
 	pea.l L0CCB18.l	; $04170C
 	clr.w -(a7)	; $041712
-	jsr sys_unk_011082.l	; $041714
+	jsr pal_load_set.l	; $041714
 	addq.w #$6,a7	; $04171A
 	bra.b L041748	; $04171C
 L04171E:
@@ -57938,13 +57938,13 @@ L04171E:
 	bne.b L041738	; $041724
 	pea.l L0CCC98.l	; $041726
 	clr.w -(a7)	; $04172C
-	jsr sys_unk_011082.l	; $04172E
+	jsr pal_load_set.l	; $04172E
 	addq.w #$6,a7	; $041734
 	bra.b L041748	; $041736
 L041738:
 	pea.l L0CCC78.l	; $041738
 	clr.w -(a7)	; $04173E
-	jsr sys_unk_011082.l	; $041740
+	jsr pal_load_set.l	; $041740
 	addq.w #$6,a7	; $041746
 L041748:
 	movea.l -$1c(a6),a0	; $041748
@@ -58441,7 +58441,7 @@ L041DAA:
 L041E04:
 	pea.l L0CCB18.l	; $041E04
 	clr.w -(a7)	; $041E0A
-	jsr sys_unk_011082.l	; $041E0C
+	jsr pal_load_set.l	; $041E0C
 	addq.w #$6,a7	; $041E12
 L041E14:
 	addq.w #$1,$ff012a.l	; $041E14
@@ -58561,7 +58561,7 @@ L041FDA:
 	bgt.w L042102	; $041FEE
 	move.w #$ffff,-(a7)	; $041FF2
 	move.w #$19,-(a7)	; $041FF6
-	jsr sys_unk_017586.l	; $041FFA
+	jsr sfx_request.l	; $041FFA
 	addq.w #$4,a7	; $042000
 	cmpi.w #$1,$ff012a.l	; $042002
 	bne.b L042068	; $04200A
@@ -58627,7 +58627,7 @@ L042102:
 	bge.w L0421BA	; $042116
 	move.w #$ffff,-(a7)	; $04211A
 	move.w #$14,-(a7)	; $04211E
-	jsr sys_unk_017586.l	; $042122
+	jsr sfx_request.l	; $042122
 	addq.w #$4,a7	; $042128
 	move.w $ff012a.l,d0	; $04212A
 	ext.l d0	; $042130
@@ -58742,7 +58742,7 @@ L0422E0:
 	bge.w L042390	; $0422F4
 	move.w #$ffff,-(a7)	; $0422F8
 	move.w #$1c,-(a7)	; $0422FC
-	jsr sys_unk_017586.l	; $042300
+	jsr sfx_request.l	; $042300
 	addq.w #$4,a7	; $042306
 	movea.l -$1c(a6),a0	; $042308
 	move.w $18(a0),d0	; $04230C
@@ -58818,7 +58818,7 @@ L042390:
 	move.w $c(a0),d0	; $042408
 	sub.w $ff029c.l,d0	; $04240C
 	move.w d0,-(a7)	; $042412
-	jsr sys_unk_01e18a.l	; $042414
+	jsr spell_duration_tick.l	; $042414
 	lea.l $c(a7),a7	; $04241A
 	addq.w #$1,$ff012a.l	; $04241E
 L042424:
@@ -58918,7 +58918,7 @@ L04258C:
 	bne.w L04264C	; $042594
 	move.w #$ffff,-(a7)	; $042598
 	move.w #$13,-(a7)	; $04259C
-	jsr sys_unk_017586.l	; $0425A0
+	jsr sfx_request.l	; $0425A0
 	addq.w #$4,a7	; $0425A6
 	clr.w -(a7)	; $0425A8
 	move.w #$a,-(a7)	; $0425AA
@@ -59001,7 +59001,7 @@ L0426D8:
 	ble.w L04276A	; $0426E0
 	move.w #$ffff,-(a7)	; $0426E4
 	move.w #$1c,-(a7)	; $0426E8
-	jsr sys_unk_017586.l	; $0426EC
+	jsr sfx_request.l	; $0426EC
 	addq.w #$4,a7	; $0426F2
 	move.w $ff0294.l,d0	; $0426F4
 	muls.w #$34,d0	; $0426FA
@@ -59136,7 +59136,7 @@ L042906:
 L04291E:
 	move.w #$ffff,-(a7)	; $04291E
 	move.w #$1e,-(a7)	; $042922
-	jsr sys_unk_017586.l	; $042926
+	jsr sfx_request.l	; $042926
 	addq.w #$4,a7	; $04292C
 	move.w $ff012c.l,d0	; $04292E
 	add.w #$10,d0	; $042934
@@ -59244,7 +59244,7 @@ L042A9A:
 	beq.b L042AEC	; $042AAA
 	move.w #$ffff,-(a7)	; $042AAC
 	move.w #$1c,-(a7)	; $042AB0
-	jsr sys_unk_017586.l	; $042AB4
+	jsr sfx_request.l	; $042AB4
 	addq.w #$4,a7	; $042ABA
 	move.w $ff0eaa.l,-(a7)	; $042ABC
 	jsr sys_unk_0243d6.l	; $042AC2
@@ -59265,11 +59265,11 @@ L042AF0:
 	bgt.w L042CFA	; $042B04
 	move.w #$ffff,-(a7)	; $042B08
 	move.w #$a,-(a7)	; $042B0C
-	jsr sys_unk_017586.l	; $042B10
+	jsr sfx_request.l	; $042B10
 	addq.w #$4,a7	; $042B16
 	move.w #$ffff,-(a7)	; $042B18
 	move.w #$15,-(a7)	; $042B1C
-	jsr sys_unk_017586.l	; $042B20
+	jsr sfx_request.l	; $042B20
 	addq.w #$4,a7	; $042B26
 	cmpi.w #$1,$ff012a.l	; $042B28
 	bne.w L042C4A	; $042B30

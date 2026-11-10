@@ -26,11 +26,11 @@ addr,name,tier,note
 0x00DE02,sys_unk_00de02,0,auto: touches none
 0x00DE1A,sys_unk_00de1a,0,auto: touches none
 0x00DEDA,sys_unk_00deda,0,auto: touches none
-0x00DEF4,sys_unk_00def4,0,auto: touches none
-0x00DF0A,sys_unk_00df0a,0,auto: touches none
+0x00DEF4,math_mod32,2,logic.md: $DEF4(arg) = modulo by arg
+0x00DF0A,math_udiv32,2,logic.md: unsigned divide; remainder in d0; core divide
 0x00E358,sys_unk_00e358,0,auto: touches $FF1EC0
 0x01107A,sys_unk_01107a,0,auto: touches none
-0x011082,sys_unk_011082,0,auto: touches none
+0x011082,pal_load_set,2,architecture.md: loads palettes $CCC38/$CCB18/$CCCB8 via $11082
 0x0110D0,sys_unk_0110d0,0,auto: touches none
 0x01110A,sys_unk_01110a,0,auto: touches $FF8640
 0x01119E,sys_unk_01119e,0,auto: touches $FF8640
@@ -46,45 +46,45 @@ addr,name,tier,note
 0x011A7C,sys_unk_011a7c,0,auto: touches $FF0076 $FF1EC0 $FF1EE0
 0x011B58,sys_unk_011b58,0,auto: touches $FF0076 $FF8644
 0x011BB8,sys_unk_011bb8,0,auto: touches $FF0E14 $FF8644 $FF8646
-0x011C4A,sys_unk_011c4a,0,auto: touches $FF8644
-0x011C9A,sys_unk_011c9a,0,auto: touches $FF1EC0 $FF8644
-0x011E06,sys_unk_011e06,0,auto: touches none
+0x011C4A,sprite_set_link,2,graphics.md: $11C4A rewrites word 1 (size/link) of a sprite
+0x011C9A,sprite_grid_write,2,graphics.md: $11C9A writes a rows x cols grid of sprites
+0x011E06,gfx_layout_game,2,graphics.md:262 Layout G installed by $11E06
 0x011FAE,sys_unk_011fae,0,auto: touches none
 0x012024,sys_unk_012024,0,auto: touches none
-0x012072,sys_unk_012072,0,auto: touches $FF0114 $FF8640 $FF8648
-0x01225C,sys_unk_01225c,0,auto: touches $FF864A
-0x0123B0,sys_unk_0123b0,0,auto: touches $41C64E $FF0072 $FF0076 $FF0E14 $FF8640 $FF8644
+0x012072,text_blit,2,logic.md: $12072 VDP/text drawing routine; blits $11820/$11A1A/$11AE4
+0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
+0x0123B0,window_down,2,architecture.md: $123B0 window down
 0x012BFC,sys_unk_012bfc,0,auto: touches $FF0010 $FF0072 $FF0076 $FF0114 $FF0E78 $FF1EC0
 0x012F48,sys_unk_012f48,0,auto: touches $FF0E14 $FF8646
 0x012F80,sys_unk_012f80,0,auto: touches $FF0E14 $FF8646
 0x012FB4,sys_unk_012fb4,0,auto: touches $FF0086 $FF00AC $FF00AE $FF010E $FF0110 $FF0112
 0x013654,sys_unk_013654,0,auto: touches none
-0x0136FC,sys_unk_0136fc,0,auto: touches $FF0016 $FF1EC0
+0x0136FC,text_word_expand,2,disasm/text/inventory.json: decoder_routine 0x136FC word expander
 0x013882,sys_unk_013882,0,auto: touches $FF00AC $FF00AE $FF010E $FF0114 $FF0132 $FF0136
 0x013D84,sys_unk_013d84,0,auto: touches $FF0116 $FF8640 $FF867A $FF867C $FF867E
-0x0147D0,sys_unk_0147d0,0,auto: touches $FF0076 $FF0E14 $FF4EC0 $FF8640 $FF8644 $FF8676
-0x014FB6,sys_unk_014fb6,0,auto: touches none
-0x015012,sys_unk_015012,0,auto: touches $FF0076 $FF007A $FF0108 $FF0128 $FF0132 $FF0E14
+0x0147D0,gfx_plane_write,2,graphics.md: $147D0 R16=$11 plane writer
+0x014FB6,intro_story_driver,2,architecture.md: $14FB6 intro/story driver
+0x015012,intro_helper,2,architecture.md: helper $15012 plays music $173BC(1) + $15C08
 0x015C08,sys_unk_015c08,0,auto: touches $FF0076 $FF0E14 $FF8640 $FF8644 $FF8680 $FF8684
 0x0162FE,sys_unk_0162fe,0,auto: touches $FF0114 $FF8648 $FF8674 $FF8676
 0x0163EE,sys_unk_0163ee,0,auto: touches $FF8678
 0x01664E,sys_unk_01664e,0,auto: touches $FF00AE $FF0124 $FF0126 $FF02B2 $FF02C0 $FF02C2
 0x0171D6,sys_unk_0171d6,0,auto: touches $FF012E
-0x0173EC,sys_unk_0173ec,0,auto: touches none
-0x017586,sys_unk_017586,0,auto: touches $FF0088
-0x0176A0,sys_unk_0176a0,0,auto: touches $FFA800
+0x0173EC,song_play_direct,2,sound.md: $173EC called directly by the Music menu and jingle path
+0x017586,sfx_request,2,sound.md: $17586 calls public SFX entry points $EBAF4/$EBAFA
+0x0176A0,save_parity,2,architecture.md: $176A0 parity over packed $FFA800
 0x017706,sys_unk_017706,0,auto: touches $FF014E $FFA800
-0x0177B4,sys_unk_0177b4,0,auto: touches $FF014E $FFA800
-0x017860,sys_unk_017860,0,auto: touches $FF0E78 $FF8648 $FF8676 $FFEC1E
+0x0177B4,save_validate_magic,2,save.md: real save validation is $177B4 magic byte
+0x017860,location_pic_draw,2,graphics.md: jsr $17860($FF009E) location-picture draw
 0x0179CA,sys_unk_0179ca,0,auto: touches none
 0x017A40,sys_unk_017a40,0,auto: touches $FF0076 $FF007A $FF8640 $FF8642 $FF8644 $FF8648
 0x01960A,sys_unk_01960a,0,auto: touches $FF0078
 0x01961A,sys_unk_01961a,0,auto: touches none
-0x019692,sys_unk_019692,0,auto: touches $FF0098 $FF009A $FF009C $FF009E $FF00AC $FF00B6
+0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
 0x01BA16,sys_unk_01ba16,0,auto: touches $FF0098 $FF009A $FF009C $FFB08A
-0x01BA4E,sys_unk_01ba4e,0,auto: touches $FF0092 $FF013C $FFA7FC $FFAE7A $FFAF42 $FFB0CC
-0x01C176,sys_unk_01c176,0,auto: touches $FF0248 $FFA7FC
-0x01C21A,sys_unk_01c21a,0,auto: touches $FF00BA $FF0E8E $FF0E90 $FF0E94 $FFA7FC $FFB36C
+0x01BA4E,map_chunk_pos,2,graphics.md:366 $1BA4E map-chunk position math
+0x01C176,map_chunk_cache_read,2,logic.md: destination tile read via $1C176 chunk cache
+0x01C21A,leader_spawn,2,architecture.md: leader spawn via $1C21A(6; 0x6F; 0x7D)
 0x01C802,sys_unk_01c802,0,auto: touches $FFA896
 0x01C83E,sys_unk_01c83e,0,auto: touches $FF0E98 $FFA7FC
 0x01C892,sys_unk_01c892,0,auto: touches $FF00A4 $FF00AE $FF010E $FF02B2 $FF02B4 $FF02BA
@@ -96,7 +96,7 @@ addr,name,tier,note
 0x01E0E4,sys_unk_01e0e4,0,auto: touches none
 0x01E11E,sys_unk_01e11e,0,auto: touches none
 0x01E158,sys_unk_01e158,0,auto: touches none
-0x01E18A,sys_unk_01e18a,0,auto: touches none
+0x01E18A,spell_duration_tick,2,spells.md: duration nibble decremented each step
 0x01E29C,sys_unk_01e29c,0,auto: touches none
 0x01E390,sys_unk_01e390,0,auto: touches none
 0x01E426,sys_unk_01e426,0,auto: touches none
