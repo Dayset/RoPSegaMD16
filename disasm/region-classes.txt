@@ -1,0 +1,7 @@
+# START END CLASS  # source (doc line)
+0x0433C0 0x0436E0 decode-table       # docs/architecture.md:444-447 a2/a3 tile decoder tables
+0x001394 0x00D25B binary-table       # disasm/map.md:150 binary tables, 156 data refs from code
+0x0197B0 0x019F8F object-record-table # docs/maps.md:478 56 x 36-byte records
+0x000D92 0x00119D rle-byte-table     # docs/graphics.md:827 run-length byte table $D92
+0x0EBB6E 0x0ED0E4 z80-sound-driver  # docs/sound.md:10 0x1576-byte Z80 blob, uploaded to Z80 RAM
+0x0DF58 0x0E357 jump-table          # docs/architecture.md:447 $DF58 dispatch table (not code)

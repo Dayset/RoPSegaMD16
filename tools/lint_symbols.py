@@ -23,7 +23,7 @@ def main():
     if f.exists():
         starts = {int(l.split()[1], 16) for l in f.read_text().splitlines() if l.startswith('FUNC ')}
     seen_addr, seen_name = {}, {}
-    files = sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv')])
+    files = sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv'), Path('disasm/symbols/auto.csv')])
     if not files:
         sys.exit('lint: no symbol files in disasm/symbols')
     for path in files:

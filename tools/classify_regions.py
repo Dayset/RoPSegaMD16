@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""classify_regions.py — content tags for every incbin data region (playbook T-50).
+
+Reads incbin pieces of disasm/src/rop.s, merges adjacent ones and writes
+disasm/regions.csv: start,end,class,name,doc_ref,tier.
+Classes from bytes alone: padding, ascii, pointer-table (big-endian longs inside ROM,
+even), word-offset-table, zero-fill, high-entropy, unknown. Documented regions
+(disasm/region-classes.txt) keep their class and doc_ref at tier 2.
+Usage: python3 tools/classify_regions.py
+"""
+import math
+import re
+from collections import Counter
+from pathlib import Path
+
+ROM = Path('rop-original.gen').read_bytes()
+INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
+
+
+def num(t):
+    return int(t[1:], 16) if t.startswith('$') else int(t)
+
+
+def entropy(b):
+    n = len(b)
+    return -sum((c / n) * math.log2(c / n) for c in Counter(b).values()) if n else 0
+
+
+def classify(b):
+    if not b:
+        return 'empty'
+    if set(b) <= {0x00}:
+        return 'zero-fill'
+    if set(b) <= {0xFF}:
+        return 'padding-ff'
+    text = sum(1 for c in b if 0x20 <= c <= 0x7E or c in (0x0A, 0x0D)) / len(b)
+    if text > 0.9:
+        return 'ascii'
+    if len(b) >= 8 and len(b) % 4 == 0:
+        longs = [int.from_bytes(b[i:i + 4], 'big') for i in range(0, len(b), 4)]
+        if all(0 < v < len(ROM) and v % 2 == 0 for v in longs):
+            return 'pointer-table'
+    if len(b) >= 32 and len(b) % 2 == 0:
+        words = [int.from_bytes(b[i:i + 2], 'big', signed=True) for i in range(0, len(b), 2)]
+        even = sum(1 for w in words if w % 2 == 0) / len(words)
+        if even >= 0.95:
+            return 'word-offset-table'
+    if entropy(b) > 7.0:
+        return 'high-entropy'
+    return 'unknown'
+
+
+def load_doc_classes():
+    out = []
+    p = Path('disasm/region-classes.txt')
+    if p.exists():
+        for line in p.read_text().splitlines():
+            line = line.split('#')[0].strip()
+            if line:
+                s, e, cls = line.split(None, 2)
+                out.append((int(s, 16), int(e, 16), cls))
+    return out
+
+
+def main():
+    spans = []
+    for line in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
+        m = INC.search(line)
+        if m:
+            spans.append((num(m.group(1)), num(m.group(2))))
+    spans.sort()
+    merged = []
+    for s, n in spans:
+        if merged and merged[-1][0] + merged[-1][1] == s:
+            merged[-1][1] += n
+        else:
+            merged.append([s, n])
+    doc = load_doc_classes()
+    rows = []
+    for s, n in merged:
+        e = s + n - 1
+        doc_hits = [(cs, ce, c) for cs, ce, c in doc if cs <= s and e <= ce]
+        if doc_hits:
+            cls, tier, ref = doc_hits[0][2], '2', 'disasm/region-classes.txt'
+        else:
+            cls, tier, ref = classify(ROM[s:e + 1]), '1', ''
+        rows.append((s, e, cls, f'region_{s:06x}', ref, tier))
+    with Path('disasm/regions.csv').open('w') as fh:
+        fh.write('start,end,class,name,doc_ref,tier\n')
+        for s, e, cls, name, ref, tier in rows:
+            fh.write(f'0x{s:06X},0x{e:06X},{cls},{name},{ref},{tier}\n')
+    unk = sum(e - s + 1 for s, e, c, *_ in rows if c in ('unknown', 'high-entropy'))
+    print(f'regions: {len(rows)}; unknown/high-entropy bytes: {unk:,}')
+
+
+if __name__ == '__main__':
+    main()

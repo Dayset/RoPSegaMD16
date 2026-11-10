@@ -24,11 +24,13 @@ def num(t):
 def measure():
     import csv
     names = []
-    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv')]):
+    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv'), Path('disasm/symbols/auto.csv')]):
         with path.open(newline='') as fh:
-            names += [(r['addr'], r['name']) for r in csv.DictReader(fh)]
-    if len({a for a, _ in names}) != len(names) or len({n for _, n in names}) != len(names):
+            names += [(r['addr'], r['name'], r.get('tier', '1')) for r in csv.DictReader(fh)]
+    if len({a for a, _, _ in names}) != len(names) or len({n for _, n, _ in names}) != len(names):
         sys.exit('status: symbol files have a duplicate address or name')
+    tier1 = sum(1 for _, _, t in names if str(t).strip() in ('1', '2'))
+    tier0 = sum(1 for _, _, t in names if str(t).strip() == '0')
     funcs = 0
     f = Path('disasm/ghidra/functions.txt')
     if f.exists():
@@ -43,7 +45,7 @@ def measure():
     size = ROM_SIZE
     code = size - incbin
     return {
-        'named': len(names), 'funcs': funcs,
+        'named': tier1, 'tier0': tier0, 'funcs': funcs,
         'code': code, 'incbin': incbin, 'raw': raw, 'size': size,
     }
 
@@ -53,7 +55,8 @@ def tables(m):
     return [
         '| Metric | Now | Target | Share |',
         '|---|---:|---:|---:|',
-        f"| Routines named (tier ≥ 0) | {m['named']} of {m['funcs']} | {m['funcs']} | {100 * m['named'] // max(m['funcs'], 1)}% |",
+        f"| Routines named (tier ≥ 1) | {m['named']} of {m['funcs']} | {m['funcs']} | {100 * m['named'] // max(m['funcs'], 1)}% |",
+        f"| Routines at tier 0 (structural only) | {m['tier0']} | — | — |",
         f"| Bytes in code | {m['code']:,} | {m['size']:,} | {pct(m['code'], m['size'])} |",
         f"| Bytes in incbin data | {m['incbin']:,} | 0 | {pct(m['incbin'], m['size'])} |",
         f"| Raw fallbacks in code | {m['raw']} | 0 | — |",
@@ -73,7 +76,7 @@ def main():
     head, rest = text.split(START, 1)
     _, tail = rest.split(END, 1)
     readme.write_text(head + START + '\n' + body + '\n' + END + tail)
-    print(f"status: {m['named']} of {m['funcs']} named; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}")
+    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}")
 
 
 if __name__ == '__main__':

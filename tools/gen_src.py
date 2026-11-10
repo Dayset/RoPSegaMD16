@@ -79,7 +79,7 @@ def load_names():
     """Routine names from disasm/symbols/*.csv (addr,name,tier,note). Names must be unique."""
     import csv
     names = {}
-    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv')]):
+    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv'), Path('disasm/symbols/auto.csv')]):
         with path.open(newline="") as fh:
             for row in csv.DictReader(fh):
                 addr = int(row["addr"], 16)
