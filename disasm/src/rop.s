@@ -2313,7 +2313,7 @@ FUN_01110a:
 	unlk a6	; $011138
 	rts	; $01113A
 	; code $01113C-$01119D
-FUN_01113c:
+text_glyph_draw:
 	link.w a6,#$0	; $01113C
 	move.l d4,-(a7)	; $011140
 	moveq #$0,d4	; $011142
@@ -2586,7 +2586,7 @@ FUN_011416:
 	move.w $e(a6),-(a7)	; $011432
 	move.w $c(a6),-(a7)	; $011436
 	move.l $8(a6),-(a7)	; $01143A
-	jsr FUN_01113c(pc)	; $01143E
+	jsr text_glyph_draw(pc)	; $01143E
 	lea.l $10(a7),a7	; $011442
 L011446:
 	movem.l (a7)+,d4-d7/a3	; $011446
@@ -2728,7 +2728,7 @@ FUN_011588:
 	move.w $e(a6),-(a7)	; $0115AA
 	move.w $c(a6),-(a7)	; $0115AE
 	move.l $8(a6),-(a7)	; $0115B2
-	jsr FUN_01113c(pc)	; $0115B6
+	jsr text_glyph_draw(pc)	; $0115B6
 	lea.l $10(a7),a7	; $0115BA
 	unlk a6	; $0115BE
 	rts	; $0115C0
@@ -2762,7 +2762,7 @@ FUN_0115c2:
 	move.w d0,-(a7)	; $01160A
 	move.w #$40,-(a7)	; $01160C
 	pea.l L001000.w	; $011610
-	jsr FUN_01113c(pc)	; $011614
+	jsr text_glyph_draw(pc)	; $011614
 	lea.l $10(a7),a7	; $011618
 	movem.l (a7)+,d4-d7	; $01161C
 	unlk a6	; $011620
@@ -2835,7 +2835,7 @@ L0116B4:
 	move.w d0,-(a7)	; $0116E8
 	move.w #$40,-(a7)	; $0116EA
 	pea.l L001000.w	; $0116EE
-	jsr FUN_01113c(pc)	; $0116F2
+	jsr text_glyph_draw(pc)	; $0116F2
 	lea.l $10(a7),a7	; $0116F6
 	clr.w -$4(a6)	; $0116FA
 	movea.w $c(a6),a4	; $0116FE
@@ -2883,7 +2883,7 @@ L01173A:
 	move.w d0,-(a7)	; $01176E
 	move.w #$40,-(a7)	; $011770
 	pea.l L001000.w	; $011774
-	jsr FUN_01113c(pc)	; $011778
+	jsr text_glyph_draw(pc)	; $011778
 	lea.l $10(a7),a7	; $01177C
 	clr.w -$4(a6)	; $011780
 	movea.w $c(a6),a4	; $011784
@@ -2938,7 +2938,7 @@ L0117CA:
 	move.w d0,-(a7)	; $01180A
 	move.w #$40,-(a7)	; $01180C
 	pea.l L001000.w	; $011810
-	jsr FUN_01113c(pc)	; $011814
+	jsr text_glyph_draw(pc)	; $011814
 	lea.l $10(a7),a7	; $011818
 L01181C:
 	bra.w L011676	; $01181C
@@ -7589,7 +7589,7 @@ L015690:
 	move.w #$11,-(a7)	; $015824
 	move.w #$40,-(a7)	; $015828
 	pea.l L002000.w	; $01582C
-	jsr FUN_01113c.l	; $015830
+	jsr text_glyph_draw.l	; $015830
 	lea.l $10(a7),a7	; $015836
 	move.w #$8000,-(a7)	; $01583A
 	pea.l L015BEA(pc)	; $01583E
@@ -7597,7 +7597,7 @@ L015690:
 	move.w #$11,-(a7)	; $015846
 	move.w #$40,-(a7)	; $01584A
 	pea.l L002000.w	; $01584E
-	jsr FUN_01113c.l	; $015852
+	jsr text_glyph_draw.l	; $015852
 	lea.l $10(a7),a7	; $015858
 	move.w #$8000,-(a7)	; $01585C
 	pea.l L015BF0(pc)	; $015860
@@ -7605,7 +7605,7 @@ L015690:
 	move.w #$11,-(a7)	; $015868
 	move.w #$40,-(a7)	; $01586C
 	pea.l L002000.w	; $015870
-	jsr FUN_01113c.l	; $015874
+	jsr text_glyph_draw.l	; $015874
 	lea.l $10(a7),a7	; $01587A
 	move.w #$8000,-(a7)	; $01587E
 	pea.l L015BF6(pc)	; $015882
@@ -7613,7 +7613,7 @@ L015690:
 	move.w #$11,-(a7)	; $01588A
 	move.w #$40,-(a7)	; $01588E
 	pea.l L002000.w	; $015892
-	jsr FUN_01113c.l	; $015896
+	jsr text_glyph_draw.l	; $015896
 	lea.l $10(a7),a7	; $01589C
 	move.w #$8000,-(a7)	; $0158A0
 	pea.l L015BFF(pc)	; $0158A4
@@ -7621,7 +7621,7 @@ L015690:
 	move.w #$11,-(a7)	; $0158AC
 	move.w #$40,-(a7)	; $0158B0
 	pea.l L002000.w	; $0158B4
-	jsr FUN_01113c.l	; $0158B8
+	jsr text_glyph_draw.l	; $0158B8
 	lea.l $10(a7),a7	; $0158BE
 	clr.w -$2(a6)	; $0158C2
 	clr.w -$12(a6)	; $0158C6
@@ -8804,7 +8804,7 @@ L0166C8:
 	move.w #$14,-(a7)	; $0168AE
 	move.w #$40,-(a7)	; $0168B2
 	pea.l L001000.w	; $0168B6
-	jsr FUN_01113c.l	; $0168BA
+	jsr text_glyph_draw.l	; $0168BA
 	lea.l $10(a7),a7	; $0168C0
 	move.w $ff8640.l,d0	; $0168C4
 	add.w #$5f,d0	; $0168CA
@@ -9349,7 +9349,7 @@ L016E76:
 	move.w #$5,-(a7)	; $016FA4
 	move.w #$40,-(a7)	; $016FA8
 	pea.l L001000.w	; $016FAC
-	jsr FUN_01113c.l	; $016FB0
+	jsr text_glyph_draw.l	; $016FB0
 	lea.l $10(a7),a7	; $016FB6
 L016FBA:
 	moveq #$0,d0	; $016FBA
@@ -16169,7 +16169,7 @@ L01E640:
 	move.w #$3,-(a7)	; $01E65E
 	move.w #$40,-(a7)	; $01E662
 	pea.l L001000.w	; $01E666
-	jsr FUN_01113c.l	; $01E66A
+	jsr text_glyph_draw.l	; $01E66A
 	lea.l $10(a7),a7	; $01E670
 	moveq #$0,d0	; $01E674
 	move.b $ffbb72.l,d0	; $01E676
@@ -16247,7 +16247,7 @@ L01E71C:
 	move.w #$2,-(a7)	; $01E72E
 	move.w #$40,-(a7)	; $01E732
 	pea.l L001000.w	; $01E736
-	jsr FUN_01113c.l	; $01E73A
+	jsr text_glyph_draw.l	; $01E73A
 	lea.l $10(a7),a7	; $01E740
 L01E744:
 	move.w d5,d4	; $01E744
@@ -16277,7 +16277,7 @@ L01E762:
 	move.w #$4,-(a7)	; $01E77C
 	move.w #$40,-(a7)	; $01E780
 	pea.l L001000.w	; $01E784
-	jsr FUN_01113c.l	; $01E788
+	jsr text_glyph_draw.l	; $01E788
 	lea.l $10(a7),a7	; $01E78E
 	addq.w #$1,d4	; $01E792
 L01E794:
@@ -16318,7 +16318,7 @@ L01E7C6:
 	move.w #$2,-(a7)	; $01E7EC
 	move.w #$40,-(a7)	; $01E7F0
 	pea.l L001000.w	; $01E7F4
-	jsr FUN_01113c.l	; $01E7F8
+	jsr text_glyph_draw.l	; $01E7F8
 	lea.l $10(a7),a7	; $01E7FE
 L01E802:
 	bra.w L01EEB4	; $01E802
@@ -16469,7 +16469,7 @@ L01E946:
 	move.w #$3,-(a7)	; $01E988
 	move.w #$40,-(a7)	; $01E98C
 	pea.l L001000.w	; $01E990
-	jsr FUN_01113c.l	; $01E994
+	jsr text_glyph_draw.l	; $01E994
 	lea.l $10(a7),a7	; $01E99A
 	tst.w d5	; $01E99E
 	ble.b L01E9C4	; $01E9A0
@@ -16479,7 +16479,7 @@ L01E946:
 	move.w #$2,-(a7)	; $01E9AE
 	move.w #$40,-(a7)	; $01E9B2
 	pea.l L001000.w	; $01E9B6
-	jsr FUN_01113c.l	; $01E9BA
+	jsr text_glyph_draw.l	; $01E9BA
 	lea.l $10(a7),a7	; $01E9C0
 L01E9C4:
 	moveq #$0,d4	; $01E9C4
@@ -16497,7 +16497,7 @@ L01E9C8:
 	move.w #$3,-(a7)	; $01E9E0
 	move.w #$40,-(a7)	; $01E9E4
 	pea.l L001000.w	; $01E9E8
-	jsr FUN_01113c.l	; $01E9EC
+	jsr text_glyph_draw.l	; $01E9EC
 	lea.l $10(a7),a7	; $01E9F2
 	addq.w #$1,d4	; $01E9F6
 L01E9F8:
@@ -16525,7 +16525,7 @@ L01EA18:
 	move.w #$2,-(a7)	; $01EA34
 	move.w #$40,-(a7)	; $01EA38
 	pea.l L001000.w	; $01EA3C
-	jsr FUN_01113c.l	; $01EA40
+	jsr text_glyph_draw.l	; $01EA40
 	lea.l $10(a7),a7	; $01EA46
 L01EA4A:
 	bra.w L01EEB4	; $01EA4A
@@ -16717,7 +16717,7 @@ L01EBD2:
 	move.w #$3,-(a7)	; $01EC38
 	move.w #$40,-(a7)	; $01EC3C
 	pea.l L001000.w	; $01EC40
-	jsr FUN_01113c.l	; $01EC44
+	jsr text_glyph_draw.l	; $01EC44
 	lea.l $10(a7),a7	; $01EC4A
 	moveq #$0,d0	; $01EC4E
 	move.b $ffbb6f.l,d0	; $01EC50
@@ -16732,7 +16732,7 @@ L01EBD2:
 	move.w #$9,-(a7)	; $01EC78
 	move.w #$40,-(a7)	; $01EC7C
 	pea.l L001000.w	; $01EC80
-	jsr FUN_01113c.l	; $01EC84
+	jsr text_glyph_draw.l	; $01EC84
 	lea.l $10(a7),a7	; $01EC8A
 L01EC8E:
 	tst.w d5	; $01EC8E
@@ -16743,7 +16743,7 @@ L01EC8E:
 	move.w #$2,-(a7)	; $01EC9E
 	move.w #$40,-(a7)	; $01ECA2
 	pea.l L001000.w	; $01ECA6
-	jsr FUN_01113c.l	; $01ECAA
+	jsr text_glyph_draw.l	; $01ECAA
 	lea.l $10(a7),a7	; $01ECB0
 L01ECB4:
 	moveq #$0,d4	; $01ECB4
@@ -16761,7 +16761,7 @@ L01ECBA:
 	move.w #$3,-(a7)	; $01ECD2
 	move.w #$40,-(a7)	; $01ECD6
 	pea.l L001000.w	; $01ECDA
-	jsr FUN_01113c.l	; $01ECDE
+	jsr text_glyph_draw.l	; $01ECDE
 	lea.l $10(a7),a7	; $01ECE4
 	tst.w -$4(a6)	; $01ECE8
 	beq.w L01EDA6	; $01ECEC
@@ -16822,7 +16822,7 @@ L01ED74:
 	move.w #$b,-(a7)	; $01ED90
 	move.w #$40,-(a7)	; $01ED94
 	pea.l L001000.w	; $01ED98
-	jsr FUN_01113c.l	; $01ED9C
+	jsr text_glyph_draw.l	; $01ED9C
 	lea.l $10(a7),a7	; $01EDA2
 L01EDA6:
 	addq.w #$1,d4	; $01EDA6
@@ -16839,7 +16839,7 @@ L01EDA8:
 	move.w #$2,-(a7)	; $01EDC4
 	move.w #$40,-(a7)	; $01EDC8
 	pea.l L001000.w	; $01EDCC
-	jsr FUN_01113c.l	; $01EDD0
+	jsr text_glyph_draw.l	; $01EDD0
 	lea.l $10(a7),a7	; $01EDD6
 L01EDDA:
 	bra.w L01EEB4	; $01EDDA
@@ -16850,7 +16850,7 @@ L01EDDE:
 	move.w #$3,-(a7)	; $01EDEC
 	move.w #$40,-(a7)	; $01EDF0
 	pea.l L001000.w	; $01EDF4
-	jsr FUN_01113c.l	; $01EDF8
+	jsr text_glyph_draw.l	; $01EDF8
 	lea.l $10(a7),a7	; $01EDFE
 	move.w #$a000,-(a7)	; $01EE02
 	pea.l L01EED4(pc)	; $01EE06
@@ -16858,7 +16858,7 @@ L01EDDE:
 	move.w #$4,-(a7)	; $01EE0E
 	move.w #$40,-(a7)	; $01EE12
 	pea.l L001000.w	; $01EE16
-	jsr FUN_01113c.l	; $01EE1A
+	jsr text_glyph_draw.l	; $01EE1A
 	lea.l $10(a7),a7	; $01EE20
 	move.w #$a000,-(a7)	; $01EE24
 	pea.l L01EEDB(pc)	; $01EE28
@@ -16866,7 +16866,7 @@ L01EDDE:
 	move.w #$4,-(a7)	; $01EE30
 	move.w #$40,-(a7)	; $01EE34
 	pea.l L001000.w	; $01EE38
-	jsr FUN_01113c.l	; $01EE3C
+	jsr text_glyph_draw.l	; $01EE3C
 	lea.l $10(a7),a7	; $01EE42
 	move.w #$a000,-(a7)	; $01EE46
 	pea.l L01EEE1(pc)	; $01EE4A
@@ -16874,7 +16874,7 @@ L01EDDE:
 	move.w #$4,-(a7)	; $01EE52
 	move.w #$40,-(a7)	; $01EE56
 	pea.l L001000.w	; $01EE5A
-	jsr FUN_01113c.l	; $01EE5E
+	jsr text_glyph_draw.l	; $01EE5E
 	lea.l $10(a7),a7	; $01EE64
 	move.w #$a000,-(a7)	; $01EE68
 	pea.l L01EEE8(pc)	; $01EE6C
@@ -16882,7 +16882,7 @@ L01EDDE:
 	move.w #$4,-(a7)	; $01EE74
 	move.w #$40,-(a7)	; $01EE78
 	pea.l L001000.w	; $01EE7C
-	jsr FUN_01113c.l	; $01EE80
+	jsr text_glyph_draw.l	; $01EE80
 	lea.l $10(a7),a7	; $01EE86
 	bra.b L01EEB4	; $01EE8A
 L01EE8C:
@@ -26371,7 +26371,7 @@ L026EB4:
 	move.w #$3,-(a7)	; $026F0C
 	move.w #$40,-(a7)	; $026F10
 	pea.l L001000.w	; $026F14
-	jsr FUN_01113c.l	; $026F18
+	jsr text_glyph_draw.l	; $026F18
 	lea.l $10(a7),a7	; $026F1E
 	bra.b L026F46	; $026F22
 L026F24:
@@ -26381,7 +26381,7 @@ L026F24:
 	move.w #$3,-(a7)	; $026F30
 	move.w #$40,-(a7)	; $026F34
 	pea.l L001000.w	; $026F38
-	jsr FUN_01113c.l	; $026F3C
+	jsr text_glyph_draw.l	; $026F3C
 	lea.l $10(a7),a7	; $026F42
 L026F46:
 	move.w #$a000,-(a7)	; $026F46
@@ -26390,7 +26390,7 @@ L026F46:
 	move.w #$3,-(a7)	; $026F52
 	move.w #$40,-(a7)	; $026F56
 	pea.l L001000.w	; $026F5A
-	jsr FUN_01113c.l	; $026F5E
+	jsr text_glyph_draw.l	; $026F5E
 	lea.l $10(a7),a7	; $026F64
 	tst.w $ff0116.l	; $026F68
 	beq.b L026F94	; $026F6E
@@ -26400,7 +26400,7 @@ L026F46:
 	move.w #$4,-(a7)	; $026F7C
 	move.w #$40,-(a7)	; $026F80
 	pea.l L001000.w	; $026F84
-	jsr FUN_01113c.l	; $026F88
+	jsr text_glyph_draw.l	; $026F88
 	lea.l $10(a7),a7	; $026F8E
 	bra.b L026FB6	; $026F92
 L026F94:
@@ -26410,7 +26410,7 @@ L026F94:
 	move.w #$4,-(a7)	; $026FA0
 	move.w #$40,-(a7)	; $026FA4
 	pea.l L001000.w	; $026FA8
-	jsr FUN_01113c.l	; $026FAC
+	jsr text_glyph_draw.l	; $026FAC
 	lea.l $10(a7),a7	; $026FB2
 L026FB6:
 	tst.w $ff0134.l	; $026FB6
@@ -26421,7 +26421,7 @@ L026FB6:
 	move.w #$3,-(a7)	; $026FCA
 	move.w #$40,-(a7)	; $026FCE
 	pea.l L001000.w	; $026FD2
-	jsr FUN_01113c.l	; $026FD6
+	jsr text_glyph_draw.l	; $026FD6
 	lea.l $10(a7),a7	; $026FDC
 	bra.b L027004	; $026FE0
 L026FE2:
@@ -26431,7 +26431,7 @@ L026FE2:
 	move.w #$3,-(a7)	; $026FEE
 	move.w #$40,-(a7)	; $026FF2
 	pea.l L001000.w	; $026FF6
-	jsr FUN_01113c.l	; $026FFA
+	jsr text_glyph_draw.l	; $026FFA
 	lea.l $10(a7),a7	; $027000
 L027004:
 	move.w #$a000,-(a7)	; $027004
@@ -26440,7 +26440,7 @@ L027004:
 	move.w #$3,-(a7)	; $027010
 	move.w #$40,-(a7)	; $027014
 	pea.l L001000.w	; $027018
-	jsr FUN_01113c.l	; $02701C
+	jsr text_glyph_draw.l	; $02701C
 	lea.l $10(a7),a7	; $027022
 	tst.w $ff013a.l	; $027026
 	beq.b L027052	; $02702C
@@ -26450,7 +26450,7 @@ L027004:
 	move.w #$4,-(a7)	; $02703A
 	move.w #$40,-(a7)	; $02703E
 	pea.l L001000.w	; $027042
-	jsr FUN_01113c.l	; $027046
+	jsr text_glyph_draw.l	; $027046
 	lea.l $10(a7),a7	; $02704C
 	bra.b L027074	; $027050
 L027052:
@@ -26460,7 +26460,7 @@ L027052:
 	move.w #$4,-(a7)	; $02705E
 	move.w #$40,-(a7)	; $027062
 	pea.l L001000.w	; $027066
-	jsr FUN_01113c.l	; $02706A
+	jsr text_glyph_draw.l	; $02706A
 	lea.l $10(a7),a7	; $027070
 L027074:
 	bra.w L0273E4	; $027074
@@ -26473,7 +26473,7 @@ L027078:
 	move.w #$4,-(a7)	; $027090
 	move.w #$40,-(a7)	; $027094
 	pea.l L001000.w	; $027098
-	jsr FUN_01113c.l	; $02709C
+	jsr text_glyph_draw.l	; $02709C
 	lea.l $10(a7),a7	; $0270A2
 	move.w #$a000,-(a7)	; $0270A6
 	move.w $ffc364.l,-(a7)	; $0270AA
@@ -26489,7 +26489,7 @@ L027078:
 	move.w #$4,-(a7)	; $0270D6
 	move.w #$40,-(a7)	; $0270DA
 	pea.l L001000.w	; $0270DE
-	jsr FUN_01113c.l	; $0270E2
+	jsr text_glyph_draw.l	; $0270E2
 	lea.l $10(a7),a7	; $0270E8
 	move.w #$a000,-(a7)	; $0270EC
 	move.w $ffc366.l,-(a7)	; $0270F0
@@ -26536,7 +26536,7 @@ L02711C:
 	move.w #$4,-(a7)	; $02717E
 	move.w #$40,-(a7)	; $027182
 	pea.l L001000.w	; $027186
-	jsr FUN_01113c.l	; $02718A
+	jsr text_glyph_draw.l	; $02718A
 	lea.l $10(a7),a7	; $027190
 	move.w -$4(a6),d0	; $027194
 	muls.w #$34,d0	; $027198
@@ -26680,7 +26680,7 @@ L0272D2:
 	move.w #$a,-(a7)	; $027390
 	move.w #$40,-(a7)	; $027394
 	pea.l L001000.w	; $027398
-	jsr FUN_01113c.l	; $02739C
+	jsr text_glyph_draw.l	; $02739C
 	lea.l $10(a7),a7	; $0273A2
 	addq.w #$1,-$2(a6)	; $0273A6
 L0273AA:
@@ -26708,7 +26708,7 @@ L0273E8:
 	move.w #$4,-(a7)	; $0273F4
 	move.w #$40,-(a7)	; $0273F8
 	pea.l L001000.w	; $0273FC
-	jsr FUN_01113c.l	; $027400
+	jsr text_glyph_draw.l	; $027400
 	lea.l $10(a7),a7	; $027406
 	move.w $ff0e82.l,d0	; $02740A
 	muls.w #$34,d0	; $027410
@@ -26756,7 +26756,7 @@ L02748C:
 	move.w #$5,-(a7)	; $027498
 	move.w #$40,-(a7)	; $02749C
 	pea.l L001000.w	; $0274A0
-	jsr FUN_01113c.l	; $0274A4
+	jsr text_glyph_draw.l	; $0274A4
 	lea.l $10(a7),a7	; $0274AA
 	move.w #$a000,-(a7)	; $0274AE
 	pea.l L02759C(pc)	; $0274B2
@@ -26764,7 +26764,7 @@ L02748C:
 	move.w #$4,-(a7)	; $0274BA
 	move.w #$40,-(a7)	; $0274BE
 	pea.l L001000.w	; $0274C2
-	jsr FUN_01113c.l	; $0274C6
+	jsr text_glyph_draw.l	; $0274C6
 	lea.l $10(a7),a7	; $0274CC
 	tst.w $ff013a.l	; $0274D0
 	beq.b L0274FC	; $0274D6
@@ -26774,7 +26774,7 @@ L02748C:
 	move.w #$5,-(a7)	; $0274E4
 	move.w #$40,-(a7)	; $0274E8
 	pea.l L001000.w	; $0274EC
-	jsr FUN_01113c.l	; $0274F0
+	jsr text_glyph_draw.l	; $0274F0
 	lea.l $10(a7),a7	; $0274F6
 	bra.b L02751E	; $0274FA
 L0274FC:
@@ -26784,7 +26784,7 @@ L0274FC:
 	move.w #$5,-(a7)	; $027508
 	move.w #$40,-(a7)	; $02750C
 	pea.l L001000.w	; $027510
-	jsr FUN_01113c.l	; $027514
+	jsr text_glyph_draw.l	; $027514
 	lea.l $10(a7),a7	; $02751A
 L02751E:
 	bra.w L026EB0	; $02751E
@@ -26961,7 +26961,7 @@ L027728:
 	move.w #$24,-(a7)	; $027742
 	move.w #$40,-(a7)	; $027746
 	pea.l L001000.w	; $02774A
-	jsr FUN_01113c.l	; $02774E
+	jsr text_glyph_draw.l	; $02774E
 	lea.l $10(a7),a7	; $027754
 	bra.b L02777C	; $027758
 L02775A:
@@ -26971,7 +26971,7 @@ L02775A:
 	move.w #$24,-(a7)	; $027766
 	move.w #$40,-(a7)	; $02776A
 	pea.l L001000.w	; $02776E
-	jsr FUN_01113c.l	; $027772
+	jsr text_glyph_draw.l	; $027772
 	lea.l $10(a7),a7	; $027778
 L02777C:
 	move.w $ff0e7e.l,d0	; $02777C
@@ -27575,7 +27575,7 @@ L027FB0:
 	move.w #$11,-(a7)	; $027FEC
 	move.w #$40,-(a7)	; $027FF0
 	pea.l L001000.w	; $027FF4
-	jsr FUN_01113c.l	; $027FF8
+	jsr text_glyph_draw.l	; $027FF8
 	lea.l $10(a7),a7	; $027FFE
 	move.w $ff012c.l,d0	; $028002
 	ext.l d0	; $028008
@@ -27590,7 +27590,7 @@ L027FB0:
 	move.w #$12,-(a7)	; $02802A
 	move.w #$40,-(a7)	; $02802E
 	pea.l L001000.w	; $028032
-	jsr FUN_01113c.l	; $028036
+	jsr text_glyph_draw.l	; $028036
 	lea.l $10(a7),a7	; $02803C
 	bra.w L028174	; $028040
 	pea.l L029505(pc)	; $028044
@@ -27603,7 +27603,7 @@ L027FB0:
 	move.w #$12,-(a7)	; $028060
 	move.w #$40,-(a7)	; $028064
 	pea.l L001000.w	; $028068
-	jsr FUN_01113c.l	; $02806C
+	jsr text_glyph_draw.l	; $02806C
 	lea.l $10(a7),a7	; $028072
 	bra.w L028174	; $028076
 	pea.l L02951E(pc)	; $02807A
@@ -27646,7 +27646,7 @@ L027FB0:
 	move.w #$12,-(a7)	; $02810E
 	move.w #$40,-(a7)	; $028112
 	pea.l L001000.w	; $028116
-	jsr FUN_01113c.l	; $02811A
+	jsr text_glyph_draw.l	; $02811A
 	lea.l $10(a7),a7	; $028120
 	bra.b L028174	; $028124
 L028126:
@@ -27673,7 +27673,7 @@ L028174:
 	move.w #$12,-(a7)	; $028180
 	move.w #$40,-(a7)	; $028184
 	pea.l L001000.w	; $028188
-	jsr FUN_01113c.l	; $02818C
+	jsr text_glyph_draw.l	; $02818C
 	lea.l $10(a7),a7	; $028192
 	bra.w L028612	; $028196
 L02819A:
@@ -27695,7 +27695,7 @@ L02819A:
 	move.w #$11,-(a7)	; $0281D4
 	move.w #$40,-(a7)	; $0281D8
 	pea.l L001000.w	; $0281DC
-	jsr FUN_01113c.l	; $0281E0
+	jsr text_glyph_draw.l	; $0281E0
 	lea.l $10(a7),a7	; $0281E6
 	move.w #$a000,-(a7)	; $0281EA
 	pea.l L029597(pc)	; $0281EE
@@ -27703,7 +27703,7 @@ L02819A:
 	move.w #$12,-(a7)	; $0281F6
 	move.w #$40,-(a7)	; $0281FA
 	pea.l L001000.w	; $0281FE
-	jsr FUN_01113c.l	; $028202
+	jsr text_glyph_draw.l	; $028202
 	lea.l $10(a7),a7	; $028208
 	bra.w L028612	; $02820C
 L028210:
@@ -27715,7 +27715,7 @@ L028210:
 	move.w #$11,-(a7)	; $028224
 	move.w #$40,-(a7)	; $028228
 	pea.l L001000.w	; $02822C
-	jsr FUN_01113c.l	; $028230
+	jsr text_glyph_draw.l	; $028230
 	lea.l $10(a7),a7	; $028236
 L02823A:
 	move.w $ff0ea8.l,d0	; $02823A
@@ -27727,7 +27727,7 @@ L02823A:
 	move.w #$12,-(a7)	; $028252
 	move.w #$40,-(a7)	; $028256
 	pea.l L001000.w	; $02825A
-	jsr FUN_01113c.l	; $02825E
+	jsr text_glyph_draw.l	; $02825E
 	lea.l $10(a7),a7	; $028264
 	bra.w L0283BC	; $028268
 	move.w #$a000,-(a7)	; $02826C
@@ -27736,7 +27736,7 @@ L02823A:
 	move.w #$12,-(a7)	; $028278
 	move.w #$40,-(a7)	; $02827C
 	pea.l L001000.w	; $028280
-	jsr FUN_01113c.l	; $028284
+	jsr text_glyph_draw.l	; $028284
 	lea.l $10(a7),a7	; $02828A
 	lea.l -$6(a6),a0	; $02828E
 	move.w $18(a3),d0	; $028292
@@ -27791,7 +27791,7 @@ L02831A:
 	move.w #$13,-(a7)	; $028326
 	move.w #$40,-(a7)	; $02832A
 	pea.l L001000.w	; $02832E
-	jsr FUN_01113c.l	; $028332
+	jsr text_glyph_draw.l	; $028332
 	lea.l $10(a7),a7	; $028338
 	bra.b L0283BC	; $02833C
 	move.w #$a000,-(a7)	; $02833E
@@ -27800,7 +27800,7 @@ L02831A:
 	move.w #$12,-(a7)	; $02834A
 	move.w #$40,-(a7)	; $02834E
 	pea.l L001000.w	; $028352
-	jsr FUN_01113c.l	; $028356
+	jsr text_glyph_draw.l	; $028356
 	lea.l $10(a7),a7	; $02835C
 	bra.b L0283BC	; $028360
 L028362:
@@ -27814,7 +27814,7 @@ L028362:
 	move.w #$12,-(a7)	; $028382
 	move.w #$40,-(a7)	; $028386
 	pea.l L001000.w	; $02838A
-	jsr FUN_01113c.l	; $02838E
+	jsr text_glyph_draw.l	; $02838E
 	lea.l $10(a7),a7	; $028394
 L028398:
 	bra.b L0283BC	; $028398
@@ -28816,7 +28816,7 @@ L029178:
 	move.w #$6,-(a7)	; $029184
 	move.w #$40,-(a7)	; $029188
 	pea.l L001000.w	; $02918C
-	jsr FUN_01113c.l	; $029190
+	jsr text_glyph_draw.l	; $029190
 	lea.l $10(a7),a7	; $029196
 	move.w #$a000,-(a7)	; $02919A
 	pea.l L02977C(pc)	; $02919E
@@ -28824,7 +28824,7 @@ L029178:
 	move.w #$7,-(a7)	; $0291A6
 	move.w #$40,-(a7)	; $0291AA
 	pea.l L001000.w	; $0291AE
-	jsr FUN_01113c.l	; $0291B2
+	jsr text_glyph_draw.l	; $0291B2
 	lea.l $10(a7),a7	; $0291B8
 	move.w #$a000,-(a7)	; $0291BC
 	move.w #$a,-(a7)	; $0291C0
@@ -28840,7 +28840,7 @@ L029178:
 	move.w #$8,-(a7)	; $0291EA
 	move.w #$40,-(a7)	; $0291EE
 	pea.l L001000.w	; $0291F2
-	jsr FUN_01113c.l	; $0291F6
+	jsr text_glyph_draw.l	; $0291F6
 	lea.l $10(a7),a7	; $0291FC
 	move.w #$a000,-(a7)	; $029200
 	pea.l L029783(pc)	; $029204
@@ -28848,7 +28848,7 @@ L029178:
 	move.w #$a,-(a7)	; $02920C
 	move.w #$40,-(a7)	; $029210
 	pea.l L001000.w	; $029214
-	jsr FUN_01113c.l	; $029218
+	jsr text_glyph_draw.l	; $029218
 	lea.l $10(a7),a7	; $02921E
 	move.w $ff0e16.l,d0	; $029222
 	ext.l d0	; $029228
@@ -28894,7 +28894,7 @@ L029296:
 	move.w #$b,-(a7)	; $0292A2
 	move.w #$40,-(a7)	; $0292A6
 	pea.l L001000.w	; $0292AA
-	jsr FUN_01113c.l	; $0292AE
+	jsr text_glyph_draw.l	; $0292AE
 	lea.l $10(a7),a7	; $0292B4
 	move.w #$a000,-(a7)	; $0292B8
 	pea.l L029792(pc)	; $0292BC
@@ -28902,7 +28902,7 @@ L029296:
 	move.w #$e,-(a7)	; $0292C4
 	move.w #$40,-(a7)	; $0292C8
 	pea.l L001000.w	; $0292CC
-	jsr FUN_01113c.l	; $0292D0
+	jsr text_glyph_draw.l	; $0292D0
 	lea.l $10(a7),a7	; $0292D6
 	move.w #$a000,-(a7)	; $0292DA
 	pea.l L029796(pc)	; $0292DE
@@ -28910,7 +28910,7 @@ L029296:
 	move.w #$f,-(a7)	; $0292E6
 	move.w #$40,-(a7)	; $0292EA
 	pea.l L001000.w	; $0292EE
-	jsr FUN_01113c.l	; $0292F2
+	jsr text_glyph_draw.l	; $0292F2
 	lea.l $10(a7),a7	; $0292F8
 	move.w #$c000,-(a7)	; $0292FC
 	clr.w -(a7)	; $029300
@@ -33264,7 +33264,7 @@ L02CD1E:
 	move.w d0,-(a7)	; $02CD7A
 	move.w #$40,-(a7)	; $02CD7C
 	pea.l L001000.w	; $02CD80
-	jsr FUN_01113c.l	; $02CD84
+	jsr text_glyph_draw.l	; $02CD84
 	lea.l $10(a7),a7	; $02CD8A
 	bra.b L02CDD0	; $02CD8E
 L02CD90:
@@ -33282,7 +33282,7 @@ L02CD90:
 	move.w d0,-(a7)	; $02CDB2
 	move.w #$40,-(a7)	; $02CDB4
 	pea.l L001000.w	; $02CDB8
-	jsr FUN_01113c.l	; $02CDBC
+	jsr text_glyph_draw.l	; $02CDBC
 	lea.l $10(a7),a7	; $02CDC2
 	bra.b L02CDD0	; $02CDC6
 L02CDC8:
@@ -35641,7 +35641,7 @@ L02ECD6:
 	move.w d0,-(a7)	; $02ED40
 	move.w #$40,-(a7)	; $02ED42
 	pea.l L001000.w	; $02ED46
-	jsr FUN_01113c.l	; $02ED4A
+	jsr text_glyph_draw.l	; $02ED4A
 	lea.l $10(a7),a7	; $02ED50
 	move.w #$c000,-(a7)	; $02ED54
 	move.w d6,d0	; $02ED58
@@ -35699,7 +35699,7 @@ L02ECD6:
 	move.w d0,-(a7)	; $02EE00
 	move.w #$40,-(a7)	; $02EE02
 	pea.l L001000.w	; $02EE06
-	jsr FUN_01113c.l	; $02EE0A
+	jsr text_glyph_draw.l	; $02EE0A
 	lea.l $10(a7),a7	; $02EE10
 L02EE14:
 	addq.w #$1,d5	; $02EE14
@@ -38036,7 +38036,7 @@ FUN_030da4:
 	move.w #$a,-(a7)	; $030DF4
 	move.w #$40,-(a7)	; $030DF8
 	pea.l L001000.w	; $030DFC
-	jsr FUN_01113c.l	; $030E00
+	jsr text_glyph_draw.l	; $030E00
 	lea.l $10(a7),a7	; $030E06
 	addq.w #$8,-$4a(a6)	; $030E0A
 	clr.w -$64(a6)	; $030E0E
@@ -38146,7 +38146,7 @@ L030F6A:
 	move.w #$b,-(a7)	; $030F80
 	move.w #$40,-(a7)	; $030F84
 	pea.l L001000.w	; $030F88
-	jsr FUN_01113c.l	; $030F8C
+	jsr text_glyph_draw.l	; $030F8C
 	lea.l $10(a7),a7	; $030F92
 	addq.w #$8,-$4a(a6)	; $030F96
 	bra.b L030FCC	; $030F9A
@@ -38161,7 +38161,7 @@ L030F9C:
 	move.w #$b,-(a7)	; $030FB2
 	move.w #$40,-(a7)	; $030FB6
 	pea.l L001000.w	; $030FBA
-	jsr FUN_01113c.l	; $030FBE
+	jsr text_glyph_draw.l	; $030FBE
 	lea.l $10(a7),a7	; $030FC4
 	addq.w #$8,-$4a(a6)	; $030FC8
 L030FCC:
@@ -38209,7 +38209,7 @@ L031040:
 	move.w #$b,-(a7)	; $031056
 	move.w #$40,-(a7)	; $03105A
 	pea.l L001000.w	; $03105E
-	jsr FUN_01113c.l	; $031062
+	jsr text_glyph_draw.l	; $031062
 	lea.l $10(a7),a7	; $031068
 	addq.w #$8,-$4a(a6)	; $03106C
 	move.w #$347,-(a7)	; $031070
@@ -38310,7 +38310,7 @@ L031040:
 	move.w #$b,-(a7)	; $0311DA
 	move.w #$40,-(a7)	; $0311DE
 	pea.l L001000.w	; $0311E2
-	jsr FUN_01113c.l	; $0311E6
+	jsr text_glyph_draw.l	; $0311E6
 	lea.l $10(a7),a7	; $0311EC
 	addq.w #$8,-$4a(a6)	; $0311F0
 L0311F4:
@@ -38358,7 +38358,7 @@ L031260:
 	move.w #$b,-(a7)	; $031276
 	move.w #$40,-(a7)	; $03127A
 	pea.l L001000.w	; $03127E
-	jsr FUN_01113c.l	; $031282
+	jsr text_glyph_draw.l	; $031282
 	lea.l $10(a7),a7	; $031288
 	addq.w #$8,-$4a(a6)	; $03128C
 	lea.l $ff0e92.l,a0	; $031290
@@ -38559,7 +38559,7 @@ L031472:
 	move.w #$b,-(a7)	; $03152E
 	move.w #$40,-(a7)	; $031532
 	pea.l L001000.w	; $031536
-	jsr FUN_01113c.l	; $03153A
+	jsr text_glyph_draw.l	; $03153A
 	lea.l $10(a7),a7	; $031540
 	addq.w #$8,-$4a(a6)	; $031544
 	bra.b L03157A	; $031548
@@ -38574,7 +38574,7 @@ L03154A:
 	move.w #$b,-(a7)	; $031560
 	move.w #$40,-(a7)	; $031564
 	pea.l L001000.w	; $031568
-	jsr FUN_01113c.l	; $03156C
+	jsr text_glyph_draw.l	; $03156C
 	lea.l $10(a7),a7	; $031572
 	addq.w #$8,-$4a(a6)	; $031576
 L03157A:
@@ -38658,7 +38658,7 @@ L0315DC:
 	move.w #$b,-(a7)	; $031698
 	move.w #$40,-(a7)	; $03169C
 	pea.l L001000.w	; $0316A0
-	jsr FUN_01113c.l	; $0316A4
+	jsr text_glyph_draw.l	; $0316A4
 	lea.l $10(a7),a7	; $0316AA
 	addq.w #$8,-$4a(a6)	; $0316AE
 	bra.b L0316E4	; $0316B2
@@ -38673,7 +38673,7 @@ L0316B4:
 	move.w #$b,-(a7)	; $0316CA
 	move.w #$40,-(a7)	; $0316CE
 	pea.l L001000.w	; $0316D2
-	jsr FUN_01113c.l	; $0316D6
+	jsr text_glyph_draw.l	; $0316D6
 	lea.l $10(a7),a7	; $0316DC
 	addq.w #$8,-$4a(a6)	; $0316E0
 L0316E4:
@@ -38727,7 +38727,7 @@ L03173A:
 	move.w #$b,-(a7)	; $031792
 	move.w #$40,-(a7)	; $031796
 	pea.l L001000.w	; $03179A
-	jsr FUN_01113c.l	; $03179E
+	jsr text_glyph_draw.l	; $03179E
 	lea.l $10(a7),a7	; $0317A4
 	addq.w #$8,-$4a(a6)	; $0317A8
 	bra.b L0317DE	; $0317AC
@@ -38742,7 +38742,7 @@ L0317AE:
 	move.w #$b,-(a7)	; $0317C4
 	move.w #$40,-(a7)	; $0317C8
 	pea.l L001000.w	; $0317CC
-	jsr FUN_01113c.l	; $0317D0
+	jsr text_glyph_draw.l	; $0317D0
 	lea.l $10(a7),a7	; $0317D6
 	addq.w #$8,-$4a(a6)	; $0317DA
 L0317DE:

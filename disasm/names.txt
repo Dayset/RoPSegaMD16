@@ -70,3 +70,5 @@
 0x00012FA0 error_show           # 1-arg wrapper calling $12072 (bytes 0x12FA0-0x12FB3). Our docs/logic.md:295 call it text draw; RROP docs/diagnostics.md:37 call it the original error handler (fatal screen). Callers pass codes 0x1A/0x1B (docs/architecture.md:228). Disputed; name chosen from callers + RROP.
 0x0001C0EC grid_fill            # docs/architecture.md:204: 10x10 grid fill, not party init
 0x00016512 column_write         # docs/graphics.md:465: column writer (scroll)
+# --- batch 4: from RROP's text-capture map (kruzeman/rrop genesis_recompiler/rings_text_capture.h:41-46) ---
+0x0001113C text_glyph_draw      # code: calls vdp_set_write_addr (0x11160) and vdp_data_write (0x1118C); RROP maps its return sites $11192,$11290,$1121C,$11238,$11252,$1126C to char-range writers
