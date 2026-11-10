@@ -31,7 +31,7 @@ Issues live in `issues/` — one file each. Update both together.
 | M8 | Full disassembly | 🟡 in progress (446 functions mapped; ~80–100 traced in detail; ~350 KB of ROM data unproven) |
 | M9 | Shiftable build | ⬜ not started |
 | M10 | Asset round-trip | 🟡 in progress (tiles, sprites, maps, chunks rendered from ROM 2026-11-10; edit → rebuild round-trip not done) |
-| M11 | Naming & symbol database | 🟡 in progress (5,017 labels in `disasm/src/rop.s`; 54 of 446 routines named — 12% — on `gh-routine-names` (tip `6b2ce43`, 2026-11-10; `disasm/names.txt`, names used only where a doc states the routine's role); RAM/hardware naming open) |
+| M11 | Naming & symbol database | 🟡 in progress (5,017 labels in `disasm/src/rop.s`; 80 of 446 routines named — 18% — on `gh-11-routine-names` (rebased onto main, 2026-11-10; gate PASS, raw=0, 80 names each defined once; `disasm/names.txt`, names used only where a doc states the routine's role); RAM/hardware naming open) |
 
 ## Issue board
 

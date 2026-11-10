@@ -73,6 +73,25 @@ def abs_operands(op):
     return refs
 
 
+
+
+def load_names():
+    """Routine names from disasm/symbols/*.csv (addr,name,tier,note). Names must be unique."""
+    import csv
+    names = {}
+    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv'), Path('disasm/symbols/auto.csv')]):
+        with path.open(newline="") as fh:
+            for row in csv.DictReader(fh):
+                addr = int(row["addr"], 16)
+                name = row["name"]
+                if name in names.values():
+                    raise SystemExit(f"duplicate routine name {name} ({path})")
+                if addr in names:
+                    raise SystemExit(f"duplicate address 0x{addr:06X} ({path})")
+                names[addr] = name
+    return names
+
+
 def load_ranges():
     rows = []
     for line in BODIES.read_text().splitlines():
@@ -117,7 +136,13 @@ def is_flow(mnem, op):
     return base in BRANCHES or base in DBRANCHES or "(pc" in op
 
 
+BITOPS = {"btst", "bset", "bclr", "bchg"}
+
+
 def abs_text(mnem, op):
+    # vasm rejects a size suffix on bit operations: the size is implied (.b on memory, .l on Dn)
+    if mnem.split(".")[0] in BITOPS:
+        mnem = mnem.split(".")[0]
     return f"{mnem} {op.replace(', ', ',')}".strip()
 
 
@@ -146,6 +171,8 @@ def verify_all(cands, rom):
 
 
 def main():
+    global NAMES
+    NAMES = load_names()
     rom = ROM.read_bytes()
     assert len(rom) == ROM_SIZE, "rop-original.gen must be the 1 MB dump"
     ranges = load_ranges()
@@ -169,6 +196,20 @@ def main():
                 continue
             cands[addr] = abs_text(mnem, op)
     ok = verify_all(cands, rom)
+    # Indexed pc-relative jumps jmp d8(pc,Xn): vasm measures a "$addr(pc)" target from the
+    # instruction's own address, so the displacement is written explicitly as "*+N", where
+    # N = d8 + 2 (* is the instruction address). N comes from the extension word in the ROM.
+    alt = {}
+    for start, end, entry, insns, tail in code:
+        for addr, size, mnem, op in insns:
+            if mnem == "jmp" and "(pc," in op and size == 4:
+                ext = rom[addr + 2]
+                d8 = ext - 256 if ext >= 128 else ext
+                index = op.split("(pc,", 1)[1]
+                alt[addr] = f"jmp *{d8 + 2:+d}(pc,{index}"
+    alt_ok = verify_all(alt, rom)
+    texts = {a: alt[a] for a in alt_ok}
+    ok |= alt_ok
 
     # 3. label targets for converted instructions that reference another address
     targets = set()
@@ -176,7 +217,9 @@ def main():
     abs_refs = {}   # addr -> {operand index: target} for non-flow absolute operands
     for start, end, entry, insns, tail in code:
         for addr, size, mnem, op in insns:
-            if addr in ok and is_flow(mnem, op):
+            if addr in alt_ok:
+                converted[addr] = True
+            elif addr in ok and is_flow(mnem, op):
                 tgt = set(int(m.group(1), 16) for m in TARGET_RE.finditer(op))
                 # only label targets we can place: instruction starts or data positions
                 if all((t in insn_starts) or (t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code))
@@ -207,6 +250,8 @@ def main():
 
     def lab(t):
         """One name per address, used for both definitions and references."""
+        if t in NAMES:
+            return NAMES[t]
         return f"FUN_{t:06x}" if t in entry_names else f"L{t:06X}"
 
     # 3b. verify the labelled form of each rewritten non-flow instruction assembles
@@ -270,7 +315,7 @@ def main():
         pieces.append((start, "code", (end, entry, insns, tail)))
     pieces.sort()
     pos = 0
-    label_addrs = targets | entry_names
+    label_addrs = targets | entry_names | set(NAMES)  # every named address gets a label
     labelled = set()
 
     def emit_data(a, b):
@@ -298,7 +343,7 @@ def main():
                 out.append(f"{lab(addr)}:")
                 labelled.add(addr)
             if converted.get(addr):
-                text = abs_text(mnem, op)
+                text = texts.get(addr) or abs_text(mnem, op)
                 # rewrite targets to labels
                 if is_flow(mnem, op):
                     # only branch and pc-relative operands take label targets; immediates stay numeric

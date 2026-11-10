@@ -1,0 +1,3 @@
+addr,name,tier,note
+0x03A62E,attack_dispatch,2,docs/logic.md: $3A62E dispatches on the spell/attack selector
+0x03B1EE,damage_calc,2,docs/logic.md: $3B1EE takes a spell base value; damage test vectors

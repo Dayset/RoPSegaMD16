@@ -1,0 +1,15 @@
+addr,name,tier,note
+0x000200,reset_entry,2,docs/architecture.md: 0x200 TMSS check + table-driven hardware init
+0x0003AA,pad1_read_boot,1,writes $A10009/$A10003 and reads $A10003; no Z80 bus request (reset path)
+0x0004E6,attract_scroll,2,docs/architecture.md: $4E6 writes H-scroll values for the attract animation
+0x00119E,main_init,2,docs/architecture.md: 0x119E main init; then jmp $D25C
+0x001350,joypad_queue_pop,2,docs/architecture.md: $1350 joypad-queue pop
+0x00D25C,game_dispatch,2,docs/architecture.md: $D25C game-code dispatcher (not the main loop itself)
+0x00D28E,main_loop,2,docs/architecture.md: $D28E eternal main loop (#020)
+0x00D9E2,vdp_ctrl_write,1,move.w arg;$C00004: one word to the VDP control port
+0x00D9EE,vdp_data_write,1,move.w arg;$C00000: one word to the VDP data port
+0x00D9FA,vdp_data_read,1,move.w $C00000;d0: one word from the VDP data port
+0x00DA04,dma_upload,2,docs/graphics.md:366;687: DMA copy to VRAM
+0x00DC60,vdp_set_write_addr,1,VDP control port: $4000|addr low word; then the 2-bit high part
+0x00DC82,pad1_read,1,bus request $A11100; TH select on $A10003; reads $A10003
+0x00DCE2,pad2_read,1,bus request $A11100; TH select on $A10005; reads $A10005

@@ -1,0 +1,4 @@
+addr,name,tier,note
+0x02155E,world_tick,2,docs/architecture.md: $2155E per-frame world tick (step counter $FF0E16)
+0x0231D8,hero_track,2,RROP rings_wide_render.h:78: sets tracking when arg at a7+4 == $FFB0CC (hero object); code: link a6 at 0x231D8
+0x023B84,entity_spawn,2,docs/architecture.md: $23B84 entity spawner

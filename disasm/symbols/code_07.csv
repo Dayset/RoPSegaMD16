@@ -1,0 +1,2 @@
+addr,name,tier,note
+0x031958,max_hp_for_level,2,docs/logic.md: $31958 max HP = min(20+15*level; 140)

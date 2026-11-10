@@ -1,0 +1,8 @@
+addr,name,tier,note
+0x01B5D6,new_game_init,2,docs/logic.md: $1B5D6 new-game init
+0x01B918,redraw_check,2,docs/architecture.md: $1B918 per-frame redraw checker
+0x01BA26,request_full_redraw,2,docs/logic.md: $1BA26 request full redraw
+0x01C0EC,grid_fill,2,docs/architecture.md:204: 10x10 grid fill; not party init
+0x01E3B0,queue_push,2,docs/logic.md: $1E3B0 push/enqueue (head/tail bytes)
+0x01E49A,queue_depth,2,docs/logic.md: $1E49A returns byte0 - byte1 (queue depth)
+0x01F296,verb_exec,2,docs/architecture.md: $1F296 verb executor
