@@ -53,7 +53,7 @@ at `0x30C`. Entry ignores the return value and resets the stack
          jsr     $42FC8             ; EEPROM init
          jsr     $DCE2              ; pad-2 read -> d0
          cmp.b   #$E0, d0
-         beq     $432B6             ; B+C+Start -> clear-save path
+         beq     $432B6             ; A+C+Start -> clear-save path
 ```
 
 **Clear path (`$432B6`):** `$FF0168 = 1`; zero the 128-byte `$FF016A`
@@ -120,7 +120,7 @@ exit paths differ only in whether they hang (see §1.3).
 | `$FF0168` | Set at | Meaning |
 |---|---|---|
 | `0` | `0x43240` (entry clear) | Default. Also the value after a valid checksum, after an invalid checksum with neither combo held, and after a successful save/load (the save/load driver never touches it). |
-| `1` | `0x432B6` (`$E0` clear path) | The `$E0` (B+C+Start) clear-save path was taken at boot. |
+| `1` | `0x432B6` (`$E0` clear path) | The `$E0` (A+C+Start) clear-save path was taken at boot. |
 | `−1` | `0x432F6` (failure path) | EEPROM error (`$FF014E < 0` after the boot read), or an invalid checksum with `$B0` held at the re-read. |
 
 **Re-verified by grep 2026-11-09: exactly 3 references to `$FF0168`
@@ -255,11 +255,35 @@ in d0). Ghidra xrefs: 8 call sites (`0x4324A`, `0x432A8`,
 `0x432FE`, `0x43316` inside `$4323C`; `0x11BC8`, `0x12420`,
 `0x16B10`, `0x12F58` in game code).
 
-**Pad-2 button decoding (verified from the `$4323C` compares +
-`$DCE2` inversion): `$E0` = B+C+Start, `$B0` = A+C+Start**
-(inverted byte: pressed buttons read 0). `$DCE2` is a shared joypad
-utility, not a save routine — #003's "not a save routine" label
-stands.
+**Pad-2 button decoding — CORRECTED 2026-11-10 (the main-line labels
+were swapped; the PR #1 branch line was right): `$E0` = A+C+Start,
+`$B0` = B+C+Start.** `$DCE2` reads pad 2 in two phases: phase 1 drives
+TH=0 (`move.b #$0,$A10005.l` after setting TH as an output via
+`move.b #$40,$A1000B.l`) and reads `$A10005` → d0, `asl.b #2;
+and.b #$C0` (keeps bits 6,7); phase 2 drives TH=1
+(`move.b #$40,$A10005.l`) and reads `$A10005` → d1, `and.b #$3F`
+(keeps bits 0–5); the shared tail `or.b d1,d0; not.b d0` returns the
+inverted button byte (1 = pressed). Genesis 3-button protocol (TH=0 →
+A/Start on data bits 4/5; TH=1 → B/C on bits 4/5; data bits PD0=Up,
+PD1=Down, PD2=Left, PD3=Right, PD4=TL, PD5=TR) gives the result byte:
+bit 7 = Start, bit 6 = A, bit 5 = C, bit 4 = B, bits 3–0 =
+Right/Left/Down/Up. So `$E0` = bits 7,6,5 = Start+A+C =
+**A+C+Start** (the clear-save path at `$432B6`), and `$B0` = bits
+7,5,4 = Start+C+B = **B+C+Start** (the failure path at `$432F6`).
+[live, 2026-11-10, 8/8]: an injection harness
+(`.scratch022/harness_dce2_inj.s`, test ROM
+`c7c94fce21b84043e9c88556cb58430e`) patched the two `$DCE2` reads to
+RAM (`$FFD010`/`$FFD011`, same 6-byte length) and fed controlled raw
+bytes — A+C+Start → `$E0`, B+C+Start → `$B0`, A → `$40`, B → `$10`,
+C → `$20`, Start → `$80`, no keys → `$00`, all four → `$F0`. (An
+end-to-end test with real key presses was blocked: XTEST keyboard
+events do not reach BlastEm's SDL in this Xvfb — `esc` (ui.exit) and
+`p` (ui.screenshot) have no effect even with the window focused and
+the pointer inside it — and there is no /dev/uinput for a virtual
+joystick. The injection test verifies the decode logic live; the
+protocol half rests on the hardware spec, confirmed by three
+independent references.) `$DCE2` is a shared joypad utility, not a
+save routine — #003's "not a save routine" label stands.
 
 ---
 
@@ -745,7 +769,7 @@ see §4.6).
 
 | # | Criterion | Status |
 |---|---|---|
-| 1 | `$DCE2`, `$42FC8`, `$43012` traced and documented (what they read, what the `$E0`/`$B0` magic bytes mean) | **DONE** — §2 (§2.1–2.4: init, bit-out/in, ACK, READ, WRITE + verify), §3 (`$DCE2` + `$E0` = B+C+Start, `$B0` = A+C+Start). |
+| 1 | `$DCE2`, `$42FC8`, `$43012` traced and documented (what they read, what the `$E0`/`$B0` magic bytes mean) | **DONE** — §2 (§2.1–2.4: init, bit-out/in, ACK, READ, WRITE + verify), §3 (`$DCE2` + `$E0` = A+C+Start, `$B0` = B+C+Start — labels corrected 2026-11-10, were swapped). |
 | 2 | Save medium decided: SRAM / EEPROM / passwords / none, with evidence | **DONE** — Verdict + §2: **128-byte serial EEPROM**, Microwire bit-bang via `$200000`, DI/DO = D7, CLK = D6; header declares no SRAM; BlastEm `rom.db` (`T-50176`, I2C, size 128) corroborates. Chip identity **open** (93C46 family is the suspect, unproven). |
 | 3 | The 128-byte `$FF016A` buffer format + its byte-sum check explained | **DONE** — §1.2 (the check), §4 (the real format: magic + parity + 1001-bit packed `$FFA800`), §5 (the incompatibility). |
 | 4 | `$FF0168` flag values (0 / 1 / −1) mapped to game states | **DONE** — §1.4 (table + the never-read re-verification). |
@@ -788,7 +812,7 @@ see §4.6).
 - The in-game save/load return codes are `0x48` (save OK), `0x4A`
   (save error), `0x49` (load OK), `0x4B` (load error), `0x4C`/`0x4D`
   (called with `$FF00AE != 1`).
-- The `$E0` (B+C+Start on pad 2) clear-save at boot is a real,
+- The `$E0` (A+C+Start on pad 2) clear-save at boot is a real,
   deliberate-feeling feature (it sets `$FF0168 = 1` and writes 128
   zeros); reproduce it in classic mode. Note the `$B0`/`$E0`
   re-read hang (`$4333A`) is a bug — holding either combo at any of

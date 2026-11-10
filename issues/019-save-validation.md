@@ -27,4 +27,18 @@ validates a save.
 
 ## Notes
 - Depends on #003. Header SRAM field is blank — do not assume SRAM exists.
+- **$E0/$B0 labels CORRECTED 2026-11-10 (were swapped; the PR #1 branch
+  line was right): `$E0` = A+C+Start (clear-save path), `$B0` = B+C+Start
+  (failure path).** Re-derived from `$DCE2`: phase 1 drives TH=0 and reads
+  A (bit 4) / Start (bit 5) into result bits 6/7; phase 2 drives TH=1 and
+  reads B (bit 4) / C (bit 5) into result bits 4/5; result byte is
+  bit 7 = Start, bit 6 = A, bit 5 = C, bit 4 = B. Verified live 8/8 by an
+  injection harness (`.scratch022/harness_dce2_inj.s`, test ROM
+  `c7c94fce21b84043e9c88556cb58430e`) — A+C+Start → `$E0`, B+C+Start →
+  `$B0`, A → `$40`, B → `$10`, C → `$20`, Start → `$80`, no keys →
+  `$00`, all four → `$F0`. (End-to-end test with real key presses was
+  blocked: XTEST keyboard events do not reach BlastEm's SDL in this
+  Xvfb, and there is no /dev/uinput. The injection test verifies the
+  decode logic live; the protocol half rests on the hardware spec.)
+  See `docs/save.md` §3.
 
