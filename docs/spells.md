@@ -349,7 +349,10 @@ the player menu (`0x3BB72` writes `move.b #$13, $25(a3)` = 19).
   decrements `$FF010E` bits 6–8 when the leader acts; if
   `char.+0x28 & 3 != 0` → step 100.
 - **Steps 1–4:** movement toward target (`$25DE4`, `$36CFC`,
-  `$1E18A`), duration nibble −= 1 each step; steps 2/4 call
+  `$1E18A` — `$1E18A` decomposes the movement direction into
+  axis components); the spell duration nibble −= 1 each step
+  (a separate step operation, not performed by `$1E18A`);
+  steps 2/4 call
   `$3B748` when `(record.w1>>4 & 0x7FF)==0` and write the result
   to `char.+0x2C` low byte; returns `$FF0250 + 0x40` (which the
   caller at `0x225AA` turns into a `$37D0E` Power-deduction call

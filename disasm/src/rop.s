@@ -15879,7 +15879,7 @@ L01E186:
 	moveq #$4,d0	; $01E186
 	bra.b L01E164	; $01E188
 	; code $01E18A-$01E29B
-spell_duration_tick:
+world_decompose_direction:
 	link.w a6,#$0	; $01E18A
 	tst.w $8(a6)	; $01E18E
 	bne.b L01E1AE	; $01E192
@@ -21598,7 +21598,7 @@ L022B68:
 	move.w (a0,d0.l),d2	; $022BD4
 	sub.w (a1,d1.l),d2	; $022BD8
 	move.w d2,-(a7)	; $022BDC
-	jsr spell_duration_tick.l	; $022BDE
+	jsr world_decompose_direction.l	; $022BDE
 	lea.l $c(a7),a7	; $022BE4
 	tst.w -$2(a6)	; $022BE8
 	beq.b L022BF8	; $022BEC
@@ -21765,7 +21765,7 @@ L022DD6:
 	move.w (a0,d0.l),d2	; $022E42
 	sub.w (a1,d1.l),d2	; $022E46
 	move.w d2,-(a7)	; $022E4A
-	jsr spell_duration_tick.l	; $022E4C
+	jsr world_decompose_direction.l	; $022E4C
 	lea.l $c(a7),a7	; $022E52
 	tst.w -$2(a6)	; $022E56
 	beq.b L022E8E	; $022E5A
@@ -22018,7 +22018,7 @@ L02316C:
 	move.w (a0,d0.l),d1	; $02319E
 	sub.w $c(a1),d1	; $0231A2
 	move.w d1,-(a7)	; $0231A6
-	jsr spell_duration_tick.l	; $0231A8
+	jsr world_decompose_direction.l	; $0231A8
 	lea.l $c(a7),a7	; $0231AE
 	move.w -$a(a6),-(a7)	; $0231B2
 	move.w d4,-(a7)	; $0231B6
@@ -36128,7 +36128,7 @@ L02EF6C:
 	move.w $c(a4),d0	; $02EFA2
 	sub.w $c(a3),d0	; $02EFA6
 	move.w d0,-(a7)	; $02EFAA
-	jsr spell_duration_tick.l	; $02EFAC
+	jsr world_decompose_direction.l	; $02EFAC
 	lea.l $c(a7),a7	; $02EFB2
 	move.w -$2(a6),-(a7)	; $02EFB6
 	move.w #$ffff,-(a7)	; $02EFBA
@@ -36148,7 +36148,7 @@ L02EF6C:
 	move.w $c(a3),d0	; $02EFF0
 	sub.w $c(a4),d0	; $02EFF4
 	move.w d0,-(a7)	; $02EFF8
-	jsr spell_duration_tick.l	; $02EFFA
+	jsr world_decompose_direction.l	; $02EFFA
 	lea.l $c(a7),a7	; $02F000
 	move.w -$2(a6),-(a7)	; $02F004
 	move.w #$ffff,-(a7)	; $02F008
@@ -40180,7 +40180,7 @@ L0323F6:
 	move.w -$a(a6),d0	; $032442
 	sub.w -$e(a6),d0	; $032446
 	move.w d0,-(a7)	; $03244A
-	jsr spell_duration_tick.l	; $03244C
+	jsr world_decompose_direction.l	; $03244C
 	lea.l $c(a7),a7	; $032452
 	cmpi.w #$64,-$8(a6)	; $032456
 	bge.b L03247E	; $03245C
@@ -42072,7 +42072,7 @@ L033AA0:
 	move.w (a0,d0.l),d2	; $033AEE
 	sub.w (a1,d1.l),d2	; $033AF2
 	move.w d2,-(a7)	; $033AF6
-	jsr spell_duration_tick.l	; $033AF8
+	jsr world_decompose_direction.l	; $033AF8
 	lea.l $c(a7),a7	; $033AFE
 	clr.w -(a7)	; $033B02
 	move.w -$8(a6),-(a7)	; $033B04
@@ -42198,7 +42198,7 @@ L033C8C:
 	move.w (a0,d0.l),d2	; $033CDA
 	sub.w (a1,d1.l),d2	; $033CDE
 	move.w d2,-(a7)	; $033CE2
-	jsr spell_duration_tick.l	; $033CE4
+	jsr world_decompose_direction.l	; $033CE4
 	lea.l $c(a7),a7	; $033CEA
 	move.w -$a(a6),-(a7)	; $033CEE
 	jsr world_reverse_dir.l	; $033CF2
@@ -43498,7 +43498,7 @@ sys_unk_034ed0:
 	pea.l -$6(a6)	; $034F0C
 	move.w -$4(a6),-(a7)	; $034F10
 	move.w -$2(a6),-(a7)	; $034F14
-	jsr spell_duration_tick.l	; $034F18
+	jsr world_decompose_direction.l	; $034F18
 	lea.l $c(a7),a7	; $034F1E
 	cmpi.w #$4,-$6(a6)	; $034F22
 	bne.b L034F30	; $034F28
@@ -45728,7 +45728,7 @@ world_get_direction:
 	pea.l -$c(a6)	; $036E10
 	move.w -$a(a6),-(a7)	; $036E14
 	move.w -$8(a6),-(a7)	; $036E18
-	jsr spell_duration_tick.l	; $036E1C
+	jsr world_decompose_direction.l	; $036E1C
 	lea.l $c(a7),a7	; $036E22
 	move.w -$c(a6),d0	; $036E26
 	unlk a6	; $036E2A
@@ -45925,7 +45925,7 @@ L03709C:
 	move.w $c(a0),d0	; $0370BA
 	sub.w $c(a4),d0	; $0370BE
 	move.w d0,-(a7)	; $0370C2
-	jsr spell_duration_tick.l	; $0370C4
+	jsr world_decompose_direction.l	; $0370C4
 	lea.l $c(a7),a7	; $0370CA
 	movea.l -$4(a6),a0	; $0370CE
 	move.w $c(a0),$ff024c.l	; $0370D2
@@ -46004,7 +46004,7 @@ L0371B4:
 	move.w $c(a0),d0	; $0371DE
 	sub.w $c(a4),d0	; $0371E2
 	move.w d0,-(a7)	; $0371E6
-	jsr spell_duration_tick.l	; $0371E8
+	jsr world_decompose_direction.l	; $0371E8
 	lea.l $c(a7),a7	; $0371EE
 	addq.w #$1,$ff0ea8.l	; $0371F2
 	move.w $2a(a4),d0	; $0371F8
@@ -46082,7 +46082,7 @@ L0372A2:
 	move.w $c(a0),d0	; $0372EA
 	sub.w $c(a4),d0	; $0372EE
 	move.w d0,-(a7)	; $0372F2
-	jsr spell_duration_tick.l	; $0372F4
+	jsr world_decompose_direction.l	; $0372F4
 	lea.l $c(a7),a7	; $0372FA
 	addq.w #$1,$ff0ea8.l	; $0372FE
 	move.w $2c(a4),d0	; $037304
@@ -46121,7 +46121,7 @@ L037326:
 	move.w $c(a0),d0	; $03737A
 	sub.w $c(a4),d0	; $03737E
 	move.w d0,-(a7)	; $037382
-	jsr spell_duration_tick.l	; $037384
+	jsr world_decompose_direction.l	; $037384
 	lea.l $c(a7),a7	; $03738A
 	move.w #$2,-(a7)	; $03738E
 	jsr rand_next.l	; $037392
@@ -46291,7 +46291,7 @@ L03758A:
 	move.w $c(a0),d0	; $0375A8
 	sub.w $c(a4),d0	; $0375AC
 	move.w d0,-(a7)	; $0375B0
-	jsr spell_duration_tick.l	; $0375B2
+	jsr world_decompose_direction.l	; $0375B2
 	lea.l $c(a7),a7	; $0375B8
 	move.w $ff0250.l,-(a7)	; $0375BC
 	move.w #$ffff,-(a7)	; $0375C2
@@ -56704,7 +56704,7 @@ L03F964:
 	move.w -$6(a6),d0	; $03F9E0
 	sub.w -$2(a6),d0	; $03F9E4
 	move.w d0,-(a7)	; $03F9E8
-	jsr spell_duration_tick.l	; $03F9EA
+	jsr world_decompose_direction.l	; $03F9EA
 	lea.l $c(a7),a7	; $03F9F0
 	move.w $ff0294.l,d0	; $03F9F4
 	ext.l d0	; $03F9FA
@@ -59669,7 +59669,7 @@ L042390:
 	move.w $c(a0),d0	; $042408
 	sub.w $ff029c.l,d0	; $04240C
 	move.w d0,-(a7)	; $042412
-	jsr spell_duration_tick.l	; $042414
+	jsr world_decompose_direction.l	; $042414
 	lea.l $c(a7),a7	; $04241A
 	addq.w #$1,$ff012a.l	; $04241E
 L042424:
