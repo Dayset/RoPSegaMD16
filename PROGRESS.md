@@ -77,6 +77,14 @@ Issues live in `issues/` — one file each. Update both together.
 
 ## Done so far (2026-11-09)
 
+- [ ] 2026-11-10 GitHub #7 (no raw fallbacks), branch `gh-7-jump-dispatch` @ `a5f8394`, PR pending: raw `.dc` in code 102 -> 0; 69 indexed dispatches now `jmp *+N(pc,Xn)`; gate PASS. MET on evidence.
+- [ ] 2026-11-10 GitHub #8 (labelled jump tables), same branch: dispatches are mnemonics; table-entry labels NOT verified. PARTIAL.
+- [x] 2026-11-10 GitHub #20 (symbol database), branch `gh-20-symbol-db` @ `7ffcc2f`, PR pending, depends on `gh-routine-names`: `tools/make_symbols.py` writes names.csv, emu.sym, asm-labels.txt from 80 names; duplicates rejected.
+- [x] 2026-11-10 GitHub #3 (clean-checkout rebuild), fresh clone of `gh-5-make-gate` with `make vasm` (pinned assembler) + `make gate`: PASS byte-identical, rom-free PASS (exit 0).
+- [ ] 2026-11-10 GitHub #4 (pin toolchain), branch `gh-4-pin-toolchain` @ `5e319f3`: vasm pinned (`install_vasm.sh`, reinstalled, 2.0f) + capstone 5.0.7 pinned in `tools/requirements.txt`. Ghidra and BlastEm versions still not pinned. PARTIAL.
+
+## Done so far (2026-11-09)
+
 - [x] ROM verified: 1 MB, MD5 `30c18fdb…`, header checksum `0x8B9F` matches computed.
 - [x] Dialogue confirmed plain ASCII in-ROM (Void death message, guild/shop text).
 - [x] Repo created with issues + progress tracking; pushed to GitHub as Dayset/RoPSegaMD16 (remote main at c6cec1f, local synced).
