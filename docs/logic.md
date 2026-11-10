@@ -599,10 +599,13 @@ mod 0, no merchant):
   truncation −1350/100 → −13), (−50, pct 100, live 50→0, entry
   −90→−100 clamped), (0, pct 80, unchanged), (+99, pct 80, live
   0→99, entry 0→79 — the real rec-75 max delta). The `$0331A4`
-  record-match is still **[open]**: the `$0331A4` harness call
-  does not return (3×300 s in the BlastEm debugger, breakpoint
-  never hit, Ctrl-C cannot break in) — most likely the no-match
-  infinite recursion, but unproven.
+  record-match is **RESOLVED [live]** (2026-11-10, `.scratch025/`,
+  batch mode, RNG seed 1): +0x02 == 1 → rec 19 ($F000, type 0xF,
+  delta 0); +0x02 == 0 → rec 20 ($1032, type 1, +50) — exactly the
+  simulated picks, SP unchanged, no hang. The old debugger failures
+  were a SIGSEGV from an unset char struct (`$FF02B2`/goods list),
+  not a hang — the no-match infinite-recursion hypothesis is refuted
+  for these inputs.
   **$02A22A return semantics, PINNED (2026-11-10) [static]:**
   `$02A22A(char, arg2, event_id)` returns
   `char[char[arg1].+0x14].+0x26` — the +0x26 byte of the struct
@@ -1303,9 +1306,11 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    LIVE (2026-11-10, `.scratch023/`, 6/6):** `$02CE74` moves the
    live attitude by the full delta and the persistent entry by
    pct×delta/100, both clamped [−100,+100] (see §3.5 for the six
-   cases). The `$0331A4` record-match is still **[open]** (the
-   harness call does not return in the BlastEm debugger). See §3.5 for
-   the full record table and the `$02A22A` return semantics. **Attitude repair is LOCATED (2026-11-10) [static]:**
+   cases). The `$0331A4` record-match is **RESOLVED [live]**
+   (2026-11-10, `.scratch025/`, batch mode): +0x02 == 1 → rec 19
+   ($F000); +0x02 == 0 → rec 20 ($1032, +50) — the simulated picks,
+   SP unchanged. See §3.5 for the full record table and the
+   `$02A22A` return semantics. **Attitude repair is LOCATED (2026-11-10) [static]:**
    CAMP raises each `$FF00C0` entry by +3 toward 10 (entry 34
    skipped), and `$02CE74` / `$030628` / `$035656` adjust it — the
    persistent merchant-attitude table `$FF00C0` (36 words, indices

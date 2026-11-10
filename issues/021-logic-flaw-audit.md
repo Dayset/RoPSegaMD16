@@ -96,9 +96,12 @@ Map the numbers behind the game and audit them for logic flaws.
   pct×delta/100, both clamped [−100,+100] — six cases incl. the live
   +100 clamp, the persistent −100 clamp, the −1350/100 → −13
   truncation, and the real +99 rec-75 delta (live 0→99, entry 0→79).
-  The `$0331A4` record-match is still **[open]** (the harness call
-  does not return in the BlastEm debugger; 3×300 s, breakpoint never
-  hit). **`$02A22A` return semantics
+  The `$0331A4` record-match is **RESOLVED [live]** (2026-11-10,
+  `.scratch025/`, batch mode, RNG seed 1): +0x02 == 1 → rec 19 ($F000,
+  type 0xF, delta 0); +0x02 == 0 → rec 20 ($1032, type 1, +50) — the
+  simulated picks, SP unchanged. The old debugger failures were a
+  SIGSEGV from an unset char struct (`$FF02B2`/goods list), not a
+  hang. **`$02A22A` return semantics
   PINNED (2026-11-10) [static]:** it returns
   `char[char[arg1].+0x14].+0x26`, used by `$0298D2` as a char
   index — in the Bribe context that byte is the merchant's char
