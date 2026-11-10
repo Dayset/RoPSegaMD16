@@ -695,9 +695,10 @@ from the cost, and not pursued here.
 #### Related [static]
 
 * **`$FF0E16` is a clock, not a step counter** (increments every frame
-  in `$2155E`, wraps at 2400; `$170DA` displays time from
-  `$FF0E16`/`$FF0E18`). The consumption is not driven by it; it is
-  driven by the movement dispatcher `FUN_024984`.
+  in `$2155E`, wraps at 2400; the palette routine `$170DA` reads it to
+  pick the day/night palette — see the CAMP clock entry above). The
+  consumption is not driven by it; it is driven by the movement
+  dispatcher `FUN_024984`.
 * **Low-supplies regen penalty:** in the `$2155E` tick, the HP/Power
   regen loop uses `d7 = +5` normally (`$021712`); if food or water
   `≤ 500` (`cmpi.w #$1f4,$ffc364.l` / `$ffc366.l` at `$021714`/
@@ -794,9 +795,47 @@ from the cost, and not pursued here.
     else set it to **0**. Measured: clock 100 → 540, clock 1000 → 0.
     So CAMP *sets* the clock to one of two anchors (0 / 540), it does
     not add half the 2400 cycle. (Dayset 2026-11-10: CAMP turns the
-    world clock around — day becomes night and vice versa.) Which
-    `$FF0E16` range counts as day vs night is [open] — the palette
-    routine `$170DA` reads `$FF0E16`/`$FF0E18`.
+    world clock around — day becomes night and vice versa.)
+    **Day/night ranges — LOCATED and live-verified (2026-11-10, 15/15
+    harness cases, `.scratch009/harness_daynight.s`, test ROM
+    `2bdb36a03d9fbd2aeca24f164df63148`).** The palette routine
+    **`FUN_0170da` (`$0170DA`)** reads the palette mode `$FF0126`
+    (high nibble of the location-table byte at `$D63E7` + location×4)
+    and the clock `$FF0E16`, computes `q = clock / 18`, and selects
+    CRAM palette 0. For mode 2 (46 outdoor locations, incl. the
+    overworld 0–31): **NIGHT is clock 18–539** (`q` 1–29, palette 19,
+    dark blue-shifted, brightness 58); **DAY is clock 558–2399**
+    (`q` 31–133, palette 10, bright, brightness 134); **dusk is clock
+    0–17** (`q` 0, crossfade DAY→NIGHT, factor `(clock%18)/2`);
+    **dawn is clock 540–557** (`q` 30, crossfade NIGHT→DAY, same
+    factor). The blend (`FUN_01225c`) interpolates per channel as
+    `A + (B−A)·factor/8` and uploads to CRAM palette 0; the factor
+    runs 0–8 over each 18-frame transition. The CAMP anchors are the
+    **starts** of the transitions: **0 = start of dusk** (pure DAY at
+    the instant of setting, fading to NIGHT over the next 17 frames)
+    and **540 = start of dawn** (pure NIGHT at the instant of setting,
+    fading to DAY over the next 17 frames) — so 0 and 540 are on
+    opposite sides of the boundary in the sense that 0 leads into
+    NIGHT and 540 leads into DAY. The clock itself increments by 1 per
+    `$2155E` tick and wraps at 2400 (`divs.w #$960`), so a full
+    day/night cycle is 2400 ticks (DAY 1842, NIGHT 522, transitions
+    18+18). `$170DA` is called from the per-frame tick `$2155E`
+    (`$0215F6`: when `$FF0124` is dirty, or when mode 2 and `q` is 0
+    or 30, so the blend updates every frame during a transition) and
+    on location load (`$017976`). Other modes: 0 (99 locations) and 3
+    (3 locations) → always DAY (pal 10); 1 (2 locations, 59/62) →
+    always NIGHT (pal 19); 4 (2 locations, 132/133) → palette 23
+    (brightest, blue-heavy, brightness 172). `$FF0124` is the
+    "palette dirty" flag: CAMP/Sleep/location loads set it to `$FFFF`,
+    `$170DA` clears it after updating the palette. Side note [live]:
+    the dusk blend (DAY→NIGHT) sets bit 14 (`$4000`) on the CRAM
+    words whose R-channel difference is 0 (an artifact of the blend's
+    unsigned `mulu.w` + logical `lsr.w #3` on negative differences);
+    bit 14 is ignored by the VDP for display, and the visible R/G/B
+    fields match the emulated blend exactly in all 15 cases. The dawn
+    blend (NIGHT→DAY, differences non-negative) is exact with no
+    stray bits. `$FF0E18` is not read by `$170DA` itself (it is passed
+    by address to other routines, not part of the palette decision).
   * Also: `$FF0124 = $FFFF` after CAMP (`$030336`) [live].
   * Harness notes: direct `jsr $03019a` from the attract loop
     (`0x35C`, hook exits `rts`); the three `$35612` message-display

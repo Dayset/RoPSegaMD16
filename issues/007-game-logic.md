@@ -84,8 +84,16 @@ and combat damage.
   80→6000; no-op on a live member; plays song 8 on a revive
   [static]). None deducts gold/food/water or flips the clock.
   **clock flips day↔night by setting `$FF0E16` to 540 (if ≤540) or 0**
-  (measured 100→540, 1000→0) — not a +1200 advance. Open: which
-  `$FF0E16` range is day vs night.
+  (measured 100→540, 1000→0) — not a +1200 advance. **Day/night
+  ranges — located and live-verified (2026-11-10, 15/15 harness
+  cases):** palette routine `FUN_0170da` (`$0170DA`), mode `$FF0126`
+  from the location table `$D63E7` high nibble. Mode 2 (46 outdoor
+  locations): **NIGHT clock 18–539** (pal 19, brightness 58), **DAY
+  clock 558–2399** (pal 10, brightness 134), **dusk 0–17** and **dawn
+  540–557** (18-frame crossfades, factor `(clock%18)/2`). CAMP anchors
+  0/540 are the starts of the dusk/dawn transitions (0 leads into
+  NIGHT, 540 into DAY). Other modes: 0/3 always DAY, 1 always NIGHT,
+  4 → pal 23.
   Harness: `.scratch007/harness_camp.s` + `.scratch007/harness_sleep.s`
   + `.scratch007/harness_temple.s`
   (see docs/logic.md §3.7). → #020.
