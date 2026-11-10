@@ -115,7 +115,9 @@ and combat damage.
   `$FF022C`=$F363E (song 8's data), `$FF0230`=$F373E (song 8's end),
   Z80 `$000B`=$0D (play command), Z80 `$00DA`=$16 (driver uploaded).
   Note: the Life path bypasses the `$0173C0` wrapper, so `$FF012E` is
-  NOT updated (stays 0) — the watchdog may restart the old song.
+  NOT updated (stays 0) — the watchdog replays song 0 only after song 8
+  finishes (RESOLVED [live] 2026-11-10, `.scratch026/`: song 8 plays
+  its full ~72 frames, then one watchdog replay at frame 72).
   Audio captures are silent, but song 8's own capture is likewise
   essentially silent, so that does not contradict the start; whether
   the sting is audible in real gameplay is [open]]. None deducts gold/food/water or flips the clock.

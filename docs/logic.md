@@ -1015,8 +1015,14 @@ from the cost, and not pursued here.
     on a live member starts no song (`$FF022C`/`$FF0230` stay 0). Note:
     the Life path calls the dispatch (`$0173EC`) directly, bypassing
     the `$0173C0` wrapper, so **`$FF012E` (current song index) is NOT
-    updated** — it stays 0 (measured) — which means the watchdog
-    (`$21608`, which replays `$FF012E`) may restart the old song.
+    updated** — it stays 0 (measured). **Watchdog behaviour RESOLVED
+    [live] (2026-11-10, `.scratch026/`, test ROM
+    `e1ddd59f9871e67a7ded156ab096e271`, 300 frames sampled):** song 8
+    plays to completion (~1.2 s, 72 frames) and only then does the
+    watchdog replay song 0 (`$FF022C` → `$000ED0E8`, `$FF012E` = 0,
+    exactly one replay at frame 72) — a natural end, not a cut-off.
+    The bypass is the cause of the replay (it replays `$FF012E` = 0),
+    but it does not truncate the sting.
     Audio captures of the harness run are silent after the boot
     transient, but song 8's own dedicated capture
     (`.scratch018/songs/raw_song08.raw`) is likewise essentially
