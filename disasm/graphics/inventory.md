@@ -126,3 +126,37 @@ Render any record with:
 
 Full 31-palette dump: read ROM `0x0CC9D8 + n*32`, 16 big-endian words
 each. Word format `0BBB0GGG0RRR0`; RGB = channel × 255/7.
+
+## Regenerated 2026-11-10 (corrected colour order) + systematic sheets
+
+The #005 PNGs were rendered with R and B swapped (the old
+`md_word_to_rgb`). `tools/render_tiles.py` was fixed in #016 to
+`r=(w>>1)&7, g=(w>>5)&7, b=(w>>9)&7` (proven by the minimal VDP test
+ROM: CRAM[1]=`0x0E00` displays pure blue). The seven #005 PNGs
+(`font_rec00_pal0`, `font_rec00_pal10`, `terrain_rec06_pal1`,
+`logo_rec12_pal1`, `portrait_b86ae_rec00/01/05`) were re-rendered with
+the fixed renderer, same parameters as the originals (font: 16 cols,
+scale 6; terrain/logo: 32 cols, scale 4; portraits: 6 cols, scale 8).
+Verified: same dimensions as the originals, and every palette pixel
+is exactly the R/B swap of the original (background fill unchanged);
+the font's index-1 colour is now blue `(0,0,182)`, matching the live
+logo screen, and the rec 0 portrait is warm browns/reds (skin tones)
+with no blue-dominant colours.
+
+Systematic sheets (same renderer, corrected palette):
+- `$96120` tile records: `recNN_pal1.png` (16 cols, scale 8, master
+  pal 1) — all 45 tile records (0–21, 27–31, 33–43, 45–47, 53, 56,
+  58, 60). The 17 tilemap/text records (22–26, 32, 44, 48–52, 54,
+  55, 57, 59, 61) are NOT rendered as tiles (declen is not a
+  multiple of 32). Pal 1 is the default placeholder; the true
+  per-record palettes remain open (#005).
+- `$B86AE` records: `spriteNN.png` (6 cols, scale 8, each record's
+  own embedded palette) — all 90 records, 36 tiles each (6×6).
+- Cross-check: `rec00_pal1.png`, `rec06_pal1.png` and `sprite00.png`
+  are byte-identical to the #016 `016_font_rec00_full.png`,
+  `016_terrain_rec06_full.png` and `016_portrait_b86ae_rec00_full.png`
+  (same parameters), so the systematic set and the #016 renders agree.
+- Render commands: `python3 tools/render_tiles.py record <N>
+  --palette 1 --cols 16 --scale 8 --out disasm/graphics/recNN_pal1.png`
+  and `python3 tools/render_tiles.py sprite <N> --cols 6 --scale 8
+  --out disasm/graphics/spriteNN.png`.

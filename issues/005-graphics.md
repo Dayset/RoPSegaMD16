@@ -42,6 +42,15 @@ Find how tiles, sprites, and palettes are stored, and whether they are compresse
   (48×48 px). `portrait_b86ae_rec05.png` is a non-face textured
   graphic. Renderer: `tools/render_tiles.py` (`record` / `sprite` /
   `raw` modes, `--layout`).
+- **Regenerated 2026-11-10 with the corrected colour order** (see
+  `disasm/graphics/inventory.md`): the seven PNGs above were
+  re-rendered with the fixed `render_tiles.py` (same parameters;
+  verified pixel-exact as the R/B swap of the originals on palette
+  pixels). Systematic sheets added the same day:
+  `disasm/graphics/recNN_pal1.png` (all 45 `$96120` tile records,
+  pal 1, 16 cols, scale 8) and `disasm/graphics/spriteNN.png` (all
+  90 `$B86AE` records, embedded palettes, 6 cols, scale 8). The 17
+  tilemap/text `$96120` records are not rendered as tiles.
 - Renders cross-checked against BlastEm's VRAM debugger on the live
   logo screen (same font renders correctly there).
 

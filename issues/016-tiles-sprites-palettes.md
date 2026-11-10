@@ -50,5 +50,19 @@ Turn the provisional tile region into visible pictures.
   `test_tiles4_harness.s` (hooks `$D292`, not yet run). Minimal VDP
   test ROM: `.scratch016/vdp_test.s`/`.gen`.
 - Open from #016: textbook bitplanar re-verification (§10.1 caveat);
-  pal 11/13 sea-colour re-check vs a live world-map CRAM snapshot;
-  regen the #005 PNGs with the corrected palette.
+  pal 11/13 sea-colour re-check vs a live world-map CRAM snapshot.
+  Note (2026-11-10): the `disasm/maps/` PNGs share the #005 R/B bug —
+  `world_map_rec09_pal11.png`'s top colour `(109,109,218)` is the
+  OLD-order decoding of pal 11 word `0x066C` (corrected: `(218,109,109)`
+  reddish-brown), so the blue sea in that PNG is a rendering artefact, not the
+  ROM's colour. `tools/decode_map.py` imports the now-fixed
+  `get_palette` from `render_tiles.py`, so re-rendering the maps would
+  use the corrected order — but the sea's true colour still needs the
+  live CRAM snapshot to settle (pal 11 corrected reads browns/reds,
+  which would look wrong for a sea; the palette itself may be wrong).
+- Done 2026-11-10: the #005 PNGs were regenerated with the corrected
+  palette (verified pixel-exact as the R/B swap of the originals),
+  and systematic sheets were rendered for every tile record:
+  `disasm/graphics/recNN_pal1.png` (45 `$96120` tile records, pal 1)
+  and `disasm/graphics/spriteNN.png` (90 `$B86AE` records, embedded
+  palettes). See `disasm/graphics/inventory.md`.
