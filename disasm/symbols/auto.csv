@@ -65,7 +65,7 @@ addr,name,tier,note
 0x0147D0,gfx_plane_write,2,graphics.md: $147D0 R16=$11 plane writer
 0x014FB6,intro_story_driver,2,architecture.md: $14FB6 intro/story driver
 0x015012,intro_helper,2,architecture.md: helper $15012 plays music $173BC(1) + $15C08
-0x015C08,sys_unk_015c08,0,auto: touches $FF0076 $FF0E14 $FF8640 $FF8644 $FF8680 $FF8684
+0x015C08,snd_music_start,1,architecture.md:186 helper plays music with 173BC(1) and 15C08
 0x0162FE,sys_unk_0162fe,0,auto: touches $FF0114 $FF8648 $FF8674 $FF8676
 0x0163EE,sys_unk_0163ee,0,auto: touches $FF8678
 0x01664E,sys_unk_01664e,0,auto: touches $FF00AE $FF0124 $FF0126 $FF02B2 $FF02C0 $FF02C2
@@ -113,11 +113,11 @@ addr,name,tier,note
 0x020D58,sys_unk_020d58,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
 0x020D9E,sys_unk_020d9e,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
 0x020E7E,map_grid_create,2,maps.md:468-485 grid creation: type>=0 grid 0; type<0 grid 1
-0x02103E,sys_unk_02103e,0,auto: touches $FFB36C $FFB76C
+0x02103E,map_grid_clear,2,maps.md:499 clears a record grid cell (frees record; FF0096 decremented)
 0x0210D8,map_record_remove,2,maps.md:498 removes a record; frees it; clears grid cell via 2103E
 0x021194,sys_unk_021194,0,auto: touches $FFA7FC $FFB0CC $FFB36C
 0x0212FC,sys_unk_0212fc,0,auto: touches $FFA7FC $FFB0CC $FFB36C
-0x02140A,sys_unk_02140a,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
+0x02140A,combat_effect_apply,1,logic.md:1159 effect 0x18 applied after 25DE4 check
 0x0214E8,sys_unk_0214e8,0,auto: touches $FF0092 $FF0094 $FF009A $FF009C $FF00AC $FF00AE
 0x021FE6,sys_unk_021fe6,0,auto: touches $FF010A $FF0110 $FF0112 $FF02A0 $FF02A2 $FF02A4
 0x0222D4,sys_unk_0222d4,0,auto: touches $FF012A $FF012C $FF02B4 $FF02B8 $FF0EAA $FFB0D0
@@ -131,7 +131,7 @@ addr,name,tier,note
 0x0238B8,sys_unk_0238b8,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
 0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
 0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
-0x0243D6,sys_unk_0243d6,0,auto: touches $FF02B2 $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE
+0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence
 0x024676,sys_unk_024676,0,auto: touches $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE $FF02C0
 0x024916,sys_unk_024916,0,auto: touches $FF02B4 $FF02B8
 0x024984,sys_unk_024984,0,auto: touches $FF009A $FF00AE $FF010E $FF0110 $FF011C $FF011E
@@ -147,25 +147,25 @@ addr,name,tier,note
 0x025CB4,sys_unk_025cb4,0,auto: touches none
 0x025D2E,sys_unk_025d2e,0,auto: touches none
 0x025D8E,sys_unk_025d8e,0,auto: touches none
-0x025DE4,sys_unk_025de4,0,auto: touches $FFB0D0
-0x025E12,sys_unk_025e12,0,auto: touches $FF02B6 $FF02BA $FF02CA $FF02CB $FF02CC
+0x025DE4,combat_target_check,1,logic.md:1159 checks target struct; nonzero -> 2140A effect
+0x025E12,sys_struct52_read_pair,1,code: index*52 into FF02B6 and FF02CB; reads two fields
 0x026076,sys_unk_026076,0,auto: touches $FF00AC $FF00AE $FF010E $FF02B2 $FF02BA $FF02CA
-0x02619C,sys_unk_02619c,0,auto: touches $FF02B4 $FF02BA $FF02BE $FF02C0 $FF02C2 $FFA7FC
-0x0265BE,sys_unk_0265be,0,auto: touches $FF011C $FF02B2 $FF02B4 $FF02BA $FF02C0 $FF02C2
-0x0269F2,sys_unk_0269f2,0,auto: touches $FF024A $FFA7FC
+0x02619C,sys_struct52_read_field,1,code: index*52 into FF02BA; reads one word field
+0x0265BE,sys_struct52_flag_test,1,code: index*52 into FF02BA; tests word and branches
+0x0269F2,world_step_apply,1,code: calls world_get_step_delta; reads FFA7FC pointer
 0x026A8C,sys_unk_026a8c,0,auto: touches $FF00AE $FF010E $FF011C $FF011E $FF02B2 $FF02BA
 0x026B08,sys_unk_026b08,0,auto: touches none
-0x026CCA,sys_unk_026cca,0,auto: touches $FF009A $FF010A $FF0E18 $FF0E78 $FF0E7A $FF0E7E
+0x026CCA,msg_queue_consume,2,logic.md:277 queue consumer calls 1E426 (pop)
 0x026DD2,sys_unk_026dd2,0,auto: touches $FF8640 $FF8674
 0x026E44,sys_unk_026e44,0,auto: touches $FF00AC $FF010E $FF0116 $FF0132 $FF0134 $FF013A
-0x0275B0,sys_unk_0275b0,0,auto: touches $FF00AC $FF010E $FF0110 $FF0114 $FF012C $FF02A0
+0x0275B0,text_event_message,2,logic.md:213 message routine 275B0 (giant event-message)
 0x02979A,sys_unk_02979a,0,auto: touches $FF0E82
 0x0297CE,sys_unk_0297ce,0,auto: touches none
 0x0297F0,sys_unk_0297f0,0,auto: touches none
 0x029834,sys_unk_029834,0,auto: touches none
 0x02988E,sys_unk_02988e,0,auto: touches none
-0x0298D2,sys_unk_0298d2,0,auto: touches $FF009C $FF00AC $FF010E $FF0110 $FF02A2 $FF02A4
-0x02A22A,sys_unk_02a22a,0,auto: touches $FF02C8 $FF02DA
+0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
+0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
 0x02A2CA,sys_unk_02a2ca,0,auto: touches $FF009A $FF010E $FF0120 $FF02A0 $FF02A2 $FF02A5
 0x02A454,sys_unk_02a454,0,auto: touches $FF02A0 $FF02A2 $FF02A4 $FF02A6 $FF02A8 $FF02AA
 0x02A562,sys_unk_02a562,0,auto: touches $FF02B4 $FF02B6 $FF02BE $FF02C0 $FF02C2 $FF02C8
@@ -176,51 +176,51 @@ addr,name,tier,note
 0x02B2B2,sys_unk_02b2b2,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
 0x02B402,sys_unk_02b402,0,auto: touches $FF02B4
 0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
-0x02B5F4,sys_unk_02b5f4,0,auto: touches $FFC326
+0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
 0x02B656,sys_unk_02b656,0,auto: touches none
 0x02B68C,sys_unk_02b68c,0,auto: touches none
 0x02B6E0,sys_unk_02b6e0,0,auto: touches $FF02A0 $FF02B4 $FF02C8 $FF02DB $FF0E82 $FF0E92
 0x02C8F2,sys_unk_02c8f2,0,auto: touches $FF02B2 $FF02B4 $FF02C8 $FF02CC $FF02CE $FF02DB
-0x02CBA4,sys_unk_02cba4,0,auto: touches $FF02B6 $FF02CA
+0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct
 0x02CBEA,sys_unk_02cbea,0,auto: touches none
 0x02CC14,sys_unk_02cc14,0,auto: touches none
 0x02CC62,sys_unk_02cc62,0,auto: touches none
 0x02CCC4,sys_unk_02ccc4,0,auto: touches none
 0x02CD10,sys_unk_02cd10,0,auto: touches none
 0x02CDD4,sys_unk_02cdd4,0,auto: touches $FFC33E $FFC340 $FFC345 $FFC34A $FFC364 $FFC366
-0x02CE74,sys_unk_02ce74,0,auto: touches $FF009C $FF00AC $FF00C0 $FF02B2 $FF02D4 $FF02D6
+0x02CE74,npc_attitude_apply,2,logic.md:544 applies attitude delta to char; persistent FF00C0
 0x02D004,sys_unk_02d004,0,auto: touches $FF02B2 $FF02C8 $FF02DC
 0x02D284,sys_unk_02d284,0,auto: touches $FFC326
 0x02D38C,sys_unk_02d38c,0,auto: touches none
 0x02D3DC,sys_unk_02d3dc,0,auto: touches $FF009C $FF00AC $FF0110 $FFA7FA $FFB08A $FFC384
 0x02D50C,sys_unk_02d50c,0,auto: touches $FF02B4 $FF02B6
 0x02D56A,sys_unk_02d56a,0,auto: touches $FF009A $FF010A $FF0110 $FF0112 $FF02B2 $FF02B8
-0x02DC0C,sys_unk_02dc0c,0,auto: touches none
+0x02DC0C,map_walkable_test,2,logic.md:721 walkability gate 02DC0C tests struct fields
 0x02DCCE,sys_unk_02dcce,0,auto: touches $FF00AE $FF0124 $FF02B2 $FF02B8 $FF02BE $FF02C0
 0x02E8C8,sys_unk_02e8c8,0,auto: touches $FF02B6 $FF02C8 $FF02CB $FF02DB
 0x02E9A6,sys_unk_02e9a6,0,auto: touches $FF0122 $FFC388 $FFC3C8
 0x02E9EC,sys_unk_02e9ec,0,auto: touches $FF0122 $FF0E92 $FFC388 $FFC3C8
 0x02EA40,sys_unk_02ea40,0,auto: touches $FF0E92 $FFC388 $FFC3C8
-0x02EA92,sys_unk_02ea92,0,auto: touches $FF02A0 $FF02D4 $FF02D6 $FF0E92
-0x02EC64,sys_unk_02ec64,0,auto: touches $FF0E16
+0x02EA92,shop_price_calc,2,logic.md:377 section 3.4 price function (verified)
+0x02EC64,sys_struct24_read,1,code: index*24 into table at L0CF1BA; reads a 24-byte record
 0x02ECCA,sys_unk_02ecca,0,auto: touches $FF02C8 $FF02CC $FF02D0 $FF02D2 $FF02E0
 0x02EE2A,sys_unk_02ee2a,0,auto: touches $FF0116 $FF0118 $FF011A
 0x02EE6C,sys_unk_02ee6c,0,auto: touches $FF02B2 $FF02B3 $FF02C8 $FF02D8 $FF02DA $FF02DB
 0x02EF4E,sys_unk_02ef4e,0,auto: touches $FF010E $FF02B4
 0x02F05A,sys_unk_02f05a,0,auto: touches none
-0x02F082,sys_unk_02f082,0,auto: touches none
-0x02F0D0,sys_unk_02f0d0,0,auto: touches $FF00AE $FF00C0 $FF0112 $FF0116 $FF0124 $FF0132
+0x02F082,save_record_fill,1,save.md:337 fills save record at LOAD (2F082)
+0x02F0D0,save_bits_unpack,2,save.md:344 bit unpacker 2F0D0 (packer/unpacker pair with 2F082)
 0x030110,sys_unk_030110,0,auto: touches $FF02B8 $FF02D0 $FF02E0 $FF0E82 $FFB0D4
 0x03019A,sys_unk_03019a,0,auto: touches $FF00AE $FF00C0 $FF0124 $FF02D0 $FF02D2 $FF02D4
-0x030628,sys_unk_030628,0,auto: touches $FF00C0 $FF02B2 $FF02B4 $FF02D4 $FFC40A $FFC40C
+0x030628,npc_attitude_step,1,logic.md:531 attitude adjustment 30628
 0x03081A,sys_unk_03081a,0,auto: touches $FF00AE $FF011C $FF02B2 $FF02B4
 0x0308C6,sys_unk_0308c6,0,auto: touches $FF02C8
 0x03090A,sys_unk_03090a,0,auto: touches $FF02B2 $FF02B4 $FF02C8 $FF0E92 $FF0E98 $FFC326
 0x030DA4,sys_unk_030da4,0,auto: touches $FF00AE $FF02B2 $FF02B4 $FF02B8 $FF02C0 $FF02C2
 0x0318C6,sys_unk_0318c6,0,auto: touches $FF009C $FF02B4 $FF02D0 $FF0E82
 0x031998,sys_unk_031998,0,auto: touches $FF02B4 $FF02B6
-0x0319EC,sys_unk_0319ec,0,auto: touches $FFA7FC
-0x031A9C,sys_unk_031a9c,0,auto: touches $FFA7FC $FFFFFF
+0x0319EC,world_pos_add_x,1,code: leader pointer FFA7FC + arg a; adds to position word (x)
+0x031A9C,world_pos_add_y,1,code: leader pointer FFA7FC + arg c; adds to position word (y)
 0x031F66,sys_unk_031f66,0,auto: touches $FFA7FC
 0x03213C,sys_unk_03213c,0,auto: touches $FFA7FC
 0x032284,sys_unk_032284,0,auto: touches $FF010E $FF0124 $FF013E $FF02B4 $FF02C0 $FF02C2
@@ -229,12 +229,12 @@ addr,name,tier,note
 0x032922,sys_unk_032922,0,auto: touches $FF0142 $FF02B2 $FF02BA $FF02BE $FF02C0 $FF02C2
 0x032C18,sys_unk_032c18,0,auto: touches $FF02B2 $FF02B4
 0x032C56,sys_unk_032c56,0,auto: touches none
-0x032D0E,sys_unk_032d0e,0,auto: touches $FF02B2 $FF02BA
+0x032D0E,snd_location_song_pick,2,sound.md:355 default/location song picker (32D0E)
 0x032D4C,sys_unk_032d4c,0,auto: touches none
 0x032F5E,sys_unk_032f5e,0,auto: touches none
 0x032FFA,sys_unk_032ffa,0,auto: touches $FF0E92
 0x033136,sys_unk_033136,0,auto: touches none
-0x0331A4,sys_unk_0331a4,0,auto: touches $FF02A0 $FF02A2 $FF02B6 $FFB00A
+0x0331A4,shop_record_score,1,logic.md:576 scores each record for template match
 0x033396,sys_unk_033396,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x0337D0,sys_unk_0337d0,0,auto: touches $FF02A2
 0x0337EE,sys_unk_0337ee,0,auto: touches $FF0120 $FF02B2 $FF02B4 $FF02BE $FF02C0 $FF02C2
@@ -250,7 +250,7 @@ addr,name,tier,note
 0x03539A,sys_unk_03539a,0,auto: touches $FF02C0 $FF02C2 $FF02D0
 0x0354A4,sys_unk_0354a4,0,auto: touches $FF02C0 $FF02C2 $FF02D0 $FF02DB
 0x035612,sys_unk_035612,0,auto: touches $FFBB86
-0x035656,sys_unk_035656,0,auto: touches $FF009C $FF00C0 $FF02B2 $FF02B6 $FF02C8 $FF02CC
+0x035656,npc_attitude_adjust,1,logic.md:532 attitude adjustment 35656 (see save.md)
 0x03599C,sys_unk_03599c,0,auto: touches $FF009C $FF010C $FF010E $FF012A $FF012C $FF0130
 0x03620A,sys_unk_03620a,0,auto: touches none
 0x0362D6,sys_unk_0362d6,0,auto: touches $FF010E $FF013C $FF02B2 $FF02B4 $FF02B6 $FF02BA
@@ -260,9 +260,9 @@ addr,name,tier,note
 0x036A94,sys_unk_036a94,0,auto: touches $FF02B4 $FF02CC $FF02DE $FF02E0
 0x036CFC,sys_unk_036cfc,0,auto: touches none
 0x036DE8,sys_unk_036de8,0,auto: touches none
-0x036E2E,sys_unk_036e2e,0,auto: touches $FF009A $FF010E $FF013A $FF024C $FF024E $FF0250
-0x03778E,sys_unk_03778e,0,auto: touches $FF02C0 $FF02C2
-0x0377FE,sys_unk_0377fe,0,auto: touches none
+0x036E2E,spell_damage_calc,1,spells.md:124 reads w0 damage base; damage path
+0x03778E,world_distance,2,logic.md:87;1228 distance 3778E (proven)
+0x0377FE,math_isqrt,2,logic.md:1228 integer sqrt 377FE verified
 0x037840,sys_unk_037840,0,auto: touches none
 0x037850,sys_unk_037850,0,auto: touches $FF02B2
 0x0378BA,sys_unk_0378ba,0,auto: touches $FF02C8 $FF02E0
@@ -270,8 +270,8 @@ addr,name,tier,note
 0x037976,sys_unk_037976,0,auto: touches $FF02C0 $FF02C2
 0x037A26,sys_unk_037a26,0,auto: touches $FF02C0 $FF02C2 $FF02C8
 0x037A9A,sys_unk_037a9a,0,auto: touches $FF009A $FF010E $FF02B2 $FF02B4 $FF02CC $FF02E0
-0x037B82,sys_unk_037b82,0,auto: touches $FF00AE $FF010E $FF0112 $FF02B2 $FF02B4 $FF02E0
-0x037D0E,sys_unk_037d0e,0,auto: touches $FF012A $FF012C $FF02B4 $FF02BE $FF0EAA $FFA7CC
+0x037B82,combat_target_select,1,logic.md:1202 sets FFC37C target index from target struct
+0x037D0E,spell_effect_apply,1,spells.md:125 tail installs w1>>4 action code; role from doc
 0x037ED6,sys_unk_037ed6,0,auto: touches none
 0x037EE6,sys_unk_037ee6,0,auto: touches none
 0x0381AE,sys_unk_0381ae,0,auto: touches $FF02B8
@@ -295,7 +295,7 @@ addr,name,tier,note
 0x039172,sys_unk_039172,0,auto: touches $FF010E $FF012A $FF02B4 $FF02C8 $FF02DD $FF0EAA
 0x0393FA,sys_unk_0393fa,0,auto: touches $FF010E $FF012A $FF02B4 $FF02C8 $FF02DD $FF0EAA
 0x039780,sys_unk_039780,0,auto: touches $FF012C $FF02B4
-0x0398E0,sys_unk_0398e0,0,auto: touches $FF02B4
+0x0398E0,spell_status_apply,2,spells.md:369 status-effect applier 398E0 verified static
 0x0399AC,sys_unk_0399ac,0,auto: touches $FF02DC $FF02E0
 0x0399F4,sys_unk_0399f4,0,auto: touches $FF02DC $FF02E0
 0x039A34,sys_unk_039a34,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
@@ -318,18 +318,18 @@ addr,name,tier,note
 0x03B152,sys_unk_03b152,0,auto: touches $FF009A $FF010E $FF012C $FF02B4 $FF02B6 $FF02CC
 0x03B408,sys_unk_03b408,0,auto: touches none
 0x03B43E,sys_unk_03b43e,0,auto: touches none
-0x03B4AC,sys_unk_03b4ac,0,auto: touches $FF012C
+0x03B4AC,spell_record_value,1,spells.md:183 record w1>>4 value via 3B4AC; if 0 -> 0x200
 0x03B4C6,sys_unk_03b4c6,0,auto: touches $FF010C $FFC368 $FFC36A $FFC36C $FFC36E $FFC370
 0x03B51E,sys_unk_03b51e,0,auto: touches $FF02B2 $FF02B4 $FF02DB $FF02DD $FFA7CC
 0x03B6C0,sys_unk_03b6c0,0,auto: touches $FF02C8 $FF02DA $FF02DB $FF02DD $FF02E0
 0x03B748,sys_unk_03b748,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD $FFA7CC
 0x03B988,sys_unk_03b988,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD
 0x03BA4C,sys_unk_03ba4c,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD
-0x03BB4E,sys_unk_03bb4e,0,auto: touches $FF013A $FF02B4 $FF0EAA $FFA7CC
+0x03BB4E,spell_ai_choose,2,spells.md:130 AI chooser 3BB4E (section 6.3)
 0x03BD3A,sys_unk_03bd3a,0,auto: touches $FF02B4 $FF02CC $FFA7CC
 0x03BE8E,sys_unk_03be8e,0,auto: touches $FF02B4 $FF02DD $FF0EAA $FFA7CC
 0x03C248,sys_unk_03c248,0,auto: touches $FF02B4 $FFA7CC
-0x03C2C0,sys_unk_03c2c0,0,auto: touches $FF02E0 $FF0EAA
+0x03C2C0,spell_cost_calc,2,spells.md:152 cost formula 3C2C0 verified (asm + harness)
 0x03C2F4,sys_unk_03c2f4,0,auto: touches $FF02B4 $FFA7CC
 0x03C362,sys_unk_03c362,0,auto: touches $FF02CC $FF02E0 $FF0EAA $FFA7CC
 0x03C520,sys_unk_03c520,0,auto: touches $FF02CC $FF0EAA $FFA7CC
@@ -337,7 +337,7 @@ addr,name,tier,note
 0x03C636,sys_unk_03c636,0,auto: touches $FF02CC $FFA7CC
 0x03CAD2,sys_unk_03cad2,0,auto: touches none
 0x03CAF2,sys_unk_03caf2,0,auto: touches $FF02C8 $FF02D0 $FF02E0
-0x03CB66,sys_unk_03cb66,0,auto: touches $FF02B2 $FF02B4 $FFB0D4
+0x03CB66,combat_flag_clear,1,logic.md:1260 clears +0x2C bit 13 (3CB66)
 0x03CC4C,sys_unk_03cc4c,0,auto: touches $FF013C $FFC41C
 0x03CC62,sys_unk_03cc62,0,auto: touches none
 0x03CE30,sys_unk_03ce30,0,auto: touches none
@@ -349,25 +349,25 @@ addr,name,tier,note
 0x03D990,sys_unk_03d990,0,auto: touches none
 0x03D9F8,sys_unk_03d9f8,0,auto: touches $FF0110 $FF0124 $FF013C $FF0290 $FF0292 $FFC41C
 0x03E198,sys_unk_03e198,0,auto: touches none
-0x03E2D4,sys_unk_03e2d4,0,auto: touches $200000 $FF009A $FF010C $FF010E $FF0124 $FF012A
+0x03E2D4,combat_action_main,1,sound.md:739 and issue 12: large combat routine 3E2D4
 0x042F26,sys_unk_042f26,0,auto: touches $200000
 0x042F5E,sys_unk_042f5e,0,auto: touches $200000 $FF014C $FF014E
 0x043006,sys_unk_043006,0,auto: touches $FF014C $FF014E $FF0150 $FF0154 $FF0158 $FF015C
-0x0430EC,vdp_unk_0430ec,0,auto: touches $400000 $A00000 $A000E6 $A10001 $A11100 $A11200
+0x0430EC,sys_wrap_stack_arg,1,save.md:223 stack-arg wrapper 430EC
 0x0EB8E0,sys_unk_0eb8e0,0,auto: touches none
-0x0EB8F2,z80_unk_0eb8f2,0,auto: touches $A00000 $A11100
+0x0EB8F2,z80_write_val24,2,sound.md:151 writes 24-bit d0 to Z80 016E-0170
 0x0EB920,sys_unk_0eb920,0,auto: touches none
 0x0EB922,sys_unk_0eb922,0,auto: touches none
 0x0EB924,z80_unk_0eb924,0,auto: touches $A00000 $A11100
 0x0EB93E,z80_unk_0eb93e,0,auto: touches $A11100
 0x0EB968,z80_unk_0eb968,0,auto: touches $A11100
 0x0EB986,sys_unk_0eb986,0,auto: touches none
-0x0EB9C4,z80_unk_0eb9c4,0,auto: touches $A00000 $A11100 $FF021E
+0x0EB9C4,snd_is_song_playing,2,sound.md:157 is a song playing? returns Z80 000B if FF021E
 0x0EB9EE,sys_unk_0eb9ee,0,auto: touches none
 0x0EBA00,z80_unk_0eba00,0,auto: touches $A01600 $A01A00 $A11100 $FF021E $FF021F $FF0224
-0x0EBA7E,z80_unk_0eba7e,0,auto: touches $A000DA $A01600 $A11100 $FF021F $FF0224 $FF0228
+0x0EBA7E,z80_song_chunk_set,2,sound.md:119 writes song-stream chunk byte to 00DA
 0x0EBAC6,sys_unk_0ebac6,0,auto: touches $FF0236
-0x0EBAF4,sys_unk_0ebaf4,0,auto: touches none
-0x0EBAFA,sys_unk_0ebafa,0,auto: touches none
+0x0EBAF4,snd_sfx_entry_a,2,sound.md:150 public SFX entry point (called by 17586); tries EBB04 immediately
+0x0EBAFA,snd_sfx_entry_b,2,sound.md:150 public SFX entry point (called by 17586); tries EBBFE immediately
 0x0EBAFE,sys_unk_0ebafe,0,auto: touches none
-0x0EBB04,vdp_unk_0ebb04,0,auto: touches $8F3360 $A00000 $A0003A $A11100 $C00000 $C00004
+0x0EBB04,snd_sfx_muted,2,sound.md:67 SFX path when sound is off (EBB04)
