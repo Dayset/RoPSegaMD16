@@ -58,10 +58,21 @@ and combat damage.
   confirmed live incl. negative (delta −4 → food −1). **Open:**
   terrain-type → terrain-name mapping for Grass/Swamp/Ice (manual
   water 2/4/3 not attainable as flat mode-0 water — live mode-0 water
-  is only 1 or 5), Dragon 40/40 vs live 38/38, CAMP 100/100 deduction
-  (no `sub` on `$FFC364`/`$FFC366` exists; `$02C188` adjust fn is the
-  candidate mechanism). Harness: `.scratch007/harness_c892.s` (see
-  docs/logic.md §3.7). → #020.
+  is only 1 or 5), Dragon 40/40 vs live 38/38. **CAMP — located and
+  live-verified (2026-11-10, 3/3 harness cases):** handler
+  `FUN_03019a` `$03019a`, called as C=28 from the verb executor
+  (Camp verb-table byte 11 = `$1C`); deduction is a direct register
+  subtract + store (`$030346`–`$0303B4`: food `$FFC364 −= 100`, water
+  `$FFC366 −= 100`, clamp [1, 30000]) — **not** via `$2BBD2`
+  (the `$02C188` candidate was wrong); **regain is 25% of the
+  HP/Power deficit** (`divs.w #$4`, measured HP 10→32, Power 20→35),
+  **not** the manual's 50% — the 50% regain (`divs.w #$2`) is a
+  separate goods/item call `FUN_03019a(1)` from `$2BBD2`, no deduction;
+  **clock flips day↔night by setting `$FF0E16` to 540 (if ≤540) or 0**
+  (measured 100→540, 1000→0) — not a +1200 advance. Open: which item
+  triggers the 50% path; which `$FF0E16` range is day vs night.
+  Harness: `.scratch007/harness_camp.s` (see docs/logic.md §3.7).
+  → #020.
 - Bribe/attitude action; Gems sell 428; `$FF012C` meanings; +0x02/+0x27;
   other `$2BBD2` handlers; who initialises `$FF0E18[2]`; item-record
   +4..+9 bytes; Doggonia 1,000-gold fee; post-harness PC=0 fault. → #021.

@@ -684,17 +684,56 @@ from the cost, and not pursued here.
   `$02171E`) it enters the low-supplies path, and if either is `≤ 1`
   it shows a message (`$35612($44)`) and sets `d7 = $FC = −4`
   (`$02176E`) — regen becomes a drain when supplies run out.
-* **CAMP** (manual: rest regains 50% strength/magic, costs 100 food +
-  100 water) — the 100/100 deduction has **not** been located in code
-  yet [open]. Static search (2026-11-10): there is **no `sub`
-  instruction on `$FFC364`/`$FFC366` anywhere** in the ROM, and no
-  `#$64` (100) immediate near them except the `muls.w #$64` in the
-  goods-adjust function `$02C188` (adds quantity×100 to food or water,
-  clamps [1, 30000] — it can subtract if the quantity is negative, so
-  it is the candidate mechanism for a −100 call). CAMP is a MAIN-menu
-  verb (verb table at `0xCCDB8`, "Camp" record after "Map"). Driving
-  CAMP through a harness would need the menu system, not just `$1C892`,
-  so it stays open.
+* **CAMP — LOCATED and live-verified (2026-11-10).** The handler is
+  **`FUN_03019a` (`$03019a`)**, reached as **C=28** from the verb
+  executor `$1F296`: the Camp verb-table record (ROM `0xCCE0A`) carries
+  byte 11 = `$1C` = 28, and the C-dispatch case 28 (`$0206E8` →
+  `L0204CE`) is `clr.w -(a7); jsr FUN_03019a.l` — argument 0.
+  **[live]** All three CAMP effects measured in one harness call
+  (`FUN_03019a(0)`, party = one member, HP 10/100, Power 20/80,
+  food/water 1000):
+  * **100/100 deduction [live]:** food `$FFC364 −= 100`, water
+    `$FFC366 −= 100`, clamped [1, 30000] — a **direct register
+    subtract + store** (`$030346`–`$0303B4`: `move.w $ffc364.l,d0;
+    sub.w #$64,d0; …; move.w d0,$ffc364.l`, same for water), **not**
+    via the goods-adjust `$2BBD2`. The earlier "no `sub` on
+    `$FFC364`/`$FFC366`" was about the memory operand — the subtract
+    is on `d0`, then stored back. The `$02C188` (quantity×100) candidate
+    is wrong for CAMP: `$02C188` is an instruction *inside* `$2BBD2`,
+    and CAMP never calls `$2BBD2`. Measured: 1000 → 900 for both.
+  * **Regain [live] — the manual's "50%" does NOT match the CAMP
+    verb.** CAMP (arg 0) runs regain loop 1 (`$0303BE`–`$0304D4`,
+    `divs.w #$4`): each party member's current HP/Power moves
+    **25% of the way toward max** — `new = current +
+    (max − current)/4`, per member, only if current < max. Measured:
+    HP 10 → 32 (`10 + 90/4`), Power 20 → 35 (`20 + 60/4`). The
+    **50% regain is a different path**: `FUN_03019a(1)` runs loop 2
+    (`$030500`–`$030620`, `divs.w #$2`, `new = current +
+    (max − current)/2`, measured HP 10 → 55, Power 20 → 50) with **no**
+    deduction — it is called from the goods-adjust `$2BBD2`
+    (`$02BE58`, argument 1), i.e. an item use, not the CAMP verb.
+    Which item triggers it is [open] (remainder 0 in the `$2BBD2`
+    dispatch).
+  * **Clock [live] — day↔night flip, but NOT a +1200 advance.**
+    `$0302F0`–`$030318`: if `$FF0E16 ≤ 540` (`$21C`) set it to **540**,
+    else set it to **0**. Measured: clock 100 → 540, clock 1000 → 0.
+    So CAMP *sets* the clock to one of two anchors (0 / 540), it does
+    not add half the 2400 cycle. (Dayset 2026-11-10: CAMP turns the
+    world clock around — day becomes night and vice versa.) Which
+    `$FF0E16` range counts as day vs night is [open] — the palette
+    routine `$170DA` reads `$FF0E16`/`$FF0E18`.
+  * Also: `$FF0124 = $FFFF` after CAMP (`$030336`) [live].
+  * Harness notes: direct `jsr $03019a` from the attract loop
+    (`0x35C`, hook exits `rts`); the three `$35612` message-display
+    calls (`$03030E`, `$03032E`, `$0304F4`) freeze in the attract
+    context (`$32D4C` writes to `$DFFFFE` — the in-game text system
+    is not set up), so they were NOP'd **only in the test ROM**;
+    RNG seed set to 1 (32-bit, `$FF0072`) so the random-event message
+    is skipped (`RNG(3)=2`); interrupts masked during the run.
+    Test ROM `.scratch007/test030.gen`
+    (MD5 `226cc6d4bd2a7400891f7ed636f11beb`). Harness:
+    `.scratch007/harness_camp.s`, `build_camp.py`, `run_camp.py`
+    (3/3 cases OK).
 * **Random event in the same function:** after the consumption block,
   if struct `+0x08` (`-$1a(a6)`) `== 3` and a 1/9 RNG roll (`$12B82`
   with 9) is 0, `FUN_024984` calls `$2BBD2(char, $400, −4, 1)` and sets
@@ -708,21 +747,9 @@ from the cost, and not pursued here.
   (per-cell driver), `$01c892` (this step routine), `$02619c`/`$0265be`
   (NPC/AI), `$02dc0c` (walkability gate).
 
-#### What would settle the open rates [open]
+#### What would settle the open rates [partly open]
 
-A BlastEm harness hooked at the attract loop (`0x35C`, hook exits with
-`rts`): build a step struct in scratch RAM, set `+0x08` to the mode
-(0 = on foot, 1 = Dino, 4 = Dragon, 7 = Boat) and `+0x00`/`+0x02` to
-coordinates on a known terrain (chunk cache pre-loaded via the chunk
-loader `$19692`), call `$1C892`, read struct `+0x1A`/`+0x1C`. That
-pins each manual terrain name to its `$5EDC4` type and checks the
-Dragon 40/40 and the Grass/Desert/Swamp/Ice water values. The same
-harness can confirm the deduction end-to-end by reading `$FFC364`/
-`$FFC366` before/after a real step.
-
-The guide's rates stay hypotheses until that live check; the routine,
-the formula shape, the base costs, the terrain additions and the height
-term are code-verified (static).
+The `$1C892` live harness ran 2026-11-10 (44/44 cases, `.scratch007/harness_c892.s`, test ROM `bc40401378c482c182f1ba379466eb4d`): it called `$1C892` with a controlled mode and terrain (chunk cache pre-loaded via `$19692`) and read struct `+0x1A`/`+0x1C`. It pinned Road (type 9, 1/1) and **Desert (type 17, 7/5)** and confirmed the Dragon 38/38 (not the manual's 40/40) and the height term live, including the negative direction. The routine, the formula shape, the base costs (corrected live: mode 0/1 base is (3,1), not (2,2)), the terrain additions and the height term are now **live-verified**. Still open: the Grass/Swamp/Ice type mapping (live mode-0 water is only 1 or 5, so the manual's 4/2, 8/4, 4/3 cannot be flat mode-0 costs) and the Dragon 40/40 vs live 38/38 gap.
 
 ## 4. Combat action routine `$3A62E` — verified (static)
 
