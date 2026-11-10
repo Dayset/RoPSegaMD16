@@ -24,7 +24,7 @@ def num(t):
 def measure():
     import csv
     names = []
-    for path in sorted(Path('disasm/symbols').glob('*.csv')):
+    for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv')]):
         with path.open(newline='') as fh:
             names += [(r['addr'], r['name']) for r in csv.DictReader(fh)]
     if len({a for a, _ in names}) != len(names) or len({n for _, n in names}) != len(names):

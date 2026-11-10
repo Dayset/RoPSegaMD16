@@ -1,0 +1,319 @@
+addr,count,users
+0xFF012A,337,FUN_0222d4 FUN_0226bc FUN_03599c FUN_037d0e FUN_03835a
+0xFF02B2,260,main_loop menu_format FUN_01664e new_game_init FUN_01c892
+0xFF02B4,231,struct52_dispatch FUN_01c892 FUN_01da6c world_tick FUN_0222d4
+0xFFA7FC,223,FUN_01664e new_game_init FUN_01ba4e FUN_01c176 FUN_01c21a
+0xFF0E82,165,main_loop struct52_dispatch FUN_01664e FUN_01c892 FUN_01da6c
+0xFF010E,147,main_loop menu_verb_input menu_format FUN_01c892 verb_exec
+0xFF02C0,114,FUN_01664e FUN_01da6c world_tick FUN_02241c FUN_0226bc
+0xFF0EAA,111,main_loop verb_exec FUN_0222d4 FUN_02241c FUN_0275b0
+0xFF02C2,108,FUN_01664e FUN_01da6c world_tick FUN_02241c FUN_0226bc
+0xFFBB72,90,FUN_01e562 FUN_01e5a0 FUN_01eeee verb_exec FUN_0207d8
+0xFF8640,73,text_glyph_draw FUN_01119e FUN_0112be FUN_011514 FUN_012072
+0xFF02E0,69,verb_exec world_tick entity_spawn FUN_026e44 xp_grant
+0xFF02DD,66,main_loop menu_format verb_exec FUN_020884 FUN_020a88
+0xFFA7CC,65,new_game_init FUN_0275b0 FUN_036e2e FUN_037d0e FUN_038512
+0xFF02DB,62,main_loop struct52_dispatch FUN_01c892 verb_exec FUN_023ae0
+0xFF02C8,61,entity_spawn FUN_024984 FUN_02595a FUN_025b4e FUN_0298d2
+0xFF867E,60,world_map_draw menu_format FUN_013d84 FUN_015012 FUN_017a40
+0xFF012C,59,FUN_0222d4 FUN_0275b0 FUN_03599c FUN_037d0e FUN_03865c
+0xFFC41C,58,FUN_03cc4c FUN_03d9f8
+0xFF0294,58,FUN_03e2d4
+0xFF02BA,56,menu_format FUN_01c892 world_tick FUN_0226bc entity_spawn
+0xFF02CC,55,main_loop FUN_01664e verb_exec world_tick entity_spawn
+0xFFA800,55,FUN_0176a0 FUN_017706 FUN_0177b4 save_serialise save_deserialise
+0xFF867A,51,world_map_draw FUN_013d84 FUN_015012
+0xFF00AC,50,main_loop struct52_dispatch menu_verb_input menu_format redraw_check
+0xFFC384,48,FUN_02d3dc FUN_02d56a
+0xFF00AE,45,main_loop menu_verb_input menu_format FUN_01664e FUN_01c892
+0xFF02B8,42,world_tick FUN_0222d4 FUN_0226bc FUN_023a9e FUN_023ae0
+0xFF02A2,41,main_loop struct52_dispatch menu_format verb_exec FUN_0207d8
+0xFF02D0,41,FUN_01664e FUN_01c892 world_tick entity_spawn FUN_026e44
+0xFF0EA8,40,main_loop FUN_0275b0 FUN_03599c FUN_036e2e
+0xFF02D4,37,FUN_01664e world_tick entity_spawn FUN_026e44 FUN_0298d2
+0xFF02D2,37,FUN_01664e FUN_01c892 world_tick FUN_0226bc entity_spawn
+0xFFBB82,37,FUN_01e562 FUN_01e5a0 FUN_01eeee verb_exec FUN_020884
+0xFFC418,37,FUN_038b96 attack_dispatch FUN_03e2d4
+0xFF0E14,36,main_loop FUN_011bb8 FUN_0123b0 FUN_012f48 FUN_012f80
+0xFFBB6F,36,FUN_01e5a0 FUN_01eeee verb_exec FUN_020884 FUN_020a88
+0xFFA7F8,35,menu_verb_input FUN_01e562 FUN_01e5a0 FUN_01eeee verb_exec
+0xFFC326,35,FUN_0275b0 FUN_0298d2 FUN_02a562 FUN_02b5f4 FUN_02b6e0
+0xFF02D6,34,FUN_01664e world_tick entity_spawn FUN_026e44 FUN_0275b0
+0xFF009A,34,redraw_check request_full_redraw FUN_01eeee verb_exec FUN_020a88
+0xFF0E92,33,main_loop menu_format FUN_01c892 FUN_01da6c FUN_026076
+0xFF009C,32,redraw_check request_full_redraw FUN_01da6c FUN_01eeee settings_menu_open
+0xFF02BE,31,main_loop FUN_02241c FUN_0226bc entity_spawn FUN_0243d6
+0xFFB08A,27,redraw_check request_full_redraw FUN_01e5a0 FUN_01eeee verb_exec
+0xFF02DE,27,verb_exec world_tick entity_spawn FUN_0275b0 FUN_02bbd2
+0xFF8642,25,FUN_011416 world_map_draw FUN_015012 scene_draw
+0xFF0092,25,FUN_01ba4e FUN_01da6c world_tick FUN_02343a FUN_03d13e
+0xFFBB86,25,FUN_024984 FUN_0298d2 FUN_02d56a FUN_02dcce FUN_03019a
+0xFF02A8,24,FUN_01e5a0 FUN_01eeee verb_exec FUN_0275b0 FUN_02a454
+0xFF02B6,23,FUN_01da6c FUN_0226bc entity_spawn FUN_024984 FUN_025b4e
+0xFF014E,22,FUN_017706 FUN_0177b4 eeprom_init eeprom_read_block eeprom_write_byte
+0xFF0E8E,22,new_game_init redraw_check FUN_01c21a FUN_020d58 FUN_020d9e
+0xFFB36C,22,FUN_01ba4e FUN_01c21a FUN_01c892 FUN_020c6a FUN_020e7e
+0xFFBB80,22,FUN_01e562 verb_exec FUN_0207d8 FUN_020884 FUN_020a88
+0xFFC364,21,world_tick FUN_024984 FUN_026e44 FUN_0275b0 FUN_02bbd2
+0xFF0E16,20,main_loop palette_fade new_game_init world_tick FUN_0275b0
+0xFF8676,20,world_map_draw FUN_0147d0 FUN_0162fe FUN_01664e FUN_017860
+0xFFC366,20,world_tick FUN_024984 FUN_026e44 FUN_0275b0 FUN_02bbd2
+0xFF0E80,20,FUN_026cca FUN_0275b0
+0xFFB76C,19,FUN_01ba4e FUN_01c21a FUN_01c892 FUN_020c6a FUN_020e7e
+0xFF00C0,19,entity_spawn FUN_02ce74 save_serialise save_deserialise FUN_03019a
+0xFFC414,18,FUN_03e2d4
+0xFFC416,18,FUN_03e2d4
+0xFF0124,17,palette_fade FUN_01da6c world_tick FUN_02dcce save_deserialise
+0xFF0245,16,menu_verb_input
+0xFF02AC,16,FUN_01e5a0 FUN_01eeee FUN_02a454
+0xFF02CA,16,verb_exec entity_spawn FUN_025e12 FUN_026076 FUN_02a562
+0xFF0130,16,FUN_02241c FUN_03599c FUN_038b96 attack_dispatch
+0xFF0296,16,FUN_03e2d4
+0xFF0142,15,main_loop struct52_dispatch FUN_01da6c FUN_024984 FUN_02aff2
+0xFF0076,15,FUN_011a7c FUN_011b58 FUN_0123b0 world_map_draw FUN_0147d0
+0xFF0110,15,menu_verb_input FUN_021fe6 FUN_0226bc FUN_024984 FUN_0275b0
+0xFF0086,15,menu_verb_input
+0xFF0246,15,menu_verb_input
+0xFF8686,15,FUN_015012 FUN_015c08
+0xFFB0CC,15,FUN_01ba4e FUN_020cca FUN_020d0a FUN_020e7e FUN_0210d8
+0xFFB0D4,15,FUN_020e7e FUN_0243d6 FUN_024676 FUN_025456 FUN_02d56a
+0xFF0298,15,FUN_03e2d4
+0xFF0E18,14,main_loop menu_format new_game_init verb_exec FUN_026b58
+0xFF013E,14,main_loop FUN_01da6c FUN_0226bc FUN_024984 FUN_032284
+0xFF8680,14,FUN_015012 FUN_015c08 scene_draw
+0xFF02DC,14,FUN_0226bc entity_spawn FUN_026b58 FUN_02d004 FUN_0337ee
+0xFF02D8,14,entity_spawn FUN_02595a FUN_02a454 FUN_02ee6c FUN_034ca2
+0xFF02BC,14,entity_spawn FUN_0243d6 FUN_024676 FUN_024984 FUN_025456
+0xFF029A,14,FUN_03e2d4
+0xFF029C,14,FUN_03e2d4
+0xFF029E,14,FUN_03e2d4
+0xFF0112,13,main_loop menu_verb_input world_tick FUN_021fe6 FUN_0226bc
+0xFF0244,13,menu_verb_input
+0xFFC324,13,new_game_init FUN_026b58
+0xFF0E90,13,redraw_check FUN_01c21a FUN_020d58 FUN_020d9e world_tick
+0xFF013C,13,FUN_01ba4e FUN_0362d6 FUN_03cc4c FUN_03d9f8
+0xFF02A0,13,verb_exec FUN_021fe6 FUN_0275b0 FUN_02a2ca FUN_02a454
+0xFF0250,13,FUN_036e2e
+0xFFC00C,12,attract_scroll
+0xFF0E7E,12,main_loop menu_format new_game_init FUN_020a88 FUN_026cca
+0xFF02CE,12,entity_spawn FUN_024984 FUN_02aff2 xp_grant FUN_02c8f2
+0xFFC410,12,FUN_0275b0 FUN_030628 FUN_035656
+0xFF0114,11,main_loop FUN_012072 world_map_draw menu_format FUN_0162fe
+0xFF013A,11,main_loop verb_exec FUN_026e44 save_serialise save_deserialise
+0xFF8648,11,FUN_012072 world_map_draw FUN_0162fe FUN_017860 scene_draw
+0xFFC380,11,FUN_0275b0 FUN_036e2e attack_dispatch damage_calc FUN_03e2d4
+0xFF0292,11,FUN_03d9f8
+0xFFC008,10,FUN_0008dc FUN_0008f4 FUN_00096c FUN_000ab2
+0xFF8644,10,clear_sprite_attr sprite_write FUN_011c4a FUN_011c9a FUN_0123b0
+0xFF8684,10,FUN_015012 FUN_015c08 scene_draw
+0xFF02DA,10,entity_spawn FUN_02595a FUN_02a22a FUN_02ce74 FUN_02ee6c
+0xFF010A,9,main_loop struct52_dispatch FUN_021fe6 FUN_026b58 FUN_026cca
+0xFF0116,9,menu_verb_input FUN_013d84 verb_exec FUN_026e44 FUN_02ee2a
+0xFF868A,9,FUN_015c08 scene_draw
+0xFFBB70,9,FUN_01eeee verb_exec
+0xFFBB6C,9,verb_exec FUN_020884 FUN_020a88
+0xFFB0D0,9,FUN_020e7e FUN_02140a FUN_0222d4 FUN_0226bc FUN_0238b8
+0xFFC40C,9,FUN_0275b0 FUN_030628 FUN_035656
+0xFF0290,9,FUN_03d9f8
+0xFF0030,8,main_loop struct52_dispatch
+0xFF8646,8,FUN_011bb8 FUN_0123b0 FUN_012f48 FUN_012f80 FUN_01664e
+0xFF8674,8,world_map_draw FUN_0162fe redraw_check FUN_026dd2 FUN_026e44
+0xFF8678,8,world_map_draw FUN_0163ee column_write FUN_01664e
+0xFF0134,8,menu_verb_input verb_exec FUN_026e44 save_serialise save_deserialise
+0xFF0132,8,menu_format FUN_015012 verb_exec FUN_026e44 save_serialise
+0xFFA894,8,FUN_019692
+0xFF0E98,8,FUN_01c83e FUN_01da6c FUN_02a562 FUN_03090a
+0xFFBB74,8,verb_exec FUN_0207d8 FUN_020884 FUN_020a88
+0xFFBB7A,8,verb_exec FUN_0207d8 FUN_020884 FUN_020a88
+0xFF011C,8,FUN_024984 FUN_0265be FUN_026a8c FUN_03081a
+0xFFC40E,8,FUN_0275b0 FUN_035656
+0xFFC37C,8,FUN_0275b0 FUN_037d0e attack_dispatch damage_calc FUN_03e2d4
+0xFF0120,7,main_loop struct52_dispatch FUN_02a2ca FUN_0337ee
+0xFF0128,7,main_loop FUN_015012 new_game_init world_tick
+0xFF1EC0,7,tile_record_load clear_decode_buffer world_map_draw map_decode redraw_check
+0xFFA7FA,7,menu_format FUN_0275b0 FUN_02d3dc FUN_02d56a
+0xFF8688,7,FUN_015c08 scene_draw
+0xFFA896,7,FUN_019692 FUN_01c802
+0xFFBB6D,7,verb_exec FUN_020884 FUN_020a88
+0xFF02E2,7,entity_spawn FUN_02bbd2 FUN_02c8f2
+0xFFC34A,7,FUN_02bbd2 FUN_02c8f2 FUN_02cdd4 save_deserialise
+0xFFBC86,7,FUN_0337ee
+0xFF024C,7,FUN_036e2e
+0xFF024E,7,FUN_036e2e
+0xFF021E,7,sound_stop sound_upload sound_start_song FUN_0eb9c4 FUN_0eba00
+0xFF0094,6,main_loop FUN_01da6c world_tick FUN_0226bc
+0xFF8672,6,FUN_0123b0
+0xFF0072,6,rand_next FUN_012bfc
+0xFF0240,6,menu_verb_input
+0xFF0126,6,palette_fade FUN_01da6c world_tick
+0xFF012E,6,song_request FUN_01da6c world_tick FUN_03aacc
+0xFF0098,6,redraw_check FUN_01ba16 request_full_redraw
+0xFF0118,6,FUN_01eeee FUN_02ee2a
+0xFF011A,6,FUN_01eeee FUN_02ee2a
+0xFF02D9,6,verb_exec entity_spawn FUN_02a454 FUN_03e2d4
+0xFF0252,6,FUN_036e2e
+0xFFC002,5,attract_scroll FUN_000ab2
+0xFF0016,5,FUN_001272 FUN_00da92 wait_vblank
+0xFF0E30,5,main_loop new_game_init FUN_0226bc FUN_032922
+0xFF0138,5,main_loop FUN_020884 FUN_020a88
+0xFF866A,5,FUN_0123b0
+0xFF0E78,5,world_map_draw FUN_017860 new_game_init FUN_026cca
+0xFF0108,5,FUN_015012 new_game_init
+0xFF009E,5,redraw_check FUN_01da6c
+0xFF0140,5,FUN_01da6c FUN_03599c
+0xFF02AA,5,FUN_01e5a0 verb_exec FUN_0275b0 FUN_02a454
+0xFFB0D6,5,FUN_020e7e FUN_02140a FUN_0238b8 FUN_024984
+0xFF0144,5,world_tick
+0xFF010C,5,FUN_0226bc FUN_03599c FUN_03b4c6 FUN_03e2d4
+0xFFC378,5,FUN_0226bc FUN_036e2e FUN_03b4c6 FUN_03e2d4
+0xFFC376,5,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFF02CB,5,entity_spawn FUN_025e12 FUN_02a454 FUN_02e8c8
+0xFF0122,5,FUN_02e9a6 FUN_02e9ec
+0xFFC41A,5,attack_dispatch FUN_03e2d4
+0xFF014C,5,eeprom_init eeprom_read_block eeprom_write_byte
+0xFF016A,5,save_validate
+0xFFC000,4,boot_display_attract attract_scroll FUN_000a14
+0xFFC004,4,attract_scroll
+0xFF0010,4,main_init FUN_001272 FUN_012bfc
+0xFF001A,4,main_init FUN_001272 joypad_queue_pop
+0xFF001B,4,main_init FUN_001272 joypad_queue_pop
+0xFF011E,4,main_loop struct52_dispatch FUN_024984 FUN_026a8c
+0xFF867C,4,world_map_draw FUN_013d84 FUN_01664e
+0xFFA884,4,FUN_019692
+0xFF01EA,4,FUN_01e562 FUN_01e5a0 verb_exec FUN_020a36
+0xFF0096,4,FUN_020cf6 FUN_020e7e FUN_0210d8 FUN_0226bc
+0xFFB0D2,4,FUN_020d0a FUN_020e7e FUN_02140a FUN_0238b8
+0xFFB0CE,4,FUN_020e7e FUN_02140a FUN_0226bc FUN_0238b8
+0xFF02A4,4,FUN_021fe6 FUN_0298d2 FUN_02a454
+0xFF0146,4,FUN_0226bc
+0xFF0148,4,FUN_0232d2
+0xFF02C4,4,FUN_0243d6 FUN_024984 FUN_02570a
+0xFF02A6,4,FUN_0298d2 FUN_02a454
+0xFFC340,4,FUN_02bbd2 FUN_02c8f2 FUN_02cdd4
+0xFFC345,4,FUN_02bbd2 FUN_02c8f2 FUN_02cdd4
+0xFF0160,4,eeprom_write_byte
+0xFF0164,4,eeprom_write_byte
+0xFF0224,4,FUN_0eba00 FUN_0eba7e
+0xFF0228,4,FUN_0eba00 FUN_0eba7e
+0xFFC00E,3,boot_display_attract pad1_read_boot
+0xFFC006,3,attract_scroll
+0xFFD2EA,3,attract_scroll FUN_00096c
+0xFFC036,3,attract_scroll FUN_000ab2
+0xFFC0C6,3,attract_scroll FUN_000ab2
+0xFFC07E,3,attract_scroll FUN_000ab2
+0xFF0018,3,main_init FUN_001272
+0xFF002C,3,main_init joypad_queue_pop
+0xFF0019,3,main_init FUN_001272
+0xFF0136,3,menu_verb_input menu_format
+0xFF0088,3,FUN_017586
+0xFFA880,3,FUN_019692 new_game_init
+0xFFB08C,3,new_game_init FUN_01da6c
+0xFF0E9A,3,FUN_01da6c FUN_02d56a
+0xFF0E9C,3,FUN_01da6c FUN_02d56a
+0xFF0EA2,3,FUN_01da6c
+0xFFBB6E,3,verb_exec FUN_020884 FUN_020a88
+0xFF02A5,3,FUN_021fe6 FUN_0298d2 FUN_02a2ca
+0xFFC368,3,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFFC372,3,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFFC374,3,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFFC36E,3,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFFC36A,3,FUN_0226bc FUN_03b4c6 FUN_03e2d4
+0xFFC408,3,entity_spawn FUN_02b6e0 FUN_03090a
+0xFFBC94,3,FUN_026b58 FUN_026cca
+0xFFBC9A,3,FUN_026b58 FUN_026cca
+0xFFBC9C,3,FUN_026b58 FUN_026cca
+0xFFBC96,3,FUN_026b58 FUN_026cca
+0xFFC40A,3,FUN_0275b0 FUN_030628 FUN_035656
+0xFFC412,3,FUN_0275b0 FUN_030628
+0xFFB00A,3,FUN_02a454 FUN_0331a4
+0xFFC33E,3,FUN_02bbd2 FUN_02c8f2 FUN_02cdd4
+0xFFC388,3,FUN_02e9a6 FUN_02e9ec FUN_02ea40
+0xFFC3C8,3,FUN_02e9a6 FUN_02e9ec FUN_02ea40
+0xFF014A,3,FUN_03835a
+0xFF0150,3,eeprom_read_block
+0xFF0154,3,eeprom_read_block
+0xFF0168,3,save_validate
+0xFF0222,3,sound_tick sound_upload
+0xFF0234,3,sound_tick
+0xFF022C,3,sound_upload sound_start_song FUN_0eba00
+0xFF0236,3,sound_upload FUN_0ebac6 FUN_0ebb04
+0xFF021F,3,FUN_0eba00 FUN_0eba7e
+0xFFC010,2,boot_display_attract pad1_read_boot
+0xFFC0A2,2,attract_scroll FUN_000ab2
+0xFFC05A,2,attract_scroll FUN_000ab2
+0xFFC0EA,2,FUN_000ab2
+0xFFDBEA,2,FUN_000ab2
+0xFF001C,2,FUN_001272 joypad_queue_pop
+0xFF00BE,2,struct52_dispatch verb_exec
+0xFF0EAC,2,FUN_00dd5c
+0xFF864A,2,FUN_01225c
+0xFF866C,2,FUN_0123b0
+0xFF866E,2,FUN_0123b0
+0xFF8670,2,FUN_0123b0
+0xFF4EC0,2,FUN_0147d0
+0xFF8682,2,FUN_015012
+0xFF007A,2,FUN_015012 scene_draw
+0xFF00B6,2,new_game_init
+0xFFB09C,2,new_game_init FUN_01da6c
+0xFFB0AC,2,new_game_init FUN_01da6c
+0xFFB0BC,2,new_game_init FUN_01da6c
+0xFFAE7A,2,FUN_01ba4e grid_fill
+0xFFAF42,2,FUN_01ba4e grid_fill
+0xFF0248,2,FUN_01c176
+0xFF0E9E,2,FUN_01da6c
+0xFF0EA0,2,FUN_01da6c
+0xFF0EA4,2,FUN_01da6c
+0xFF0EA6,2,FUN_01da6c
+0xFF0E96,2,FUN_01da6c FUN_0362d6
+0xFF02B0,2,verb_exec FUN_021fe6
+0xFF02AE,2,FUN_021fe6 FUN_0298d2
+0xFFC370,2,FUN_0226bc FUN_03b4c6
+0xFFC36C,2,FUN_0226bc FUN_03b4c6
+0xFF024A,2,FUN_0269f2
+0xFFBC9E,2,FUN_026b58
+0xFF0E7A,2,FUN_026cca FUN_0275b0
+0xFF015C,2,eeprom_read_block
+0xFF0158,2,eeprom_read_block
+0xFF015E,2,eeprom_write_byte
+0xFF015F,2,eeprom_write_byte
+0xFF0220,2,sound_tick
+0xFF0230,2,sound_start_song FUN_0eba00
+0xFFC9F2,1,FUN_000ab2
+0xFFC9EA,1,FUN_000ab2
+0xFFC012,1,FUN_000ab2
+0xFFE7EA,1,FUN_000d04
+0xFF000C,1,main_init
+0xFF1EE0,1,tile_record_load
+0xFFEC1E,1,soft_reset
+0xFF0078,1,FUN_01960a
+0xFFA882,1,FUN_019692
+0xFF868C,1,FUN_019692
+0xFFA88C,1,FUN_019692
+0xFFA7D0,1,new_game_init
+0xFFA7D4,1,new_game_init
+0xFFA7D8,1,new_game_init
+0xFFA7DC,1,new_game_init
+0xFFA7E0,1,new_game_init
+0xFFA7E4,1,new_game_init
+0xFFA7E8,1,new_game_init
+0xFFA7EC,1,new_game_init
+0xFFA7F0,1,new_game_init
+0xFF00B8,1,new_game_init
+0xFFB376,1,FUN_01c21a
+0xFFB776,1,FUN_01c21a
+0xFFB36D,1,FUN_01c21a
+0xFFB76D,1,FUN_01c21a
+0xFFB38C,1,FUN_01c21a
+0xFFB78C,1,FUN_01c21a
+0xFFB4AC,1,FUN_01c21a
+0xFFB8AC,1,FUN_01c21a
+0xFF0E94,1,FUN_01c21a
+0xFF00BA,1,FUN_01c21a
+0xFF00A4,1,FUN_01c892
+0xFFC37A,1,FUN_02241c
+0xFF02B3,1,FUN_02ee6c
+0xFFC34B,1,save_deserialise
+0xFFC382,1,FUN_037a9a
+0xFFC37E,1,FUN_037d0e
+0xFF01E8,1,save_validate
+0xFF023A,1,sound_upload

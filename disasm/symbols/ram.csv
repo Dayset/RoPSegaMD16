@@ -1,0 +1,10 @@
+addr,size,name,tier,note
+0xFF02B2,2,ram_party_leader,2,party leader index; docs/architecture.md, docs/logic.md
+0xFF0E82,12,ram_party_index_array,2,6 party member index words; docs/architecture.md, docs/logic.md
+0xFF02B4,4,ram_merchant_base,2,merchant struct base; docs/architecture.md, docs/logic.md
+0xFFA7CC,2,ram_actor_hp,2,HP word; docs/architecture.md, docs/logic.md
+0xFF0EAA,2,ram_actor_index,2,actor index for combat struct; docs/logic-audit.md, docs/logic.md
+0xFF010E,2,ram_combat_flags,2,combat flags; docs/architecture.md, docs/graphics.md
+0xFF012C,1,ram_event_code,2,event/state code; docs/logic-audit.md, docs/logic.md
+0xFFBB72,1,ram_shop_stock_byte,2,stock byte decremented on sell; docs/logic.md
+0xFF02C0,2,ram_header_leader,2,header leader word; docs/save.md
