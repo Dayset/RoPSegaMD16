@@ -215,8 +215,31 @@ def main():
     texts = {a: alt[a] for a in alt_ok}
     ok |= alt_ok
 
+    # 2b. computed dispatch targets (issue #8): a jump d0-indexed through a word table at
+    # table_base has targets J+2+word(table_base+2*i) for i in 0..bound, where table_base is
+    # the last `move.w T(pc,d0.w),d0` and bound is the last `cmp.l #N,d0`. Targets that are
+    # instruction starts get labels; the byte gate still decides every emitted line.
+    dispatch_targets = set()
+    for start, end, entry, insns, tail in code:
+        table = bound = None
+        for addr, size, mnem, op in insns:
+            mt = re.search(r"\$?([0-9a-fA-F]{4,6})\(pc,d0\.w\),d0", op) if mnem == "move.w" else None
+            if mt:
+                table = int(mt.group(1), 16)
+            mc = re.match(r"#\$?([0-9a-fA-F]+),d0", op) if mnem == "cmp.l" else None
+            if mc:
+                bound = int(mc.group(1), 16)
+            if mnem == "jmp" and "(pc,d0.w)" in op and table is not None and bound is not None:
+                for i in range(bound + 1):
+                    off = table + 2 * i
+                    if off + 1 >= len(rom):
+                        break
+                    w = int.from_bytes(rom[off:off + 2], "big", signed=True)
+                    tgt = addr + 2 + w
+                    if tgt in insn_starts:
+                        dispatch_targets.add(tgt)
     # 3. label targets for converted instructions that reference another address
-    targets = set()
+    targets = set(dispatch_targets)
     converted = {}
     abs_refs = {}   # addr -> {operand index: target} for non-flow absolute operands
     for start, end, entry, insns, tail in code:
