@@ -2,6 +2,15 @@
 
 Issue #006, done 2026-11-09. Tool: `tools/decode_map.py`.
 Rendered maps + per-record inventory: `disasm/maps/`.
+Chunk renders: `disasm/maps/chunks/` (tool `tools/render_chunks.py`).
+
+Note (2026-11-10): the six colour PNGs in `disasm/maps/` were
+regenerated with the corrected CRAM order (r=(w>>1)&7, g=(w>>5)&7,
+b=(w>>9)&7) — the #005 renders had R and B swapped (the pixel
+content matched the fresh renders exactly under an R↔B swap, all
+pixels). The title logo was already correct and is untouched.
+`world_map_rec09_index.png` is also unaffected (index colours,
+not palette colours).
 
 ## Summary (verified)
 
@@ -16,10 +25,13 @@ the loader call sites, and the pairing rule held for all 21: **the
 map's max tile index is exactly one less than the tileset's tile
 count** (e.g. world map max 437 vs rec 6's 438 tiles).
 
-The **walkable overworld / town / dungeon terrain grid was not found**
-in this issue — none of the `$96120` records is a terrain grid. The
-leads are listed under Open questions; the overworld grid is #020 /
-#011 territory.
+The **walkable overworld / town / dungeon terrain grid is not a ROM
+table** — resolved 2026-11-10 (see "The walkable terrain grid"
+below). It is a runtime structure: the 252 chunk tilemaps in the
+`$43850` table, per-tile properties in `$5EDC4`, and 176 terrain
+streams decoded by `$E358`/`$E3B4`, assembled at runtime into
+RAM cell grids (`$FFB36C`, `$FFB76C`) and a 4-slot chunk cache.
+None of the `$96120` records is a terrain grid.
 
 ## The record format (verified)
 
@@ -288,20 +300,126 @@ distances in "klicks". This is a separate system from the 40x28
 tilemap — the tilemap is a picture of the world, not the grid the
 player walks on.
 
+## The chunk tilemaps — `$43850` table (verified 2026-11-10)
+
+Block 1 (`0x044000–0x05FFFF`) holds a second map system, distinct
+from the `$96120` picture tilemaps: **252 chunk tilemaps** in a
+`$DD5C` table at `$43850` (records decoded to `disasm/chunks/`,
+tool `tools/decode_chunks.py`).
+
+- **99 × 2048 B chunks (32×32 tiles)**: recs 0–76 and 230–251.
+- **153 × 242 B chunks (11×11 tiles)**: recs 77–229.
+- Chunk words are full VDP tilemap words (tile index + flip/palette/
+  priority bits — all flag bits `0x0800`–`0x8000` seen in the data).
+- Tile indices span 0–2027 (560 distinct), in fragmented ranges
+  (dense 0–287, then 464–560ish, scattered to 2027); 1,468 indices
+  in 0–2027 are unused. **No `$96120` tileset holds that many tiles**
+  (largest rec 37 = 586), so no tileset/palette pairing is pinned
+  for chunks yet — a full tile render is blocked on it.
+- **Renders** (`disasm/maps/chunks/`, tool `tools/render_chunks.py`):
+  all 252 chunks as INDEX images (one pixel per tile, colour = MD5
+  hash of the tile index — the same method as the index grids here),
+  plus `CHUNKS.md` inventory (distinct-tile counts, index ranges,
+  most common tiles). The renders show coherent structure, not noise:
+  e.g. chunk 0 has a large uniform region and distinct clusters; the
+  dominant tiles recur across chunks (28, 29, 36, 86, 87, 47 are the
+  bulk tiles). 32×32 and 11×11 chunks share 255 tile indices, with
+  266 only in 32×32 and 39 only in 11×11 — same tileset space,
+  different subsets (consistent with overworld/town vs room chunks,
+  unproven).
+- **Loader**: `$19692(index)` — a 4-slot round-robin cache
+  (buffers at `$FF868C` + slot×2048; slot counter `$FFA894` & 3;
+  pointer table `$FFA896`; slot→index table `$FFA884`). It calls
+  `$13654` with table `$43850`, base `$44228`. `$1C802(index)`
+  is the lazy getter (returns the cached chunk pointer, loading via
+  `$19692` if null).
+- **Chunk index from position**: `$1C83E` computes
+  `(y / H) * W + (x / W)` using the geometry struct at `$FFA7FC`
+  (`+4` = height divisor, `+6` = row width) plus base `$FF0E98`
+  (+`$4D` if not `$FFFF`). `$1C7DA` computes the current chunk
+  index from the player position (`$FF0E8E`/`$FF0E90`) into
+  `$FF0E94`. So the chunk index is a function of position — the
+  chunks ARE the walkable map, indexed by where the player stands.
+
+## The walkable terrain grid (resolved 2026-11-10)
+
+There is no ROM "terrain grid" table. The walkable terrain is a
+runtime assembly of four ROM sources plus RAM grids:
+
+| part | where | role |
+|------|-------|------|
+| chunk tilemaps | `$43850` table, 252 recs | the map itself (see above) |
+| per-tile properties | `$5EDC4`, 512 words | per-tile data, indexed by tile & `$1FF` |
+| terrain streams | `$5F524`, 176 u32 offsets, streams at `$603E4+` (last ends ~`$6823B`) | per-tile terrain detail, decoded by `$E358` |
+| RAM cell grids | `$FFB36C`, `$FFB76C` (bytes per cell) + `$FFB0CC` (12-byte records) | runtime walkable state |
+
+**`$5EDC4` (512 words, ROM `0x05EDC4`)**: indexed by tile index &
+`$1FF` at 9 sites (e.g. `0x01BAAC`, `0x01BB82`). Value structure
+(verified from the bit tests in `$1BA4E`): bits 13–15 are a count
+(0–7) — the number of `$E358` terrain-decode rows for that tile;
+bits 5–9 and 12 and the low byte are flags. Most common value is
+`0x240B` (×177); 147 distinct values; low byte most often `0x0B`
+(×177) or `0x01` (×101). Which flag bit means "walkable" is **not
+yet pinned** — the bit fields the code actually tests are listed
+above, the semantics are open.
+
+**`$E358` threaded terrain decoder** (entry, 114 direct `jsr`
+call sites in 15 caller functions — correcting the earlier "no direct
+callers" note): args
+are (d2 = stream index into `$5F524`, d0, d1, d3 = variant). It
+selects one of the 176 terrain streams (`lea $5f524;
+movea.l (a1,d4.w), a0; adda.l #$603e4, a0`), seeks by high nibble,
+then d3==0 → `$E3B4` path (d0 − `$40`), d3!=0 → `$E412` path
+(d0 − `$26`). Both set a1=`$435C0`, a2=`$436E0`, a3=`$433C0`,
+a4=`$FF1EC0`, then a computed jump via the `$DF58` table
+(longwords, high word 0) into handler routines; the `$E47C`
+unrolled writer emits 4 bytes/group with a +`0x1D` skip → 33-byte
+output rows (1bpp bitmap) into `$FF1EC0`.
+
+**`$1BA4E` per-cell terrain driver** (`0x01BA4E–0x01BC56+`): for
+each cell it calls `$1C176` to get the tile word, looks up
+`$5EDC4[tile & $1FF]`, extracts bit fields, then loops calling
+`$E358` per row (d3 = a value ≥ `$22F`, so always the `$E412`
+path, or `#$230` = 560). After the decode it computes a cell
+index from position via the `$FFA7FC` geometry struct and reads
+two bytes: `$FFB36C[index]` and `$FFB76C[index]`. The `$FFB76C`
+byte is a record key: if not `$FF`, it is ×12 and used to index
+`$FFB0CC` (a 12-byte-record table), whose word at +`$A` is read.
+So `$FFB36C`/`$FFB76C` are byte-per-cell RAM grids and `$FFB0CC`
+is a per-cell record table — the runtime walkable-state grids.
+
+**`$FF1EC0` is shared scratch, NOT a persistent grid** (settled):
+9 references — the `$E3B4`/`$E412` decoder writes there
+(`0x00E3C6`, `0x00E424`), `$1383C` (the `$96120` loader) and
+`$11AE4` (the `$B86AE` sprite loader) also use it as decompression
+scratch. `$11DE8` clears it (26,496 bytes, `0x19E0` longwords) and
+is called from the `$1B958` scroll routine — it is re-cleared each
+redraw. The `$E358` output bitmap is transient.
+
+**Grid geometry is per-location, in RAM**: `$FFA7FC` is set once
+(`0x01B74E`, in the map-load routine) to `$FFB08C` — a RAM struct
+initialized by `$1DA10` calls with per-location values (fields
+used: +0 width divisor, +2 height divisor, +4 chunk-height
+divisor, +6 row width, +`$A` ×8). A second `$E358` caller,
+`$231D8`, processes 36-byte records from the `$197B0` table
+(mostly zeros with small values) and calls `$E358` with stream
+index `#$209` (521) when a record's first word is `$1CC` (460).
+
+Still open on the terrain grid: which `$5EDC4` flag bit means
+walkable (needs a live check — e.g. a harness that steps onto a
+cell and reads `$FFB36C`/`$FFB76C`); the byte meanings of
+`$FFB36C`/`$FFB76C` and the `$FFB0CC` 12-byte record layout; the
+`$197B0` 36-byte record layout; the chunk tileset/palette pairing
+(blocks full tile renders of the chunks).
+
 ## Open questions (for #020 / #011 / #015)
 
-1. **The walkable overworld / town / dungeon terrain grid is not
-   located.** Best leads: the threaded decoder at `0xE3B4`/`0xE412`
-   (reached via a jump table at `$DF58`, no direct callers found)
-   with nibble tables at `$433C0` (masks FF/F0/0F), `$434C0`
-   (nibble expansions), `$435C0` (u16: `((i>>2)<<5)|(i&3)`),
-   `$436E0` (tile offsets incl. `0x0480` = 1152 = 36x32) and an
-   unrolled bitmap writer at `0xE47C` (4 bytes per group, +0x1D skip
-   → 33-byte rows) into `$FF1EC0` — possibly the "MM map" bitmap
-   decoder; the high-entropy block at `0x044000–0x05FFFF`; and the
-   "MM map" rendering routine. The overworld may not be a tile grid
-   at all (the walk view may be built from the same picture-style
-   records, or from a bitmap).
+1. **The walkable overworld / town / dungeon terrain grid — resolved
+   as a runtime structure 2026-11-10 (see above).** Remaining open
+   bits: which `$5EDC4` flag bit means walkable; the `$FFB36C` /
+   `$FFB76C` byte meanings and the `$FFB0CC` 12-byte record layout;
+   the `$197B0` 36-byte record layout; the chunk tileset/palette
+   pairing (blocks full tile renders of the 252 chunks).
 2. **Which screen is rec 35?** Starfield + grey diamond, selected by
    routine 0x17860's arg. Candidates: a second world, the Void, a
    space view. Needs a live check (drive the game to the map screen

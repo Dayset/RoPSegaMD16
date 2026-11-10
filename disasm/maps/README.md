@@ -14,7 +14,8 @@ format). Regenerate any PNG with, e.g.:
   routines load into the map's slot). A black diamond landmass on a
   blue-grey sea, ornate frame, compass rose bottom-right. The in-game
   map is schematic: the land is one solid tile, no desert/ice/cities
-  in the tilemap itself.
+  in the tilemap itself. **Regenerated 2026-11-10** with the
+  corrected CRAM order — the #005 render had R and B swapped.
 - `world_map_rec09_pal13_fancolours.png` — the same map with palette
   13 (green land, dark-blue sea). **Not** what the code loads — shown
   for comparison because pal 13's colours match the fan world map's
@@ -41,6 +42,25 @@ format). Regenerate any PNG with, e.g.:
   palette slot 3 is not loaded by its routine; pal 14 is the most
   coherent of the candidates tried). Night landscape: mountains, dark
   forest, snow field, starry sky.
+
+## Chunk renders — `chunks/`
+
+The 252 decoded chunks from the `$43850` table (`disasm/chunks/`,
+tool `tools/decode_chunks.py`) are rendered as INDEX images in
+`chunks/` (tool `tools/render_chunks.py`):
+
+    python3 tools/render_chunks.py
+
+- `chunk_NNN.png` — one pixel per tile (scale 8), colour = MD5 hash
+  of the tile index (same method as the index grids above). No
+  tileset or palette is assumed — the chunk tileset/palette pairing
+  is not pinned (tile indices span 0–2027; no `$96120` tileset holds
+  that many tiles), so a full tile render is not possible yet.
+  The renders show coherent structure (regions, not noise); the
+  bulk tiles 28, 29, 36, 86, 87, 47 recur across chunks.
+- `CHUNKS.md` — inventory: size (32×32 for recs 0–76, 230–251;
+  11×11 for recs 77–229), distinct-tile counts, index ranges,
+  most common tiles per chunk.
 
 ## Palette confidence
 
