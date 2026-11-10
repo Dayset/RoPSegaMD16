@@ -139,14 +139,31 @@ Full table with ROM sources: `disasm/maps/inventory.md`. Summary:
   almost all the work: tile 18 (311 cells, solid pixel 12) is the sea,
   tile 131 (302 cells, solid pixel 0) is the land; the remaining 507
   cells are the frame, coastline detail and the compass.
-- Palette: **pal 11** (code-pinned — both the 0x12C20 and 0x17860
-  routines load `$CCB38` → slot 1, and the map's base is
-  `+$2000` = palette slot 1). With pal 11 the land renders black and
-  the sea blue-grey (`disasm/maps/world_map_rec09_pal11.png`).
-  `world_map_rec09_pal13_fancolours.png` shows the same map with pal
-  13 (green land, dark-blue sea) for comparison — pal 13 is *not*
-  what the code loads; it is included because its colours match the
-  fan world map's modern render.
+- Palette: **pal 11 — LIVE-VERIFIED (2026-11-10).** Both the 0x12C20
+  and 0x17860 routines load `$CCB38` → slot 1 [static], and a live
+  CRAM snapshot after calling the map routine `$17860(0)` confirms
+  CRAM slot 1 is pal 11 exactly (16/16 words; harness
+  `.scratch006/harness_cram.s`, test ROM
+  `9d48497b051c9e105effbcfb78e2a026`). The sea (tile 18, solid pixel
+  12) is CRAM slot 1 entry 12 = `$066C`; the land (tile 131, solid
+  pixel 0) is entry 0 = `$0000` (black). Under the corrected CRAM
+  order (r=(w>>1)&7, g=(w>>5)&7, b=(w>>9)&7, proven live in #016
+  §10.2) `$066C` is RGB (218,109,109) — a dusty rose /
+  brownish-red, NOT blue. The earlier "blue-grey sea" description
+  was from the pre-fix R/B-swapped renderer and is corrected here;
+  the regenerated `world_map_rec09_pal11.png` already shows the true
+  colour. `world_map_rec09_pal13_fancolours.png` shows the same map
+  with pal 13 (green land, dark-red sea — entry 12 `$0006` = RGB
+  (109,0,0)) for comparison — pal 13 is *not* what the game loads
+  (CRAM slot 1 matches pal 13 on only 1/16 words); it is included
+  because its colours match the fan world map's modern render. The
+  same snapshot confirms the other slots: slot 0 = pal 10 (day, from
+  `$170DA`), slot 2 = pal 30, slot 3 = a sprite palette (from
+  `$11AE4`, not pal 9 — the prologue's pal-9 load into slot 3 is
+  overwritten by the sprite load). Note: the pre-map CRAM snapshot
+  (attract/title palette) reads back with bit 15 set on every word —
+  a boot transient in the VDP read buffer; the post-map snapshot is
+  clean and validated by three exact palette matches (48/48 words).
 - `world_map_rec09_index.png` (one pixel per tile, colour = hash of
   the tile index) shows the diamond shape independent of tiles or
   palette.
@@ -181,7 +198,7 @@ What differs, and why it is not a contradiction:
   the map routine; `$11C9A` places objects in related routines).
   Which sprites mark which cities is an open question.
 - The fan map's colours (green land, blue sea) match pal 13, not the
-  code-pinned pal 11 (black land, blue-grey sea). The fan map is a
+  live-verified pal 11 (black land, dusty-rose sea). The fan map is a
   re-render with its own palette, not a screenshot of the in-game
   map screen — so the colour difference does not invalidate it as a
   layout reference, and the layout (diamond, compass, land/sea) is

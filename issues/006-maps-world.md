@@ -74,6 +74,25 @@ correction) and were replaced with corrected renders 2026-11-10
 (pixel content matched the fresh renders exactly under an R↔B
 swap, all pixels); the title logo was already correct.
 
+**Pal 11 vs pal 13 — RESOLVED live (2026-11-10).** The sea uses
+**pal 11, not pal 13.** A harness (`.scratch006/harness_cram.s`,
+test ROM `9d48497b051c9e105effbcfb78e2a026`) called the map routine
+`$17860(0)` and snapshotted all 64 CRAM words before and after.
+After the call, CRAM slot 1 is pal 11 exactly (16/16 words); it
+matches pal 13 on only 1/16 words. The sea (tile 18, pixel 12) is
+CRAM slot 1 entry 12 = `$066C`; the land (tile 131, pixel 0) is
+entry 0 = `$0000` (black). Under the corrected CRAM order
+(r=(w>>1)&7, g=(w>>5)&7, b=(w>>9)&7, proven live in #016 §10.2)
+`$066C` is RGB (218,109,109) — a dusty rose / brownish-red, NOT
+blue. The old "blue-grey sea" (pal 11) / "dark-blue sea" (pal 13)
+descriptions were from the pre-fix R/B-swapped renderer and are
+corrected in `docs/maps.md`; the regenerated PNGs already show the
+true colours. The same snapshot confirms slot 0 = pal 10 (day, from
+`$170DA`), slot 2 = pal 30, and slot 3 = a sprite palette (from
+`$11AE4`). This is the live re-verification `docs/graphics.md`
+§10.2 called for. Still open: which screen rec 35 is, city markers
+on the world map, the chunk tileset/palette pairing.
+
 **Terrain grid resolved** (details in `docs/maps.md`): there is no
 ROM terrain-grid table. The walkable terrain is a runtime assembly:
 chunk tilemaps (`$43850`, loaded by `$19692` into a 4-slot cache
