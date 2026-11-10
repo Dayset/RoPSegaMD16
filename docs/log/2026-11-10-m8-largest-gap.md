@@ -6,3 +6,5 @@
 - Chain test: following candidate headers end to end from 0x05F802 covers only one stream (ends 0x05FAF5). No contiguous LZSS tiling of the block.
 - Conclusion: the block is not one LZSS run. Its streams are probably referenced individually (the $96120 table has 62 records). Not classified; stays `unknown`.
 - Next: decode each $96120 record and check whether its stream lies inside this block; then class those spans `lzss-stream` with the record id.
+- Per-record check (done): all 62 $96120 records decode with the documented LZSS format to exactly their declared length (decoder validated). Stream starts span 0x09638C-0x0B83A1; zero of them fall inside 0x05F7E4-0x09611F. So the $96120 table does not reference this block.
+- Remaining candidate owners: the terrain streams at $603E4+ (maps.md:371, ends ~$6823B) and the unknown data #017 (graphics.md:884). Next: check whether any $5F524 offset or other pointer table reaches 0x05F7E4-0x09611F before classing it.
