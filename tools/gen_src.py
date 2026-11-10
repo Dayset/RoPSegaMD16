@@ -67,8 +67,14 @@ DBRANCHES = {"dbt", "dbf", "dbra", "dbhi", "dbls", "dbcc", "dbcs", "dbne", "dbeq
 
 
 def is_flow(mnem, op):
-    """Branch, jump, or pc-relative operand: the only operands whose hex may become a label."""
-    return mnem in BRANCHES or mnem in DBRANCHES or "(pc" in op
+    """Branch, jump, or pc-relative operand: the only operands whose hex may become a label.
+
+    Capstone's mnemonic carries the size suffix (bne.b, bra.w, bsr.b), while the
+    BRANCHES/DBRANCHES sets hold bare names, so strip the suffix before matching;
+    otherwise every suffixed conditional branch is missed and its target stays raw.
+    """
+    base = mnem.split(".")[0]
+    return base in BRANCHES or base in DBRANCHES or "(pc" in op
 
 
 def abs_text(mnem, op):
