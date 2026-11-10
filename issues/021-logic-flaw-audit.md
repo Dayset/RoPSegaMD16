@@ -89,9 +89,16 @@ Map the numbers behind the game and audit them for logic flaws.
   match + `0x10000` for the event id + `RNG(0x400)`; for +0x02 ==
   1, recs 18/19 win (type 0xF); for other merchants the winner is
   RNG-selected among the tied records, so **the Bribe's delta is
-  not a single universal number**. Live confirmation is [open]
-  (harness in `.scratch023/`, blocked by the VM replacement
-  removing the emulator toolchain). **`$02A22A` return semantics
+  not a single universal number**. **Delta mechanism confirmed
+  LIVE (2026-11-10, `.scratch023/`, 6/6, test ROM
+  `d4a75f32562e6f3732ae0ec74df34b97`):** `$02CE74` moves the live
+  attitude by the full delta and the persistent `$FF00C0` entry by
+  pct×delta/100, both clamped [−100,+100] — six cases incl. the live
+  +100 clamp, the persistent −100 clamp, the −1350/100 → −13
+  truncation, and the real +99 rec-75 delta (live 0→99, entry 0→79).
+  The `$0331A4` record-match is still **[open]** (the harness call
+  does not return in the BlastEm debugger; 3×300 s, breakpoint never
+  hit). **`$02A22A` return semantics
   PINNED (2026-11-10) [static]:** it returns
   `char[char[arg1].+0x14].+0x26`, used by `$0298D2` as a char
   index — in the Bribe context that byte is the merchant's char

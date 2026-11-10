@@ -588,11 +588,21 @@ mod 0, no merchant):
   type-3 record (−1)**. The +4/+5-byte match flags do not
   discriminate for a typical merchant (most templates have
   +0x17 = 0, so the +4-byte flag is skipped; record+5 is 0x00
-  while the attitude index is non-zero). **Live confirmation is
-  [open]** — a BlastEm harness calling `$0331A4` with Bribe args
-  was built (`.scratch023/`) but the live run is blocked: the VM
-  was replaced, removing BlastEm/xdotool/the m68k toolchain, and
-  the `$0331A4` 1005-record scan is very slow in debugger mode.
+  while the attitude index is non-zero). **Delta mechanism
+  confirmed LIVE (2026-11-10, `.scratch023/`, 6/6, test ROM
+  `d4a75f32562e6f3732ae0ec74df34b97`):** `$02CE74` called directly
+  with a known merchant struct (char 5, +0x20=7) and a known delta
+  — live +0x22 moves by the full delta and the `$FF00C0` entry by
+  pct×delta/100, both clamped [−100,+100]: (+50, pct 80, live
+  50→100, entry 10→50), (+50, pct 80, live 90→100 clamped, entry
+  10→50), (−15, pct 90, live 60→45, entry 20→7 — the divs
+  truncation −1350/100 → −13), (−50, pct 100, live 50→0, entry
+  −90→−100 clamped), (0, pct 80, unchanged), (+99, pct 80, live
+  0→99, entry 0→79 — the real rec-75 max delta). The `$0331A4`
+  record-match is still **[open]**: the `$0331A4` harness call
+  does not return (3×300 s in the BlastEm debugger, breakpoint
+  never hit, Ctrl-C cannot break in) — most likely the no-match
+  infinite recursion, but unproven.
   **$02A22A return semantics, PINNED (2026-11-10) [static]:**
   `$02A22A(char, arg2, event_id)` returns
   `char[char[arg1].+0x14].+0x26` — the +0x26 byte of the struct
@@ -1289,9 +1299,12 @@ Combat message strings (`0x295C8`–`0x29603`): "Enemy" / " lost " / " got
    `0x10000` for the event id + `RNG(0x400)`; for +0x02 == 1,
    recs 18/19 win (type 0xF); for other merchants the winner is
    RNG-selected among the tied records, so **the Bribe's delta
-   is not a single universal number**. Live confirmation is
-   [open] (harness built in `.scratch023/`, blocked by the VM
-   replacement removing the emulator toolchain). See §3.5 for
+   is not a single universal number**. **Delta mechanism confirmed
+   LIVE (2026-11-10, `.scratch023/`, 6/6):** `$02CE74` moves the
+   live attitude by the full delta and the persistent entry by
+   pct×delta/100, both clamped [−100,+100] (see §3.5 for the six
+   cases). The `$0331A4` record-match is still **[open]** (the
+   harness call does not return in the BlastEm debugger). See §3.5 for
    the full record table and the `$02A22A` return semantics. **Attitude repair is LOCATED (2026-11-10) [static]:**
    CAMP raises each `$FF00C0` entry by +3 toward 10 (entry 34
    skipped), and `$02CE74` / `$030628` / `$035656` adjust it — the
