@@ -1258,7 +1258,7 @@ L00D4AC:
 	moveq #$0,d0	; $00D4B4
 	move.b -$3(a6),d0	; $00D4B6
 	move.w d0,-(a7)	; $00D4BA
-	jsr sys_unk_01eeee.l	; $00D4BC
+	jsr cmd10_handler.l	; $00D4BC
 	addq.w #$2,a7	; $00D4C2
 	bra.b L00D4EE	; $00D4C4
 L00D4C6:
@@ -1291,7 +1291,7 @@ L00D4F2:
 	bne.b L00D536	; $00D522
 	move.w #$a,-(a7)	; $00D524
 	move.w #$17,-(a7)	; $00D528
-	jsr sys_unk_020a36.l	; $00D52C
+	jsr cmd25_handler.l	; $00D52C
 	addq.w #$4,a7	; $00D532
 	bra.b L00D54E	; $00D534
 L00D536:
@@ -1311,10 +1311,10 @@ L00D552:
 	jsr verb_exec.l	; $00D552
 	bra.w L00D7A2	; $00D558
 L00D55C:
-	jsr sys_unk_0207d8.l	; $00D55C
+	jsr cmd22_handler.l	; $00D55C
 	bra.w L00D7A2	; $00D562
 L00D566:
-	jsr sys_unk_01e5a0.l	; $00D566
+	jsr menu_record_reload.l	; $00D566
 	bra.w L00D7A2	; $00D56C
 L00D570:
 	lea.l $ff02a2.l,a0	; $00D570
@@ -1327,7 +1327,7 @@ L00D570:
 	moveq #$0,d0	; $00D588
 	move.b -$3(a6),d0	; $00D58A
 	move.w d0,-(a7)	; $00D58E
-	jsr sys_unk_020884.l	; $00D590
+	jsr cmd24_handler.l	; $00D590
 	addq.w #$6,a7	; $00D596
 L00D598:
 	bra.w L00D7A2	; $00D598
@@ -1341,7 +1341,7 @@ L00D59C:
 	moveq #$0,d0	; $00D5B0
 	move.b -$3(a6),d0	; $00D5B2
 	move.w d0,-(a7)	; $00D5B6
-	jsr sys_unk_020a36.l	; $00D5B8
+	jsr cmd25_handler.l	; $00D5B8
 	addq.w #$4,a7	; $00D5BE
 L00D5C0:
 	bra.w L00D7A2	; $00D5C0
@@ -1534,7 +1534,7 @@ L00D7A2:
 	bne.b L00D84A	; $00D83A
 	move.w #$1,-(a7)	; $00D83C
 	clr.w -(a7)	; $00D840
-	jsr sys_unk_020a36.l	; $00D842
+	jsr cmd25_handler.l	; $00D842
 	addq.w #$4,a7	; $00D848
 L00D84A:
 	bra.b L00D8B6	; $00D84A
@@ -1564,7 +1564,7 @@ L00D84C:
 	clr.w $ff0138.l	; $00D8A2
 	move.w #$1,-(a7)	; $00D8A8
 	clr.w -(a7)	; $00D8AC
-	jsr sys_unk_020a36.l	; $00D8AE
+	jsr cmd25_handler.l	; $00D8AE
 	addq.w #$4,a7	; $00D8B4
 L00D8B6:
 	bra.w L00D95C	; $00D8B6
@@ -12431,7 +12431,7 @@ new_game_init:
 	link.w a6,#$fff4	; $01B5D6
 	move.w #$8,-(a7)	; $01B5DA
 	pea.l $ff0e18.l	; $01B5DE
-	jsr sys_unk_01e390.l	; $01B5E4
+	jsr queue_init.l	; $01B5E4
 	addq.w #$6,a7	; $01B5EA
 	move.w #$ffff,$ffc324.l	; $01B5EC
 	lea.l L0D6B6C.l,a0	; $01B5F4
@@ -12504,7 +12504,7 @@ new_game_init:
 	addq.w #$2,a7	; $01B734
 	clr.w $ff0e78.l	; $01B736
 	clr.w $ff0e7e.l	; $01B73C
-	jsr sys_unk_020c5e.l	; $01B742
+	jsr map_prepare.l	; $01B742
 	lea.l $ffb08c.l,a0	; $01B748
 	move.l a0,$ffa7fc.l	; $01B74E
 	jsr sys_unk_023a9e.l	; $01B754
@@ -12580,7 +12580,7 @@ L01B81A:
 	lea.l $ff0e30.l,a0	; $01B874
 	add.l a0,d0	; $01B87A
 	move.l d0,-(a7)	; $01B87C
-	jsr sys_unk_01e390.l	; $01B87E
+	jsr queue_init.l	; $01B87E
 	addq.w #$6,a7	; $01B884
 	jsr sys_unk_02e9a6.l	; $01B886
 	jsr sys_unk_01e562.l	; $01B88C
@@ -12661,7 +12661,7 @@ L01B97E:
 	beq.b L01B9A2	; $01B98A
 	tst.w $ff00ac.l	; $01B98C
 	beq.b L01B99C	; $01B992
-	jsr sys_unk_01e5a0.l	; $01B994
+	jsr menu_record_reload.l	; $01B994
 	bra.b L01B9A2	; $01B99A
 L01B99C:
 	jsr sys_unk_026dd2.l	; $01B99C
@@ -13902,7 +13902,7 @@ L01C888:
 	unlk a6	; $01C88E
 	rts	; $01C890
 	; code $01C892-$01D73D
-sys_unk_01c892:
+move_cost_calc:
 	link.w a6,#$ffde	; $01C892
 	movem.l d4-d5,-(a7)	; $01C896
 	clr.w -$a(a6)	; $01C89A
@@ -15942,7 +15942,7 @@ L01E384:
 L01E38C:
 	bra.w L01E2BC	; $01E38C
 	; code $01E390-$01E3AF
-sys_unk_01e390:
+queue_init:
 	link.w a6,#$0	; $01E390
 	movea.l $8(a6),a0	; $01E394
 	clr.b (a0)	; $01E398
@@ -15994,7 +15994,7 @@ L01E402:
 	moveq #$1,d0	; $01E422
 	bra.b L01E3FE	; $01E424
 	; code $01E426-$01E499
-sys_unk_01e426:
+queue_pop:
 	link.w a6,#$fff8	; $01E426
 	move.l $c(a6),-$4(a6)	; $01E42A
 	movea.l $c(a6),a0	; $01E430
@@ -16121,7 +16121,7 @@ sys_unk_01e562:
 	unlk a6	; $01E59C
 	rts	; $01E59E
 	; code $01E5A0-$01EEC1
-sys_unk_01e5a0:
+menu_record_reload:
 	link.w a6,#$ff90	; $01E5A0
 	movem.l d4-d7/a3-a4,-(a7)	; $01E5A4
 	movea.w $ff02a8.l,a3	; $01E5A8
@@ -16940,7 +16940,7 @@ L01EEE8:
 	; data $01EEE8-$01EEED
 	incbin "rop-original.gen",$01EEE8,$6
 	; code $01EEEE-$01F295
-sys_unk_01eeee:
+cmd10_handler:
 	link.w a6,#$fff6	; $01EEEE
 	cmpi.w #$20,$8(a6)	; $01EEF2
 	bls.b L01EF08	; $01EEF8
@@ -18693,7 +18693,7 @@ L02078E:
 L0207D4:
 	bra.w L01F318	; $0207D4
 	; code $0207D8-$020883
-sys_unk_0207d8:
+cmd22_handler:
 	link.w a6,#$0	; $0207D8
 	lea.l $ff02a2.l,a0	; $0207DC
 	move.w (a0),d0	; $0207E2
@@ -18739,7 +18739,7 @@ L02082E:
 	move.w #$ffff,$ff009c.l	; $020878
 	bra.w L0207EC	; $020880
 	; code $020884-$020A35
-sys_unk_020884:
+cmd24_handler:
 	link.w a6,#$fffc	; $020884
 	tst.w $ff00ac.l	; $020888
 	beq.b L02089E	; $02088E
@@ -18832,7 +18832,7 @@ L0209D0:
 	beq.b L020A08	; $0209F2
 	tst.w $ff00ac.l	; $0209F4
 	beq.b L020A02	; $0209FA
-	jsr sys_unk_01e5a0(pc)	; $0209FC
+	jsr menu_record_reload(pc)	; $0209FC
 	bra.b L020A08	; $020A00
 L020A02:
 	jsr sys_unk_026dd2.l	; $020A02
@@ -18850,7 +18850,7 @@ L020A22:
 	addq.w #$4,a7	; $020A30
 	bra.w L0208BE	; $020A32
 	; code $020A36-$020A87
-sys_unk_020a36:
+cmd25_handler:
 	link.w a6,#$0	; $020A36
 	lea.l $ff02a2.l,a0	; $020A3A
 	move.w (a0),d0	; $020A40
@@ -18864,7 +18864,7 @@ L020A4E:
 	clr.w -(a7)	; $020A4E
 	move.w $a(a6),-(a7)	; $020A50
 	move.w $8(a6),-(a7)	; $020A54
-	jsr sys_unk_020884(pc)	; $020A58
+	jsr cmd24_handler(pc)	; $020A58
 	addq.w #$6,a7	; $020A5C
 	moveq #$0,d0	; $020A5E
 	move.b $ffa7f8.l,d0	; $020A60
@@ -18885,7 +18885,7 @@ sys_unk_020a88:
 	move.w #$1,-(a7)	; $020A94
 	clr.w -(a7)	; $020A98
 	move.w #$17,-(a7)	; $020A9A
-	jsr sys_unk_020884(pc)	; $020A9E
+	jsr cmd24_handler(pc)	; $020A9E
 	addq.w #$6,a7	; $020AA2
 L020AA4:
 	unlk a6	; $020AA4
@@ -18957,7 +18957,7 @@ L020B62:
 	beq.b L020BCA	; $020BB4
 	tst.w $ff00ac.l	; $020BB6
 	beq.b L020BC4	; $020BBC
-	jsr sys_unk_01e5a0(pc)	; $020BBE
+	jsr menu_record_reload(pc)	; $020BBE
 	bra.b L020BCA	; $020BC2
 L020BC4:
 	jsr sys_unk_026dd2.l	; $020BC4
@@ -19008,7 +19008,7 @@ L020C56:
 	unlk a6	; $020C5A
 	rts	; $020C5C
 	; code $020C5E-$020C69
-sys_unk_020c5e:
+map_prepare:
 	link.w a6,#$0	; $020C5E
 	jsr sys_unk_020cf6(pc)	; $020C62
 	unlk a6	; $020C66
@@ -21211,7 +21211,7 @@ L0227FC:
 	add.l a0,d0	; $0228B8
 	move.l d0,-(a7)	; $0228BA
 	pea.l -$e(a6)	; $0228BC
-	jsr sys_unk_01e426.l	; $0228C0
+	jsr queue_pop.l	; $0228C0
 	addq.w #$8,a7	; $0228C6
 	move.w d0,-$2(a6)	; $0228C8
 	cmpi.w #$4,-$e(a6)	; $0228CC
@@ -21343,7 +21343,7 @@ L022A18:
 	add.l a0,d0	; $022A6E
 	move.l d0,-(a7)	; $022A70
 	pea.l -$e(a6)	; $022A72
-	jsr sys_unk_01e426.l	; $022A76
+	jsr queue_pop.l	; $022A76
 	addq.w #$8,a7	; $022A7C
 	move.w d0,-$2(a6)	; $022A7E
 	tst.w -$2(a6)	; $022A82
@@ -23680,7 +23680,7 @@ L024B66:
 	clr.w -$2(a6)	; $024B66
 L024B6A:
 	pea.l -$22(a6)	; $024B6A
-	jsr sys_unk_01c892.l	; $024B6E
+	jsr move_cost_calc.l	; $024B6E
 	addq.w #$4,a7	; $024B74
 	move.w d0,d4	; $024B76
 	cmp.w #$2,d7	; $024B78
@@ -23692,7 +23692,7 @@ L024B6A:
 	move.w -$1e(a6),-$22(a6)	; $024B8C
 	move.w -$1c(a6),-$20(a6)	; $024B92
 	pea.l -$22(a6)	; $024B98
-	jsr sys_unk_01c892.l	; $024B9C
+	jsr move_cost_calc.l	; $024B9C
 	addq.w #$4,a7	; $024BA2
 	add.w d0,d4	; $024BA4
 	move.w -$18(a6),d0	; $024BA6
@@ -24333,7 +24333,7 @@ sys_unk_0253fe:
 	move.w #$ffff,-$4(a6)	; $025436
 	move.w $10(a6),-$2(a6)	; $02543C
 	pea.l -$22(a6)	; $025442
-	jsr sys_unk_01c892.l	; $025446
+	jsr move_cost_calc.l	; $025446
 	addq.w #$4,a7	; $02544C
 	move.w -$a(a6),d0	; $02544E
 	unlk a6	; $025452
@@ -26229,7 +26229,7 @@ sys_unk_026cca:
 	link.w a6,#$fff6	; $026CCA
 	pea.l $ff0e18.l	; $026CCE
 	pea.l -$a(a6)	; $026CD4
-	jsr sys_unk_01e426.l	; $026CD8
+	jsr queue_pop.l	; $026CD8
 	addq.w #$8,a7	; $026CDE
 	move.w d0,-$2(a6)	; $026CE0
 	tst.w -$2(a6)	; $026CE4
@@ -29718,7 +29718,7 @@ L029D66:
 	move.w #$1,-(a7)	; $029D6E
 	clr.w -(a7)	; $029D72
 	move.w #$11,-(a7)	; $029D74
-	jsr sys_unk_020884.l	; $029D78
+	jsr cmd24_handler.l	; $029D78
 	addq.w #$6,a7	; $029D7E
 	lea.l $ff02a2.l,a0	; $029D80
 	andi.w #$fffb,(a0)	; $029D86
@@ -29826,7 +29826,7 @@ L029EE0:
 	move.w #$1,-(a7)	; $029EE8
 	clr.w -(a7)	; $029EEC
 	move.w #$13,-(a7)	; $029EEE
-	jsr sys_unk_020884.l	; $029EF2
+	jsr cmd24_handler.l	; $029EF2
 	addq.w #$6,a7	; $029EF8
 	lea.l $ff02a2.l,a0	; $029EFA
 	andi.w #$fffb,(a0)	; $029F00
@@ -30220,7 +30220,7 @@ L02A438:
 	move.w #$1,-(a7)	; $02A43E
 	clr.w -(a7)	; $02A442
 	move.w #$17,-(a7)	; $02A444
-	jsr sys_unk_020884.l	; $02A448
+	jsr cmd24_handler.l	; $02A448
 	addq.w #$6,a7	; $02A44E
 L02A450:
 	bra.w L02A2E8	; $02A450
@@ -33853,7 +33853,7 @@ L02D4A6:
 	beq.b L02D4EE	; $02D4D6
 	tst.w $ff00ac.l	; $02D4D8
 	beq.b L02D4E8	; $02D4DE
-	jsr sys_unk_01e5a0.l	; $02D4E0
+	jsr menu_record_reload.l	; $02D4E0
 	bra.b L02D4EE	; $02D4E6
 L02D4E8:
 	jsr sys_unk_026dd2.l	; $02D4E8

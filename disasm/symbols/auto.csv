@@ -87,7 +87,7 @@ addr,name,tier,note
 0x01C21A,leader_spawn,2,architecture.md: leader spawn via $1C21A(6; 0x6F; 0x7D)
 0x01C802,map_chunk_load_buf,2,graphics.md: map-chunk loader ($19692/$1C802; buffers $FF868C + slot*2048)
 0x01C83E,location_divide,2,save.md: mode 6 divides by the location record words via $1C83E
-0x01C892,sys_unk_01c892,0,auto: touches $FF00A4 $FF00AE $FF010E $FF02B2 $FF02B4 $FF02BA
+0x01C892,move_cost_calc,2,logic.md 3.7 base(mode)+terrain; live harness 46/46
 0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
 0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
 0x01DA6C,sys_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
@@ -98,18 +98,18 @@ addr,name,tier,note
 0x01E158,sys_unk_01e158,0,auto: touches none
 0x01E18A,spell_duration_tick,2,spells.md: duration nibble decremented each step
 0x01E29C,sys_unk_01e29c,0,auto: touches none
-0x01E390,sys_unk_01e390,0,auto: touches none
-0x01E426,sys_unk_01e426,0,auto: touches none
+0x01E390,queue_init,1,architecture.md:198 and spells.md:653 queue init (capacity byte[2]=8)
+0x01E426,queue_pop,1,logic.md:259 pop/dequeue; tail==head returns -1
 0x01E4E6,sys_unk_01e4e6,0,auto: touches $FF8640
 0x01E562,sys_unk_01e562,0,auto: touches $FF01EA $FFA7F8 $FFBB72 $FFBB80 $FFBB82
-0x01E5A0,sys_unk_01e5a0,0,auto: touches $FF01EA $FF02A8 $FF02AA $FF02AC $FF02B2 $FF8640
-0x01EEEE,sys_unk_01eeee,0,auto: touches $FF009A $FF009C $FF00AC $FF00BE $FF010E $FF0116
-0x0207D8,sys_unk_0207d8,0,auto: touches $FF009C $FF010E $FF02A2 $FFA7F8 $FFB08A $FFBB72
-0x020884,sys_unk_020884,0,auto: touches $FF009C $FF00AC $FF010E $FF0138 $FF02B2 $FF02DD
-0x020A36,sys_unk_020a36,0,auto: touches $FF01EA $FF02A2 $FFA7F8 $FFBB82
+0x01E5A0,menu_record_reload,2,logic-audit.md:526-536 command 23 handler; reloads current menu record
+0x01EEEE,cmd10_handler,1,architecture.md:289 dispatch command 10 handler
+0x0207D8,cmd22_handler,1,architecture.md:291 dispatch command 22 handler
+0x020884,cmd24_handler,1,architecture.md:291 dispatch command 24 handler
+0x020A36,cmd25_handler,1,architecture.md:291 dispatch command 25 handler; spell-sequencer step
 0x020A88,sys_unk_020a88,0,auto: touches $FF009A $FF009C $FF00AC $FF010E $FF0138 $FF02B2
 0x020BFE,sys_unk_020bfe,0,auto: touches none
-0x020C5E,sys_unk_020c5e,0,auto: touches none
+0x020C5E,map_prepare,1,maps.md:461 must run before 0x20E7E
 0x020C6A,table_fill_ff,2,maps.md: $FFB36C+1024 initialised to $FF (empty) by $20C6A
 0x020CCA,sys_unk_020cca,0,auto: touches $FFB0CC
 0x020CF6,sys_unk_020cf6,0,auto: touches $FF0096
