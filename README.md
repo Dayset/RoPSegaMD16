@@ -26,8 +26,8 @@ Agents: keep this section and PROGRESS.md in sync — see the status rule in
 
 Overall: **19 of 37 issues done** — `██████████░░░░░░░░░░ 51%`
 
-Routines named: **54 of 446** — `██░░░░░░░░░░░░░░░░░░ 12%` (M11; on
-`gh-routine-names`, not yet on main)
+Routines named: **80 of 446** — `███░░░░░░░░░░░░░░░░░ 18%` (M11; on
+`gh-11-routine-names`, not yet on main)
 
 | Epic | Done | Progress |
 |---|---|---|
@@ -50,7 +50,7 @@ Routines named: **54 of 446** — `██░░░░░░░░░░░░░
 | M8 Full disassembly | 🟡 in progress (446 functions mapped; ~80–100 traced in detail) |
 | M9 Shiftable build | ⬜ not started |
 | M10 Asset round-trip | 🟡 in progress (assets rendered from ROM; round-trip not done) |
-| M11 Naming & symbol database | 🟡 in progress (5,017 labels; 54 of 446 routines named, 12%, on `gh-routine-names`) |
+| M11 Naming & symbol database | 🟡 in progress (5,017 labels; 80 of 446 routines named, 18%, on `gh-11-routine-names`) |
 
 Project overview — epics, rebuild contract, hardware limits, structure,
 graphics pipeline: [docs/overview.md](docs/overview.md).
