@@ -19,12 +19,15 @@ one. Design: [docs/tribute-remake.md](docs/tribute-remake.md), issues
 
 ## Progress
 
-Updated 2026-11-10 (remote main `e505433`). Counts are local issues
+Updated 2026-11-10 (remote main `592fe87`). Counts are local issues
 `L001`–`L037`; detail lives in [PROGRESS.md](PROGRESS.md) and [issues/](issues/).
 Agents: keep this section and PROGRESS.md in sync — see the status rule in
 [CLAUDE.md](CLAUDE.md).
 
 Overall: **19 of 37 issues done** — `██████████░░░░░░░░░░ 51%`
+
+Routines named: **54 of 446** — `██░░░░░░░░░░░░░░░░░░ 12%` (M11; on
+`gh-routine-names`, not yet on main)
 
 | Epic | Done | Progress |
 |---|---|---|
@@ -47,7 +50,7 @@ Overall: **19 of 37 issues done** — `██████████░░░�
 | M8 Full disassembly | 🟡 in progress (446 functions mapped; ~80–100 traced in detail) |
 | M9 Shiftable build | ⬜ not started |
 | M10 Asset round-trip | 🟡 in progress (assets rendered from ROM; round-trip not done) |
-| M11 Naming & symbol database | 🟡 in progress (5,017 labels; routine names in progress) |
+| M11 Naming & symbol database | 🟡 in progress (5,017 labels; 54 of 446 routines named, 12%, on `gh-routine-names`) |
 
 Project overview — epics, rebuild contract, hardware limits, structure,
 graphics pipeline: [docs/overview.md](docs/overview.md).
