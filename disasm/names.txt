@@ -72,3 +72,6 @@
 0x00016512 column_write         # docs/graphics.md:465: column writer (scroll)
 # --- batch 4: from RROP's text-capture map (kruzeman/rrop genesis_recompiler/rings_text_capture.h:41-46) ---
 0x0001113C text_glyph_draw      # code: calls vdp_set_write_addr (0x11160) and vdp_data_write (0x1118C); RROP maps its return sites $11192,$11290,$1121C,$11238,$11252,$1126C to char-range writers
+# --- batch 5: from RROP hook addresses (kruzeman/rrop genesis_recompiler/rings_wide_render.h:78, rings_settings_sdl.h:151-153) ---
+0x00231D8 hero_track            # RROP rings_wide_render.h:78: sets tracking when arg at a7+4 == $FFB0CC (hero object); code: link a6 at 0x231D8
+0x00020758 settings_menu_open   # RROP rings_settings_sdl.h:153: redirects to $20758 to open Settings; 0x20388 branches to L020758

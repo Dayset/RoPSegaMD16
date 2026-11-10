@@ -12991,7 +12991,7 @@ L01BC56:
 	move.w -$c(a6),-(a7)	; $01BD8C
 	move.w -$a(a6),-(a7)	; $01BD90
 	move.l -$1a(a6),-(a7)	; $01BD94
-	jsr FUN_0231d8.l	; $01BD98
+	jsr hero_track.l	; $01BD98
 	lea.l $a(a7),a7	; $01BD9E
 	bra.w L01BEA0	; $01BDA2
 	lea.l -$4(a6),a0	; $01BDA6
@@ -13113,7 +13113,7 @@ L01BEA0:
 	move.w -$c(a6),-(a7)	; $01BF08
 	move.w -$a(a6),-(a7)	; $01BF0C
 	move.l -$1a(a6),-(a7)	; $01BF10
-	jsr FUN_0231d8.l	; $01BF14
+	jsr hero_track.l	; $01BF14
 	lea.l $a(a7),a7	; $01BF1A
 	bra.w L01C0C2	; $01BF1E
 	moveq #$0,d0	; $01BF22
@@ -18218,7 +18218,7 @@ L020172:
 	bra.w L02068E	; $020184
 L020188:
 	move.w #$ffff,$ff00be.l	; $020188
-	bra.w L020758	; $020190
+	bra.w settings_menu_open	; $020190
 L020194:
 	clr.l -(a7)	; $020194
 	moveq #$0,d0	; $020196
@@ -18243,7 +18243,7 @@ L020194:
 	move.w d1,-(a7)	; $0201DA
 	jsr FUN_026b58.l	; $0201DC
 	lea.l $a(a7),a7	; $0201E2
-	bra.w L020758	; $0201E6
+	bra.w settings_menu_open	; $0201E6
 L0201EA:
 	clr.l -(a7)	; $0201EA
 	move.w $ff02b2.l,-(a7)	; $0201EC
@@ -18259,7 +18259,7 @@ L0201EA:
 	move.w d1,-(a7)	; $020216
 	jsr FUN_026b58.l	; $020218
 	lea.l $a(a7),a7	; $02021E
-	bra.w L020758	; $020222
+	bra.w settings_menu_open	; $020222
 L020226:
 	clr.l -(a7)	; $020226
 	move.w $ff0e82.l,d0	; $020228
@@ -18272,7 +18272,7 @@ L020226:
 	move.w d0,-(a7)	; $020242
 	jsr FUN_026b58.l	; $020244
 	lea.l $a(a7),a7	; $02024A
-	bra.w L020758	; $02024E
+	bra.w settings_menu_open	; $02024E
 L020252:
 	clr.l -(a7)	; $020252
 	move.w $ff0e82.l,d0	; $020254
@@ -18285,7 +18285,7 @@ L020252:
 	move.w d0,-(a7)	; $02026E
 	jsr FUN_026b58.l	; $020270
 	lea.l $a(a7),a7	; $020276
-	bra.w L020758	; $02027A
+	bra.w settings_menu_open	; $02027A
 L02027E:
 	moveq #$0,d0	; $02027E
 	move.b $ffbb70.l,d0	; $020280
@@ -18295,7 +18295,7 @@ L02027E:
 	move.w d0,-(a7)	; $020290
 	jsr FUN_037a9a.l	; $020292
 	addq.w #$4,a7	; $020298
-	bra.w L020758	; $02029A
+	bra.w settings_menu_open	; $02029A
 L02029E:
 	move.w #$2f,-(a7)	; $02029E
 	clr.w -(a7)	; $0202A2
@@ -18307,7 +18307,7 @@ L02029E:
 	addq.w #$4,a7	; $0202BA
 	move.w #$ffff,-$10(a6)	; $0202BC
 	move.w #$2,-$c(a6)	; $0202C2
-	bra.w L020758	; $0202C8
+	bra.w settings_menu_open	; $0202C8
 L0202CC:
 	move.w #$30,-(a7)	; $0202CC
 	clr.w -(a7)	; $0202D0
@@ -18319,7 +18319,7 @@ L0202CC:
 	addq.w #$4,a7	; $0202E8
 	move.w #$ffff,-$10(a6)	; $0202EA
 	move.w #$2,-$c(a6)	; $0202F0
-	bra.w L020758	; $0202F6
+	bra.w settings_menu_open	; $0202F6
 L0202FA:
 	move.w #$1,-(a7)	; $0202FA
 	clr.w -(a7)	; $0202FE
@@ -18329,14 +18329,14 @@ L0202FA:
 	move.w d0,-(a7)	; $02030E
 	jsr FUN_0298d2.l	; $020310
 	addq.w #$4,a7	; $020316
-	bra.w L020758	; $020318
+	bra.w settings_menu_open	; $020318
 L02031C:
 	moveq #$0,d0	; $02031C
 	move.b $ffbb6f.l,d0	; $02031E
 	move.w d0,-(a7)	; $020324
 	jsr FUN_037850.l	; $020326
 	addq.w #$2,a7	; $02032C
-	bra.w L020758	; $02032E
+	bra.w settings_menu_open	; $02032E
 L020332:
 	move.w #$346,-(a7)	; $020332
 	move.w $ff02b2.l,-(a7)	; $020336
@@ -18356,7 +18356,7 @@ L02035C:
 	jsr FUN_035612.l	; $020364
 	addq.w #$4,a7	; $02036A
 L02036C:
-	bra.w L020758	; $02036C
+	bra.w settings_menu_open	; $02036C
 L020370:
 	tst.w $ff0132.l	; $020370
 	bne.b L020382	; $020376
@@ -18365,7 +18365,7 @@ L020370:
 L020382:
 	clr.w $ff0132.l	; $020382
 L020388:
-	bra.w L020758	; $020388
+	bra.w settings_menu_open	; $020388
 L02038C:
 	clr.l -(a7)	; $02038C
 	clr.w -(a7)	; $02038E
@@ -18381,7 +18381,7 @@ L02038C:
 	move.w d1,-(a7)	; $0203B6
 	jsr FUN_026b58.l	; $0203B8
 	lea.l $a(a7),a7	; $0203BE
-	bra.w L020758	; $0203C2
+	bra.w settings_menu_open	; $0203C2
 L0203C6:
 	tst.w $ff0116.l	; $0203C6
 	bne.b L0203D8	; $0203CC
@@ -18391,7 +18391,7 @@ L0203D8:
 	clr.w $ff0116.l	; $0203D8
 L0203DE:
 	jsr FUN_02ee2a.l	; $0203DE
-	bra.w L020758	; $0203E4
+	bra.w settings_menu_open	; $0203E4
 L0203E8:
 	move.w #$1,-(a7)	; $0203E8
 	moveq #$0,d0	; $0203EC
@@ -18402,7 +18402,7 @@ L0203E8:
 	move.w d0,-(a7)	; $0203FE
 	jsr FUN_02dcce.l	; $020400
 	addq.w #$6,a7	; $020406
-	bra.w L020758	; $020408
+	bra.w settings_menu_open	; $020408
 L02040C:
 	move.w #$1,-(a7)	; $02040C
 	moveq #$0,d0	; $020410
@@ -18413,7 +18413,7 @@ L02040C:
 	move.w d0,-(a7)	; $020422
 	jsr FUN_02dcce.l	; $020424
 	addq.w #$6,a7	; $02042A
-	bra.w L020758	; $02042C
+	bra.w settings_menu_open	; $02042C
 L020430:
 	pea.l $ff0e18.l	; $020430
 	jsr queue_depth(pc)	; $020436
@@ -18429,9 +18429,9 @@ L020430:
 	jsr FUN_0298d2.l	; $020456
 	addq.w #$4,a7	; $02045C
 L02045E:
-	bra.w L020758	; $02045E
+	bra.w settings_menu_open	; $02045E
 L020462:
-	bra.w L020758	; $020462
+	bra.w settings_menu_open	; $020462
 L020466:
 	pea.l $ff0e18.l	; $020466
 	jsr queue_depth(pc)	; $02046C
@@ -18458,14 +18458,14 @@ L020466:
 	jsr FUN_0298d2.l	; $0204BE
 	addq.w #$4,a7	; $0204C4
 L0204C6:
-	bra.w L020758	; $0204C6
+	bra.w settings_menu_open	; $0204C6
 L0204CA:
-	bra.w L020758	; $0204CA
+	bra.w settings_menu_open	; $0204CA
 L0204CE:
 	clr.w -(a7)	; $0204CE
 	jsr FUN_03019a.l	; $0204D0
 	addq.w #$2,a7	; $0204D6
-	bra.w L020758	; $0204D8
+	bra.w settings_menu_open	; $0204D8
 L0204DC:
 	pea.l $ff0e18.l	; $0204DC
 	jsr queue_depth(pc)	; $0204E2
@@ -18482,7 +18482,7 @@ L0204DC:
 	jsr FUN_0298d2.l	; $020508
 	addq.w #$4,a7	; $02050E
 L020510:
-	bra.w L020758	; $020510
+	bra.w settings_menu_open	; $020510
 L020514:
 	pea.l $ff0e18.l	; $020514
 	jsr queue_depth(pc)	; $02051A
@@ -18499,7 +18499,7 @@ L020514:
 	jsr FUN_0298d2.l	; $020540
 	addq.w #$4,a7	; $020546
 L020548:
-	bra.w L020758	; $020548
+	bra.w settings_menu_open	; $020548
 L02054C:
 	pea.l $ff0e18.l	; $02054C
 	jsr queue_depth(pc)	; $020552
@@ -18516,7 +18516,7 @@ L02054C:
 	jsr FUN_0298d2.l	; $020578
 	addq.w #$4,a7	; $02057E
 L020580:
-	bra.w L020758	; $020580
+	bra.w settings_menu_open	; $020580
 L020584:
 	pea.l $ff0e18.l	; $020584
 	jsr queue_depth(pc)	; $02058A
@@ -18533,7 +18533,7 @@ L020584:
 	jsr FUN_0298d2.l	; $0205B0
 	addq.w #$4,a7	; $0205B6
 L0205B8:
-	bra.w L020758	; $0205B8
+	bra.w settings_menu_open	; $0205B8
 L0205BC:
 	tst.w $ff0134.l	; $0205BC
 	bne.b L0205CE	; $0205C2
@@ -18542,7 +18542,7 @@ L0205BC:
 L0205CE:
 	clr.w $ff0134.l	; $0205CE
 L0205D4:
-	bra.w L020758	; $0205D4
+	bra.w settings_menu_open	; $0205D4
 L0205D8:
 	tst.w $ff013a.l	; $0205D8
 	bne.b L0205EA	; $0205DE
@@ -18551,7 +18551,7 @@ L0205D8:
 L0205EA:
 	clr.w $ff013a.l	; $0205EA
 L0205F0:
-	bra.w L020758	; $0205F0
+	bra.w settings_menu_open	; $0205F0
 L0205F4:
 	move.w #$3a,-(a7)	; $0205F4
 	clr.w -(a7)	; $0205F8
@@ -18570,14 +18570,14 @@ L0205F4:
 	move.w d0,$ff02b0.l	; $020626
 	move.w #$ffff,-$10(a6)	; $02062C
 	move.w #$2,-$c(a6)	; $020632
-	bra.w L020758	; $020638
+	bra.w settings_menu_open	; $020638
 L02063C:
 	moveq #$0,d0	; $02063C
 	move.b $ffbb6f.l,d0	; $02063E
 	move.w d0,-(a7)	; $020644
 	jsr FUN_0173ec.l	; $020646
 	addq.w #$2,a7	; $02064C
-	bra.w L020758	; $02064E
+	bra.w settings_menu_open	; $02064E
 L020652:
 	jsr FUN_02f896.l	; $020652
 	move.w d0,-$e(a6)	; $020658
@@ -18585,7 +18585,7 @@ L020652:
 	move.w #$51,-(a7)	; $020660
 	jsr FUN_035612.l	; $020664
 	addq.w #$4,a7	; $02066A
-	bra.w L020758	; $02066C
+	bra.w settings_menu_open	; $02066C
 L020670:
 	jsr FUN_02f11a.l	; $020670
 	move.w d0,-$e(a6)	; $020676
@@ -18593,7 +18593,7 @@ L020670:
 	move.w #$51,-(a7)	; $02067E
 	jsr FUN_035612.l	; $020682
 	addq.w #$4,a7	; $020688
-	bra.w L020758	; $02068A
+	bra.w settings_menu_open	; $02068A
 L02068E:
 	subq.l #$8,d0	; $02068E
 	beq.w L02027E	; $020690
@@ -18657,7 +18657,7 @@ L02068E:
 	beq.w L020252	; $02074A
 	sub.l #$95,d0	; $02074E
 	beq.w L020188	; $020754
-L020758:
+settings_menu_open:
 	tst.b $ffa7f8.l	; $020758
 	bne.b L02077A	; $02075E
 	tst.w -$10(a6)	; $020760
@@ -21872,7 +21872,7 @@ L0231CA:
 	unlk a6	; $0231D4
 	rts	; $0231D6
 	; code $0231D8-$0232AB
-FUN_0231d8:
+hero_track:
 	link.w a6,#$0	; $0231D8
 	move.l a3,-(a7)	; $0231DC
 	movea.l $8(a6),a0	; $0231DE
