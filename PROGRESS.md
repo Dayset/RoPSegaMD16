@@ -77,6 +77,13 @@ Issues live in `issues/` — one file each. Update both together.
 
 ## Done so far (2026-11-09)
 
+- [x] 2026-11-10 GitHub #5 (make targets + gate), branch `gh-5-make-gate` @ `81d27da`, PR pending: `Makefile` with `make build|verify|coverage|regions|gate|rom-free`. `make gate` PASS byte-identical (1048576 bytes), TOTAL 19.19% code, raw=102. Clean clone of `81d27da` + ROM: gate PASS, exit 0 (vasm copied from the built tree, not reinstalled).
+- [x] 2026-11-10 GitHub #6 (coverage meter), branch `gh-6-coverage-rop` @ `254b5a8`, PR pending: `tools/coverage_rop.py` reads `rop.s`. Corrected: raw=102 (an earlier revision reported 0 because of a regex bug).
+- [x] 2026-11-10 GitHub #15 (region inventory), branch `gh-15-unclassified-regions` @ `c5468ae`, PR pending: 105 incbin pieces, 99 unclassified (788,146 bytes).
+- [ ] GitHub #7 (no raw fallbacks): NOT met, 102 raw lines (69 indexed jumps as `dc.w $4EFB,$0000`). GitHub #8 (jump tables labelled): partial.
+
+## Done so far (2026-11-09)
+
 - [x] ROM verified: 1 MB, MD5 `30c18fdb…`, header checksum `0x8B9F` matches computed.
 - [x] Dialogue confirmed plain ASCII in-ROM (Void death message, guild/shop text).
 - [x] Repo created with issues + progress tracking; pushed to GitHub as Dayset/RoPSegaMD16 (remote main at c6cec1f, local synced).
