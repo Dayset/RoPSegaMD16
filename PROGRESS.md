@@ -10,11 +10,11 @@ Issues live in `issues/` — one file each. Update both together.
 
 | Epic | Name | Goal | Status |
 |---|---|---|---|
-| 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1 done) |
-| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | 🟡 in progress (#003, #007, #019 done) |
-| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | 🟡 in progress (#004, #005, #006, #015, #017 done) |
-| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (first patch shipped: music-off 2026-11-09; #022 target still TBD) |
-| 5 | Tribute remake (Esenthel/Titan) | Recreate the same environment in a modern 3D engine — RE docs as spec, classic-isometric vs modern-3D, old vs new combat | 🟡 in progress (goal set 2026-11-09, issues #023–#031 open; #023/#024/#025/#029 ready to start) |
+| 1 | Rebuildable ROM | Decompile → recompile byte-identical → boot on emulator + real hardware | 🟡 in progress (M1–M4 done; M5 gate PASS on main, labelling done, PR #35 pending) |
+| 2 | Game structure & logic | Entry, main loop, save, stats, combat, spells; weak/strong points + logic-flaw audit | ✅ done 2026-11-09 (#003, #007, #008, #019, #020, #021) |
+| 3 | Graphics & audio pipeline | VDP, tiles, sprites, palettes, compression, Z80 sound | ✅ done 2026-11-10 (#004, #005, #006, #015, #016, #017, #018, #037 + images/maps/audio follow-ups) |
+| 4 | Mods | A few chosen changes, each as a tested patch | 🟡 in progress (first patches shipped: music-off + smooth-move 2026-11-09; #022 target still TBD) |
+| 5 | Tribute remake (Esenthel/Titan) | Recreate the same environment in a modern 3D engine — RE docs as spec, classic-isometric vs modern-3D, old vs new combat | ⏸️ on hold (Dayset's call 2026-11-09; issues #023–#031 open) |
 | 6 | Research & history | Fansites, translations, interviews, reception — the reference database | 🟡 in progress (issues #032–#036 open, all ready to start) |
 
 ## Milestones
@@ -25,9 +25,13 @@ Issues live in `issues/` — one file each. Update both together.
 | M2 | Code/data map + labelled entry/interrupts | ✅ done 2026-11-09 (#003, #011, #019) |
 | M3 | Text + graphics + maps identified | ✅ done 2026-11-10 (#004, #005, #006, #015, #016, #017, #018, #037) |
 | M4 | Game logic mapped (stats/XP/gold/combat/spells) | ✅ done 2026-11-09 (#007, #008, #020, #021) |
-| M5 | Rebuildable, byte-identical disassembly | ⬜ not started |
+| M5 | Rebuildable, byte-identical disassembly | 🟡 in progress (gate PASS on main; 54,080 mnemonic instructions, 5,017 labels; 102 `dc.w` fallbacks remain — PR #35 needs a rebase onto main) |
 | M6 | First real mod, shipped as a patch | 🟡 in progress (first patch shipped separately as music-off 2026-11-09; #022 target still TBD) |
-| M7 | Tribute remake in Esenthel/Titan (classic + modern, old + new combat) | 🟡 in progress (design `docs/tribute-remake.md`, issues #023–#031 open) |
+| M7 | Tribute remake in Esenthel/Titan (classic + modern, old + new combat) | ⏸️ on hold (Dayset's call 2026-11-09) |
+| M8 | Full disassembly | 🟡 in progress (446 functions mapped; ~80–100 traced in detail; ~350 KB of ROM data unproven) |
+| M9 | Shiftable build | ⬜ not started |
+| M10 | Asset round-trip | 🟡 in progress (tiles, sprites, maps, chunks rendered from ROM 2026-11-10; edit → rebuild round-trip not done) |
+| M11 | Naming & symbol database | 🟡 in progress (5,017 labels in `disasm/src/rop.s`; routine names in progress on `gh-routine-names`; RAM/hardware naming open) |
 
 ## Issue board
 
@@ -41,12 +45,12 @@ Issues live in `issues/` — one file each. Update both together.
 | #006 | 3 | Maps / world data | ✅ done 2026-11-09 | M3 |
 | #007 | 2 | Game logic: stats, XP, gold, combat | ✅ done 2026-11-09 | M4 |
 | #008 | 2 | Spells / skills system | ✅ done 2026-11-09 | M4 |
-| #009 | 1 | Rebuildable byte-identical disassembly | ⬜ not started | M5 |
-| #010 | 4 | Patch workflow + first mod (target TBD) | ⬜ not started | M6 |
+| #009 | 1 | Rebuildable byte-identical disassembly | 🟡 in progress (split + gate + labelling on main; carve is Claude's) | M5 |
+| #010 | 4 | Patch workflow + first mod (target TBD) | 🟡 in progress (workflow proven: music-off + smooth-move shipped; target TBD) | M6 |
 | #011 | 1 | Ghidra recursive analysis + function map | ✅ done 2026-11-09 | M2 |
-| #012 | 1 | Split rebuildable asm: code vs incbin data | ⬜ not started | M2 |
-| #013 | 1 | Assembler verification: byte-identical rebuild gate | ⬜ not started | M5 |
-| #014 | 1 | Hardware-limits checklist + emulator/hardware test harness | ⬜ not started | M5 |
+| #012 | 1 | Split rebuildable asm: code vs incbin data | ✅ done 2026-11-10 (PR #33) | M2 |
+| #013 | 1 | Assembler verification: byte-identical rebuild gate | ✅ done 2026-11-10 (PR #33; gate PASS on main) | M5 |
+| #014 | 1 | Hardware-limits checklist + emulator/hardware test harness | ✅ done 2026-11-10 (PR #34; 600-frame headless boot harness) | M5 |
 | #015 | 3 | VDP register + VRAM layout map | ✅ done 2026-11-09 | M3 |
 | #016 | 3 | Tile/sprite/palette decoding + first rendered tileset | ✅ done 2026-11-09 | M3 |
 | #017 | 3 | Compression identification: Nemesis / Kosinski / Enigma | ✅ done 2026-11-09 | M3 |
@@ -101,7 +105,13 @@ Issues live in `issues/` — one file each. Update both together.
 
 - [x] **#018 done 2026-11-10** — sound: Z80 driver + music/SFX map (`docs/sound.md`, harness `.scratch018/`). **Headline: the driver is an FM (YM2612) driver by S. Hayes, 1991 — blob ROM `0xEBB6E–0xED0E4`, entry Z80 `$0000`, signature `SHayes1991` at `$00DA` — and the L011 "song/SFX data" range `0x0E0000–0x0EB771` is WRONG: songs live at `$ED0E8–$FCB7C+` plus song 11 at `$00692E`, SFX at `$FCAE2`.** 19 songs + 2 no-ops (18/19 — Quiet is a no-op dispatch word `$0002`); song map verified byte-for-byte from the `$17546` dispatch table (every case body is `pea.l $addr; jsr $EB88A`) and the u32 end pointers; parser simulation of the event format (`$8X`/`$9X` note events, `$CX` channel set, `$FC $80` chunk-boundary seek, `$FC <other>` end) shows songs 8/16/20 terminate and the rest loop. 68k→Z80 path: `$EB772` per-frame tick (tempo byte to Z80 `$00E6`, +`$100`/frame NTSC, +`$33` PAL; `$EBAC6` SFX queue; every 16th frame `$EBA00` streams 256 B into the Z80 `$1600–$1A00` ring), `$EB806` driver upload (lazy — not in Z80 RAM during attract), `$EB88A` start-song, `$EB9C4` song-playing check (watchdog `0x21608` replays `$FF012E`), `$EB9EE` SFX-busy gate (4 callers in the `$3Dxxx` combat routines). SFX: table at `$FCAE2` (22 B records; 62 slots before a 16-bit table at `$FD036`, indices 65–68 read the checksum routine, 69–89 the `0xFF` padding; only 0–38 called) (23-B copy, two alternating slots via `$EBAF4`/`$EBAFA`, queue slots `$FF0236`/`$FF023A`) + pointer SFX 90–96 (68k ROM addresses read by the Z80 through its bank window, `$0498`). **Live-verified in BlastEm** (original-ROM breakpoint run: boot song 0, `$FF0234` +`$100`/frame; snapshot harness: Z80 `$000B=$0D`, `$00DA=$16`, song 0 bytes at `$1600`, driver absent pre-song). Tooling gap closed: Ghidra 11.4.2 headless Z80 (`z80:LE:16:default`, lowercase) disassembled the driver (1067 instructions). Corrections caught in the write-up re-check: `$EB9EE` has 4 callers (not dead); `$EB986`/`$EB9A0`/`$EB9B4`/`$EB8E0` are dead (no callers); `$17586`'s second argument is `$FFFF` at all 98 call sites; song lengths are stream lengths (end−start), not the earlier draft's numbers. Open: track→index mapping (17 fan-site names unmapped), `0x0E0000–0x0EB771` identity, SFX record byte semantics, FM voice-routine internals, `$00E6` advance observed only indirectly. ROM MD5 unchanged. **M3 COMPLETE.**
 
+- [x] **Rebuild labelling done 2026-11-10** (branch-target labelling `614a451` + non-flow operand labelling `321e725`, remote main): `gen_src.py` `is_flow()` compared Capstone's suffixed mnemonics (`bne.b`) to bare names, so every suffixed branch was missed — one-line fix (strip the suffix); labels 770 → 4,831, raw branch targets 6,165 → 0. Non-flow step labels absolute `$hex` operands of non-flow instructions pointing at ROM data (765 operands, labels 4,831 → 5,017, 0 ROM-pointing operands left; RAM/hardware/EEPROM stay numeric); each rewritten instruction's labelled form verified in vasm before keeping. Gate re-verified PASS on merged main after each push. 102 `dc.w` fallbacks remain (69 `jmp (pc,d0.w)` + 30 btst/2 bclr/1 bset) — Claude's PR #35 converts them, but the branch predates the labelling and conflicts with main; it needs a rebase onto current main before it can merge. ROM MD5 unchanged.
+- [x] **Images + maps follow-ups done 2026-11-10** (`dbcd108`, `46988ac`): the #005 PNGs regenerated with the corrected CRAM order (verified pixel-exact as the R/B swap of the originals) + systematic sheets — 45 `$96120` tile records (`recNN_pal1.png`) and 90 `$B86AE` sprite records (`spriteNN.png`), cross-checked byte-identical to the #016 renders where parameters match. The 6 colour map PNGs re-rendered the same way (closes the #005 R/B-swap item for the maps set). All 252 decoded map chunks rendered as INDEX images (`disasm/maps/chunks/`, tool `tools/render_chunks.py`, colour = MD5 hash of the tile index & `$07FF`, scale 8; spot-checked 0/77/251 tile-by-tile against their `.bin` files, zero mismatches). **Walkable terrain grid RESOLVED as a runtime structure, not a ROM table**: chunk tilemaps (`$43850`, 4-slot cache `$FF868C`) + per-tile properties `$5EDC4` (bits 13–15 = `$E358` row count, verified from `$1BA4E`) + terrain streams `$5F524` decoded by `$E358` (114 `jsr` sites, 15 callers) into the `$FF1EC0` scratch bitmap (cleared by `$11DE8`, 26,496 B) + RAM cell grids `$FFB36C`/`$FFB76C`/`$FFB0CC` read by `$1BA4E`. Pal 11 word `0x066C` corrects to reddish `(218,109,109)`, not grey — the blue sea in the old world-map PNG is a rendering artefact; the sea's true colour still needs a live world-map CRAM snapshot. Open: which `$5EDC4` flag bit means walkable, the `$FFB36C`/`$FFB76C` byte meanings, the `$FFB0CC` record layout, the chunk tileset/palette pairing. ROM MD5 unchanged.
+- [x] **SFX audio + bursts follow-up done 2026-11-10** (`9736dbd`): 12 SFX captured as audio with a 68k harness at the attract loop (`0x35C`, calls `$17586(i, $FFFF)` with silent song 0, waits 360 VBlanks calling `$EB772` — the tempo clock the SFX voice needs) — top 7 table SFX (32, 1, 20, 15, 19, 21, 33) + 17 + pointer 91/92/94/95, in `.scratch018/sfx/` (not committed). Durations + fundamentals measured; character is a spectral guess (SFX 21's spectrum is identical to 19's; SFX 33 sounds 10.6 s from a 3-byte record). **The two non-dispatch bursts are NARROWED, not solved**: burst 1 (~24.4–28.4 s) is the same phrase as the ~37.6–41.6 s event in every SFX capture (0.44 lagged correlation); burst 2 (~67.6–71.1 s) is a different phrase. Ruled out: direct `$EB88A` (all 19 callers inside the dispatch), song 0's hidden note data (parser takes 686 s to reach the seek; zeroing the 248 B still plays the event), all 12 captured SFX, every song. Remaining candidates: variable-index `$17586` at `0x01837E`, an uncaptured table SFX, a song fragment, or the `$0967` PSG routine. Also corrects SFX 91's pointer to `$1394` (not `$4502`, verified against the `$1764E` jump table). ROM MD5 unchanged.
+
 ## Next
 
 1. Dayset picks the first mod target for #022 — difficulty, a spell, dialogue, or a fix.
-2. Tribute remake (Epic 5, M7) — #023/#024/#025/#029 can start now in parallel; #026/#027 wait for #007/#008, #028 waits for #025, #030 can now start (#018 done), #031 can now start (#019 done). Research (Epic 6) — #032–#036 are all junior-agent-ready now. **M3 is complete** (#004–#006, #015–#018, #037 all done).
+2. PR #35 (Claude's bit-ops + jump-table dispatch, `gh-12` branch `abfbcd9`) needs a rebase onto current main before it can merge — it would remove the last 102 `dc.w` fallbacks.
+3. #009 carve (`0x000200–0x00FFFF`) is Claude's; the other carve regions (#10–#13) and the symbol database (M11) are open.
+4. Tribute remake (Epic 5, M7) is **on hold** by Dayset's call — do not resume it. Research (Epic 6) — #032–#036 are all junior-agent-ready now. **M3 is complete** (#004–#006, #015–#018, #037 all done; images/maps/audio follow-ups done 2026-11-10).

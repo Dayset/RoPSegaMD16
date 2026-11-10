@@ -17,10 +17,40 @@ Esenthel C++ Titan Engine, playable in classic (isometric) and modern
 one. Design: [docs/tribute-remake.md](docs/tribute-remake.md), issues
 #023–#031.
 
-Status: **M1 done 2026-11-09** (toolchain + first disassembly).
+## Progress
+
+Updated 2026-11-10 (remote main `9736dbd`). Counts are local issues
+`L001`–`L037`; detail lives in [PROGRESS.md](PROGRESS.md) and [issues/](issues/).
+Agents: keep this section and PROGRESS.md in sync — see the status rule in
+[CLAUDE.md](CLAUDE.md).
+
+Overall: **20 of 37 issues done** — `███████████░░░░░░░░░ 54%`
+
+| Epic | Done | Progress |
+|---|---|---|
+| 1 Rebuildable ROM | 6/7 | `█████████████████░░░ 86%` |
+| 2 Game structure & logic | 6/6 | `████████████████████ 100%` |
+| 3 Graphics & audio pipeline | 8/8 | `████████████████████ 100%` |
+| 4 Mods | 0/2 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
+| 5 Tribute remake | 0/9 | `░░░░░░░░░░░░░░░░░░░░ 0%` (on hold) |
+| 6 Research & history | 0/5 | `░░░░░░░░░░░░░░░░░░░░ 0%` |
+
+| Milestone | Status |
+|---|---|
+| M1 Repo + toolchain + first disassembly | ✅ done 2026-11-09 |
+| M2 Code/data map + labelled entry/interrupts | ✅ done 2026-11-09 |
+| M3 Text + graphics + maps identified | ✅ done 2026-11-10 |
+| M4 Game logic mapped | ✅ done 2026-11-09 |
+| M5 Rebuildable, byte-identical disassembly | 🟡 in progress (gate PASS on main; 102 `dc.w` fallbacks remain, PR #35) |
+| M6 First real mod, shipped as a patch | 🟡 in progress (music-off + smooth-move shipped; #022 target TBD) |
+| M7 Tribute remake | ⏸️ on hold (Dayset's call 2026-11-09) |
+| M8 Full disassembly | 🟡 in progress (446 functions mapped; ~80–100 traced in detail) |
+| M9 Shiftable build | ⬜ not started |
+| M10 Asset round-trip | 🟡 in progress (assets rendered from ROM; round-trip not done) |
+| M11 Naming & symbol database | 🟡 in progress (5,017 labels; routine names in progress) |
+
 Project overview — epics, rebuild contract, hardware limits, structure,
 graphics pipeline: [docs/overview.md](docs/overview.md).
-See [PROGRESS.md](PROGRESS.md) and [issues/](issues/).
 
 ## The ROM (you supply your own dump)
 

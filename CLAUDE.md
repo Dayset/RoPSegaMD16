@@ -40,3 +40,22 @@ by side with their evidence, not silently overwritten.
 ## Logs
 Session logs go in `docs/log/YYYY-MM-DD.md`, not PROGRESS.md. PROGRESS.md
 keeps epics, milestones, the board and the coverage table only.
+
+## Status updates (README progress bars + PROGRESS.md)
+The README `## Progress` section and PROGRESS.md are the same status in
+two places — they must agree after every push. After any work lands
+(commit/push), update both in the same push:
+- PROGRESS.md: the issue board row, the milestone row, the epic row, and
+  a `Done so far` entry with the evidence (commit hash, what was verified).
+- README `## Progress`: the overall count, the epic table, the milestone
+  table, and the `Updated` line (date + remote main hash).
+- Recompute the numbers from the real state — count the local issues
+  (`L001`–`L037`) by status, do not guess or copy the old numbers. Bar
+  fill is 20 chars: filled = round(20 × done / total). Epic 4/5/6 show
+  0% until an issue in them is actually done; partial work goes in the
+  milestone note, not the count.
+- Never tick an issue or milestone done without evidence — the evidence
+  standard applies to status too. A milestone that changes state
+  (e.g. M5 not-started → in-progress, M7 → on hold) changes in both
+  places at once. If you are unsure of a count, count it from the board
+  before writing it down.
