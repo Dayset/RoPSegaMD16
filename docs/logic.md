@@ -470,7 +470,7 @@ mod 0, no merchant):
 | Weapons | 200 | 95 | 50 | 101 |
 | Wood | 196 | 15 | 5 | 15 |
 
-- **Buy:** 17/21 guide buy prices fit `(base/2)·attitude` (the item-14
+- **Buy:** 16/20 guide buy prices fit `(base/2)·attitude` (the item-14
   halving active, attitude 15–94 depending on the merchant). The 3 Mesa
   stones fit `base·attitude` (no halving at Mesa). Nectar fits
   `2·base·attitude` (doubling active at Commerce).

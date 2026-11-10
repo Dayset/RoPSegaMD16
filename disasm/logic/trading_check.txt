@@ -8,7 +8,7 @@ $2EA92 buy price = base adjusted by merchant attitude (att 0-100 ->
   sell price S implies a $2EA92 value of 2*S; that must lie in the
   $2EA92 bands [0.64,1.36]xbase (no multiplier), [1.28,2.72]xbase (x2
   m20/location), or [2.56,5.43]xbase (x2 m20/location and x2 slot).
-Buy guide prices fit (base/2)*attitude for 17/21 goods (halving active);
+Buy guide prices fit (base/2)*attitude for 16/20 goods with a buy price (halving active);
 the 3 Mesa stones fit base*attitude (no halving); Nectar fits 2*base*
 attitude (doubling active at Commerce). Sell guide prices fit for 17/17
 goods; Gems 428 is CORRECT (implies $2EA92 = 856 = 4.28x base, inside the
