@@ -147,14 +147,34 @@ edge cases as written; reproduce exactly).
 
 On level change: set order high nibble (`andi #$FF0F` / `or (level<<4)`),
 max Power = `$31946(level)` → +0x22, max HP = `$31958(level)` → +0x20,
-then `$26B58` (message queue) and `$173EC(8)` (level-up jingle).
-Then the party loop at `0x2C63C`: **all** party members' max HP is
-recomputed via `$31958(order-high)` and current HP set to max — a full
-heal on every XP grant (code-verified, needs live confirmation).
+then `$26B58` (message queue) and `$173EC(8)` (level-up jingle). **The
+XP handler never writes cur HP (+0x1C) or cur Power (+0x1E)** — a level-up
+raises the maxes only; the currents are left exactly where they were.
+**[live, 2026-11-10, 4/4 harness cases, `.scratch008/harness_levelup.s`,
+test ROM `7932edd91c0c0700722cfcb4e9f256d4`]:** XP 90 +20 → XP 110, level
+0 → 1, max HP 20 → 35, max Power 1000 → 2000, but cur HP stayed 10 and
+cur Power stayed 500 (second party member also untouched).
+
+**Correction (2026-11-10):** the earlier "party loop at `0x2C63C` — a full
+heal on every XP grant" was a misreading. The code at `$02C63C` is
+`bra.w L02C8AA` (all XP-handler exits go to the dispatch tail), so there
+is **no** fall-through into the loop at `$02C640` — that loop is the
+**separate temple Heal dispatch case** (goods code `0x402`, `$02C640`:
+cur HP = max HP for all party members, max HP recomputed via `$31958`;
+`0x403` Pow Up at `$02C6FA` does the same for Power). The HP/Power fill
+is the temple Heal/Pow Up, invoked via the goods system — **not** via
+XP, and not called by the battle-end routine (which only grants gold
+`0x400` and XP `0x401`). So there is no automatic post-battle or
+per-XP-grant heal; a level-up raises the ceiling but does not fill the
+currents.
 
 Harness-proven: slot 0, XP 0 → +150 → XP 150, level 1, max HP 35,
 max Power 2000; then +13000 → XP 13000 (cap), level 8, max HP 140,
-max Power 9000.
+max Power 9000. `$2BBD2` preconditions worth noting: the quotient-16
+gate at `$02BE30` makes the call a silent no-op unless
+`struct[char].+0x27 == $FF02B2` (current-char index), and the `$FF0E82`
+party list uses 0 as the "empty" marker (a party entry of 0 is skipped
+by the Heal/Pow Up loops).
 
 ### 2.4 Battle-end XP/gold — verified
 
