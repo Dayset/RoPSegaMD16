@@ -39,7 +39,6 @@
 0x00031958 max_hp_for_level     # docs/logic.md: $31958 max HP = min(20+15*level, 140)
 0x00031946 max_power_for_level  # docs/logic.md: $31946 max Power = (level+1)*1000
 0x0002C4E2 xp_grant             # docs/logic.md 2.3: XP grant / level-up handler, inside resource routine $2BBD2
-0x000173EC jingle_play          # docs/logic.md: $173EC(8) level-up jingle
 0x0003A62E attack_dispatch      # docs/logic.md: $3A62E dispatches on the spell/attack selector
 0x0003B1EE damage_calc          # docs/logic.md: $3B1EE takes a spell base value; damage test vectors
 0x0001E3B0 queue_push           # docs/logic.md: $1E3B0 push/enqueue (head/tail bytes)
@@ -51,3 +50,12 @@
 0x000DEB2 div32_signed          # docs/logic.md: $DEB2 signed 32/32 divide (quotient in d0)
 0x00011F3A num_to_str           # docs/logic.md: $11F3A number->string (base 10)
 0x00011624 text_box             # docs/logic.md: $11624 display text box
+# --- named from docs (roles stated in docs/logic.md, docs/graphics.md, docs/sound.md, docs/architecture.md) ---
+0x0001B5D6 new_game_init        # docs/logic.md: $1B5D6 new-game init
+0x0001BA26 request_full_redraw  # docs/logic.md: $1BA26 request full redraw
+0x00017B88 scene_draw           # docs/graphics.md: $17B88 scene-draw driver
+0x00011BD8 sprite_write         # docs/graphics.md: $11BD8 sprite writer
+0x000170DA palette_fade         # docs/graphics.md: $170DA palette cross-fade (mode 2 pal 10<->19)
+0x0001383C map_decode           # docs/maps.md: $1383C map decode
+0x000138A8 menu_format          # docs/graphics.md / logic: $138A8 menu-display formatter
+0x000173BC song_request         # docs/sound.md: $173BC song request; returns early if the song already plays

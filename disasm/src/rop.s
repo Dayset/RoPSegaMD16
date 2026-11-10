@@ -1082,10 +1082,10 @@ game_dispatch:
 	link.w a6,#$0	; $00D25C
 	jsr FUN_011e06.l	; $00D260
 	jsr FUN_014fb6.l	; $00D266
-	jsr FUN_01b5d6.l	; $00D26C
+	jsr new_game_init.l	; $00D26C
 	jsr FUN_032d0e.l	; $00D272
 	move.w d0,-(a7)	; $00D278
-	jsr FUN_0173bc.l	; $00D27A
+	jsr song_request.l	; $00D27A
 	addq.w #$2,a7	; $00D280
 	bsr.b main_loop	; $00D282
 	jsr soft_reset.l	; $00D284
@@ -1100,7 +1100,7 @@ main_loop:
 	move.w #$1,-(a7)	; $00D2A6
 	jsr FUN_026cca.l	; $00D2AA
 	addq.w #$2,a7	; $00D2B0
-	jsr FUN_01ba26.l	; $00D2B2
+	jsr request_full_redraw.l	; $00D2B2
 	jsr redraw_check.l	; $00D2B8
 L00D2BE:
 	tst.w $ff00ac.l	; $00D2BE
@@ -3297,7 +3297,7 @@ FUN_011bb8:
 	unlk a6	; $011BD4
 	rts	; $011BD6
 	; code $011BD8-$011C49
-FUN_011bd8:
+sprite_write:
 	link.w a6,#$0	; $011BD8
 	move.w $8(a6),d0	; $011BDC
 	asl.w #$3,d0	; $011BE0
@@ -3584,7 +3584,7 @@ L011ECC:
 	jsr FUN_00dc16.l	; $011F22
 	addq.w #$8,a7	; $011F28
 	clr.w -(a7)	; $011F2A
-	jsr FUN_0173bc.l	; $011F2C
+	jsr song_request.l	; $011F2C
 	addq.w #$2,a7	; $011F32
 	move.l (a7)+,d4	; $011F34
 	unlk a6	; $011F36
@@ -3705,7 +3705,7 @@ L012066:
 FUN_012072:
 	link.w a6,#$ff10	; $012072
 	clr.w $ff0114.l	; $012076
-	jsr FUN_0138a8.l	; $01207C
+	jsr menu_format.l	; $01207C
 	move.w $ff8648.l,d0	; $012082
 	add.w #$6000,d0	; $012088
 	moveq #$0,d1	; $01208C
@@ -3916,7 +3916,7 @@ L012440:
 	move.w #$234,$ff0076.l	; $012440
 	move.w #$67,-(a7)	; $012448
 	clr.w -(a7)	; $01244C
-	jsr FUN_01383c.l	; $01244E
+	jsr map_decode.l	; $01244E
 	addq.w #$2,a7	; $012454
 	move.l d0,-(a7)	; $012456
 	jsr FUN_011a7c(pc)	; $012458
@@ -3924,7 +3924,7 @@ L012440:
 	move.w d0,$ff8640.l	; $01245E
 	move.w #$90,-(a7)	; $012464
 	move.w #$2,-(a7)	; $012468
-	jsr FUN_01383c.l	; $01246C
+	jsr map_decode.l	; $01246C
 	addq.w #$2,a7	; $012472
 	move.l d0,-(a7)	; $012474
 	jsr FUN_011a7c(pc)	; $012476
@@ -3932,7 +3932,7 @@ L012440:
 	move.w d0,$ff866a.l	; $01247C
 	move.w #$40,-(a7)	; $012482
 	move.w #$3,-(a7)	; $012486
-	jsr FUN_01383c.l	; $01248A
+	jsr map_decode.l	; $01248A
 	addq.w #$2,a7	; $012490
 	move.l d0,-(a7)	; $012492
 	jsr FUN_011a7c(pc)	; $012494
@@ -3940,7 +3940,7 @@ L012440:
 	move.w d0,$ff866c.l	; $01249A
 	move.w #$8,-(a7)	; $0124A0
 	move.w #$4,-(a7)	; $0124A4
-	jsr FUN_01383c.l	; $0124A8
+	jsr map_decode.l	; $0124A8
 	addq.w #$2,a7	; $0124AE
 	move.l d0,-(a7)	; $0124B0
 	jsr FUN_011a7c(pc)	; $0124B2
@@ -3948,7 +3948,7 @@ L012440:
 	move.w d0,$ff866e.l	; $0124B8
 	move.w #$fc,-(a7)	; $0124BE
 	move.w #$5,-(a7)	; $0124C2
-	jsr FUN_01383c.l	; $0124C6
+	jsr map_decode.l	; $0124C6
 	addq.w #$2,a7	; $0124CC
 	move.l d0,-(a7)	; $0124CE
 	jsr FUN_011a7c(pc)	; $0124D0
@@ -3958,7 +3958,7 @@ L012440:
 	beq.b L012502	; $0124E0
 	move.w #$c0,-(a7)	; $0124E2
 	move.w #$8,-(a7)	; $0124E6
-	jsr FUN_01383c.l	; $0124EA
+	jsr map_decode.l	; $0124EA
 	addq.w #$2,a7	; $0124F0
 	move.l d0,-(a7)	; $0124F2
 	jsr FUN_011a7c(pc)	; $0124F4
@@ -3968,7 +3968,7 @@ L012440:
 L012502:
 	move.w #$100,-(a7)	; $012502
 	move.w #$7,-(a7)	; $012506
-	jsr FUN_01383c.l	; $01250A
+	jsr map_decode.l	; $01250A
 	addq.w #$2,a7	; $012510
 	move.l d0,-(a7)	; $012512
 	jsr FUN_011a7c(pc)	; $012514
@@ -4556,7 +4556,7 @@ FUN_012c20:
 	move.w #$134,$ff0076.l	; $012D00
 	move.w #$67,-(a7)	; $012D08
 	clr.w -(a7)	; $012D0C
-	jsr FUN_01383c(pc)	; $012D0E
+	jsr map_decode(pc)	; $012D0E
 	addq.w #$2,a7	; $012D12
 	move.l d0,-(a7)	; $012D14
 	jsr FUN_011a7c.l	; $012D16
@@ -4564,7 +4564,7 @@ FUN_012c20:
 	move.w d0,$ff8640.l	; $012D1E
 	move.w #$19,-(a7)	; $012D24
 	move.w #$1,-(a7)	; $012D28
-	jsr FUN_01383c(pc)	; $012D2C
+	jsr map_decode(pc)	; $012D2C
 	addq.w #$2,a7	; $012D30
 	move.l d0,-(a7)	; $012D32
 	jsr FUN_011a7c.l	; $012D34
@@ -4572,7 +4572,7 @@ FUN_012c20:
 	move.w d0,$ff8642.l	; $012D3C
 	move.w #$1b6,-(a7)	; $012D42
 	move.w #$6,-(a7)	; $012D46
-	jsr FUN_01383c(pc)	; $012D4A
+	jsr map_decode(pc)	; $012D4A
 	addq.w #$2,a7	; $012D4E
 	move.l d0,-(a7)	; $012D50
 	jsr FUN_011a7c.l	; $012D52
@@ -4588,7 +4588,7 @@ FUN_012c20:
 	move.w d0,$ff8674.l	; $012D7E
 	move.w #$60,-(a7)	; $012D84
 	move.w #$b,-(a7)	; $012D88
-	jsr FUN_01383c(pc)	; $012D8C
+	jsr map_decode(pc)	; $012D8C
 	addq.w #$2,a7	; $012D90
 	move.l d0,-(a7)	; $012D92
 	jsr FUN_011a7c.l	; $012D94
@@ -4596,7 +4596,7 @@ FUN_012c20:
 	move.w d0,$ff867a.l	; $012D9C
 	move.w #$80,-(a7)	; $012DA2
 	move.w #$10,-(a7)	; $012DA6
-	jsr FUN_01383c(pc)	; $012DAA
+	jsr map_decode(pc)	; $012DAA
 	addq.w #$2,a7	; $012DAE
 	move.l d0,-(a7)	; $012DB0
 	jsr FUN_011a7c.l	; $012DB2
@@ -4605,7 +4605,7 @@ FUN_012c20:
 	move.w $ff867c.l,$ff8678.l	; $012DC0
 	move.w #$4c,-(a7)	; $012DCA
 	move.w #$11,-(a7)	; $012DCE
-	jsr FUN_01383c(pc)	; $012DD2
+	jsr map_decode(pc)	; $012DD2
 	addq.w #$2,a7	; $012DD6
 	move.l d0,-(a7)	; $012DD8
 	jsr FUN_011a7c.l	; $012DDA
@@ -4648,7 +4648,7 @@ FUN_012c20:
 	jsr FUN_011820.l	; $012E6C
 	lea.l $10(a7),a7	; $012E72
 	move.w #$9,-(a7)	; $012E76
-	jsr FUN_01383c(pc)	; $012E7A
+	jsr map_decode(pc)	; $012E7A
 	addq.w #$2,a7	; $012E7E
 	move.l d0,-(a7)	; $012E80
 	move.w $ff8676.l,d0	; $012E82
@@ -4696,7 +4696,7 @@ FUN_012c20:
 	jsr FUN_013d84(pc)	; $012F2E
 	clr.w $ff0114.l	; $012F32
 	jsr FUN_012bfc.l	; $012F38
-	jsr FUN_01ba26.l	; $012F3E
+	jsr request_full_redraw.l	; $012F3E
 	unlk a6	; $012F44
 	rts	; $012F46
 	; code $012F48-$012F7F
@@ -5424,7 +5424,7 @@ L013824:
 	unlk a6	; $013838
 	rts	; $01383A
 	; code $01383C-$013869
-FUN_01383c:
+map_decode:
 	link.w a6,#$0	; $01383C
 	pea.l $ff1ec0.l	; $013840
 	move.w $8(a6),-(a7)	; $013846
@@ -5461,7 +5461,7 @@ L0138A2:
 	move.w $8(a6),d0	; $0138A2
 	bra.b L01389E	; $0138A6
 	; code $0138A8-$013D83
-FUN_0138a8:
+menu_format:
 	link.w a6,#$ffea	; $0138A8
 	clr.w -$6(a6)	; $0138AC
 	move.w #$43,-$8(a6)	; $0138B0
@@ -5488,7 +5488,7 @@ FUN_0138a8:
 	movea.l -$16(a6),a0	; $01390A
 	move.w $2(a0),-(a7)	; $01390E
 	move.w #$43,-(a7)	; $013912
-	jsr FUN_011bd8.l	; $013916
+	jsr sprite_write.l	; $013916
 	lea.l $e(a7),a7	; $01391C
 	cmpi.w #$4,$ff0e7e.l	; $013920
 	bne.b L013930	; $013928
@@ -5628,7 +5628,7 @@ L013AF8:
 	move.w #$ac,-(a7)	; $013B10
 	move.w #$1,-(a7)	; $013B14
 	move.w #$3b,-(a7)	; $013B18
-	jsr FUN_011bd8.l	; $013B1C
+	jsr sprite_write.l	; $013B1C
 	lea.l $e(a7),a7	; $013B22
 	bra.b L013B52	; $013B26
 L013B28:
@@ -5641,7 +5641,7 @@ L013B28:
 	move.w #$ac,-(a7)	; $013B3C
 	move.w #$188,-(a7)	; $013B40
 	move.w #$3b,-(a7)	; $013B44
-	jsr FUN_011bd8.l	; $013B48
+	jsr sprite_write.l	; $013B48
 	lea.l $e(a7),a7	; $013B4E
 L013B52:
 	cmpi.w #$ff,-$e(a6)	; $013B52
@@ -5653,7 +5653,7 @@ L013B52:
 	move.w #$a3,-(a7)	; $013B6A
 	move.w #$1,-(a7)	; $013B6E
 	move.w #$3c,-(a7)	; $013B72
-	jsr FUN_011bd8.l	; $013B76
+	jsr sprite_write.l	; $013B76
 	lea.l $e(a7),a7	; $013B7C
 	bra.b L013BAC	; $013B80
 L013B82:
@@ -5666,7 +5666,7 @@ L013B82:
 	move.w #$a3,-(a7)	; $013B96
 	move.w #$193,-(a7)	; $013B9A
 	move.w #$3c,-(a7)	; $013B9E
-	jsr FUN_011bd8.l	; $013BA2
+	jsr sprite_write.l	; $013BA2
 	lea.l $e(a7),a7	; $013BA8
 L013BAC:
 	cmpi.w #$ff,-$10(a6)	; $013BAC
@@ -5678,7 +5678,7 @@ L013BAC:
 	move.w #$9a,-(a7)	; $013BC4
 	move.w #$1,-(a7)	; $013BC8
 	move.w #$3d,-(a7)	; $013BCC
-	jsr FUN_011bd8.l	; $013BD0
+	jsr sprite_write.l	; $013BD0
 	lea.l $e(a7),a7	; $013BD6
 	bra.b L013C06	; $013BDA
 L013BDC:
@@ -5691,7 +5691,7 @@ L013BDC:
 	move.w #$9a,-(a7)	; $013BF0
 	move.w #$19f,-(a7)	; $013BF4
 	move.w #$3d,-(a7)	; $013BF8
-	jsr FUN_011bd8.l	; $013BFC
+	jsr sprite_write.l	; $013BFC
 	lea.l $e(a7),a7	; $013C02
 L013C06:
 	tst.w $ff00ac.l	; $013C06
@@ -5703,7 +5703,7 @@ L013C06:
 	move.w #$8e,-(a7)	; $013C1E
 	move.w #$1,-(a7)	; $013C22
 	move.w #$3e,-(a7)	; $013C26
-	jsr FUN_011bd8.l	; $013C2A
+	jsr sprite_write.l	; $013C2A
 	lea.l $e(a7),a7	; $013C30
 	bra.b L013C62	; $013C34
 L013C36:
@@ -5716,7 +5716,7 @@ L013C36:
 	move.w #$8e,-(a7)	; $013C4C
 	move.w #$191,-(a7)	; $013C50
 	move.w #$3e,-(a7)	; $013C54
-	jsr FUN_011bd8.l	; $013C58
+	jsr sprite_write.l	; $013C58
 	lea.l $e(a7),a7	; $013C5E
 L013C62:
 	cmpi.w #$3f,-$8(a6)	; $013C62
@@ -5814,7 +5814,7 @@ FUN_013d84:
 	clr.w -(a7)	; $013D9A
 	clr.w -(a7)	; $013D9C
 	clr.w -(a7)	; $013D9E
-	jsr FUN_011bd8.l	; $013DA0
+	jsr sprite_write.l	; $013DA0
 	lea.l $e(a7),a7	; $013DA6
 	move.w $ff8640.l,d0	; $013DAA
 	add.w #$205b,d0	; $013DB0
@@ -5825,7 +5825,7 @@ FUN_013d84:
 	clr.w -(a7)	; $013DBC
 	clr.w -(a7)	; $013DBE
 	move.w #$1,-(a7)	; $013DC0
-	jsr FUN_011bd8.l	; $013DC4
+	jsr sprite_write.l	; $013DC4
 	lea.l $e(a7),a7	; $013DCA
 	move.w $ff867a.l,d0	; $013DCE
 	add.w #$2000,d0	; $013DD4
@@ -5836,7 +5836,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013DE6
 	move.w #$88,-(a7)	; $013DEA
 	move.w #$2,-(a7)	; $013DEE
-	jsr FUN_011bd8.l	; $013DF2
+	jsr sprite_write.l	; $013DF2
 	lea.l $e(a7),a7	; $013DF8
 	move.w $ff867a.l,d0	; $013DFC
 	add.w #$2020,d0	; $013E02
@@ -5847,7 +5847,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013E14
 	move.w #$a8,-(a7)	; $013E18
 	move.w #$3,-(a7)	; $013E1C
-	jsr FUN_011bd8.l	; $013E20
+	jsr sprite_write.l	; $013E20
 	lea.l $e(a7),a7	; $013E26
 	move.w $ff867a.l,d0	; $013E2A
 	add.w #$2020,d0	; $013E30
@@ -5858,7 +5858,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013E42
 	move.w #$c8,-(a7)	; $013E46
 	move.w #$4,-(a7)	; $013E4A
-	jsr FUN_011bd8.l	; $013E4E
+	jsr sprite_write.l	; $013E4E
 	lea.l $e(a7),a7	; $013E54
 	move.w $ff867a.l,d0	; $013E58
 	add.w #$2020,d0	; $013E5E
@@ -5869,7 +5869,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013E70
 	move.w #$e8,-(a7)	; $013E74
 	move.w #$5,-(a7)	; $013E78
-	jsr FUN_011bd8.l	; $013E7C
+	jsr sprite_write.l	; $013E7C
 	lea.l $e(a7),a7	; $013E82
 	move.w $ff867a.l,d0	; $013E86
 	add.w #$2020,d0	; $013E8C
@@ -5880,7 +5880,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013E9E
 	move.w #$108,-(a7)	; $013EA2
 	move.w #$6,-(a7)	; $013EA6
-	jsr FUN_011bd8.l	; $013EAA
+	jsr sprite_write.l	; $013EAA
 	lea.l $e(a7),a7	; $013EB0
 	move.w $ff867a.l,d0	; $013EB4
 	add.w #$2020,d0	; $013EBA
@@ -5891,7 +5891,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013ECC
 	move.w #$128,-(a7)	; $013ED0
 	move.w #$7,-(a7)	; $013ED4
-	jsr FUN_011bd8.l	; $013ED8
+	jsr sprite_write.l	; $013ED8
 	lea.l $e(a7),a7	; $013EDE
 	move.w $ff867a.l,d0	; $013EE2
 	add.w #$2020,d0	; $013EE8
@@ -5902,7 +5902,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013EFA
 	move.w #$148,-(a7)	; $013EFE
 	move.w #$8,-(a7)	; $013F02
-	jsr FUN_011bd8.l	; $013F06
+	jsr sprite_write.l	; $013F06
 	lea.l $e(a7),a7	; $013F0C
 	move.w $ff867a.l,d0	; $013F10
 	add.w #$2020,d0	; $013F16
@@ -5913,7 +5913,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013F28
 	move.w #$168,-(a7)	; $013F2C
 	move.w #$9,-(a7)	; $013F30
-	jsr FUN_011bd8.l	; $013F34
+	jsr sprite_write.l	; $013F34
 	lea.l $e(a7),a7	; $013F3A
 	move.w $ff867a.l,d0	; $013F3E
 	add.w #$2020,d0	; $013F44
@@ -5924,7 +5924,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013F56
 	move.w #$180,-(a7)	; $013F5A
 	move.w #$a,-(a7)	; $013F5E
-	jsr FUN_011bd8.l	; $013F62
+	jsr sprite_write.l	; $013F62
 	lea.l $e(a7),a7	; $013F68
 	move.w $ff867a.l,d0	; $013F6C
 	add.w #$2030,d0	; $013F72
@@ -5935,7 +5935,7 @@ FUN_013d84:
 	move.w #$11a,-(a7)	; $013F84
 	move.w #$1a0,-(a7)	; $013F88
 	move.w #$b,-(a7)	; $013F8C
-	jsr FUN_011bd8.l	; $013F90
+	jsr sprite_write.l	; $013F90
 	lea.l $e(a7),a7	; $013F96
 	move.w $ff867a.l,d0	; $013F9A
 	add.w #$3000,d0	; $013FA0
@@ -5946,7 +5946,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $013FB2
 	move.w #$88,-(a7)	; $013FB6
 	move.w #$c,-(a7)	; $013FBA
-	jsr FUN_011bd8.l	; $013FBE
+	jsr sprite_write.l	; $013FBE
 	lea.l $e(a7),a7	; $013FC4
 	move.w $ff867a.l,d0	; $013FC8
 	add.w #$3020,d0	; $013FCE
@@ -5957,7 +5957,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $013FE0
 	move.w #$a8,-(a7)	; $013FE4
 	move.w #$d,-(a7)	; $013FE8
-	jsr FUN_011bd8.l	; $013FEC
+	jsr sprite_write.l	; $013FEC
 	lea.l $e(a7),a7	; $013FF2
 	move.w $ff867a.l,d0	; $013FF6
 	add.w #$3020,d0	; $013FFC
@@ -5968,7 +5968,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $01400E
 	move.w #$c8,-(a7)	; $014012
 	move.w #$e,-(a7)	; $014016
-	jsr FUN_011bd8.l	; $01401A
+	jsr sprite_write.l	; $01401A
 	lea.l $e(a7),a7	; $014020
 	move.w $ff867a.l,d0	; $014024
 	add.w #$3020,d0	; $01402A
@@ -5979,7 +5979,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $01403C
 	move.w #$e8,-(a7)	; $014040
 	move.w #$f,-(a7)	; $014044
-	jsr FUN_011bd8.l	; $014048
+	jsr sprite_write.l	; $014048
 	lea.l $e(a7),a7	; $01404E
 	move.w $ff867a.l,d0	; $014052
 	add.w #$3020,d0	; $014058
@@ -5990,7 +5990,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $01406A
 	move.w #$108,-(a7)	; $01406E
 	move.w #$10,-(a7)	; $014072
-	jsr FUN_011bd8.l	; $014076
+	jsr sprite_write.l	; $014076
 	lea.l $e(a7),a7	; $01407C
 	move.w $ff867a.l,d0	; $014080
 	add.w #$3020,d0	; $014086
@@ -6001,7 +6001,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $014098
 	move.w #$128,-(a7)	; $01409C
 	move.w #$11,-(a7)	; $0140A0
-	jsr FUN_011bd8.l	; $0140A4
+	jsr sprite_write.l	; $0140A4
 	lea.l $e(a7),a7	; $0140AA
 	move.w $ff867a.l,d0	; $0140AE
 	add.w #$3020,d0	; $0140B4
@@ -6012,7 +6012,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $0140C6
 	move.w #$148,-(a7)	; $0140CA
 	move.w #$12,-(a7)	; $0140CE
-	jsr FUN_011bd8.l	; $0140D2
+	jsr sprite_write.l	; $0140D2
 	lea.l $e(a7),a7	; $0140D8
 	move.w $ff867a.l,d0	; $0140DC
 	add.w #$3020,d0	; $0140E2
@@ -6023,7 +6023,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $0140F4
 	move.w #$168,-(a7)	; $0140F8
 	move.w #$13,-(a7)	; $0140FC
-	jsr FUN_011bd8.l	; $014100
+	jsr sprite_write.l	; $014100
 	lea.l $e(a7),a7	; $014106
 	move.w $ff867a.l,d0	; $01410A
 	add.w #$3020,d0	; $014110
@@ -6034,7 +6034,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $014122
 	move.w #$180,-(a7)	; $014126
 	move.w #$14,-(a7)	; $01412A
-	jsr FUN_011bd8.l	; $01412E
+	jsr sprite_write.l	; $01412E
 	lea.l $e(a7),a7	; $014134
 	move.w $ff867a.l,d0	; $014138
 	add.w #$3030,d0	; $01413E
@@ -6045,7 +6045,7 @@ FUN_013d84:
 	move.w #$13a,-(a7)	; $014150
 	move.w #$1a0,-(a7)	; $014154
 	move.w #$15,-(a7)	; $014158
-	jsr FUN_011bd8.l	; $01415C
+	jsr sprite_write.l	; $01415C
 	lea.l $e(a7),a7	; $014162
 	move.w $ff867a.l,d0	; $014166
 	add.w #$2000,d0	; $01416C
@@ -6056,7 +6056,7 @@ FUN_013d84:
 	move.w #$118,-(a7)	; $01417E
 	move.w #$176,-(a7)	; $014182
 	move.w #$16,-(a7)	; $014186
-	jsr FUN_011bd8.l	; $01418A
+	jsr sprite_write.l	; $01418A
 	lea.l $e(a7),a7	; $014190
 	move.w $ff867a.l,d0	; $014194
 	add.w #$2030,d0	; $01419A
@@ -6067,7 +6067,7 @@ FUN_013d84:
 	move.w #$118,-(a7)	; $0141AC
 	move.w #$196,-(a7)	; $0141B0
 	move.w #$17,-(a7)	; $0141B4
-	jsr FUN_011bd8.l	; $0141B8
+	jsr sprite_write.l	; $0141B8
 	lea.l $e(a7),a7	; $0141BE
 	move.w $ff867a.l,d0	; $0141C2
 	add.w #$3000,d0	; $0141C8
@@ -6078,7 +6078,7 @@ FUN_013d84:
 	move.w #$138,-(a7)	; $0141DA
 	move.w #$176,-(a7)	; $0141DE
 	move.w #$18,-(a7)	; $0141E2
-	jsr FUN_011bd8.l	; $0141E6
+	jsr sprite_write.l	; $0141E6
 	lea.l $e(a7),a7	; $0141EC
 	move.w $ff867a.l,d0	; $0141F0
 	add.w #$3030,d0	; $0141F6
@@ -6089,7 +6089,7 @@ FUN_013d84:
 	move.w #$138,-(a7)	; $014208
 	move.w #$196,-(a7)	; $01420C
 	move.w #$19,-(a7)	; $014210
-	jsr FUN_011bd8.l	; $014214
+	jsr sprite_write.l	; $014214
 	lea.l $e(a7),a7	; $01421A
 	move.w $ff867a.l,d0	; $01421E
 	add.w #$2000,d0	; $014224
@@ -6100,7 +6100,7 @@ FUN_013d84:
 	move.w #$d8,-(a7)	; $014236
 	move.w #$95,-(a7)	; $01423A
 	move.w #$1a,-(a7)	; $01423E
-	jsr FUN_011bd8.l	; $014242
+	jsr sprite_write.l	; $014242
 	lea.l $e(a7),a7	; $014248
 	move.w $ff867a.l,d0	; $01424C
 	add.w #$2030,d0	; $014252
@@ -6111,7 +6111,7 @@ FUN_013d84:
 	move.w #$d8,-(a7)	; $014264
 	move.w #$b5,-(a7)	; $014268
 	move.w #$1b,-(a7)	; $01426C
-	jsr FUN_011bd8.l	; $014270
+	jsr sprite_write.l	; $014270
 	lea.l $e(a7),a7	; $014276
 	move.w $ff867a.l,d0	; $01427A
 	add.w #$3000,d0	; $014280
@@ -6122,7 +6122,7 @@ FUN_013d84:
 	move.w #$f8,-(a7)	; $014292
 	move.w #$95,-(a7)	; $014296
 	move.w #$1c,-(a7)	; $01429A
-	jsr FUN_011bd8.l	; $01429E
+	jsr sprite_write.l	; $01429E
 	lea.l $e(a7),a7	; $0142A4
 	move.w $ff867a.l,d0	; $0142A8
 	add.w #$3030,d0	; $0142AE
@@ -6133,7 +6133,7 @@ FUN_013d84:
 	move.w #$f8,-(a7)	; $0142C0
 	move.w #$b5,-(a7)	; $0142C4
 	move.w #$1d,-(a7)	; $0142C8
-	jsr FUN_011bd8.l	; $0142CC
+	jsr sprite_write.l	; $0142CC
 	lea.l $e(a7),a7	; $0142D2
 	move.w $ff8640.l,d0	; $0142D6
 	add.w #$405f,d0	; $0142DC
@@ -6144,7 +6144,7 @@ FUN_013d84:
 	clr.w -(a7)	; $0142EC
 	clr.w -(a7)	; $0142EE
 	move.w #$1e,-(a7)	; $0142F0
-	jsr FUN_011bd8.l	; $0142F4
+	jsr sprite_write.l	; $0142F4
 	lea.l $e(a7),a7	; $0142FA
 	move.w $ff8640.l,d0	; $0142FE
 	add.w #$4063,d0	; $014304
@@ -6155,7 +6155,7 @@ FUN_013d84:
 	clr.w -(a7)	; $014314
 	clr.w -(a7)	; $014316
 	move.w #$1f,-(a7)	; $014318
-	jsr FUN_011bd8.l	; $01431C
+	jsr sprite_write.l	; $01431C
 	lea.l $e(a7),a7	; $014322
 	move.w $ff867a.l,d0	; $014326
 	add.w #$2000,d0	; $01432C
@@ -6166,7 +6166,7 @@ FUN_013d84:
 	move.w #$88,-(a7)	; $01433E
 	move.w #$86,-(a7)	; $014342
 	move.w #$20,-(a7)	; $014346
-	jsr FUN_011bd8.l	; $01434A
+	jsr sprite_write.l	; $01434A
 	lea.l $e(a7),a7	; $014350
 	move.w $ff867a.l,d0	; $014354
 	add.w #$2020,d0	; $01435A
@@ -6177,7 +6177,7 @@ FUN_013d84:
 	move.w #$88,-(a7)	; $01436C
 	move.w #$a6,-(a7)	; $014370
 	move.w #$21,-(a7)	; $014374
-	jsr FUN_011bd8.l	; $014378
+	jsr sprite_write.l	; $014378
 	lea.l $e(a7),a7	; $01437E
 	move.w $ff867a.l,d0	; $014382
 	add.w #$2030,d0	; $014388
@@ -6188,7 +6188,7 @@ FUN_013d84:
 	move.w #$88,-(a7)	; $01439A
 	move.w #$c6,-(a7)	; $01439E
 	move.w #$22,-(a7)	; $0143A2
-	jsr FUN_011bd8.l	; $0143A6
+	jsr sprite_write.l	; $0143A6
 	lea.l $e(a7),a7	; $0143AC
 	move.w $ff867a.l,d0	; $0143B0
 	add.w #$2010,d0	; $0143B6
@@ -6199,7 +6199,7 @@ FUN_013d84:
 	move.w #$a8,-(a7)	; $0143C8
 	move.w #$86,-(a7)	; $0143CC
 	move.w #$23,-(a7)	; $0143D0
-	jsr FUN_011bd8.l	; $0143D4
+	jsr sprite_write.l	; $0143D4
 	lea.l $e(a7),a7	; $0143DA
 	move.w $ff867a.l,d0	; $0143DE
 	add.w #$2040,d0	; $0143E4
@@ -6210,7 +6210,7 @@ FUN_013d84:
 	move.w #$a8,-(a7)	; $0143F6
 	move.w #$a6,-(a7)	; $0143FA
 	move.w #$24,-(a7)	; $0143FE
-	jsr FUN_011bd8.l	; $014402
+	jsr sprite_write.l	; $014402
 	lea.l $e(a7),a7	; $014408
 	move.w $ff867a.l,d0	; $01440C
 	add.w #$2050,d0	; $014412
@@ -6221,7 +6221,7 @@ FUN_013d84:
 	move.w #$a8,-(a7)	; $014424
 	move.w #$c6,-(a7)	; $014428
 	move.w #$25,-(a7)	; $01442C
-	jsr FUN_011bd8.l	; $014430
+	jsr sprite_write.l	; $014430
 	lea.l $e(a7),a7	; $014436
 	move.w $ff867a.l,d0	; $01443A
 	add.w #$2010,d0	; $014440
@@ -6232,7 +6232,7 @@ FUN_013d84:
 	move.w #$c8,-(a7)	; $014452
 	move.w #$86,-(a7)	; $014456
 	move.w #$26,-(a7)	; $01445A
-	jsr FUN_011bd8.l	; $01445E
+	jsr sprite_write.l	; $01445E
 	lea.l $e(a7),a7	; $014464
 	move.w $ff867a.l,d0	; $014468
 	add.w #$2040,d0	; $01446E
@@ -6243,7 +6243,7 @@ FUN_013d84:
 	move.w #$c8,-(a7)	; $014480
 	move.w #$a6,-(a7)	; $014484
 	move.w #$27,-(a7)	; $014488
-	jsr FUN_011bd8.l	; $01448C
+	jsr sprite_write.l	; $01448C
 	lea.l $e(a7),a7	; $014492
 	move.w $ff867a.l,d0	; $014496
 	add.w #$2050,d0	; $01449C
@@ -6254,7 +6254,7 @@ FUN_013d84:
 	move.w #$c8,-(a7)	; $0144AE
 	move.w #$c6,-(a7)	; $0144B2
 	move.w #$28,-(a7)	; $0144B6
-	jsr FUN_011bd8.l	; $0144BA
+	jsr sprite_write.l	; $0144BA
 	lea.l $e(a7),a7	; $0144C0
 	move.w $ff867a.l,d0	; $0144C4
 	add.w #$2010,d0	; $0144CA
@@ -6265,7 +6265,7 @@ FUN_013d84:
 	move.w #$e8,-(a7)	; $0144DC
 	move.w #$86,-(a7)	; $0144E0
 	move.w #$29,-(a7)	; $0144E4
-	jsr FUN_011bd8.l	; $0144E8
+	jsr sprite_write.l	; $0144E8
 	lea.l $e(a7),a7	; $0144EE
 	move.w $ff867a.l,d0	; $0144F2
 	add.w #$2040,d0	; $0144F8
@@ -6276,7 +6276,7 @@ FUN_013d84:
 	move.w #$e8,-(a7)	; $01450A
 	move.w #$a6,-(a7)	; $01450E
 	move.w #$2a,-(a7)	; $014512
-	jsr FUN_011bd8.l	; $014516
+	jsr sprite_write.l	; $014516
 	lea.l $e(a7),a7	; $01451C
 	move.w $ff867a.l,d0	; $014520
 	add.w #$2050,d0	; $014526
@@ -6287,7 +6287,7 @@ FUN_013d84:
 	move.w #$e8,-(a7)	; $014538
 	move.w #$c6,-(a7)	; $01453C
 	move.w #$2b,-(a7)	; $014540
-	jsr FUN_011bd8.l	; $014544
+	jsr sprite_write.l	; $014544
 	lea.l $e(a7),a7	; $01454A
 	move.w $ff867a.l,d0	; $01454E
 	add.w #$3000,d0	; $014554
@@ -6298,7 +6298,7 @@ FUN_013d84:
 	move.w #$f8,-(a7)	; $014566
 	move.w #$86,-(a7)	; $01456A
 	move.w #$2c,-(a7)	; $01456E
-	jsr FUN_011bd8.l	; $014572
+	jsr sprite_write.l	; $014572
 	lea.l $e(a7),a7	; $014578
 	move.w $ff867a.l,d0	; $01457C
 	add.w #$3020,d0	; $014582
@@ -6309,7 +6309,7 @@ FUN_013d84:
 	move.w #$f8,-(a7)	; $014594
 	move.w #$a6,-(a7)	; $014598
 	move.w #$2d,-(a7)	; $01459C
-	jsr FUN_011bd8.l	; $0145A0
+	jsr sprite_write.l	; $0145A0
 	lea.l $e(a7),a7	; $0145A6
 	move.w $ff867a.l,d0	; $0145AA
 	add.w #$3030,d0	; $0145B0
@@ -6320,7 +6320,7 @@ FUN_013d84:
 	move.w #$f8,-(a7)	; $0145C2
 	move.w #$c6,-(a7)	; $0145C6
 	move.w #$2e,-(a7)	; $0145CA
-	jsr FUN_011bd8.l	; $0145CE
+	jsr sprite_write.l	; $0145CE
 	lea.l $e(a7),a7	; $0145D4
 	move.w $ff867c.l,d0	; $0145D8
 	add.w #$4000,d0	; $0145DE
@@ -6346,7 +6346,7 @@ FUN_013d84:
 	move.w #$86,-(a7)	; $014630
 	move.w #$147,-(a7)	; $014634
 	move.w #$37,-(a7)	; $014638
-	jsr FUN_011bd8.l	; $01463C
+	jsr sprite_write.l	; $01463C
 	lea.l $e(a7),a7	; $014642
 	move.w $ff867e.l,d0	; $014646
 	add.w #$582c,d0	; $01464C
@@ -6357,7 +6357,7 @@ FUN_013d84:
 	move.w #$b3,-(a7)	; $01465E
 	move.w #$14f,-(a7)	; $014662
 	move.w #$38,-(a7)	; $014666
-	jsr FUN_011bd8.l	; $01466A
+	jsr sprite_write.l	; $01466A
 	lea.l $e(a7),a7	; $014670
 	move.w $ff867e.l,d0	; $014674
 	add.w #$502c,d0	; $01467A
@@ -6368,7 +6368,7 @@ FUN_013d84:
 	move.w #$a2,-(a7)	; $01468C
 	move.w #$133,-(a7)	; $014690
 	move.w #$39,-(a7)	; $014694
-	jsr FUN_011bd8.l	; $014698
+	jsr sprite_write.l	; $014698
 	lea.l $e(a7),a7	; $01469E
 	move.w $ff867e.l,d0	; $0146A2
 	add.w #$482c,d0	; $0146A8
@@ -6379,7 +6379,7 @@ FUN_013d84:
 	move.w #$97,-(a7)	; $0146BA
 	move.w #$161,-(a7)	; $0146BE
 	move.w #$3a,-(a7)	; $0146C2
-	jsr FUN_011bd8.l	; $0146C6
+	jsr sprite_write.l	; $0146C6
 	lea.l $e(a7),a7	; $0146CC
 	bra.w L01478C	; $0146D0
 L0146D4:
@@ -6392,7 +6392,7 @@ L0146D4:
 	move.w #$86,-(a7)	; $0146EC
 	move.w #$14f,-(a7)	; $0146F0
 	move.w #$37,-(a7)	; $0146F4
-	jsr FUN_011bd8.l	; $0146F8
+	jsr sprite_write.l	; $0146F8
 	lea.l $e(a7),a7	; $0146FE
 	move.w $ff867e.l,d0	; $014702
 	add.w #$502c,d0	; $014708
@@ -6403,7 +6403,7 @@ L0146D4:
 	move.w #$b3,-(a7)	; $01471A
 	move.w #$147,-(a7)	; $01471E
 	move.w #$38,-(a7)	; $014722
-	jsr FUN_011bd8.l	; $014726
+	jsr sprite_write.l	; $014726
 	lea.l $e(a7),a7	; $01472C
 	move.w $ff867e.l,d0	; $014730
 	add.w #$402c,d0	; $014736
@@ -6414,7 +6414,7 @@ L0146D4:
 	move.w #$97,-(a7)	; $014748
 	move.w #$133,-(a7)	; $01474C
 	move.w #$39,-(a7)	; $014750
-	jsr FUN_011bd8.l	; $014754
+	jsr sprite_write.l	; $014754
 	lea.l $e(a7),a7	; $01475A
 	move.w $ff867e.l,d0	; $01475E
 	add.w #$582c,d0	; $014764
@@ -6425,7 +6425,7 @@ L0146D4:
 	move.w #$a2,-(a7)	; $014776
 	move.w #$161,-(a7)	; $01477A
 	move.w #$3a,-(a7)	; $01477E
-	jsr FUN_011bd8.l	; $014782
+	jsr sprite_write.l	; $014782
 	lea.l $e(a7),a7	; $014788
 L01478C:
 	move.w $ff867e.l,d0	; $01478C
@@ -6486,7 +6486,7 @@ FUN_0147d0:
 	move.w #$234,$ff0076.l	; $014872
 	move.w #$10e,-(a7)	; $01487A
 	move.w #$24,-(a7)	; $01487E
-	jsr FUN_01383c.l	; $014882
+	jsr map_decode.l	; $014882
 	addq.w #$2,a7	; $014888
 	move.l d0,-(a7)	; $01488A
 	jsr FUN_011a7c.l	; $01488C
@@ -6494,7 +6494,7 @@ FUN_0147d0:
 	move.w d0,$ff8640.l	; $014894
 	move.w #$176,-(a7)	; $01489A
 	move.w #$c,-(a7)	; $01489E
-	jsr FUN_01383c.l	; $0148A2
+	jsr map_decode.l	; $0148A2
 	addq.w #$2,a7	; $0148A8
 	move.l d0,-(a7)	; $0148AA
 	jsr FUN_011a7c.l	; $0148AC
@@ -6577,7 +6577,7 @@ FUN_0147d0:
 	clr.w -$2(a6)	; $0149E0
 L0149E4:
 	move.w #$e,-(a7)	; $0149E4
-	jsr FUN_01383c.l	; $0149E8
+	jsr map_decode.l	; $0149E8
 	addq.w #$2,a7	; $0149EE
 	move.l d0,-(a7)	; $0149F0
 	move.w $ff8676.l,-(a7)	; $0149F2
@@ -6596,7 +6596,7 @@ L0149E4:
 	cmpi.w #$7,-$2(a6)	; $014A20
 	blt.b L0149E4	; $014A26
 	move.w #$d,-(a7)	; $014A28
-	jsr FUN_01383c.l	; $014A2C
+	jsr map_decode.l	; $014A2C
 	addq.w #$2,a7	; $014A32
 	move.l d0,-(a7)	; $014A34
 	move.w $ff8676.l,-(a7)	; $014A36
@@ -6706,7 +6706,7 @@ L014B7E:
 	asl.w #$3,d1	; $014BA0
 	add.w d1,-$c(a6)	; $014BA2
 	move.w #$f,-(a7)	; $014BA6
-	jsr FUN_01383c.l	; $014BAA
+	jsr map_decode.l	; $014BAA
 	addq.w #$2,a7	; $014BB0
 	move.l d0,-(a7)	; $014BB2
 	move.w $ff8676.l,-(a7)	; $014BB4
@@ -6917,7 +6917,7 @@ L014E54:
 	bne.b L014ED0	; $014E9C
 L014E9E:
 	move.w #$e,-(a7)	; $014E9E
-	jsr FUN_01383c.l	; $014EA2
+	jsr map_decode.l	; $014EA2
 	addq.w #$2,a7	; $014EA8
 	move.l d0,-(a7)	; $014EAA
 	move.w $ff8676.l,-(a7)	; $014EAC
@@ -7043,7 +7043,7 @@ FUN_015012:
 	link.w a6,#$ffe6	; $015012
 	move.w #$1,-$4(a6)	; $015016
 	move.w #$1,-(a7)	; $01501C
-	jsr FUN_0173bc(pc)	; $015020
+	jsr song_request(pc)	; $015020
 	addq.w #$2,a7	; $015024
 	clr.w -(a7)	; $015026
 	jsr FUN_015c08(pc)	; $015028
@@ -7051,7 +7051,7 @@ FUN_015012:
 	move.w $ff8686.l,$ff0076.l	; $01502E
 	move.w #$150,-(a7)	; $015038
 	move.w #$1d,-(a7)	; $01503C
-	jsr FUN_01383c.l	; $015040
+	jsr map_decode.l	; $015040
 	addq.w #$2,a7	; $015046
 	move.l d0,-(a7)	; $015048
 	jsr FUN_011a7c.l	; $01504A
@@ -7059,7 +7059,7 @@ FUN_015012:
 	move.w d0,$ff8682.l	; $015052
 	move.w #$e,-(a7)	; $015058
 	move.w #$1e,-(a7)	; $01505C
-	jsr FUN_01383c.l	; $015060
+	jsr map_decode.l	; $015060
 	addq.w #$2,a7	; $015066
 	move.l d0,-(a7)	; $015068
 	jsr FUN_011a7c.l	; $01506A
@@ -7067,7 +7067,7 @@ FUN_015012:
 	move.w d0,$ff8642.l	; $015072
 	move.w #$40,-(a7)	; $015078
 	move.w #$1f,-(a7)	; $01507C
-	jsr FUN_01383c.l	; $015080
+	jsr map_decode.l	; $015080
 	addq.w #$2,a7	; $015086
 	move.l d0,-(a7)	; $015088
 	jsr FUN_011a7c.l	; $01508A
@@ -7127,7 +7127,7 @@ FUN_015012:
 	move.w #$a1,-(a7)	; $015160
 	move.w #$13a,-(a7)	; $015164
 	clr.w -(a7)	; $015168
-	jsr FUN_011bd8.l	; $01516A
+	jsr sprite_write.l	; $01516A
 	lea.l $e(a7),a7	; $015170
 	move.w $ff8642.l,d0	; $015174
 	add.w #$4000,d0	; $01517A
@@ -7151,7 +7151,7 @@ FUN_015012:
 	move.w #$81,-(a7)	; $0151C0
 	move.w #$16a,-(a7)	; $0151C4
 	move.w #$2,-(a7)	; $0151C8
-	jsr FUN_011bd8.l	; $0151CC
+	jsr sprite_write.l	; $0151CC
 	lea.l $e(a7),a7	; $0151D2
 	move.w $ff8682.l,d0	; $0151D6
 	add.w #$4000,d0	; $0151DC
@@ -7366,7 +7366,7 @@ L015474:
 	move.w #$a1,-(a7)	; $0154A6
 	move.w #$13a,-(a7)	; $0154AA
 	clr.w -(a7)	; $0154AE
-	jsr FUN_011bd8.l	; $0154B0
+	jsr sprite_write.l	; $0154B0
 	lea.l $e(a7),a7	; $0154B6
 	moveq #$0,d0	; $0154BA
 	move.b $ff0e14.l,d0	; $0154BC
@@ -7383,7 +7383,7 @@ L0154D4:
 	jsr FUN_015c08(pc)	; $0154EC
 	addq.w #$2,a7	; $0154F0
 	move.w #$1,-(a7)	; $0154F2
-	jsr FUN_0173bc(pc)	; $0154F6
+	jsr song_request(pc)	; $0154F6
 	addq.w #$2,a7	; $0154FA
 	move.w #$1,-(a7)	; $0154FC
 	move.w #$20,-(a7)	; $015500
@@ -7395,7 +7395,7 @@ L0154D4:
 	move.w #$ffff,$ff0128.l	; $015512
 	clr.w $ff0132.l	; $01551A
 	jsr FUN_012bfc.l	; $015520
-	jsr FUN_01b5d6.l	; $015526
+	jsr new_game_init.l	; $015526
 	jsr FUN_012c20.l	; $01552C
 	jsr main_loop.l	; $015532
 	clr.w -(a7)	; $015538
@@ -7436,7 +7436,7 @@ L015544:
 	move.w #$234,$ff0076.l	; $0155C0
 	move.w #$60,-(a7)	; $0155C8
 	move.w #$b,-(a7)	; $0155CC
-	jsr FUN_01383c.l	; $0155D0
+	jsr map_decode.l	; $0155D0
 	addq.w #$2,a7	; $0155D6
 	move.l d0,-(a7)	; $0155D8
 	jsr FUN_011a7c.l	; $0155DA
@@ -7444,7 +7444,7 @@ L015544:
 	move.w d0,$ff867a.l	; $0155E2
 	move.w #$67,-(a7)	; $0155E8
 	clr.w -(a7)	; $0155EC
-	jsr FUN_01383c.l	; $0155EE
+	jsr map_decode.l	; $0155EE
 	addq.w #$2,a7	; $0155F4
 	move.l d0,-(a7)	; $0155F6
 	jsr FUN_011a7c.l	; $0155F8
@@ -7452,7 +7452,7 @@ L015544:
 	move.w d0,$ff8640.l	; $015600
 	move.w #$24a,-(a7)	; $015606
 	move.w #$25,-(a7)	; $01560A
-	jsr FUN_01383c.l	; $01560E
+	jsr map_decode.l	; $01560E
 	addq.w #$2,a7	; $015614
 	move.l d0,-(a7)	; $015616
 	jsr FUN_011a7c.l	; $015618
@@ -7460,7 +7460,7 @@ L015544:
 	move.w d0,$ff8642.l	; $015620
 	move.w #$84,-(a7)	; $015626
 	move.w #$26,-(a7)	; $01562A
-	jsr FUN_01383c.l	; $01562E
+	jsr map_decode.l	; $01562E
 	addq.w #$2,a7	; $015634
 	move.l d0,-(a7)	; $015636
 	jsr FUN_011a7c.l	; $015638
@@ -7487,7 +7487,7 @@ L015544:
 	clr.w -$12(a6)	; $01568C
 L015690:
 	move.w #$28,-(a7)	; $015690
-	jsr FUN_01383c.l	; $015694
+	jsr map_decode.l	; $015694
 	addq.w #$2,a7	; $01569A
 	move.l d0,-(a7)	; $01569C
 	move.w $ff8642.l,d0	; $01569E
@@ -7505,7 +7505,7 @@ L015690:
 	cmpi.w #$28,-$12(a6)	; $0156CC
 	bcs.b L015690	; $0156D2
 	move.w #$27,-(a7)	; $0156D4
-	jsr FUN_01383c.l	; $0156D8
+	jsr map_decode.l	; $0156D8
 	addq.w #$2,a7	; $0156DE
 	move.l d0,-(a7)	; $0156E0
 	move.w $ff8642.l,d0	; $0156E2
@@ -7526,7 +7526,7 @@ L015690:
 	move.w #$dd,-(a7)	; $01571E
 	move.w #$f4,-(a7)	; $015722
 	move.w #$3,-(a7)	; $015726
-	jsr FUN_011bd8.l	; $01572A
+	jsr sprite_write.l	; $01572A
 	lea.l $e(a7),a7	; $015730
 	move.w $ff867a.l,d0	; $015734
 	add.w #$20,d0	; $01573A
@@ -7537,7 +7537,7 @@ L015690:
 	move.w #$dd,-(a7)	; $01574C
 	move.w #$114,-(a7)	; $015750
 	move.w #$4,-(a7)	; $015754
-	jsr FUN_011bd8.l	; $015758
+	jsr sprite_write.l	; $015758
 	lea.l $e(a7),a7	; $01575E
 	move.w $ff867a.l,d0	; $015762
 	add.w #$30,d0	; $015768
@@ -7548,7 +7548,7 @@ L015690:
 	move.w #$dd,-(a7)	; $01577A
 	move.w #$134,-(a7)	; $01577E
 	move.w #$5,-(a7)	; $015782
-	jsr FUN_011bd8.l	; $015786
+	jsr sprite_write.l	; $015786
 	lea.l $e(a7),a7	; $01578C
 	move.w $ff867a.l,d0	; $015790
 	add.w #$1000,d0	; $015796
@@ -7559,7 +7559,7 @@ L015690:
 	move.w #$fd,-(a7)	; $0157A8
 	move.w #$f4,-(a7)	; $0157AC
 	move.w #$6,-(a7)	; $0157B0
-	jsr FUN_011bd8.l	; $0157B4
+	jsr sprite_write.l	; $0157B4
 	lea.l $e(a7),a7	; $0157BA
 	move.w $ff867a.l,d0	; $0157BE
 	add.w #$1020,d0	; $0157C4
@@ -7570,7 +7570,7 @@ L015690:
 	move.w #$fd,-(a7)	; $0157D6
 	move.w #$114,-(a7)	; $0157DA
 	move.w #$7,-(a7)	; $0157DE
-	jsr FUN_011bd8.l	; $0157E2
+	jsr sprite_write.l	; $0157E2
 	lea.l $e(a7),a7	; $0157E8
 	move.w $ff867a.l,d0	; $0157EC
 	add.w #$1030,d0	; $0157F2
@@ -7581,7 +7581,7 @@ L015690:
 	move.w #$fd,-(a7)	; $015802
 	move.w #$134,-(a7)	; $015806
 	move.w #$8,-(a7)	; $01580A
-	jsr FUN_011bd8.l	; $01580E
+	jsr sprite_write.l	; $01580E
 	lea.l $e(a7),a7	; $015814
 	move.w #$8000,-(a7)	; $015818
 	pea.l L015BE1(pc)	; $01581C
@@ -7688,7 +7688,7 @@ L01597A:
 	move.w d0,-(a7)	; $0159A2
 	move.w #$100,-(a7)	; $0159A4
 	clr.w -(a7)	; $0159A8
-	jsr FUN_011bd8.l	; $0159AA
+	jsr sprite_write.l	; $0159AA
 	lea.l $e(a7),a7	; $0159B0
 	move.w $ff8640.l,d0	; $0159B4
 	add.w #$4063,d0	; $0159BA
@@ -7702,7 +7702,7 @@ L01597A:
 	move.w d0,-(a7)	; $0159D4
 	move.w #$120,-(a7)	; $0159D6
 	move.w #$1,-(a7)	; $0159DA
-	jsr FUN_011bd8.l	; $0159DE
+	jsr sprite_write.l	; $0159DE
 	lea.l $e(a7),a7	; $0159E4
 	move.w $ff8640.l,d0	; $0159E8
 	add.w #$4063,d0	; $0159EE
@@ -7716,7 +7716,7 @@ L01597A:
 	move.w d0,-(a7)	; $015A08
 	move.w #$130,-(a7)	; $015A0A
 	move.w #$2,-(a7)	; $015A0E
-	jsr FUN_011bd8.l	; $015A12
+	jsr sprite_write.l	; $015A12
 	lea.l $e(a7),a7	; $015A18
 	clr.w -$12(a6)	; $015A1C
 L015A20:
@@ -7792,7 +7792,7 @@ L015AC6:
 	jsr FUN_011820.l	; $015B0A
 	lea.l $10(a7),a7	; $015B10
 	move.w #$8,-(a7)	; $015B14
-	jsr FUN_0173bc(pc)	; $015B18
+	jsr song_request(pc)	; $015B18
 	addq.w #$2,a7	; $015B1C
 L015B1E:
 	move.w -$16(a6),d0	; $015B1E
@@ -7884,7 +7884,7 @@ FUN_015c08:
 	move.w #$234,$ff0076.l	; $015C52
 	move.w #$30,-(a7)	; $015C5A
 	move.w #$1b,-(a7)	; $015C5E
-	jsr FUN_01383c.l	; $015C62
+	jsr map_decode.l	; $015C62
 	addq.w #$2,a7	; $015C68
 	move.l d0,-(a7)	; $015C6A
 	jsr FUN_011a7c.l	; $015C6C
@@ -7892,7 +7892,7 @@ FUN_015c08:
 	move.w d0,$ff8688.l	; $015C74
 	move.w #$180,-(a7)	; $015C7A
 	move.w #$1c,-(a7)	; $015C7E
-	jsr FUN_01383c.l	; $015C82
+	jsr map_decode.l	; $015C82
 	addq.w #$2,a7	; $015C88
 	move.l d0,-(a7)	; $015C8A
 	jsr FUN_011a7c.l	; $015C8C
@@ -7900,7 +7900,7 @@ FUN_015c08:
 	move.w d0,$ff868a.l	; $015C94
 	move.w #$78,-(a7)	; $015C9A
 	move.w #$12,-(a7)	; $015C9E
-	jsr FUN_01383c.l	; $015CA2
+	jsr map_decode.l	; $015CA2
 	addq.w #$2,a7	; $015CA8
 	move.l d0,-(a7)	; $015CAA
 	jsr FUN_011a7c.l	; $015CAC
@@ -7908,7 +7908,7 @@ FUN_015c08:
 	move.w d0,$ff8680.l	; $015CB4
 	move.w #$18f,-(a7)	; $015CBA
 	move.w #$14,-(a7)	; $015CBE
-	jsr FUN_01383c.l	; $015CC2
+	jsr map_decode.l	; $015CC2
 	addq.w #$2,a7	; $015CC8
 	move.l d0,-(a7)	; $015CCA
 	jsr FUN_011a7c.l	; $015CCC
@@ -7916,7 +7916,7 @@ FUN_015c08:
 	move.w d0,$ff8684.l	; $015CD4
 	move.w #$1e,-(a7)	; $015CDA
 	move.w #$13,-(a7)	; $015CDE
-	jsr FUN_01383c.l	; $015CE2
+	jsr map_decode.l	; $015CE2
 	addq.w #$2,a7	; $015CE8
 	move.l d0,-(a7)	; $015CEA
 	jsr FUN_011a7c.l	; $015CEC
@@ -7924,7 +7924,7 @@ FUN_015c08:
 	move.w d0,$ff8640.l	; $015CF4
 	move.w #$37,-(a7)	; $015CFA
 	move.w #$15,-(a7)	; $015CFE
-	jsr FUN_01383c.l	; $015D02
+	jsr map_decode.l	; $015D02
 	addq.w #$2,a7	; $015D08
 	move.l d0,-(a7)	; $015D0A
 	jsr FUN_011a7c.l	; $015D0C
@@ -8028,7 +8028,7 @@ L015E50:
 	tst.w $8(a6)	; $015E8A
 	bne.w L015FF0	; $015E8E
 	move.w #$16,-(a7)	; $015E92
-	jsr FUN_01383c.l	; $015E96
+	jsr map_decode.l	; $015E96
 	addq.w #$2,a7	; $015E9C
 	move.l d0,-(a7)	; $015E9E
 	move.w $ff8686.l,d0	; $015EA0
@@ -8046,7 +8046,7 @@ L015E50:
 	jsr FUN_01194a.l	; $015ECE
 	lea.l $14(a7),a7	; $015ED4
 	move.w #$17,-(a7)	; $015ED8
-	jsr FUN_01383c.l	; $015EDC
+	jsr map_decode.l	; $015EDC
 	addq.w #$2,a7	; $015EE2
 	move.l d0,-(a7)	; $015EE4
 	move.w $ff8686.l,d0	; $015EE6
@@ -8064,7 +8064,7 @@ L015E50:
 	jsr FUN_01194a.l	; $015F14
 	lea.l $14(a7),a7	; $015F1A
 	move.w #$18,-(a7)	; $015F1E
-	jsr FUN_01383c.l	; $015F22
+	jsr map_decode.l	; $015F22
 	addq.w #$2,a7	; $015F28
 	move.l d0,-(a7)	; $015F2A
 	move.w $ff8686.l,d0	; $015F2C
@@ -8082,7 +8082,7 @@ L015E50:
 	jsr FUN_01194a.l	; $015F5A
 	lea.l $14(a7),a7	; $015F60
 	move.w #$19,-(a7)	; $015F64
-	jsr FUN_01383c.l	; $015F68
+	jsr map_decode.l	; $015F68
 	addq.w #$2,a7	; $015F6E
 	move.l d0,-(a7)	; $015F70
 	move.w $ff8686.l,d0	; $015F72
@@ -8100,7 +8100,7 @@ L015E50:
 	jsr FUN_01194a.l	; $015FA0
 	lea.l $14(a7),a7	; $015FA6
 	move.w #$1a,-(a7)	; $015FAA
-	jsr FUN_01383c.l	; $015FAE
+	jsr map_decode.l	; $015FAE
 	addq.w #$2,a7	; $015FB4
 	move.l d0,-(a7)	; $015FB6
 	move.w $ff8686.l,d0	; $015FB8
@@ -8121,7 +8121,7 @@ L015FF0:
 	cmpi.w #$1,$8(a6)	; $015FF0
 	bne.w L016158	; $015FF6
 	move.w #$30,-(a7)	; $015FFA
-	jsr FUN_01383c.l	; $015FFE
+	jsr map_decode.l	; $015FFE
 	addq.w #$2,a7	; $016004
 	move.l d0,-(a7)	; $016006
 	move.w $ff8686.l,d0	; $016008
@@ -8139,7 +8139,7 @@ L015FF0:
 	jsr FUN_01194a.l	; $016036
 	lea.l $14(a7),a7	; $01603C
 	move.w #$31,-(a7)	; $016040
-	jsr FUN_01383c.l	; $016044
+	jsr map_decode.l	; $016044
 	addq.w #$2,a7	; $01604A
 	move.l d0,-(a7)	; $01604C
 	move.w $ff8686.l,d0	; $01604E
@@ -8157,7 +8157,7 @@ L015FF0:
 	jsr FUN_01194a.l	; $01607C
 	lea.l $14(a7),a7	; $016082
 	move.w #$32,-(a7)	; $016086
-	jsr FUN_01383c.l	; $01608A
+	jsr map_decode.l	; $01608A
 	addq.w #$2,a7	; $016090
 	move.l d0,-(a7)	; $016092
 	move.w $ff8686.l,d0	; $016094
@@ -8175,7 +8175,7 @@ L015FF0:
 	jsr FUN_01194a.l	; $0160C2
 	lea.l $14(a7),a7	; $0160C8
 	move.w #$33,-(a7)	; $0160CC
-	jsr FUN_01383c.l	; $0160D0
+	jsr map_decode.l	; $0160D0
 	addq.w #$2,a7	; $0160D6
 	move.l d0,-(a7)	; $0160D8
 	move.w $ff8686.l,d0	; $0160DA
@@ -8193,7 +8193,7 @@ L015FF0:
 	jsr FUN_01194a.l	; $016108
 	lea.l $14(a7),a7	; $01610E
 	move.w #$34,-(a7)	; $016112
-	jsr FUN_01383c.l	; $016116
+	jsr map_decode.l	; $016116
 	addq.w #$2,a7	; $01611C
 	move.l d0,-(a7)	; $01611E
 	move.w $ff8686.l,d0	; $016120
@@ -8344,7 +8344,7 @@ L0162B4:
 FUN_0162fe:
 	link.w a6,#$0	; $0162FE
 	jsr wait_vblank.l	; $016302
-	jsr FUN_0138a8.l	; $016308
+	jsr menu_format.l	; $016308
 	move.w $ff8674.l,-(a7)	; $01630E
 	move.w #$17,-(a7)	; $016314
 	move.w #$24,-(a7)	; $016318
@@ -8355,7 +8355,7 @@ FUN_0162fe:
 	jsr FUN_011820.l	; $01632A
 	lea.l $10(a7),a7	; $016330
 	move.w #$9,-(a7)	; $016334
-	jsr FUN_01383c.l	; $016338
+	jsr map_decode.l	; $016338
 	addq.w #$2,a7	; $01633E
 	move.l d0,-(a7)	; $016340
 	move.w $ff8676.l,d0	; $016342
@@ -8402,7 +8402,7 @@ L0163AC:
 	jsr FUN_011820.l	; $0163DA
 	lea.l $10(a7),a7	; $0163E0
 L0163E4:
-	jsr FUN_01ba26.l	; $0163E4
+	jsr request_full_redraw.l	; $0163E4
 	unlk a6	; $0163EA
 	rts	; $0163EC
 	; code $0163EE-$016511
@@ -8711,7 +8711,7 @@ L0166C8:
 	move.w #$40,-(a7)	; $016738
 	move.w $ff8678.l,-(a7)	; $01673C
 	move.w #$a,-(a7)	; $016742
-	jsr FUN_01383c.l	; $016746
+	jsr map_decode.l	; $016746
 	addq.w #$2,a7	; $01674C
 	move.l d0,-(a7)	; $01674E
 	jsr FUN_011abc.l	; $016750
@@ -8719,7 +8719,7 @@ L0166C8:
 	move.w #$148,-(a7)	; $016758
 	move.w $ff8676.l,-(a7)	; $01675C
 	move.w #$21,-(a7)	; $016762
-	jsr FUN_01383c.l	; $016766
+	jsr map_decode.l	; $016766
 	addq.w #$2,a7	; $01676C
 	move.l d0,-(a7)	; $01676E
 	jsr FUN_011abc.l	; $016770
@@ -8815,7 +8815,7 @@ L0166C8:
 	move.w #$140,-(a7)	; $0168DA
 	move.w #$a4,-(a7)	; $0168DE
 	move.w #$2,-(a7)	; $0168E2
-	jsr FUN_011bd8.l	; $0168E6
+	jsr sprite_write.l	; $0168E6
 	lea.l $e(a7),a7	; $0168EC
 	move.w $ff8640.l,d0	; $0168F0
 	add.w #$5f,d0	; $0168F6
@@ -8826,7 +8826,7 @@ L0166C8:
 	move.w #$140,-(a7)	; $016906
 	move.w #$bc,-(a7)	; $01690A
 	move.w #$3,-(a7)	; $01690E
-	jsr FUN_011bd8.l	; $016912
+	jsr sprite_write.l	; $016912
 	lea.l $e(a7),a7	; $016918
 	move.w $ff8640.l,d0	; $01691C
 	add.w #$5f,d0	; $016922
@@ -8837,7 +8837,7 @@ L0166C8:
 	move.w #$140,-(a7)	; $016932
 	move.w #$d4,-(a7)	; $016936
 	move.w #$4,-(a7)	; $01693A
-	jsr FUN_011bd8.l	; $01693E
+	jsr sprite_write.l	; $01693E
 	lea.l $e(a7),a7	; $016944
 	move.w $ff8640.l,d0	; $016948
 	add.w #$63,d0	; $01694E
@@ -8848,7 +8848,7 @@ L0166C8:
 	move.w #$140,-(a7)	; $01695C
 	move.w #$e4,-(a7)	; $016960
 	move.w #$5,-(a7)	; $016964
-	jsr FUN_011bd8.l	; $016968
+	jsr sprite_write.l	; $016968
 	lea.l $e(a7),a7	; $01696E
 	bra.b L0169C6	; $016972
 L016974:
@@ -8861,7 +8861,7 @@ L016974:
 	move.w #$1,-(a7)	; $016988
 	move.w #$1,-(a7)	; $01698C
 	move.w #$2,-(a7)	; $016990
-	jsr FUN_011bd8.l	; $016994
+	jsr sprite_write.l	; $016994
 	lea.l $e(a7),a7	; $01699A
 	move.w $ff8640.l,d0	; $01699E
 	add.w #$2000,d0	; $0169A4
@@ -8872,7 +8872,7 @@ L016974:
 	move.w #$1,-(a7)	; $0169B0
 	move.w #$1,-(a7)	; $0169B4
 	move.w #$5,-(a7)	; $0169B8
-	jsr FUN_011bd8.l	; $0169BC
+	jsr sprite_write.l	; $0169BC
 	lea.l $e(a7),a7	; $0169C2
 L0169C6:
 	jsr joypad_queue_pop.l	; $0169C6
@@ -8991,7 +8991,7 @@ L016AB6:
 	jsr FUN_011082.l	; $016AF0
 	addq.w #$6,a7	; $016AF6
 	move.w #$7,-(a7)	; $016AF8
-	jsr FUN_0173bc(pc)	; $016AFC
+	jsr song_request(pc)	; $016AFC
 	addq.w #$2,a7	; $016B00
 	moveq #$0,d4	; $016B02
 L016B04:
@@ -9233,7 +9233,7 @@ L016D88:
 	add.w #$80,d0	; $016E1C
 	move.w d0,-(a7)	; $016E20
 	move.w #$1,-(a7)	; $016E22
-	jsr FUN_011bd8.l	; $016E26
+	jsr sprite_write.l	; $016E26
 	lea.l $e(a7),a7	; $016E2C
 	tst.w d4	; $016E30
 	beq.b L016E4C	; $016E32
@@ -9358,7 +9358,7 @@ L016FBA:
 	beq.w L016B04	; $016FC6
 	jsr FUN_032d0e.l	; $016FCA
 	move.w d0,-(a7)	; $016FD0
-	jsr FUN_0173bc(pc)	; $016FD2
+	jsr song_request(pc)	; $016FD2
 	addq.w #$2,a7	; $016FD6
 	pea.l L0CCAF8.l	; $016FD8
 	clr.w -(a7)	; $016FDE
@@ -9377,7 +9377,7 @@ L016FBA:
 	clr.w -(a7)	; $01700C
 	clr.w -(a7)	; $01700E
 	move.w #$1,-(a7)	; $017010
-	jsr FUN_011bd8.l	; $017014
+	jsr sprite_write.l	; $017014
 	lea.l $e(a7),a7	; $01701A
 	jsr wait_vblank.l	; $01701E
 	clr.w -(a7)	; $017024
@@ -9389,7 +9389,7 @@ L016FBA:
 	move.w #$80,-(a7)	; $017034
 	move.w $ff867c.l,-(a7)	; $017038
 	move.w #$10,-(a7)	; $01703E
-	jsr FUN_01383c.l	; $017042
+	jsr map_decode.l	; $017042
 	addq.w #$2,a7	; $017048
 	move.l d0,-(a7)	; $01704A
 	jsr FUN_011abc.l	; $01704C
@@ -9397,7 +9397,7 @@ L016FBA:
 	move.w #$1b6,-(a7)	; $017054
 	move.w $ff8676.l,-(a7)	; $017058
 	move.w #$6,-(a7)	; $01705E
-	jsr FUN_01383c.l	; $017062
+	jsr map_decode.l	; $017062
 	addq.w #$2,a7	; $017068
 	move.l d0,-(a7)	; $01706A
 	jsr FUN_011abc.l	; $01706C
@@ -9421,7 +9421,7 @@ L016FBA:
 	move.w #$2,-(a7)	; $0170BA
 	jsr FUN_011082.l	; $0170BE
 	addq.w #$6,a7	; $0170C4
-	bsr.b FUN_0170da	; $0170C6
+	bsr.b palette_fade	; $0170C6
 	bra.w L016670	; $0170C8
 L0170CC:
 	; data $0170CC-$0170CD
@@ -9439,7 +9439,7 @@ L0170D5:
 	; data $0170D5-$0170D9
 	incbin "rop-original.gen",$0170D5,$5
 	; code $0170DA-$0171D5
-FUN_0170da:
+palette_fade:
 	link.w a6,#$fffc	; $0170DA
 	move.w $ff0126.l,-$2(a6)	; $0170DE
 	move.w $ff0e16.l,d0	; $0170E6
@@ -9657,7 +9657,7 @@ L017390:
 	unlk a6	; $0173B8
 	rts	; $0173BA
 	; code $0173BC-$0173EB
-FUN_0173bc:
+song_request:
 	link.w a6,#$0	; $0173BC
 	move.w $ff012e.l,d0	; $0173C0
 	cmp.w $8(a6),d0	; $0173C6
@@ -9671,11 +9671,11 @@ L0173D6:
 L0173DA:
 	move.w $8(a6),$ff012e.l	; $0173DA
 	move.w $8(a6),-(a7)	; $0173E2
-	bsr.b jingle_play	; $0173E6
+	bsr.b FUN_0173ec	; $0173E6
 	addq.w #$2,a7	; $0173E8
 	bra.b L0173D6	; $0173EA
 	; code $0173EC-$017545
-jingle_play:
+FUN_0173ec:
 	link.w a6,#$0	; $0173EC
 	move.w $8(a6),d0	; $0173F0
 	ext.l d0	; $0173F4
@@ -10035,13 +10035,13 @@ FUN_017860:
 	move.w #$1b6,-(a7)	; $0178B0
 	move.w $ff8676.l,-(a7)	; $0178B4
 	move.w #$6,-(a7)	; $0178BA
-	jsr FUN_01383c.l	; $0178BE
+	jsr map_decode.l	; $0178BE
 	addq.w #$2,a7	; $0178C4
 	move.l d0,-(a7)	; $0178C6
 	jsr FUN_011abc.l	; $0178C8
 	addq.w #$8,a7	; $0178CE
 	move.w #$9,-(a7)	; $0178D0
-	jsr FUN_01383c.l	; $0178D4
+	jsr map_decode.l	; $0178D4
 	addq.w #$2,a7	; $0178DA
 	move.l d0,-(a7)	; $0178DC
 	move.w $ff8676.l,d0	; $0178DE
@@ -10060,13 +10060,13 @@ L017908:
 	move.w #$119,-(a7)	; $017908
 	move.w $ff8676.l,-(a7)	; $01790C
 	move.w #$22,-(a7)	; $017912
-	jsr FUN_01383c.l	; $017916
+	jsr map_decode.l	; $017916
 	addq.w #$2,a7	; $01791C
 	move.l d0,-(a7)	; $01791E
 	jsr FUN_011abc.l	; $017920
 	addq.w #$8,a7	; $017926
 	move.w #$23,-(a7)	; $017928
-	jsr FUN_01383c.l	; $01792C
+	jsr map_decode.l	; $01792C
 	addq.w #$2,a7	; $017932
 	move.l d0,-(a7)	; $017934
 	move.w $ff8676.l,d0	; $017936
@@ -10086,7 +10086,7 @@ L01795E:
 	move.w $ff0e78.l,-(a7)	; $017968
 	jsr FUN_011ae4.l	; $01796E
 	addq.w #$6,a7	; $017974
-	jsr FUN_0170da(pc)	; $017976
+	jsr palette_fade(pc)	; $017976
 	pea.l L0CCB38.l	; $01797A
 	move.w #$1,-(a7)	; $017980
 	jsr FUN_011082.l	; $017984
@@ -10175,7 +10175,7 @@ FUN_017a40:
 	add.w #$80,d0	; $017A7E
 	move.w d0,-(a7)	; $017A82
 	move.w $c(a6),-(a7)	; $017A84
-	jsr FUN_011bd8.l	; $017A88
+	jsr sprite_write.l	; $017A88
 	lea.l $e(a7),a7	; $017A8E
 	move.w $12(a6),d0	; $017A92
 	asl.w #$4,d0	; $017A96
@@ -10200,7 +10200,7 @@ FUN_017a40:
 	move.w $c(a6),d0	; $017AD2
 	addq.w #$1,d0	; $017AD6
 	move.w d0,-(a7)	; $017AD8
-	jsr FUN_011bd8.l	; $017ADA
+	jsr sprite_write.l	; $017ADA
 	lea.l $e(a7),a7	; $017AE0
 	move.w $12(a6),d0	; $017AE4
 	asl.w #$4,d0	; $017AE8
@@ -10225,7 +10225,7 @@ FUN_017a40:
 	move.w $c(a6),d0	; $017B24
 	addq.w #$2,d0	; $017B28
 	move.w d0,-(a7)	; $017B2A
-	jsr FUN_011bd8.l	; $017B2C
+	jsr sprite_write.l	; $017B2C
 	lea.l $e(a7),a7	; $017B32
 	move.w $12(a6),d0	; $017B36
 	asl.w #$4,d0	; $017B3A
@@ -10248,16 +10248,16 @@ FUN_017a40:
 	move.w $c(a6),d0	; $017B72
 	addq.w #$3,d0	; $017B76
 	move.w d0,-(a7)	; $017B78
-	jsr FUN_011bd8.l	; $017B7A
+	jsr sprite_write.l	; $017B7A
 	lea.l $e(a7),a7	; $017B80
 	unlk a6	; $017B84
 	rts	; $017B86
 	; code $017B88-$019609
-FUN_017b88:
+scene_draw:
 	link.w a6,#$ffdc	; $017B88
 	movem.l d4-d7/a3-a4,-(a7)	; $017B8C
 	move.w #$b,-(a7)	; $017B90
-	jsr FUN_0173bc(pc)	; $017B94
+	jsr song_request(pc)	; $017B94
 	addq.w #$2,a7	; $017B98
 	clr.w -(a7)	; $017B9A
 	move.w #$37,-(a7)	; $017B9C
@@ -10266,7 +10266,7 @@ FUN_017b88:
 	move.w #$234,$ff0076.l	; $017BA6
 	move.w #$90,-(a7)	; $017BAE
 	move.w #$29,-(a7)	; $017BB2
-	jsr FUN_01383c.l	; $017BB6
+	jsr map_decode.l	; $017BB6
 	addq.w #$2,a7	; $017BBC
 	move.l d0,-(a7)	; $017BBE
 	jsr FUN_011a7c.l	; $017BC0
@@ -10274,7 +10274,7 @@ FUN_017b88:
 	move.w d0,$ff8688.l	; $017BC8
 	move.w #$22,-(a7)	; $017BCE
 	move.w #$2a,-(a7)	; $017BD2
-	jsr FUN_01383c.l	; $017BD6
+	jsr map_decode.l	; $017BD6
 	addq.w #$2,a7	; $017BDC
 	move.l d0,-(a7)	; $017BDE
 	jsr FUN_011a7c.l	; $017BE0
@@ -10282,7 +10282,7 @@ FUN_017b88:
 	move.w d0,$ff868a.l	; $017BE8
 	move.w #$140,-(a7)	; $017BEE
 	move.w #$2e,-(a7)	; $017BF2
-	jsr FUN_01383c.l	; $017BF6
+	jsr map_decode.l	; $017BF6
 	addq.w #$2,a7	; $017BFC
 	move.l d0,-(a7)	; $017BFE
 	jsr FUN_011a7c.l	; $017C00
@@ -10290,7 +10290,7 @@ FUN_017b88:
 	move.w d0,$ff8684.l	; $017C08
 	move.w #$4b,-(a7)	; $017C0E
 	move.w #$2f,-(a7)	; $017C12
-	jsr FUN_01383c.l	; $017C16
+	jsr map_decode.l	; $017C16
 	addq.w #$2,a7	; $017C1C
 	move.l d0,-(a7)	; $017C1E
 	jsr FUN_011a7c.l	; $017C20
@@ -10298,7 +10298,7 @@ FUN_017b88:
 	move.w d0,$ff8642.l	; $017C28
 	move.w #$40,-(a7)	; $017C2E
 	move.w #$1f,-(a7)	; $017C32
-	jsr FUN_01383c.l	; $017C36
+	jsr map_decode.l	; $017C36
 	addq.w #$2,a7	; $017C3C
 	move.l d0,-(a7)	; $017C3E
 	jsr FUN_011a7c.l	; $017C40
@@ -10306,7 +10306,7 @@ FUN_017b88:
 	move.w d0,$ff867e.l	; $017C48
 	move.w #$1c,-(a7)	; $017C4E
 	move.w #$2d,-(a7)	; $017C52
-	jsr FUN_01383c.l	; $017C56
+	jsr map_decode.l	; $017C56
 	addq.w #$2,a7	; $017C5C
 	move.l d0,-(a7)	; $017C5E
 	jsr FUN_011a7c.l	; $017C60
@@ -10487,7 +10487,7 @@ FUN_017b88:
 	move.w #$da,-(a7)	; $017F1A
 	move.w #$134,-(a7)	; $017F1E
 	move.w #$31,-(a7)	; $017F22
-	jsr FUN_011bd8.l	; $017F26
+	jsr sprite_write.l	; $017F26
 	lea.l $e(a7),a7	; $017F2C
 	move.w $ff8680.l,d0	; $017F30
 	add.w #$2814,d0	; $017F36
@@ -10498,7 +10498,7 @@ FUN_017b88:
 	move.w #$da,-(a7)	; $017F48
 	move.w #$16c,-(a7)	; $017F4C
 	move.w #$32,-(a7)	; $017F50
-	jsr FUN_011bd8.l	; $017F54
+	jsr sprite_write.l	; $017F54
 	lea.l $e(a7),a7	; $017F5A
 	moveq #$0,d0	; $017F5E
 	move.w $ff8688.l,d0	; $017F60
@@ -10526,7 +10526,7 @@ FUN_017b88:
 	move.w #$9a,-(a7)	; $017FBA
 	move.w #$e2,-(a7)	; $017FBE
 	move.w #$3c,-(a7)	; $017FC2
-	jsr FUN_011bd8.l	; $017FC6
+	jsr sprite_write.l	; $017FC6
 	lea.l $e(a7),a7	; $017FCC
 	moveq #$0,d7	; $017FD0
 L017FD2:
@@ -10549,7 +10549,7 @@ L017FD2:
 	move.w d7,d0	; $018002
 	add.w #$3d,d0	; $018004
 	move.w d0,-(a7)	; $018008
-	jsr FUN_011bd8.l	; $01800A
+	jsr sprite_write.l	; $01800A
 	lea.l $e(a7),a7	; $018010
 	addq.w #$1,d7	; $018014
 	cmp.w #$a,d7	; $018016
@@ -10566,7 +10566,7 @@ L017FD2:
 	move.w #$102,-(a7)	; $01803C
 	move.w #$ea,-(a7)	; $018040
 	move.w #$47,-(a7)	; $018044
-	jsr FUN_011bd8.l	; $018048
+	jsr sprite_write.l	; $018048
 	lea.l $e(a7),a7	; $01804E
 	move.w $ff868a.l,-(a7)	; $018052
 	move.w #$20,-(a7)	; $018058
@@ -10591,7 +10591,7 @@ L01809A:
 	moveq #$0,d7	; $01809A
 L01809C:
 	move.w #$2b,-(a7)	; $01809C
-	jsr FUN_01383c.l	; $0180A0
+	jsr map_decode.l	; $0180A0
 	addq.w #$2,a7	; $0180A6
 	move.l d0,-(a7)	; $0180A8
 	move.w $ff868a.l,-(a7)	; $0180AA
@@ -10614,7 +10614,7 @@ L0180E2:
 	moveq #$0,d7	; $0180E2
 L0180E4:
 	move.w #$2c,-(a7)	; $0180E4
-	jsr FUN_01383c.l	; $0180E8
+	jsr map_decode.l	; $0180E8
 	addq.w #$2,a7	; $0180EE
 	move.l d0,-(a7)	; $0180F0
 	moveq #$0,d0	; $0180F2
@@ -10822,7 +10822,7 @@ L01831E:
 	add.w #$80,d0	; $01835A
 	move.w d0,-(a7)	; $01835E
 	move.w #$14,-(a7)	; $018360
-	jsr FUN_011bd8.l	; $018364
+	jsr sprite_write.l	; $018364
 	lea.l $e(a7),a7	; $01836A
 	cmpi.w #$e1,-$8(a6)	; $01836E
 	beq.b L018384	; $018374
@@ -10924,7 +10924,7 @@ L018460:
 	move.w d0,-(a7)	; $0184D0
 	move.w #$e2,-(a7)	; $0184D2
 	move.w #$3c,-(a7)	; $0184D6
-	jsr FUN_011bd8.l	; $0184DA
+	jsr sprite_write.l	; $0184DA
 	lea.l $e(a7),a7	; $0184E0
 	moveq #$0,d7	; $0184E4
 L0184E6:
@@ -10949,7 +10949,7 @@ L0184E6:
 	move.w d7,d0	; $01851A
 	add.w #$3d,d0	; $01851C
 	move.w d0,-(a7)	; $018520
-	jsr FUN_011bd8.l	; $018522
+	jsr sprite_write.l	; $018522
 	lea.l $e(a7),a7	; $018528
 	addq.w #$1,d7	; $01852C
 	cmp.w #$a,d7	; $01852E
@@ -10969,7 +10969,7 @@ L0184E6:
 	move.w d0,-(a7)	; $01855C
 	move.w #$ea,-(a7)	; $01855E
 	move.w #$47,-(a7)	; $018562
-	jsr FUN_011bd8.l	; $018566
+	jsr sprite_write.l	; $018566
 	lea.l $e(a7),a7	; $01856C
 	cmp.w #$96,d4	; $018570
 	bne.b L01857A	; $018574
@@ -11001,7 +11001,7 @@ L01857A:
 	move.w #$1,-(a7)	; $0185D6
 	move.w #$1,-(a7)	; $0185DA
 	move.w #$1d,-(a7)	; $0185DE
-	jsr FUN_011bd8.l	; $0185E2
+	jsr sprite_write.l	; $0185E2
 	lea.l $e(a7),a7	; $0185E8
 	clr.l -$24(a6)	; $0185EC
 L0185F0:
@@ -11068,7 +11068,7 @@ L01865A:
 	move.w #$234,$ff0076.l	; $0186DC
 	move.w #$1e,-(a7)	; $0186E4
 	move.w #$13,-(a7)	; $0186E8
-	jsr FUN_01383c.l	; $0186EC
+	jsr map_decode.l	; $0186EC
 	addq.w #$2,a7	; $0186F2
 	move.l d0,-(a7)	; $0186F4
 	jsr FUN_011a7c.l	; $0186F6
@@ -11076,7 +11076,7 @@ L01865A:
 	move.w d0,$ff8640.l	; $0186FE
 	move.w #$24a,-(a7)	; $018704
 	move.w #$25,-(a7)	; $018708
-	jsr FUN_01383c.l	; $01870C
+	jsr map_decode.l	; $01870C
 	addq.w #$2,a7	; $018712
 	move.l d0,-(a7)	; $018714
 	jsr FUN_011a7c.l	; $018716
@@ -11084,7 +11084,7 @@ L01865A:
 	move.w d0,$ff8642.l	; $01871E
 	move.w #$122,-(a7)	; $018724
 	move.w #$38,-(a7)	; $018728
-	jsr FUN_01383c.l	; $01872C
+	jsr map_decode.l	; $01872C
 	addq.w #$2,a7	; $018732
 	move.l d0,-(a7)	; $018734
 	jsr FUN_011a7c.l	; $018736
@@ -11092,7 +11092,7 @@ L01865A:
 	move.w d0,$ff8684.l	; $01873E
 	move.w #$51,-(a7)	; $018744
 	move.w #$3a,-(a7)	; $018748
-	jsr FUN_01383c.l	; $01874C
+	jsr map_decode.l	; $01874C
 	addq.w #$2,a7	; $018752
 	move.l d0,-(a7)	; $018754
 	jsr FUN_011a7c.l	; $018756
@@ -11119,7 +11119,7 @@ L01865A:
 	moveq #$0,d7	; $0187AA
 L0187AC:
 	move.w #$28,-(a7)	; $0187AC
-	jsr FUN_01383c.l	; $0187B0
+	jsr map_decode.l	; $0187B0
 	addq.w #$2,a7	; $0187B6
 	move.l d0,-(a7)	; $0187B8
 	move.w $ff8642.l,d0	; $0187BA
@@ -11137,7 +11137,7 @@ L0187AC:
 	cmp.w #$28,d7	; $0187E4
 	bcs.b L0187AC	; $0187E8
 	move.w #$27,-(a7)	; $0187EA
-	jsr FUN_01383c.l	; $0187EE
+	jsr map_decode.l	; $0187EE
 	addq.w #$2,a7	; $0187F4
 	move.l d0,-(a7)	; $0187F6
 	move.w $ff8642.l,d0	; $0187F8
@@ -11152,7 +11152,7 @@ L0187AC:
 	jsr FUN_01194a.l	; $018818
 	lea.l $14(a7),a7	; $01881E
 	move.w #$39,-(a7)	; $018822
-	jsr FUN_01383c.l	; $018826
+	jsr map_decode.l	; $018826
 	addq.w #$2,a7	; $01882C
 	move.l d0,-(a7)	; $01882E
 	moveq #$0,d0	; $018830
@@ -11223,7 +11223,7 @@ L0188AC:
 	move.w d0,-(a7)	; $0188FC
 	move.w #$da,-(a7)	; $0188FE
 	clr.w -(a7)	; $018902
-	jsr FUN_011bd8.l	; $018904
+	jsr sprite_write.l	; $018904
 	lea.l $e(a7),a7	; $01890A
 	move.w $ff867e.l,d0	; $01890E
 	add.w a4,d0	; $018914
@@ -11239,7 +11239,7 @@ L0188AC:
 	move.w d0,-(a7)	; $018936
 	move.w #$118,-(a7)	; $018938
 	move.w #$1,-(a7)	; $01893C
-	jsr FUN_011bd8.l	; $018940
+	jsr sprite_write.l	; $018940
 	lea.l $e(a7),a7	; $018946
 	move.w $ff867e.l,d0	; $01894A
 	add.w a4,d0	; $018950
@@ -11252,7 +11252,7 @@ L0188AC:
 	move.w d0,-(a7)	; $018968
 	move.w #$f7,-(a7)	; $01896A
 	move.w #$2,-(a7)	; $01896E
-	jsr FUN_011bd8.l	; $018972
+	jsr sprite_write.l	; $018972
 	lea.l $e(a7),a7	; $018978
 	move.w $ff867e.l,d0	; $01897C
 	add.w a4,d0	; $018982
@@ -11265,7 +11265,7 @@ L0188AC:
 	move.w d0,-(a7)	; $01899A
 	move.w #$12b,-(a7)	; $01899C
 	move.w #$3,-(a7)	; $0189A0
-	jsr FUN_011bd8.l	; $0189A4
+	jsr sprite_write.l	; $0189A4
 	lea.l $e(a7),a7	; $0189AA
 	move.w $ff867e.l,d0	; $0189AE
 	add.w a4,d0	; $0189B4
@@ -11282,7 +11282,7 @@ L0188AC:
 	move.w d0,-(a7)	; $0189DA
 	move.w #$cb,-(a7)	; $0189DC
 	move.w #$4,-(a7)	; $0189E0
-	jsr FUN_011bd8.l	; $0189E4
+	jsr sprite_write.l	; $0189E4
 	lea.l $e(a7),a7	; $0189EA
 	move.w $ff867e.l,d0	; $0189EE
 	add.w a4,d0	; $0189F4
@@ -11299,7 +11299,7 @@ L0188AC:
 	move.w d0,-(a7)	; $018A1A
 	move.w #$d6,-(a7)	; $018A1C
 	move.w #$5,-(a7)	; $018A20
-	jsr FUN_011bd8.l	; $018A24
+	jsr sprite_write.l	; $018A24
 	lea.l $e(a7),a7	; $018A2A
 	move.w $ff867e.l,d0	; $018A2E
 	add.w a4,d0	; $018A34
@@ -11316,7 +11316,7 @@ L0188AC:
 	move.w d0,-(a7)	; $018A58
 	move.w #$15d,-(a7)	; $018A5A
 	move.w #$6,-(a7)	; $018A5E
-	jsr FUN_011bd8.l	; $018A62
+	jsr sprite_write.l	; $018A62
 	lea.l $e(a7),a7	; $018A68
 	move.w d5,d0	; $018A6C
 	sub.w #$12c,d0	; $018A6E
@@ -11391,7 +11391,7 @@ L018AF6:
 	move.w #$234,$ff0076.l	; $018B44
 	move.w #$30,-(a7)	; $018B4C
 	move.w #$1b,-(a7)	; $018B50
-	jsr FUN_01383c.l	; $018B54
+	jsr map_decode.l	; $018B54
 	addq.w #$2,a7	; $018B5A
 	move.l d0,-(a7)	; $018B5C
 	jsr FUN_011a7c.l	; $018B5E
@@ -11399,7 +11399,7 @@ L018AF6:
 	move.w d0,$ff8688.l	; $018B66
 	move.w #$180,-(a7)	; $018B6C
 	move.w #$1c,-(a7)	; $018B70
-	jsr FUN_01383c.l	; $018B74
+	jsr map_decode.l	; $018B74
 	addq.w #$2,a7	; $018B7A
 	move.l d0,-(a7)	; $018B7C
 	jsr FUN_011a7c.l	; $018B7E
@@ -11407,7 +11407,7 @@ L018AF6:
 	move.w d0,$ff868a.l	; $018B86
 	move.w #$1e,-(a7)	; $018B8C
 	move.w #$13,-(a7)	; $018B90
-	jsr FUN_01383c.l	; $018B94
+	jsr map_decode.l	; $018B94
 	addq.w #$2,a7	; $018B9A
 	move.l d0,-(a7)	; $018B9C
 	jsr FUN_011a7c.l	; $018B9E
@@ -11415,7 +11415,7 @@ L018AF6:
 	move.w d0,$ff8640.l	; $018BA6
 	move.w #$218,-(a7)	; $018BAC
 	move.w #$35,-(a7)	; $018BB0
-	jsr FUN_01383c.l	; $018BB4
+	jsr map_decode.l	; $018BB4
 	addq.w #$2,a7	; $018BBA
 	move.l d0,-(a7)	; $018BBC
 	jsr FUN_011a7c.l	; $018BBE
@@ -11423,7 +11423,7 @@ L018AF6:
 	move.w d0,$ff8642.l	; $018BC6
 	move.w #$170,-(a7)	; $018BCC
 	move.w #$3c,-(a7)	; $018BD0
-	jsr FUN_01383c.l	; $018BD4
+	jsr map_decode.l	; $018BD4
 	addq.w #$2,a7	; $018BDA
 	move.l d0,-(a7)	; $018BDC
 	jsr FUN_011a7c.l	; $018BDE
@@ -11520,7 +11520,7 @@ L018CE6:
 	jsr FUN_011a1a.l	; $018D32
 	lea.l $10(a7),a7	; $018D38
 	move.w #$36,-(a7)	; $018D3C
-	jsr FUN_01383c.l	; $018D40
+	jsr map_decode.l	; $018D40
 	addq.w #$2,a7	; $018D46
 	move.l d0,-(a7)	; $018D48
 	move.w $ff8642.l,d0	; $018D4A
@@ -11728,7 +11728,7 @@ L018DF0:
 	move.w #$234,$ff0076.l	; $01902A
 	move.w #$1e,-(a7)	; $019032
 	move.w #$13,-(a7)	; $019036
-	jsr FUN_01383c.l	; $01903A
+	jsr map_decode.l	; $01903A
 	addq.w #$2,a7	; $019040
 	move.l d0,-(a7)	; $019042
 	jsr FUN_011a7c.l	; $019044
@@ -11736,7 +11736,7 @@ L018DF0:
 	move.w d0,$ff8640.l	; $01904C
 	move.w #$24a,-(a7)	; $019052
 	move.w #$25,-(a7)	; $019056
-	jsr FUN_01383c.l	; $01905A
+	jsr map_decode.l	; $01905A
 	addq.w #$2,a7	; $019060
 	move.l d0,-(a7)	; $019062
 	jsr FUN_011a7c.l	; $019064
@@ -11744,7 +11744,7 @@ L018DF0:
 	move.w d0,$ff8642.l	; $01906C
 	move.w #$122,-(a7)	; $019072
 	move.w #$38,-(a7)	; $019076
-	jsr FUN_01383c.l	; $01907A
+	jsr map_decode.l	; $01907A
 	addq.w #$2,a7	; $019080
 	move.l d0,-(a7)	; $019082
 	jsr FUN_011a7c.l	; $019084
@@ -11752,7 +11752,7 @@ L018DF0:
 	move.w d0,$ff8684.l	; $01908C
 	move.w #$51,-(a7)	; $019092
 	move.w #$3a,-(a7)	; $019096
-	jsr FUN_01383c.l	; $01909A
+	jsr map_decode.l	; $01909A
 	addq.w #$2,a7	; $0190A0
 	move.l d0,-(a7)	; $0190A2
 	jsr FUN_011a7c.l	; $0190A4
@@ -11779,7 +11779,7 @@ L018DF0:
 	moveq #$0,d7	; $0190F8
 L0190FA:
 	move.w #$28,-(a7)	; $0190FA
-	jsr FUN_01383c.l	; $0190FE
+	jsr map_decode.l	; $0190FE
 	addq.w #$2,a7	; $019104
 	move.l d0,-(a7)	; $019106
 	move.w $ff8642.l,d0	; $019108
@@ -11797,7 +11797,7 @@ L0190FA:
 	cmp.w #$28,d7	; $019132
 	bcs.b L0190FA	; $019136
 	move.w #$27,-(a7)	; $019138
-	jsr FUN_01383c.l	; $01913C
+	jsr map_decode.l	; $01913C
 	addq.w #$2,a7	; $019142
 	move.l d0,-(a7)	; $019144
 	move.w $ff8642.l,d0	; $019146
@@ -11812,7 +11812,7 @@ L0190FA:
 	jsr FUN_01194a.l	; $019166
 	lea.l $14(a7),a7	; $01916C
 	move.w #$39,-(a7)	; $019170
-	jsr FUN_01383c.l	; $019174
+	jsr map_decode.l	; $019174
 	addq.w #$2,a7	; $01917A
 	move.l d0,-(a7)	; $01917C
 	moveq #$0,d0	; $01917E
@@ -11997,7 +11997,7 @@ L01937A:
 	move.w d0,-(a7)	; $0193A8
 	move.w #$118,-(a7)	; $0193AA
 	clr.w -(a7)	; $0193AE
-	jsr FUN_011bd8.l	; $0193B0
+	jsr sprite_write.l	; $0193B0
 	lea.l $e(a7),a7	; $0193B6
 	move.w $ff867e.l,d0	; $0193BA
 	add.w a4,d0	; $0193C0
@@ -12010,7 +12010,7 @@ L01937A:
 	move.w d0,-(a7)	; $0193D8
 	move.w #$f7,-(a7)	; $0193DA
 	move.w #$1,-(a7)	; $0193DE
-	jsr FUN_011bd8.l	; $0193E2
+	jsr sprite_write.l	; $0193E2
 	lea.l $e(a7),a7	; $0193E8
 	move.w $ff867e.l,d0	; $0193EC
 	add.w a4,d0	; $0193F2
@@ -12023,7 +12023,7 @@ L01937A:
 	move.w d0,-(a7)	; $01940A
 	move.w #$12b,-(a7)	; $01940C
 	move.w #$2,-(a7)	; $019410
-	jsr FUN_011bd8.l	; $019414
+	jsr sprite_write.l	; $019414
 	lea.l $e(a7),a7	; $01941A
 	move.w $ff867e.l,d0	; $01941E
 	add.w a4,d0	; $019424
@@ -12040,7 +12040,7 @@ L01937A:
 	move.w d0,-(a7)	; $01944A
 	move.w #$cb,-(a7)	; $01944C
 	move.w #$3,-(a7)	; $019450
-	jsr FUN_011bd8.l	; $019454
+	jsr sprite_write.l	; $019454
 	lea.l $e(a7),a7	; $01945A
 	move.w $ff867e.l,d0	; $01945E
 	add.w a4,d0	; $019464
@@ -12057,7 +12057,7 @@ L01937A:
 	move.w d0,-(a7)	; $01948A
 	move.w #$d6,-(a7)	; $01948C
 	move.w #$4,-(a7)	; $019490
-	jsr FUN_011bd8.l	; $019494
+	jsr sprite_write.l	; $019494
 	lea.l $e(a7),a7	; $01949A
 	move.w $ff867e.l,d0	; $01949E
 	add.w a4,d0	; $0194A4
@@ -12074,7 +12074,7 @@ L01937A:
 	move.w d0,-(a7)	; $0194CA
 	move.w #$15d,-(a7)	; $0194CC
 	move.w #$5,-(a7)	; $0194D0
-	jsr FUN_011bd8.l	; $0194D4
+	jsr sprite_write.l	; $0194D4
 	lea.l $e(a7),a7	; $0194DA
 	move.w -$20(a6),-(a7)	; $0194DE
 	move.w -$1a(a6),-(a7)	; $0194E2
@@ -12427,7 +12427,7 @@ L01B5CC:
 	; data $01B5CC-$01B5D5
 	incbin "rop-original.gen",$01B5CC,$A
 	; code $01B5D6-$01B917
-FUN_01b5d6:
+new_game_init:
 	link.w a6,#$fff4	; $01B5D6
 	move.w #$8,-(a7)	; $01B5DA
 	pea.l $ff0e18.l	; $01B5DE
@@ -12656,7 +12656,7 @@ L01B970:
 	beq.b L01B97E	; $01B976
 	jsr FUN_0275b0.l	; $01B978
 L01B97E:
-	jsr FUN_0138a8.l	; $01B97E
+	jsr menu_format.l	; $01B97E
 	tst.b $ffb08a.l	; $01B984
 	beq.b L01B9A2	; $01B98A
 	tst.w $ff00ac.l	; $01B98C
@@ -12701,7 +12701,7 @@ FUN_01ba16:
 	unlk a6	; $01BA22
 	rts	; $01BA24
 	; code $01BA26-$01BA4D
-FUN_01ba26:
+request_full_redraw:
 	link.w a6,#$0	; $01BA26
 	move.w #$ffff,$ff0098.l	; $01BA2A
 	move.b #$ff,$ffb08a.l	; $01BA32
@@ -15348,7 +15348,7 @@ L01DC14:
 	addq.w #$6,a7	; $01DC42
 	clr.w $ff009e.l	; $01DC44
 	move.w #$14,-(a7)	; $01DC4A
-	jsr jingle_play.l	; $01DC4E
+	jsr FUN_0173ec.l	; $01DC4E
 	addq.w #$2,a7	; $01DC54
 	move.w $a(a6),d0	; $01DC56
 	ext.l d0	; $01DC5A
@@ -15368,7 +15368,7 @@ L01DC76:
 	move.b (a0,d0.l),d1	; $01DC86
 	and.w #$f,d1	; $01DC8A
 	move.w d1,-(a7)	; $01DC8E
-	jsr FUN_0173bc.l	; $01DC90
+	jsr song_request.l	; $01DC90
 	addq.w #$2,a7	; $01DC96
 L01DC98:
 	move.w #$ffff,$ff0124.l	; $01DC98
@@ -15493,7 +15493,7 @@ L01DDDE:
 	move.w #$2,$ff0126.l	; $01DE2C
 	jsr FUN_032d0e.l	; $01DE34
 	move.w d0,-(a7)	; $01DE3A
-	jsr FUN_0173bc.l	; $01DE3C
+	jsr song_request.l	; $01DE3C
 	addq.w #$2,a7	; $01DE42
 L01DE44:
 	move.w #$ffff,$ff0e98.l	; $01DE44
@@ -16083,7 +16083,7 @@ FUN_01e4e6:
 	add.w #$98,d0	; $01E510
 	move.w d0,-(a7)	; $01E514
 	move.w #$1e,-(a7)	; $01E516
-	jsr FUN_011bd8.l	; $01E51A
+	jsr sprite_write.l	; $01E51A
 	lea.l $e(a7),a7	; $01E520
 	move.w $ff8640.l,d0	; $01E524
 	add.w #$4063,d0	; $01E52A
@@ -16099,7 +16099,7 @@ FUN_01e4e6:
 	add.w #$b8,d0	; $01E54A
 	move.w d0,-(a7)	; $01E54E
 	move.w #$1f,-(a7)	; $01E550
-	jsr FUN_011bd8.l	; $01E554
+	jsr sprite_write.l	; $01E554
 	lea.l $e(a7),a7	; $01E55A
 	unlk a6	; $01E55E
 	rts	; $01E560
@@ -18575,7 +18575,7 @@ L02063C:
 	moveq #$0,d0	; $02063C
 	move.b $ffbb6f.l,d0	; $02063E
 	move.w d0,-(a7)	; $020644
-	jsr jingle_play.l	; $020646
+	jsr FUN_0173ec.l	; $020646
 	addq.w #$2,a7	; $02064C
 	bra.w L020758	; $02064E
 L020652:
@@ -18689,7 +18689,7 @@ L02078E:
 	clr.w $ff009c.l	; $0207BC
 	jsr FUN_026dd2.l	; $0207C2
 	jsr FUN_026e44.l	; $0207C8
-	jsr FUN_0138a8.l	; $0207CE
+	jsr menu_format.l	; $0207CE
 L0207D4:
 	bra.w L01F318	; $0207D4
 	; code $0207D8-$020883
@@ -18827,7 +18827,7 @@ L0209D0:
 	move.w #$ffff,$ff009c.l	; $0209D8
 	tst.w $c(a6)	; $0209E0
 	beq.b L020A22	; $0209E4
-	jsr FUN_0138a8.l	; $0209E6
+	jsr menu_format.l	; $0209E6
 	tst.b $ffb08a.l	; $0209EC
 	beq.b L020A08	; $0209F2
 	tst.w $ff00ac.l	; $0209F4
@@ -18952,7 +18952,7 @@ L020B62:
 	clr.b $ffbb80.l	; $020B92
 	move.b #$ff,$ffb08a.l	; $020B98
 	move.w #$ffff,$ff009c.l	; $020BA0
-	jsr FUN_0138a8.l	; $020BA8
+	jsr menu_format.l	; $020BA8
 	tst.b $ffb08a.l	; $020BAE
 	beq.b L020BCA	; $020BB4
 	tst.w $ff00ac.l	; $020BB6
@@ -19791,7 +19791,7 @@ world_tick:
 	cmp.w #$1e,d4	; $0215F0
 	bne.b L0215FC	; $0215F4
 L0215F6:
-	jsr FUN_0170da.l	; $0215F6
+	jsr palette_fade.l	; $0215F6
 L0215FC:
 	move.w $ff0e16.l,d0	; $0215FC
 	and.w #$7,d0	; $021602
@@ -19800,7 +19800,7 @@ L0215FC:
 	tst.w d0	; $02160E
 	bne.b L021620	; $021610
 	move.w $ff012e.l,-(a7)	; $021612
-	jsr jingle_play.l	; $021618
+	jsr FUN_0173ec.l	; $021618
 	addq.w #$2,a7	; $02161E
 L021620:
 	cmpi.w #$1,$ff00ae.l	; $021620
@@ -19937,7 +19937,7 @@ L02175E:
 	addq.w #$6,a7	; $02180C
 	jsr FUN_032d0e.l	; $02180E
 	move.w d0,-(a7)	; $021814
-	jsr FUN_0173bc.l	; $021816
+	jsr song_request.l	; $021816
 	addq.w #$2,a7	; $02181C
 	move.w #$ffff,-(a7)	; $02181E
 	move.w #$14,-(a7)	; $021822
@@ -20112,7 +20112,7 @@ L0219C2:
 	addq.w #$6,a7	; $021A6A
 	jsr FUN_032d0e.l	; $021A6C
 	move.w d0,-(a7)	; $021A72
-	jsr FUN_0173bc.l	; $021A74
+	jsr song_request.l	; $021A74
 	addq.w #$2,a7	; $021A7A
 	move.w #$ffff,-(a7)	; $021A7C
 	move.w #$14,-(a7)	; $021A80
@@ -25673,7 +25673,7 @@ L02658C:
 L0265AA:
 	jsr FUN_032d0e.l	; $0265AA
 	move.w d0,-(a7)	; $0265B0
-	jsr FUN_0173bc.l	; $0265B2
+	jsr song_request.l	; $0265B2
 	addq.w #$2,a7	; $0265B8
 	bra.w L0262AA	; $0265BA
 	; code $0265BE-$0269F1
@@ -26018,7 +26018,7 @@ L026954:
 	addq.w #$2,a7	; $0269DC
 	jsr FUN_032d0e.l	; $0269DE
 	move.w d0,-(a7)	; $0269E4
-	jsr FUN_0173bc.l	; $0269E6
+	jsr song_request.l	; $0269E6
 	addq.w #$2,a7	; $0269EC
 	bra.w L02690C	; $0269EE
 	; code $0269F2-$026A8B
@@ -26862,7 +26862,7 @@ FUN_0275b0:
 	cmpi.w #$7,$ff0e7e.l	; $0275C8
 	beq.b L027616	; $0275D0
 	clr.w $ff0114.l	; $0275D2
-	jsr FUN_0138a8.l	; $0275D8
+	jsr menu_format.l	; $0275D8
 	move.w $ff8648.l,d0	; $0275DE
 	add.w #$6000,d0	; $0275E4
 	moveq #$0,d1	; $0275E8
@@ -28792,7 +28792,7 @@ L029110:
 	bra.w L029368	; $029124
 	move.w $ff0114.l,d6	; $029128
 	move.w #$ffff,$ff0114.l	; $02912E
-	jsr FUN_0138a8.l	; $029136
+	jsr menu_format.l	; $029136
 	tst.w d6	; $02913C
 	bne.b L029178	; $02913E
 	move.w $ff8648.l,d0	; $029140
@@ -29582,7 +29582,7 @@ L029B4E:
 	jsr FUN_026b58.l	; $029B9E
 	lea.l $a(a7),a7	; $029BA4
 	move.w #$8,-(a7)	; $029BA8
-	jsr jingle_play.l	; $029BAC
+	jsr FUN_0173ec.l	; $029BAC
 	addq.w #$2,a7	; $029BB2
 	bra.w L029FBA	; $029BB4
 	clr.w -(a7)	; $029BB8
@@ -29665,7 +29665,7 @@ L029C36:
 	move.w d1,d0	; $029CA2
 	bra.w L029DB4	; $029CA4
 	move.w #$8,-(a7)	; $029CA8
-	jsr jingle_play.l	; $029CAC
+	jsr FUN_0173ec.l	; $029CAC
 	addq.w #$2,a7	; $029CB2
 	bra.w L029DC6	; $029CB4
 	move.w #$ff,-(a7)	; $029CB8
@@ -29767,7 +29767,7 @@ L029E0E:
 	cmpi.w #$6,-$12(a6)	; $029E12
 	blt.b L029DCE	; $029E18
 	move.w #$8,-(a7)	; $029E1A
-	jsr jingle_play.l	; $029E1E
+	jsr FUN_0173ec.l	; $029E1E
 	addq.w #$2,a7	; $029E24
 	bra.w L029FBA	; $029E26
 	cmpi.w #$ffff,$a(a6)	; $029E2A
@@ -30025,7 +30025,7 @@ L029FBA:
 	bra.b L02A1D6	; $02A1AA
 L02A1AC:
 	move.w #$8,-(a7)	; $02A1AC
-	jsr jingle_play.l	; $02A1B0
+	jsr FUN_0173ec.l	; $02A1B0
 	addq.w #$2,a7	; $02A1B6
 	bra.b L02A1DE	; $02A1B8
 L02A1BA:
@@ -30427,7 +30427,7 @@ L02A72A:
 	jsr FUN_026b58.l	; $02A750
 	lea.l $a(a7),a7	; $02A756
 	move.w #$8,-(a7)	; $02A75A
-	jsr jingle_play.l	; $02A75E
+	jsr FUN_0173ec.l	; $02A75E
 	addq.w #$2,a7	; $02A764
 L02A766:
 	bra.w L02AD60	; $02A766
@@ -30684,7 +30684,7 @@ L02A9BC:
 	jsr FUN_026b58.l	; $02AABA
 	lea.l $a(a7),a7	; $02AAC0
 	move.w #$8,-(a7)	; $02AAC4
-	jsr jingle_play.l	; $02AAC8
+	jsr FUN_0173ec.l	; $02AAC8
 	addq.w #$2,a7	; $02AACE
 	clr.w -$14(a6)	; $02AAD0
 L02AAD4:
@@ -30828,7 +30828,7 @@ L02AC2E:
 	jsr FUN_026b58.l	; $02ACD8
 	lea.l $a(a7),a7	; $02ACDE
 	move.w #$8,-(a7)	; $02ACE2
-	jsr jingle_play.l	; $02ACE6
+	jsr FUN_0173ec.l	; $02ACE6
 	addq.w #$2,a7	; $02ACEC
 	clr.w -(a7)	; $02ACEE
 	move.w -$10(a6),-(a7)	; $02ACF0
@@ -32685,7 +32685,7 @@ L02C558:
 	jsr FUN_026b58.l	; $02C626
 	lea.l $a(a7),a7	; $02C62C
 	move.w #$8,-(a7)	; $02C630
-	jsr jingle_play.l	; $02C634
+	jsr FUN_0173ec.l	; $02C634
 	addq.w #$2,a7	; $02C63A
 L02C63C:
 	bra.w L02C8AA	; $02C63C
@@ -32841,7 +32841,7 @@ L02C870:
 	tst.w -$a(a6)	; $02C87A
 	beq.b L02C88C	; $02C87E
 	move.w #$8,-(a7)	; $02C880
-	jsr jingle_play.l	; $02C884
+	jsr FUN_0173ec.l	; $02C884
 	addq.w #$2,a7	; $02C88A
 L02C88C:
 	bra.b L02C8AA	; $02C88C
@@ -33848,7 +33848,7 @@ L02D4A6:
 	move.b #$ff,$ffb08a.l	; $02D4B2
 	move.w #$ffff,$ff009c.l	; $02D4BA
 	move.w #$ffff,$ff0110.l	; $02D4C2
-	jsr FUN_0138a8.l	; $02D4CA
+	jsr menu_format.l	; $02D4CA
 	tst.b $ffb08a.l	; $02D4D0
 	beq.b L02D4EE	; $02D4D6
 	tst.w $ff00ac.l	; $02D4D8
@@ -34054,7 +34054,7 @@ L02D76E:
 	addq.w #$4,a7	; $02D798
 	move.w #$1,$ff0112.l	; $02D79A
 	move.w #$4,-(a7)	; $02D7A2
-	jsr FUN_0173bc.l	; $02D7A6
+	jsr song_request.l	; $02D7A6
 	addq.w #$2,a7	; $02D7AC
 	move.w #$1,-(a7)	; $02D7AE
 	jsr FUN_026cca.l	; $02D7B2
@@ -34598,7 +34598,7 @@ L02DE8A:
 	jsr FUN_026b58.l	; $02DF5A
 	lea.l $a(a7),a7	; $02DF60
 	move.w #$8,-(a7)	; $02DF64
-	jsr jingle_play.l	; $02DF68
+	jsr FUN_0173ec.l	; $02DF68
 	addq.w #$2,a7	; $02DF6E
 	move.w #$e5,-(a7)	; $02DF70
 	jsr FUN_02d50c(pc)	; $02DF74
@@ -35197,7 +35197,7 @@ L02E7C2:
 	addq.w #$8,a7	; $02E7EA
 L02E7EC:
 	move.w #$8,-(a7)	; $02E7EC
-	jsr jingle_play.l	; $02E7F0
+	jsr FUN_0173ec.l	; $02E7F0
 	addq.w #$2,a7	; $02E7F6
 	bra.b L02E81C	; $02E7F8
 L02E7FA:
@@ -35727,7 +35727,7 @@ L02EE48:
 L02EE56:
 	jsr wait_vblank.l	; $02EE56
 	jsr FUN_013d84.l	; $02EE5C
-	jsr FUN_0138a8.l	; $02EE62
+	jsr menu_format.l	; $02EE62
 	unlk a6	; $02EE68
 	rts	; $02EE6A
 	; code $02EE6C-$02EF4D
@@ -43820,7 +43820,7 @@ L035984:
 FUN_03599c:
 	link.w a6,#$ffc4	; $03599C
 	move.w #$14,-(a7)	; $0359A0
-	jsr jingle_play.l	; $0359A4
+	jsr FUN_0173ec.l	; $0359A4
 	addq.w #$2,a7	; $0359AA
 	cmpi.w #$ff,$8(a6)	; $0359AC
 	beq.b L0359E8	; $0359B2
@@ -44777,7 +44777,7 @@ L0367BE:
 	tst.w -$6(a6)	; $0367CA
 	bne.w L0368E0	; $0367CE
 	move.w #$10,-(a7)	; $0367D2
-	jsr jingle_play.l	; $0367D6
+	jsr FUN_0173ec.l	; $0367D6
 	addq.w #$2,a7	; $0367DC
 	cmpi.w #$fb,-$4(a6)	; $0367DE
 	beq.w L0368A2	; $0367E4
@@ -49786,7 +49786,7 @@ L03AB28:
 	addq.w #$4,a7	; $03AB36
 L03AB38:
 	move.w #$14,-(a7)	; $03AB38
-	jsr jingle_play.l	; $03AB3C
+	jsr FUN_0173ec.l	; $03AB3C
 	addq.w #$2,a7	; $03AB42
 	move.w #$4,$ff012e.l	; $03AB44
 	move.w #$ffff,-(a7)	; $03AB4C
@@ -54063,7 +54063,7 @@ L03E000:
 	cmpi.w #$a,$ffc41c.l	; $03E052
 	blt.b L03E0B8	; $03E05A
 	clr.w $ff013c.l	; $03E05C
-	jsr FUN_017b88.l	; $03E062
+	jsr scene_draw.l	; $03E062
 	clr.w $ff0110.l	; $03E068
 	jsr FUN_026a8c.l	; $03E06E
 	move.w #$14,-(a7)	; $03E074
