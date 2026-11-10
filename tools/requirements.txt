@@ -1,0 +1,2 @@
+# Python tools pinned (GitHub #4). Only disassemble.py needs Capstone; the gate (make gate) needs none.
+capstone==5.0.7
