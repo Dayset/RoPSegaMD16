@@ -94,7 +94,7 @@ L000318:
 	beq.b L000318	; $000322
 	move.w #$8134,$c00004.l	; $000324
 	bsr.w pad1_read_boot	; $00032C
-	bsr.w vdp_unk_000a14	; $000330
+	bsr.w vdp_ram_clear	; $000330
 	bsr.w pad1_read_boot	; $000334
 	move.w #$0,$ffc00e.l	; $000338
 	move.w #$0,$ffc010.l	; $000340
@@ -224,7 +224,7 @@ L0004B4:
 	movem.w (a7)+,d0-d7	; $0004BC
 	rts	; $0004C0
 	; code $0004C2-$0004E5
-vdp_unk_0004c2:
+vdp_fill_rows:
 	movem.w d1-d3,-(a7)	; $0004C2
 	ori.w #$c00,d2	; $0004C6
 	ori.w #$c00,d3	; $0004CA
@@ -406,7 +406,7 @@ L0007AA:
 	moveq #$12,d3	; $0007DA
 	moveq #$0,d3	; $0007DC
 	move.w #$5c02,$c00004.l	; $0007DE
-	bsr.w vdp_unk_0004c2	; $0007E6
+	bsr.w vdp_fill_rows	; $0007E6
 	move.w #$4e4,d0	; $0007EA
 	bsr.w vdp_unk_00093e	; $0007EE
 	bra.b L000832	; $0007F2
@@ -424,7 +424,7 @@ L0007F4:
 	move.w #$c24,(a5)	; $00081E
 	moveq #$25,d2	; $000822
 	moveq #$0,d3	; $000824
-	bsr.w vdp_unk_0004c2	; $000826
+	bsr.w vdp_fill_rows	; $000826
 	move.w #$ce,d0	; $00082A
 	bsr.w vdp_unk_00093e	; $00082E
 L000832:
@@ -434,7 +434,7 @@ L000834:
 	move.w #$c12,(a5)	; $00083C
 	moveq #$13,d2	; $000840
 	moveq #$0,d3	; $000842
-	bsr.w vdp_unk_0004c2	; $000844
+	bsr.w vdp_fill_rows	; $000844
 	move.w #$e86,d0	; $000848
 	bsr.w vdp_unk_00093e	; $00084C
 	lea.l $ffd2ea.l,a3	; $000850
@@ -478,7 +478,7 @@ sys_unk_00088a:
 	add.w d2,d0	; $0008AA
 	rts	; $0008AC
 	; code $0008AE-$0008D1
-sys_unk_0008ae:
+vdp_row_pair_write:
 	moveq #$7,d7	; $0008AE
 L0008B0:
 	bsr.b sys_unk_00088a	; $0008B0
@@ -496,7 +496,7 @@ L0008B0:
 	move.w d0,(a5)	; $0008CE
 	rts	; $0008D0
 	; code $0008D2-$0008DB
-sys_unk_0008d2:
+plane_cell_index:
 	move.w d5,d6	; $0008D2
 	move.w d4,d7	; $0008D4
 	asl.w #$2,d7	; $0008D6
@@ -625,7 +625,7 @@ L000A00:
 	dbra d4,L000982	; $000A0E
 	rts	; $000A12
 	; code $000A14-$000AB1
-vdp_unk_000a14:
+vdp_ram_clear:
 	clr.w $ffc000.l	; $000A14
 	movea.l #$c00004,a4	; $000A1A
 	movea.l #$c00000,a5	; $000A20
@@ -660,12 +660,12 @@ L000A90:
 	dbra d1,L000A90	; $000A92
 	moveq #$0,d1	; $000A96
 	move.l #$40000010,$c00004.l	; $000A98
-	bsr.b vdp_unk_000ab2	; $000AA2
+	bsr.b vram_cram_clear	; $000AA2
 	move.l #$60000000,$c00004.l	; $000AA4
 	neg.w d1	; $000AAE
 	rts	; $000AB0
 	; code $000AB2-$000CF9
-vdp_unk_000ab2:
+vram_cram_clear:
 	move.w d1,(a5)	; $000AB2
 	move.w d1,(a5)	; $000AB4
 	lea.l $ffc0ea.l,a3	; $000AB6
@@ -679,7 +679,7 @@ L000AC8:
 	move.b (a0)+,d2	; $000ACC
 	bra.b L000B04	; $000ACE
 L000AD0:
-	bsr.w sys_unk_0008d2	; $000AD0
+	bsr.w plane_cell_index	; $000AD0
 	movea.l #$66666666,a1	; $000AD4
 	tst.w d4	; $000ADA
 	bne.b L000AE4	; $000ADC
@@ -701,7 +701,7 @@ L000B04:
 	dbra d2,L000AD0	; $000B04
 	tst.w d0	; $000B08
 	beq.b L000B28	; $000B0A
-	bsr.w sys_unk_0008d2	; $000B0C
+	bsr.w plane_cell_index	; $000B0C
 	movea.l #$55555555,a1	; $000B10
 	move.l a1,(a3,d6.w)	; $000B16
 	add.w d1,d6	; $000B1A
@@ -785,21 +785,21 @@ L000BF8:
 	move.w #$48,d3	; $000C18
 	moveq #$0,d4	; $000C1C
 	moveq #$12,d5	; $000C1E
-	bsr.w sys_unk_0008ae	; $000C20
+	bsr.w vdp_row_pair_write	; $000C20
 	lea.l $ffc0a2.l,a0	; $000C24
 	lea.l $ffc0c6.l,a1	; $000C2A
 	move.w #$88,d2	; $000C30
 	move.w #$48,d3	; $000C34
 	move.w #$48,d4	; $000C38
 	moveq #$24,d5	; $000C3C
-	bsr.w sys_unk_0008ae	; $000C3E
+	bsr.w vdp_row_pair_write	; $000C3E
 	lea.l $ffc05a.l,a0	; $000C42
 	lea.l $ffc07e.l,a1	; $000C48
 	move.w #$b0,d2	; $000C4E
 	move.w #$46,d3	; $000C52
 	move.w #$90,d4	; $000C56
 	moveq #$0,d5	; $000C5A
-	bsr.w sys_unk_0008ae	; $000C5C
+	bsr.w vdp_row_pair_write	; $000C5C
 	lea.l $ffdbea.l,a1	; $000C60
 	lea.l L000DC8(pc),a3	; $000C66
 	moveq #$0,d2	; $000C6A
@@ -974,10 +974,10 @@ L001216:
 	move.w #$2000,sr	; $001266
 	jmp game_dispatch.l	; $00126A
 	; code $001270-$001271
-sys_unk_001270:
+hblank_empty:
 	rte	; $001270
 	; code $001272-$00133B
-vdp_unk_001272:
+vblank_handler:
 	move.w #$0,$ff0016.l	; $001272
 	addq.l #$1,$ff0010.l	; $00127A
 	movem.l d0-d2/a0,-(a7)	; $001280
@@ -1711,7 +1711,7 @@ L00DA80:
 	move.l (a7)+,d3	; $00DA8E
 	rts	; $00DA90
 	; code $00DA92-$00DB2F
-vdp_unk_00da92:
+vdp_dma_copy:
 	move.l $4(a7),d0	; $00DA92
 	move.l $8(a7),d1	; $00DA96
 	move.w $c(a7),d2	; $00DA9A
@@ -1757,7 +1757,7 @@ L00DB1E:
 	move.l (a7)+,d3	; $00DB2C
 	rts	; $00DB2E
 	; code $00DB30-$00DBCB
-vdp_unk_00db30:
+vdp_dma_fill:
 	move.l $4(a7),d0	; $00DB30
 	move.l $8(a7),d1	; $00DB34
 	move.w $c(a7),d2	; $00DB38
@@ -1800,7 +1800,7 @@ L00DBB4:
 	move.w (a7)+,sr	; $00DBC8
 	rts	; $00DBCA
 	; code $00DBCC-$00DC15
-vdp_unk_00dbcc:
+vdp_write_block:
 	move.w $4(a7),d0	; $00DBCC
 	move.w $6(a7),d1	; $00DBD0
 	move.w $8(a7),d2	; $00DBD4
@@ -1845,12 +1845,12 @@ pad1_read:
 	move.w #$100,$a11100.l	; $00DC82
 	move.b #$40,$a10009.l	; $00DC8A
 	move.b #$0,$a10003.l	; $00DC92
-	bsr.b z80_unk_00dcca	; $00DC9A
+	bsr.b wait_delay	; $00DC9A
 	move.b $a10003.l,d0	; $00DC9C
 	asl.b #$2,d0	; $00DCA2
 	and.b #$c0,d0	; $00DCA4
 	move.b #$40,$a10003.l	; $00DCA8
-	bsr.b z80_unk_00dcca	; $00DCB0
+	bsr.b wait_delay	; $00DCB0
 	move.b $a10003.l,d1	; $00DCB2
 L00DCB8:
 	and.b #$3f,d1	; $00DCB8
@@ -1859,7 +1859,7 @@ L00DCB8:
 	not.b d0	; $00DCC6
 	rts	; $00DCC8
 	; code $00DCCA-$00DCE1
-z80_unk_00dcca:
+wait_delay:
 	move.w #$0,$a11100.l	; $00DCCA
 	moveq #$a,d1	; $00DCD2
 L00DCD4:
@@ -1871,12 +1871,12 @@ pad2_read:
 	move.w #$100,$a11100.l	; $00DCE2
 	move.b #$40,$a1000b.l	; $00DCEA
 	move.b #$0,$a10005.l	; $00DCF2
-	bsr.b z80_unk_00dcca	; $00DCFA
+	bsr.b wait_delay	; $00DCFA
 	move.b $a10005.l,d0	; $00DCFC
 	asl.b #$2,d0	; $00DD02
 	and.b #$c0,d0	; $00DD04
 	move.b #$40,$a10005.l	; $00DD08
-	bsr.b z80_unk_00dcca	; $00DD10
+	bsr.b wait_delay	; $00DD10
 	move.b $a10005.l,d1	; $00DD12
 	bra.b L00DCB8	; $00DD18
 	; data $00DD1A-$00DD5B
@@ -4008,7 +4008,7 @@ L012520:
 	clr.w -(a7)	; $01259C
 	clr.w -(a7)	; $01259E
 	clr.w -(a7)	; $0125A0
-	jsr vdp_unk_00dbcc.l	; $0125A2
+	jsr vdp_write_block.l	; $0125A2
 	addq.w #$8,a7	; $0125A8
 	jsr clear_sprite_attr(pc)	; $0125AA
 	move.w $ff8640.l,-(a7)	; $0125AE
@@ -4188,7 +4188,7 @@ L0127CE:
 	move.w d0,-(a7)	; $0127EA
 	clr.w -(a7)	; $0127EC
 	clr.w -(a7)	; $0127EE
-	jsr vdp_unk_00dbcc.l	; $0127F0
+	jsr vdp_write_block.l	; $0127F0
 	addq.w #$8,a7	; $0127F6
 	move.w #$1964,d0	; $0127F8
 	sub.w -$2(a6),d0	; $0127FC
@@ -6545,7 +6545,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $014966
 	clr.w -(a7)	; $014968
 	clr.w -(a7)	; $01496A
-	jsr vdp_unk_00dbcc.l	; $01496C
+	jsr vdp_write_block.l	; $01496C
 	addq.w #$8,a7	; $014972
 	move.w $ff8640.l,-(a7)	; $014974
 	move.w #$1c,-(a7)	; $01497A
@@ -6909,7 +6909,7 @@ L014E54:
 	clr.w -(a7)	; $014E7C
 	move.w -$a(a6),-(a7)	; $014E7E
 	move.w -$a(a6),-(a7)	; $014E82
-	jsr vdp_unk_00dbcc.l	; $014E86
+	jsr vdp_write_block.l	; $014E86
 	addq.w #$8,a7	; $014E8C
 	cmpi.w #$78,-$a(a6)	; $014E8E
 	beq.b L014E9E	; $014E94
@@ -6995,7 +6995,7 @@ L014F54:
 	clr.w -(a7)	; $014FA2
 	clr.w -(a7)	; $014FA4
 	clr.w -(a7)	; $014FA6
-	jsr vdp_unk_00dbcc.l	; $014FA8
+	jsr vdp_write_block.l	; $014FA8
 	addq.w #$8,a7	; $014FAE
 	unlk a6	; $014FB0
 	rts	; $014FB2
@@ -7411,7 +7411,7 @@ L015544:
 	clr.w -(a7)	; $015558
 	move.w #$120,-(a7)	; $01555A
 	clr.w -(a7)	; $01555E
-	jsr vdp_unk_00dbcc.l	; $015560
+	jsr vdp_write_block.l	; $015560
 	addq.w #$8,a7	; $015566
 	jsr clear_sprite_attr.l	; $015568
 	pea.l L0CCAD8.l	; $01556E
@@ -7776,7 +7776,7 @@ L015AC6:
 	clr.w -(a7)	; $015ACE
 	move.w -$2(a6),-(a7)	; $015AD0
 	clr.w -(a7)	; $015AD4
-	jsr vdp_unk_00dbcc.l	; $015AD6
+	jsr vdp_write_block.l	; $015AD6
 	addq.w #$8,a7	; $015ADC
 	cmpi.w #$d8,-$2(a6)	; $015ADE
 	bne.b L015B1E	; $015AE4
@@ -7960,7 +7960,7 @@ sys_unk_015c08:
 	move.w #$140,-(a7)	; $015D8A
 	clr.w -(a7)	; $015D8E
 	clr.w -(a7)	; $015D90
-	jsr vdp_unk_00dbcc.l	; $015D92
+	jsr vdp_write_block.l	; $015D92
 	addq.w #$8,a7	; $015D98
 	move.w $ff8686.l,d0	; $015D9A
 	add.w #$6000,d0	; $015DA0
@@ -10348,7 +10348,7 @@ scene_draw:
 	clr.w -(a7)	; $017CF6
 	clr.w -(a7)	; $017CF8
 	clr.w -(a7)	; $017CFA
-	jsr vdp_unk_00dbcc.l	; $017CFC
+	jsr vdp_write_block.l	; $017CFC
 	addq.w #$8,a7	; $017D02
 	move.w #$8b03,-(a7)	; $017D04
 	jsr vdp_ctrl_write.l	; $017D08
@@ -11059,7 +11059,7 @@ L01865A:
 	clr.w -(a7)	; $0186BC
 	clr.w -(a7)	; $0186BE
 	clr.w -(a7)	; $0186C0
-	jsr vdp_unk_00dbcc.l	; $0186C2
+	jsr vdp_write_block.l	; $0186C2
 	addq.w #$8,a7	; $0186C8
 	jsr clear_sprite_attr.l	; $0186CA
 	move.w #$9011,-(a7)	; $0186D0
@@ -11206,7 +11206,7 @@ L0188AC:
 	clr.w -(a7)	; $0188C2
 	move.w d4,-(a7)	; $0188C4
 	move.w -$2(a6),-(a7)	; $0188C6
-	jsr vdp_unk_00dbcc.l	; $0188CA
+	jsr vdp_write_block.l	; $0188CA
 	addq.w #$8,a7	; $0188D0
 	move.w $ff867e.l,d0	; $0188D2
 	add.w d7,d0	; $0188D8
@@ -11459,7 +11459,7 @@ L018AF6:
 	move.w #$140,-(a7)	; $018C5C
 	clr.w -(a7)	; $018C60
 	clr.w -(a7)	; $018C62
-	jsr vdp_unk_00dbcc.l	; $018C64
+	jsr vdp_write_block.l	; $018C64
 	addq.w #$8,a7	; $018C6A
 	jsr clear_sprite_attr.l	; $018C6C
 	move.w $ff8640.l,-(a7)	; $018C72
@@ -11719,7 +11719,7 @@ L018DF0:
 	clr.w -(a7)	; $01900A
 	clr.w -(a7)	; $01900C
 	clr.w -(a7)	; $01900E
-	jsr vdp_unk_00dbcc.l	; $019010
+	jsr vdp_write_block.l	; $019010
 	addq.w #$8,a7	; $019016
 	jsr clear_sprite_attr.l	; $019018
 	move.w #$9011,-(a7)	; $01901E
@@ -11863,7 +11863,7 @@ L0191B2:
 	clr.w -(a7)	; $019214
 	move.w d4,-(a7)	; $019216
 	move.w -$2(a6),-(a7)	; $019218
-	jsr vdp_unk_00dbcc.l	; $01921C
+	jsr vdp_write_block.l	; $01921C
 	addq.w #$8,a7	; $019222
 	pea.l L0CCD58.l	; $019224
 	move.w #$1,-(a7)	; $01922A

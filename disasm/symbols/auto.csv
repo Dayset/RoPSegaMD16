@@ -3,25 +3,25 @@ addr,name,tier,note
 0x000462,sys_unk_000462,0,auto: touches none
 0x000474,sys_unk_000474,0,auto: touches none
 0x0004A0,sys_unk_0004a0,0,auto: touches none
-0x0004C2,vdp_unk_0004c2,0,auto: touches $400000 $492000 $600000 $C00004 $C00400 $C00600
+0x0004C2,vdp_fill_rows,1,static: word-pair writes to VDP data port with ori $c00 address bits in a row loop
 0x00088A,sys_unk_00088a,0,auto: touches none
-0x0008AE,sys_unk_0008ae,0,auto: touches none
-0x0008D2,sys_unk_0008d2,0,auto: touches none
+0x0008AE,vdp_row_pair_write,1,static: 8 iterations; each writes two tile words via sys_unk_00088a; stride 0x20
+0x0008D2,plane_cell_index,1,static: index = d5 + 4*d4 (cell offset from two coordinates)
 0x0008DC,sys_unk_0008dc,0,auto: touches $FFC008
 0x0008F4,sys_unk_0008f4,0,auto: touches $FFC008
 0x00093E,vdp_unk_00093e,0,auto: touches $C00004 $C00200 $C01200
 0x00096C,sys_unk_00096c,0,auto: touches $333333 $AAAAAA $DDDDDD $FFC008 $FFD2EA
-0x000A14,vdp_unk_000a14,0,auto: touches $400000 $600000 $C00000 $C00004 $FFC000 $FFFF00
-0x000AB2,vdp_unk_000ab2,0,auto: touches $222222 $400000 $402000 $444444 $522000 $555555
+0x000A14,vdp_ram_clear,1,static: clears $FFC000 and RAM by longs; sets VDP write addresses $C00004/$C00000
+0x000AB2,vram_cram_clear,2,architecture.md: clears 64 KB VRAM and CRAM via $AB2
 0x000CFA,sys_unk_000cfa,0,auto: touches none
 0x000D04,vdp_unk_000d04,0,auto: touches $202020 $4D414E $C00004 $FF0000 $FF000C $FF0010
-0x001270,sys_unk_001270,0,auto: touches none
-0x001272,vdp_unk_001272,0,auto: touches $A10003 $A10009 $A11100 $C00000 $C00004 $FF0010
-0x00DA92,vdp_unk_00da92,0,auto: touches $C00004 $FF0016
-0x00DB30,vdp_unk_00db30,0,auto: touches $C00000 $C00004
-0x00DBCC,vdp_unk_00dbcc,0,auto: touches $C00000 $C00004
+0x001270,hblank_empty,2,architecture.md: level 4 (HBlank) handler is a single rte; empty
+0x001272,vblank_handler,2,architecture.md / sound.md:130: VBlank handler 0x1272 calls per-frame sound tick
+0x00DA92,vdp_dma_copy,1,static: VDP autoincrement 2 ($8F02) and DMA length register ($93xx) setup
+0x00DB30,vdp_dma_fill,1,static: VDP autoincrement 1 ($8F01) and DMA length register ($93xx) setup
+0x00DBCC,vdp_write_block,1,static: VDP write address command $4000 then word writes to data port
 0x00DC16,vdp_unk_00dc16,0,auto: touches $A10003 $A10009 $A11100 $C00000 $C00004
-0x00DCCA,z80_unk_00dcca,0,auto: touches $A10005 $A1000B $A11100
+0x00DCCA,wait_delay,2,save.md: bsr $DCCA delay routine (move.w #0;$A11100 timing loop)
 0x00DD5C,sys_unk_00dd5c,0,auto: touches $202020 $FF0EAC
 0x00DE02,sys_unk_00de02,0,auto: touches none
 0x00DE1A,sys_unk_00de1a,0,auto: touches none
