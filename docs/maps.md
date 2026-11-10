@@ -27,7 +27,8 @@ count** (e.g. world map max 437 vs rec 6's 438 tiles).
 
 The **walkable overworld / town / dungeon terrain grid is not a ROM
 table** — resolved 2026-11-10 (see "The walkable terrain grid"
-below). It is a runtime structure: the 252 chunk tilemaps in the
+below), with walkability and the RAM record layouts pinned live
+the same day. It is a runtime structure: the 252 chunk tilemaps in the
 `$43850` table, per-tile properties in `$5EDC4`, and 176 terrain
 streams decoded by `$E358`/`$E3B4`, assembled at runtime into
 RAM cell grids (`$FFB36C`, `$FFB76C`) and a 4-slot chunk cache.
@@ -355,13 +356,50 @@ runtime assembly of four ROM sources plus RAM grids:
 
 **`$5EDC4` (512 words, ROM `0x05EDC4`)**: indexed by tile index &
 `$1FF` at 9 sites (e.g. `0x01BAAC`, `0x01BB82`). Value structure
-(verified from the bit tests in `$1BA4E`): bits 13–15 are a count
-(0–7) — the number of `$E358` terrain-decode rows for that tile;
-bits 5–9 and 12 and the low byte are flags. Most common value is
-`0x240B` (×177); 147 distinct values; low byte most often `0x0B`
-(×177) or `0x01` (×101). Which flag bit means "walkable" is **not
-yet pinned** — the bit fields the code actually tests are listed
-above, the semantics are open.
+(verified from the bit tests in `$1BA4E`, corrected 2026-11-10 —
+see below): bits 0–4 are a low value (stream-index offset; +`$22F`
+for the secondary lookup), bit 5 is a flag (stream-source select),
+bit 6 a flag (tile index −1 when `$FF0092` is set), bit 7 a flag
+(row count +1), bit 8 a flag (row count +4), bit 9 a flag (tile
+index +1 when `$FF0092` is set), and **bits 10–15 are a 6-bit
+terrain type** (extracted via `rol.w #$6; and.w #$3f`).
+Most common value is `0x240B` (×177); 147 distinct values; low
+byte most often `0x0B` (×177) or `0x01` (×101).
+
+**Correction (2026-11-10): the `$E358` row count is in the TILE
+word, not in `$5EDC4`.** Every `rol.w #$3; and.w #$7` site in
+`$1BA4E` operates on the tile word (`-$4(a6)`, from `$1C176`),
+not on the `$5EDC4` word. The row argument passed (negated) to
+the `$231D8`/`$2343A`/`$232AC`/`$232D2` handlers is
+((tile bits 13–15) + (`$5EDC4` bit 7)) × 7 + 4×(`$5EDC4` bit 8)
+— i.e. the row count is (tile bits 13–15) + bit 7, scaled by 7
+words per row, plus a 4-word offset when bit 8 is set.
+The earlier maps agent and this section misattributed the count
+to `$5EDC4`; the tile-word reading is the correct one.
+
+**Walkability — PINNED LIVE 2026-11-10.** There is no single
+"walkable flag bit". The game's own walkability gate is
+`FUN_02dc0c` (`$02DC0C`, called from `$02dcce` on the verb-executor
+path): it reads the tile via `$1C176`, takes
+`type = ($5EDC4[tile & $1FF] >> 10) & $3F`, and returns 1
+(walkable) iff **type is 5, 9, or 18, or the tile index
+(`tile & $1FF`) is `$24` (36)** — otherwise 0. A harness
+(`.scratch006/harness_walk.s`, hook at the attract loop `0x35C`,
+results in `$FFD000+`) called `$02dc0c(x, y, mode=0)` for 13
+overworld coordinates chosen offline from the decoded chunk
+tilemaps + `$5EDC4` table: **13/13 match** — types 5, 9, 18 →
+1; tile `$24` (type 6) → 1; types 0, 1, 2, 3, 4, 6, 7, 8, 10 →
+0. The discriminating pair is `(0,0)` tile `$24` (type 6) → 1
+versus `(156,0)` tile `$57` (type 6) → 0: same type, different
+tile index — the `$24` rule is real, and type 6 alone is not
+walkable. (The mode=`$17` path delegates to `$253FE` with an
+inverted result and is not live-tested. The player's arrow-key
+step, `FUN_01c892`, does not itself gate on `$5EDC4`; the same
+type set {5, 9, 18} is also tested by the NPC/AI routines
+`$2619c`/`$265be`.) Overworld type distribution (352×224):
+type 0 ×21810, 6 ×11644, 1 ×8231, 4 ×6933, 8 ×5224, 19 ×3972,
+5 ×3139, 7 ×3136, 20 ×3106, 18 ×2879, 9 ×2491, and the rest
+smaller; tile `$24` occurs ×5426.
 
 **`$E358` threaded terrain decoder** (entry, 114 direct `jsr`
 call sites in 15 caller functions — correcting the earlier "no direct
@@ -376,17 +414,85 @@ a4=`$FF1EC0`, then a computed jump via the `$DF58` table
 unrolled writer emits 4 bytes/group with a +`0x1D` skip → 33-byte
 output rows (1bpp bitmap) into `$FF1EC0`.
 
-**`$1BA4E` per-cell terrain driver** (`0x01BA4E–0x01BC56+`): for
-each cell it calls `$1C176` to get the tile word, looks up
-`$5EDC4[tile & $1FF]`, extracts bit fields, then loops calling
-`$E358` per row (d3 = a value ≥ `$22F`, so always the `$E412`
-path, or `#$230` = 560). After the decode it computes a cell
-index from position via the `$FFA7FC` geometry struct and reads
-two bytes: `$FFB36C[index]` and `$FFB76C[index]`. The `$FFB76C`
-byte is a record key: if not `$FF`, it is ×12 and used to index
-`$FFB0CC` (a 12-byte-record table), whose word at +`$A` is read.
-So `$FFB36C`/`$FFB76C` are byte-per-cell RAM grids and `$FFB0CC`
-is a per-cell record table — the runtime walkable-state grids.
+**`$1BA4E` per-cell terrain driver** (`0x01BA4E–0x01C0EA`): for
+each cell of a 10×10 window it calls `$1C176` to get the tile
+word, looks up `$5EDC4[tile & $1FF]`, extracts bit fields, then
+loops calling `$E358` per row (the row count is tile bits 13–15
+plus `$5EDC4` bits 7/8 — see the correction above). After the
+decode it computes a **screen-relative** cell index
+(`(screen_col+1) × 32 + (screen_row+1)`, from the `$FFA7FC`
+geometry struct and the scroll offsets `-$16`/`-$14` set by
+`$20D58`) and reads two bytes: `$FFB36C[index]` and
+`$FFB76C[index]`.
+
+**`$FFB36C` / `$FFB76C` — byte meanings [live].** Both are 32×32
+byte grids (1024 bytes each, contiguous: `$FFB76C` =
+`$FFB36C`+1024), initialised to `$FF` (empty) by `$20C6A`.
+A byte holds a **`$FFB0CC` record index (0–55)** or `$FF`
+(empty). A record lives in exactly one grid at a time. Which
+grid is chosen at creation (`$20E7E`): type ≥ 0 → `$FFB36C`
+(grid 0), type < 0 → `$FFB76C` (grid 1). The grids are
+**screen-relative**, not map-absolute — the cell is a position
+on the currently visible 10×10 screen (plus a 1-cell border),
+and `$1C21A` shifts both grids on scroll. In `$1BA4E` the
+`$FFB76C` (grid 1) dispatch runs first, then `$FFB36C`
+(grid 0) — so grid 1 is drawn first (behind) and grid 0 second
+(in front). `$FF0096` is the active-record count (0 in the
+attract; `$20CF6` clears it). Live evidence (harness B1/B2,
+`.scratch006/`): the attract context has cold (zeroed) RAM for
+this subsystem — grids all `0x00`, records all `0x0000` —
+so `$20C5E` must run first or `$20E7E` errors out via `$12FA0`
+(which hangs waiting for input); after `$20C5E`, creating two
+records put index 0 in `$FFB36C[165]` and index 1 in
+`$FFB76C[198]`, exactly as predicted.
+
+**`$FFB0CC` 12-byte record layout [live].** 56 records (672
+bytes). Created by `$20E7E` (called from `$0243d6` when a
+character is placed on the map; the character slot's +`0x04`
+holds its record index, so these are **per-character map-draw
+records**). Fields, verified live by creating two records with
+known args (harness B1, `.scratch006/harness_rec.s`):
++`0` = type = abs(creation type); `$270F` = free (set by
+`$20CCA`, checked by `$20D0A`/`$210D8`); +`2` = creation arg
+`$c`; +`4` = creation arg `$a`; +`6` = creation arg `$12`;
++`8` = 0 (cleared on creation; `$231D8` subtracts it as an
+offset); +`$A` = creation arg `$14` = the dispatch index
+(0–3 → `$231D8`/`$2343A`/`$232AC`/`$232D2`, read by `$1BA4E`).
+Live: record 0 = `[000A, 0007, 0005, 0003, 0000, 0001]` and
+record 1 = `[0014, 000D, 000B, 0005, 0000, 0002]`, matching the
+creation args exactly; `$FF0096` went 0 → 2. `$210D8` removes
+a record (frees it, clears its grid cell via `$2103E`, `$FF0096`−−);
+`$2103E` finds a record's cell and grid (output +4 = 0 for
+`$FFB36C`, 1 for `$FFB76C`).
+
+**The `$2343A` promotion [live].** In `$1BA4E`'s `$FFB36C`
+(grid 0) dispatch, the dispatch-1 (`$2343A`) case — and only
+that case — promotes the record when the `$FFB76C` cell is
+`$FF`: `$FFB36C[cell]` is cleared to `$FF` and `$FFB76C[cell]`
+takes the record index. Live (harness B2,
+`.scratch006/harness_ba4e.s`, `$1BA4E(125,111)`): record 0
+(disp=1) moved from `$FFB36C[165]` to `$FFB76C[165]` while
+record 1 (disp=2) stayed in `$FFB76C[198]`; `$FF0096` stayed
+2 and the records themselves were unchanged.
+
+**`$197B0` 36-byte record layout.** 56 records (0x7E0 bytes,
+`$197B0–$19F8F`), indexed by a `$FFB0CC` record's (+`2` + +`4`)
+in `$231D8`/`$2343A` (plus `geom+$A` × 8, which is 0 in
+practice). Each record is **4 groups of 8 bytes + a 4-byte tail**
+— the tail is 0 in 32 records and non-zero in 24 (recs 16–19
+and 36–55; values (1–5, 1–2); meaning [open]). Group 0 — the only group the handlers read — is
+(`$E358` stream-index offset, `$E358` 4th-arg param, x-offset,
+y-offset) as 4 words: +`0` is added to the `$FFB0CC` record's
++`0` to form the `$E358` stream index; +`2` is passed to
+`$E358`; +`4`/`+6` are added to the screen x / (y + row).
+Groups 1–3 have the same shape but different stream offsets
+(and occasionally non-zero x/y offsets, e.g. record 12's
+(2,0)/(0,1)/(−2,0)/(0,−1) cross) — 4 variants of one template
+(frame or facing); which variant is selected is [open]. Group-0
+stream offsets range 0–14; the param is 0 or 1 (28 records each).
+Live support: harness B2 ran `$1BA4E` with records indexing
+`$197B0` records 12 and 24, and the dispatch handlers computed
+valid `$E358` streams (18 and 28) without faulting.
 
 **`$FF1EC0` is shared scratch, NOT a persistent grid** (settled):
 9 references — the `$E3B4`/`$E412` decoder writes there
@@ -400,26 +506,35 @@ redraw. The `$E358` output bitmap is transient.
 (`0x01B74E`, in the map-load routine) to `$FFB08C` — a RAM struct
 initialized by `$1DA10` calls with per-location values (fields
 used: +0 width divisor, +2 height divisor, +4 chunk-height
-divisor, +6 row width, +`$A` ×8). A second `$E358` caller,
-`$231D8`, processes 36-byte records from the `$197B0` table
-(mostly zeros with small values) and calls `$E358` with stream
-index `#$209` (521) when a record's first word is `$1CC` (460).
+divisor, +6 row width, +`$A` ×8). A second `$E358` caller, `$231D8`, is the dispatch-0 handler for
+`$FFB0CC` records: it indexes a `$197B0` record by the
+`$FFB0CC` record's (+`2` + +`4`), and calls `$E358` once — or
+twice, with stream `#$209` (521) first, when the record's +`0`
+is `$1CC` (460). See the `$197B0` layout above. The other
+handlers are `$2343A` (dispatch 1; also the promotion path),
+`$232AC` (dispatch 2), and `$232D2` (dispatch 3, which checks
+the record's +`0` against `$210`/`$218`/`$228`/`$21C`/`$216`/`$22A`).
 
-Still open on the terrain grid: which `$5EDC4` flag bit means
-walkable (needs a live check — e.g. a harness that steps onto a
-cell and reads `$FFB36C`/`$FFB76C`); the byte meanings of
-`$FFB36C`/`$FFB76C` and the `$FFB0CC` 12-byte record layout; the
-`$197B0` 36-byte record layout; the chunk tileset/palette pairing
-(blocks full tile renders of the chunks).
+Still open on the terrain grid: the `$197B0` group 1–3 selection
+(frame vs facing); the `$253FE` mode-`$17` walkability path
+(not live-tested); how the player's arrow-key step gates on
+terrain (it does not use `$02dc0c`); the chunk tileset/palette
+pairing (blocks full tile renders of the 252 chunks).
 
 ## Open questions (for #020 / #011 / #015)
 
 1. **The walkable overworld / town / dungeon terrain grid — resolved
-   as a runtime structure 2026-11-10 (see above).** Remaining open
-   bits: which `$5EDC4` flag bit means walkable; the `$FFB36C` /
-   `$FFB76C` byte meanings and the `$FFB0CC` 12-byte record layout;
-   the `$197B0` 36-byte record layout; the chunk tileset/palette
-   pairing (blocks full tile renders of the 252 chunks).
+   as a runtime structure 2026-11-10 (see above), and the three
+   remaining bits pinned live the same day.** Walkability is a
+   `$5EDC4` terrain-type test (type ∈ {5, 9, 18} or tile `$24`),
+   via `$02dc0c` (13/13 harness cases); the `$FFB36C`/`$FFB76C`
+   byte meanings and the `$FFB0CC` 12-byte record layout are
+   live-confirmed (harness B1/B2, incl. the `$2343A` promotion);
+   the `$197B0` 36-byte record layout is determined. Still open:
+   the `$197B0` group 1–3 selection, the `$253FE` mode-`$17`
+   path, the player's arrow-key step gate, and the chunk
+   tileset/palette pairing (blocks full tile renders of the
+   252 chunks).
 2. **Which screen is rec 35?** Starfield + grey diamond, selected by
    routine 0x17860's arg. Candidates: a second world, the Void, a
    space view. Needs a live check (drive the game to the map screen

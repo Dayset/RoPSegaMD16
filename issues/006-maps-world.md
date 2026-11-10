@@ -41,14 +41,19 @@ Locate the world/map data: towns, dungeons, overworld layout.
 
 The **walkable overworld / town / dungeon terrain grid** — RESOLVED
 2026-11-10 as a runtime structure, not a ROM table (see follow-up
-below; `docs/maps.md` "The walkable terrain grid"). Remaining open
-bits: which `$5EDC4` flag bit means walkable, the `$FFB36C` /
-`$FFB76C` byte meanings, the `$FFB0CC` 12-byte record layout, the
-`$197B0` 36-byte record layout, and the chunk tileset/palette pairing
-(blocks full tile renders of the 252 chunks). Also open: which
-screen rec 35 is, title layer 2's purpose, rec 39's display
-palette + its scene's top half, city markers on the world map,
-`$1194A` flip-path arithmetic.
+below; `docs/maps.md` "The walkable terrain grid"), and the three
+remaining bits pinned live the same day: walkability is a `$5EDC4`
+terrain-type test (type ∈ {5, 9, 18} or tile `$24`) via `$02dc0c`
+(13/13 harness cases); the `$FFB36C` / `$FFB76C` byte meanings and
+the `$FFB0CC` 12-byte record layout are live-confirmed (harness
+B1/B2, incl. the `$2343A` promotion); the `$197B0` 36-byte record
+layout is determined. Still open: the `$197B0` group 1–3 selection,
+the `$253FE` mode-`$17` walkability path, the player's arrow-key
+step gate, and the chunk tileset/palette pairing (blocks full tile
+renders of the 252 chunks). Also open: which screen rec 35 is,
+title layer 2's purpose, rec 39's display palette + its scene's
+top half, city markers on the world map, `$1194A` flip-path
+arithmetic.
 
 ## Follow-up (2026-11-10) — chunk renders + terrain grid resolved
 
@@ -73,12 +78,41 @@ swap, all pixels); the title logo was already correct.
 ROM terrain-grid table. The walkable terrain is a runtime assembly:
 chunk tilemaps (`$43850`, loaded by `$19692` into a 4-slot cache
 at `$FF868C`, chunk index from position via `$1C83E`/`$1C7DA`) +
-per-tile properties (`$5EDC4`, 512 words; bits 13–15 = a count of
-`$E358` decode rows, bits 5–9/12 + low byte = flags) + 176 terrain
-streams (`$5F524`, decoded by `$E358` → `$E3B4`/`$E412` into the
-`$FF1EC0` 1bpp bitmap) + RAM cell grids (`$FFB36C`, `$FFB76C`
-byte-per-cell, `$FFB0CC` 12-byte records) driven by the per-cell
-routine `$1BA4E`. `$FF1EC0` is shared scratch, NOT a persistent
-grid (cleared by `$11DE8`, 26,496 bytes, each redraw; also used by
-the `$96120` and sprite loaders). Grid geometry is per-location in
-a RAM struct at `$FFB08C` (pointed to by `$FFA7FC`).
+per-tile properties (`$5EDC4`, 512 words; bits 10–15 = a 6-bit
+terrain type, bits 5–9 = flags, low byte = stream-index offset)
++ 176 terrain streams (`$5F524`, decoded by `$E358` → `$E3B4`/`$E412`
+into the `$FF1EC0` 1bpp bitmap) + RAM cell grids (`$FFB36C`,
+`$FFB76C` byte-per-cell, `$FFB0CC` 12-byte records) driven by the
+per-cell routine `$1BA4E`. `$FF1EC0` is shared scratch, NOT a
+persistent grid (cleared by `$11DE8`, 26,496 bytes, each redraw;
+also used by the `$96120` and sprite loaders). Grid geometry is
+per-location in a RAM struct at `$FFB08C` (pointed to by `$FFA7FC`).
+
+**Terrain grid follow-up (2026-11-10) — walkability + record layouts
+pinned live** (harnesses in `.scratch006/`, hook at the attract loop
+`0x35C`, results in `$FFD000+`):
+- **Walkability**: no single flag bit. `$02dc0c` returns walkable
+  iff the `$5EDC4` terrain type (bits 10–15) is 5, 9, or 18, or the
+  tile index is `$24`. 13/13 live cases (types 5/9/18 → 1; tile
+  `$24` type 6 → 1; types 0/1/2/3/4/6/7/8/10 → 0).
+- **Correction**: the `$E358` row count (tile bits 13–15) is in the
+  TILE word, not in `$5EDC4` — the earlier note misattributed it.
+- **`$FFB36C`/`$FFB76C`**: 32×32 byte grids, screen-relative
+  (cell = (screen_col+1)×32 + (screen_row+1)); a byte is a `$FFB0CC`
+  record index or `$FF` (empty). Type ≥ 0 → `$FFB36C`, type < 0 →
+  `$FFB76C`; grid 1 is dispatched (drawn) first, grid 0 second.
+- **`$FFB0CC` (12 B)**: +0 type (`$270F` = free), +2/+4 template-index
+  components, +6 offset, +8 = 0, +$A dispatch index (0–3). Live:
+  two created records matched their args exactly; `$FF0096` is the
+  active-record count. Records are per-character draw records
+  (created by `$0243d6`; the character slot's +`0x04` holds its index).
+- **`$2343A` promotion [live]**: in `$1BA4E`'s `$FFB36C` dispatch,
+  a dispatch-1 record moves to `$FFB76C` when that cell is `$FF`.
+- **`$197B0` (36 B × 56)**: 4 groups of 8 bytes + 4-byte tail;
+  group 0 = (stream-index offset, `$E358` param, x-offset, y-offset);
+  index = `$FFB0CC` record's (+2 + +4). Groups 1–3 are variants
+  (selection open). Harness B2 exercised `$197B0` records 12 and 24
+  through `$1BA4E` with valid streams (18, 28).
+- **Attract-context gotcha**: the grids/records are cold (zeroed)
+  RAM before any map load, so `$20C5E` must run before `$20E7E`
+  or it errors via `$12FA0` (which hangs waiting for input).
