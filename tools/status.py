@@ -4,9 +4,11 @@
 Writes STATUS.md and replaces the README block between
 <!-- status:start --> and <!-- status:end -->.
 Sources: disasm/symbols/*.csv, disasm/ghidra/functions.txt, disasm/src/rop.s,
+         disasm/regions.csv (M8 bytes-accounted; high-entropy on its own line),
          rop-original.gen (size, if present).
 Usage: python3 tools/status.py
 """
+import csv
 import re
 import sys
 from pathlib import Path
@@ -22,7 +24,6 @@ def num(t):
 
 
 def measure():
-    import csv
     names = []
     for path in sorted([*Path('disasm/symbols').glob('code_*.csv'), Path('disasm/symbols/extra.csv'), Path('disasm/symbols/auto.csv')]):
         with path.open(newline='') as fh:
@@ -44,15 +45,35 @@ def measure():
             raw += 1
     size = ROM_SIZE
     code = size - incbin
+    # M8 region join: regions.csv must cover exactly the incbin bytes.
+    regions = None
+    rp = Path('disasm/regions.csv')
+    if rp.exists():
+        unknown = high_entropy = total = 0
+        with rp.open(newline='') as fh:
+            for r in csv.DictReader(fh):
+                n = int(r['end'], 16) - int(r['start'], 16) + 1
+                total += n
+                if r['class'] == 'unknown':
+                    unknown += n
+                elif r['class'] == 'high-entropy':
+                    high_entropy += n
+        if total != incbin:
+            sys.exit(f'status: regions.csv covers {total} bytes, incbin is {incbin}')
+        regions = {
+            'accounted': code + (total - unknown),
+            'unknown': unknown, 'high_entropy': high_entropy,
+        }
     return {
         'named': tier1, 'tier0': tier0, 'funcs': funcs,
         'code': code, 'incbin': incbin, 'raw': raw, 'size': size,
+        'regions': regions,
     }
 
 
 def tables(m):
     pct = lambda a, b: f'{100.0 * a / b:.2f}%'
-    return [
+    rows = [
         '| Metric | Now | Target | Share |',
         '|---|---:|---:|---:|',
         f"| Routines named (tier ≥ 1) | {m['named']} of {m['funcs']} | {m['funcs']} | {100 * m['named'] // max(m['funcs'], 1)}% |",
@@ -61,6 +82,14 @@ def tables(m):
         f"| Bytes in incbin data | {m['incbin']:,} | 0 | {pct(m['incbin'], m['size'])} |",
         f"| Raw fallbacks in code | {m['raw']} | 0 | — |",
     ]
+    if m['regions'] is not None:
+        r = m['regions']
+        rows += [
+            f"| Bytes accounted (M8) | {r['accounted']:,} | {m['size']:,} | {pct(r['accounted'], m['size'])} |",
+            f"| Bytes unknown | {r['unknown']:,} | 0 | {pct(r['unknown'], m['size'])} |",
+            f"| Bytes high-entropy (opaque, counted in M8) | {r['high_entropy']:,} | 0 | {pct(r['high_entropy'], m['size'])} |",
+        ]
+    return rows
 
 
 def main():
@@ -76,7 +105,13 @@ def main():
     head, rest = text.split(START, 1)
     _, tail = rest.split(END, 1)
     readme.write_text(head + START + '\n' + body + '\n' + END + tail)
-    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}")
+    extra = ''
+    if m['regions'] is not None:
+        r = m['regions']
+        extra = (f"; M8 accounted {r['accounted']:,} "
+                 f"({100.0 * r['accounted'] / m['size']:.2f}%), "
+                 f"unknown {r['unknown']:,}, high-entropy {r['high_entropy']:,}")
+    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}{extra}")
 
 
 if __name__ == '__main__':
