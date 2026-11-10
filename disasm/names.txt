@@ -90,3 +90,5 @@
 0x00042F96 eeprom_ack_read      # docs/save.md:172 ACK read, 0x42F96-0x42FC6
 0x00043012 eeprom_read_block    # docs/save.md:176 EEPROM READ (block), 0x43012-0x430E0
 0x000430F4 eeprom_write_byte    # docs/save.md:198 EEPROM WRITE (one byte), 0x430F4-0x43230
+0x0026B58 text_enqueue_message  # docs/logic.md 2.7: message enqueue (dedup, leader gate kind 4, writes $FFBC94 ring, $1E3B0 slot alloc, sets $FF009A)
+0x002BBD2 inv_apply_resource    # docs/logic.md 3.2: central resource/goods dispatcher (code/64 quotient, code%64 remainder; gold/XP/Heal/Pow Up/Life, services, shop)
