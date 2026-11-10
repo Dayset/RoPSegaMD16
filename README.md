@@ -19,7 +19,7 @@ one. Design: [docs/tribute-remake.md](docs/tribute-remake.md), issues
 
 ## Progress
 
-Updated 2026-11-10 (remote main `9736dbd`). Counts are local issues
+Updated 2026-11-10 (remote main `e505433`). Counts are local issues
 `L001`–`L037`; detail lives in [PROGRESS.md](PROGRESS.md) and [issues/](issues/).
 Agents: keep this section and PROGRESS.md in sync — see the status rule in
 [CLAUDE.md](CLAUDE.md).
