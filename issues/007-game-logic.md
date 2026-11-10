@@ -73,12 +73,21 @@ and combat damage.
   Power 20→50, no food/water/gold deduction; paired service **Meal**
   (goods 705, 50 gold) gives +25 HP only. Sleep is a service bought
   at an inn, not a carried item; the 75-gold payment is a separate
-  transaction. Temple counterparts Heal/Pow Up/Life (goods
-  1026/1027/1028) — effects [open].
+  transaction. **Temple counterparts — located and live-verified
+  (2026-11-10, 4/4 harness cases, `.scratch007/harness_temple.s`):**
+  **Heal** (goods 1026, 150 gold) = full HP restore (max HP recomputed
+  from level, measured HP 10→95, HP max 100→95); **Pow Up** (goods
+  1027, 150 gold) = full Power restore (measured Power 20→80, no
+  recompute); **Life** (goods 1028, 700 gold) = revive a dead member
+  (cur HP/Power = 5, maxes recomputed, dead flag `+0x2C` bit 13
+  cleared, measured HP 0→5, Power 0→5, HP max 100→95, Power max
+  80→6000; no-op on a live member; plays song 8 on a revive
+  [static]). None deducts gold/food/water or flips the clock.
   **clock flips day↔night by setting `$FF0E16` to 540 (if ≤540) or 0**
   (measured 100→540, 1000→0) — not a +1200 advance. Open: which
   `$FF0E16` range is day vs night.
   Harness: `.scratch007/harness_camp.s` + `.scratch007/harness_sleep.s`
+  + `.scratch007/harness_temple.s`
   (see docs/logic.md §3.7). → #020.
 - Bribe/attitude action; Gems sell 428; `$FF012C` meanings; +0x02/+0x27;
   other `$2BBD2` handlers; who initialises `$FF0E18[2]`; item-record

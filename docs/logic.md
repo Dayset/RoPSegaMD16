@@ -735,8 +735,40 @@ from the cost, and not pursued here.
     so the 75-gold payment is a separate transaction by the purchase
     code, not part of the regain call. The temple counterparts are
     Heal (goods 1026) / Pow Up (1027) / Life (1028) — same formula,
-    item 16 ("healing", `w` = 215) — but their effects are [open]
-    (quotient-16 dispatch `$02C46A`, not traced).
+    item 16 ("healing", `w` = 215) — **LOCATED and live-verified
+    (2026-11-10, 4/4 harness cases, `.scratch007/harness_temple.s`,
+    test ROM `a24ea110c7dfe46432a63f211c67689e`)**: the quotient-16
+    dispatch `$02C46A` loads the remainder and branches to the
+    remainder jump table `$02C88E` (remainders 0–5); remainder 0 = gold
+    (adds `$c(a6)` to `$FF02DE`, clamps to `$3A98` = 15000 — the gold
+    cap), remainder 1 = XP (adds to `$FF02CE`, clamps to `$32C8` =
+    13000, then recomputes the level and writes it into order-word
+    bits 4–7 at `$02C5A8`–`$02C5C8`), remainder 2 → `$02C640` (Heal),
+    3 → `$02C6FA` (Pow Up), 4 → `$02C760` (Life). **Heal [live]: full
+    HP restore** — per party member, recompute max HP from level via
+    `FUN_031958` (20+15·level, cap 140) into `+0x20`, then copy max HP
+    to cur HP (`+0x1C`); measured HP 10 → 95, HP max 100 → 95 (level 5,
+    stored max was deliberately inconsistent to test the recompute).
+    **Pow Up [live]: full Power restore** — per party member, copy
+    stored max Power (`+0x22`) to cur Power (`+0x1E`), no recompute;
+    measured Power 20 → 80, HP untouched. **Life [live]: revive** —
+    per party member with `+0x2C` bit 13 set (dead): cur HP = 5, cur
+    Power = 5, recompute max HP (`FUN_031958`) and max Power
+    (`FUN_031946`, (level+1)·1000), clear bit 13 of `+0x2C`; measured
+    HP 0 → 5, Power 0 → 5, HP max 100 → 95, Power max 80 → 6000 (level
+    5), `+0x2C` `$2000` → `$0000`. A Life call on a live member does
+    nothing (measured: no change). None of the three deducts gold,
+    food or water (measured unchanged at 1000), none flips the clock
+    (stays 100) or sets `$FF0124` (stays 0) — like Sleep, the payment
+    is a separate purchase transaction. If Life revives anyone it plays
+    song 8 (`jsr $173EC` at `$02C884` — [static]; the call was NOP'd in
+    the test ROM only, freeze risk in the attract context). Prices
+    (price table `$D6768`, raw byte b3; `$2EA92`: raw 20–100 →
+    (raw−16)·5, raw >100 → (raw−96)·100): Heal raw 46 → **150 gold**,
+    Pow Up raw 46 → **150 gold**, Life raw 103 → **700 gold** (the
+    >100 branch — not (103−16)·5 = 435). All three are more expensive
+    than the inn services (Sleep 75, Meal 50), matching the manual's
+    "Inns are cheaper than Temples at low levels".
   * **Clock [live] — day↔night flip, but NOT a +1200 advance.**
     `$0302F0`–`$030318`: if `$FF0E16 ≤ 540` (`$21C`) set it to **540**,
     else set it to **0**. Measured: clock 100 → 540, clock 1000 → 0.
