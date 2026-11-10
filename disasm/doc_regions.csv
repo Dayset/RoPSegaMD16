@@ -14,3 +14,10 @@ start,end,class,name,doc_ref,tier
 0x05F524,0x05F7E3,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets),2
 0x0D6768,0x0D6B6B,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
 0x0D63E7,0x0D6646,table-location-song,table_location_song,docs/sound.md (152 locations x 4 bytes stride 4),2
+0x0D66A6,0x0D6767,table-item-category,table_item_category,docs/logic.md:320 (20 x 10 bytes stated; range to price-table start is 194 bytes; CONFLICT recorded not resolved),1
+0x0D6B6C,0x0D6BE9,table-spell-rank,table_spell_rank_1,docs/spells.md:99 (rank 1; stride 0x7E from pointer table $FFA7CC),2
+0x0D6BEA,0x0D6C67,table-spell-rank,table_spell_rank_2,docs/spells.md:100 (rank 2; stride 0x7E),2
+0x0D6C68,0x0D6CE5,table-spell-rank,table_spell_rank_3,docs/spells.md:101 (rank 3; stride 0x7E),2
+0x0D6CE6,0x0D6D63,table-spell-rank,table_spell_rank_4,docs/spells.md:102 (rank 4; stride 0x7E),2
+0x0D6D64,0x0D6DE1,table-spell-rank,table_spell_rank_5,docs/spells.md:103 (rank 5; stride 0x7E),2
+0x0D6DE2,0x0D6E5F,table-spell-rank,table_spell_rank_6,docs/spells.md:104 (rank 6; end inferred from 0x7E stride; not doc-stated),1
