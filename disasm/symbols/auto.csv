@@ -300,47 +300,47 @@ addr,name,tier,note
 0x0399F4,sys_unk_0399f4,0,auto: touches $FF02DC $FF02E0
 0x039a34,spell_phased_blast,1,action code 142 flat-70 family; phased cinematic build-up flash travel impact fade
 0x039be0,spell_travel_effect,1,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase
-0x039C8A,sys_unk_039c8a,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
-0x039D34,sys_unk_039d34,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
+0x039c8a,spell_step_effect_144,1,flat-70 phased spell effect action 144; visual 5 via $03CC4C; applies spell_apply_group while $FF012A below 65; called from combat_action_main dispatch
+0x039d34,spell_step_effect_145,1,flat-70 phased spell effect action 145; visual 6 or 8 if caster template $6E; same phased shape as 144; called from combat_action_main dispatch
 0x039DF4,sys_unk_039df4,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
-0x039E9E,sys_unk_039e9e,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
-0x039F48,sys_unk_039f48,0,auto: touches $FF010E $FF012A $FF012C $FF0130 $FF02B2 $FF02B4
+0x039e9e,spell_step_effect_146,1,flat-70 phased spell effect action 146; visual 7 via $03CC4C; same phased shape as 144; called from combat_action_main dispatch
+0x039f48,spell_find_target_cell,1,evaluates 13x13 cost grid and writes best cell x y to $FF024C $FF024E; called from spell_damage_calc with range 0-7
 0x03A062,sys_unk_03a062,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x03A2E4,sys_unk_03a2e4,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x03A4A2,sys_unk_03a4a2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x03AAC4,sys_unk_03aac4,0,auto: touches none
-0x03AACC,sys_unk_03aacc,0,auto: touches $FF00AE $FF010E $FF0112 $FF012E $FFC364
-0x03AB8C,sys_unk_03ab8c,0,auto: touches $FF012A
-0x03ABA6,sys_unk_03aba6,0,auto: touches $FF02B4 $FF02BE
-0x03AE40,sys_unk_03ae40,0,auto: touches $FF02B4 $FF02C0 $FF02C2
-0x03AF10,sys_unk_03af10,0,auto: touches none
-0x03AF92,sys_unk_03af92,0,auto: touches $FF010E $FF02B4 $FF02E0 $FF0EAA $FFA7CC
-0x03B152,sys_unk_03b152,0,auto: touches $FF009A $FF010E $FF012C $FF02B4 $FF02B6 $FF02CC
-0x03B408,sys_unk_03b408,0,auto: touches none
-0x03B43E,sys_unk_03b43e,0,auto: touches none
+0x03aacc,combat_victory_announce,1,shows message 0x20-0x23 by $FF00AE and food; plays Victory song 20 and SFX 91; sets $FF0112 to 1; flushes msg queue 3x; called when group alive
+0x03ab8c,combat_lock_action,2,sets $FF012C to 7 locked busy and $FF012A to 1; spells.md:262 0x07 locked busy set by $3AB8C; called from spell_effect_apply and $03B51E
+0x03aba6,world_check_char_ahead,1,checks 3x2 fan ahead of a char via +0x0A facing and $0258EE; returns 1 if any char found else 0; called from movement $0224DE
+0x03ae40,world_move_char_chain,1,moves a char via walk check and $024984 or random move; re-inits as leader and marks bit 14; recurses while result is a valid char index; called from $0226B0
+0x03af10,world_check_path_clear,1,checks 1-step and 2-step cells ahead of a char via world_get_step_delta; returns 0 only if both occupied else 1; used by combat_calc_range_effect
+0x03af92,spell_apply_target,1,applies spell to target char type 4; resist roll via $03B152 then damage_calc or effect 0x14; recurses to group for type 1; called from multihit routines
+0x03b152,spell_resist_roll,1,two-char contest rand 13 plus level minus 6; defender rank 8+ penalty 4; returns 1 if target avoids damage else 0; called from $03AF92 and multihit spell routines
+0x03b408,math_fold_range,1,folds value into 0-MAX by reflection; value mod 2*MAX then reflect above MAX; called from $0412FC with isqrt distance and frame counter
+0x03b43e,combat_random_empty_cell,1,picks random x y 1-10 until $0258EE finds no char there; max 10 tries; stores coords via pointer args; caller spawns entity there
 0x03B4AC,spell_record_value,1,spells.md:183 record w1>>4 value via 3B4AC; if 0 -> 0x200
-0x03B4C6,sys_unk_03b4c6,0,auto: touches $FF010C $FFC368 $FFC36A $FFC36C $FFC36E $FFC370
-0x03B51E,sys_unk_03b51e,0,auto: touches $FF02B2 $FF02B4 $FF02DB $FF02DD $FFA7CC
-0x03B6C0,sys_unk_03b6c0,0,auto: touches $FF02C8 $FF02DA $FF02DB $FF02DD $FF02E0
-0x03B748,sys_unk_03b748,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD $FFA7CC
-0x03B988,sys_unk_03b988,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD
-0x03BA4C,sys_unk_03ba4c,0,auto: touches $FF02B4 $FF02C8 $FF02DB $FF02DD
+0x03b4c6,spell_effect_queue,1,stores 9 words into $FFC368 block and sets $FF010C flag; consumer plays SFX 3 and runs $02B190 with the block; called from combat dispatch $040EC8
+0x03b51e,combat_ai_turn,1,AI turn for a char; group-alive checks then spell_ai_choose else 4-way dispatch to target pickers $03B6C0 $03B988 $03B748 $03BA4C; writes target into +0x2C low byte
+0x03b6c0,combat_resolve_target,1,resolves target via +0x27 to +0x29 to group to +0x26 chain; falls back to $03B748 if resolved char is 0 or dead; used by $03B51E
+0x03b748,combat_pick_target,1,picks target from linked group by nearest farthest lowest-HP highest-HP chosen by spell-record flags and +0x2C bits 8-9; used by $03B51E and as fallback in $03BA4C
+0x03b988,combat_pick_max_level,1,returns highest-level alive member of linked group via +0x27 to +0x29 chain; used by $03B51E case 1
+0x03ba4c,combat_pick_same_target,1,returns nearest alive member whose +0x2C low byte equals actor +0x26 link; falls back to $03B748 if none; used by $03B51E case 3
 0x03BB4E,spell_ai_choose,2,spells.md:130 AI chooser 3BB4E (section 6.3)
-0x03BD3A,sys_unk_03bd3a,0,auto: touches $FF02B4 $FF02CC $FFA7CC
-0x03BE8E,sys_unk_03be8e,0,auto: touches $FF02B4 $FF02DD $FF0EAA $FFA7CC
-0x03C248,sys_unk_03c248,0,auto: touches $FF02B4 $FFA7CC
+0x03bd3a,spell_ai_pick,1,AI picks random spell for a char; enumerates candidates via $02CC14 $02CC62 filters by spell-record flags picks rand 5th sets +0x25; called from spell_ai_choose
+0x03be8e,spell_pick_target,1,picks a valid target for caster spell by action code; records it in caster +0x2C low byte; returns 1 if found; called from $03BC5E $03C346
+0x03c248,spell_can_cast,1,checks char can cast spell: cost <= Power and record level <= char level; returns 1 or 0; called from $03C2F4 $03C362 $03C520 $03BE8E
 0x03C2C0,spell_cost_calc,2,spells.md:152 cost formula 3C2C0 verified (asm + harness)
-0x03C2F4,sys_unk_03c2f4,0,auto: touches $FF02B4 $FFA7CC
-0x03C362,sys_unk_03c362,0,auto: touches $FF02CC $FF02E0 $FF0EAA $FFA7CC
-0x03C520,sys_unk_03c520,0,auto: touches $FF02CC $FF0EAA $FFA7CC
-0x03C608,sys_unk_03c608,0,auto: touches $FFA7CC
-0x03C636,sys_unk_03c636,0,auto: touches $FF02CC $FFA7CC
-0x03CAD2,sys_unk_03cad2,0,auto: touches none
-0x03CAF2,sys_unk_03caf2,0,auto: touches $FF02C8 $FF02D0 $FF02E0
+0x03c2f4,spell_menu_cast,1,casts menu-selected spell: if record w0 bit 15 set assigns +0x25 and picks target via $03BE8E else checks can-cast via $03C248; called from $01F360
+0x03c362,spell_ai_pick_best,1,AI spell picker: scores each castable spell ((w1 and 0xF)*100 + rand - 0x96) and returns best index; called from spell_ai_choose $03BBB4
+0x03c520,spell_ai_pick_first,1,AI spell picker: returns first castable spell in scan order; called from spell_ai_choose $03BBFE $03BC8A $03BCB0 $03BD26
+0x03c608,spell_is_ai_usable,1,tests w0 bit 7 of a spell record; gate in AI spell pickers $03C362 $03C520
+0x03c636,spell_grant_for_level,1,raises char level to arg2 and grants level-appropriate spells via inv_apply_resource (+0x40 +0x80 goods); called at battle-end (member 2 0)
+0x03cad2,rng_rand_below,1,returns random in [0 arg); 0 if arg <= 1; chance gate in spell grants $03C362 $03C636
+0x03caf2,combat_any_low_hp,1,returns 0 if any living group member has HP below arg2 else 1; called from $03BD18
 0x03CB66,combat_flag_clear,1,logic.md:1260 clears +0x2C bit 13 (3CB66)
-0x03CC4C,sys_unk_03cc4c,0,auto: touches $FF013C $FFC41C
-0x03CC62,sys_unk_03cc62,0,auto: touches none
-0x03CE30,sys_unk_03ce30,0,auto: touches none
+0x03cc4c,spell_effect_start,1,sets $FF013C effect mode and clears $FFC41C frame counter; called from $02D764 $0328F2 and spell multihit routines
+0x03cc62,gfx_paint_stream_column,1,paints terrain streams $330-$33D via $E358 in a vertical pattern around x y; called from spell-effect driver $03D9F8
+0x03ce30,gfx_paint_stream_spread,1,paints terrain streams $340+ via $E358 in a spreading pattern with repeated tail; called from $03DC32
 0x03D13E,sys_unk_03d13e,0,auto: touches $FF0092 $FF0124
 0x03D32E,sys_unk_03d32e,0,auto: touches none
 0x03D46C,sys_unk_03d46c,0,auto: touches none
