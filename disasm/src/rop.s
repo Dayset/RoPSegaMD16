@@ -93,9 +93,9 @@ L000318:
 	btst #$3,d1	; $00031E
 	beq.b L000318	; $000322
 	move.w #$8134,$c00004.l	; $000324
-	bsr.w FUN_0003aa	; $00032C
+	bsr.w pad1_read_boot	; $00032C
 	bsr.w FUN_000a14	; $000330
-	bsr.w FUN_0003aa	; $000334
+	bsr.w pad1_read_boot	; $000334
 	move.w #$0,$ffc00e.l	; $000338
 	move.w #$0,$ffc010.l	; $000340
 L000348:
@@ -111,7 +111,7 @@ L000368:
 	move.w $c00004.l,d1	; $000368
 	btst #$3,d1	; $00036E
 	beq.b L000368	; $000372
-	bsr.w FUN_0003aa	; $000374
+	bsr.w pad1_read_boot	; $000374
 	andi.w #$ff,d0	; $000378
 	bne.b L000392	; $00037C
 	andi.w #$ff,d1	; $00037E
@@ -126,7 +126,7 @@ L000392:
 	move.w #$8134,$c00004.l	; $00039E
 	bra.w main_init	; $0003A6
 	; code $0003AA-$00044B
-FUN_0003aa:
+pad1_read_boot:
 	move.b #$40,$a10009.l	; $0003AA
 	move.b #$0,$a10003.l	; $0003B2
 	move.w #$a,d1	; $0003BA
@@ -1654,7 +1654,7 @@ L00D9CE:
 	beq.w L00D2BE	; $00D9DA
 	bra.w L00D392	; $00D9DE
 	; code $00D9E2-$00D9ED
-FUN_00d9e2:
+vdp_ctrl_write:
 	move.w $4(a7),d0	; $00D9E2
 	move.w d0,$c00004.l	; $00D9E6
 	rts	; $00D9EC
@@ -1841,7 +1841,7 @@ vdp_set_write_addr:
 	move.w d1,$c00004.l	; $00DC7A
 	rts	; $00DC80
 	; code $00DC82-$00DCC9
-FUN_00dc82:
+pad1_read:
 	move.w #$100,$a11100.l	; $00DC82
 	move.b #$40,$a10009.l	; $00DC8A
 	move.b #$0,$a10003.l	; $00DC92
@@ -1867,7 +1867,7 @@ L00DCD4:
 	move.w #$100,$a11100.l	; $00DCD8
 	rts	; $00DCE0
 	; code $00DCE2-$00DD19
-FUN_00dce2:
+pad2_read:
 	move.w #$100,$a11100.l	; $00DCE2
 	move.b #$40,$a1000b.l	; $00DCEA
 	move.b #$0,$a10005.l	; $00DCF2
@@ -2256,10 +2256,10 @@ FUN_011082:
 	asl.w #$5,d0	; $01108A
 	sub.w #$4000,d0	; $01108C
 	move.w d0,-(a7)	; $011090
-	jsr FUN_00d9e2.l	; $011092
+	jsr vdp_ctrl_write.l	; $011092
 	addq.w #$2,a7	; $011098
 	clr.w -(a7)	; $01109A
-	jsr FUN_00d9e2.l	; $01109C
+	jsr vdp_ctrl_write.l	; $01109C
 	addq.w #$2,a7	; $0110A2
 	clr.w -$2(a6)	; $0110A4
 L0110A8:
@@ -2285,10 +2285,10 @@ FUN_0110d0:
 	add.w d1,d0	; $0110E0
 	sub.w #$4000,d0	; $0110E2
 	move.w d0,-(a7)	; $0110E6
-	jsr FUN_00d9e2.l	; $0110E8
+	jsr vdp_ctrl_write.l	; $0110E8
 	addq.w #$2,a7	; $0110EE
 	clr.w -(a7)	; $0110F0
-	jsr FUN_00d9e2.l	; $0110F2
+	jsr vdp_ctrl_write.l	; $0110F2
 	addq.w #$2,a7	; $0110F8
 	move.w $c(a6),-(a7)	; $0110FA
 	jsr vdp_data_write.l	; $0110FE
@@ -2304,10 +2304,10 @@ FUN_01110a:
 	asl.w #$1,d1	; $011118
 	add.w d1,d0	; $01111A
 	move.w d0,-(a7)	; $01111C
-	jsr FUN_00d9e2.l	; $01111E
+	jsr vdp_ctrl_write.l	; $01111E
 	addq.w #$2,a7	; $011124
 	move.w #$20,-(a7)	; $011126
-	jsr FUN_00d9e2.l	; $01112A
+	jsr vdp_ctrl_write.l	; $01112A
 	addq.w #$2,a7	; $011130
 	jsr vdp_data_read.l	; $011132
 	unlk a6	; $011138
@@ -3290,9 +3290,9 @@ FUN_011b76:
 	; code $011BB8-$011BD7
 FUN_011bb8:
 	link.w a6,#$0	; $011BB8
-	jsr FUN_00dc82.l	; $011BBC
+	jsr pad1_read.l	; $011BBC
 	move.b d0,$ff0e14.l	; $011BC2
-	jsr FUN_00dce2.l	; $011BC8
+	jsr pad2_read.l	; $011BC8
 	move.b d0,$ff8646.l	; $011BCE
 	unlk a6	; $011BD4
 	rts	; $011BD6
@@ -3507,49 +3507,49 @@ FUN_011e06:
 	link.w a6,#$0	; $011E06
 	move.l d4,-(a7)	; $011E0A
 	move.w #$8004,-(a7)	; $011E0C
-	jsr FUN_00d9e2.l	; $011E10
+	jsr vdp_ctrl_write.l	; $011E10
 	addq.w #$2,a7	; $011E16
 	move.w #$8134,-(a7)	; $011E18
-	jsr FUN_00d9e2.l	; $011E1C
+	jsr vdp_ctrl_write.l	; $011E1C
 	addq.w #$2,a7	; $011E22
 	move.w #$8200,-(a7)	; $011E24
-	jsr FUN_00d9e2.l	; $011E28
+	jsr vdp_ctrl_write.l	; $011E28
 	addq.w #$2,a7	; $011E2E
 	move.w #$8304,-(a7)	; $011E30
-	jsr FUN_00d9e2.l	; $011E34
+	jsr vdp_ctrl_write.l	; $011E34
 	addq.w #$2,a7	; $011E3A
 	move.w #$8400,-(a7)	; $011E3C
-	jsr FUN_00d9e2.l	; $011E40
+	jsr vdp_ctrl_write.l	; $011E40
 	addq.w #$2,a7	; $011E46
 	move.w #$8512,-(a7)	; $011E48
-	jsr FUN_00d9e2.l	; $011E4C
+	jsr vdp_ctrl_write.l	; $011E4C
 	addq.w #$2,a7	; $011E52
 	move.w #$8d08,-(a7)	; $011E54
-	jsr FUN_00d9e2.l	; $011E58
+	jsr vdp_ctrl_write.l	; $011E58
 	addq.w #$2,a7	; $011E5E
 	move.w #$8700,-(a7)	; $011E60
-	jsr FUN_00d9e2.l	; $011E64
+	jsr vdp_ctrl_write.l	; $011E64
 	addq.w #$2,a7	; $011E6A
 	move.w #$8aff,-(a7)	; $011E6C
-	jsr FUN_00d9e2.l	; $011E70
+	jsr vdp_ctrl_write.l	; $011E70
 	addq.w #$2,a7	; $011E76
 	move.w #$8b00,-(a7)	; $011E78
-	jsr FUN_00d9e2.l	; $011E7C
+	jsr vdp_ctrl_write.l	; $011E7C
 	addq.w #$2,a7	; $011E82
 	move.w #$8c81,-(a7)	; $011E84
-	jsr FUN_00d9e2.l	; $011E88
+	jsr vdp_ctrl_write.l	; $011E88
 	addq.w #$2,a7	; $011E8E
 	move.w #$8f02,-(a7)	; $011E90
-	jsr FUN_00d9e2.l	; $011E94
+	jsr vdp_ctrl_write.l	; $011E94
 	addq.w #$2,a7	; $011E9A
 	move.w #$9003,-(a7)	; $011E9C
-	jsr FUN_00d9e2.l	; $011EA0
+	jsr vdp_ctrl_write.l	; $011EA0
 	addq.w #$2,a7	; $011EA6
 	move.w #$9180,-(a7)	; $011EA8
-	jsr FUN_00d9e2.l	; $011EAC
+	jsr vdp_ctrl_write.l	; $011EAC
 	addq.w #$2,a7	; $011EB2
 	move.w #$9200,-(a7)	; $011EB4
-	jsr FUN_00d9e2.l	; $011EB8
+	jsr vdp_ctrl_write.l	; $011EB8
 	addq.w #$2,a7	; $011EBE
 	clr.l -(a7)	; $011EC0
 	jsr vdp_set_write_addr.l	; $011EC2
@@ -3563,7 +3563,7 @@ L011ECC:
 	cmp.l #$8000,d4	; $011ED8
 	blt.b L011ECC	; $011EDE
 	move.w #$8174,-(a7)	; $011EE0
-	jsr FUN_00d9e2.l	; $011EE4
+	jsr vdp_ctrl_write.l	; $011EE4
 	addq.w #$2,a7	; $011EEA
 	pea.l L0CCB18.l	; $011EEC
 	clr.w -(a7)	; $011EF2
@@ -3574,7 +3574,7 @@ L011ECC:
 	jsr FUN_011082(pc)	; $011F04
 	addq.w #$6,a7	; $011F08
 	move.w #$8700,-(a7)	; $011F0A
-	jsr FUN_00d9e2.l	; $011F0E
+	jsr vdp_ctrl_write.l	; $011F0E
 	addq.w #$2,a7	; $011F14
 	jsr FUN_011b76(pc)	; $011F16
 	clr.w -(a7)	; $011F1A
@@ -3905,7 +3905,7 @@ FUN_0123b0:
 	move.w #$3,-(a7)	; $012416
 	jsr FUN_011082(pc)	; $01241A
 	addq.w #$6,a7	; $01241E
-	jsr FUN_00dce2.l	; $012420
+	jsr pad2_read.l	; $012420
 	move.b d0,$ff8646.l	; $012426
 	moveq #$0,d0	; $01242C
 	move.b $ff8646.l,d0	; $01242E
@@ -3976,32 +3976,32 @@ L012502:
 	move.w d0,$ff8672.l	; $01251A
 L012520:
 	move.w #$8208,-(a7)	; $012520
-	jsr FUN_00d9e2.l	; $012524
+	jsr vdp_ctrl_write.l	; $012524
 	addq.w #$2,a7	; $01252A
 	move.w #$833c,-(a7)	; $01252C
-	jsr FUN_00d9e2.l	; $012530
+	jsr vdp_ctrl_write.l	; $012530
 	addq.w #$2,a7	; $012536
 	move.w #$8400,-(a7)	; $012538
-	jsr FUN_00d9e2.l	; $01253C
+	jsr vdp_ctrl_write.l	; $01253C
 	addq.w #$2,a7	; $012542
 	move.w #$8522,-(a7)	; $012544
-	jsr FUN_00d9e2.l	; $012548
+	jsr vdp_ctrl_write.l	; $012548
 	addq.w #$2,a7	; $01254E
 	move.w #$4400,$ff8644.l	; $012550
 	move.w #$8d10,-(a7)	; $012558
-	jsr FUN_00d9e2.l	; $01255C
+	jsr vdp_ctrl_write.l	; $01255C
 	addq.w #$2,a7	; $012562
 	move.w #$9200,-(a7)	; $012564
-	jsr FUN_00d9e2.l	; $012568
+	jsr vdp_ctrl_write.l	; $012568
 	addq.w #$2,a7	; $01256E
 	move.w #$9100,-(a7)	; $012570
-	jsr FUN_00d9e2.l	; $012574
+	jsr vdp_ctrl_write.l	; $012574
 	addq.w #$2,a7	; $01257A
 	move.w #$9003,-(a7)	; $01257C
-	jsr FUN_00d9e2.l	; $012580
+	jsr vdp_ctrl_write.l	; $012580
 	addq.w #$2,a7	; $012586
 	move.w #$8b00,-(a7)	; $012588
-	jsr FUN_00d9e2.l	; $01258C
+	jsr vdp_ctrl_write.l	; $01258C
 	addq.w #$2,a7	; $012592
 	jsr wait_vblank.l	; $012594
 	clr.w -(a7)	; $01259A
@@ -4305,7 +4305,7 @@ L01294E:
 	tst.w -$10(a6)	; $012970
 	bne.w L012A58	; $012974
 	move.w #$9294,-(a7)	; $012978
-	jsr FUN_00d9e2.l	; $01297C
+	jsr vdp_ctrl_write.l	; $01297C
 	addq.w #$2,a7	; $012982
 	pea.l L0CCA98.l	; $012984
 	move.w #$2,-(a7)	; $01298A
@@ -4516,35 +4516,35 @@ FUN_012c20:
 	jsr FUN_011082.l	; $012C62
 	addq.w #$6,a7	; $012C68
 	move.w #$8134,-(a7)	; $012C6A
-	jsr FUN_00d9e2.l	; $012C6E
+	jsr vdp_ctrl_write.l	; $012C6E
 	addq.w #$2,a7	; $012C74
 	move.w #$8b00,-(a7)	; $012C76
-	jsr FUN_00d9e2.l	; $012C7A
+	jsr vdp_ctrl_write.l	; $012C7A
 	addq.w #$2,a7	; $012C80
 	move.w #$8200,-(a7)	; $012C82
-	jsr FUN_00d9e2.l	; $012C86
+	jsr vdp_ctrl_write.l	; $012C86
 	addq.w #$2,a7	; $012C8C
 	move.w #$8304,-(a7)	; $012C8E
-	jsr FUN_00d9e2.l	; $012C92
+	jsr vdp_ctrl_write.l	; $012C92
 	addq.w #$2,a7	; $012C98
 	move.w #$8400,-(a7)	; $012C9A
-	jsr FUN_00d9e2.l	; $012C9E
+	jsr vdp_ctrl_write.l	; $012C9E
 	addq.w #$2,a7	; $012CA4
 	move.w #$8512,-(a7)	; $012CA6
-	jsr FUN_00d9e2.l	; $012CAA
+	jsr vdp_ctrl_write.l	; $012CAA
 	addq.w #$2,a7	; $012CB0
 	move.w #$2400,$ff8644.l	; $012CB2
 	move.w #$8d08,-(a7)	; $012CBA
-	jsr FUN_00d9e2.l	; $012CBE
+	jsr vdp_ctrl_write.l	; $012CBE
 	addq.w #$2,a7	; $012CC4
 	move.w #$9180,-(a7)	; $012CC6
-	jsr FUN_00d9e2.l	; $012CCA
+	jsr vdp_ctrl_write.l	; $012CCA
 	addq.w #$2,a7	; $012CD0
 	move.w #$9200,-(a7)	; $012CD2
-	jsr FUN_00d9e2.l	; $012CD6
+	jsr vdp_ctrl_write.l	; $012CD6
 	addq.w #$2,a7	; $012CDC
 	move.w #$9001,-(a7)	; $012CDE
-	jsr FUN_00d9e2.l	; $012CE2
+	jsr vdp_ctrl_write.l	; $012CE2
 	addq.w #$2,a7	; $012CE8
 	jsr FUN_011b76.l	; $012CEA
 	clr.w -(a7)	; $012CF0
@@ -4673,7 +4673,7 @@ FUN_012c20:
 	jsr FUN_00da04.l	; $012EC8
 	lea.l $a(a7),a7	; $012ECE
 	move.w #$8174,-(a7)	; $012ED2
-	jsr FUN_00d9e2.l	; $012ED6
+	jsr vdp_ctrl_write.l	; $012ED6
 	addq.w #$2,a7	; $012EDC
 	clr.w $ff0e78.l	; $012EDE
 	move.w #$3,-(a7)	; $012EE4
@@ -4704,7 +4704,7 @@ FUN_012f48:
 	link.w a6,#$0	; $012F48
 	jsr joypad_queue_pop.l	; $012F4C
 	move.b d0,$ff0e14.l	; $012F52
-	jsr FUN_00dce2.l	; $012F58
+	jsr pad2_read.l	; $012F58
 	move.b d0,$ff8646.l	; $012F5E
 	tst.b $ff0e14.l	; $012F64
 	bne.b L012F78	; $012F6A
@@ -6513,33 +6513,33 @@ FUN_0147d0:
 	addq.w #$2,a7	; $0148E4
 	move.w d0,-$18(a6)	; $0148E6
 	move.w #$8208,-(a7)	; $0148EA
-	jsr FUN_00d9e2.l	; $0148EE
+	jsr vdp_ctrl_write.l	; $0148EE
 	addq.w #$2,a7	; $0148F4
 	move.w #$833c,-(a7)	; $0148F6
-	jsr FUN_00d9e2.l	; $0148FA
+	jsr vdp_ctrl_write.l	; $0148FA
 	addq.w #$2,a7	; $014900
 	move.w #$8400,-(a7)	; $014902
-	jsr FUN_00d9e2.l	; $014906
+	jsr vdp_ctrl_write.l	; $014906
 	addq.w #$2,a7	; $01490C
 	move.w #$8522,-(a7)	; $01490E
-	jsr FUN_00d9e2.l	; $014912
+	jsr vdp_ctrl_write.l	; $014912
 	addq.w #$2,a7	; $014918
 	move.w #$4400,$ff8644.l	; $01491A
 	move.w #$8d10,-(a7)	; $014922
-	jsr FUN_00d9e2.l	; $014926
+	jsr vdp_ctrl_write.l	; $014926
 	addq.w #$2,a7	; $01492C
 	move.w #$9200,-(a7)	; $01492E
-	jsr FUN_00d9e2.l	; $014932
+	jsr vdp_ctrl_write.l	; $014932
 	addq.w #$2,a7	; $014938
 	move.w #$9100,-(a7)	; $01493A
-	jsr FUN_00d9e2.l	; $01493E
+	jsr vdp_ctrl_write.l	; $01493E
 	addq.w #$2,a7	; $014944
 	move.w #$9011,-(a7)	; $014946
-	jsr FUN_00d9e2.l	; $01494A
+	jsr vdp_ctrl_write.l	; $01494A
 	addq.w #$2,a7	; $014950
 	jsr FUN_011b76.l	; $014952
 	move.w #$8b00,-(a7)	; $014958
-	jsr FUN_00d9e2.l	; $01495C
+	jsr vdp_ctrl_write.l	; $01495C
 	addq.w #$2,a7	; $014962
 	clr.w -(a7)	; $014964
 	clr.w -(a7)	; $014966
@@ -7095,10 +7095,10 @@ FUN_015012:
 	jsr FUN_017586(pc)	; $0150EC
 	addq.w #$4,a7	; $0150F0
 	move.w #$9200,-(a7)	; $0150F2
-	jsr FUN_00d9e2.l	; $0150F6
+	jsr vdp_ctrl_write.l	; $0150F6
 	addq.w #$2,a7	; $0150FC
 	move.w #$9100,-(a7)	; $0150FE
-	jsr FUN_00d9e2.l	; $015102
+	jsr vdp_ctrl_write.l	; $015102
 	addq.w #$2,a7	; $015108
 	clr.w -(a7)	; $01510A
 	move.w #$fec0,-(a7)	; $01510C
@@ -7405,7 +7405,7 @@ L0154D4:
 L015544:
 	jsr wait_vblank.l	; $015544
 	move.w #$8b00,-(a7)	; $01554A
-	jsr FUN_00d9e2.l	; $01554E
+	jsr vdp_ctrl_write.l	; $01554E
 	addq.w #$2,a7	; $015554
 	clr.w -(a7)	; $015556
 	clr.w -(a7)	; $015558
@@ -7431,7 +7431,7 @@ L015544:
 	jsr FUN_011082.l	; $0155AC
 	addq.w #$6,a7	; $0155B2
 	move.w #$9011,-(a7)	; $0155B4
-	jsr FUN_00d9e2.l	; $0155B8
+	jsr vdp_ctrl_write.l	; $0155B8
 	addq.w #$2,a7	; $0155BE
 	move.w #$234,$ff0076.l	; $0155C0
 	move.w #$60,-(a7)	; $0155C8
@@ -7931,29 +7931,29 @@ FUN_015c08:
 	addq.w #$6,a7	; $015D12
 	move.w d0,$ff8686.l	; $015D14
 	move.w #$8208,-(a7)	; $015D1A
-	jsr FUN_00d9e2.l	; $015D1E
+	jsr vdp_ctrl_write.l	; $015D1E
 	addq.w #$2,a7	; $015D24
 	move.w #$833c,-(a7)	; $015D26
-	jsr FUN_00d9e2.l	; $015D2A
+	jsr vdp_ctrl_write.l	; $015D2A
 	addq.w #$2,a7	; $015D30
 	move.w #$8400,-(a7)	; $015D32
-	jsr FUN_00d9e2.l	; $015D36
+	jsr vdp_ctrl_write.l	; $015D36
 	addq.w #$2,a7	; $015D3C
 	move.w #$8522,-(a7)	; $015D3E
-	jsr FUN_00d9e2.l	; $015D42
+	jsr vdp_ctrl_write.l	; $015D42
 	addq.w #$2,a7	; $015D48
 	move.w #$4400,$ff8644.l	; $015D4A
 	move.w #$8d10,-(a7)	; $015D52
-	jsr FUN_00d9e2.l	; $015D56
+	jsr vdp_ctrl_write.l	; $015D56
 	addq.w #$2,a7	; $015D5C
 	move.w #$9003,-(a7)	; $015D5E
-	jsr FUN_00d9e2.l	; $015D62
+	jsr vdp_ctrl_write.l	; $015D62
 	addq.w #$2,a7	; $015D68
 	move.w #$8b03,-(a7)	; $015D6A
-	jsr FUN_00d9e2.l	; $015D6E
+	jsr vdp_ctrl_write.l	; $015D6E
 	addq.w #$2,a7	; $015D74
 	move.w #$8f02,-(a7)	; $015D76
-	jsr FUN_00d9e2.l	; $015D7A
+	jsr vdp_ctrl_write.l	; $015D7A
 	addq.w #$2,a7	; $015D80
 	jsr FUN_011b76.l	; $015D82
 	clr.w -(a7)	; $015D88
@@ -8213,10 +8213,10 @@ L015FF0:
 L016158:
 	move.w #$fec0,-$2(a6)	; $016158
 	move.w #$9200,-(a7)	; $01615E
-	jsr FUN_00d9e2.l	; $016162
+	jsr vdp_ctrl_write.l	; $016162
 	addq.w #$2,a7	; $016168
 	move.w #$9180,-(a7)	; $01616A
-	jsr FUN_00d9e2.l	; $01616E
+	jsr vdp_ctrl_write.l	; $01616E
 	addq.w #$2,a7	; $016174
 	pea.l L0CCBB8.l	; $016176
 	clr.w -(a7)	; $01617C
@@ -8280,7 +8280,7 @@ L01622C:
 	move.w -$4(a6),d0	; $016230
 	sub.w #$6f00,d0	; $016234
 	move.w d0,-(a7)	; $016238
-	jsr FUN_00d9e2.l	; $01623A
+	jsr vdp_ctrl_write.l	; $01623A
 	addq.w #$2,a7	; $016240
 L016242:
 	cmpi.w #$270,-$2(a6)	; $016242
@@ -8312,7 +8312,7 @@ L016286:
 	move.w -$4(a6),d0	; $01628A
 	sub.w #$6e80,d0	; $01628E
 	move.w d0,-(a7)	; $016292
-	jsr FUN_00d9e2.l	; $016294
+	jsr vdp_ctrl_write.l	; $016294
 	addq.w #$2,a7	; $01629A
 L01629C:
 	moveq #$0,d0	; $01629C
@@ -8527,7 +8527,7 @@ FUN_016512:
 	link.w a6,#$fffe	; $016512
 	movem.l d4/a3,-(a7)	; $016516
 	move.w #$8f80,-(a7)	; $01651A
-	jsr FUN_00d9e2.l	; $01651E
+	jsr vdp_ctrl_write.l	; $01651E
 	addq.w #$2,a7	; $016524
 	move.w $8(a6),d0	; $016526
 	asl.w #$7,d0	; $01652A
@@ -8640,7 +8640,7 @@ L016630:
 	cmp.w #$20,d4	; $016632
 	blt.w L016542	; $016636
 	move.w #$8f02,-(a7)	; $01663A
-	jsr FUN_00d9e2.l	; $01663E
+	jsr vdp_ctrl_write.l	; $01663E
 	addq.w #$2,a7	; $016644
 	movem.l (a7)+,d4/a3	; $016646
 	unlk a6	; $01664A
@@ -8997,7 +8997,7 @@ L016AB6:
 L016B04:
 	jsr joypad_queue_pop.l	; $016B04
 	move.b d0,$ff0e14.l	; $016B0A
-	jsr FUN_00dce2.l	; $016B10
+	jsr pad2_read.l	; $016B10
 	move.b d0,$ff8646.l	; $016B16
 	tst.w d4	; $016B1C
 	bne.b L016B24	; $016B1E
@@ -9681,79 +9681,79 @@ FUN_0173ec:
 	ext.l d0	; $0173F4
 	bra.w L017570	; $0173F6
 	pea.l L0ED0E8.l	; $0173FA
-	jsr FUN_0eb88a.l	; $017400
+	jsr sound_start_song.l	; $017400
 	addq.w #$4,a7	; $017406
 	bra.w L017582	; $017408
 	pea.l L0ED4FE.l	; $01740C
-	jsr FUN_0eb88a.l	; $017412
+	jsr sound_start_song.l	; $017412
 	addq.w #$4,a7	; $017418
 	bra.w L017582	; $01741A
 	pea.l L0EDDBA.l	; $01741E
-	jsr FUN_0eb88a.l	; $017424
+	jsr sound_start_song.l	; $017424
 	addq.w #$4,a7	; $01742A
 	bra.w L017582	; $01742C
 	pea.l L0EEF8C.l	; $017430
-	jsr FUN_0eb88a.l	; $017436
+	jsr sound_start_song.l	; $017436
 	addq.w #$4,a7	; $01743C
 	bra.w L017582	; $01743E
 	pea.l L0EFBC8.l	; $017442
-	jsr FUN_0eb88a.l	; $017448
+	jsr sound_start_song.l	; $017448
 	addq.w #$4,a7	; $01744E
 	bra.w L017582	; $017450
 	pea.l L0F075E.l	; $017454
-	jsr FUN_0eb88a.l	; $01745A
+	jsr sound_start_song.l	; $01745A
 	addq.w #$4,a7	; $017460
 	bra.w L017582	; $017462
 	pea.l L0F0C32.l	; $017466
-	jsr FUN_0eb88a.l	; $01746C
+	jsr sound_start_song.l	; $01746C
 	addq.w #$4,a7	; $017472
 	bra.w L017582	; $017474
 	pea.l L0F26CC.l	; $017478
-	jsr FUN_0eb88a.l	; $01747E
+	jsr sound_start_song.l	; $01747E
 	addq.w #$4,a7	; $017484
 	bra.w L017582	; $017486
 	pea.l L0F363E.l	; $01748A
-	jsr FUN_0eb88a.l	; $017490
+	jsr sound_start_song.l	; $017490
 	addq.w #$4,a7	; $017496
 	bra.w L017582	; $017498
 	pea.l L0F36AC.l	; $01749C
-	jsr FUN_0eb88a.l	; $0174A2
+	jsr sound_start_song.l	; $0174A2
 	addq.w #$4,a7	; $0174A8
 	bra.w L017582	; $0174AA
 	pea.l L0F5182.l	; $0174AE
-	jsr FUN_0eb88a.l	; $0174B4
+	jsr sound_start_song.l	; $0174B4
 	addq.w #$4,a7	; $0174BA
 	bra.w L017582	; $0174BC
 	pea.l L0ED4F4.l	; $0174C0
-	jsr FUN_0eb88a.l	; $0174C6
+	jsr sound_start_song.l	; $0174C6
 	addq.w #$4,a7	; $0174CC
 	bra.w L017582	; $0174CE
 	pea.l L00692E.l	; $0174D2
-	jsr FUN_0eb88a.l	; $0174D8
+	jsr sound_start_song.l	; $0174D8
 	addq.w #$4,a7	; $0174DE
 	bra.w L017582	; $0174E0
 	pea.l L0F5DAE.l	; $0174E4
-	jsr FUN_0eb88a.l	; $0174EA
+	jsr sound_start_song.l	; $0174EA
 	addq.w #$4,a7	; $0174F0
 	bra.w L017582	; $0174F2
 	pea.l L0F6844.l	; $0174F6
-	jsr FUN_0eb88a.l	; $0174FC
+	jsr sound_start_song.l	; $0174FC
 	addq.w #$4,a7	; $017502
 	bra.b L017582	; $017504
 	pea.l L0F900A.l	; $017506
-	jsr FUN_0eb88a.l	; $01750C
+	jsr sound_start_song.l	; $01750C
 	addq.w #$4,a7	; $017512
 	bra.b L017582	; $017514
 	pea.l L0F9B38.l	; $017516
-	jsr FUN_0eb88a.l	; $01751C
+	jsr sound_start_song.l	; $01751C
 	addq.w #$4,a7	; $017522
 	bra.b L017582	; $017524
 	pea.l L0FA926.l	; $017526
-	jsr FUN_0eb88a.l	; $01752C
+	jsr sound_start_song.l	; $01752C
 	addq.w #$4,a7	; $017532
 	bra.b L017582	; $017534
 	pea.l L0FBC7C.l	; $017536
-	jsr FUN_0eb88a.l	; $01753C
+	jsr sound_start_song.l	; $01753C
 	addq.w #$4,a7	; $017542
 	bra.b L017582	; $017544
 L017546:
@@ -10313,35 +10313,35 @@ FUN_017b88:
 	addq.w #$6,a7	; $017C66
 	move.w d0,$ff8680.l	; $017C68
 	move.w #$8208,-(a7)	; $017C6E
-	jsr FUN_00d9e2.l	; $017C72
+	jsr vdp_ctrl_write.l	; $017C72
 	addq.w #$2,a7	; $017C78
 	move.w #$833c,-(a7)	; $017C7A
-	jsr FUN_00d9e2.l	; $017C7E
+	jsr vdp_ctrl_write.l	; $017C7E
 	addq.w #$2,a7	; $017C84
 	move.w #$8400,-(a7)	; $017C86
-	jsr FUN_00d9e2.l	; $017C8A
+	jsr vdp_ctrl_write.l	; $017C8A
 	addq.w #$2,a7	; $017C90
 	move.w #$8522,-(a7)	; $017C92
-	jsr FUN_00d9e2.l	; $017C96
+	jsr vdp_ctrl_write.l	; $017C96
 	addq.w #$2,a7	; $017C9C
 	move.w #$4400,$ff8644.l	; $017C9E
 	move.w #$8d10,-(a7)	; $017CA6
-	jsr FUN_00d9e2.l	; $017CAA
+	jsr vdp_ctrl_write.l	; $017CAA
 	addq.w #$2,a7	; $017CB0
 	move.w #$8b00,-(a7)	; $017CB2
-	jsr FUN_00d9e2.l	; $017CB6
+	jsr vdp_ctrl_write.l	; $017CB6
 	addq.w #$2,a7	; $017CBC
 	move.w #$9003,-(a7)	; $017CBE
-	jsr FUN_00d9e2.l	; $017CC2
+	jsr vdp_ctrl_write.l	; $017CC2
 	addq.w #$2,a7	; $017CC8
 	move.w #$8f02,-(a7)	; $017CCA
-	jsr FUN_00d9e2.l	; $017CCE
+	jsr vdp_ctrl_write.l	; $017CCE
 	addq.w #$2,a7	; $017CD4
 	move.w #$9200,-(a7)	; $017CD6
-	jsr FUN_00d9e2.l	; $017CDA
+	jsr vdp_ctrl_write.l	; $017CDA
 	addq.w #$2,a7	; $017CE0
 	move.w #$9100,-(a7)	; $017CE2
-	jsr FUN_00d9e2.l	; $017CE6
+	jsr vdp_ctrl_write.l	; $017CE6
 	addq.w #$2,a7	; $017CEC
 	jsr wait_vblank.l	; $017CEE
 	clr.w -(a7)	; $017CF4
@@ -10351,7 +10351,7 @@ FUN_017b88:
 	jsr FUN_00dbcc.l	; $017CFC
 	addq.w #$8,a7	; $017D02
 	move.w #$8b03,-(a7)	; $017D04
-	jsr FUN_00d9e2.l	; $017D08
+	jsr vdp_ctrl_write.l	; $017D08
 	addq.w #$2,a7	; $017D0E
 	clr.w -(a7)	; $017D10
 	jsr FUN_0179ca(pc)	; $017D12
@@ -11053,7 +11053,7 @@ L01865A:
 	addq.w #$6,a7	; $0186A6
 	jsr wait_vblank.l	; $0186A8
 	move.w #$8b00,-(a7)	; $0186AE
-	jsr FUN_00d9e2.l	; $0186B2
+	jsr vdp_ctrl_write.l	; $0186B2
 	addq.w #$2,a7	; $0186B8
 	clr.w -(a7)	; $0186BA
 	clr.w -(a7)	; $0186BC
@@ -11063,7 +11063,7 @@ L01865A:
 	addq.w #$8,a7	; $0186C8
 	jsr FUN_011b76.l	; $0186CA
 	move.w #$9011,-(a7)	; $0186D0
-	jsr FUN_00d9e2.l	; $0186D4
+	jsr vdp_ctrl_write.l	; $0186D4
 	addq.w #$2,a7	; $0186DA
 	move.w #$234,$ff0076.l	; $0186DC
 	move.w #$1e,-(a7)	; $0186E4
@@ -11430,29 +11430,29 @@ L018AF6:
 	addq.w #$6,a7	; $018BE4
 	move.w d0,$ff867e.l	; $018BE6
 	move.w #$8208,-(a7)	; $018BEC
-	jsr FUN_00d9e2.l	; $018BF0
+	jsr vdp_ctrl_write.l	; $018BF0
 	addq.w #$2,a7	; $018BF6
 	move.w #$833c,-(a7)	; $018BF8
-	jsr FUN_00d9e2.l	; $018BFC
+	jsr vdp_ctrl_write.l	; $018BFC
 	addq.w #$2,a7	; $018C02
 	move.w #$8400,-(a7)	; $018C04
-	jsr FUN_00d9e2.l	; $018C08
+	jsr vdp_ctrl_write.l	; $018C08
 	addq.w #$2,a7	; $018C0E
 	move.w #$8522,-(a7)	; $018C10
-	jsr FUN_00d9e2.l	; $018C14
+	jsr vdp_ctrl_write.l	; $018C14
 	addq.w #$2,a7	; $018C1A
 	move.w #$4400,$ff8644.l	; $018C1C
 	move.w #$8d10,-(a7)	; $018C24
-	jsr FUN_00d9e2.l	; $018C28
+	jsr vdp_ctrl_write.l	; $018C28
 	addq.w #$2,a7	; $018C2E
 	move.w #$9003,-(a7)	; $018C30
-	jsr FUN_00d9e2.l	; $018C34
+	jsr vdp_ctrl_write.l	; $018C34
 	addq.w #$2,a7	; $018C3A
 	move.w #$8b03,-(a7)	; $018C3C
-	jsr FUN_00d9e2.l	; $018C40
+	jsr vdp_ctrl_write.l	; $018C40
 	addq.w #$2,a7	; $018C46
 	move.w #$8f02,-(a7)	; $018C48
-	jsr FUN_00d9e2.l	; $018C4C
+	jsr vdp_ctrl_write.l	; $018C4C
 	addq.w #$2,a7	; $018C52
 	jsr wait_vblank.l	; $018C54
 	clr.w -(a7)	; $018C5A
@@ -11713,7 +11713,7 @@ L018DF0:
 	addq.w #$6,a7	; $018FF4
 	jsr wait_vblank.l	; $018FF6
 	move.w #$8b00,-(a7)	; $018FFC
-	jsr FUN_00d9e2.l	; $019000
+	jsr vdp_ctrl_write.l	; $019000
 	addq.w #$2,a7	; $019006
 	clr.w -(a7)	; $019008
 	clr.w -(a7)	; $01900A
@@ -11723,7 +11723,7 @@ L018DF0:
 	addq.w #$8,a7	; $019016
 	jsr FUN_011b76.l	; $019018
 	move.w #$9011,-(a7)	; $01901E
-	jsr FUN_00d9e2.l	; $019022
+	jsr vdp_ctrl_write.l	; $019022
 	addq.w #$2,a7	; $019028
 	move.w #$234,$ff0076.l	; $01902A
 	move.w #$1e,-(a7)	; $019032
@@ -59832,7 +59832,7 @@ save_validate:
 	movem.l d0-d1,-(a7)	; $04323C
 	clr.w $ff0168.l	; $043240
 	jsr FUN_042fc8(pc)	; $043246
-	jsr FUN_00dce2.l	; $04324A
+	jsr pad2_read.l	; $04324A
 	cmp.b #$e0,d0	; $043250
 	beq.b L0432B6	; $043254
 	moveq #$0,d0	; $043256
@@ -59867,7 +59867,7 @@ L0432A2:
 	swap d0	; $0432A2
 	tst.w d1	; $0432A4
 	beq.b L043316	; $0432A6
-	jsr FUN_00dce2.l	; $0432A8
+	jsr pad2_read.l	; $0432A8
 	cmp.b #$b0,d0	; $0432AE
 	beq.b L0432F6	; $0432B2
 	bra.b L043316	; $0432B4
@@ -59893,7 +59893,7 @@ L0432DE:
 	bra.b L043316	; $0432F4
 L0432F6:
 	move.w #$ffff,$ff0168.l	; $0432F6
-	jsr FUN_00dce2.l	; $0432FE
+	jsr pad2_read.l	; $0432FE
 	cmp.b #$b0,d0	; $043304
 	beq.b L043310	; $043308
 	cmp.b #$e0,d0	; $04330A
@@ -59905,7 +59905,7 @@ L043310:
 	incbin "rop-original.gen",$043314,$2
 	; code $043316-$0433BF
 L043316:
-	jsr FUN_00dce2.l	; $043316
+	jsr pad2_read.l	; $043316
 	cmp.b #$b0,d0	; $04331C
 	beq.b L043328	; $043320
 	cmp.b #$e0,d0	; $043322
@@ -60283,11 +60283,11 @@ L0EB7C2:
 	movem.l (a7)+,d0-d7/a0-a6	; $0EB7C2
 	rts	; $0EB7C6
 	; code $0EB7C8-$0EB805
-FUN_0eb7c8:
+sound_stop:
 	sf.b $ff021e.l	; $0EB7C8
 	movem.l d0/a0,-(a7)	; $0EB7CE
 	move.w sr,-(a7)	; $0EB7D2
-	bsr.w FUN_0eb92a	; $0EB7D4
+	bsr.w z80_bus_request	; $0EB7D4
 	moveq #$0,d0	; $0EB7D8
 	move.b d0,$b(a0)	; $0EB7DA
 	move.b d0,$a(a0)	; $0EB7DE
@@ -60335,7 +60335,7 @@ L0EB87A:
 	move.w (a7)+,sr	; $0EB886
 	rts	; $0EB888
 	; code $0EB88A-$0EB8DF
-FUN_0eb88a:
+sound_start_song:
 	move.l $4(a7),d0	; $0EB88A
 	movem.l d0-d1/a0-a1,-(a7)	; $0EB88E
 	bsr.w sound_upload	; $0EB892
@@ -60388,7 +60388,7 @@ FUN_0eb924:
 	dbra d0,FUN_0eb922	; $0EB924
 	rts	; $0EB928
 	; code $0EB92A-$0EB93D
-FUN_0eb92a:
+z80_bus_request:
 	move.w #$2700,sr	; $0EB92A
 	move.w #$100,$a11100.l	; $0EB92E
 	movea.l #$a00000,a0	; $0EB936
@@ -60453,7 +60453,7 @@ FUN_0eb9ee:
 	moveq #$0,d0	; $0EB9EE
 	move.l a0,-(a7)	; $0EB9F0
 	move.w sr,-(a7)	; $0EB9F2
-	bsr.w FUN_0eb92a	; $0EB9F4
+	bsr.w z80_bus_request	; $0EB9F4
 	move.b $a(a0),d0	; $0EB9F8
 	bra.w L0EB978	; $0EB9FC
 	; code $0EBA00-$0EBA7D
@@ -60464,7 +60464,7 @@ FUN_0eba00:
 	movea.l $ff0224.l,a1	; $0EBA0C
 	movea.l $ff0228.l,a2	; $0EBA12
 	move.w sr,-(a7)	; $0EBA18
-	bsr.w FUN_0eb92a	; $0EBA1A
+	bsr.w z80_bus_request	; $0EBA1A
 	move.b $b(a0),d1	; $0EBA1E
 	beq.b L0EBA6E	; $0EBA22
 	move.b $da(a0),d1	; $0EBA24

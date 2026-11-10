@@ -26,3 +26,11 @@
 0x0000D9FA vdp_data_read       # move.w $C00000,d0: one word from the VDP data port
 0x0000DC60 vdp_set_write_addr  # VDP control port: $4000|addr low word, then the 2-bit high part
 0x0001386A wait_vblank         # sets $FF0016=$FFFF, spins until the VBlank handler clears it
+# --- hardware-facing routines (evidence: the hardware ports each one writes or reads) ---
+0x000003AA pad1_read_boot       # writes $A10009/$A10003 and reads $A10003; no Z80 bus request (reset path)
+0x0000DC82 pad1_read            # bus request $A11100, TH select on $A10003, reads $A10003
+0x0000DCE2 pad2_read            # bus request $A11100, TH select on $A10005, reads $A10005
+0x0000D9E2 vdp_ctrl_write       # move.w arg,$C00004: one word to the VDP control port
+0x000EB92A z80_bus_request      # sr=$2700, $A11100=$0100 (bus request), a0=$A00000
+0x000EB7C8 sound_stop           # sf.b $FF021E (sound-off flag); docs/overview.md: stop-sound, zero callers
+0x000EB88A sound_start_song     # sound_upload, then song pointer into $FF022C/$FF0230; docs/architecture.md: start-song
