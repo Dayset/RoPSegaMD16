@@ -420,16 +420,31 @@ tool `tools/decode_chunks.py`).
       (7 `$D1D00` locs, all +5 = 71, "Keep out, Belmont Residence:
       Private!"), chunk 87 is loc 397 (262,6). Set on 1,350/119,889
       cells overall (1,065 in the 15 rooms + 285 elsewhere).
-    - **Open:** which NPC speaks recs 499–501/1148–1152. The
-      reply-text rule is pinned (`shop_record_score` returns
-      best event-record index + 96; recs 499–501 = event records
-      403–405, which match a char with struct +0x02 == 189/200
-      under event ids 10/25), but no `text_event_resolve` caller
-      found so far passes event id 10 or 25, so the triggering
-      verb/situation and the speaker (asylum lunatic vs hermit)
-      are unproven from the code. Name indices 189/200 are
-      'Sunder'/'Arrow' (category 0x11) — suggestive only, NOT a
-      pin: the +0x02 field's provenance is unverified.
+    - **PINNED (ev1025): the speaker is 'Annulka' (template 189,
+      Conjurors' Guild / Library of Perfection, loc 195) or 'Ayzz'
+      (template 200, Tower of Kaos, loc 213) — NOT the asylum
+      lunatic and NOT the hermit.** Event 25 = TALK→Quest (verb
+      C=53, `$0205B0`); event 10 = the merchant-select greeting
+      (`npc_merchant_attitude_tick`, `$0220DC`, seeded by
+      `combat_select_unit` setting `$FF02A5` = 10). Both reach
+      `shop_record_score` via `npc_attitude_positive` →
+      `text_event_resolve` (`$0299F6`), where the double match
+      (event id + char +0x02) wins deterministically for recs
+      403–405. `+0x02` is `entity_spawn`'s `$c` arg = the template
+      index (mode 1); `world_enter_location` spawns template 189
+      only at loc 195 and template 200 only at loc 213 (template
+      w10 & 0x3FF == location number). Rec 499 ('Hello friend. I
+      am just reading up on the Ring of Variation.') and rec 500
+      (Book of Variation quote) are 'Annulka'; rec 501 (the "Key
+      to Variation" / third-square quote) is 'Ayzz'. The old
+      'Sunder'/'Arrow' reading was WRONG: those are NAME indices
+      189/200, not template indices (template 189's name is
+      'Annulka', template 200's is 'Ayzz'). The Asylum (loc 390)
+      holds templates 288–291, all named 'Cleave' (+0x02 288–291),
+      so its lunatic cannot match. **Open sub-item:** how recs
+      1148–1152 are delivered is still untraced — no literal id
+      1148–1152 appears in the code, and the +96/+1093 paths from
+      the 13 `text_event_resolve` sites cannot produce them.
   - **bit 12: variant flag.** Selects the display descriptor's
     high variant in `column_write`/`row_write`; also a height
     factor in `map_chunk_pos`.
