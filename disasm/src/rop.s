@@ -1391,7 +1391,7 @@ L00D64C:
 	move.b -$3(a6),d0	; $00D64E
 	move.w d0,-(a7)	; $00D652
 	move.w $ff0e82.l,-(a7)	; $00D654
-	jsr sys_unk_02a562.l	; $00D65A
+	jsr world_step_tile.l	; $00D65A
 	addq.w #$4,a7	; $00D660
 L00D662:
 	bra.w L00D7A2	; $00D662
@@ -1405,7 +1405,7 @@ L00D666:
 	move.b -$3(a6),d0	; $00D67A
 	move.w d0,-(a7)	; $00D67E
 	move.w $ff02b2.l,-(a7)	; $00D680
-	jsr sys_unk_02aff2.l	; $00D686
+	jsr npc_spawn_from_char.l	; $00D686
 	addq.w #$4,a7	; $00D68C
 L00D68E:
 	bra.w L00D7A2	; $00D68E
@@ -1447,7 +1447,7 @@ L00D6EA:
 	jsr world_check_other_char.l	; $00D70A
 	tst.w d0	; $00D710
 	beq.b L00D71C	; $00D712
-	jsr combat_unk_026a8c.l	; $00D714
+	jsr npc_show_greeting.l	; $00D714
 	bra.b L00D73E	; $00D71A
 L00D71C:
 	move.w #$1,-(a7)	; $00D71C
@@ -1457,7 +1457,7 @@ L00D71C:
 	move.b -$3(a6),d0	; $00D72A
 	move.w d0,-(a7)	; $00D72E
 	move.w $ff0e82.l,-(a7)	; $00D730
-	jsr sys_unk_02ad64.l	; $00D736
+	jsr world_scan_ahead_for_char.l	; $00D736
 	addq.w #$4,a7	; $00D73C
 L00D73E:
 	bra.b L00D7A2	; $00D73E
@@ -1610,7 +1610,7 @@ L00D93A:
 L00D94E:
 	tst.w $ff011e.l	; $00D94E
 	beq.b L00D95C	; $00D954
-	jsr combat_unk_026a8c.l	; $00D956
+	jsr npc_show_greeting.l	; $00D956
 L00D95C:
 	tst.w $ff00ac.l	; $00D95C
 	beq.b L00D97E	; $00D962
@@ -12551,7 +12551,7 @@ new_game_init:
 	jsr table_init_b(pc)	; $01B722
 	lea.l $e(a7),a7	; $01B726
 	move.w #$ff,-(a7)	; $01B72A
-	jsr sys_unk_02a454.l	; $01B72E
+	jsr shop_merchant_setup.l	; $01B72E
 	addq.w #$2,a7	; $01B734
 	clr.w $ff0e78.l	; $01B736
 	clr.w $ff0e7e.l	; $01B73C
@@ -12642,7 +12642,7 @@ L01B81A:
 	jsr text_enqueue_message.l	; $01B89E
 	lea.l $a(a7),a7	; $01B8A4
 	move.w #$ff,-(a7)	; $01B8A8
-	jsr sys_unk_02a454.l	; $01B8AC
+	jsr shop_merchant_setup.l	; $01B8AC
 	addq.w #$2,a7	; $01B8B2
 	tst.w $ff0128.l	; $01B8B4
 	bne.b L01B8E0	; $01B8BA
@@ -14147,7 +14147,7 @@ L01CA66:
 	addq.w #$4,a7	; $01CAE6
 	move.w d0,-(a7)	; $01CAE8
 	move.w $ff0e82.l,-(a7)	; $01CAEA
-	jsr sys_unk_02a562.l	; $01CAF0
+	jsr world_step_tile.l	; $01CAF0
 	addq.w #$4,a7	; $01CAF6
 	move.w #$ffff,-$20(a6)	; $01CAF8
 	lea.l -$8(a6),a0	; $01CAFE
@@ -15109,7 +15109,7 @@ L01D796:
 	beq.b L01D800	; $01D79A
 	move.w d5,-(a7)	; $01D79C
 	move.w d4,-(a7)	; $01D79E
-	jsr sys_unk_026b08.l	; $01D7A0
+	jsr world_location_lookup.l	; $01D7A0
 	addq.w #$4,a7	; $01D7A6
 	move.w d0,-$18(a6)	; $01D7A8
 	movea.l $8(a6),a0	; $01D7AC
@@ -17278,7 +17278,7 @@ L01F1E6:
 	tst.b $ffbb72.l	; $01F1F2
 	bne.b L01F210	; $01F1F8
 	move.w #$43,-(a7)	; $01F1FA
-	jsr sys_unk_0297f0.l	; $01F1FE
+	jsr world_party_count.l	; $01F1FE
 	addq.w #$2,a7	; $01F204
 	subq.w #$1,d0	; $01F206
 	move.b d0,$ffbb72.l	; $01F208
@@ -17297,7 +17297,7 @@ L01F226:
 	move.b $ffbb72.l,d0	; $01F23A
 	move.w d0,-(a7)	; $01F240
 	move.w #$43,-(a7)	; $01F242
-	jsr sys_unk_0297f0.l	; $01F246
+	jsr world_party_count.l	; $01F246
 	addq.w #$2,a7	; $01F24C
 	move.w (a7)+,d1	; $01F24E
 	swap d1	; $01F250
@@ -17860,7 +17860,7 @@ L01FA4E:
 	addq.w #$1,d0	; $01FA56
 	move.w d0,-(a7)	; $01FA58
 	move.w #$43,-(a7)	; $01FA5A
-	jsr sys_unk_029834.l	; $01FA5E
+	jsr world_party_nth_index.l	; $01FA5E
 	addq.w #$4,a7	; $01FA64
 	move.b d0,$ffbb6d.l	; $01FA66
 	bra.w L01FB00	; $01FA6C
@@ -17879,7 +17879,7 @@ L01FA90:
 	addq.w #$1,d0	; $01FA98
 	move.w d0,-(a7)	; $01FA9A
 	move.w #$43,-(a7)	; $01FA9C
-	jsr sys_unk_029834.l	; $01FAA0
+	jsr world_party_nth_index.l	; $01FAA0
 	addq.w #$4,a7	; $01FAA6
 	move.b d0,$ffbb6e.l	; $01FAA8
 	bra.b L01FB00	; $01FAAE
@@ -17889,7 +17889,7 @@ L01FAB0:
 	addq.w #$1,d0	; $01FAB8
 	move.w d0,-(a7)	; $01FABA
 	move.w #$43,-(a7)	; $01FABC
-	jsr sys_unk_029834.l	; $01FAC0
+	jsr world_party_nth_index.l	; $01FAC0
 	addq.w #$4,a7	; $01FAC6
 	muls.w #$e,d0	; $01FAC8
 	movea.l d0,a0	; $01FACC
@@ -19074,7 +19074,7 @@ L020B2C:
 	cmpi.w #$f,$ff0e7e.l	; $020B3E
 	bne.b L020B62	; $020B46
 L020B48:
-	jsr npc_attitude_result.l	; $020B48
+	jsr npc_location_greet.l	; $020B48
 	move.w #$1,-(a7)	; $020B4E
 	jsr msg_queue_consume.l	; $020B52
 	addq.w #$2,a7	; $020B58
@@ -20627,7 +20627,7 @@ L021ED4:
 	muls.w #$34,d0	; $021F04
 	lea.l $ff02c0.l,a0	; $021F08
 	move.w (a0,d0.l),-(a7)	; $021F0E
-	jsr sys_unk_026b08.l	; $021F12
+	jsr world_location_lookup.l	; $021F12
 	addq.w #$4,a7	; $021F18
 	tst.w d0	; $021F1A
 	bne.w L021FDE	; $021F1C
@@ -21660,7 +21660,7 @@ L022CA8:
 L022CC2:
 	move.w -$a(a6),-(a7)	; $022CC2
 	move.w d4,-(a7)	; $022CC6
-	jsr sys_unk_02aff2.l	; $022CC8
+	jsr npc_spawn_from_char.l	; $022CC8
 	addq.w #$4,a7	; $022CCE
 L022CD0:
 	move.w $ff02b2.l,d0	; $022CD0
@@ -21714,7 +21714,7 @@ L022D70:
 L022D8A:
 	move.w -$a(a6),-(a7)	; $022D8A
 	move.w d4,-(a7)	; $022D8E
-	jsr sys_unk_02aff2.l	; $022D90
+	jsr npc_spawn_from_char.l	; $022D90
 	addq.w #$4,a7	; $022D96
 L022D98:
 	cmpi.w #$4,-$e(a6)	; $022D98
@@ -21920,7 +21920,7 @@ L023016:
 	move.w $ffc36e.l,-(a7)	; $023052
 	move.w $ffc36c.l,-(a7)	; $023058
 	move.w $ffc36a.l,-(a7)	; $02305E
-	jsr sys_unk_02b190.l	; $023064
+	jsr npc_spawn_at_step.l	; $023064
 	lea.l $12(a7),a7	; $02306A
 	clr.w $ff010c.l	; $02306E
 L023074:
@@ -23341,7 +23341,7 @@ L02446C:
 	muls.w #$34,d0	; $024470
 	lea.l $ff02ba.l,a0	; $024474
 	move.w (a0,d0.l),-(a7)	; $02447A
-	jsr sys_unk_025cb4(pc)	; $02447E
+	jsr world_vessel_grid_value(pc)	; $02447E
 	addq.w #$2,a7	; $024482
 	move.w d0,d6	; $024484
 	move.w $8(a6),d0	; $024486
@@ -23438,7 +23438,7 @@ L0245D8:
 	muls.w #$34,d0	; $0245DC
 	lea.l $ff02ba.l,a0	; $0245E0
 	move.w (a0,d0.l),-(a7)	; $0245E6
-	jsr sys_unk_025d2e(pc)	; $0245EA
+	jsr world_vessel_class(pc)	; $0245EA
 	addq.w #$2,a7	; $0245EE
 	move.w d0,-(a7)	; $0245F0
 	move.w #$1,-(a7)	; $0245F2
@@ -23593,14 +23593,14 @@ L024804:
 	muls.w #$34,d0	; $024806
 	lea.l $ff02ba.l,a0	; $02480A
 	move.w (a0,d0.l),-(a7)	; $024810
-	jsr sys_unk_025cb4(pc)	; $024814
+	jsr world_vessel_grid_value(pc)	; $024814
 	addq.w #$2,a7	; $024818
 	move.w d0,d6	; $02481A
 	move.w d7,d0	; $02481C
 	muls.w #$34,d0	; $02481E
 	lea.l $ff02ba.l,a0	; $024822
 	move.w (a0,d0.l),-(a7)	; $024828
-	jsr sys_unk_025d2e(pc)	; $02482C
+	jsr world_vessel_class(pc)	; $02482C
 	addq.w #$2,a7	; $024830
 	move.w d0,-(a7)	; $024832
 	move.w #$1,-(a7)	; $024834
@@ -23823,7 +23823,7 @@ L024ABA:
 	muls.w #$34,d0	; $024B18
 	lea.l $ff02ba.l,a0	; $024B1C
 	move.w (a0,d0.l),-(a7)	; $024B22
-	jsr sys_unk_025d8e(pc)	; $024B26
+	jsr world_vessel_mode(pc)	; $024B26
 	addq.w #$2,a7	; $024B2A
 	move.w d0,-$1a(a6)	; $024B2C
 	move.w -$34(a6),d0	; $024B30
@@ -24241,7 +24241,7 @@ L0250E8:
 L0250EA:
 	tst.w $ff0110.l	; $0250EA
 	bne.b L0250F6	; $0250F0
-	jsr npc_attitude_result(pc)	; $0250F2
+	jsr npc_location_greet(pc)	; $0250F2
 L0250F6:
 	bra.b L025112	; $0250F6
 L0250F8:
@@ -24619,14 +24619,14 @@ L0255AE:
 	muls.w #$34,d0	; $0255CA
 	lea.l $ff02ba.l,a0	; $0255CE
 	move.w (a0,d0.l),-(a7)	; $0255D4
-	jsr sys_unk_025cb4(pc)	; $0255D8
+	jsr world_vessel_grid_value(pc)	; $0255D8
 	addq.w #$2,a7	; $0255DC
 	move.w d0,d4	; $0255DE
 	move.w $8(a6),d0	; $0255E0
 	muls.w #$34,d0	; $0255E4
 	lea.l $ff02ba.l,a0	; $0255E8
 	move.w (a0,d0.l),-(a7)	; $0255EE
-	jsr sys_unk_025d2e(pc)	; $0255F2
+	jsr world_vessel_class(pc)	; $0255F2
 	addq.w #$2,a7	; $0255F6
 	move.w d0,-(a7)	; $0255F8
 	move.w #$ffff,-(a7)	; $0255FA
@@ -25147,7 +25147,7 @@ L025CA6:
 	unlk a6	; $025CB0
 	rts	; $025CB2
 	; code $025CB4-$025D05
-sys_unk_025cb4:
+world_vessel_grid_value:
 	link.w a6,#$0	; $025CB4
 	move.l d4,-(a7)	; $025CB8
 	move.w $8(a6),d4	; $025CBA
@@ -25201,7 +25201,7 @@ L025D20:
 	addq.w #$2,a7	; $025D2A
 	bra.b L025CDC	; $025D2C
 	; code $025D2E-$025D65
-sys_unk_025d2e:
+world_vessel_class:
 	link.w a6,#$0	; $025D2E
 	move.w $8(a6),d0	; $025D32
 	ext.l d0	; $025D36
@@ -25247,7 +25247,7 @@ L025D80:
 	addq.w #$2,a7	; $025D8A
 	bra.b L025D52	; $025D8C
 	; code $025D8E-$025DBB
-sys_unk_025d8e:
+world_vessel_mode:
 	link.w a6,#$0	; $025D8E
 	move.w $8(a6),d0	; $025D92
 	ext.l d0	; $025D96
@@ -25474,7 +25474,7 @@ L026072:
 	unlk a6	; $026072
 	rts	; $026074
 	; code $026076-$02619B
-npc_attitude_result:
+npc_location_greet:
 	link.w a6,#$0	; $026076
 	cmpi.w #$1,$ff00ae.l	; $02607A
 	bne.b L0260B4	; $026082
@@ -26018,7 +26018,7 @@ L026772:
 	move.w d0,-$4(a6)	; $0267AC
 	move.w -$8(a6),-(a7)	; $0267B0
 	move.w -$a(a6),-(a7)	; $0267B4
-	jsr sys_unk_026b08(pc)	; $0267B8
+	jsr world_location_lookup(pc)	; $0267B8
 	addq.w #$4,a7	; $0267BC
 	move.w d0,d6	; $0267BE
 	cmpi.w #$2,-$4(a6)	; $0267C0
@@ -26144,7 +26144,7 @@ L026914:
 	move.w #$1,-(a7)	; $026926
 	jsr combat_unk_01da6c.l	; $02692A
 	addq.w #$6,a7	; $026930
-	jsr npc_attitude_result.l	; $026932
+	jsr npc_location_greet.l	; $026932
 L026938:
 	bra.b L02690C	; $026938
 L02693A:
@@ -26249,7 +26249,7 @@ world_step_apply:
 	unlk a6	; $026A88
 	rts	; $026A8A
 	; code $026A8C-$026B07
-combat_unk_026a8c:
+npc_show_greeting:
 	link.w a6,#$fffe	; $026A8C
 	clr.w $ff011e.l	; $026A90
 	cmpi.w #$1,$ff00ae.l	; $026A96
@@ -26286,7 +26286,7 @@ L026AB2:
 	move.w #$4,$ff011c.l	; $026AFE
 	bra.b L026AAE	; $026B06
 	; code $026B08-$026B57
-sys_unk_026b08:
+world_location_lookup:
 	link.w a6,#$0	; $026B08
 	movem.l d4-d5,-(a7)	; $026B0C
 	moveq #$0,d4	; $026B10
@@ -26691,7 +26691,7 @@ L02711C:
 	addq.w #$1,d0	; $027120
 	move.w d0,-(a7)	; $027122
 	move.w #$43,-(a7)	; $027124
-	jsr sys_unk_029834.l	; $027128
+	jsr world_party_nth_index.l	; $027128
 	addq.w #$4,a7	; $02712E
 	ext.l d0	; $027130
 	asl.l #$1,d0	; $027132
@@ -26868,7 +26868,7 @@ L0272D2:
 	addq.w #$1,-$2(a6)	; $0273A6
 L0273AA:
 	move.w #$43,-(a7)	; $0273AA
-	jsr sys_unk_0297f0.l	; $0273AE
+	jsr world_party_count.l	; $0273AE
 	addq.w #$2,a7	; $0273B4
 	move.w -$2(a6),d1	; $0273B6
 	cmp.w d0,d1	; $0273BA
@@ -29451,7 +29451,7 @@ L029796:
 	; data $029796-$029799
 	incbin "rop-original.gen",$029796,$4
 	; code $02979A-$0297CB
-sys_unk_02979a:
+world_party_member_at:
 	link.w a6,#$fffe	; $02979A
 	move.w $8(a6),d0	; $02979E
 	ext.l d0	; $0297A2
@@ -29477,7 +29477,7 @@ L0297C2:
 FUN_0297cc:
 	bra.b L0297BA	; $0297CC
 	; code $0297CE-$0297ED
-sys_unk_0297ce:
+world_party_size:
 	link.w a6,#$0	; $0297CE
 	move.w $8(a6),d0	; $0297D2
 	ext.l d0	; $0297D6
@@ -29498,11 +29498,11 @@ L0297E4:
 FUN_0297ee:
 	bra.b L0297DC	; $0297EE
 	; code $0297F0-$029833
-sys_unk_0297f0:
+world_party_count:
 	link.w a6,#$fffa	; $0297F0
 	clr.w -$6(a6)	; $0297F4
 	move.w $8(a6),-(a7)	; $0297F8
-	bsr.b sys_unk_0297ce	; $0297FC
+	bsr.b world_party_size	; $0297FC
 	addq.w #$2,a7	; $0297FE
 	move.w d0,-$4(a6)	; $029800
 	clr.w -$2(a6)	; $029804
@@ -29510,7 +29510,7 @@ sys_unk_0297f0:
 L02980A:
 	move.w -$2(a6),-(a7)	; $02980A
 	move.w $8(a6),-(a7)	; $02980E
-	bsr.b sys_unk_02979a	; $029812
+	bsr.b world_party_member_at	; $029812
 	addq.w #$4,a7	; $029814
 	tst.w d0	; $029816
 	beq.b L02981E	; $029818
@@ -29525,7 +29525,7 @@ L029822:
 	unlk a6	; $029830
 	rts	; $029832
 	; code $029834-$02988D
-sys_unk_029834:
+world_party_nth_index:
 	link.w a6,#$fffc	; $029834
 	tst.w $a(a6)	; $029838
 	bne.b L029844	; $02983C
@@ -29540,7 +29540,7 @@ L029844:
 L02984E:
 	move.w -$2(a6),-(a7)	; $02984E
 	move.w $8(a6),-(a7)	; $029852
-	jsr sys_unk_02979a(pc)	; $029856
+	jsr world_party_member_at(pc)	; $029856
 	addq.w #$4,a7	; $02985A
 	tst.w d0	; $02985C
 	beq.b L029874	; $02985E
@@ -29554,7 +29554,7 @@ L029874:
 	addq.w #$1,-$2(a6)	; $029874
 L029878:
 	move.w $8(a6),-(a7)	; $029878
-	jsr sys_unk_0297ce(pc)	; $02987C
+	jsr world_party_size(pc)	; $02987C
 	addq.w #$2,a7	; $029880
 	move.w -$2(a6),d1	; $029882
 	cmp.w d0,d1	; $029886
@@ -29577,7 +29577,7 @@ L02989E:
 L0298A8:
 	move.w -$2(a6),-(a7)	; $0298A8
 	move.w $8(a6),-(a7)	; $0298AC
-	jsr sys_unk_02979a(pc)	; $0298B0
+	jsr world_party_member_at(pc)	; $0298B0
 	addq.w #$4,a7	; $0298B4
 	tst.w d0	; $0298B6
 	beq.b L0298BE	; $0298B8
@@ -29742,7 +29742,7 @@ L029ADA:
 	move.w (a0),d0	; $029AE2
 	and.w #$fff,d0	; $029AE4
 	move.w d0,-(a7)	; $029AE8
-	jsr sys_unk_02b6e0(pc)	; $029AEA
+	jsr npc_attitude_event_apply(pc)	; $029AEA
 	addq.w #$4,a7	; $029AEE
 	bra.w L029FBA	; $029AF0
 L029AF4:
@@ -29751,7 +29751,7 @@ L029AF4:
 	move.w (a0),d0	; $029AFA
 	and.w #$fff,d0	; $029AFC
 	move.w d0,-(a7)	; $029B00
-	jsr sys_unk_02b6e0(pc)	; $029B02
+	jsr npc_attitude_event_apply(pc)	; $029B02
 	addq.w #$4,a7	; $029B06
 	bra.w L029FBA	; $029B08
 L029B0C:
@@ -29853,7 +29853,7 @@ L029C36:
 	move.w (a0),d0	; $029C3C
 	and.w #$fff,d0	; $029C3E
 	move.w d0,-(a7)	; $029C42
-	jsr sys_unk_02b6e0(pc)	; $029C44
+	jsr npc_attitude_event_apply(pc)	; $029C44
 	addq.w #$4,a7	; $029C48
 	bra.w L029FBA	; $029C4A
 L029C4E:
@@ -30182,7 +30182,7 @@ L02A086:
 	move.w (a0),d0	; $02A08E
 	and.w #$fff,d0	; $02A090
 	move.w d0,-(a7)	; $02A094
-	jsr sys_unk_02b6e0(pc)	; $02A096
+	jsr npc_attitude_event_apply(pc)	; $02A096
 	addq.w #$4,a7	; $02A09A
 	move.w #$ffff,-$c(a6)	; $02A09C
 	bra.w L02A21C	; $02A0A2
@@ -30192,7 +30192,7 @@ L02A0A6:
 	move.w (a0),d0	; $02A0AC
 	and.w #$fff,d0	; $02A0AE
 	move.w d0,-(a7)	; $02A0B2
-	jsr sys_unk_02b6e0(pc)	; $02A0B4
+	jsr npc_attitude_event_apply(pc)	; $02A0B4
 	addq.w #$4,a7	; $02A0B8
 	move.w #$ffff,-$c(a6)	; $02A0BA
 	bra.w L02A21C	; $02A0C0
@@ -30411,7 +30411,7 @@ L02A318:
 	move.b #$ff,(a0,d0.l)	; $02A372
 L02A378:
 	move.w #$ff,-(a7)	; $02A378
-	jsr sys_unk_02a454(pc)	; $02A37C
+	jsr shop_merchant_setup(pc)	; $02A37C
 	addq.w #$2,a7	; $02A380
 	bra.w L02A450	; $02A382
 L02A386:
@@ -30438,7 +30438,7 @@ L02A386:
 	cmp.w -$2(a6),d0	; $02A3D6
 	beq.b L02A410	; $02A3DA
 	move.w -$2(a6),-(a7)	; $02A3DC
-	bsr.b sys_unk_02a454	; $02A3E0
+	bsr.b shop_merchant_setup	; $02A3E0
 	addq.w #$2,a7	; $02A3E2
 	lea.l $ff02a2.l,a0	; $02A3E4
 	andi.w #$fffd,(a0)	; $02A3EA
@@ -30469,7 +30469,7 @@ L02A438:
 L02A450:
 	bra.w L02A2E8	; $02A450
 	; code $02A454-$02A561
-sys_unk_02a454:
+shop_merchant_setup:
 	link.w a6,#$fffc	; $02A454
 	move.w $8(a6),$ff02a0.l	; $02A458
 	lea.l $ff02a2.l,a0	; $02A460
@@ -30535,7 +30535,7 @@ L02A544:
 	unlk a6	; $02A55E
 	rts	; $02A560
 	; code $02A562-$02AD63
-sys_unk_02a562:
+world_step_tile:
 	link.w a6,#$ffe8	; $02A562
 	cmpi.w #$4,$a(a6)	; $02A566
 	bne.b L02A582	; $02A56C
@@ -30731,7 +30731,7 @@ L02A822:
 	move.w #$58,-(a7)	; $02A822
 	move.w -$12(a6),-(a7)	; $02A826
 	move.w $8(a6),-(a7)	; $02A82A
-	jsr sys_unk_02af72(pc)	; $02A82E
+	jsr text_item_grant_message(pc)	; $02A82E
 	addq.w #$6,a7	; $02A832
 	tst.w d0	; $02A834
 	beq.b L02A8A6	; $02A836
@@ -30810,7 +30810,7 @@ L02A91E:
 	move.w #$56,-(a7)	; $02A91E
 	move.w -$12(a6),-(a7)	; $02A922
 	move.w $8(a6),-(a7)	; $02A926
-	jsr sys_unk_02af72(pc)	; $02A92A
+	jsr text_item_grant_message(pc)	; $02A92A
 	addq.w #$6,a7	; $02A92E
 	tst.w d0	; $02A930
 	beq.w L02A9BC	; $02A932
@@ -31022,7 +31022,7 @@ L02AB4A:
 	move.w $ff0e82.l,-(a7)	; $02AC14
 	jsr npc_leader_init.l	; $02AC1A
 	lea.l $10(a7),a7	; $02AC20
-	jsr npc_attitude_result.l	; $02AC24
+	jsr npc_location_greet.l	; $02AC24
 	bra.w L02AD60	; $02AC2A
 L02AC2E:
 	pea.l -$18(a6)	; $02AC2E
@@ -31115,7 +31115,7 @@ L02AD50:
 L02AD60:
 	bra.w L02A6D6	; $02AD60
 	; code $02AD64-$02ADEB
-sys_unk_02ad64:
+world_scan_ahead_for_char:
 	link.w a6,#$ffee	; $02AD64
 	cmpi.w #$4,$a(a6)	; $02AD68
 	bne.b L02AD84	; $02AD6E
@@ -31272,7 +31272,7 @@ L02AF6E:
 	unlk a6	; $02AF6E
 	rts	; $02AF70
 	; code $02AF72-$02AFF1
-sys_unk_02af72:
+text_item_grant_message:
 	link.w a6,#$fffa	; $02AF72
 	tst.w $a(a6)	; $02AF76
 	bne.b L02AF82	; $02AF7A
@@ -31318,7 +31318,7 @@ L02AFDE:
 	moveq #$0,d0	; $02AFEE
 	bra.b L02AF7E	; $02AFF0
 	; code $02AFF2-$02B18F
-sys_unk_02aff2:
+npc_spawn_from_char:
 	link.w a6,#$fff2	; $02AFF2
 	cmpi.w #$4,$a(a6)	; $02AFF6
 	bne.b L02B012	; $02AFFC
@@ -31427,7 +31427,7 @@ L02B0A8:
 L02B18C:
 	bra.w L02B096	; $02B18C
 	; code $02B190-$02B2B1
-sys_unk_02b190:
+npc_spawn_at_step:
 	link.w a6,#$fffa	; $02B190
 	movem.l d4-d7/a3,-(a7)	; $02B194
 	moveq #$0,d6	; $02B198
@@ -31592,7 +31592,7 @@ L02B3FC:
 	unlk a6	; $02B3FE
 	rts	; $02B400
 	; code $02B402-$02B501
-npc_spawn_at_step:
+spell_spawn_entity:
 	link.w a6,#$fff6	; $02B402
 	move.l a3,-(a7)	; $02B406
 	cmpi.w #$6,$14(a6)	; $02B408
@@ -31815,7 +31815,7 @@ sys_bitmap_write:
 	unlk a6	; $02B6DC
 	rts	; $02B6DE
 	; code $02B6E0-$02BBB3
-sys_unk_02b6e0:
+npc_attitude_event_apply:
 	link.w a6,#$fff6	; $02B6E0
 	cmpi.w #$100,$8(a6)	; $02B6E4
 	bcs.b L02B708	; $02B6EA
@@ -34465,7 +34465,7 @@ L02D8F4:
 	move.w #$a,-(a7)	; $02D94A
 	move.w #$ff,-(a7)	; $02D94E
 	move.w -$2(a6),-(a7)	; $02D952
-	jsr sys_unk_02b190.l	; $02D956
+	jsr npc_spawn_at_step.l	; $02D956
 	lea.l $12(a7),a7	; $02D95C
 	bra.w L02DBEA	; $02D960
 L02D964:
@@ -34564,7 +34564,7 @@ L02DAB4:
 	move.w $6(a0),$ff0e9c.l	; $02DAC8
 	bra.w L02DBEA	; $02DAD0
 L02DAD4:
-	jsr combat_unk_026a8c.l	; $02DAD4
+	jsr npc_show_greeting.l	; $02DAD4
 	move.w #$1,-(a7)	; $02DADA
 	jsr msg_queue_consume.l	; $02DADE
 	addq.w #$2,a7	; $02DAE4
@@ -34583,7 +34583,7 @@ L02DB06:
 	move.w d0,-(a7)	; $02DB12
 	movea.l $ffc384.l,a0	; $02DB14
 	move.w $4(a0),-(a7)	; $02DB1A
-	jsr sys_unk_02b6e0.l	; $02DB1E
+	jsr npc_attitude_event_apply.l	; $02DB1E
 	addq.w #$4,a7	; $02DB24
 	bra.w L02DBEA	; $02DB26
 L02DB2A:
@@ -34622,7 +34622,7 @@ L02DB88:
 	move.b $3(a0),d0	; $02DBA4
 	move.w d0,-(a7)	; $02DBA8
 	move.w -$2(a6),-(a7)	; $02DBAA
-	jsr sys_unk_02a562.l	; $02DBAE
+	jsr world_step_tile.l	; $02DBAE
 	addq.w #$4,a7	; $02DBB4
 	bra.b L02DBEA	; $02DBB6
 L02DBB8:
@@ -34827,7 +34827,7 @@ L02DE2E:
 	addq.w #$4,a7	; $02DE3C
 	move.w #$1,-(a7)	; $02DE3E
 	move.w #$8f,-(a7)	; $02DE42
-	jsr sys_unk_02b6e0.l	; $02DE46
+	jsr npc_attitude_event_apply.l	; $02DE46
 	addq.w #$4,a7	; $02DE4C
 	pea.l L0CCC58.l	; $02DE4E
 	clr.w -(a7)	; $02DE54
@@ -36877,7 +36877,7 @@ L02F8E6:
 	jsr sys_struct52_scan.l	; $02F9FC
 	addq.w #$2,a7	; $02FA02
 	move.w #$ff,-(a7)	; $02FA04
-	jsr sys_unk_02a454.l	; $02FA08
+	jsr shop_merchant_setup.l	; $02FA08
 	addq.w #$2,a7	; $02FA0E
 	move.w #$9,-(a7)	; $02FA10
 	move.w #$3,-(a7)	; $02FA14
@@ -37400,7 +37400,7 @@ world_camp:
 	link.w a6,#$fff4	; $03019A
 	cmpi.w #$2,$ff00ae.l	; $03019E
 	bne.b L0301AE	; $0301A6
-	jsr combat_unk_026a8c.l	; $0301A8
+	jsr npc_show_greeting.l	; $0301A8
 L0301AE:
 	move.w #$3,-(a7)	; $0301AE
 	jsr rand_next.l	; $0301B2
@@ -45172,7 +45172,7 @@ L036642:
 	addq.w #$4,a7	; $03666E
 	tst.w -$6(a6)	; $036670
 	beq.b L036698	; $036674
-	jsr combat_unk_026a8c.l	; $036676
+	jsr npc_show_greeting.l	; $036676
 	move.w #$6,-(a7)	; $03667C
 	move.w #$d,-(a7)	; $036680
 	jsr text_show_message.l	; $036684
@@ -45188,7 +45188,7 @@ L036698:
 	rol.w #$3,d1	; $0366AC
 	and.w #$1,d1	; $0366AE
 	beq.w L0367BE	; $0366B2
-	jsr combat_unk_026a8c.l	; $0366B6
+	jsr npc_show_greeting.l	; $0366B6
 	move.w #$54,-(a7)	; $0366BC
 	move.w #$35,-(a7)	; $0366C0
 	jsr world_refresh_chars.l	; $0366C4
@@ -48246,7 +48246,7 @@ L038D84:
 	move.w d0,-(a7)	; $038D94
 	move.w -$8(a6),-(a7)	; $038D96
 	move.w -$6(a6),-(a7)	; $038D9A
-	jsr npc_spawn_at_step.l	; $038D9E
+	jsr spell_spawn_entity.l	; $038D9E
 	lea.l $14(a7),a7	; $038DA4
 	tst.w d0	; $038DA8
 	beq.b L038DB0	; $038DAA
@@ -48386,7 +48386,7 @@ L038F52:
 	move.w d0,-(a7)	; $038F62
 	move.w -$8(a6),-(a7)	; $038F64
 	move.w -$6(a6),-(a7)	; $038F68
-	jsr npc_spawn_at_step.l	; $038F6C
+	jsr spell_spawn_entity.l	; $038F6C
 	lea.l $14(a7),a7	; $038F72
 	tst.w d0	; $038F76
 	beq.b L038F7E	; $038F78
@@ -48506,7 +48506,7 @@ L0390EA:
 	move.w d0,-(a7)	; $0390FA
 	move.w -$8(a6),-(a7)	; $0390FC
 	move.w -$6(a6),-(a7)	; $039100
-	jsr npc_spawn_at_step.l	; $039104
+	jsr spell_spawn_entity.l	; $039104
 	lea.l $14(a7),a7	; $03910A
 	tst.w d0	; $03910E
 	beq.b L039116	; $039110
@@ -48706,7 +48706,7 @@ L03937C:
 	move.w d0,-(a7)	; $03938C
 	move.w -$8(a6),-(a7)	; $03938E
 	move.w -$6(a6),-(a7)	; $039392
-	jsr npc_spawn_at_step.l	; $039396
+	jsr spell_spawn_entity.l	; $039396
 	lea.l $14(a7),a7	; $03939C
 	tst.w d0	; $0393A0
 	beq.b L0393A8	; $0393A2
@@ -48966,7 +48966,7 @@ L0396B4:
 	move.w d0,-(a7)	; $0396C4
 	move.w -$8(a6),-(a7)	; $0396C6
 	move.w -$6(a6),-(a7)	; $0396CA
-	jsr npc_spawn_at_step.l	; $0396CE
+	jsr spell_spawn_entity.l	; $0396CE
 	lea.l $14(a7),a7	; $0396D4
 	tst.w d0	; $0396D8
 	beq.b L0396E0	; $0396DA
@@ -54921,7 +54921,7 @@ L03E000:
 	clr.w $ff013c.l	; $03E05C
 	jsr scene_draw.l	; $03E062
 	clr.w $ff0110.l	; $03E068
-	jsr combat_unk_026a8c.l	; $03E06E
+	jsr npc_show_greeting.l	; $03E06E
 	move.w #$14,-(a7)	; $03E074
 	move.w #$d,-(a7)	; $03E078
 	jsr text_show_message.l	; $03E07C
@@ -55188,7 +55188,7 @@ L03E398:
 	move.b $27(a0),d0	; $03E3F6
 	move.w d0,-(a7)	; $03E3FA
 	move.w $ff0eaa.l,-(a7)	; $03E3FC
-	jsr sys_unk_02b190.l	; $03E402
+	jsr npc_spawn_at_step.l	; $03E402
 	lea.l $12(a7),a7	; $03E408
 	move.w d0,$ff0294.l	; $03E40C
 	addq.w #$1,$ff012a.l	; $03E412
@@ -57076,7 +57076,7 @@ L03FF06:
 	move.w d0,-(a7)	; $03FF16
 	move.w #$1,-(a7)	; $03FF18
 	move.w #$1,-(a7)	; $03FF1C
-	jsr npc_spawn_at_step.l	; $03FF20
+	jsr spell_spawn_entity.l	; $03FF20
 	lea.l $14(a7),a7	; $03FF26
 	clr.w -(a7)	; $03FF2A
 	move.w #$a,-(a7)	; $03FF2C
@@ -57103,7 +57103,7 @@ L03FF5C:
 	move.w d0,-(a7)	; $03FF6C
 	move.w #$b,-(a7)	; $03FF6E
 	move.w #$1,-(a7)	; $03FF72
-	jsr npc_spawn_at_step.l	; $03FF76
+	jsr spell_spawn_entity.l	; $03FF76
 	lea.l $14(a7),a7	; $03FF7C
 	clr.w -(a7)	; $03FF80
 	move.w #$a,-(a7)	; $03FF82
@@ -57130,7 +57130,7 @@ L03FFB2:
 	move.w d0,-(a7)	; $03FFC2
 	move.w #$b,-(a7)	; $03FFC4
 	move.w #$b,-(a7)	; $03FFC8
-	jsr npc_spawn_at_step.l	; $03FFCC
+	jsr spell_spawn_entity.l	; $03FFCC
 	lea.l $14(a7),a7	; $03FFD2
 	clr.w -(a7)	; $03FFD6
 	move.w #$a,-(a7)	; $03FFD8
@@ -57157,7 +57157,7 @@ L040008:
 	move.w d0,-(a7)	; $040018
 	move.w #$1,-(a7)	; $04001A
 	move.w #$b,-(a7)	; $04001E
-	jsr npc_spawn_at_step.l	; $040022
+	jsr spell_spawn_entity.l	; $040022
 	lea.l $14(a7),a7	; $040028
 	jsr map_animate_tiles.l	; $04002C
 	addq.w #$1,$ff012a.l	; $040032
@@ -58314,7 +58314,7 @@ L041056:
 	move.w d0,-(a7)	; $041066
 	move.w -$8(a6),-(a7)	; $041068
 	move.w -$6(a6),-(a7)	; $04106C
-	jsr npc_spawn_at_step.l	; $041070
+	jsr spell_spawn_entity.l	; $041070
 	lea.l $14(a7),a7	; $041076
 	tst.w d0	; $04107A
 	beq.b L041082	; $04107C
@@ -59803,7 +59803,7 @@ L04258C:
 	move.b (a0,d0.l),d1	; $04260C
 	move.w d1,-(a7)	; $042610
 	move.w $ff0294.l,-(a7)	; $042612
-	jsr sys_unk_02b190.l	; $042618
+	jsr npc_spawn_at_step.l	; $042618
 	lea.l $12(a7),a7	; $04261E
 	clr.w -(a7)	; $042622
 	move.w $ff0294.l,d0	; $042624
@@ -60016,7 +60016,7 @@ L04291E:
 	move.b $27(a0),d0	; $042964
 	move.w d0,-(a7)	; $042968
 	move.w $ff0eaa.l,-(a7)	; $04296A
-	jsr sys_unk_02b190.l	; $042970
+	jsr npc_spawn_at_step.l	; $042970
 	lea.l $12(a7),a7	; $042976
 	move.w $ff0eaa.l,-(a7)	; $04297A
 	jsr npc_struct_release.l	; $042980
@@ -60084,7 +60084,7 @@ L042A1A:
 	move.w $2c(a0),d0	; $042A52
 	and.w #$ff,d0	; $042A56
 	move.w d0,-(a7)	; $042A5A
-	jsr sys_unk_02b190.l	; $042A5C
+	jsr npc_spawn_at_step.l	; $042A5C
 	lea.l $12(a7),a7	; $042A62
 	clr.w -(a7)	; $042A66
 	movea.l -$1c(a6),a0	; $042A68
