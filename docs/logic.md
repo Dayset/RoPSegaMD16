@@ -498,7 +498,18 @@ in `doc_regions.csv` were the same table's leading bytes.)
   entity's grid value for `combat_effect_apply`). Values: spells 7,
   rings 2, services 6, keys 3, items 4, goods 6, crafts 6, healing 5,
   papers 7, cat 18 (goods) 0, drinks 6, dummy 6. What vessel mode 5
-  IS (which mount/vehicle) stays open, like vessel mode 2.
+  IS (which mount/vehicle) stays open, like vessel mode 2. E by
+  category (re-dumped 2026-11-11): 0:6, 1–9:7, 10:2, 11:6, 12:3, 13:4,
+  14:6, 15:6, 16:5, 17:7, 18:0, 19:6 — so a mode-5 spawn's grid tile is
+  $208+E (rings $20A, keys $20B, items $20C, healing $20D,
+  services/goods/crafts/drinks/dummy $20E, spells/papers/cats 7–9 $20F,
+  cat 18 $208). Grant-code categories actually present in the 161
+  $D601E records (q = code//64): {0:54, 1:37, 5:1, 10:7, 12:11, 13:20,
+  14:6, 17:23, 18:2}; no grants for cats 2, 3, 4, 6, 7, 8, 9, 11, 15,
+  16, 19. Which vessel each E selects is still open — a mode-5 grant
+  is an event reward (NPC gift / location grant); the mapping from
+  granted item to vessel needs the grant sites enumerated. The $D601E
+  record bytes +2..+5 (grant conditions) are not decoded.
 
 **Price/value table `$D6768`, 257 records × 4 bytes**
 (`$D6768`–`$D6B68`). Record: +0 word name_idx (`$CD431` — the
@@ -885,6 +896,55 @@ water = base_water(mode) + terrain_water(type, mode)
   `+0x06 = 0`, `+0x08 = 4`; type 4 → `+0x08 = 4`. `+0x06` is otherwise
   0 (cleared at `$024264`, `$0367B4`), so **plain on-foot walking is
   mode 0, base (3,1)** — live, see the fall-through correction above.
+* **Travel-mode names and the four vessels (pinned 2026-11-11,
+  static):** mode 0 foot, 1 Dino, 2 Boat, 3 Ship, 4 Dragon, 5
+  event-grant vessel, 6 unknown (high byte 1, no setter found), 7
+  high-byte-3 / spawn-type-6 'Tinini' (transient NPC travel). The
+  mountable vessels are spawn-mode-2 location entities from
+  `world_ensure_location_entity` (`$02C212`): Ship (`$e`=3, site
+  `$02C332`), Boat (`$e`=2, `$02C37E`), Dino (`$e`=1, `$02C3CA`),
+  Dragon (`$e`=4, `$02C414`) — identified by the cost table (Dino is
+  the only (3,1) vessel besides foot; Boat is the only mode paying the
+  deep-water (5,20); Ship is (1,1) everywhere; Dragon is (38,38)).
+  Which `$D1D00` locations host each vessel (the per-site gating in
+  `$02C2E0`–`$02C332`) is not enumerated. The Dragon template 75
+  (location 57) is NOT itself a mountable Dragon — template spawns
+  pass `$e`=`$FFFF` → `+0x06`=0; no template uses 'Dino'/'Ship'/'Boat'.
+  **Spawn mode and travel mode are different numberspaces:** spawn mode
+  is `entity_spawn` arg `$8` (1 template, 2 location entity, 4
+  spawn-table, 5 event grant, 6 transient); travel mode is
+  `world_vessel_mode`'s result from `+0x06`. A spawn-mode-2 entity can
+  carry travel mode 1/2/3/4. `world_vessel_grid_value` (`$025CB4`):
+  high 0 → low==0 ? `$180` : low*4+`$1BC`; high 1 → low*16+`$120`;
+  high 2 → low+`$208` (mode-5 case); high 3 → low+`$202`.
+  `world_vessel_class` (`$025D2E`): high 0 → low==0 ? 1 : 0; high 1 →
+  1; high 2 → 2; high 3 → 3. **Vessel behaviours in `world_tick`:**
+  Dragon SFX 36 (`$02165C` — leader `+0x06`==4 and gfx phase != 0 →
+  `sfx_request($24)`); Dino forage (`$02175E`–`$02182E` — food/water ≤
+  1 and leader on a Dino → rec_1105 'Your Dino is hungry and thirsty,
+  so he's run away to forage.', the Dino is re-placed adjacent). The
+  board/mount transition routine (leader `+0x06` := vessel `+0x06`) is
+  not yet traced. Guide cross-check (Oblisky Travel): every row matches
+  the code — foot (3,1), foot Desert (7,5), Boat shallow (1,1), Boat
+  deep (5,20), Ship (1,1), Dino road (1,1), Dino other (3,1), Dragon
+  38≈40 (manual rounds 38 to 40). **No world projectile mechanic
+  exists:** no FIRE verb in any menu; `+0x06` is read in the world only
+  by movement, struct setup, the Dragon SFX and the Dino starvation
+  check. The ship 'can shoot' is guide-only (Jeromec, twice); the
+  routine is unlocated — most plausible home is naval combat, not
+  pinned. Vessels do NOT cast in the world either; the asymmetry is
+  world-vs-combat, not vessel-vs-Buc.
+* **No dino autopilot / routes (discrepancy, code wins, 2026-11-11):**
+  the word 'autopilot' appears in neither the Jeromec FAQ (1,268
+  lines) nor the Oblisky guide's Travel/Hints sections, and the code
+  has no route data or route-following routine — NPC movement is
+  `world_move_random` (`$037976`, `rand_next(24)` → direction table
+  `$1AE38` → `map_walk_check`, up to 4 tries). The party moves only by
+  player input. Closest real behaviours: the starving Dino foraging on
+  its own (above), wandering merchants travelling by craft (same random
+  walk), the scripted Buc cutscene walk. What Dayset remembers
+  (road-cost behaviour? forage? merchants? a different guide?) is an
+  open question back to him — do not repeat the autopilot claim as fact.
 * **Terrain addition — jump table at `$01D73E`** (35 entries, terrain
   types 0–34, offsets relative to `$01D794`; dispatch at `$01D784`,
   `cmp.l #$23,d0` bounds-checks, out-of-range → `$01D736` sets the
