@@ -8,3 +8,7 @@ addr,size,name,tier,note
 0xFF012C,1,ram_event_code,2,event/state code; docs/logic-audit.md, docs/logic.md
 0xFFBB72,1,ram_shop_stock_byte,2,stock byte decremented on sell; docs/logic.md
 0xFF02C0,2,ram_header_leader,2,header leader word; docs/save.md
+0xFF012A,2,ram_sys_field_012a,0,word compared to 1 and 41 in spell_apply_actor_39df4 used by 5 routines
+0xFF02C2,2,ram_npc_field_02c2,0,word in stride-34 record table paired with ram_header_leader in npc_calc_delta_34ed0
+0xFF02C8,2,ram_npc_field_02c8,0,word in stride-34 record table read in npc_get_attr_34fc4
+0xFF02DC,1,ram_npc_flag_02dc,1,byte masked with 7f in npc_get_attr_34fc4
