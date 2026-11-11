@@ -78,7 +78,7 @@ addr,name,tier,note
 0x017860,location_pic_draw,2,graphics.md: jsr $17860($FF009E) location-picture draw
 0x0179CA,vdp_scaled_table_write,1,static: table L01B4D2 scaled by arg/32; written to VDP data after set_write_addr $4000
 0x017a40,sprite_write_block,1,writes 2x2 block of 4 sprite entries via sprite_write for one composite large sprite; called from scene_draw at 3 sites
-0x01960A,map_set_flag_ffff,1,static: writes $FFFF to ram_sys_ff0078 and returns; flag-clear helper
+0x01960A,map_set_flag_ffff,1,static: writes $FFFF to ram_sys_ff0078 and returns ($FF0078 is never read anywhere in the ROM)
 0x01961a,map_chunk_cache_init,1,initializes the 4-slot map-chunk cache struct at $FFA880 with slot count 4; clears slot-index table and 377-entry pointer table; called once from new_game_init; maps.md:348 architecture.md:204
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
 0x01BA16,redraw_flag_set,1,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26

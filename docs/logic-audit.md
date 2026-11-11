@@ -265,11 +265,13 @@ reachable, persisted toggle whose only live effect is the input
 decoder's extended mapping; there is no on-screen debug display.
 
 **Format string dead (high confidence).** The debug format string at
-`0x23934` ("N^NuSp:%i Dir:%i Ac:%i St:%i Dr:%i\n") has **no
-references**: no longword pointer `0x00023934` anywhere in ROM, no
-PC-relative/immediate reference in `disasm/rop.s`. A
-computed-address reference cannot be fully excluded statically, but
-none was found. It is dead data left from development.
+`0x23938` ("Sp:%i Dir:%i Ac:%i St:%i Dr:%i\n") is referenced once:
+`pea.l L023938(pc)` at `$02391A`, inside `$0238B8`
+(`sys_each_entry_238b8`). (An earlier note said it had no references
+and cited `0x23934` — that address is 4 bytes before the string, and
+the `pea.l` reference was missed.) Its sole referrer is itself
+uncalled, so the string is still dead data left from development.
+**Corrected 2026-11-11 [static].**
 
 **Other dead code (CODE-VERIFIED).** `$EB7C8` (stop-sound) is dead
 code, **zero callers** (it is the routine the music-off patch calls
@@ -437,10 +439,12 @@ type 1 direct; `$2B402` and `$2B5F4` **are** jsr-called (from spell
 routines `0x38D9E`/`0x38F6C`/`0x39104`/`0x39396`/`0x396CE`/`0x3FF20`/
 `0x3FF76`/`0x3FFCC`/`0x40022`/`0x41070` and new-game init `0x1B75A` /
 `0x2F904`). `$2B5F4` loops the `$D601E` table (`0xA1` then `0xB8`
-entries) via `$2B68C`. The most likely entry is a computed jump
-through the `$2BBD2` dispatch (a jump table whose entries are not
-visible as plain longwords) — open, narrowed to the `$2BBD2`
-major/minor dispatch and the party-join call sites.
+entries) via `$2B68C`. The `$2BBD2` computed-jump entry hypothesis is
+**falsified**: all four `$2BBD2` dispatch tables were decoded
+(2026-11-11) and contain no entry for `$2B2B2`/`$2B502`/`$2988E`,
+and all 71 `jmp *+2(pc,d0.w)` tables in the ROM were decoded with
+zero targets among them. The entry mechanism remains **open**, not
+narrowed to `$2BBD2`. **Corrected 2026-11-11 [static].**
 
 **`$1E0A4` helper — SOLVED (audit Q14).** `0x1E0A4–0x1E0E2`:
 jump table at `0x1E0C6`, input d0 (attacker.+0x0A): 0→2, 1→3, 2→0,
@@ -966,14 +970,14 @@ disassembly line; registers must be read explicitly.
 | Command-23 writer | OPEN | No literal `move.b #$17` into the command slot in `disasm/rop.s` (§11) |
 | +0x14 chain passing 57–62 | OPEN | `$2BBD2` major/minor dispatch + party-join call sites (§14) |
 | Food/water consumption routine | OPEN | `$FF0E16` step-counter consumers in the `$2155E` tick path other than save code; `$32C56` callers (§13) |
-| Bribe 10-gold code path | LOCATED + delta mechanism confirmed [live 6/6] (2026-11-10) | Verb "Bribe" (ROM `0xCD38C`, C 25) → handler `$020466`: gold ≥ 10, deduct 10 via `$2BBD2`, raise attitude via `$02A22A` → `$02CE74` (§16). `$02CE74`: live +0x22 += full delta, persistent `$FF00C0` += (pct × delta)/100, both clamped [−100,+100]. 11 event-8 records in `$0D3102`; type-1 deltas 50/99/15, type-3 −1. Which record matches is the merchant's +0x02 (RNG tie-break) — not a single universal number. `$0331A4` record-match RESOLVED [live] (2026-11-10, `.scratch025/` batch mode: +0x02=1 → rec 19 $F000; +0x02=0 → rec 20 $1032). |
+| Bribe 10-gold code path | LOCATED + delta mechanism confirmed [live 6/6] (2026-11-10) | Verb "Bribe" (ROM `0xCD38C`, C 25) → handler `$020466`: gold ≥ 10, deduct 10 via `$2BBD2`, raise attitude via `$02A22A` → `$02CE74` (§16). `$02CE74`: live +0x22 += full delta, persistent `$FF00C0` += (pct × delta)/100, both clamped [−100,+100]. 11 event-8 records in `$0D3102`; type-1 deltas 50/99/15, type 11 is the attitude-down path, rec 44 (type 3, delta 1) ends combat. Type 0xF has no case in either dispatch table — a +0x02==1 merchant's Bribe changes attitude by exactly zero (corrected 2026-11-11, PR #138). Which record matches is the merchant's +0x02 (RNG tie-break) — not a single universal number. `$0331A4` record-match RESOLVED [live] (2026-11-10, `.scratch025/` batch mode: +0x02=1 → rec 19 $F000; +0x02=0 → rec 20 $1032). |
 | Doggonia 1,000-gold fee | OPEN | Player-observed only; no routine found (§16) |
 | Gems sell 428 | RESOLVED (2026-11-10) [live] | Guide was right; `$2EA92` slot-doubling table `$1B299` was missed. `$2EA92(14,2)` = 856 @ Commerce att 40, sell 428 (§16) |
 | Discipline↔spell-block mapping | OPEN | Names only suggest it; not proven from code (§14) |
 | `$2BBD2` handlers `$2C0A6`/`$2C0BE`/`$2C0EE`/`$2C212`/`$2C0D6` | OPEN | Not traced (§16) |
 | Item-record +4..+9 byte meanings | OPEN | Dumped; consumers in shop/message code listed (§16) |
 | +0x27 exact semantic | OPEN (medium confidence: char index) | Read as an index in `$3B1EE` + message routines (§16) |
-| `$2B240` family entry mechanism | OPEN | No jsr/jmp/longword refs; likely a computed jump through `$2BBD2` (§10) |
+| `$2B240` family entry mechanism | OPEN | No jsr/jmp/longword refs; computed-jump entry via `$2BBD2` falsified 2026-11-11 (all four `$2BBD2` tables decoded, no entry for `$2B2B2`/`$2B502`/`$2988E`; all 71 computed-jump tables decoded, zero targets among them). Entry mechanism still open (§10) |
 | Giant-function per-block internals | OPEN (dispatch mapped) | `0x40880` max-HP path arithmetic; five `$39xxx` spell effects (§9) |
 | Live-combat headless drive | OPEN (not attempted) | Needs a save-state + scripted-input driver (§19) |
 | Joypad mashing / debounce in live play | OPEN | Pop semantics proven; overflow unmeasured (§17) |
