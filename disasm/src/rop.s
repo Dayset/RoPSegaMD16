@@ -10021,7 +10021,7 @@ L0177BC:
 	pea.l -$6(a6)	; $0177D6
 	pea.l L000001.w	; $0177DA
 	clr.l -(a7)	; $0177DE
-	jsr sys_unk_043006.l	; $0177E0
+	jsr eeprom_read.l	; $0177E0
 	lea.l $c(a7),a7	; $0177E6
 	cmpi.w #$ffff,$ff014e.l	; $0177EA
 	bne.b L0177FA	; $0177F2
@@ -10033,7 +10033,7 @@ L0177FA:
 	pea.l -$5(a6)	; $0177FA
 	pea.l L000001.w	; $0177FE
 	pea.l L000001.w	; $017802
-	jsr sys_unk_043006.l	; $017806
+	jsr eeprom_read.l	; $017806
 	lea.l $c(a7),a7	; $01780C
 	cmpi.w #$ffff,$ff014e.l	; $017810
 	bne.b L01781E	; $017818
@@ -10043,7 +10043,7 @@ L01781E:
 	pea.l $ffa800.l	; $01781E
 	pea.l L00007E.w	; $017824
 	pea.l L000002.w	; $017828
-	jsr sys_unk_043006.l	; $01782C
+	jsr eeprom_read.l	; $01782C
 	lea.l $c(a7),a7	; $017832
 	cmpi.w #$ffff,$ff014e.l	; $017836
 	bne.b L017844	; $01783E
@@ -13315,7 +13315,7 @@ L01C0C2:
 	blt.w L01BA64	; $01C0D2
 	tst.w $ff013c.l	; $01C0D6
 	beq.b L01C0E4	; $01C0DC
-	jsr sys_unk_03d9f8.l	; $01C0DE
+	jsr spell_effect_step.l	; $01C0DE
 L01C0E4:
 	movem.l (a7)+,d4-d7/a3-a4	; $01C0E4
 	unlk a6	; $01C0E8
@@ -53703,7 +53703,7 @@ L03D136:
 	unlk a6	; $03D13A
 	rts	; $03D13C
 	; code $03D13E-$03D32D
-sys_unk_03d13e:
+gfx_paint_stream_burst:
 	link.w a6,#$0	; $03D13E
 	clr.w -(a7)	; $03D142
 	move.w $a(a6),-(a7)	; $03D144
@@ -53849,7 +53849,7 @@ L03D32A:
 	unlk a6	; $03D32A
 	rts	; $03D32C
 	; code $03D32E-$03D46B
-sys_unk_03d32e:
+gfx_paint_stream_fan:
 	link.w a6,#$0	; $03D32E
 	movem.l d4-d5,-(a7)	; $03D332
 	tst.w $c(a6)	; $03D336
@@ -53947,7 +53947,7 @@ L03D348:
 	unlk a6	; $03D468
 	rts	; $03D46A
 	; code $03D46C-$03D527
-sys_unk_03d46c:
+gfx_paint_stream_block:
 	link.w a6,#$0	; $03D46C
 	movem.l d4-d5,-(a7)	; $03D470
 	tst.w $c(a6)	; $03D474
@@ -54007,7 +54007,7 @@ L03D48C:
 	unlk a6	; $03D524
 	rts	; $03D526
 	; code $03D528-$03D759
-sys_unk_03d528:
+gfx_paint_stream_grid:
 	link.w a6,#$0	; $03D528
 	clr.w -(a7)	; $03D52C
 	move.w $a(a6),-(a7)	; $03D52E
@@ -54178,7 +54178,7 @@ L03D756:
 	unlk a6	; $03D756
 	rts	; $03D758
 	; code $03D75A-$03D98F
-sys_unk_03d75a:
+spell_effect_scatter:
 	link.w a6,#$0	; $03D75A
 	movem.l d4-d5,-(a7)	; $03D75E
 	tst.w $ff0092.l	; $03D762
@@ -54349,7 +54349,7 @@ L03D808:
 	unlk a6	; $03D98C
 	rts	; $03D98E
 	; code $03D990-$03D9F7
-sys_unk_03d990:
+spell_effect_block:
 	link.w a6,#$0	; $03D990
 	movem.l d4-d6,-(a7)	; $03D994
 	tst.w $c(a6)	; $03D998
@@ -54391,7 +54391,7 @@ L03D9AE:
 	unlk a6	; $03D9F4
 	rts	; $03D9F6
 	; code $03D9F8-$03E197
-sys_unk_03d9f8:
+spell_effect_step:
 	link.w a6,#$0	; $03D9F8
 	movem.l d4-d6,-(a7)	; $03D9FC
 	move.w $ff013c.l,d0	; $03DA00
@@ -54619,7 +54619,7 @@ L03DCAA:
 	addq.w #$2,a7	; $03DCD4
 	add.w #$b4,d0	; $03DCD6
 	move.w d0,-(a7)	; $03DCDA
-	jsr sys_unk_03d13e(pc)	; $03DCDC
+	jsr gfx_paint_stream_burst(pc)	; $03DCDC
 	addq.w #$6,a7	; $03DCE0
 	addq.w #$1,$ffc41c.l	; $03DCE2
 	cmpi.w #$3c,$ffc41c.l	; $03DCE8
@@ -54658,7 +54658,7 @@ L03DD26:
 	muls.w #$6,d0	; $03DD3C
 	add.w #$91,d0	; $03DD40
 	move.w d0,-(a7)	; $03DD44
-	jsr sys_unk_03d32e(pc)	; $03DD46
+	jsr gfx_paint_stream_fan(pc)	; $03DD46
 	addq.w #$8,a7	; $03DD4A
 	move.w $ffc41c.l,d0	; $03DD4C
 	ext.l d0	; $03DD52
@@ -54679,7 +54679,7 @@ L03DD26:
 	add.w d1,d0	; $03DD80
 	add.w #$50,d0	; $03DD82
 	move.w d0,-(a7)	; $03DD86
-	jsr sys_unk_03d46c(pc)	; $03DD88
+	jsr gfx_paint_stream_block(pc)	; $03DD88
 	addq.w #$8,a7	; $03DD8C
 	move.w $ffc41c.l,d0	; $03DD8E
 	ext.l d0	; $03DD94
@@ -54700,7 +54700,7 @@ L03DD26:
 	add.w d1,d0	; $03DDC4
 	add.w #$fa,d0	; $03DDC6
 	move.w d0,-(a7)	; $03DDCA
-	jsr sys_unk_03d46c(pc)	; $03DDCC
+	jsr gfx_paint_stream_block(pc)	; $03DDCC
 	addq.w #$8,a7	; $03DDD0
 	jsr sys_unk_0eb9ee.l	; $03DDD2
 	tst.w d0	; $03DDD8
@@ -54777,7 +54777,7 @@ L03DE8E:
 	add.w d1,d0	; $03DE94
 	add.w #$78,d0	; $03DE96
 	move.w d0,-(a7)	; $03DE9A
-	jsr sys_unk_03d528(pc)	; $03DE9C
+	jsr gfx_paint_stream_grid(pc)	; $03DE9C
 	addq.w #$6,a7	; $03DEA0
 	tst.w d6	; $03DEA2
 	beq.b L03DEC0	; $03DEA4
@@ -54817,7 +54817,7 @@ L03DEF6:
 	muls.w #$6,d0	; $03DF0A
 	add.w #$a5,d0	; $03DF0E
 	move.w d0,-(a7)	; $03DF12
-	jsr sys_unk_03d75a(pc)	; $03DF14
+	jsr spell_effect_scatter(pc)	; $03DF14
 	addq.w #$4,a7	; $03DF18
 	move.w $ffc41c.l,d0	; $03DF1A
 	ext.l d0	; $03DF20
@@ -54869,7 +54869,7 @@ L03DF88:
 	muls.w #$3,d0	; $03DF9E
 	add.w #$8c,d0	; $03DFA2
 	move.w d0,-(a7)	; $03DFA6
-	jsr sys_unk_03d990(pc)	; $03DFA8
+	jsr spell_effect_block(pc)	; $03DFA8
 	addq.w #$6,a7	; $03DFAC
 	move.w #$4,-(a7)	; $03DFAE
 	jsr rand_next.l	; $03DFB2
@@ -54975,7 +54975,7 @@ L03E128:
 	move.w d0,-(a7)	; $03E136
 	move.w $ff0292.l,-(a7)	; $03E138
 	move.w $ff0290.l,-(a7)	; $03E13E
-	bsr.b sys_unk_03e198	; $03E144
+	bsr.b spell_effect_line	; $03E144
 	addq.w #$6,a7	; $03E146
 	addq.w #$1,$ffc41c.l	; $03E148
 	bra.b L03E190	; $03E14E
@@ -55005,7 +55005,7 @@ L03E190:
 	unlk a6	; $03E194
 	rts	; $03E196
 	; code $03E198-$03E2D3
-sys_unk_03e198:
+spell_effect_line:
 	link.w a6,#$0	; $03E198
 	clr.w -(a7)	; $03E19C
 	move.w $a(a6),d0	; $03E19E
@@ -60452,7 +60452,7 @@ eeprom_bit_in:
 	roxl.w #$1,d0	; $042F22
 	rts	; $042F24
 	; code $042F26-$042F5D
-sys_unk_042f26:
+eeprom_between_bytes:
 	move.w #$0,$200000.l	; $042F26
 	nop	; $042F2E
 	nop	; $042F30
@@ -60473,7 +60473,7 @@ sys_unk_042f26:
 	nop	; $042F5A
 	rts	; $042F5C
 	; code $042F5E-$042F95
-sys_unk_042f5e:
+eeprom_read_tail:
 	move.w #$80,$200000.l	; $042F5E
 	nop	; $042F66
 	nop	; $042F68
@@ -60533,7 +60533,7 @@ L042FE4:
 	jsr eeprom_stop(pc)	; $043000
 	rts	; $043004
 	; code $043006-$043011
-sys_unk_043006:
+eeprom_read:
 	move.l $4(a7),d0	; $043006
 	move.l $8(a7),d1	; $04300A
 	movea.l $c(a7),a0	; $04300E
@@ -60585,10 +60585,10 @@ L043096:
 	move.b d0,(a0)+	; $0430B6
 	subq.w #$1,$ff015c.l	; $0430B8
 	beq.b L0430C6	; $0430BE
-	jsr sys_unk_042f26(pc)	; $0430C0
+	jsr eeprom_between_bytes(pc)	; $0430C0
 	bra.b L043096	; $0430C4
 L0430C6:
-	jsr sys_unk_042f5e(pc)	; $0430C6
+	jsr eeprom_read_tail(pc)	; $0430C6
 	jsr eeprom_stop(pc)	; $0430CA
 L0430CE:
 	movea.l $ff0150.l,a0	; $0430CE
