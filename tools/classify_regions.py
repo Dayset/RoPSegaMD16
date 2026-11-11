@@ -132,11 +132,12 @@ def main():
         cuts = sorted(cuts)
         for a, b in zip(cuts, cuts[1:]):
             pe = b - 1
-            hit = None
-            for ds, de, cls, name, ref, tier in regions:
-                if ds <= a and b <= de:
-                    hit = (cls, name, ref, tier)
-                    break
+            # Narrowest doc row covering this piece wins (a text stream nested
+            # inside the $96120 tile table keeps its own class).
+            hits = sorted((de - ds, cls, name, ref, tier)
+                          for ds, de, cls, name, ref, tier in regions
+                          if ds <= a and b <= de)
+            hit = hits[0][1:] if hits else None
             if hit:
                 cls, name, ref, tier = hit
                 rows.append((a, pe, cls, name, ref, tier))

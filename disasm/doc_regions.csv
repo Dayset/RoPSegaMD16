@@ -212,3 +212,7 @@ start,end,class,name,doc_ref,tier
 0x0CF1AC,0x0D1CFC,entity-template-table,tbl_entity_template_table_0cf1ac,docs/architecture.md:237 + docs/spells.md:412; 24-byte entity templates at $CF1AC (462 total; t0-t461); consumers entity_spawn $23B84 + world_tick $021BDE,2
 0x0DC0C0,0x0DC0C2,dict-gap-ff6f,dict_gap_ff6f,disasm/text/README.md:25-27 and :287 (FF 6F between dictionary blob and offset table; meaning unknown; structural gap),0
 0x00DF58,0x00E358,jump-table,tbl_jump_table_00df58,rop.s map_terrain_tile_lookup lea L00DF58(pc) reads table (256 entries; 114 targets) (tier 1),1
+0x0A66E6,0x0A6C16,text-dd5c-stream,text_dd5c_stream_0,disasm/text/inventory.json:dd5c_stream_offsets (2105 bytes decompressed; 1328 bytes consumed),2
+0x0B3D40,0x0B41DA,text-dd5c-stream,text_dd5c_stream_1,disasm/text/inventory.json:dd5c_stream_offsets (1810 bytes decompressed; 1178 bytes consumed),2
+0x0B6221,0x0B666C,text-dd5c-stream,text_dd5c_stream_2,disasm/text/inventory.json:dd5c_stream_offsets (1590 bytes decompressed; 1099 bytes consumed),2
+0x0B83A1,0x0B86AE,text-dd5c-stream,text_dd5c_stream_3,disasm/text/inventory.json:dd5c_stream_offsets (1188 bytes decompressed; 781 bytes consumed; ends at the B86AE table),2
