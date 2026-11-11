@@ -9,7 +9,7 @@ Usage:
     checksum.py verify-all <rom>        # header + in-game runtime checksum
     checksum.py fix <rom> <out>         # write a copy with the header checksum fixed
     checksum.py fix --in-place <rom>    # fix the file in place (never use on the original!)
-    checksum.py fix-all <rom> <out>     # fix header checksum AND runtime constant
+    checksum.py fix-all <rom> <out> [shift]  # fix header checksum AND runtime constant
     checksum.py inc <image> <out.inc> [shift]  # build-time: RUNTIME_SUM / HEADER_SUM (#16)
 
 Runtime checksum (found 2026-11-09, issue #002): the game self-checks at
@@ -53,18 +53,19 @@ def compute_runtime_checksum(data: bytes) -> int:
     return total
 
 
-def stored_runtime_checksum(data: bytes) -> int:
-    if data[RT_CMPI_ADDR:RT_CMPI_ADDR + 2] != b"\x0c\x80":
-        raise ValueError(f"expected cmpi.l opcode 0C 80 at 0x{RT_CMPI_ADDR:06X}, "
-                         f"found {data[RT_CMPI_ADDR:RT_CMPI_ADDR + 2].hex()} — "
-                         f"ROM is not the known Rings of Power dump")
-    return struct.unpack_from(">I", data, RT_IMM_ADDR)[0]
+def stored_runtime_checksum(data: bytes, shift: int = 0) -> int:
+    cmp_at, imm_at = RT_CMPI_ADDR + shift, RT_IMM_ADDR + shift
+    if data[cmp_at:cmp_at + 2] != b"\x0c\x80":
+        raise ValueError(f"expected cmpi.l opcode 0C 80 at 0x{cmp_at:06X}, "
+                         f"found {data[cmp_at:cmp_at + 2].hex()} — "
+                         f"ROM is not the known Rings of Power dump (or shift is wrong)")
+    return struct.unpack_from(">I", data, imm_at)[0]
 
 
-def fix_runtime_checksum(data: bytearray) -> int:
+def fix_runtime_checksum(data: bytearray, shift: int = 0) -> int:
     value = compute_runtime_checksum(bytes(data))
-    stored_runtime_checksum(bytes(data))  # guard: refuse if not the known code
-    struct.pack_into(">I", data, RT_IMM_ADDR, value)
+    stored_runtime_checksum(bytes(data), shift)  # guard: refuse if not the known code
+    struct.pack_into(">I", data, RT_IMM_ADDR + shift, value)
     return value
 
 
@@ -139,11 +140,12 @@ def main(argv):
         with open(src, "rb") as f:
             data = bytearray(f.read())
         old_h = stored_checksum(bytes(data))
-        old_r = stored_runtime_checksum(bytes(data))
+        shift = int(argv[4], 0) if len(argv) > 4 else 0  # shifted builds move the immediate (#16 item 3)
+        old_r = stored_runtime_checksum(bytes(data), shift)
         # ORDER MATTERS: patch the runtime immediate FIRST (it lives at
         # 0xFD098, inside the header checksum's range), then fix the header
         # checksum LAST (it only touches 0x18E, which the runtime sum skips).
-        new_r = fix_runtime_checksum(data)
+        new_r = fix_runtime_checksum(data, shift)
         new_h = fix_checksum(data)
         with open(dst, "wb") as f:
             f.write(data)
