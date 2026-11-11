@@ -7308,7 +7308,7 @@ text_draw_at:
 	move.w #$a,-(a7)	; $011590
 	pea.l -$a(a6)	; $011594
 	move.l $12(a6),-(a7)	; $011598
-	jsr sys_unk_011fae(pc)	; $01159C
+	jsr text_fmt_decimal(pc)	; $01159C
 	lea.l $a(a7),a7	; $0115A0
 	move.l d0,-(a7)	; $0115A4
 	move.w $10(a6),-(a7)	; $0115A6
@@ -8219,7 +8219,7 @@ L011F90:
 	unlk a6	; $011FAA
 	rts	; $011FAC
 	; code $011FAE-$012023
-sys_unk_011fae:
+text_fmt_decimal:
 	link.w a6,#$0	; $011FAE
 	movem.l d4-d5,-(a7)	; $011FB2
 	move.l $8(a6),d5	; $011FB6
@@ -16800,7 +16800,7 @@ L0195A6:
 	unlk a6	; $019606
 	rts	; $019608
 	; code $01960A-$019619
-sys_unk_01960a:
+map_set_flag_ffff:
 	link.w a6,#$0	; $01960A
 	move.w #$ffff,ram_sys_ff0078.l	; $01960E
 	unlk a6	; $019616
@@ -75921,7 +75921,7 @@ snd_sfx_pointer_12:
 	move.b #$12,$b(a0)	; $0EB998
 	bra.b L0EB94E	; $0EB99E
 	; code $0EB9A0-$0EB9C3
-z80_unk_0eb9a0:
+snd_post_cmd_12_arg1:
 	move.l $4(a7),d0	; $0EB9A0
 	move.l a0,-(a7)	; $0EB9A4
 	move.w sr,-(a7)	; $0EB9A6
