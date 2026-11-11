@@ -7875,7 +7875,7 @@ clear_sprite_attr:
 	unlk a6	; $011BB4
 	rts	; $011BB6
 	; code $011BB8-$011BD7
-sys_unk_011bb8:
+pad_latch_11bb8:
 	link.w a6,#$0	; $011BB8
 	jsr pad1_read.l	; $011BBC
 	move.b d0,ram_sys_ff0e14.l	; $011BC2
@@ -9287,7 +9287,7 @@ world_map_draw:
 	unlk a6	; $012F44
 	rts	; $012F46
 	; code $012F48-$012F7F
-sys_unk_012f48:
+pad_poll_queued_12f48:
 	link.w a6,#$0	; $012F48
 	jsr joypad_queue_pop.l	; $012F4C
 	move.b d0,ram_sys_ff0e14.l	; $012F52
@@ -9302,7 +9302,7 @@ L012F78:
 	unlk a6	; $012F7C
 	rts	; $012F7E
 	; code $012F80-$012F9F
-sys_unk_012f80:
+pad_any_held_12f80:
 	link.w a6,#$0	; $012F80
 	tst.b ram_sys_ff0e14.l	; $012F84
 	bne.b L012F9A	; $012F8A
@@ -36094,7 +36094,7 @@ L02B2AE:
 	moveq #$0,d0	; $02B2AE
 	bra.b L02B2A6	; $02B2B0
 	; code $02B2B2-$02B401
-sys_unk_02b2b2:
+npc_pick_target_2b2b2:
 	link.w a6,#$fff2	; $02B2B2
 	move.l a3,-(a7)	; $02B2B6
 	cmpi.w #$6,$14(a6)	; $02B2B8
@@ -36248,7 +36248,7 @@ L02B4FE:
 	moveq #$0,d0	; $02B4FE
 	bra.b L02B4F8	; $02B500
 	; code $02B502-$02B5F3
-sys_unk_02b502:
+npc_step_2b502:
 	link.w a6,#$fff6	; $02B502
 	move.l a3,-(a7)	; $02B506
 	cmpi.w #$6,$14(a6)	; $02B508
@@ -48072,7 +48072,7 @@ L034EC8:
 	move.w -$a(a6),d0	; $034EC8
 	bra.w L034E38	; $034ECC
 	; code $034ED0-$034FC3
-sys_unk_034ed0:
+npc_calc_delta_34ed0:
 	link.w a6,#$fff6	; $034ED0
 	move.w $8(a6),d0	; $034ED4
 	muls.w #$34,d0	; $034ED8
@@ -48138,7 +48138,7 @@ L034FBC:
 	move.w -$a(a6),d0	; $034FBC
 	bra.w L034F2C	; $034FC0
 	; code $034FC4-$035233
-sys_unk_034fc4:
+npc_get_attr_34fc4:
 	link.w a6,#$ffea	; $034FC4
 	clr.w -$12(a6)	; $034FC8
 	move.w $8(a6),d0	; $034FCC
