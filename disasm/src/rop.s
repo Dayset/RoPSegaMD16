@@ -29473,8 +29473,9 @@ L0297C2:
 	sub.l #$43,d0	; $0297C2
 	beq.b L0297A6	; $0297C8
 	bra.b L0297BE	; $0297CA
-	; data $0297CC-$0297CD
-	incbin "rop-original.gen",$0297CC,$2
+	; code $0297CC-$0297CD
+FUN_0297cc:
+	bra.b L0297BA	; $0297CC
 	; code $0297CE-$0297ED
 sys_unk_0297ce:
 	link.w a6,#$0	; $0297CE
@@ -29493,8 +29494,9 @@ L0297E4:
 	sub.l #$43,d0	; $0297E4
 	beq.b L0297DA	; $0297EA
 	bra.b L0297E0	; $0297EC
-	; data $0297EE-$0297EF
-	incbin "rop-original.gen",$0297EE,$2
+	; code $0297EE-$0297EF
+FUN_0297ee:
+	bra.b L0297DC	; $0297EE
 	; code $0297F0-$029833
 sys_unk_0297f0:
 	link.w a6,#$fffa	; $0297F0
@@ -33391,12 +33393,14 @@ L02CBF6:
 	move.l d0,d1	; $02CC04
 	moveq #$0,d0	; $02CC06
 	move.b (a0,d1.l),d0	; $02CC08
+L02CC0C:
 	unlk a6	; $02CC0C
 	rts	; $02CC0E
 L02CC10:
 	bra.b L02CBF6	; $02CC10
-	; data $02CC12-$02CC13
-	incbin "rop-original.gen",$02CC12,$2
+	; code $02CC12-$02CC13
+FUN_02cc12:
+	bra.b L02CC0C	; $02CC12
 	; code $02CC14-$02CC61
 shop_count_category_items:
 	link.w a6,#$fffa	; $02CC14
@@ -35902,8 +35906,9 @@ L02ECBA:
 	subq.l #$1,d0	; $02ECC2
 	beq.b L02EC9C	; $02ECC4
 	bra.b L02ECB6	; $02ECC6
-	; data $02ECC8-$02ECC9
-	incbin "rop-original.gen",$02ECC8,$2
+	; code $02ECC8-$02ECC9
+FUN_02ecc8:
+	bra.b L02EC94	; $02ECC8
 	; code $02ECCA-$02EE27
 world_draw_link_icons:
 	link.w a6,#$0	; $02ECCA

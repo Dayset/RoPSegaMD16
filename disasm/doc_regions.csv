@@ -106,3 +106,48 @@ start,end,class,name,doc_ref,tier
 0x017366,0x01737E,jump-table,tbl_jump_table_017366,rop.s L01737E dispatch cmp #$c reads word table at L017366 (12 entries; #8 target check) (tier 1),1
 0x01E086,0x01E08E,jump-table,tbl_jump_table_01e086,rop.s L01E08E dispatch cmp #$4 reads word table at L01E086 (4 entries; #8 target check) (tier 1),1
 0x0170CC,0x0170DA,pal-fade-args,tbl_pal_fade_args_0170cc,rop.s pal_fade call sites at 0x0168A6 0x016ED6 0x016F12 pass L0170CC L0170CE L0170D0 (14 bytes) (tier 1),1
+0x020C3A,0x020C44,jump-table,tbl_jump_table_020c3a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L020C3A) (tier 1),1
+0x021542,0x02154A,jump-table,tbl_jump_table_021542,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L021542) (tier 1),1
+0x021B4C,0x021B54,jump-table,tbl_jump_table_021b4c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L021B4C) (tier 1),1
+0x022F06,0x022F22,jump-table,tbl_jump_table_022f06,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L022F06) (tier 1),1
+0x023076,0x023082,jump-table,tbl_jump_table_023076,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L023076) (tier 1),1
+0x024EB6,0x024EBE,jump-table,tbl_jump_table_024eb6,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L024EB6) (tier 1),1
+0x02539E,0x0253A8,jump-table,tbl_jump_table_02539e,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02539E) (tier 1),1
+0x025D06,0x025D0E,jump-table,tbl_jump_table_025d06,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025D06) (tier 1),1
+0x025D66,0x025D6E,jump-table,tbl_jump_table_025d66,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025D66) (tier 1),1
+0x025DBC,0x025DC4,jump-table,tbl_jump_table_025dbc,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025DBC) (tier 1),1
+0x027472,0x02747A,jump-table,tbl_jump_table_027472,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L027472) (tier 1),1
+0x027522,0x02752A,panel-arg-data,tbl_panel_arg_data_027522,rop.s pea argument to gfx_fill_panel_flagged (L027522) (tier 1),1
+0x02752A,0x027533,panel-arg-data,tbl_panel_arg_data_02752a,rop.s pea argument to gfx_fill_panel_flagged (L02752A) (tier 1),1
+0x027533,0x02753B,panel-arg-data,tbl_panel_arg_data_027533,rop.s pea argument to gfx_fill_panel_flagged (L027533) (tier 1),1
+0x02753B,0x027541,panel-arg-data,tbl_panel_arg_data_02753b,rop.s pea argument to gfx_fill_panel_flagged (L02753B) (tier 1),1
+0x027541,0x027548,panel-arg-data,tbl_panel_arg_data_027541,rop.s pea argument to gfx_fill_panel_flagged (L027541) (tier 1),1
+0x027548,0x027551,panel-arg-data,tbl_panel_arg_data_027548,rop.s pea argument to gfx_fill_panel_flagged (L027548) (tier 1),1
+0x027551,0x02755B,panel-arg-data,tbl_panel_arg_data_027551,rop.s pea argument to gfx_fill_panel_flagged (L027551) (tier 1),1
+0x02755B,0x027563,panel-arg-data,tbl_panel_arg_data_02755b,rop.s pea argument to gfx_fill_panel_flagged (L02755B) (tier 1),1
+0x027563,0x02756A,panel-arg-data,tbl_panel_arg_data_027563,rop.s pea argument to gfx_fill_panel_flagged (L027563) (tier 1),1
+0x02756A,0x02756F,panel-arg-data,tbl_panel_arg_data_02756a,rop.s pea argument to gfx_fill_panel_flagged (L02756A) (tier 1),1
+0x02756F,0x027575,panel-arg-data,tbl_panel_arg_data_02756f,rop.s pea argument to gfx_fill_panel_flagged (L02756F) (tier 1),1
+0x027575,0x02757C,panel-arg-data,tbl_panel_arg_data_027575,rop.s pea argument to gfx_fill_panel_flagged (L027575) (tier 1),1
+0x02757C,0x02757E,panel-arg-data,tbl_panel_arg_data_02757c,rop.s pea argument to gfx_fill_panel_flagged (L02757C) (tier 1),1
+0x02757E,0x027584,panel-arg-data,tbl_panel_arg_data_02757e,rop.s pea argument to gfx_fill_panel_flagged (L02757E) (tier 1),1
+0x027584,0x027589,panel-arg-data,tbl_panel_arg_data_027584,rop.s pea argument to gfx_fill_panel_flagged (L027584) (tier 1),1
+0x027589,0x02758E,panel-arg-data,tbl_panel_arg_data_027589,rop.s pea argument to gfx_fill_panel_flagged (L027589) (tier 1),1
+0x02758E,0x027595,panel-arg-data,tbl_panel_arg_data_02758e,rop.s pea argument to gfx_fill_panel_flagged (L02758E) (tier 1),1
+0x027595,0x02759C,panel-arg-data,tbl_panel_arg_data_027595,rop.s pea argument to gfx_fill_panel_flagged (L027595) (tier 1),1
+0x02759C,0x0275A4,panel-arg-data,tbl_panel_arg_data_02759c,rop.s pea argument to gfx_fill_panel_flagged (L02759C) (tier 1),1
+0x0275A4,0x0275AB,panel-arg-data,tbl_panel_arg_data_0275a4,rop.s pea argument to gfx_fill_panel_flagged (L0275A4) (tier 1),1
+0x0275AB,0x0275B0,panel-arg-data,tbl_panel_arg_data_0275ab,rop.s pea argument to gfx_fill_panel_flagged (L0275AB) (tier 1),1
+0x02839A,0x0283AA,jump-table,tbl_jump_table_02839a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02839A) (tier 1),1
+0x029DA0,0x029DB4,jump-table,tbl_jump_table_029da0,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L029DA0) (tier 1),1
+0x029F8A,0x029FA8,jump-table,tbl_jump_table_029f8a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L029F8A) (tier 1),1
+0x02A1EE,0x02A20A,jump-table,tbl_jump_table_02a1ee,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02A1EE) (tier 1),1
+0x02ADEC,0x02ADF4,jump-table,tbl_jump_table_02adec,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02ADEC) (tier 1),1
+0x02BBB4,0x02BBBC,jump-table,tbl_jump_table_02bbb4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02BBB4) (tier 1),1
+0x02C424,0x02C42C,jump-table,tbl_jump_table_02c424,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C424) (tier 1),1
+0x02C88E,0x02C898,jump-table,tbl_jump_table_02c88e,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C88E) (tier 1),1
+0x02C8C4,0x02C8D6,jump-table,tbl_jump_table_02c8c4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C8C4) (tier 1),1
+0x02CB7A,0x02CB88,jump-table,tbl_jump_table_02cb7a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02CB7A) (tier 1),1
+0x02D480,0x02D494,jump-table,tbl_jump_table_02d480,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02D480) (tier 1),1
+0x023938,0x023A9E,str-format-block,str_format_stat_line,rop.s sys_unk_0238b8 pea L023938 into sys_unk_01107a printf-style format text (Sp Dir Ac St Dr with %i),1
+0x02EE28,0x02EE2A,word-const-arg,word_const_02ee28,rop.s world_draw_link_icons pea L02EE28 pushes this address (2 bytes; tail reached by return; not decoded as code),1

@@ -1,0 +1,3 @@
+dispatch targets: 438 labelled, 0 unresolved entries
+wrote disasm/src/rop.s: 531 code ranges, 54624 mnemonic instructions, 5415 targets labelled (765 non-flow absolute operands)
+GEN_DONE
