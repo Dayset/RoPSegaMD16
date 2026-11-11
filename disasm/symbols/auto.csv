@@ -236,7 +236,7 @@ addr,name,tier,note
 0x033136,text_record_lookup,1,searches 6-byte table $0D301E 35 entries for key pair; returns index+0x3A or hash fallback; called from $032E28
 0x0331A4,shop_record_score,1,logic.md:576 scores each record for template match
 0x033396,sys_unk_033396,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
-0x0337D0,sys_unk_0337d0,0,auto: touches $FF02A2
+0x0337D0,sys_set_flag_bit3_add44d,1,static: sets bit 3 of ram_sys_ff02a2 and returns arg + $44D
 0x0337ee,npc_place_char,1,places char with HP and type guards; move via $024984 plus npc_leader_init; sets bit 14; called from $022958
 0x034b50,npc_move_leader,1,moves char via $024984 then npc_leader_init; sets bit 14; called from $034754
 0x034bd0,npc_random_walk_check,1,picks random direction from $01AE38; checks walk via map_walk_check; retries up to 4 times; called from $033F7A
