@@ -12,25 +12,25 @@ addr,size,name,tier,note
 0xFF02C2,2,ram_npc_field_02c2,0,word in stride-34 record table paired with ram_header_leader in npc_calc_delta_34ed0
 0xFF02C8,2,ram_npc_field_02c8,0,word in stride-34 record table read in npc_get_attr_34fc4
 0xFF02DC,1,ram_npc_flag_02dc,1,byte masked with 7f in npc_get_attr_34fc4
-0xFFA7FC,4,ram_sys_field_a7fc,0,223 refs; subsystem from majority of named users; role not read
+0xFFA7FC,4,ram_map_grid_base,1,static: longword movea in move_cost_calc map_chunk_pos map_grid_set_cell all in map code
 0xFF8640,2,ram_text_field_8640,0,73 refs; subsystem from majority of named users; role not read
-0xFF02E0,4,ram_world_field_02e0,0,69 refs; subsystem from majority of named users; role not read
-0xFF02DD,4,ram_menu_field_02dd,0,66 refs; subsystem from majority of named users; role not read
-0xFF02DB,4,ram_sys_field_02db,0,62 refs; subsystem from majority of named users; role not read
+0xFF02E0,4,ram_combat_field_02e0,1,static: 31 of 44 sites in combat_action_main
+0xFF02DD,4,ram_combat_field_02dd,1,static: 10 sites in combat_action_main plus combat_select_unit
+0xFF02DB,4,ram_combat_field_02db,1,static: 26 of 34 sites in combat_action_main
 0xFF867E,2,ram_world_field_867e,0,60 refs; subsystem from majority of named users; role not read
-0xFFC41C,2,ram_sys_field_c41c,0,58 refs; subsystem from majority of named users; role not read
-0xFF0294,2,ram_sys_field_0294,0,58 refs; subsystem from majority of named users; role not read
+0xFFC41C,2,ram_spell_effect_c41c,1,static: 57 of 58 sites in spell_effect_step
+0xFF0294,2,ram_combat_field_0294,1,static: all 58 sites in combat_action_main
 0xFF02BA,4,ram_menu_field_02ba,0,56 refs; subsystem from majority of named users; role not read
 0xFF02CC,4,ram_world_field_02cc,0,55 refs; subsystem from majority of named users; role not read
-0xFFA800,4,ram_save_field_a800,0,55 refs; subsystem from majority of named users; role not read
-0xFF867A,2,ram_world_field_867a,0,51 refs; subsystem from majority of named users; role not read
+0xFFA800,4,ram_save_buffer_a800,1,static: save_serialise and save_deserialise 51 of 55 sites
+0xFF867A,2,ram_world_sprite_867a,1,static: 43 of 51 sites in world_sprites_setup
 0xFF00AC,2,ram_menu_field_00ac,0,50 refs; subsystem from majority of named users; role not read
-0xFFC384,4,ram_sys_field_c384,0,48 refs; subsystem from majority of named users; role not read
+0xFFC384,4,ram_sys_event_c384,1,static: 38 of 48 sites in sys_event_run
 0xFF00AE,2,ram_menu_field_00ae,0,45 refs; subsystem from majority of named users; role not read
 0xFF02B8,4,ram_world_field_02b8,0,42 refs; subsystem from majority of named users; role not read
 0xFF02A2,4,ram_menu_field_02a2,0,41 refs; subsystem from majority of named users; role not read
 0xFF02D0,4,ram_world_field_02d0,0,41 refs; subsystem from majority of named users; role not read
-0xFF0EA8,2,ram_sys_field_0ea8,0,40 refs; subsystem from majority of named users; role not read
+0xFF0EA8,2,ram_spell_damage_0ea8,1,static: 30 of 40 sites in spell_damage_calc
 0xFF02D4,4,ram_world_field_02d4,0,37 refs; subsystem from majority of named users; role not read
 0xFF02D2,4,ram_world_field_02d2,0,37 refs; subsystem from majority of named users; role not read
 0xFFBB82,4,ram_sys_field_bb82,0,37 refs; subsystem from majority of named users; role not read

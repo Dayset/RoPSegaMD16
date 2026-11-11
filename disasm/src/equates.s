@@ -115,7 +115,7 @@ ram_sys_field_0250	equ	$FF0250
 ram_sys_field_0252	equ	$FF0252
 ram_sys_field_0290	equ	$FF0290
 ram_sys_field_0292	equ	$FF0292
-ram_sys_field_0294	equ	$FF0294
+ram_combat_field_0294	equ	$FF0294
 ram_sys_field_0296	equ	$FF0296
 ram_sys_field_0298	equ	$FF0298
 ram_sys_field_029a	equ	$FF029A
@@ -154,11 +154,11 @@ ram_world_field_02d6	equ	$FF02D6
 ram_sys_field_02d8	equ	$FF02D8
 ram_sys_field_02d9	equ	$FF02D9
 ram_sys_field_02da	equ	$FF02DA
-ram_sys_field_02db	equ	$FF02DB
+ram_combat_field_02db	equ	$FF02DB
 ram_npc_flag_02dc	equ	$FF02DC
-ram_menu_field_02dd	equ	$FF02DD
+ram_combat_field_02dd	equ	$FF02DD
 ram_world_field_02de	equ	$FF02DE
-ram_world_field_02e0	equ	$FF02E0
+ram_combat_field_02e0	equ	$FF02E0
 ram_sys_field_02e2	equ	$FF02E2
 ram_sys_field_0e14	equ	$FF0E14
 ram_world_field_0e16	equ	$FF0E16
@@ -182,7 +182,7 @@ ram_sys_ff0ea0	equ	$FF0EA0
 ram_sys_field_0ea2	equ	$FF0EA2
 ram_sys_ff0ea4	equ	$FF0EA4
 ram_sys_ff0ea6	equ	$FF0EA6
-ram_sys_field_0ea8	equ	$FF0EA8
+ram_spell_damage_0ea8	equ	$FF0EA8
 ram_actor_index	equ	$FF0EAA
 ram_sys_ff0eac	equ	$FF0EAC
 ram_world_field_1ec0	equ	$FF1EC0
@@ -202,7 +202,7 @@ ram_sys_field_8672	equ	$FF8672
 ram_world_field_8674	equ	$FF8674
 ram_world_field_8676	equ	$FF8676
 ram_world_field_8678	equ	$FF8678
-ram_world_field_867a	equ	$FF867A
+ram_world_sprite_867a	equ	$FF867A
 ram_world_field_867c	equ	$FF867C
 ram_world_field_867e	equ	$FF867E
 ram_sys_field_8680	equ	$FF8680
@@ -224,8 +224,8 @@ ram_sys_ffa7ec	equ	$FFA7EC
 ram_sys_ffa7f0	equ	$FFA7F0
 ram_menu_field_a7f8	equ	$FFA7F8
 ram_menu_field_a7fa	equ	$FFA7FA
-ram_sys_field_a7fc	equ	$FFA7FC
-ram_save_field_a800	equ	$FFA800
+ram_map_grid_base	equ	$FFA7FC
+ram_save_buffer_a800	equ	$FFA800
 ram_sys_field_a880	equ	$FFA880
 ram_sys_ffa882	equ	$FFA882
 ram_sys_field_a884	equ	$FFA884
@@ -311,7 +311,7 @@ ram_sys_field_c37c	equ	$FFC37C
 ram_sys_ffc37e	equ	$FFC37E
 ram_sys_field_c380	equ	$FFC380
 ram_sys_ffc382	equ	$FFC382
-ram_sys_field_c384	equ	$FFC384
+ram_sys_event_c384	equ	$FFC384
 ram_sys_ffc388	equ	$FFC388
 ram_sys_ffc3c8	equ	$FFC3C8
 ram_sys_ffc408	equ	$FFC408
@@ -324,7 +324,7 @@ ram_sys_field_c414	equ	$FFC414
 ram_sys_field_c416	equ	$FFC416
 ram_sys_field_c418	equ	$FFC418
 ram_sys_field_c41a	equ	$FFC41A
-ram_sys_field_c41c	equ	$FFC41C
+ram_spell_effect_c41c	equ	$FFC41C
 ram_sys_ffc9ea	equ	$FFC9EA
 ram_sys_ffc9f2	equ	$FFC9F2
 ram_sys_field_d2ea	equ	$FFD2EA
