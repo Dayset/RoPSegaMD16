@@ -49,7 +49,7 @@ addr,name,tier,note
 0x011C4A,sprite_set_link,2,graphics.md: $11C4A rewrites word 1 (size/link) of a sprite
 0x011C9A,sprite_grid_write,2,graphics.md: $11C9A writes a rows x cols grid of sprites
 0x011E06,gfx_layout_game,2,graphics.md:262 Layout G installed by $11E06
-0x011FAE,sys_unk_011fae,0,auto: touches none
+0x011FAE,text_fmt_decimal,1,"static: absolute value of a long, then repeated divide-by-10 with '0' (0x30) added per digit"
 0x012024,str_reverse,1,static: strlen then pairwise byte swap in place
 0x012072,text_blit,2,logic.md: $12072 VDP/text drawing routine; blits $11820/$11A1A/$11AE4
 0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
@@ -78,7 +78,7 @@ addr,name,tier,note
 0x017860,location_pic_draw,2,graphics.md: jsr $17860($FF009E) location-picture draw
 0x0179CA,vdp_scaled_table_write,1,static: table L01B4D2 scaled by arg/32; written to VDP data after set_write_addr $4000
 0x017a40,sprite_write_block,1,writes 2x2 block of 4 sprite entries via sprite_write for one composite large sprite; called from scene_draw at 3 sites
-0x01960A,sys_unk_01960a,0,auto: touches $FF0078
+0x01960A,map_set_flag_ffff,1,static: writes $FFFF to ram_sys_ff0078 and returns; flag-clear helper
 0x01961a,map_chunk_cache_init,1,initializes the 4-slot map-chunk cache struct at $FFA880 with slot count 4; clears slot-index table and 377-entry pointer table; called once from new_game_init; maps.md:348 architecture.md:204
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
 0x01BA16,redraw_flag_set,1,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26
@@ -371,4 +371,4 @@ addr,name,tier,note
 0x0EBAFA,snd_sfx_entry_b,2,sound.md:150 public SFX entry point (called by 17586); tries EBBFE immediately
 0x0ebafe,snd_sfx_deliver_7,2,SFX deliver slot 7 per sound.md:149; sets $000C=7 and copies 23-byte block to Z80 $003A or queues pointer in $FF023A when busy; reached via public entry $EBAFA
 0x0EBB04,snd_sfx_muted,2,sound.md:67 SFX path when sound is off (EBB04)
-0x0EB9A0,z80_unk_0eb9a0,0,auto: 68000 bus-wrapper tail (move.l 4(a7) then bsr and move.b to $0B(a0)); not Ghidra-named
+0x0EB9A0,snd_post_cmd_12_arg1,1,static: one-arg sibling of snd_sfx_pointer_12; writes d0 via z80_write_val24 then sets $0B(a0)=$12
