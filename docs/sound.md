@@ -1088,6 +1088,6 @@ This is grammar-level evidence only. It doesn't check the note values, the
 `sfx_request` (`0x17586`–`0x1769F`, `FUN_00017586` in `functions.txt`) holds the switch that feeds the pointer-SFX path. Its case labels load a 68k ROM address that is then passed to `snd_sfx_pointer` / `snd_sfx_pointer_ff`:
 
 - `0x17602` loads `0x001394`, the block now classed `snd-sfx-payload` in `disasm/regions.csv`.
-- `0x175F6` loads `0x004502`, `0x17626` loads `0x004504`, `0x17614`-area cases load `0x003ADA`, `0x004500`, `0x009A60`, and `0x01763E` loads `0x00AE56`.
+- `0x175F6` loads `0x004502`, `0x17626` loads `0x004504`, `0x1761A` loads `0x004500`, `0x1760E` loads `0x003ADA`, `0x17632` loads `0x009A60`, and `0x1763E` loads `0x00AE56`.
 
-The cases are dispatched by a jump table at `0x1764E`, indexed by `(SFX index - 0x5A)` for indices `0x5A`-`0x61` (90-97). That matches docs/sound.md section 2 (SFX 90-96 carry a ROM pointer). Mapping each case to its exact SFX index is still open: the jump-table entries are not yet decoded.
+The cases are dispatched by a jump table at `0x1764E`, indexed by `(SFX index - 0x5A)` for SFX indices 90-97 (`cmp #7` at `0x17662`, out-of-range falls through). That matches docs/sound.md section 2 (SFX 90-96 carry a ROM pointer). Mapping each case to its exact SFX index is still open: the jump-table entries are not yet decoded.
