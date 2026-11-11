@@ -638,15 +638,36 @@ allocation, not the SFX's frequency computation. **PSG ruled out
 [static]:** every PSG (`$7F11`) write is in `$0967–$09AA`, called
 only from the song loop (`$0915`); the SFX path (`$0B22`/`$0A78`)
 never writes the PSG — SFX 1 is FM-only, so the earlier "PSG voice
-only, FM suppressed" hypothesis is dead, not just weakened. **Still
-[open]:** the exact pitch translation — how sounding on FM ch 2 vs
-ch 0 moves the heard peaks from 282–612 Hz to 112–254 Hz (candidates:
-the song's own notes on ch 2 overwriting the SFX's frequency
-registers between SFX steps, or a per-channel operator setup
-difference). What would settle it: a Z80-side trace of the YM2612
-register writes (F-number `$A0–$A6`, key `$28`) for SFX 1 in both
-contexts. Also [open]: the 88-step data stream predicts ~1.5 s but
-SFX 1 sounds ~3.6 s (step rate or release decay). Harness caveat:
+only, FM suppressed" hypothesis is dead, not just weakened. **Pitch
+translation — RESOLVED [static, 2026-11-11]:** `$05C2` converts the note to
+an FM frequency by octave-folding it into table range and looking it up in
+two tables — low byte at Z80 `$03C2`, high byte at `$0416` — giving a 16-bit
+value `(block << 11) | FNUM`, written to YM `$A0` (low) / `$A4` (high) by
+`$09D9`. YM2612 frequency is FNUM × 2^BLOCK × 7,670,454 / (2^20 × 144).
+Note `$09` → `$0C3C` (FNUM 1084, block 1, 110.1 Hz); the slide adds the
+signed offset each frame, so SFX 1 runs `$0C3C` → `$0914` (110.1 → 28.0 Hz)
+over its 88 steps. The heard peaks are harmonics of the FM voice, not the
+fundamental. This translation is **channel-independent** (the slot freq is
+identical in both contexts, per the live data above), so it does not explain
+how sounding on FM ch 2 vs ch 0 moves the heard peaks from 282–612 Hz to
+112–254 Hz. The remaining cause is the **voice/operator setup**: the SFX
+record carries no operator parameters, so the SFX sounds through whatever
+voice is currently installed on the channel it allocates (the driver's
+default voice when silent, song 1's voice on that channel when song 1
+plays). The "song notes overwriting the SFX's frequency registers" candidate
+is weakened by the identical live slot freq. What would settle it: a Z80-side
+trace of the YM2612 register writes (F-number `$A0–$A6`, key `$28`, operator
+registers `$30–$8C`) for SFX 1 in both contexts. **Duration — PARTIALLY
+RESOLVED [static + audio, 2026-11-11]:** the 88-step stream is 88 frames =
+1.47 s of driven sound at 1 step/frame (confirmed live: duration `$1C` at 60
+frames) — a slower step rate is ruled out, and the stream does not loop or
+replay. The sound continues ~1.7 s more at essentially constant level
+(3.20 s isolated harness, ~3.5–3.6 s song context), a post-stream tail at the
+final frequency (`$0914`, 28 Hz), not additional stream steps. Whether the
+tail is a very slow release after the stream-end key-off (`$09ED` → `$06DA`
+→ `$0558`, YM `$28`) or a missed key-off is **[open]** — it needs a YM `$28`
+write trace plus the voice's release rate (channel struct `IY+$20–$23`).
+Harness caveat:
 multi-byte `(a0)+` Z80 dumps return an identical byte pattern for
 different addresses (unreliable — the `$22/$EE/$BB` pattern is not in
 `driver.bin`); all voice-row/channel-struct numbers above are from
@@ -671,11 +692,14 @@ routine at `$FD07C`; indices 66–68 read the checksum code itself; indices
 — that was a scan that counted the checksum-code bytes as records.)
 The 68k copies 23 bytes per delivery (1-byte overread into the next record).
 Records are mostly zeros after the first 4–6 bytes, e.g. SFX 0:
-`14 0c 0a 80 00…`, SFX 1: `08 09 30 f0 28 ff 00…`. The per-byte meaning of
-the 22-byte record is **[open]** — `$0A04` reads bytes 0, 1 and 3 of the block
-and a slot byte at `$0051`, and calls `$09E0`/`$09ED`/`$09FA`; the full voice
-installation (`$067B`/`$0558`/`$0515`/`$052E` FM routines) was not traced to
-the per-byte level.
+`14 0c 0a 80 00…`, SFX 1: `08 09 30 f0 28 ff 00…`. The 22-byte record layout
+is **[decoded, static 2026-11-11]** — `$0A04` reads bytes 0, 1, 2 and 3 of the
+block and a slot byte at `$0051`, and calls `$09E0`/`$09ED`/`$09FA`: byte 0 is
+stored to slot+`$1A` (freq low) and then overwritten by the channel freq low
+before the first step, so it does not affect the sound (dead store); byte 1
+is the note (base frequency via `$05C2`); byte 2 onward is (duration, offset)
+pairs, one step per frame, until a duration byte of `$00` ends the stream.
+SFX 1: byte 0 `$08`, note `$09`, pairs (48, −16), (40, −1), 88 steps.
 
 Static call-site counts for `$17586` (immediate index args; 91 sites, plus 7
 sites with a computed index):
