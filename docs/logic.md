@@ -935,17 +935,71 @@ water = base_water(mode) + terrain_water(type, mode)
   pinned. Vessels do NOT cast in the world either; the asymmetry is
   world-vs-combat, not vessel-vs-Buc.
 * **Auto Mode — real, per the official manual (corrected 2026-11-11;
-  the earlier 'no autopilot' note was wrong):** the manual's 'Getting
+  mechanism traced, static, 2026-11-11):** the manual's 'Getting
   around' section: 'Auto Mode: on foot paths, D-Pad in your direction
   and press A to walk automatically until a city or intersection. For
   boats, press A to follow streams automatically until hitting land or
   pressing C.' C stops Auto Mode (or exits a vehicle). Dayset confirms
-  Buc and the Dino auto-walk on paths. The earlier note searched the
-  fan guides for the word 'autopilot', while the feature is the
-  manual's 'Auto Mode' — the discrepancy was a wrong search, not a
-  wrong memory. The CODE mechanism (which routine holds the auto-walk
-  state, how it detects paths/intersections/cities, how the Dino
-  shares it) is not yet traced — open.
+  Buc and the Dino auto-walk on paths. The earlier 'no autopilot' note
+  searched the fan guides for the word 'autopilot', while the feature
+  is the manual's 'Auto Mode' — a wrong search, not a wrong memory.
+  State: `$FF0142` (word): 0 off, 1 just-engaged, 2 continuing. Set to
+  1 by `npc_spawn_from_char` (`$02B08E`); promoted 1→2 by
+  `world_terrain_direction` (`$032C08`) after a successful auto-step;
+  cleared by any menu command (`$00D49C`), any location transition
+  (`$01DA7C`, first instruction), a step event that produces a message
+  (`world_tick` `$025054`/`$0250B0`/`$0250E0`), a non-path tile on the
+  2nd+ continuation call (`$032A14`), or a computed stop (`$032BFA`).
+  The 1-vs-2 grace: engaging just off a path works — the walk only
+  stops on a non-path tile from the second call on.
+  Trigger: A + D-pad → command 40 (`menu_verb_input` `$013254`,
+  overworld only) → main-loop cmd-40 case → `npc_spawn_from_char`
+  (leader, direction). If the leader's vessel word `+0x06` is 1
+  (Dino), 3 (Ship) or 4 (Dragon), the same press FIRES instead —
+  spawns a mode-6 entity ahead with SFX (Dino 3, Ship 4, Dragon 96);
+  foot (0) and Boat (2) engage auto-walk. No path check at engage
+  time. A directionless engage (tap A, no D-pad) substitutes the
+  leader's stored heading (`+0x0A`).
+  Continuation: `world_terrain_direction` (`$032922`), once per
+  main-loop tick while `$FF0142 != 0` and no command is present (gate
+  `$00D47C`). It reads the tile under the leader
+  (`map_chunk_cache_read`, tile = cell word bits 0–8), maps tile →
+  turn instruction `a3` (0–7, subtract chain), then jump table
+  `$032BB2` → next direction `d7`, pushed into the leader's step queue
+  (`$FF0E30`); `combat_turn_run` pops it and `combat_move_unit` steps
+  — the same queue and mover as a manual D-pad step. Directions: 0 N,
+  1 E, 2 S, 3 W. The turn table: straights (N/S, E/W, selected by cell
+  bit 12), all four corners, keep-heading. Road tiles `0x4E–0x4F`/
+  `0x80–0x87` are terrain type 9 = Road (verified: 587 cells, connected
+  networks, chunk 60 max component 42). Stream tiles `0x30–0x3F`/
+  `0x44–0x4A` (types 2, 3, 10, 11, 15, 21, 22, 23) get the same
+  complete straight+corner shape set, but their visual identity as
+  streams is NOT confirmed from chunk data (539 cells, scattered
+  singles, max component 8) — the overworld water is drawn by the
+  terrain streams, not the chunk tilemaps. Tile `0x48` is not in the
+  switch.
+  Stops: "city" is real — any location transition clears the flag.
+  "Intersection" is NOT a stop: there is no intersection detector, no
+  T/cross tile in the switch, no neighbour scan — at a fork the walk
+  follows the fork tile's shape and does not stop. The manual's "until
+  a city or intersection" is approximate for intersections. C cancels
+  via the generic any-command gate (C → cmd 50 overworld / 55
+  in-location). A boat on a non-path tile keeps heading (`a3` = 7) and
+  the step fails in `combat_move_unit` — whether the flag clears is
+  open (needs a live boat-on-land trace). The SFX-31 block
+  (`$032A26`–`$032A34`) is dead code (unreachable after the `clr` at
+  `$032A14`).
+  Direct (`$FF0116`) is unrelated: it selects the D-pad→direction
+  mapping in `menu_verb_input` (OFF natural, ON rotated 90°), not the
+  auto-walk state.
+  **Dino tension — OPEN, needs a live boarding trace:** the code says A
+  on `+0x06 == 1` fires, but Dayset says the Dino auto-walks. The
+  reconciler is the untraced board/mount routine's `+0x06` assignment:
+  if boarding leaves the leader's `+0x06` as the mode-5 grant value
+  (`$200 + E`) or 0, the dispatch falls through and auto-walk engages;
+  if boarding copies the vessel's `+0x06` (= 1), A fires. A
+  mode-5-granted Dino would auto-walk while a map Dino would fire — if
+  the leader's word is what the dispatch reads.
 * **Terrain addition — jump table at `$01D73E`** (35 entries, terrain
   types 0–34, offsets relative to `$01D794`; dispatch at `$01D784`,
   `cmp.l #$23,d0` bounds-checks, out-of-range → `$01D736` sets the
