@@ -251,4 +251,5 @@ written, the reference owner is its dominant writer, not the routine named in
 its note. A note owner that differs from the writer prints NAME-OWNER-MISMATCH
 and needs a human to decide whether the name still fits. Words that are only
 read keep the note owner. Current mismatches: ram_spell_scatter_0092, ram_world_sprite_867a,
-ram_sys_verb_02a8, ram_menu_record_bb82, ram_sys_event_c384, ram_combat_field_c418.
+ram_sys_verb_02a8, ram_menu_record_bb82, ram_sys_event_c384, ram_combat_field_c418,
+ram_menu_record_02ac, ram_text_event_0e80.
