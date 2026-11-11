@@ -1,0 +1,29 @@
+#!/bin/sh
+# pre-push — refuses a push that touches disasm/src or tools/ unless `make verify` passes on that commit (#5).
+# Installed by tools/setup.sh (git config core.hooksPath tools/hooks). Git passes lines: <local ref> <local sha> <remote ref> <remote sha>.
+zero=0000000000000000000000000000000000000000
+while read -r lref lsha rref rsha; do
+    [ "$lsha" = "$zero" ] && continue   # branch deletion
+    if [ "$rsha" = "$zero" ]; then   # new branch: everything not already on origin/main
+        base=$(git merge-base "$lsha" origin/main 2>/dev/null || git rev-list --max-parents=0 "$lsha" | tail -1)
+        range="$base..$lsha"
+    else
+        range="$rsha..$lsha"
+    fi
+    touched=$(git diff --name-only "$range" 2>/dev/null | grep -E '^(disasm/src/|tools/)' || true)
+    [ -z "$touched" ] && continue
+    head=$(git rev-parse HEAD)
+    if [ "$head" != "$lsha" ]; then
+        echo "pre-push: $lref is $lsha but the working tree is at $head; check out the commit you push, then push again." >&2
+        exit 1
+    fi
+    echo "pre-push: $lref touches disasm/src or tools/; running make verify on $lsha"
+    if ! make verify >/tmp/pre-push-verify.$$ 2>&1; then
+        tail -20 /tmp/pre-push-verify.$$ >&2
+        rm -f /tmp/pre-push-verify.$$
+        echo "pre-push: make verify FAILED; push refused." >&2
+        exit 1
+    fi
+    rm -f /tmp/pre-push-verify.$$
+done
+exit 0
