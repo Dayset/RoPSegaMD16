@@ -227,3 +227,15 @@ Read CLAUDE.md and docs/agent-playbook.md. Do no reverse engineering.
    owner-only items for Dayset.
 Report only: metrics before → after, and cards remaining per phase.
 ```
+
+## 6. Owner rule for tier 1 (RAM and routine names)
+
+A RAM word may be named tier 1 only when one named routine owns at least
+half of its access sites and there are at least 10 sites. Each name's note
+records the owner and the count, so anyone can recheck it.
+
+Why: the first pass used two-thirds. Only one word of the top 40 qualified,
+so most of the top list stayed at tier 0 with no role evidence. At one half,
+the dominant owner still shows the word's role; the note keeps the share, so
+a weak name can be reverted by anyone reading it. Mixed-owner words stay at
+tier 0 and keep their subsystem prefix from the majority of users.

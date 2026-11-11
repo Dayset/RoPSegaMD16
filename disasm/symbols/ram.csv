@@ -33,11 +33,11 @@ addr,size,name,tier,note
 0xFF0EA8,2,ram_spell_damage_0ea8,1,static: 30 of 40 sites in spell_damage_calc
 0xFF02D4,4,ram_world_field_02d4,0,37 refs; subsystem from majority of named users; role not read
 0xFF02D2,4,ram_world_field_02d2,0,37 refs; subsystem from majority of named users; role not read
-0xFFBB82,4,ram_sys_field_bb82,0,37 refs; subsystem from majority of named users; role not read
+0xFFBB82,4,ram_menu_record_bb82,1,static: static: 19 of 37 sites in menu_record_reload
 0xFFC418,2,ram_combat_field_c418,1,static: 30 of 37 sites in combat_action_main
 0xFF0E14,1,ram_sys_field_0e14,0,36 refs; subsystem from majority of named users; role not read
-0xFFBB6F,1,ram_sys_field_bb6f,0,36 refs; subsystem from majority of named users; role not read
-0xFFA7F8,1,ram_menu_field_a7f8,0,35 refs; subsystem from majority of named users; role not read
+0xFFBB6F,1,ram_sys_verb_bb6f,1,static: static: 22 of 36 sites in verb_exec
+0xFFA7F8,1,ram_sys_verb_a7f8,1,static: static: 18 of 35 sites in verb_exec
 0xFFC326,4,ram_sys_field_c326,0,35 refs; subsystem from majority of named users; role not read
 0xFF02D6,4,ram_world_field_02d6,0,34 refs; subsystem from majority of named users; role not read
 0xFF009A,2,ram_sys_field_009a,0,34 refs; subsystem from majority of named users; role not read
@@ -46,10 +46,10 @@ addr,size,name,tier,note
 0xFF02BE,4,ram_sys_field_02be,0,31 refs; subsystem from majority of named users; role not read
 0xFFB08A,1,ram_sys_field_b08a,0,27 refs; subsystem from majority of named users; role not read
 0xFF02DE,4,ram_world_field_02de,0,27 refs; subsystem from majority of named users; role not read
-0xFF8642,2,ram_world_field_8642,0,25 refs; subsystem from majority of named users; role not read
-0xFF0092,2,ram_world_field_0092,0,25 refs; subsystem from majority of named users; role not read
+0xFF8642,2,ram_gfx_scene_8642,1,static: static: 17 of 25 sites in scene_draw
+0xFF0092,2,ram_spell_scatter_0092,1,static: static: 14 of 25 sites in spell_effect_scatter
 0xFFBB86,4,ram_sys_field_bb86,0,25 refs; subsystem from majority of named users; role not read
-0xFF02A8,2,ram_sys_field_02a8,0,24 refs; subsystem from majority of named users; role not read
+0xFF02A8,2,ram_sys_verb_02a8,1,static: static: 16 of 24 sites in verb_exec
 0xFF02B6,4,ram_sys_field_02b6,0,23 refs; subsystem from majority of named users; role not read
 0xFF014E,2,ram_sys_field_014e,0,22 refs; subsystem from majority of named users; role not read
 0xFF0E8E,2,ram_sys_field_0e8e,0,22 refs; subsystem from majority of named users; role not read

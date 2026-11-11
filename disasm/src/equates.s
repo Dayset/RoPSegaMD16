@@ -29,7 +29,7 @@ ram_sys_ff0078	equ	$FF0078
 ram_sys_ff007a	equ	$FF007A
 ram_menu_field_0086	equ	$FF0086
 ram_sys_field_0088	equ	$FF0088
-ram_world_field_0092	equ	$FF0092
+ram_spell_scatter_0092	equ	$FF0092
 ram_world_field_0094	equ	$FF0094
 ram_sys_field_0096	equ	$FF0096
 ram_sys_field_0098	equ	$FF0098
@@ -126,7 +126,7 @@ ram_menu_field_02a2	equ	$FF02A2
 ram_sys_field_02a4	equ	$FF02A4
 ram_sys_ff02a5	equ	$FF02A5
 ram_sys_field_02a6	equ	$FF02A6
-ram_sys_field_02a8	equ	$FF02A8
+ram_sys_verb_02a8	equ	$FF02A8
 ram_sys_field_02aa	equ	$FF02AA
 ram_sys_field_02ac	equ	$FF02AC
 ram_sys_ff02ae	equ	$FF02AE
@@ -189,7 +189,7 @@ ram_world_field_1ec0	equ	$FF1EC0
 ram_sys_ff1ee0	equ	$FF1EE0
 ram_sys_ff4ec0	equ	$FF4EC0
 ram_text_field_8640	equ	$FF8640
-ram_world_field_8642	equ	$FF8642
+ram_gfx_scene_8642	equ	$FF8642
 ram_sys_field_8644	equ	$FF8644
 ram_sys_field_8646	equ	$FF8646
 ram_world_field_8648	equ	$FF8648
@@ -222,7 +222,7 @@ ram_sys_ffa7e4	equ	$FFA7E4
 ram_sys_ffa7e8	equ	$FFA7E8
 ram_sys_ffa7ec	equ	$FFA7EC
 ram_sys_ffa7f0	equ	$FFA7F0
-ram_menu_field_a7f8	equ	$FFA7F8
+ram_sys_verb_a7f8	equ	$FFA7F8
 ram_menu_field_a7fa	equ	$FFA7FA
 ram_map_grid_base	equ	$FFA7FC
 ram_save_buffer_a800	equ	$FFA800
@@ -259,13 +259,13 @@ ram_sys_ffb8ac	equ	$FFB8AC
 ram_sys_field_bb6c	equ	$FFBB6C
 ram_sys_field_bb6d	equ	$FFBB6D
 ram_sys_field_bb6e	equ	$FFBB6E
-ram_sys_field_bb6f	equ	$FFBB6F
+ram_sys_verb_bb6f	equ	$FFBB6F
 ram_sys_field_bb70	equ	$FFBB70
 ram_shop_stock_byte	equ	$FFBB72
 ram_sys_field_bb74	equ	$FFBB74
 ram_sys_field_bb7a	equ	$FFBB7A
 ram_sys_field_bb80	equ	$FFBB80
-ram_sys_field_bb82	equ	$FFBB82
+ram_menu_record_bb82	equ	$FFBB82
 ram_sys_field_bb86	equ	$FFBB86
 ram_sys_field_bc86	equ	$FFBC86
 ram_sys_ffbc94	equ	$FFBC94
