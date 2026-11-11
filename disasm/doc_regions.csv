@@ -25,4 +25,14 @@ start,end,class,name,doc_ref,tier
 0x0B86AE,0x0B8A31,gfx-record-table,gfx_record_table_b86ae,docs/graphics.md:886 ($B86AE table 90 records x 10 bytes; tiling test base 0xB8A32 89/89 consecutive streams),2
 0x0B8A32,0x0CC9D7,lzss-stream,gfx_lzss_streams_b86ae,docs/graphics.md:886 (streams from base 0xB8A32; consecutive tiling exact 89/89; last ends 0xCC9D8),2
 0x09638C,0x0B86AD,lzss-stream,gfx_lzss_streams_96120,docs/graphics.md:886 ($96120 streams from base 0x9638C; consecutive tiling exact 61/61; last ends 0xB86AE),2
-0x01AA60,0x01ADE3,str-fixed10-table,str_stat_class_names,measured dump 2026-11-11: 10-byte null-padded records; 9 stat names (Brain..Intuition) then weapon-type and NPC/class names; 0x01AE98 region not included,1
+0x019F90,0x01A227,menu-screen-script,tbl_menu_screen_0,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A228,0x1A397,menu-screen-script,tbl_menu_screen_1,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A398,0x1A3AF,menu-screen-script,tbl_menu_screen_2,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A3B0,0x1A3B7,menu-screen-script,tbl_menu_screen_3,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A3B8,0x1A4BF,menu-screen-script,tbl_menu_screen_4,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A4C0,0x1A4E7,menu-screen-script,tbl_menu_screen_5,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A4E8,0x1A51F,menu-screen-script,tbl_menu_screen_6,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A520,0x1A58F,menu-screen-script,tbl_menu_screen_7,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A590,0x1A5B7,menu-screen-script,tbl_menu_screen_8,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01AA60,0x01AD88,str-order-name,str_order_name,docs/logic.md:91 (order-name table; index = (rank-1)*90 + level*10; 81 records x 10 bytes),1
+0x01AD8A,0x01ADE1,str-fixed10-table,str_npc_class_name,measured dump 2026-11-11: 10-byte null-padded names (Beggar..Queen); not a doc-stated table,1
