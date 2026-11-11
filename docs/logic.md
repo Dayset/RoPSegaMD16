@@ -934,17 +934,18 @@ water = base_water(mode) + terrain_water(type, mode)
   routine is unlocated — most plausible home is naval combat, not
   pinned. Vessels do NOT cast in the world either; the asymmetry is
   world-vs-combat, not vessel-vs-Buc.
-* **No dino autopilot / routes (discrepancy, code wins, 2026-11-11):**
-  the word 'autopilot' appears in neither the Jeromec FAQ (1,268
-  lines) nor the Oblisky guide's Travel/Hints sections, and the code
-  has no route data or route-following routine — NPC movement is
-  `world_move_random` (`$037976`, `rand_next(24)` → direction table
-  `$1AE38` → `map_walk_check`, up to 4 tries). The party moves only by
-  player input. Closest real behaviours: the starving Dino foraging on
-  its own (above), wandering merchants travelling by craft (same random
-  walk), the scripted Buc cutscene walk. What Dayset remembers
-  (road-cost behaviour? forage? merchants? a different guide?) is an
-  open question back to him — do not repeat the autopilot claim as fact.
+* **Auto Mode — real, per the official manual (corrected 2026-11-11;
+  the earlier 'no autopilot' note was wrong):** the manual's 'Getting
+  around' section: 'Auto Mode: on foot paths, D-Pad in your direction
+  and press A to walk automatically until a city or intersection. For
+  boats, press A to follow streams automatically until hitting land or
+  pressing C.' C stops Auto Mode (or exits a vehicle). Dayset confirms
+  Buc and the Dino auto-walk on paths. The earlier note searched the
+  fan guides for the word 'autopilot', while the feature is the
+  manual's 'Auto Mode' — the discrepancy was a wrong search, not a
+  wrong memory. The CODE mechanism (which routine holds the auto-walk
+  state, how it detects paths/intersections/cities, how the Dino
+  shares it) is not yet traced — open.
 * **Terrain addition — jump table at `$01D73E`** (35 entries, terrain
   types 0–34, offsets relative to `$01D794`; dispatch at `$01D784`,
   `cmp.l #$23,d0` bounds-checks, out-of-range → `$01D736` sets the
