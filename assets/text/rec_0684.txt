@@ -1,0 +1,30 @@
+# rec 684 | ptr=0x066F6 len=48 type=5 | entries=24
+# rendered: 'Void is my masster. Join him or die. Your pain sshall add to the magnitude of his entrance into thiss world. '
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 685 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1439 sep=space # 'Pain!'
+1 idx=238 sep=space # 'Void'
+2 idx=57 sep=space # 'is'
+3 idx=484 sep=space # 'my'
+4 idx=2466 sep=period # 'masster'
+5 idx=4 sep=space # ' '
+6 idx=2130 sep=space # 'Join'
+7 idx=933 sep=space # 'him'
+8 idx=677 sep=space # 'or'
+9 idx=876 sep=period # 'die'
+10 idx=4 sep=space # ' '
+11 idx=1016 sep=space # 'Your'
+12 idx=520 sep=space # 'pain'
+13 idx=2467 sep=space # 'sshall'
+14 idx=2468 sep=space # 'add'
+15 idx=103 sep=space # 'to'
+16 idx=14 sep=space # 'the'
+17 idx=2469 sep=space # 'magnitude'
+18 idx=13 sep=space # 'of'
+19 idx=239 sep=space # 'his'
+20 idx=64 sep=space # 'entrance'
+21 idx=271 sep=space # 'into'
+22 idx=2470 sep=space # 'thiss'
+23 idx=90 sep=period # 'world'

@@ -1,0 +1,14 @@
+# rec 801 | ptr=0x07848 len=16 type=5 | entries=8
+# rendered: 'Do you know about the Ideal Plane? '
+# $136FC skips array[0] and renders array[1..8], inclusive of the read-past entry
+# (read-past entry: rec 802 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=846 sep=space # 'Do'
+2 idx=12 sep=space # 'you'
+3 idx=622 sep=space # 'know'
+4 idx=215 sep=space # 'about'
+5 idx=14 sep=space # 'the'
+6 idx=1551 sep=space # 'Ideal'
+7 idx=2747 sep=question # 'Plane'

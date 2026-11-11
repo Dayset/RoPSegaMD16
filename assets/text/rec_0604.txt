@@ -1,0 +1,21 @@
+# rec 604 | ptr=0x058EC len=30 type=5 | entries=15
+# rendered: 'Tough as armor, found inside, bring me protection that is not hide. '
+# $136FC skips array[0] and renders array[1..15], inclusive of the read-past entry
+# (read-past entry: rec 605 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=2276 sep=space # 'Tough'
+2 idx=538 sep=space # 'as'
+3 idx=2277 sep=comma # 'armor'
+4 idx=4 sep=space # ' '
+5 idx=396 sep=space # 'found'
+6 idx=2278 sep=comma # 'inside'
+7 idx=4 sep=space # ' '
+8 idx=941 sep=space # 'bring'
+9 idx=494 sep=space # 'me'
+10 idx=1925 sep=space # 'protection'
+11 idx=191 sep=space # 'that'
+12 idx=57 sep=space # 'is'
+13 idx=452 sep=space # 'not'
+14 idx=1765 sep=period # 'hide'

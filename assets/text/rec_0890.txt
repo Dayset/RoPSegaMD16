@@ -1,0 +1,34 @@
+# rec 890 | ptr=0x0863C len=56 type=5 | entries=28
+# rendered: "Queen Richi is an enlightned woman; she's using her power to promote science. A rebirth of knowledge is taking place in Richi -- you're just in time! "
+# $136FC skips array[0] and renders array[1..28], inclusive of the read-past entry
+# (read-past entry: rec 891 array[0], idx=1852 sep=space 'time!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=369 sep=space # 'Queen'
+2 idx=170 sep=space # 'Richi'
+3 idx=57 sep=space # 'is'
+4 idx=234 sep=space # 'an'
+5 idx=2903 sep=space # 'enlightned'
+6 idx=2904 sep=space # 'woman;'
+7 idx=1605 sep=space # "she's"
+8 idx=2815 sep=space # 'using'
+9 idx=1087 sep=space # 'her'
+10 idx=154 sep=space # 'power'
+11 idx=103 sep=space # 'to'
+12 idx=2905 sep=space # 'promote'
+13 idx=187 sep=period # 'science'
+14 idx=4 sep=space # ' '
+15 idx=5 sep=space # 'A'
+16 idx=2906 sep=space # 'rebirth'
+17 idx=13 sep=space # 'of'
+18 idx=2907 sep=space # 'knowledge'
+19 idx=57 sep=space # 'is'
+20 idx=2908 sep=space # 'taking'
+21 idx=236 sep=space # 'place'
+22 idx=76 sep=space # 'in'
+23 idx=170 sep=space # 'Richi'
+24 idx=97 sep=space # '--'
+25 idx=1054 sep=space # "you're"
+26 idx=179 sep=space # 'just'
+27 idx=76 sep=space # 'in'

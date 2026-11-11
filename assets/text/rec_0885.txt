@@ -1,0 +1,17 @@
+# rec 885 | ptr=0x08586 len=22 type=5 | entries=11
+# rendered: 'Just the same all cultures today know of the legend. '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 886 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=808 sep=space # 'Just'
+2 idx=14 sep=space # 'the'
+3 idx=692 sep=space # 'same'
+4 idx=373 sep=space # 'all'
+5 idx=2894 sep=space # 'cultures'
+6 idx=2553 sep=space # 'today'
+7 idx=622 sep=space # 'know'
+8 idx=13 sep=space # 'of'
+9 idx=14 sep=space # 'the'
+10 idx=799 sep=period # 'legend'

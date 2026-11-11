@@ -1,0 +1,34 @@
+# rec 827 | ptr=0x07CCE len=56 type=5 | entries=28
+# rendered: "I do whatever strikes me at any given moment. I don't understood how anyone could do the same job for more than a day or two. "
+# $136FC skips array[0] and renders array[1..28], inclusive of the read-past entry
+# (read-past entry: rec 828 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=461 sep=space # 'do'
+3 idx=2799 sep=space # 'whatever'
+4 idx=2800 sep=space # 'strikes'
+5 idx=494 sep=space # 'me'
+6 idx=508 sep=space # 'at'
+7 idx=561 sep=space # 'any'
+8 idx=559 sep=space # 'given'
+9 idx=1652 sep=period # 'moment'
+10 idx=4 sep=space # ' '
+11 idx=459 sep=space # 'I'
+12 idx=471 sep=space # "don't"
+13 idx=2801 sep=space # 'understood'
+14 idx=1188 sep=space # 'how'
+15 idx=521 sep=space # 'anyone'
+16 idx=1181 sep=space # 'could'
+17 idx=461 sep=space # 'do'
+18 idx=14 sep=space # 'the'
+19 idx=692 sep=space # 'same'
+20 idx=490 sep=space # 'job'
+21 idx=185 sep=space # 'for'
+22 idx=156 sep=space # 'more'
+23 idx=157 sep=space # 'than'
+24 idx=42 sep=space # 'a'
+25 idx=545 sep=space # 'day'
+26 idx=677 sep=space # 'or'
+27 idx=711 sep=period # 'two'

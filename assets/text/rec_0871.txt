@@ -1,0 +1,16 @@
+# rec 871 | ptr=0x08352 len=20 type=5 | entries=10
+# rendered: 'Sit and talk with me a while, youngster. '
+# $136FC skips array[0] and renders array[1..10], inclusive of the read-past entry
+# (read-past entry: rec 872 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=2874 sep=space # 'Sit'
+2 idx=20 sep=space # 'and'
+3 idx=563 sep=space # 'talk'
+4 idx=41 sep=space # 'with'
+5 idx=494 sep=space # 'me'
+6 idx=42 sep=space # 'a'
+7 idx=651 sep=comma # 'while'
+8 idx=4 sep=space # ' '
+9 idx=2875 sep=period # 'youngster'

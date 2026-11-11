@@ -1,0 +1,37 @@
+# rec 831 | ptr=0x07D5C len=62 type=5 | entries=31
+# rendered: "Kaos is the place where people have the most fun -- we don't suffer from a lack of excitement, that's for sure. It's always one thing after another. "
+# $136FC skips array[0] and renders array[1..31], inclusive of the read-past entry
+# (read-past entry: rec 832 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=112 sep=space # 'Kaos'
+2 idx=57 sep=space # 'is'
+3 idx=14 sep=space # 'the'
+4 idx=236 sep=space # 'place'
+5 idx=146 sep=space # 'where'
+6 idx=38 sep=space # 'people'
+7 idx=161 sep=space # 'have'
+8 idx=14 sep=space # 'the'
+9 idx=87 sep=space # 'most'
+10 idx=691 sep=space # 'fun'
+11 idx=97 sep=space # '--'
+12 idx=645 sep=space # 'we'
+13 idx=471 sep=space # "don't"
+14 idx=1909 sep=space # 'suffer'
+15 idx=23 sep=space # 'from'
+16 idx=42 sep=space # 'a'
+17 idx=2808 sep=space # 'lack'
+18 idx=13 sep=space # 'of'
+19 idx=2809 sep=comma # 'excitement'
+20 idx=4 sep=space # ' '
+21 idx=2382 sep=space # "that's"
+22 idx=185 sep=space # 'for'
+23 idx=733 sep=period # 'sure'
+24 idx=4 sep=space # ' '
+25 idx=736 sep=space # "It's"
+26 idx=547 sep=space # 'always'
+27 idx=380 sep=space # 'one'
+28 idx=301 sep=space # 'thing'
+29 idx=180 sep=space # 'after'
+30 idx=228 sep=period # 'another'

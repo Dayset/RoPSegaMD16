@@ -1,0 +1,24 @@
+# rec 839 | ptr=0x07ED0 len=36 type=5 | entries=18
+# rendered: 'I am a Paladin of the Holy Order of Silicon Knights of Nexus. HOOSKON for short. '
+# $136FC skips array[0] and renders array[1..18], inclusive of the read-past entry
+# (read-past entry: rec 840 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=495 sep=space # 'am'
+3 idx=42 sep=space # 'a'
+4 idx=2823 sep=space # 'Paladin'
+5 idx=13 sep=space # 'of'
+6 idx=14 sep=space # 'the'
+7 idx=16 sep=space # 'Holy'
+8 idx=17 sep=space # 'Order'
+9 idx=13 sep=space # 'of'
+10 idx=2824 sep=space # 'Silicon'
+11 idx=15 sep=space # 'Knights'
+12 idx=13 sep=space # 'of'
+13 idx=48 sep=period # 'Nexus'
+14 idx=4 sep=space # ' '
+15 idx=2825 sep=space # 'HOOSKON'
+16 idx=185 sep=space # 'for'
+17 idx=1699 sep=period # 'short'

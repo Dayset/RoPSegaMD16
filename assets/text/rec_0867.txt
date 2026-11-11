@@ -1,0 +1,12 @@
+# rec 867 | ptr=0x082F8 len=12 type=5 | entries=6
+# rendered: 'We are all young here. '
+# $136FC skips array[0] and renders array[1..6], inclusive of the read-past entry
+# (read-past entry: rec 868 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2868 sep=space # 'Guildsmaster!'
+1 idx=577 sep=space # 'We'
+2 idx=207 sep=space # 'are'
+3 idx=373 sep=space # 'all'
+4 idx=668 sep=space # 'young'
+5 idx=68 sep=period # 'here'

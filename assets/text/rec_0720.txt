@@ -1,0 +1,33 @@
+# rec 720 | ptr=0x06BF0 len=54 type=5 | entries=27
+# rendered: 'There are six Arts that Nexus gave man when He came to this place: Sorcery, Separation, Force, Necromancy, Enchantment, and Conjuration. '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 721 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=588 sep=space # 'There'
+2 idx=207 sep=space # 'are'
+3 idx=1499 sep=space # 'six'
+4 idx=978 sep=space # 'Arts'
+5 idx=191 sep=space # 'that'
+6 idx=48 sep=space # 'Nexus'
+7 idx=866 sep=space # 'gave'
+8 idx=1426 sep=space # 'man'
+9 idx=746 sep=space # 'when'
+10 idx=795 sep=space # 'He'
+11 idx=227 sep=space # 'came'
+12 idx=103 sep=space # 'to'
+13 idx=104 sep=space # 'this'
+14 idx=2572 sep=space # 'place:'
+15 idx=324 sep=comma # 'Sorcery'
+16 idx=4 sep=space # ' '
+17 idx=18 sep=comma # 'Separation'
+18 idx=4 sep=space # ' '
+19 idx=1840 sep=comma # 'Force'
+20 idx=4 sep=space # ' '
+21 idx=279 sep=comma # 'Necromancy'
+22 idx=4 sep=space # ' '
+23 idx=308 sep=comma # 'Enchantment'
+24 idx=4 sep=space # ' '
+25 idx=20 sep=space # 'and'
+26 idx=2573 sep=period # 'Conjuration'
