@@ -90,7 +90,7 @@ addr,name,tier,note
 0x01C892,move_cost_calc,2,logic.md 3.7 base(mode)+terrain; live harness 46/46
 0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
 0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
-0x01DA6C,sys_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
+0x01DA6C,combat_unk_01da6c,0,auto: touches $FF0092 $FF0094 $FF009C $FF009E $FF00AE $FF0124
 0x01E02E,sys_unk_01e02e,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
 0x01E18A,world_decompose_direction,1,decomposes dx/dy into direction-component codes via two output pointers; called from world_get_direction $036DE8
@@ -153,11 +153,11 @@ addr,name,tier,note
 0x02619C,sys_struct52_read_field,1,code: index*52 into FF02BA; reads one word field
 0x0265BE,sys_struct52_flag_test,1,code: index*52 into FF02BA; tests word and branches
 0x0269F2,world_step_apply,1,code: calls world_get_step_delta; reads FFA7FC pointer
-0x026A8C,sys_unk_026a8c,0,auto: touches $FF00AE $FF010E $FF011C $FF011E $FF02B2 $FF02BA
+0x026A8C,combat_unk_026a8c,0,auto: touches $FF00AE $FF010E $FF011C $FF011E $FF02B2 $FF02BA
 0x026B08,sys_unk_026b08,0,auto: touches none
 0x026CCA,msg_queue_consume,2,logic.md:277 queue consumer calls 1E426 (pop)
-0x026DD2,sys_unk_026dd2,0,auto: touches $FF8640 $FF8674
-0x026E44,sys_unk_026e44,0,auto: touches $FF00AC $FF010E $FF0116 $FF0132 $FF0134 $FF013A
+0x026DD2,gfx_unk_026dd2,0,auto: touches $FF8640 $FF8674
+0x026E44,gfx_unk_026e44,0,auto: touches $FF00AC $FF010E $FF0116 $FF0132 $FF0134 $FF013A
 0x0275B0,text_event_message,2,logic.md:213 message routine 275B0 (giant event-message)
 0x02979A,sys_unk_02979a,0,auto: touches $FF0E82
 0x0297CE,sys_unk_0297ce,0,auto: touches none
