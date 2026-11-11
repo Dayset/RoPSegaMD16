@@ -48,7 +48,7 @@ translation's author states it himself (see §5): he changed the text system
 | 5 | `bsr $136FC` — word expansion, count = (length >> 1) + 1 |
 
 Record index × 10 into the table; data pointer = base + record+0.
-Known callers: `0x11AFE` (table `$B8A32`, base `$B86AE`),
+Known callers: `0x11AFE` (table `$B86AE`, base `$B8A32`),
 `0x13856` and `0x1485E` (table `$96120`, base `$9638C`),
 `0x19778` (call site not yet disassembled),
 `0x32EC4` (table `$DDBD8`, base `$E0A18` — the dialogue/location table).
@@ -181,8 +181,9 @@ the ROM uses `...`, the doc typed `.....`). The 2 misses:
    disarray.` — the words (`regret`, `thrown`, `disarray`) are all in
    the dictionary (blob offsets near `0xD90C8`), but the sentence is in
    no `$DDBD8` record. It belongs to an undecoded dialogue bank
-   (the `$B8A32` table does not parse as `$13654` records — its layout
-   is different; `$96120` is all type-1 binary). **Gap: NPC dialogue
+   (the `$B86AE` table parses as `$13654` records — all 90 type 1,
+   length 1184 each, LZSS sprite patterns, not text; `$96120` is all
+   type-1 binary). **Gap: NPC dialogue
    outside `$DDBD8` is not yet decoded** — #020's territory.
 
 Four bare `<NA>` records (102, 112, 113, 131) also appear in the corpus
@@ -278,9 +279,9 @@ doesn't stick — it auto-enables on location/screen change.
   observation (#020).
 - The `&` string separator in `0x32EC4`'s post-processing: no dictionary
   word contains `&`; its source is unknown.
-- `$B8A32` (caller `0x11AFE`): does not parse as `$13654` records —
-  different layout or different routine; its text (incl. the Thalmus
-  line) is undecoded.
+- `$B86AE` (caller `0x11AFE`): parses as `$13654` records (all 90
+  type 1, LZSS sprite patterns, not text) — the Thalmus line's
+  dialogue bank is still undecoded.
 - Control codes in the `$DD5C` text streams (`\x00` separators,
   `( (( #$%&(()*+((/<=>` sequences): icon/formatting codes, meaning
   unknown (#020).
