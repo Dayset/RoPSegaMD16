@@ -2173,8 +2173,262 @@ L00DF4E:
 	move.w (a7)+,d2	; $00DF54
 	rts	; $00DF56
 L00DF58:
-	; data $00DF58-$00E357
-	incbin "rop-original.gen",$00DF58,$400
+	dc.l L00E3E2	; $00DF58 vector
+	dc.l L00E43C	; $00DF5C vector
+	dc.l L00E3E2	; $00DF60 vector
+	dc.l L00E43C	; $00DF64 vector
+	dc.l L00E3E2	; $00DF68 vector
+	dc.l L00E43C	; $00DF6C vector
+	dc.l L00E3E2	; $00DF70 vector
+	dc.l L00E43C	; $00DF74 vector
+	dc.l L00E3E2	; $00DF78 vector
+	dc.l L00E43C	; $00DF7C vector
+	dc.l L00E3E2	; $00DF80 vector
+	dc.l L00E43C	; $00DF84 vector
+	dc.l L00E3E2	; $00DF88 vector
+	dc.l L00E43C	; $00DF8C vector
+	dc.l L00E3E2	; $00DF90 vector
+	dc.l L00E43C	; $00DF94 vector
+	dc.l FUN_00f6f8	; $00DF98 vector
+	dc.l FUN_01102c	; $00DF9C vector
+	dc.l FUN_00f714	; $00DFA0 vector
+	dc.l FUN_011050	; $00DFA4 vector
+	dc.l FUN_00f706	; $00DFA8 vector
+	dc.l FUN_01103e	; $00DFAC vector
+	dc.l FUN_00f722	; $00DFB0 vector
+	dc.l FUN_011062	; $00DFB4 vector
+	dc.l L00E3E2	; $00DFB8 vector
+	dc.l L00E43C	; $00DFBC vector
+	dc.l L00E3E2	; $00DFC0 vector
+	dc.l L00E43C	; $00DFC4 vector
+	dc.l L00E3E2	; $00DFC8 vector
+	dc.l L00E43C	; $00DFCC vector
+	dc.l L00E3E2	; $00DFD0 vector
+	dc.l L00E43C	; $00DFD4 vector
+	dc.l FUN_00f694	; $00DFD8 vector
+	dc.l FUN_010fa8	; $00DFDC vector
+	dc.l FUN_00f6c4	; $00DFE0 vector
+	dc.l FUN_010fec	; $00DFE4 vector
+	dc.l FUN_00f6ac	; $00DFE8 vector
+	dc.l FUN_010fcc	; $00DFEC vector
+	dc.l FUN_00f6dc	; $00DFF0 vector
+	dc.l FUN_01100c	; $00DFF4 vector
+	dc.l L00E3E2	; $00DFF8 vector
+	dc.l L00E43C	; $00DFFC vector
+	dc.l L00E3E2	; $00E000 vector
+	dc.l L00E43C	; $00E004 vector
+	dc.l L00E3E2	; $00E008 vector
+	dc.l L00E43C	; $00E00C vector
+	dc.l L00E3E2	; $00E010 vector
+	dc.l L00E43C	; $00E014 vector
+	dc.l FUN_00f604	; $00E018 vector
+	dc.l FUN_010ee8	; $00E01C vector
+	dc.l FUN_00f64c	; $00E020 vector
+	dc.l FUN_010f48	; $00E024 vector
+	dc.l FUN_00f626	; $00E028 vector
+	dc.l FUN_010f1a	; $00E02C vector
+	dc.l FUN_00f66e	; $00E030 vector
+	dc.l FUN_010f7a	; $00E034 vector
+	dc.l L00E3E2	; $00E038 vector
+	dc.l L00E43C	; $00E03C vector
+	dc.l L00E3E2	; $00E040 vector
+	dc.l L00E43C	; $00E044 vector
+	dc.l L00E3E2	; $00E048 vector
+	dc.l L00E43C	; $00E04C vector
+	dc.l L00E3E2	; $00E050 vector
+	dc.l L00E43C	; $00E054 vector
+	dc.l FUN_00f548	; $00E058 vector
+	dc.l FUN_010dec	; $00E05C vector
+	dc.l FUN_00f5a4	; $00E060 vector
+	dc.l FUN_010e6c	; $00E064 vector
+	dc.l FUN_00f574	; $00E068 vector
+	dc.l FUN_010e2c	; $00E06C vector
+	dc.l FUN_00f5d4	; $00E070 vector
+	dc.l FUN_010eac	; $00E074 vector
+	dc.l L00E3E2	; $00E078 vector
+	dc.l L00E43C	; $00E07C vector
+	dc.l L00E3E2	; $00E080 vector
+	dc.l L00E43C	; $00E084 vector
+	dc.l L00E3E2	; $00E088 vector
+	dc.l L00E43C	; $00E08C vector
+	dc.l L00E3E2	; $00E090 vector
+	dc.l L00E43C	; $00E094 vector
+	dc.l FUN_00f460	; $00E098 vector
+	dc.l FUN_010cb4	; $00E09C vector
+	dc.l FUN_00f4d4	; $00E0A0 vector
+	dc.l FUN_010d50	; $00E0A4 vector
+	dc.l FUN_00f49a	; $00E0A8 vector
+	dc.l FUN_010d02	; $00E0AC vector
+	dc.l FUN_00f50e	; $00E0B0 vector
+	dc.l FUN_010d9e	; $00E0B4 vector
+	dc.l L00E3E2	; $00E0B8 vector
+	dc.l L00E43C	; $00E0BC vector
+	dc.l L00E3E2	; $00E0C0 vector
+	dc.l L00E43C	; $00E0C4 vector
+	dc.l L00E3E2	; $00E0C8 vector
+	dc.l L00E43C	; $00E0CC vector
+	dc.l L00E3E2	; $00E0D0 vector
+	dc.l L00E43C	; $00E0D4 vector
+	dc.l FUN_00f34c	; $00E0D8 vector
+	dc.l FUN_010b40	; $00E0DC vector
+	dc.l FUN_00f3d4	; $00E0E0 vector
+	dc.l FUN_010bfc	; $00E0E4 vector
+	dc.l FUN_00f390	; $00E0E8 vector
+	dc.l FUN_010ba0	; $00E0EC vector
+	dc.l FUN_00f418	; $00E0F0 vector
+	dc.l FUN_010c58	; $00E0F4 vector
+	dc.l L00E3E2	; $00E0F8 vector
+	dc.l L00E43C	; $00E0FC vector
+	dc.l L00E3E2	; $00E100 vector
+	dc.l L00E43C	; $00E104 vector
+	dc.l L00E3E2	; $00E108 vector
+	dc.l L00E43C	; $00E10C vector
+	dc.l L00E3E2	; $00E110 vector
+	dc.l L00E43C	; $00E114 vector
+	dc.l FUN_00f20c	; $00E118 vector
+	dc.l FUN_010990	; $00E11C vector
+	dc.l FUN_00f2ac	; $00E120 vector
+	dc.l FUN_010a68	; $00E124 vector
+	dc.l FUN_00f25a	; $00E128 vector
+	dc.l FUN_0109fe	; $00E12C vector
+	dc.l FUN_00f2fa	; $00E130 vector
+	dc.l FUN_010ad6	; $00E134 vector
+	dc.l L00E3E2	; $00E138 vector
+	dc.l L00E43C	; $00E13C vector
+	dc.l L00E3E2	; $00E140 vector
+	dc.l L00E43C	; $00E144 vector
+	dc.l L00E3E2	; $00E148 vector
+	dc.l L00E43C	; $00E14C vector
+	dc.l L00E3E2	; $00E150 vector
+	dc.l L00E43C	; $00E154 vector
+	dc.l FUN_00f0a0	; $00E158 vector
+	dc.l FUN_0107a4	; $00E15C vector
+	dc.l FUN_00f154	; $00E160 vector
+	dc.l FUN_01089c	; $00E164 vector
+	dc.l FUN_00f0f8	; $00E168 vector
+	dc.l FUN_010820	; $00E16C vector
+	dc.l FUN_00f1b0	; $00E170 vector
+	dc.l FUN_010918	; $00E174 vector
+	dc.l L00E3E2	; $00E178 vector
+	dc.l L00E43C	; $00E17C vector
+	dc.l L00E3E2	; $00E180 vector
+	dc.l L00E43C	; $00E184 vector
+	dc.l L00E3E2	; $00E188 vector
+	dc.l L00E43C	; $00E18C vector
+	dc.l L00E3E2	; $00E190 vector
+	dc.l L00E43C	; $00E194 vector
+	dc.l FUN_00ef08	; $00E198 vector
+	dc.l FUN_01057c	; $00E19C vector
+	dc.l FUN_00efd4	; $00E1A0 vector
+	dc.l FUN_010690	; $00E1A4 vector
+	dc.l FUN_00ef6e	; $00E1A8 vector
+	dc.l FUN_010606	; $00E1AC vector
+	dc.l FUN_00f03a	; $00E1B0 vector
+	dc.l FUN_01071a	; $00E1B4 vector
+	dc.l L00E3E2	; $00E1B8 vector
+	dc.l L00E43C	; $00E1BC vector
+	dc.l L00E3E2	; $00E1C0 vector
+	dc.l L00E43C	; $00E1C4 vector
+	dc.l L00E3E2	; $00E1C8 vector
+	dc.l L00E43C	; $00E1CC vector
+	dc.l L00E3E2	; $00E1D0 vector
+	dc.l L00E43C	; $00E1D4 vector
+	dc.l FUN_00ed44	; $00E1D8 vector
+	dc.l FUN_010318	; $00E1DC vector
+	dc.l FUN_00ee24	; $00E1E0 vector
+	dc.l FUN_01044c	; $00E1E4 vector
+	dc.l FUN_00edb4	; $00E1E8 vector
+	dc.l FUN_0103b4	; $00E1EC vector
+	dc.l FUN_00ee94	; $00E1F0 vector
+	dc.l FUN_0104e4	; $00E1F4 vector
+	dc.l L00E3E2	; $00E1F8 vector
+	dc.l L00E43C	; $00E1FC vector
+	dc.l L00E3E2	; $00E200 vector
+	dc.l L00E43C	; $00E204 vector
+	dc.l L00E3E2	; $00E208 vector
+	dc.l L00E43C	; $00E20C vector
+	dc.l L00E3E2	; $00E210 vector
+	dc.l L00E43C	; $00E214 vector
+	dc.l FUN_00eb54	; $00E218 vector
+	dc.l FUN_010078	; $00E21C vector
+	dc.l FUN_00ec4c	; $00E220 vector
+	dc.l FUN_0101c8	; $00E224 vector
+	dc.l FUN_00ebce	; $00E228 vector
+	dc.l FUN_010122	; $00E22C vector
+	dc.l FUN_00ecc6	; $00E230 vector
+	dc.l FUN_010272	; $00E234 vector
+	dc.l L00E3E2	; $00E238 vector
+	dc.l L00E43C	; $00E23C vector
+	dc.l L00E3E2	; $00E240 vector
+	dc.l L00E43C	; $00E244 vector
+	dc.l L00E3E2	; $00E248 vector
+	dc.l L00E43C	; $00E24C vector
+	dc.l L00E3E2	; $00E250 vector
+	dc.l L00E43C	; $00E254 vector
+	dc.l FUN_00e938	; $00E258 vector
+	dc.l FUN_00fd9c	; $00E25C vector
+	dc.l FUN_00ea44	; $00E260 vector
+	dc.l FUN_00ff0c	; $00E264 vector
+	dc.l FUN_00e9bc	; $00E268 vector
+	dc.l FUN_00fe54	; $00E26C vector
+	dc.l FUN_00eacc	; $00E270 vector
+	dc.l FUN_00ffc4	; $00E274 vector
+	dc.l L00E3E2	; $00E278 vector
+	dc.l L00E43C	; $00E27C vector
+	dc.l L00E3E2	; $00E280 vector
+	dc.l L00E43C	; $00E284 vector
+	dc.l L00E3E2	; $00E288 vector
+	dc.l L00E43C	; $00E28C vector
+	dc.l L00E3E2	; $00E290 vector
+	dc.l L00E43C	; $00E294 vector
+	dc.l FUN_00e6f0	; $00E298 vector
+	dc.l FUN_00fa84	; $00E29C vector
+	dc.l FUN_00e814	; $00E2A0 vector
+	dc.l FUN_00fc10	; $00E2A4 vector
+	dc.l FUN_00e782	; $00E2A8 vector
+	dc.l FUN_00fb4a	; $00E2AC vector
+	dc.l FUN_00e8a6	; $00E2B0 vector
+	dc.l FUN_00fcd6	; $00E2B4 vector
+	dc.l L00E3E2	; $00E2B8 vector
+	dc.l L00E43C	; $00E2BC vector
+	dc.l L00E3E2	; $00E2C0 vector
+	dc.l L00E43C	; $00E2C4 vector
+	dc.l L00E3E2	; $00E2C8 vector
+	dc.l L00E43C	; $00E2CC vector
+	dc.l L00E3E2	; $00E2D0 vector
+	dc.l L00E43C	; $00E2D4 vector
+	dc.l FUN_00e47c	; $00E2D8 vector
+	dc.l FUN_00f730	; $00E2DC vector
+	dc.l FUN_00e5b4	; $00E2E0 vector
+	dc.l FUN_00f8dc	; $00E2E4 vector
+	dc.l FUN_00e518	; $00E2E8 vector
+	dc.l FUN_00f808	; $00E2EC vector
+	dc.l FUN_00e650	; $00E2F0 vector
+	dc.l FUN_00f9b0	; $00E2F4 vector
+	dc.l L00E3E2	; $00E2F8 vector
+	dc.l L00E43C	; $00E2FC vector
+	dc.l L00E3E2	; $00E300 vector
+	dc.l L00E43C	; $00E304 vector
+	dc.l L00E3E2	; $00E308 vector
+	dc.l L00E43C	; $00E30C vector
+	dc.l L00E3E2	; $00E310 vector
+	dc.l L00E43C	; $00E314 vector
+	dc.l L00E3E2	; $00E318 vector
+	dc.l L00E43C	; $00E31C vector
+	dc.l L00E3E2	; $00E320 vector
+	dc.l L00E43C	; $00E324 vector
+	dc.l L00E3E2	; $00E328 vector
+	dc.l L00E43C	; $00E32C vector
+	dc.l L00E3E2	; $00E330 vector
+	dc.l L00E43C	; $00E334 vector
+	dc.l L00E3E2	; $00E338 vector
+	dc.l L00E43C	; $00E33C vector
+	dc.l L00E3E2	; $00E340 vector
+	dc.l L00E43C	; $00E344 vector
+	dc.l L00E3E2	; $00E348 vector
+	dc.l L00E43C	; $00E34C vector
+	dc.l L00E3E2	; $00E350 vector
+	dc.l L00E43C	; $00E354 vector
 	; code $00E358-$00E47B
 map_terrain_tile_lookup:
 	moveq #$0,d2	; $00E358
@@ -2222,6 +2476,7 @@ L00E3B0:
 	moveq #$0,d6	; $00E3DA
 	add.w d1,d1	; $00E3DC
 	sub.w #$40,d0	; $00E3DE
+L00E3E2:
 	move.b (a0)+,d2	; $00E3E2
 	beq.w L011074	; $00E3E4
 	move.b d2,d3	; $00E3E8
@@ -2252,6 +2507,7 @@ L00E412:
 	moveq #$0,d6	; $00E434
 	add.w d1,d1	; $00E436
 	sub.w #$26,d0	; $00E438
+L00E43C:
 	move.b (a0)+,d2	; $00E43C
 	beq.w L011074	; $00E43E
 	move.b d2,d3	; $00E442
@@ -2273,11 +2529,4304 @@ L00E412:
 	move.l (a6,d2.w),-(a7)	; $00E470
 	lea.l L0434C0.l,a6	; $00E474
 	rts	; $00E47A
-	; data $00E47C-$00EFFF
-	incbin "rop-original.gen",$00E47C,$B84
-L00F000:
-	; data $00F000-$011073
-	incbin "rop-original.gen",$00F000,$2074
+	; code $00E47C-$00E517
+FUN_00e47c:
+	move.b (a0)+,d5	; $00E47C
+	move.b (a3,d5.w),d6	; $00E47E
+	and.b d6,(a5)	; $00E482
+	or.b d5,(a5)+	; $00E484
+	move.b (a0)+,d5	; $00E486
+	move.b (a3,d5.w),d6	; $00E488
+	and.b d6,(a5)	; $00E48C
+	or.b d5,(a5)+	; $00E48E
+	move.b (a0)+,d5	; $00E490
+	move.b (a3,d5.w),d6	; $00E492
+	and.b d6,(a5)	; $00E496
+	or.b d5,(a5)+	; $00E498
+	move.b (a0)+,d5	; $00E49A
+	move.b (a3,d5.w),d6	; $00E49C
+	and.b d6,(a5)	; $00E4A0
+	or.b d5,(a5)	; $00E4A2
+	adda.w #$1d,a5	; $00E4A4
+	move.b (a0)+,d5	; $00E4A8
+	move.b (a3,d5.w),d6	; $00E4AA
+	and.b d6,(a5)	; $00E4AE
+	or.b d5,(a5)+	; $00E4B0
+	move.b (a0)+,d5	; $00E4B2
+	move.b (a3,d5.w),d6	; $00E4B4
+	and.b d6,(a5)	; $00E4B8
+	or.b d5,(a5)+	; $00E4BA
+	move.b (a0)+,d5	; $00E4BC
+	move.b (a3,d5.w),d6	; $00E4BE
+	and.b d6,(a5)	; $00E4C2
+	or.b d5,(a5)+	; $00E4C4
+	move.b (a0)+,d5	; $00E4C6
+	move.b (a3,d5.w),d6	; $00E4C8
+	and.b d6,(a5)	; $00E4CC
+	or.b d5,(a5)	; $00E4CE
+	adda.w #$1d,a5	; $00E4D0
+	move.b (a0)+,d5	; $00E4D4
+	move.b (a3,d5.w),d6	; $00E4D6
+	and.b d6,(a5)	; $00E4DA
+	or.b d5,(a5)+	; $00E4DC
+	move.b (a0)+,d5	; $00E4DE
+	move.b (a3,d5.w),d6	; $00E4E0
+	and.b d6,(a5)	; $00E4E4
+	or.b d5,(a5)+	; $00E4E6
+	move.b (a0)+,d5	; $00E4E8
+	move.b (a3,d5.w),d6	; $00E4EA
+	and.b d6,(a5)	; $00E4EE
+	or.b d5,(a5)+	; $00E4F0
+	move.b (a0)+,d5	; $00E4F2
+	move.b (a3,d5.w),d6	; $00E4F4
+	and.b d6,(a5)	; $00E4F8
+	or.b d5,(a5)	; $00E4FA
+	adda.w #$1d,a5	; $00E4FC
+	move.b (a0)+,d5	; $00E500
+	move.b (a3,d5.w),d6	; $00E502
+	and.b d6,(a5)	; $00E506
+	or.b d5,(a5)+	; $00E508
+	move.b (a0)+,d5	; $00E50A
+	move.b (a3,d5.w),d6	; $00E50C
+	and.b d6,(a5)	; $00E510
+	or.b d5,(a5)	; $00E512
+	bra.w L00E3E2	; $00E514
+	; code $00E518-$00E5B3
+FUN_00e518:
+	move.b (a0)+,d5	; $00E518
+	move.b (a3,d5.w),d6	; $00E51A
+	and.b d6,(a5)	; $00E51E
+	or.b d5,(a5)+	; $00E520
+	move.b (a0)+,d5	; $00E522
+	move.b (a3,d5.w),d6	; $00E524
+	and.b d6,(a5)	; $00E528
+	or.b d5,(a5)	; $00E52A
+	adda.w #$1d,a5	; $00E52C
+	move.b (a0)+,d5	; $00E530
+	move.b (a3,d5.w),d6	; $00E532
+	and.b d6,(a5)	; $00E536
+	or.b d5,(a5)+	; $00E538
+	move.b (a0)+,d5	; $00E53A
+	move.b (a3,d5.w),d6	; $00E53C
+	and.b d6,(a5)	; $00E540
+	or.b d5,(a5)+	; $00E542
+	move.b (a0)+,d5	; $00E544
+	move.b (a3,d5.w),d6	; $00E546
+	and.b d6,(a5)	; $00E54A
+	or.b d5,(a5)+	; $00E54C
+	move.b (a0)+,d5	; $00E54E
+	move.b (a3,d5.w),d6	; $00E550
+	and.b d6,(a5)	; $00E554
+	or.b d5,(a5)	; $00E556
+	adda.w #$1d,a5	; $00E558
+	move.b (a0)+,d5	; $00E55C
+	move.b (a3,d5.w),d6	; $00E55E
+	and.b d6,(a5)	; $00E562
+	or.b d5,(a5)+	; $00E564
+	move.b (a0)+,d5	; $00E566
+	move.b (a3,d5.w),d6	; $00E568
+	and.b d6,(a5)	; $00E56C
+	or.b d5,(a5)+	; $00E56E
+	move.b (a0)+,d5	; $00E570
+	move.b (a3,d5.w),d6	; $00E572
+	and.b d6,(a5)	; $00E576
+	or.b d5,(a5)+	; $00E578
+	move.b (a0)+,d5	; $00E57A
+	move.b (a3,d5.w),d6	; $00E57C
+	and.b d6,(a5)	; $00E580
+	or.b d5,(a5)	; $00E582
+	adda.w #$1d,a5	; $00E584
+	move.b (a0)+,d5	; $00E588
+	move.b (a3,d5.w),d6	; $00E58A
+	and.b d6,(a5)	; $00E58E
+	or.b d5,(a5)+	; $00E590
+	move.b (a0)+,d5	; $00E592
+	move.b (a3,d5.w),d6	; $00E594
+	and.b d6,(a5)	; $00E598
+	or.b d5,(a5)+	; $00E59A
+	move.b (a0)+,d5	; $00E59C
+	move.b (a3,d5.w),d6	; $00E59E
+	and.b d6,(a5)	; $00E5A2
+	or.b d5,(a5)+	; $00E5A4
+	move.b (a0)+,d5	; $00E5A6
+	move.b (a3,d5.w),d6	; $00E5A8
+	and.b d6,(a5)	; $00E5AC
+	or.b d5,(a5)	; $00E5AE
+	bra.w L00E3E2	; $00E5B0
+	; code $00E5B4-$00E64F
+FUN_00e5b4:
+	move.b (a0)+,d5	; $00E5B4
+	move.b (a3,d5.w),d6	; $00E5B6
+	and.b d6,(a5)	; $00E5BA
+	or.b d5,(a5)+	; $00E5BC
+	move.b (a0)+,d5	; $00E5BE
+	move.b (a3,d5.w),d6	; $00E5C0
+	and.b d6,(a5)	; $00E5C4
+	or.b d5,(a5)+	; $00E5C6
+	move.b (a0)+,d5	; $00E5C8
+	move.b (a3,d5.w),d6	; $00E5CA
+	and.b d6,(a5)	; $00E5CE
+	or.b d5,(a5)	; $00E5D0
+	adda.w #$1d,a5	; $00E5D2
+	move.b (a0)+,d5	; $00E5D6
+	move.b (a3,d5.w),d6	; $00E5D8
+	and.b d6,(a5)	; $00E5DC
+	or.b d5,(a5)+	; $00E5DE
+	move.b (a0)+,d5	; $00E5E0
+	move.b (a3,d5.w),d6	; $00E5E2
+	and.b d6,(a5)	; $00E5E6
+	or.b d5,(a5)+	; $00E5E8
+	move.b (a0)+,d5	; $00E5EA
+	move.b (a3,d5.w),d6	; $00E5EC
+	and.b d6,(a5)	; $00E5F0
+	or.b d5,(a5)+	; $00E5F2
+	move.b (a0)+,d5	; $00E5F4
+	move.b (a3,d5.w),d6	; $00E5F6
+	and.b d6,(a5)	; $00E5FA
+	or.b d5,(a5)	; $00E5FC
+	adda.w #$1d,a5	; $00E5FE
+	move.b (a0)+,d5	; $00E602
+	move.b (a3,d5.w),d6	; $00E604
+	and.b d6,(a5)	; $00E608
+	or.b d5,(a5)+	; $00E60A
+	move.b (a0)+,d5	; $00E60C
+	move.b (a3,d5.w),d6	; $00E60E
+	and.b d6,(a5)	; $00E612
+	or.b d5,(a5)+	; $00E614
+	move.b (a0)+,d5	; $00E616
+	move.b (a3,d5.w),d6	; $00E618
+	and.b d6,(a5)	; $00E61C
+	or.b d5,(a5)+	; $00E61E
+	move.b (a0)+,d5	; $00E620
+	move.b (a3,d5.w),d6	; $00E622
+	and.b d6,(a5)	; $00E626
+	or.b d5,(a5)	; $00E628
+	adda.w #$1d,a5	; $00E62A
+	move.b (a0)+,d5	; $00E62E
+	move.b (a3,d5.w),d6	; $00E630
+	and.b d6,(a5)	; $00E634
+	or.b d5,(a5)+	; $00E636
+	move.b (a0)+,d5	; $00E638
+	move.b (a3,d5.w),d6	; $00E63A
+	and.b d6,(a5)	; $00E63E
+	or.b d5,(a5)+	; $00E640
+	move.b (a0)+,d5	; $00E642
+	move.b (a3,d5.w),d6	; $00E644
+	and.b d6,(a5)	; $00E648
+	or.b d5,(a5)	; $00E64A
+	bra.w L00E3E2	; $00E64C
+	; code $00E650-$00E6EF
+FUN_00e650:
+	move.b (a0)+,d5	; $00E650
+	move.b (a3,d5.w),d6	; $00E652
+	and.b d6,(a5)	; $00E656
+	or.b d5,(a5)	; $00E658
+	adda.w #$1d,a5	; $00E65A
+	move.b (a0)+,d5	; $00E65E
+	move.b (a3,d5.w),d6	; $00E660
+	and.b d6,(a5)	; $00E664
+	or.b d5,(a5)+	; $00E666
+	move.b (a0)+,d5	; $00E668
+	move.b (a3,d5.w),d6	; $00E66A
+	and.b d6,(a5)	; $00E66E
+	or.b d5,(a5)+	; $00E670
+	move.b (a0)+,d5	; $00E672
+	move.b (a3,d5.w),d6	; $00E674
+	and.b d6,(a5)	; $00E678
+	or.b d5,(a5)+	; $00E67A
+	move.b (a0)+,d5	; $00E67C
+	move.b (a3,d5.w),d6	; $00E67E
+	and.b d6,(a5)	; $00E682
+	or.b d5,(a5)	; $00E684
+	adda.w #$1d,a5	; $00E686
+	move.b (a0)+,d5	; $00E68A
+	move.b (a3,d5.w),d6	; $00E68C
+	and.b d6,(a5)	; $00E690
+	or.b d5,(a5)+	; $00E692
+	move.b (a0)+,d5	; $00E694
+	move.b (a3,d5.w),d6	; $00E696
+	and.b d6,(a5)	; $00E69A
+	or.b d5,(a5)+	; $00E69C
+	move.b (a0)+,d5	; $00E69E
+	move.b (a3,d5.w),d6	; $00E6A0
+	and.b d6,(a5)	; $00E6A4
+	or.b d5,(a5)+	; $00E6A6
+	move.b (a0)+,d5	; $00E6A8
+	move.b (a3,d5.w),d6	; $00E6AA
+	and.b d6,(a5)	; $00E6AE
+	or.b d5,(a5)	; $00E6B0
+	adda.w #$1d,a5	; $00E6B2
+	move.b (a0)+,d5	; $00E6B6
+	move.b (a3,d5.w),d6	; $00E6B8
+	and.b d6,(a5)	; $00E6BC
+	or.b d5,(a5)+	; $00E6BE
+	move.b (a0)+,d5	; $00E6C0
+	move.b (a3,d5.w),d6	; $00E6C2
+	and.b d6,(a5)	; $00E6C6
+	or.b d5,(a5)+	; $00E6C8
+	move.b (a0)+,d5	; $00E6CA
+	move.b (a3,d5.w),d6	; $00E6CC
+	and.b d6,(a5)	; $00E6D0
+	or.b d5,(a5)+	; $00E6D2
+	move.b (a0)+,d5	; $00E6D4
+	move.b (a3,d5.w),d6	; $00E6D6
+	and.b d6,(a5)	; $00E6DA
+	or.b d5,(a5)	; $00E6DC
+	adda.w #$1d,a5	; $00E6DE
+	move.b (a0)+,d5	; $00E6E2
+	move.b (a3,d5.w),d6	; $00E6E4
+	and.b d6,(a5)	; $00E6E8
+	or.b d5,(a5)	; $00E6EA
+	bra.w L00E3E2	; $00E6EC
+	; code $00E6F0-$00E781
+FUN_00e6f0:
+	move.b (a0)+,d5	; $00E6F0
+	move.b (a3,d5.w),d6	; $00E6F2
+	and.b d6,(a5)	; $00E6F6
+	or.b d5,(a5)+	; $00E6F8
+	move.b (a0)+,d5	; $00E6FA
+	move.b (a3,d5.w),d6	; $00E6FC
+	and.b d6,(a5)	; $00E700
+	or.b d5,(a5)+	; $00E702
+	move.b (a0)+,d5	; $00E704
+	move.b (a3,d5.w),d6	; $00E706
+	and.b d6,(a5)	; $00E70A
+	or.b d5,(a5)+	; $00E70C
+	move.b (a0)+,d5	; $00E70E
+	move.b (a3,d5.w),d6	; $00E710
+	and.b d6,(a5)	; $00E714
+	or.b d5,(a5)	; $00E716
+	adda.w #$1d,a5	; $00E718
+	move.b (a0)+,d5	; $00E71C
+	move.b (a3,d5.w),d6	; $00E71E
+	and.b d6,(a5)	; $00E722
+	or.b d5,(a5)+	; $00E724
+	move.b (a0)+,d5	; $00E726
+	move.b (a3,d5.w),d6	; $00E728
+	and.b d6,(a5)	; $00E72C
+	or.b d5,(a5)+	; $00E72E
+	move.b (a0)+,d5	; $00E730
+	move.b (a3,d5.w),d6	; $00E732
+	and.b d6,(a5)	; $00E736
+	or.b d5,(a5)+	; $00E738
+	move.b (a0)+,d5	; $00E73A
+	move.b (a3,d5.w),d6	; $00E73C
+	and.b d6,(a5)	; $00E740
+	or.b d5,(a5)	; $00E742
+	adda.w #$1d,a5	; $00E744
+	move.b (a0)+,d5	; $00E748
+	move.b (a3,d5.w),d6	; $00E74A
+	and.b d6,(a5)	; $00E74E
+	or.b d5,(a5)+	; $00E750
+	move.b (a0)+,d5	; $00E752
+	move.b (a3,d5.w),d6	; $00E754
+	and.b d6,(a5)	; $00E758
+	or.b d5,(a5)+	; $00E75A
+	move.b (a0)+,d5	; $00E75C
+	move.b (a3,d5.w),d6	; $00E75E
+	and.b d6,(a5)	; $00E762
+	or.b d5,(a5)+	; $00E764
+	move.b (a0)+,d5	; $00E766
+	move.b (a3,d5.w),d6	; $00E768
+	and.b d6,(a5)	; $00E76C
+	or.b d5,(a5)	; $00E76E
+	adda.w #$1d,a5	; $00E770
+	move.b (a0)+,d5	; $00E774
+	move.b (a3,d5.w),d6	; $00E776
+	and.b d6,(a5)	; $00E77A
+	or.b d5,(a5)	; $00E77C
+	bra.w L00E3E2	; $00E77E
+	; code $00E782-$00E813
+FUN_00e782:
+	move.b (a0)+,d5	; $00E782
+	move.b (a3,d5.w),d6	; $00E784
+	and.b d6,(a5)	; $00E788
+	or.b d5,(a5)+	; $00E78A
+	move.b (a0)+,d5	; $00E78C
+	move.b (a3,d5.w),d6	; $00E78E
+	and.b d6,(a5)	; $00E792
+	or.b d5,(a5)	; $00E794
+	adda.w #$1d,a5	; $00E796
+	move.b (a0)+,d5	; $00E79A
+	move.b (a3,d5.w),d6	; $00E79C
+	and.b d6,(a5)	; $00E7A0
+	or.b d5,(a5)+	; $00E7A2
+	move.b (a0)+,d5	; $00E7A4
+	move.b (a3,d5.w),d6	; $00E7A6
+	and.b d6,(a5)	; $00E7AA
+	or.b d5,(a5)+	; $00E7AC
+	move.b (a0)+,d5	; $00E7AE
+	move.b (a3,d5.w),d6	; $00E7B0
+	and.b d6,(a5)	; $00E7B4
+	or.b d5,(a5)+	; $00E7B6
+	move.b (a0)+,d5	; $00E7B8
+	move.b (a3,d5.w),d6	; $00E7BA
+	and.b d6,(a5)	; $00E7BE
+	or.b d5,(a5)	; $00E7C0
+	adda.w #$1d,a5	; $00E7C2
+	move.b (a0)+,d5	; $00E7C6
+	move.b (a3,d5.w),d6	; $00E7C8
+	and.b d6,(a5)	; $00E7CC
+	or.b d5,(a5)+	; $00E7CE
+	move.b (a0)+,d5	; $00E7D0
+	move.b (a3,d5.w),d6	; $00E7D2
+	and.b d6,(a5)	; $00E7D6
+	or.b d5,(a5)+	; $00E7D8
+	move.b (a0)+,d5	; $00E7DA
+	move.b (a3,d5.w),d6	; $00E7DC
+	and.b d6,(a5)	; $00E7E0
+	or.b d5,(a5)+	; $00E7E2
+	move.b (a0)+,d5	; $00E7E4
+	move.b (a3,d5.w),d6	; $00E7E6
+	and.b d6,(a5)	; $00E7EA
+	or.b d5,(a5)	; $00E7EC
+	adda.w #$1d,a5	; $00E7EE
+	move.b (a0)+,d5	; $00E7F2
+	move.b (a3,d5.w),d6	; $00E7F4
+	and.b d6,(a5)	; $00E7F8
+	or.b d5,(a5)+	; $00E7FA
+	move.b (a0)+,d5	; $00E7FC
+	move.b (a3,d5.w),d6	; $00E7FE
+	and.b d6,(a5)	; $00E802
+	or.b d5,(a5)+	; $00E804
+	move.b (a0)+,d5	; $00E806
+	move.b (a3,d5.w),d6	; $00E808
+	and.b d6,(a5)	; $00E80C
+	or.b d5,(a5)	; $00E80E
+	bra.w L00E3E2	; $00E810
+	; code $00E814-$00E8A5
+FUN_00e814:
+	move.b (a0)+,d5	; $00E814
+	move.b (a3,d5.w),d6	; $00E816
+	and.b d6,(a5)	; $00E81A
+	or.b d5,(a5)+	; $00E81C
+	move.b (a0)+,d5	; $00E81E
+	move.b (a3,d5.w),d6	; $00E820
+	and.b d6,(a5)	; $00E824
+	or.b d5,(a5)+	; $00E826
+	move.b (a0)+,d5	; $00E828
+	move.b (a3,d5.w),d6	; $00E82A
+	and.b d6,(a5)	; $00E82E
+	or.b d5,(a5)	; $00E830
+	adda.w #$1d,a5	; $00E832
+	move.b (a0)+,d5	; $00E836
+	move.b (a3,d5.w),d6	; $00E838
+	and.b d6,(a5)	; $00E83C
+	or.b d5,(a5)+	; $00E83E
+	move.b (a0)+,d5	; $00E840
+	move.b (a3,d5.w),d6	; $00E842
+	and.b d6,(a5)	; $00E846
+	or.b d5,(a5)+	; $00E848
+	move.b (a0)+,d5	; $00E84A
+	move.b (a3,d5.w),d6	; $00E84C
+	and.b d6,(a5)	; $00E850
+	or.b d5,(a5)+	; $00E852
+	move.b (a0)+,d5	; $00E854
+	move.b (a3,d5.w),d6	; $00E856
+	and.b d6,(a5)	; $00E85A
+	or.b d5,(a5)	; $00E85C
+	adda.w #$1d,a5	; $00E85E
+	move.b (a0)+,d5	; $00E862
+	move.b (a3,d5.w),d6	; $00E864
+	and.b d6,(a5)	; $00E868
+	or.b d5,(a5)+	; $00E86A
+	move.b (a0)+,d5	; $00E86C
+	move.b (a3,d5.w),d6	; $00E86E
+	and.b d6,(a5)	; $00E872
+	or.b d5,(a5)+	; $00E874
+	move.b (a0)+,d5	; $00E876
+	move.b (a3,d5.w),d6	; $00E878
+	and.b d6,(a5)	; $00E87C
+	or.b d5,(a5)+	; $00E87E
+	move.b (a0)+,d5	; $00E880
+	move.b (a3,d5.w),d6	; $00E882
+	and.b d6,(a5)	; $00E886
+	or.b d5,(a5)	; $00E888
+	adda.w #$1d,a5	; $00E88A
+	move.b (a0)+,d5	; $00E88E
+	move.b (a3,d5.w),d6	; $00E890
+	and.b d6,(a5)	; $00E894
+	or.b d5,(a5)+	; $00E896
+	move.b (a0)+,d5	; $00E898
+	move.b (a3,d5.w),d6	; $00E89A
+	and.b d6,(a5)	; $00E89E
+	or.b d5,(a5)	; $00E8A0
+	bra.w L00E3E2	; $00E8A2
+	; code $00E8A6-$00E937
+FUN_00e8a6:
+	move.b (a0)+,d5	; $00E8A6
+	move.b (a3,d5.w),d6	; $00E8A8
+	and.b d6,(a5)	; $00E8AC
+	or.b d5,(a5)	; $00E8AE
+	adda.w #$1d,a5	; $00E8B0
+	move.b (a0)+,d5	; $00E8B4
+	move.b (a3,d5.w),d6	; $00E8B6
+	and.b d6,(a5)	; $00E8BA
+	or.b d5,(a5)+	; $00E8BC
+	move.b (a0)+,d5	; $00E8BE
+	move.b (a3,d5.w),d6	; $00E8C0
+	and.b d6,(a5)	; $00E8C4
+	or.b d5,(a5)+	; $00E8C6
+	move.b (a0)+,d5	; $00E8C8
+	move.b (a3,d5.w),d6	; $00E8CA
+	and.b d6,(a5)	; $00E8CE
+	or.b d5,(a5)+	; $00E8D0
+	move.b (a0)+,d5	; $00E8D2
+	move.b (a3,d5.w),d6	; $00E8D4
+	and.b d6,(a5)	; $00E8D8
+	or.b d5,(a5)	; $00E8DA
+	adda.w #$1d,a5	; $00E8DC
+	move.b (a0)+,d5	; $00E8E0
+	move.b (a3,d5.w),d6	; $00E8E2
+	and.b d6,(a5)	; $00E8E6
+	or.b d5,(a5)+	; $00E8E8
+	move.b (a0)+,d5	; $00E8EA
+	move.b (a3,d5.w),d6	; $00E8EC
+	and.b d6,(a5)	; $00E8F0
+	or.b d5,(a5)+	; $00E8F2
+	move.b (a0)+,d5	; $00E8F4
+	move.b (a3,d5.w),d6	; $00E8F6
+	and.b d6,(a5)	; $00E8FA
+	or.b d5,(a5)+	; $00E8FC
+	move.b (a0)+,d5	; $00E8FE
+	move.b (a3,d5.w),d6	; $00E900
+	and.b d6,(a5)	; $00E904
+	or.b d5,(a5)	; $00E906
+	adda.w #$1d,a5	; $00E908
+	move.b (a0)+,d5	; $00E90C
+	move.b (a3,d5.w),d6	; $00E90E
+	and.b d6,(a5)	; $00E912
+	or.b d5,(a5)+	; $00E914
+	move.b (a0)+,d5	; $00E916
+	move.b (a3,d5.w),d6	; $00E918
+	and.b d6,(a5)	; $00E91C
+	or.b d5,(a5)+	; $00E91E
+	move.b (a0)+,d5	; $00E920
+	move.b (a3,d5.w),d6	; $00E922
+	and.b d6,(a5)	; $00E926
+	or.b d5,(a5)+	; $00E928
+	move.b (a0)+,d5	; $00E92A
+	move.b (a3,d5.w),d6	; $00E92C
+	and.b d6,(a5)	; $00E930
+	or.b d5,(a5)	; $00E932
+	bra.w L00E3E2	; $00E934
+	; code $00E938-$00E9BB
+FUN_00e938:
+	move.b (a0)+,d5	; $00E938
+	move.b (a3,d5.w),d6	; $00E93A
+	and.b d6,(a5)	; $00E93E
+	or.b d5,(a5)+	; $00E940
+	move.b (a0)+,d5	; $00E942
+	move.b (a3,d5.w),d6	; $00E944
+	and.b d6,(a5)	; $00E948
+	or.b d5,(a5)+	; $00E94A
+	move.b (a0)+,d5	; $00E94C
+	move.b (a3,d5.w),d6	; $00E94E
+	and.b d6,(a5)	; $00E952
+	or.b d5,(a5)+	; $00E954
+	move.b (a0)+,d5	; $00E956
+	move.b (a3,d5.w),d6	; $00E958
+	and.b d6,(a5)	; $00E95C
+	or.b d5,(a5)	; $00E95E
+	adda.w #$1d,a5	; $00E960
+	move.b (a0)+,d5	; $00E964
+	move.b (a3,d5.w),d6	; $00E966
+	and.b d6,(a5)	; $00E96A
+	or.b d5,(a5)+	; $00E96C
+	move.b (a0)+,d5	; $00E96E
+	move.b (a3,d5.w),d6	; $00E970
+	and.b d6,(a5)	; $00E974
+	or.b d5,(a5)+	; $00E976
+	move.b (a0)+,d5	; $00E978
+	move.b (a3,d5.w),d6	; $00E97A
+	and.b d6,(a5)	; $00E97E
+	or.b d5,(a5)+	; $00E980
+	move.b (a0)+,d5	; $00E982
+	move.b (a3,d5.w),d6	; $00E984
+	and.b d6,(a5)	; $00E988
+	or.b d5,(a5)	; $00E98A
+	adda.w #$1d,a5	; $00E98C
+	move.b (a0)+,d5	; $00E990
+	move.b (a3,d5.w),d6	; $00E992
+	and.b d6,(a5)	; $00E996
+	or.b d5,(a5)+	; $00E998
+	move.b (a0)+,d5	; $00E99A
+	move.b (a3,d5.w),d6	; $00E99C
+	and.b d6,(a5)	; $00E9A0
+	or.b d5,(a5)+	; $00E9A2
+	move.b (a0)+,d5	; $00E9A4
+	move.b (a3,d5.w),d6	; $00E9A6
+	and.b d6,(a5)	; $00E9AA
+	or.b d5,(a5)+	; $00E9AC
+	move.b (a0)+,d5	; $00E9AE
+	move.b (a3,d5.w),d6	; $00E9B0
+	and.b d6,(a5)	; $00E9B4
+	or.b d5,(a5)	; $00E9B6
+	bra.w L00E3E2	; $00E9B8
+	; code $00E9BC-$00EA43
+FUN_00e9bc:
+	move.b (a0)+,d5	; $00E9BC
+	move.b (a3,d5.w),d6	; $00E9BE
+	and.b d6,(a5)	; $00E9C2
+	or.b d5,(a5)+	; $00E9C4
+	move.b (a0)+,d5	; $00E9C6
+	move.b (a3,d5.w),d6	; $00E9C8
+	and.b d6,(a5)	; $00E9CC
+	or.b d5,(a5)	; $00E9CE
+	adda.w #$1d,a5	; $00E9D0
+	move.b (a0)+,d5	; $00E9D4
+	move.b (a3,d5.w),d6	; $00E9D6
+	and.b d6,(a5)	; $00E9DA
+	or.b d5,(a5)+	; $00E9DC
+	move.b (a0)+,d5	; $00E9DE
+	move.b (a3,d5.w),d6	; $00E9E0
+	and.b d6,(a5)	; $00E9E4
+	or.b d5,(a5)+	; $00E9E6
+	move.b (a0)+,d5	; $00E9E8
+	move.b (a3,d5.w),d6	; $00E9EA
+	and.b d6,(a5)	; $00E9EE
+	or.b d5,(a5)+	; $00E9F0
+	move.b (a0)+,d5	; $00E9F2
+	move.b (a3,d5.w),d6	; $00E9F4
+	and.b d6,(a5)	; $00E9F8
+	or.b d5,(a5)	; $00E9FA
+	adda.w #$1d,a5	; $00E9FC
+	move.b (a0)+,d5	; $00EA00
+	move.b (a3,d5.w),d6	; $00EA02
+	and.b d6,(a5)	; $00EA06
+	or.b d5,(a5)+	; $00EA08
+	move.b (a0)+,d5	; $00EA0A
+	move.b (a3,d5.w),d6	; $00EA0C
+	and.b d6,(a5)	; $00EA10
+	or.b d5,(a5)+	; $00EA12
+	move.b (a0)+,d5	; $00EA14
+	move.b (a3,d5.w),d6	; $00EA16
+	and.b d6,(a5)	; $00EA1A
+	or.b d5,(a5)+	; $00EA1C
+	move.b (a0)+,d5	; $00EA1E
+	move.b (a3,d5.w),d6	; $00EA20
+	and.b d6,(a5)	; $00EA24
+	or.b d5,(a5)	; $00EA26
+	adda.w #$1d,a5	; $00EA28
+	move.b (a0)+,d5	; $00EA2C
+	move.b (a3,d5.w),d6	; $00EA2E
+	and.b d6,(a5)	; $00EA32
+	or.b d5,(a5)+	; $00EA34
+	move.b (a0)+,d5	; $00EA36
+	move.b (a3,d5.w),d6	; $00EA38
+	and.b d6,(a5)	; $00EA3C
+	or.b d5,(a5)	; $00EA3E
+	bra.w L00E3E2	; $00EA40
+	; code $00EA44-$00EACB
+FUN_00ea44:
+	move.b (a0)+,d5	; $00EA44
+	move.b (a3,d5.w),d6	; $00EA46
+	and.b d6,(a5)	; $00EA4A
+	or.b d5,(a5)+	; $00EA4C
+	move.b (a0)+,d5	; $00EA4E
+	move.b (a3,d5.w),d6	; $00EA50
+	and.b d6,(a5)	; $00EA54
+	or.b d5,(a5)+	; $00EA56
+	move.b (a0)+,d5	; $00EA58
+	move.b (a3,d5.w),d6	; $00EA5A
+	and.b d6,(a5)	; $00EA5E
+	or.b d5,(a5)	; $00EA60
+	adda.w #$1d,a5	; $00EA62
+	move.b (a0)+,d5	; $00EA66
+	move.b (a3,d5.w),d6	; $00EA68
+	and.b d6,(a5)	; $00EA6C
+	or.b d5,(a5)+	; $00EA6E
+	move.b (a0)+,d5	; $00EA70
+	move.b (a3,d5.w),d6	; $00EA72
+	and.b d6,(a5)	; $00EA76
+	or.b d5,(a5)+	; $00EA78
+	move.b (a0)+,d5	; $00EA7A
+	move.b (a3,d5.w),d6	; $00EA7C
+	and.b d6,(a5)	; $00EA80
+	or.b d5,(a5)+	; $00EA82
+	move.b (a0)+,d5	; $00EA84
+	move.b (a3,d5.w),d6	; $00EA86
+	and.b d6,(a5)	; $00EA8A
+	or.b d5,(a5)	; $00EA8C
+	adda.w #$1d,a5	; $00EA8E
+	move.b (a0)+,d5	; $00EA92
+	move.b (a3,d5.w),d6	; $00EA94
+	and.b d6,(a5)	; $00EA98
+	or.b d5,(a5)+	; $00EA9A
+	move.b (a0)+,d5	; $00EA9C
+	move.b (a3,d5.w),d6	; $00EA9E
+	and.b d6,(a5)	; $00EAA2
+	or.b d5,(a5)+	; $00EAA4
+	move.b (a0)+,d5	; $00EAA6
+	move.b (a3,d5.w),d6	; $00EAA8
+	and.b d6,(a5)	; $00EAAC
+	or.b d5,(a5)+	; $00EAAE
+	move.b (a0)+,d5	; $00EAB0
+	move.b (a3,d5.w),d6	; $00EAB2
+	and.b d6,(a5)	; $00EAB6
+	or.b d5,(a5)	; $00EAB8
+	adda.w #$1d,a5	; $00EABA
+	move.b (a0)+,d5	; $00EABE
+	move.b (a3,d5.w),d6	; $00EAC0
+	and.b d6,(a5)	; $00EAC4
+	or.b d5,(a5)	; $00EAC6
+	bra.w L00E3E2	; $00EAC8
+	; code $00EACC-$00EB53
+FUN_00eacc:
+	move.b (a0)+,d5	; $00EACC
+	move.b (a3,d5.w),d6	; $00EACE
+	and.b d6,(a5)	; $00EAD2
+	or.b d5,(a5)	; $00EAD4
+	adda.w #$1d,a5	; $00EAD6
+	move.b (a0)+,d5	; $00EADA
+	move.b (a3,d5.w),d6	; $00EADC
+	and.b d6,(a5)	; $00EAE0
+	or.b d5,(a5)+	; $00EAE2
+	move.b (a0)+,d5	; $00EAE4
+	move.b (a3,d5.w),d6	; $00EAE6
+	and.b d6,(a5)	; $00EAEA
+	or.b d5,(a5)+	; $00EAEC
+	move.b (a0)+,d5	; $00EAEE
+	move.b (a3,d5.w),d6	; $00EAF0
+	and.b d6,(a5)	; $00EAF4
+	or.b d5,(a5)+	; $00EAF6
+	move.b (a0)+,d5	; $00EAF8
+	move.b (a3,d5.w),d6	; $00EAFA
+	and.b d6,(a5)	; $00EAFE
+	or.b d5,(a5)	; $00EB00
+	adda.w #$1d,a5	; $00EB02
+	move.b (a0)+,d5	; $00EB06
+	move.b (a3,d5.w),d6	; $00EB08
+	and.b d6,(a5)	; $00EB0C
+	or.b d5,(a5)+	; $00EB0E
+	move.b (a0)+,d5	; $00EB10
+	move.b (a3,d5.w),d6	; $00EB12
+	and.b d6,(a5)	; $00EB16
+	or.b d5,(a5)+	; $00EB18
+	move.b (a0)+,d5	; $00EB1A
+	move.b (a3,d5.w),d6	; $00EB1C
+	and.b d6,(a5)	; $00EB20
+	or.b d5,(a5)+	; $00EB22
+	move.b (a0)+,d5	; $00EB24
+	move.b (a3,d5.w),d6	; $00EB26
+	and.b d6,(a5)	; $00EB2A
+	or.b d5,(a5)	; $00EB2C
+	adda.w #$1d,a5	; $00EB2E
+	move.b (a0)+,d5	; $00EB32
+	move.b (a3,d5.w),d6	; $00EB34
+	and.b d6,(a5)	; $00EB38
+	or.b d5,(a5)+	; $00EB3A
+	move.b (a0)+,d5	; $00EB3C
+	move.b (a3,d5.w),d6	; $00EB3E
+	and.b d6,(a5)	; $00EB42
+	or.b d5,(a5)+	; $00EB44
+	move.b (a0)+,d5	; $00EB46
+	move.b (a3,d5.w),d6	; $00EB48
+	and.b d6,(a5)	; $00EB4C
+	or.b d5,(a5)	; $00EB4E
+	bra.w L00E3E2	; $00EB50
+	; code $00EB54-$00EBCD
+FUN_00eb54:
+	move.b (a0)+,d5	; $00EB54
+	move.b (a3,d5.w),d6	; $00EB56
+	and.b d6,(a5)	; $00EB5A
+	or.b d5,(a5)+	; $00EB5C
+	move.b (a0)+,d5	; $00EB5E
+	move.b (a3,d5.w),d6	; $00EB60
+	and.b d6,(a5)	; $00EB64
+	or.b d5,(a5)+	; $00EB66
+	move.b (a0)+,d5	; $00EB68
+	move.b (a3,d5.w),d6	; $00EB6A
+	and.b d6,(a5)	; $00EB6E
+	or.b d5,(a5)+	; $00EB70
+	move.b (a0)+,d5	; $00EB72
+	move.b (a3,d5.w),d6	; $00EB74
+	and.b d6,(a5)	; $00EB78
+	or.b d5,(a5)	; $00EB7A
+	adda.w #$1d,a5	; $00EB7C
+	move.b (a0)+,d5	; $00EB80
+	move.b (a3,d5.w),d6	; $00EB82
+	and.b d6,(a5)	; $00EB86
+	or.b d5,(a5)+	; $00EB88
+	move.b (a0)+,d5	; $00EB8A
+	move.b (a3,d5.w),d6	; $00EB8C
+	and.b d6,(a5)	; $00EB90
+	or.b d5,(a5)+	; $00EB92
+	move.b (a0)+,d5	; $00EB94
+	move.b (a3,d5.w),d6	; $00EB96
+	and.b d6,(a5)	; $00EB9A
+	or.b d5,(a5)+	; $00EB9C
+	move.b (a0)+,d5	; $00EB9E
+	move.b (a3,d5.w),d6	; $00EBA0
+	and.b d6,(a5)	; $00EBA4
+	or.b d5,(a5)	; $00EBA6
+	adda.w #$1d,a5	; $00EBA8
+	move.b (a0)+,d5	; $00EBAC
+	move.b (a3,d5.w),d6	; $00EBAE
+	and.b d6,(a5)	; $00EBB2
+	or.b d5,(a5)+	; $00EBB4
+	move.b (a0)+,d5	; $00EBB6
+	move.b (a3,d5.w),d6	; $00EBB8
+	and.b d6,(a5)	; $00EBBC
+	or.b d5,(a5)+	; $00EBBE
+	move.b (a0)+,d5	; $00EBC0
+	move.b (a3,d5.w),d6	; $00EBC2
+	and.b d6,(a5)	; $00EBC6
+	or.b d5,(a5)	; $00EBC8
+	bra.w L00E3E2	; $00EBCA
+	; code $00EBCE-$00EC4B
+FUN_00ebce:
+	move.b (a0)+,d5	; $00EBCE
+	move.b (a3,d5.w),d6	; $00EBD0
+	and.b d6,(a5)	; $00EBD4
+	or.b d5,(a5)+	; $00EBD6
+	move.b (a0)+,d5	; $00EBD8
+	move.b (a3,d5.w),d6	; $00EBDA
+	and.b d6,(a5)	; $00EBDE
+	or.b d5,(a5)	; $00EBE0
+	adda.w #$1d,a5	; $00EBE2
+	move.b (a0)+,d5	; $00EBE6
+	move.b (a3,d5.w),d6	; $00EBE8
+	and.b d6,(a5)	; $00EBEC
+	or.b d5,(a5)+	; $00EBEE
+	move.b (a0)+,d5	; $00EBF0
+	move.b (a3,d5.w),d6	; $00EBF2
+	and.b d6,(a5)	; $00EBF6
+	or.b d5,(a5)+	; $00EBF8
+	move.b (a0)+,d5	; $00EBFA
+	move.b (a3,d5.w),d6	; $00EBFC
+	and.b d6,(a5)	; $00EC00
+	or.b d5,(a5)+	; $00EC02
+	move.b (a0)+,d5	; $00EC04
+	move.b (a3,d5.w),d6	; $00EC06
+	and.b d6,(a5)	; $00EC0A
+	or.b d5,(a5)	; $00EC0C
+	adda.w #$1d,a5	; $00EC0E
+	move.b (a0)+,d5	; $00EC12
+	move.b (a3,d5.w),d6	; $00EC14
+	and.b d6,(a5)	; $00EC18
+	or.b d5,(a5)+	; $00EC1A
+	move.b (a0)+,d5	; $00EC1C
+	move.b (a3,d5.w),d6	; $00EC1E
+	and.b d6,(a5)	; $00EC22
+	or.b d5,(a5)+	; $00EC24
+	move.b (a0)+,d5	; $00EC26
+	move.b (a3,d5.w),d6	; $00EC28
+	and.b d6,(a5)	; $00EC2C
+	or.b d5,(a5)+	; $00EC2E
+	move.b (a0)+,d5	; $00EC30
+	move.b (a3,d5.w),d6	; $00EC32
+	and.b d6,(a5)	; $00EC36
+	or.b d5,(a5)	; $00EC38
+	adda.w #$1d,a5	; $00EC3A
+	move.b (a0)+,d5	; $00EC3E
+	move.b (a3,d5.w),d6	; $00EC40
+	and.b d6,(a5)	; $00EC44
+	or.b d5,(a5)	; $00EC46
+	bra.w L00E3E2	; $00EC48
+	; code $00EC4C-$00ECC5
+FUN_00ec4c:
+	move.b (a0)+,d5	; $00EC4C
+	move.b (a3,d5.w),d6	; $00EC4E
+	and.b d6,(a5)	; $00EC52
+	or.b d5,(a5)+	; $00EC54
+	move.b (a0)+,d5	; $00EC56
+	move.b (a3,d5.w),d6	; $00EC58
+	and.b d6,(a5)	; $00EC5C
+	or.b d5,(a5)+	; $00EC5E
+	move.b (a0)+,d5	; $00EC60
+	move.b (a3,d5.w),d6	; $00EC62
+	and.b d6,(a5)	; $00EC66
+	or.b d5,(a5)	; $00EC68
+	adda.w #$1d,a5	; $00EC6A
+	move.b (a0)+,d5	; $00EC6E
+	move.b (a3,d5.w),d6	; $00EC70
+	and.b d6,(a5)	; $00EC74
+	or.b d5,(a5)+	; $00EC76
+	move.b (a0)+,d5	; $00EC78
+	move.b (a3,d5.w),d6	; $00EC7A
+	and.b d6,(a5)	; $00EC7E
+	or.b d5,(a5)+	; $00EC80
+	move.b (a0)+,d5	; $00EC82
+	move.b (a3,d5.w),d6	; $00EC84
+	and.b d6,(a5)	; $00EC88
+	or.b d5,(a5)+	; $00EC8A
+	move.b (a0)+,d5	; $00EC8C
+	move.b (a3,d5.w),d6	; $00EC8E
+	and.b d6,(a5)	; $00EC92
+	or.b d5,(a5)	; $00EC94
+	adda.w #$1d,a5	; $00EC96
+	move.b (a0)+,d5	; $00EC9A
+	move.b (a3,d5.w),d6	; $00EC9C
+	and.b d6,(a5)	; $00ECA0
+	or.b d5,(a5)+	; $00ECA2
+	move.b (a0)+,d5	; $00ECA4
+	move.b (a3,d5.w),d6	; $00ECA6
+	and.b d6,(a5)	; $00ECAA
+	or.b d5,(a5)+	; $00ECAC
+	move.b (a0)+,d5	; $00ECAE
+	move.b (a3,d5.w),d6	; $00ECB0
+	and.b d6,(a5)	; $00ECB4
+	or.b d5,(a5)+	; $00ECB6
+	move.b (a0)+,d5	; $00ECB8
+	move.b (a3,d5.w),d6	; $00ECBA
+	and.b d6,(a5)	; $00ECBE
+	or.b d5,(a5)	; $00ECC0
+	bra.w L00E3E2	; $00ECC2
+	; code $00ECC6-$00ED43
+FUN_00ecc6:
+	move.b (a0)+,d5	; $00ECC6
+	move.b (a3,d5.w),d6	; $00ECC8
+	and.b d6,(a5)	; $00ECCC
+	or.b d5,(a5)	; $00ECCE
+	adda.w #$1d,a5	; $00ECD0
+	move.b (a0)+,d5	; $00ECD4
+	move.b (a3,d5.w),d6	; $00ECD6
+	and.b d6,(a5)	; $00ECDA
+	or.b d5,(a5)+	; $00ECDC
+	move.b (a0)+,d5	; $00ECDE
+	move.b (a3,d5.w),d6	; $00ECE0
+	and.b d6,(a5)	; $00ECE4
+	or.b d5,(a5)+	; $00ECE6
+	move.b (a0)+,d5	; $00ECE8
+	move.b (a3,d5.w),d6	; $00ECEA
+	and.b d6,(a5)	; $00ECEE
+	or.b d5,(a5)+	; $00ECF0
+	move.b (a0)+,d5	; $00ECF2
+	move.b (a3,d5.w),d6	; $00ECF4
+	and.b d6,(a5)	; $00ECF8
+	or.b d5,(a5)	; $00ECFA
+	adda.w #$1d,a5	; $00ECFC
+	move.b (a0)+,d5	; $00ED00
+	move.b (a3,d5.w),d6	; $00ED02
+	and.b d6,(a5)	; $00ED06
+	or.b d5,(a5)+	; $00ED08
+	move.b (a0)+,d5	; $00ED0A
+	move.b (a3,d5.w),d6	; $00ED0C
+	and.b d6,(a5)	; $00ED10
+	or.b d5,(a5)+	; $00ED12
+	move.b (a0)+,d5	; $00ED14
+	move.b (a3,d5.w),d6	; $00ED16
+	and.b d6,(a5)	; $00ED1A
+	or.b d5,(a5)+	; $00ED1C
+	move.b (a0)+,d5	; $00ED1E
+	move.b (a3,d5.w),d6	; $00ED20
+	and.b d6,(a5)	; $00ED24
+	or.b d5,(a5)	; $00ED26
+	adda.w #$1d,a5	; $00ED28
+	move.b (a0)+,d5	; $00ED2C
+	move.b (a3,d5.w),d6	; $00ED2E
+	and.b d6,(a5)	; $00ED32
+	or.b d5,(a5)+	; $00ED34
+	move.b (a0)+,d5	; $00ED36
+	move.b (a3,d5.w),d6	; $00ED38
+	and.b d6,(a5)	; $00ED3C
+	or.b d5,(a5)	; $00ED3E
+	bra.w L00E3E2	; $00ED40
+	; code $00ED44-$00EDB3
+FUN_00ed44:
+	move.b (a0)+,d5	; $00ED44
+	move.b (a3,d5.w),d6	; $00ED46
+	and.b d6,(a5)	; $00ED4A
+	or.b d5,(a5)+	; $00ED4C
+	move.b (a0)+,d5	; $00ED4E
+	move.b (a3,d5.w),d6	; $00ED50
+	and.b d6,(a5)	; $00ED54
+	or.b d5,(a5)+	; $00ED56
+	move.b (a0)+,d5	; $00ED58
+	move.b (a3,d5.w),d6	; $00ED5A
+	and.b d6,(a5)	; $00ED5E
+	or.b d5,(a5)+	; $00ED60
+	move.b (a0)+,d5	; $00ED62
+	move.b (a3,d5.w),d6	; $00ED64
+	and.b d6,(a5)	; $00ED68
+	or.b d5,(a5)	; $00ED6A
+	adda.w #$1d,a5	; $00ED6C
+	move.b (a0)+,d5	; $00ED70
+	move.b (a3,d5.w),d6	; $00ED72
+	and.b d6,(a5)	; $00ED76
+	or.b d5,(a5)+	; $00ED78
+	move.b (a0)+,d5	; $00ED7A
+	move.b (a3,d5.w),d6	; $00ED7C
+	and.b d6,(a5)	; $00ED80
+	or.b d5,(a5)+	; $00ED82
+	move.b (a0)+,d5	; $00ED84
+	move.b (a3,d5.w),d6	; $00ED86
+	and.b d6,(a5)	; $00ED8A
+	or.b d5,(a5)+	; $00ED8C
+	move.b (a0)+,d5	; $00ED8E
+	move.b (a3,d5.w),d6	; $00ED90
+	and.b d6,(a5)	; $00ED94
+	or.b d5,(a5)	; $00ED96
+	adda.w #$1d,a5	; $00ED98
+	move.b (a0)+,d5	; $00ED9C
+	move.b (a3,d5.w),d6	; $00ED9E
+	and.b d6,(a5)	; $00EDA2
+	or.b d5,(a5)+	; $00EDA4
+	move.b (a0)+,d5	; $00EDA6
+	move.b (a3,d5.w),d6	; $00EDA8
+	and.b d6,(a5)	; $00EDAC
+	or.b d5,(a5)	; $00EDAE
+	bra.w L00E3E2	; $00EDB0
+	; code $00EDB4-$00EE23
+FUN_00edb4:
+	move.b (a0)+,d5	; $00EDB4
+	move.b (a3,d5.w),d6	; $00EDB6
+	and.b d6,(a5)	; $00EDBA
+	or.b d5,(a5)+	; $00EDBC
+	move.b (a0)+,d5	; $00EDBE
+	move.b (a3,d5.w),d6	; $00EDC0
+	and.b d6,(a5)	; $00EDC4
+	or.b d5,(a5)	; $00EDC6
+	adda.w #$1d,a5	; $00EDC8
+	move.b (a0)+,d5	; $00EDCC
+	move.b (a3,d5.w),d6	; $00EDCE
+	and.b d6,(a5)	; $00EDD2
+	or.b d5,(a5)+	; $00EDD4
+	move.b (a0)+,d5	; $00EDD6
+	move.b (a3,d5.w),d6	; $00EDD8
+	and.b d6,(a5)	; $00EDDC
+	or.b d5,(a5)+	; $00EDDE
+	move.b (a0)+,d5	; $00EDE0
+	move.b (a3,d5.w),d6	; $00EDE2
+	and.b d6,(a5)	; $00EDE6
+	or.b d5,(a5)+	; $00EDE8
+	move.b (a0)+,d5	; $00EDEA
+	move.b (a3,d5.w),d6	; $00EDEC
+	and.b d6,(a5)	; $00EDF0
+	or.b d5,(a5)	; $00EDF2
+	adda.w #$1d,a5	; $00EDF4
+	move.b (a0)+,d5	; $00EDF8
+	move.b (a3,d5.w),d6	; $00EDFA
+	and.b d6,(a5)	; $00EDFE
+	or.b d5,(a5)+	; $00EE00
+	move.b (a0)+,d5	; $00EE02
+	move.b (a3,d5.w),d6	; $00EE04
+	and.b d6,(a5)	; $00EE08
+	or.b d5,(a5)+	; $00EE0A
+	move.b (a0)+,d5	; $00EE0C
+	move.b (a3,d5.w),d6	; $00EE0E
+	and.b d6,(a5)	; $00EE12
+	or.b d5,(a5)+	; $00EE14
+	move.b (a0)+,d5	; $00EE16
+	move.b (a3,d5.w),d6	; $00EE18
+	and.b d6,(a5)	; $00EE1C
+	or.b d5,(a5)	; $00EE1E
+	bra.w L00E3E2	; $00EE20
+	; code $00EE24-$00EE93
+FUN_00ee24:
+	move.b (a0)+,d5	; $00EE24
+	move.b (a3,d5.w),d6	; $00EE26
+	and.b d6,(a5)	; $00EE2A
+	or.b d5,(a5)+	; $00EE2C
+	move.b (a0)+,d5	; $00EE2E
+	move.b (a3,d5.w),d6	; $00EE30
+	and.b d6,(a5)	; $00EE34
+	or.b d5,(a5)+	; $00EE36
+	move.b (a0)+,d5	; $00EE38
+	move.b (a3,d5.w),d6	; $00EE3A
+	and.b d6,(a5)	; $00EE3E
+	or.b d5,(a5)	; $00EE40
+	adda.w #$1d,a5	; $00EE42
+	move.b (a0)+,d5	; $00EE46
+	move.b (a3,d5.w),d6	; $00EE48
+	and.b d6,(a5)	; $00EE4C
+	or.b d5,(a5)+	; $00EE4E
+	move.b (a0)+,d5	; $00EE50
+	move.b (a3,d5.w),d6	; $00EE52
+	and.b d6,(a5)	; $00EE56
+	or.b d5,(a5)+	; $00EE58
+	move.b (a0)+,d5	; $00EE5A
+	move.b (a3,d5.w),d6	; $00EE5C
+	and.b d6,(a5)	; $00EE60
+	or.b d5,(a5)+	; $00EE62
+	move.b (a0)+,d5	; $00EE64
+	move.b (a3,d5.w),d6	; $00EE66
+	and.b d6,(a5)	; $00EE6A
+	or.b d5,(a5)	; $00EE6C
+	adda.w #$1d,a5	; $00EE6E
+	move.b (a0)+,d5	; $00EE72
+	move.b (a3,d5.w),d6	; $00EE74
+	and.b d6,(a5)	; $00EE78
+	or.b d5,(a5)+	; $00EE7A
+	move.b (a0)+,d5	; $00EE7C
+	move.b (a3,d5.w),d6	; $00EE7E
+	and.b d6,(a5)	; $00EE82
+	or.b d5,(a5)+	; $00EE84
+	move.b (a0)+,d5	; $00EE86
+	move.b (a3,d5.w),d6	; $00EE88
+	and.b d6,(a5)	; $00EE8C
+	or.b d5,(a5)	; $00EE8E
+	bra.w L00E3E2	; $00EE90
+	; code $00EE94-$00EF07
+FUN_00ee94:
+	move.b (a0)+,d5	; $00EE94
+	move.b (a3,d5.w),d6	; $00EE96
+	and.b d6,(a5)	; $00EE9A
+	or.b d5,(a5)	; $00EE9C
+	adda.w #$1d,a5	; $00EE9E
+	move.b (a0)+,d5	; $00EEA2
+	move.b (a3,d5.w),d6	; $00EEA4
+	and.b d6,(a5)	; $00EEA8
+	or.b d5,(a5)+	; $00EEAA
+	move.b (a0)+,d5	; $00EEAC
+	move.b (a3,d5.w),d6	; $00EEAE
+	and.b d6,(a5)	; $00EEB2
+	or.b d5,(a5)+	; $00EEB4
+	move.b (a0)+,d5	; $00EEB6
+	move.b (a3,d5.w),d6	; $00EEB8
+	and.b d6,(a5)	; $00EEBC
+	or.b d5,(a5)+	; $00EEBE
+	move.b (a0)+,d5	; $00EEC0
+	move.b (a3,d5.w),d6	; $00EEC2
+	and.b d6,(a5)	; $00EEC6
+	or.b d5,(a5)	; $00EEC8
+	adda.w #$1d,a5	; $00EECA
+	move.b (a0)+,d5	; $00EECE
+	move.b (a3,d5.w),d6	; $00EED0
+	and.b d6,(a5)	; $00EED4
+	or.b d5,(a5)+	; $00EED6
+	move.b (a0)+,d5	; $00EED8
+	move.b (a3,d5.w),d6	; $00EEDA
+	and.b d6,(a5)	; $00EEDE
+	or.b d5,(a5)+	; $00EEE0
+	move.b (a0)+,d5	; $00EEE2
+	move.b (a3,d5.w),d6	; $00EEE4
+	and.b d6,(a5)	; $00EEE8
+	or.b d5,(a5)+	; $00EEEA
+	move.b (a0)+,d5	; $00EEEC
+	move.b (a3,d5.w),d6	; $00EEEE
+	and.b d6,(a5)	; $00EEF2
+	or.b d5,(a5)	; $00EEF4
+	adda.w #$1d,a5	; $00EEF6
+	move.b (a0)+,d5	; $00EEFA
+	move.b (a3,d5.w),d6	; $00EEFC
+	and.b d6,(a5)	; $00EF00
+	or.b d5,(a5)	; $00EF02
+	bra.w L00E3E2	; $00EF04
+	; code $00EF08-$00EF6D
+FUN_00ef08:
+	move.b (a0)+,d5	; $00EF08
+	move.b (a3,d5.w),d6	; $00EF0A
+	and.b d6,(a5)	; $00EF0E
+	or.b d5,(a5)+	; $00EF10
+	move.b (a0)+,d5	; $00EF12
+	move.b (a3,d5.w),d6	; $00EF14
+	and.b d6,(a5)	; $00EF18
+	or.b d5,(a5)+	; $00EF1A
+	move.b (a0)+,d5	; $00EF1C
+	move.b (a3,d5.w),d6	; $00EF1E
+	and.b d6,(a5)	; $00EF22
+	or.b d5,(a5)+	; $00EF24
+	move.b (a0)+,d5	; $00EF26
+	move.b (a3,d5.w),d6	; $00EF28
+	and.b d6,(a5)	; $00EF2C
+	or.b d5,(a5)	; $00EF2E
+	adda.w #$1d,a5	; $00EF30
+	move.b (a0)+,d5	; $00EF34
+	move.b (a3,d5.w),d6	; $00EF36
+	and.b d6,(a5)	; $00EF3A
+	or.b d5,(a5)+	; $00EF3C
+	move.b (a0)+,d5	; $00EF3E
+	move.b (a3,d5.w),d6	; $00EF40
+	and.b d6,(a5)	; $00EF44
+	or.b d5,(a5)+	; $00EF46
+	move.b (a0)+,d5	; $00EF48
+	move.b (a3,d5.w),d6	; $00EF4A
+	and.b d6,(a5)	; $00EF4E
+	or.b d5,(a5)+	; $00EF50
+	move.b (a0)+,d5	; $00EF52
+	move.b (a3,d5.w),d6	; $00EF54
+	and.b d6,(a5)	; $00EF58
+	or.b d5,(a5)	; $00EF5A
+	adda.w #$1d,a5	; $00EF5C
+	move.b (a0)+,d5	; $00EF60
+	move.b (a3,d5.w),d6	; $00EF62
+	and.b d6,(a5)	; $00EF66
+	or.b d5,(a5)	; $00EF68
+	bra.w L00E3E2	; $00EF6A
+	; code $00EF6E-$00EFD3
+FUN_00ef6e:
+	move.b (a0)+,d5	; $00EF6E
+	move.b (a3,d5.w),d6	; $00EF70
+	and.b d6,(a5)	; $00EF74
+	or.b d5,(a5)+	; $00EF76
+	move.b (a0)+,d5	; $00EF78
+	move.b (a3,d5.w),d6	; $00EF7A
+	and.b d6,(a5)	; $00EF7E
+	or.b d5,(a5)	; $00EF80
+	adda.w #$1d,a5	; $00EF82
+	move.b (a0)+,d5	; $00EF86
+	move.b (a3,d5.w),d6	; $00EF88
+	and.b d6,(a5)	; $00EF8C
+	or.b d5,(a5)+	; $00EF8E
+	move.b (a0)+,d5	; $00EF90
+	move.b (a3,d5.w),d6	; $00EF92
+	and.b d6,(a5)	; $00EF96
+	or.b d5,(a5)+	; $00EF98
+	move.b (a0)+,d5	; $00EF9A
+	move.b (a3,d5.w),d6	; $00EF9C
+	and.b d6,(a5)	; $00EFA0
+	or.b d5,(a5)+	; $00EFA2
+	move.b (a0)+,d5	; $00EFA4
+	move.b (a3,d5.w),d6	; $00EFA6
+	and.b d6,(a5)	; $00EFAA
+	or.b d5,(a5)	; $00EFAC
+	adda.w #$1d,a5	; $00EFAE
+	move.b (a0)+,d5	; $00EFB2
+	move.b (a3,d5.w),d6	; $00EFB4
+	and.b d6,(a5)	; $00EFB8
+	or.b d5,(a5)+	; $00EFBA
+	move.b (a0)+,d5	; $00EFBC
+	move.b (a3,d5.w),d6	; $00EFBE
+	and.b d6,(a5)	; $00EFC2
+	or.b d5,(a5)+	; $00EFC4
+	move.b (a0)+,d5	; $00EFC6
+	move.b (a3,d5.w),d6	; $00EFC8
+	and.b d6,(a5)	; $00EFCC
+	or.b d5,(a5)	; $00EFCE
+	bra.w L00E3E2	; $00EFD0
+	; code $00EFD4-$00F039
+FUN_00efd4:
+	move.b (a0)+,d5	; $00EFD4
+	move.b (a3,d5.w),d6	; $00EFD6
+	and.b d6,(a5)	; $00EFDA
+	or.b d5,(a5)+	; $00EFDC
+	move.b (a0)+,d5	; $00EFDE
+	move.b (a3,d5.w),d6	; $00EFE0
+	and.b d6,(a5)	; $00EFE4
+	or.b d5,(a5)+	; $00EFE6
+	move.b (a0)+,d5	; $00EFE8
+	move.b (a3,d5.w),d6	; $00EFEA
+	and.b d6,(a5)	; $00EFEE
+	or.b d5,(a5)	; $00EFF0
+	adda.w #$1d,a5	; $00EFF2
+	move.b (a0)+,d5	; $00EFF6
+	move.b (a3,d5.w),d6	; $00EFF8
+	and.b d6,(a5)	; $00EFFC
+	or.b d5,(a5)+	; $00EFFE
+	move.b (a0)+,d5	; $00F000
+	move.b (a3,d5.w),d6	; $00F002
+	and.b d6,(a5)	; $00F006
+	or.b d5,(a5)+	; $00F008
+	move.b (a0)+,d5	; $00F00A
+	move.b (a3,d5.w),d6	; $00F00C
+	and.b d6,(a5)	; $00F010
+	or.b d5,(a5)+	; $00F012
+	move.b (a0)+,d5	; $00F014
+	move.b (a3,d5.w),d6	; $00F016
+	and.b d6,(a5)	; $00F01A
+	or.b d5,(a5)	; $00F01C
+	adda.w #$1d,a5	; $00F01E
+	move.b (a0)+,d5	; $00F022
+	move.b (a3,d5.w),d6	; $00F024
+	and.b d6,(a5)	; $00F028
+	or.b d5,(a5)+	; $00F02A
+	move.b (a0)+,d5	; $00F02C
+	move.b (a3,d5.w),d6	; $00F02E
+	and.b d6,(a5)	; $00F032
+	or.b d5,(a5)	; $00F034
+	bra.w L00E3E2	; $00F036
+	; code $00F03A-$00F09F
+FUN_00f03a:
+	move.b (a0)+,d5	; $00F03A
+	move.b (a3,d5.w),d6	; $00F03C
+	and.b d6,(a5)	; $00F040
+	or.b d5,(a5)	; $00F042
+	adda.w #$1d,a5	; $00F044
+	move.b (a0)+,d5	; $00F048
+	move.b (a3,d5.w),d6	; $00F04A
+	and.b d6,(a5)	; $00F04E
+	or.b d5,(a5)+	; $00F050
+	move.b (a0)+,d5	; $00F052
+	move.b (a3,d5.w),d6	; $00F054
+	and.b d6,(a5)	; $00F058
+	or.b d5,(a5)+	; $00F05A
+	move.b (a0)+,d5	; $00F05C
+	move.b (a3,d5.w),d6	; $00F05E
+	and.b d6,(a5)	; $00F062
+	or.b d5,(a5)+	; $00F064
+	move.b (a0)+,d5	; $00F066
+	move.b (a3,d5.w),d6	; $00F068
+	and.b d6,(a5)	; $00F06C
+	or.b d5,(a5)	; $00F06E
+	adda.w #$1d,a5	; $00F070
+	move.b (a0)+,d5	; $00F074
+	move.b (a3,d5.w),d6	; $00F076
+	and.b d6,(a5)	; $00F07A
+	or.b d5,(a5)+	; $00F07C
+	move.b (a0)+,d5	; $00F07E
+	move.b (a3,d5.w),d6	; $00F080
+	and.b d6,(a5)	; $00F084
+	or.b d5,(a5)+	; $00F086
+	move.b (a0)+,d5	; $00F088
+	move.b (a3,d5.w),d6	; $00F08A
+	and.b d6,(a5)	; $00F08E
+	or.b d5,(a5)+	; $00F090
+	move.b (a0)+,d5	; $00F092
+	move.b (a3,d5.w),d6	; $00F094
+	and.b d6,(a5)	; $00F098
+	or.b d5,(a5)	; $00F09A
+	bra.w L00E3E2	; $00F09C
+	; code $00F0A0-$00F0F7
+FUN_00f0a0:
+	move.b (a0)+,d5	; $00F0A0
+	move.b (a3,d5.w),d6	; $00F0A2
+	and.b d6,(a5)	; $00F0A6
+	or.b d5,(a5)+	; $00F0A8
+	move.b (a0)+,d5	; $00F0AA
+	move.b (a3,d5.w),d6	; $00F0AC
+	and.b d6,(a5)	; $00F0B0
+	or.b d5,(a5)+	; $00F0B2
+	move.b (a0)+,d5	; $00F0B4
+	move.b (a3,d5.w),d6	; $00F0B6
+	and.b d6,(a5)	; $00F0BA
+	or.b d5,(a5)+	; $00F0BC
+	move.b (a0)+,d5	; $00F0BE
+	move.b (a3,d5.w),d6	; $00F0C0
+	and.b d6,(a5)	; $00F0C4
+	or.b d5,(a5)	; $00F0C6
+	adda.w #$1d,a5	; $00F0C8
+	move.b (a0)+,d5	; $00F0CC
+	move.b (a3,d5.w),d6	; $00F0CE
+	and.b d6,(a5)	; $00F0D2
+	or.b d5,(a5)+	; $00F0D4
+	move.b (a0)+,d5	; $00F0D6
+	move.b (a3,d5.w),d6	; $00F0D8
+	and.b d6,(a5)	; $00F0DC
+	or.b d5,(a5)+	; $00F0DE
+	move.b (a0)+,d5	; $00F0E0
+	move.b (a3,d5.w),d6	; $00F0E2
+	and.b d6,(a5)	; $00F0E6
+	or.b d5,(a5)+	; $00F0E8
+	move.b (a0)+,d5	; $00F0EA
+	move.b (a3,d5.w),d6	; $00F0EC
+	and.b d6,(a5)	; $00F0F0
+	or.b d5,(a5)	; $00F0F2
+	bra.w L00E3E2	; $00F0F4
+	; code $00F0F8-$00F153
+FUN_00f0f8:
+	move.b (a0)+,d5	; $00F0F8
+	move.b (a3,d5.w),d6	; $00F0FA
+	and.b d6,(a5)	; $00F0FE
+	or.b d5,(a5)+	; $00F100
+	move.b (a0)+,d5	; $00F102
+	move.b (a3,d5.w),d6	; $00F104
+	and.b d6,(a5)	; $00F108
+	or.b d5,(a5)	; $00F10A
+	adda.w #$1d,a5	; $00F10C
+	move.b (a0)+,d5	; $00F110
+	move.b (a3,d5.w),d6	; $00F112
+	and.b d6,(a5)	; $00F116
+	or.b d5,(a5)+	; $00F118
+	move.b (a0)+,d5	; $00F11A
+	move.b (a3,d5.w),d6	; $00F11C
+	and.b d6,(a5)	; $00F120
+	or.b d5,(a5)+	; $00F122
+	move.b (a0)+,d5	; $00F124
+	move.b (a3,d5.w),d6	; $00F126
+	and.b d6,(a5)	; $00F12A
+	or.b d5,(a5)+	; $00F12C
+	move.b (a0)+,d5	; $00F12E
+	move.b (a3,d5.w),d6	; $00F130
+	and.b d6,(a5)	; $00F134
+	or.b d5,(a5)	; $00F136
+	adda.w #$1d,a5	; $00F138
+	move.b (a0)+,d5	; $00F13C
+	move.b (a3,d5.w),d6	; $00F13E
+	and.b d6,(a5)	; $00F142
+	or.b d5,(a5)+	; $00F144
+	move.b (a0)+,d5	; $00F146
+	move.b (a3,d5.w),d6	; $00F148
+	and.b d6,(a5)	; $00F14C
+	or.b d5,(a5)	; $00F14E
+	bra.w L00E3E2	; $00F150
+	; code $00F154-$00F1AF
+FUN_00f154:
+	move.b (a0)+,d5	; $00F154
+	move.b (a3,d5.w),d6	; $00F156
+	and.b d6,(a5)	; $00F15A
+	or.b d5,(a5)+	; $00F15C
+	move.b (a0)+,d5	; $00F15E
+	move.b (a3,d5.w),d6	; $00F160
+	and.b d6,(a5)	; $00F164
+	or.b d5,(a5)+	; $00F166
+	move.b (a0)+,d5	; $00F168
+	move.b (a3,d5.w),d6	; $00F16A
+	and.b d6,(a5)	; $00F16E
+	or.b d5,(a5)	; $00F170
+	adda.w #$1d,a5	; $00F172
+	move.b (a0)+,d5	; $00F176
+	move.b (a3,d5.w),d6	; $00F178
+	and.b d6,(a5)	; $00F17C
+	or.b d5,(a5)+	; $00F17E
+	move.b (a0)+,d5	; $00F180
+	move.b (a3,d5.w),d6	; $00F182
+	and.b d6,(a5)	; $00F186
+	or.b d5,(a5)+	; $00F188
+	move.b (a0)+,d5	; $00F18A
+	move.b (a3,d5.w),d6	; $00F18C
+	and.b d6,(a5)	; $00F190
+	or.b d5,(a5)+	; $00F192
+	move.b (a0)+,d5	; $00F194
+	move.b (a3,d5.w),d6	; $00F196
+	and.b d6,(a5)	; $00F19A
+	or.b d5,(a5)	; $00F19C
+	adda.w #$1d,a5	; $00F19E
+	move.b (a0)+,d5	; $00F1A2
+	move.b (a3,d5.w),d6	; $00F1A4
+	and.b d6,(a5)	; $00F1A8
+	or.b d5,(a5)	; $00F1AA
+	bra.w L00E3E2	; $00F1AC
+	; code $00F1B0-$00F20B
+FUN_00f1b0:
+	move.b (a0)+,d5	; $00F1B0
+	move.b (a3,d5.w),d6	; $00F1B2
+	and.b d6,(a5)	; $00F1B6
+	or.b d5,(a5)	; $00F1B8
+	adda.w #$1d,a5	; $00F1BA
+	move.b (a0)+,d5	; $00F1BE
+	move.b (a3,d5.w),d6	; $00F1C0
+	and.b d6,(a5)	; $00F1C4
+	or.b d5,(a5)+	; $00F1C6
+	move.b (a0)+,d5	; $00F1C8
+	move.b (a3,d5.w),d6	; $00F1CA
+	and.b d6,(a5)	; $00F1CE
+	or.b d5,(a5)+	; $00F1D0
+	move.b (a0)+,d5	; $00F1D2
+	move.b (a3,d5.w),d6	; $00F1D4
+	and.b d6,(a5)	; $00F1D8
+	or.b d5,(a5)+	; $00F1DA
+	move.b (a0)+,d5	; $00F1DC
+	move.b (a3,d5.w),d6	; $00F1DE
+	and.b d6,(a5)	; $00F1E2
+	or.b d5,(a5)	; $00F1E4
+	adda.w #$1d,a5	; $00F1E6
+	move.b (a0)+,d5	; $00F1EA
+	move.b (a3,d5.w),d6	; $00F1EC
+	and.b d6,(a5)	; $00F1F0
+	or.b d5,(a5)+	; $00F1F2
+	move.b (a0)+,d5	; $00F1F4
+	move.b (a3,d5.w),d6	; $00F1F6
+	and.b d6,(a5)	; $00F1FA
+	or.b d5,(a5)+	; $00F1FC
+	move.b (a0)+,d5	; $00F1FE
+	move.b (a3,d5.w),d6	; $00F200
+	and.b d6,(a5)	; $00F204
+	or.b d5,(a5)	; $00F206
+	bra.w L00E3E2	; $00F208
+	; code $00F20C-$00F259
+FUN_00f20c:
+	move.b (a0)+,d5	; $00F20C
+	move.b (a3,d5.w),d6	; $00F20E
+	and.b d6,(a5)	; $00F212
+	or.b d5,(a5)+	; $00F214
+	move.b (a0)+,d5	; $00F216
+	move.b (a3,d5.w),d6	; $00F218
+	and.b d6,(a5)	; $00F21C
+	or.b d5,(a5)+	; $00F21E
+	move.b (a0)+,d5	; $00F220
+	move.b (a3,d5.w),d6	; $00F222
+	and.b d6,(a5)	; $00F226
+	or.b d5,(a5)+	; $00F228
+	move.b (a0)+,d5	; $00F22A
+	move.b (a3,d5.w),d6	; $00F22C
+	and.b d6,(a5)	; $00F230
+	or.b d5,(a5)	; $00F232
+	adda.w #$1d,a5	; $00F234
+	move.b (a0)+,d5	; $00F238
+	move.b (a3,d5.w),d6	; $00F23A
+	and.b d6,(a5)	; $00F23E
+	or.b d5,(a5)+	; $00F240
+	move.b (a0)+,d5	; $00F242
+	move.b (a3,d5.w),d6	; $00F244
+	and.b d6,(a5)	; $00F248
+	or.b d5,(a5)+	; $00F24A
+	move.b (a0)+,d5	; $00F24C
+	move.b (a3,d5.w),d6	; $00F24E
+	and.b d6,(a5)	; $00F252
+	or.b d5,(a5)	; $00F254
+	bra.w L00E3E2	; $00F256
+	; code $00F25A-$00F2AB
+FUN_00f25a:
+	move.b (a0)+,d5	; $00F25A
+	move.b (a3,d5.w),d6	; $00F25C
+	and.b d6,(a5)	; $00F260
+	or.b d5,(a5)+	; $00F262
+	move.b (a0)+,d5	; $00F264
+	move.b (a3,d5.w),d6	; $00F266
+	and.b d6,(a5)	; $00F26A
+	or.b d5,(a5)	; $00F26C
+	adda.w #$1d,a5	; $00F26E
+	move.b (a0)+,d5	; $00F272
+	move.b (a3,d5.w),d6	; $00F274
+	and.b d6,(a5)	; $00F278
+	or.b d5,(a5)+	; $00F27A
+	move.b (a0)+,d5	; $00F27C
+	move.b (a3,d5.w),d6	; $00F27E
+	and.b d6,(a5)	; $00F282
+	or.b d5,(a5)+	; $00F284
+	move.b (a0)+,d5	; $00F286
+	move.b (a3,d5.w),d6	; $00F288
+	and.b d6,(a5)	; $00F28C
+	or.b d5,(a5)+	; $00F28E
+	move.b (a0)+,d5	; $00F290
+	move.b (a3,d5.w),d6	; $00F292
+	and.b d6,(a5)	; $00F296
+	or.b d5,(a5)	; $00F298
+	adda.w #$1d,a5	; $00F29A
+	move.b (a0)+,d5	; $00F29E
+	move.b (a3,d5.w),d6	; $00F2A0
+	and.b d6,(a5)	; $00F2A4
+	or.b d5,(a5)	; $00F2A6
+	bra.w L00E3E2	; $00F2A8
+	; code $00F2AC-$00F2F9
+FUN_00f2ac:
+	move.b (a0)+,d5	; $00F2AC
+	move.b (a3,d5.w),d6	; $00F2AE
+	and.b d6,(a5)	; $00F2B2
+	or.b d5,(a5)+	; $00F2B4
+	move.b (a0)+,d5	; $00F2B6
+	move.b (a3,d5.w),d6	; $00F2B8
+	and.b d6,(a5)	; $00F2BC
+	or.b d5,(a5)+	; $00F2BE
+	move.b (a0)+,d5	; $00F2C0
+	move.b (a3,d5.w),d6	; $00F2C2
+	and.b d6,(a5)	; $00F2C6
+	or.b d5,(a5)	; $00F2C8
+	adda.w #$1d,a5	; $00F2CA
+	move.b (a0)+,d5	; $00F2CE
+	move.b (a3,d5.w),d6	; $00F2D0
+	and.b d6,(a5)	; $00F2D4
+	or.b d5,(a5)+	; $00F2D6
+	move.b (a0)+,d5	; $00F2D8
+	move.b (a3,d5.w),d6	; $00F2DA
+	and.b d6,(a5)	; $00F2DE
+	or.b d5,(a5)+	; $00F2E0
+	move.b (a0)+,d5	; $00F2E2
+	move.b (a3,d5.w),d6	; $00F2E4
+	and.b d6,(a5)	; $00F2E8
+	or.b d5,(a5)+	; $00F2EA
+	move.b (a0)+,d5	; $00F2EC
+	move.b (a3,d5.w),d6	; $00F2EE
+	and.b d6,(a5)	; $00F2F2
+	or.b d5,(a5)	; $00F2F4
+	bra.w L00E3E2	; $00F2F6
+	; code $00F2FA-$00F34B
+FUN_00f2fa:
+	move.b (a0)+,d5	; $00F2FA
+	move.b (a3,d5.w),d6	; $00F2FC
+	and.b d6,(a5)	; $00F300
+	or.b d5,(a5)	; $00F302
+	adda.w #$1d,a5	; $00F304
+	move.b (a0)+,d5	; $00F308
+	move.b (a3,d5.w),d6	; $00F30A
+	and.b d6,(a5)	; $00F30E
+	or.b d5,(a5)+	; $00F310
+	move.b (a0)+,d5	; $00F312
+	move.b (a3,d5.w),d6	; $00F314
+	and.b d6,(a5)	; $00F318
+	or.b d5,(a5)+	; $00F31A
+	move.b (a0)+,d5	; $00F31C
+	move.b (a3,d5.w),d6	; $00F31E
+	and.b d6,(a5)	; $00F322
+	or.b d5,(a5)+	; $00F324
+	move.b (a0)+,d5	; $00F326
+	move.b (a3,d5.w),d6	; $00F328
+	and.b d6,(a5)	; $00F32C
+	or.b d5,(a5)	; $00F32E
+	adda.w #$1d,a5	; $00F330
+	move.b (a0)+,d5	; $00F334
+	move.b (a3,d5.w),d6	; $00F336
+	and.b d6,(a5)	; $00F33A
+	or.b d5,(a5)+	; $00F33C
+	move.b (a0)+,d5	; $00F33E
+	move.b (a3,d5.w),d6	; $00F340
+	and.b d6,(a5)	; $00F344
+	or.b d5,(a5)	; $00F346
+	bra.w L00E3E2	; $00F348
+	; code $00F34C-$00F38F
+FUN_00f34c:
+	move.b (a0)+,d5	; $00F34C
+	move.b (a3,d5.w),d6	; $00F34E
+	and.b d6,(a5)	; $00F352
+	or.b d5,(a5)+	; $00F354
+	move.b (a0)+,d5	; $00F356
+	move.b (a3,d5.w),d6	; $00F358
+	and.b d6,(a5)	; $00F35C
+	or.b d5,(a5)+	; $00F35E
+	move.b (a0)+,d5	; $00F360
+	move.b (a3,d5.w),d6	; $00F362
+	and.b d6,(a5)	; $00F366
+	or.b d5,(a5)+	; $00F368
+	move.b (a0)+,d5	; $00F36A
+	move.b (a3,d5.w),d6	; $00F36C
+	and.b d6,(a5)	; $00F370
+	or.b d5,(a5)	; $00F372
+	adda.w #$1d,a5	; $00F374
+	move.b (a0)+,d5	; $00F378
+	move.b (a3,d5.w),d6	; $00F37A
+	and.b d6,(a5)	; $00F37E
+	or.b d5,(a5)+	; $00F380
+	move.b (a0)+,d5	; $00F382
+	move.b (a3,d5.w),d6	; $00F384
+	and.b d6,(a5)	; $00F388
+	or.b d5,(a5)	; $00F38A
+	bra.w L00E3E2	; $00F38C
+	; code $00F390-$00F3D3
+FUN_00f390:
+	move.b (a0)+,d5	; $00F390
+	move.b (a3,d5.w),d6	; $00F392
+	and.b d6,(a5)	; $00F396
+	or.b d5,(a5)+	; $00F398
+	move.b (a0)+,d5	; $00F39A
+	move.b (a3,d5.w),d6	; $00F39C
+	and.b d6,(a5)	; $00F3A0
+	or.b d5,(a5)	; $00F3A2
+	adda.w #$1d,a5	; $00F3A4
+	move.b (a0)+,d5	; $00F3A8
+	move.b (a3,d5.w),d6	; $00F3AA
+	and.b d6,(a5)	; $00F3AE
+	or.b d5,(a5)+	; $00F3B0
+	move.b (a0)+,d5	; $00F3B2
+	move.b (a3,d5.w),d6	; $00F3B4
+	and.b d6,(a5)	; $00F3B8
+	or.b d5,(a5)+	; $00F3BA
+	move.b (a0)+,d5	; $00F3BC
+	move.b (a3,d5.w),d6	; $00F3BE
+	and.b d6,(a5)	; $00F3C2
+	or.b d5,(a5)+	; $00F3C4
+	move.b (a0)+,d5	; $00F3C6
+	move.b (a3,d5.w),d6	; $00F3C8
+	and.b d6,(a5)	; $00F3CC
+	or.b d5,(a5)	; $00F3CE
+	bra.w L00E3E2	; $00F3D0
+	; code $00F3D4-$00F417
+FUN_00f3d4:
+	move.b (a0)+,d5	; $00F3D4
+	move.b (a3,d5.w),d6	; $00F3D6
+	and.b d6,(a5)	; $00F3DA
+	or.b d5,(a5)+	; $00F3DC
+	move.b (a0)+,d5	; $00F3DE
+	move.b (a3,d5.w),d6	; $00F3E0
+	and.b d6,(a5)	; $00F3E4
+	or.b d5,(a5)+	; $00F3E6
+	move.b (a0)+,d5	; $00F3E8
+	move.b (a3,d5.w),d6	; $00F3EA
+	and.b d6,(a5)	; $00F3EE
+	or.b d5,(a5)	; $00F3F0
+	adda.w #$1d,a5	; $00F3F2
+	move.b (a0)+,d5	; $00F3F6
+	move.b (a3,d5.w),d6	; $00F3F8
+	and.b d6,(a5)	; $00F3FC
+	or.b d5,(a5)+	; $00F3FE
+	move.b (a0)+,d5	; $00F400
+	move.b (a3,d5.w),d6	; $00F402
+	and.b d6,(a5)	; $00F406
+	or.b d5,(a5)+	; $00F408
+	move.b (a0)+,d5	; $00F40A
+	move.b (a3,d5.w),d6	; $00F40C
+	and.b d6,(a5)	; $00F410
+	or.b d5,(a5)	; $00F412
+	bra.w L00E3E2	; $00F414
+	; code $00F418-$00F45F
+FUN_00f418:
+	move.b (a0)+,d5	; $00F418
+	move.b (a3,d5.w),d6	; $00F41A
+	and.b d6,(a5)	; $00F41E
+	or.b d5,(a5)	; $00F420
+	adda.w #$1d,a5	; $00F422
+	move.b (a0)+,d5	; $00F426
+	move.b (a3,d5.w),d6	; $00F428
+	and.b d6,(a5)	; $00F42C
+	or.b d5,(a5)+	; $00F42E
+	move.b (a0)+,d5	; $00F430
+	move.b (a3,d5.w),d6	; $00F432
+	and.b d6,(a5)	; $00F436
+	or.b d5,(a5)+	; $00F438
+	move.b (a0)+,d5	; $00F43A
+	move.b (a3,d5.w),d6	; $00F43C
+	and.b d6,(a5)	; $00F440
+	or.b d5,(a5)+	; $00F442
+	move.b (a0)+,d5	; $00F444
+	move.b (a3,d5.w),d6	; $00F446
+	and.b d6,(a5)	; $00F44A
+	or.b d5,(a5)	; $00F44C
+	adda.w #$1d,a5	; $00F44E
+	move.b (a0)+,d5	; $00F452
+	move.b (a3,d5.w),d6	; $00F454
+	and.b d6,(a5)	; $00F458
+	or.b d5,(a5)	; $00F45A
+	bra.w L00E3E2	; $00F45C
+	; code $00F460-$00F499
+FUN_00f460:
+	move.b (a0)+,d5	; $00F460
+	move.b (a3,d5.w),d6	; $00F462
+	and.b d6,(a5)	; $00F466
+	or.b d5,(a5)+	; $00F468
+	move.b (a0)+,d5	; $00F46A
+	move.b (a3,d5.w),d6	; $00F46C
+	and.b d6,(a5)	; $00F470
+	or.b d5,(a5)+	; $00F472
+	move.b (a0)+,d5	; $00F474
+	move.b (a3,d5.w),d6	; $00F476
+	and.b d6,(a5)	; $00F47A
+	or.b d5,(a5)+	; $00F47C
+	move.b (a0)+,d5	; $00F47E
+	move.b (a3,d5.w),d6	; $00F480
+	and.b d6,(a5)	; $00F484
+	or.b d5,(a5)	; $00F486
+	adda.w #$1d,a5	; $00F488
+	move.b (a0)+,d5	; $00F48C
+	move.b (a3,d5.w),d6	; $00F48E
+	and.b d6,(a5)	; $00F492
+	or.b d5,(a5)	; $00F494
+	bra.w L00E3E2	; $00F496
+	; code $00F49A-$00F4D3
+FUN_00f49a:
+	move.b (a0)+,d5	; $00F49A
+	move.b (a3,d5.w),d6	; $00F49C
+	and.b d6,(a5)	; $00F4A0
+	or.b d5,(a5)+	; $00F4A2
+	move.b (a0)+,d5	; $00F4A4
+	move.b (a3,d5.w),d6	; $00F4A6
+	and.b d6,(a5)	; $00F4AA
+	or.b d5,(a5)	; $00F4AC
+	adda.w #$1d,a5	; $00F4AE
+	move.b (a0)+,d5	; $00F4B2
+	move.b (a3,d5.w),d6	; $00F4B4
+	and.b d6,(a5)	; $00F4B8
+	or.b d5,(a5)+	; $00F4BA
+	move.b (a0)+,d5	; $00F4BC
+	move.b (a3,d5.w),d6	; $00F4BE
+	and.b d6,(a5)	; $00F4C2
+	or.b d5,(a5)+	; $00F4C4
+	move.b (a0)+,d5	; $00F4C6
+	move.b (a3,d5.w),d6	; $00F4C8
+	and.b d6,(a5)	; $00F4CC
+	or.b d5,(a5)	; $00F4CE
+	bra.w L00E3E2	; $00F4D0
+	; code $00F4D4-$00F50D
+FUN_00f4d4:
+	move.b (a0)+,d5	; $00F4D4
+	move.b (a3,d5.w),d6	; $00F4D6
+	and.b d6,(a5)	; $00F4DA
+	or.b d5,(a5)+	; $00F4DC
+	move.b (a0)+,d5	; $00F4DE
+	move.b (a3,d5.w),d6	; $00F4E0
+	and.b d6,(a5)	; $00F4E4
+	or.b d5,(a5)+	; $00F4E6
+	move.b (a0)+,d5	; $00F4E8
+	move.b (a3,d5.w),d6	; $00F4EA
+	and.b d6,(a5)	; $00F4EE
+	or.b d5,(a5)	; $00F4F0
+	adda.w #$1d,a5	; $00F4F2
+	move.b (a0)+,d5	; $00F4F6
+	move.b (a3,d5.w),d6	; $00F4F8
+	and.b d6,(a5)	; $00F4FC
+	or.b d5,(a5)+	; $00F4FE
+	move.b (a0)+,d5	; $00F500
+	move.b (a3,d5.w),d6	; $00F502
+	and.b d6,(a5)	; $00F506
+	or.b d5,(a5)	; $00F508
+	bra.w L00E3E2	; $00F50A
+	; code $00F50E-$00F547
+FUN_00f50e:
+	move.b (a0)+,d5	; $00F50E
+	move.b (a3,d5.w),d6	; $00F510
+	and.b d6,(a5)	; $00F514
+	or.b d5,(a5)	; $00F516
+	adda.w #$1d,a5	; $00F518
+	move.b (a0)+,d5	; $00F51C
+	move.b (a3,d5.w),d6	; $00F51E
+	and.b d6,(a5)	; $00F522
+	or.b d5,(a5)+	; $00F524
+	move.b (a0)+,d5	; $00F526
+	move.b (a3,d5.w),d6	; $00F528
+	and.b d6,(a5)	; $00F52C
+	or.b d5,(a5)+	; $00F52E
+	move.b (a0)+,d5	; $00F530
+	move.b (a3,d5.w),d6	; $00F532
+	and.b d6,(a5)	; $00F536
+	or.b d5,(a5)+	; $00F538
+	move.b (a0)+,d5	; $00F53A
+	move.b (a3,d5.w),d6	; $00F53C
+	and.b d6,(a5)	; $00F540
+	or.b d5,(a5)	; $00F542
+	bra.w L00E3E2	; $00F544
+	; code $00F548-$00F573
+FUN_00f548:
+	move.b (a0)+,d5	; $00F548
+	move.b (a3,d5.w),d6	; $00F54A
+	and.b d6,(a5)	; $00F54E
+	or.b d5,(a5)+	; $00F550
+	move.b (a0)+,d5	; $00F552
+	move.b (a3,d5.w),d6	; $00F554
+	and.b d6,(a5)	; $00F558
+	or.b d5,(a5)+	; $00F55A
+	move.b (a0)+,d5	; $00F55C
+	move.b (a3,d5.w),d6	; $00F55E
+	and.b d6,(a5)	; $00F562
+	or.b d5,(a5)+	; $00F564
+	move.b (a0)+,d5	; $00F566
+	move.b (a3,d5.w),d6	; $00F568
+	and.b d6,(a5)	; $00F56C
+	or.b d5,(a5)	; $00F56E
+	bra.w L00E3E2	; $00F570
+	; code $00F574-$00F5A3
+FUN_00f574:
+	move.b (a0)+,d5	; $00F574
+	move.b (a3,d5.w),d6	; $00F576
+	and.b d6,(a5)	; $00F57A
+	or.b d5,(a5)+	; $00F57C
+	move.b (a0)+,d5	; $00F57E
+	move.b (a3,d5.w),d6	; $00F580
+	and.b d6,(a5)	; $00F584
+	or.b d5,(a5)	; $00F586
+	adda.w #$1d,a5	; $00F588
+	move.b (a0)+,d5	; $00F58C
+	move.b (a3,d5.w),d6	; $00F58E
+	and.b d6,(a5)	; $00F592
+	or.b d5,(a5)+	; $00F594
+	move.b (a0)+,d5	; $00F596
+	move.b (a3,d5.w),d6	; $00F598
+	and.b d6,(a5)	; $00F59C
+	or.b d5,(a5)	; $00F59E
+	bra.w L00E3E2	; $00F5A0
+	; code $00F5A4-$00F5D3
+FUN_00f5a4:
+	move.b (a0)+,d5	; $00F5A4
+	move.b (a3,d5.w),d6	; $00F5A6
+	and.b d6,(a5)	; $00F5AA
+	or.b d5,(a5)+	; $00F5AC
+	move.b (a0)+,d5	; $00F5AE
+	move.b (a3,d5.w),d6	; $00F5B0
+	and.b d6,(a5)	; $00F5B4
+	or.b d5,(a5)+	; $00F5B6
+	move.b (a0)+,d5	; $00F5B8
+	move.b (a3,d5.w),d6	; $00F5BA
+	and.b d6,(a5)	; $00F5BE
+	or.b d5,(a5)	; $00F5C0
+	adda.w #$1d,a5	; $00F5C2
+	move.b (a0)+,d5	; $00F5C6
+	move.b (a3,d5.w),d6	; $00F5C8
+	and.b d6,(a5)	; $00F5CC
+	or.b d5,(a5)	; $00F5CE
+	bra.w L00E3E2	; $00F5D0
+	; code $00F5D4-$00F603
+FUN_00f5d4:
+	move.b (a0)+,d5	; $00F5D4
+	move.b (a3,d5.w),d6	; $00F5D6
+	and.b d6,(a5)	; $00F5DA
+	or.b d5,(a5)	; $00F5DC
+	adda.w #$1d,a5	; $00F5DE
+	move.b (a0)+,d5	; $00F5E2
+	move.b (a3,d5.w),d6	; $00F5E4
+	and.b d6,(a5)	; $00F5E8
+	or.b d5,(a5)+	; $00F5EA
+	move.b (a0)+,d5	; $00F5EC
+	move.b (a3,d5.w),d6	; $00F5EE
+	and.b d6,(a5)	; $00F5F2
+	or.b d5,(a5)+	; $00F5F4
+	move.b (a0)+,d5	; $00F5F6
+	move.b (a3,d5.w),d6	; $00F5F8
+	and.b d6,(a5)	; $00F5FC
+	or.b d5,(a5)	; $00F5FE
+	bra.w L00E3E2	; $00F600
+	; code $00F604-$00F625
+FUN_00f604:
+	move.b (a0)+,d5	; $00F604
+	move.b (a3,d5.w),d6	; $00F606
+	and.b d6,(a5)	; $00F60A
+	or.b d5,(a5)+	; $00F60C
+	move.b (a0)+,d5	; $00F60E
+	move.b (a3,d5.w),d6	; $00F610
+	and.b d6,(a5)	; $00F614
+	or.b d5,(a5)+	; $00F616
+	move.b (a0)+,d5	; $00F618
+	move.b (a3,d5.w),d6	; $00F61A
+	and.b d6,(a5)	; $00F61E
+	or.b d5,(a5)	; $00F620
+	bra.w L00E3E2	; $00F622
+	; code $00F626-$00F64B
+FUN_00f626:
+	move.b (a0)+,d5	; $00F626
+	move.b (a3,d5.w),d6	; $00F628
+	and.b d6,(a5)	; $00F62C
+	or.b d5,(a5)+	; $00F62E
+	move.b (a0)+,d5	; $00F630
+	move.b (a3,d5.w),d6	; $00F632
+	and.b d6,(a5)	; $00F636
+	or.b d5,(a5)	; $00F638
+	adda.w #$1d,a5	; $00F63A
+	move.b (a0)+,d5	; $00F63E
+	move.b (a3,d5.w),d6	; $00F640
+	and.b d6,(a5)	; $00F644
+	or.b d5,(a5)	; $00F646
+	bra.w L00E3E2	; $00F648
+	; code $00F64C-$00F66D
+FUN_00f64c:
+	move.b (a0)+,d5	; $00F64C
+	move.b (a3,d5.w),d6	; $00F64E
+	and.b d6,(a5)	; $00F652
+	or.b d5,(a5)+	; $00F654
+	move.b (a0)+,d5	; $00F656
+	move.b (a3,d5.w),d6	; $00F658
+	and.b d6,(a5)	; $00F65C
+	or.b d5,(a5)+	; $00F65E
+	move.b (a0)+,d5	; $00F660
+	move.b (a3,d5.w),d6	; $00F662
+	and.b d6,(a5)	; $00F666
+	or.b d5,(a5)	; $00F668
+	bra.w L00E3E2	; $00F66A
+	; code $00F66E-$00F693
+FUN_00f66e:
+	move.b (a0)+,d5	; $00F66E
+	move.b (a3,d5.w),d6	; $00F670
+	and.b d6,(a5)	; $00F674
+	or.b d5,(a5)	; $00F676
+	adda.w #$1d,a5	; $00F678
+	move.b (a0)+,d5	; $00F67C
+	move.b (a3,d5.w),d6	; $00F67E
+	and.b d6,(a5)	; $00F682
+	or.b d5,(a5)+	; $00F684
+	move.b (a0)+,d5	; $00F686
+	move.b (a3,d5.w),d6	; $00F688
+	and.b d6,(a5)	; $00F68C
+	or.b d5,(a5)	; $00F68E
+	bra.w L00E3E2	; $00F690
+	; code $00F694-$00F6AB
+FUN_00f694:
+	move.b (a0)+,d5	; $00F694
+	move.b (a3,d5.w),d6	; $00F696
+	and.b d6,(a5)	; $00F69A
+	or.b d5,(a5)+	; $00F69C
+	move.b (a0)+,d5	; $00F69E
+	move.b (a3,d5.w),d6	; $00F6A0
+	and.b d6,(a5)	; $00F6A4
+	or.b d5,(a5)	; $00F6A6
+	bra.w L00E3E2	; $00F6A8
+	; code $00F6AC-$00F6C3
+FUN_00f6ac:
+	move.b (a0)+,d5	; $00F6AC
+	move.b (a3,d5.w),d6	; $00F6AE
+	and.b d6,(a5)	; $00F6B2
+	or.b d5,(a5)+	; $00F6B4
+	move.b (a0)+,d5	; $00F6B6
+	move.b (a3,d5.w),d6	; $00F6B8
+	and.b d6,(a5)	; $00F6BC
+	or.b d5,(a5)	; $00F6BE
+	bra.w L00E3E2	; $00F6C0
+	; code $00F6C4-$00F6DB
+FUN_00f6c4:
+	move.b (a0)+,d5	; $00F6C4
+	move.b (a3,d5.w),d6	; $00F6C6
+	and.b d6,(a5)	; $00F6CA
+	or.b d5,(a5)+	; $00F6CC
+	move.b (a0)+,d5	; $00F6CE
+	move.b (a3,d5.w),d6	; $00F6D0
+	and.b d6,(a5)	; $00F6D4
+	or.b d5,(a5)	; $00F6D6
+	bra.w L00E3E2	; $00F6D8
+	; code $00F6DC-$00F6F7
+FUN_00f6dc:
+	move.b (a0)+,d5	; $00F6DC
+	move.b (a3,d5.w),d6	; $00F6DE
+	and.b d6,(a5)	; $00F6E2
+	or.b d5,(a5)	; $00F6E4
+	adda.w #$1d,a5	; $00F6E6
+	move.b (a0)+,d5	; $00F6EA
+	move.b (a3,d5.w),d6	; $00F6EC
+	and.b d6,(a5)	; $00F6F0
+	or.b d5,(a5)	; $00F6F2
+	bra.w L00E3E2	; $00F6F4
+	; code $00F6F8-$00F705
+FUN_00f6f8:
+	move.b (a0)+,d5	; $00F6F8
+	move.b (a3,d5.w),d6	; $00F6FA
+	and.b d6,(a5)	; $00F6FE
+	or.b d5,(a5)	; $00F700
+	bra.w L00E3E2	; $00F702
+	; code $00F706-$00F713
+FUN_00f706:
+	move.b (a0)+,d5	; $00F706
+	move.b (a3,d5.w),d6	; $00F708
+	and.b d6,(a5)	; $00F70C
+	or.b d5,(a5)	; $00F70E
+	bra.w L00E3E2	; $00F710
+	; code $00F714-$00F721
+FUN_00f714:
+	move.b (a0)+,d5	; $00F714
+	move.b (a3,d5.w),d6	; $00F716
+	and.b d6,(a5)	; $00F71A
+	or.b d5,(a5)	; $00F71C
+	bra.w L00E3E2	; $00F71E
+	; code $00F722-$00F72F
+FUN_00f722:
+	move.b (a0)+,d5	; $00F722
+	move.b (a3,d5.w),d6	; $00F724
+	and.b d6,(a5)	; $00F728
+	or.b d5,(a5)	; $00F72A
+	bra.w L00E3E2	; $00F72C
+	; code $00F730-$00F807
+FUN_00f730:
+	move.b (a0)+,d5	; $00F730
+	move.b (a6,d5.w),d5	; $00F732
+	move.b (a3,d5.w),d6	; $00F736
+	and.b d6,(a5)	; $00F73A
+	or.b d5,(a5)	; $00F73C
+	suba.w #$1d,a5	; $00F73E
+	move.b (a0)+,d5	; $00F742
+	move.b (a6,d5.w),d5	; $00F744
+	move.b (a3,d5.w),d6	; $00F748
+	and.b d6,(a5)	; $00F74C
+	or.b d5,(a5)	; $00F74E
+	move.b (a0)+,d5	; $00F750
+	move.b (a6,d5.w),d5	; $00F752
+	move.b (a3,d5.w),d6	; $00F756
+	and.b d6,-(a5)	; $00F75A
+	or.b d5,(a5)	; $00F75C
+	move.b (a0)+,d5	; $00F75E
+	move.b (a6,d5.w),d5	; $00F760
+	move.b (a3,d5.w),d6	; $00F764
+	and.b d6,-(a5)	; $00F768
+	or.b d5,(a5)	; $00F76A
+	move.b (a0)+,d5	; $00F76C
+	move.b (a6,d5.w),d5	; $00F76E
+	move.b (a3,d5.w),d6	; $00F772
+	and.b d6,-(a5)	; $00F776
+	or.b d5,(a5)	; $00F778
+	suba.w #$1d,a5	; $00F77A
+	move.b (a0)+,d5	; $00F77E
+	move.b (a6,d5.w),d5	; $00F780
+	move.b (a3,d5.w),d6	; $00F784
+	and.b d6,(a5)	; $00F788
+	or.b d5,(a5)	; $00F78A
+	move.b (a0)+,d5	; $00F78C
+	move.b (a6,d5.w),d5	; $00F78E
+	move.b (a3,d5.w),d6	; $00F792
+	and.b d6,-(a5)	; $00F796
+	or.b d5,(a5)	; $00F798
+	move.b (a0)+,d5	; $00F79A
+	move.b (a6,d5.w),d5	; $00F79C
+	move.b (a3,d5.w),d6	; $00F7A0
+	and.b d6,-(a5)	; $00F7A4
+	or.b d5,(a5)	; $00F7A6
+	move.b (a0)+,d5	; $00F7A8
+	move.b (a6,d5.w),d5	; $00F7AA
+	move.b (a3,d5.w),d6	; $00F7AE
+	and.b d6,-(a5)	; $00F7B2
+	or.b d5,(a5)	; $00F7B4
+	suba.w #$1d,a5	; $00F7B6
+	move.b (a0)+,d5	; $00F7BA
+	move.b (a6,d5.w),d5	; $00F7BC
+	move.b (a3,d5.w),d6	; $00F7C0
+	and.b d6,(a5)	; $00F7C4
+	or.b d5,(a5)	; $00F7C6
+	move.b (a0)+,d5	; $00F7C8
+	move.b (a6,d5.w),d5	; $00F7CA
+	move.b (a3,d5.w),d6	; $00F7CE
+	and.b d6,-(a5)	; $00F7D2
+	or.b d5,(a5)	; $00F7D4
+	move.b (a0)+,d5	; $00F7D6
+	move.b (a6,d5.w),d5	; $00F7D8
+	move.b (a3,d5.w),d6	; $00F7DC
+	and.b d6,-(a5)	; $00F7E0
+	or.b d5,(a5)	; $00F7E2
+	move.b (a0)+,d5	; $00F7E4
+	move.b (a6,d5.w),d5	; $00F7E6
+	move.b (a3,d5.w),d6	; $00F7EA
+	and.b d6,-(a5)	; $00F7EE
+	or.b d5,(a5)	; $00F7F0
+	suba.w #$1d,a5	; $00F7F2
+	move.b (a0)+,d5	; $00F7F6
+	move.b (a6,d5.w),d5	; $00F7F8
+	move.b (a3,d5.w),d6	; $00F7FC
+	and.b d6,(a5)	; $00F800
+	or.b d5,(a5)	; $00F802
+	bra.w L00E43C	; $00F804
+	; code $00F808-$00F8DB
+FUN_00f808:
+	move.b (a0)+,d5	; $00F808
+	move.b (a6,d5.w),d5	; $00F80A
+	move.b (a3,d5.w),d6	; $00F80E
+	and.b d6,(a5)	; $00F812
+	or.b d5,(a5)	; $00F814
+	move.b (a0)+,d5	; $00F816
+	move.b (a6,d5.w),d5	; $00F818
+	move.b (a3,d5.w),d6	; $00F81C
+	and.b d6,-(a5)	; $00F820
+	or.b d5,(a5)	; $00F822
+	move.b (a0)+,d5	; $00F824
+	move.b (a6,d5.w),d5	; $00F826
+	move.b (a3,d5.w),d6	; $00F82A
+	and.b d6,-(a5)	; $00F82E
+	or.b d5,(a5)	; $00F830
+	suba.w #$1d,a5	; $00F832
+	move.b (a0)+,d5	; $00F836
+	move.b (a6,d5.w),d5	; $00F838
+	move.b (a3,d5.w),d6	; $00F83C
+	and.b d6,(a5)	; $00F840
+	or.b d5,(a5)	; $00F842
+	move.b (a0)+,d5	; $00F844
+	move.b (a6,d5.w),d5	; $00F846
+	move.b (a3,d5.w),d6	; $00F84A
+	and.b d6,-(a5)	; $00F84E
+	or.b d5,(a5)	; $00F850
+	move.b (a0)+,d5	; $00F852
+	move.b (a6,d5.w),d5	; $00F854
+	move.b (a3,d5.w),d6	; $00F858
+	and.b d6,-(a5)	; $00F85C
+	or.b d5,(a5)	; $00F85E
+	move.b (a0)+,d5	; $00F860
+	move.b (a6,d5.w),d5	; $00F862
+	move.b (a3,d5.w),d6	; $00F866
+	and.b d6,-(a5)	; $00F86A
+	or.b d5,(a5)	; $00F86C
+	suba.w #$1d,a5	; $00F86E
+	move.b (a0)+,d5	; $00F872
+	move.b (a6,d5.w),d5	; $00F874
+	move.b (a3,d5.w),d6	; $00F878
+	and.b d6,(a5)	; $00F87C
+	or.b d5,(a5)	; $00F87E
+	move.b (a0)+,d5	; $00F880
+	move.b (a6,d5.w),d5	; $00F882
+	move.b (a3,d5.w),d6	; $00F886
+	and.b d6,-(a5)	; $00F88A
+	or.b d5,(a5)	; $00F88C
+	move.b (a0)+,d5	; $00F88E
+	move.b (a6,d5.w),d5	; $00F890
+	move.b (a3,d5.w),d6	; $00F894
+	and.b d6,-(a5)	; $00F898
+	or.b d5,(a5)	; $00F89A
+	move.b (a0)+,d5	; $00F89C
+	move.b (a6,d5.w),d5	; $00F89E
+	move.b (a3,d5.w),d6	; $00F8A2
+	and.b d6,-(a5)	; $00F8A6
+	or.b d5,(a5)	; $00F8A8
+	suba.w #$1d,a5	; $00F8AA
+	move.b (a0)+,d5	; $00F8AE
+	move.b (a6,d5.w),d5	; $00F8B0
+	move.b (a3,d5.w),d6	; $00F8B4
+	and.b d6,(a5)	; $00F8B8
+	or.b d5,(a5)	; $00F8BA
+	move.b (a0)+,d5	; $00F8BC
+	move.b (a6,d5.w),d5	; $00F8BE
+	move.b (a3,d5.w),d6	; $00F8C2
+	and.b d6,-(a5)	; $00F8C6
+	or.b d5,(a5)	; $00F8C8
+	move.b (a0)+,d5	; $00F8CA
+	move.b (a6,d5.w),d5	; $00F8CC
+	move.b (a3,d5.w),d6	; $00F8D0
+	and.b d6,-(a5)	; $00F8D4
+	or.b d5,(a5)	; $00F8D6
+	bra.w L00E43C	; $00F8D8
+	; code $00F8DC-$00F9AF
+FUN_00f8dc:
+	move.b (a0)+,d5	; $00F8DC
+	move.b (a6,d5.w),d5	; $00F8DE
+	move.b (a3,d5.w),d6	; $00F8E2
+	and.b d6,(a5)	; $00F8E6
+	or.b d5,(a5)	; $00F8E8
+	move.b (a0)+,d5	; $00F8EA
+	move.b (a6,d5.w),d5	; $00F8EC
+	move.b (a3,d5.w),d6	; $00F8F0
+	and.b d6,-(a5)	; $00F8F4
+	or.b d5,(a5)	; $00F8F6
+	suba.w #$1d,a5	; $00F8F8
+	move.b (a0)+,d5	; $00F8FC
+	move.b (a6,d5.w),d5	; $00F8FE
+	move.b (a3,d5.w),d6	; $00F902
+	and.b d6,(a5)	; $00F906
+	or.b d5,(a5)	; $00F908
+	move.b (a0)+,d5	; $00F90A
+	move.b (a6,d5.w),d5	; $00F90C
+	move.b (a3,d5.w),d6	; $00F910
+	and.b d6,-(a5)	; $00F914
+	or.b d5,(a5)	; $00F916
+	move.b (a0)+,d5	; $00F918
+	move.b (a6,d5.w),d5	; $00F91A
+	move.b (a3,d5.w),d6	; $00F91E
+	and.b d6,-(a5)	; $00F922
+	or.b d5,(a5)	; $00F924
+	move.b (a0)+,d5	; $00F926
+	move.b (a6,d5.w),d5	; $00F928
+	move.b (a3,d5.w),d6	; $00F92C
+	and.b d6,-(a5)	; $00F930
+	or.b d5,(a5)	; $00F932
+	suba.w #$1d,a5	; $00F934
+	move.b (a0)+,d5	; $00F938
+	move.b (a6,d5.w),d5	; $00F93A
+	move.b (a3,d5.w),d6	; $00F93E
+	and.b d6,(a5)	; $00F942
+	or.b d5,(a5)	; $00F944
+	move.b (a0)+,d5	; $00F946
+	move.b (a6,d5.w),d5	; $00F948
+	move.b (a3,d5.w),d6	; $00F94C
+	and.b d6,-(a5)	; $00F950
+	or.b d5,(a5)	; $00F952
+	move.b (a0)+,d5	; $00F954
+	move.b (a6,d5.w),d5	; $00F956
+	move.b (a3,d5.w),d6	; $00F95A
+	and.b d6,-(a5)	; $00F95E
+	or.b d5,(a5)	; $00F960
+	move.b (a0)+,d5	; $00F962
+	move.b (a6,d5.w),d5	; $00F964
+	move.b (a3,d5.w),d6	; $00F968
+	and.b d6,-(a5)	; $00F96C
+	or.b d5,(a5)	; $00F96E
+	suba.w #$1d,a5	; $00F970
+	move.b (a0)+,d5	; $00F974
+	move.b (a6,d5.w),d5	; $00F976
+	move.b (a3,d5.w),d6	; $00F97A
+	and.b d6,(a5)	; $00F97E
+	or.b d5,(a5)	; $00F980
+	move.b (a0)+,d5	; $00F982
+	move.b (a6,d5.w),d5	; $00F984
+	move.b (a3,d5.w),d6	; $00F988
+	and.b d6,-(a5)	; $00F98C
+	or.b d5,(a5)	; $00F98E
+	move.b (a0)+,d5	; $00F990
+	move.b (a6,d5.w),d5	; $00F992
+	move.b (a3,d5.w),d6	; $00F996
+	and.b d6,-(a5)	; $00F99A
+	or.b d5,(a5)	; $00F99C
+	move.b (a0)+,d5	; $00F99E
+	move.b (a6,d5.w),d5	; $00F9A0
+	move.b (a3,d5.w),d6	; $00F9A4
+	and.b d6,-(a5)	; $00F9A8
+	or.b d5,(a5)	; $00F9AA
+	bra.w L00E43C	; $00F9AC
+	; code $00F9B0-$00FA83
+FUN_00f9b0:
+	move.b (a0)+,d5	; $00F9B0
+	move.b (a6,d5.w),d5	; $00F9B2
+	move.b (a3,d5.w),d6	; $00F9B6
+	and.b d6,(a5)	; $00F9BA
+	or.b d5,(a5)	; $00F9BC
+	move.b (a0)+,d5	; $00F9BE
+	move.b (a6,d5.w),d5	; $00F9C0
+	move.b (a3,d5.w),d6	; $00F9C4
+	and.b d6,-(a5)	; $00F9C8
+	or.b d5,(a5)	; $00F9CA
+	move.b (a0)+,d5	; $00F9CC
+	move.b (a6,d5.w),d5	; $00F9CE
+	move.b (a3,d5.w),d6	; $00F9D2
+	and.b d6,-(a5)	; $00F9D6
+	or.b d5,(a5)	; $00F9D8
+	move.b (a0)+,d5	; $00F9DA
+	move.b (a6,d5.w),d5	; $00F9DC
+	move.b (a3,d5.w),d6	; $00F9E0
+	and.b d6,-(a5)	; $00F9E4
+	or.b d5,(a5)	; $00F9E6
+	suba.w #$1d,a5	; $00F9E8
+	move.b (a0)+,d5	; $00F9EC
+	move.b (a6,d5.w),d5	; $00F9EE
+	move.b (a3,d5.w),d6	; $00F9F2
+	and.b d6,(a5)	; $00F9F6
+	or.b d5,(a5)	; $00F9F8
+	move.b (a0)+,d5	; $00F9FA
+	move.b (a6,d5.w),d5	; $00F9FC
+	move.b (a3,d5.w),d6	; $00FA00
+	and.b d6,-(a5)	; $00FA04
+	or.b d5,(a5)	; $00FA06
+	move.b (a0)+,d5	; $00FA08
+	move.b (a6,d5.w),d5	; $00FA0A
+	move.b (a3,d5.w),d6	; $00FA0E
+	and.b d6,-(a5)	; $00FA12
+	or.b d5,(a5)	; $00FA14
+	move.b (a0)+,d5	; $00FA16
+	move.b (a6,d5.w),d5	; $00FA18
+	move.b (a3,d5.w),d6	; $00FA1C
+	and.b d6,-(a5)	; $00FA20
+	or.b d5,(a5)	; $00FA22
+	suba.w #$1d,a5	; $00FA24
+	move.b (a0)+,d5	; $00FA28
+	move.b (a6,d5.w),d5	; $00FA2A
+	move.b (a3,d5.w),d6	; $00FA2E
+	and.b d6,(a5)	; $00FA32
+	or.b d5,(a5)	; $00FA34
+	move.b (a0)+,d5	; $00FA36
+	move.b (a6,d5.w),d5	; $00FA38
+	move.b (a3,d5.w),d6	; $00FA3C
+	and.b d6,-(a5)	; $00FA40
+	or.b d5,(a5)	; $00FA42
+	move.b (a0)+,d5	; $00FA44
+	move.b (a6,d5.w),d5	; $00FA46
+	move.b (a3,d5.w),d6	; $00FA4A
+	and.b d6,-(a5)	; $00FA4E
+	or.b d5,(a5)	; $00FA50
+	move.b (a0)+,d5	; $00FA52
+	move.b (a6,d5.w),d5	; $00FA54
+	move.b (a3,d5.w),d6	; $00FA58
+	and.b d6,-(a5)	; $00FA5C
+	or.b d5,(a5)	; $00FA5E
+	suba.w #$1d,a5	; $00FA60
+	move.b (a0)+,d5	; $00FA64
+	move.b (a6,d5.w),d5	; $00FA66
+	move.b (a3,d5.w),d6	; $00FA6A
+	and.b d6,(a5)	; $00FA6E
+	or.b d5,(a5)	; $00FA70
+	move.b (a0)+,d5	; $00FA72
+	move.b (a6,d5.w),d5	; $00FA74
+	move.b (a3,d5.w),d6	; $00FA78
+	and.b d6,-(a5)	; $00FA7C
+	or.b d5,(a5)	; $00FA7E
+	bra.w L00E43C	; $00FA80
+	; code $00FA84-$00FB49
+FUN_00fa84:
+	move.b (a0)+,d5	; $00FA84
+	move.b (a6,d5.w),d5	; $00FA86
+	move.b (a3,d5.w),d6	; $00FA8A
+	and.b d6,(a5)	; $00FA8E
+	or.b d5,(a5)	; $00FA90
+	suba.w #$1d,a5	; $00FA92
+	move.b (a0)+,d5	; $00FA96
+	move.b (a6,d5.w),d5	; $00FA98
+	move.b (a3,d5.w),d6	; $00FA9C
+	and.b d6,(a5)	; $00FAA0
+	or.b d5,(a5)	; $00FAA2
+	move.b (a0)+,d5	; $00FAA4
+	move.b (a6,d5.w),d5	; $00FAA6
+	move.b (a3,d5.w),d6	; $00FAAA
+	and.b d6,-(a5)	; $00FAAE
+	or.b d5,(a5)	; $00FAB0
+	move.b (a0)+,d5	; $00FAB2
+	move.b (a6,d5.w),d5	; $00FAB4
+	move.b (a3,d5.w),d6	; $00FAB8
+	and.b d6,-(a5)	; $00FABC
+	or.b d5,(a5)	; $00FABE
+	move.b (a0)+,d5	; $00FAC0
+	move.b (a6,d5.w),d5	; $00FAC2
+	move.b (a3,d5.w),d6	; $00FAC6
+	and.b d6,-(a5)	; $00FACA
+	or.b d5,(a5)	; $00FACC
+	suba.w #$1d,a5	; $00FACE
+	move.b (a0)+,d5	; $00FAD2
+	move.b (a6,d5.w),d5	; $00FAD4
+	move.b (a3,d5.w),d6	; $00FAD8
+	and.b d6,(a5)	; $00FADC
+	or.b d5,(a5)	; $00FADE
+	move.b (a0)+,d5	; $00FAE0
+	move.b (a6,d5.w),d5	; $00FAE2
+	move.b (a3,d5.w),d6	; $00FAE6
+	and.b d6,-(a5)	; $00FAEA
+	or.b d5,(a5)	; $00FAEC
+	move.b (a0)+,d5	; $00FAEE
+	move.b (a6,d5.w),d5	; $00FAF0
+	move.b (a3,d5.w),d6	; $00FAF4
+	and.b d6,-(a5)	; $00FAF8
+	or.b d5,(a5)	; $00FAFA
+	move.b (a0)+,d5	; $00FAFC
+	move.b (a6,d5.w),d5	; $00FAFE
+	move.b (a3,d5.w),d6	; $00FB02
+	and.b d6,-(a5)	; $00FB06
+	or.b d5,(a5)	; $00FB08
+	suba.w #$1d,a5	; $00FB0A
+	move.b (a0)+,d5	; $00FB0E
+	move.b (a6,d5.w),d5	; $00FB10
+	move.b (a3,d5.w),d6	; $00FB14
+	and.b d6,(a5)	; $00FB18
+	or.b d5,(a5)	; $00FB1A
+	move.b (a0)+,d5	; $00FB1C
+	move.b (a6,d5.w),d5	; $00FB1E
+	move.b (a3,d5.w),d6	; $00FB22
+	and.b d6,-(a5)	; $00FB26
+	or.b d5,(a5)	; $00FB28
+	move.b (a0)+,d5	; $00FB2A
+	move.b (a6,d5.w),d5	; $00FB2C
+	move.b (a3,d5.w),d6	; $00FB30
+	and.b d6,-(a5)	; $00FB34
+	or.b d5,(a5)	; $00FB36
+	move.b (a0)+,d5	; $00FB38
+	move.b (a6,d5.w),d5	; $00FB3A
+	move.b (a3,d5.w),d6	; $00FB3E
+	and.b d6,-(a5)	; $00FB42
+	or.b d5,(a5)	; $00FB44
+	bra.w L00E43C	; $00FB46
+	; code $00FB4A-$00FC0F
+FUN_00fb4a:
+	move.b (a0)+,d5	; $00FB4A
+	move.b (a6,d5.w),d5	; $00FB4C
+	move.b (a3,d5.w),d6	; $00FB50
+	and.b d6,(a5)	; $00FB54
+	or.b d5,(a5)	; $00FB56
+	move.b (a0)+,d5	; $00FB58
+	move.b (a6,d5.w),d5	; $00FB5A
+	move.b (a3,d5.w),d6	; $00FB5E
+	and.b d6,-(a5)	; $00FB62
+	or.b d5,(a5)	; $00FB64
+	move.b (a0)+,d5	; $00FB66
+	move.b (a6,d5.w),d5	; $00FB68
+	move.b (a3,d5.w),d6	; $00FB6C
+	and.b d6,-(a5)	; $00FB70
+	or.b d5,(a5)	; $00FB72
+	suba.w #$1d,a5	; $00FB74
+	move.b (a0)+,d5	; $00FB78
+	move.b (a6,d5.w),d5	; $00FB7A
+	move.b (a3,d5.w),d6	; $00FB7E
+	and.b d6,(a5)	; $00FB82
+	or.b d5,(a5)	; $00FB84
+	move.b (a0)+,d5	; $00FB86
+	move.b (a6,d5.w),d5	; $00FB88
+	move.b (a3,d5.w),d6	; $00FB8C
+	and.b d6,-(a5)	; $00FB90
+	or.b d5,(a5)	; $00FB92
+	move.b (a0)+,d5	; $00FB94
+	move.b (a6,d5.w),d5	; $00FB96
+	move.b (a3,d5.w),d6	; $00FB9A
+	and.b d6,-(a5)	; $00FB9E
+	or.b d5,(a5)	; $00FBA0
+	move.b (a0)+,d5	; $00FBA2
+	move.b (a6,d5.w),d5	; $00FBA4
+	move.b (a3,d5.w),d6	; $00FBA8
+	and.b d6,-(a5)	; $00FBAC
+	or.b d5,(a5)	; $00FBAE
+	suba.w #$1d,a5	; $00FBB0
+	move.b (a0)+,d5	; $00FBB4
+	move.b (a6,d5.w),d5	; $00FBB6
+	move.b (a3,d5.w),d6	; $00FBBA
+	and.b d6,(a5)	; $00FBBE
+	or.b d5,(a5)	; $00FBC0
+	move.b (a0)+,d5	; $00FBC2
+	move.b (a6,d5.w),d5	; $00FBC4
+	move.b (a3,d5.w),d6	; $00FBC8
+	and.b d6,-(a5)	; $00FBCC
+	or.b d5,(a5)	; $00FBCE
+	move.b (a0)+,d5	; $00FBD0
+	move.b (a6,d5.w),d5	; $00FBD2
+	move.b (a3,d5.w),d6	; $00FBD6
+	and.b d6,-(a5)	; $00FBDA
+	or.b d5,(a5)	; $00FBDC
+	move.b (a0)+,d5	; $00FBDE
+	move.b (a6,d5.w),d5	; $00FBE0
+	move.b (a3,d5.w),d6	; $00FBE4
+	and.b d6,-(a5)	; $00FBE8
+	or.b d5,(a5)	; $00FBEA
+	suba.w #$1d,a5	; $00FBEC
+	move.b (a0)+,d5	; $00FBF0
+	move.b (a6,d5.w),d5	; $00FBF2
+	move.b (a3,d5.w),d6	; $00FBF6
+	and.b d6,(a5)	; $00FBFA
+	or.b d5,(a5)	; $00FBFC
+	move.b (a0)+,d5	; $00FBFE
+	move.b (a6,d5.w),d5	; $00FC00
+	move.b (a3,d5.w),d6	; $00FC04
+	and.b d6,-(a5)	; $00FC08
+	or.b d5,(a5)	; $00FC0A
+	bra.w L00E43C	; $00FC0C
+	; code $00FC10-$00FCD5
+FUN_00fc10:
+	move.b (a0)+,d5	; $00FC10
+	move.b (a6,d5.w),d5	; $00FC12
+	move.b (a3,d5.w),d6	; $00FC16
+	and.b d6,(a5)	; $00FC1A
+	or.b d5,(a5)	; $00FC1C
+	move.b (a0)+,d5	; $00FC1E
+	move.b (a6,d5.w),d5	; $00FC20
+	move.b (a3,d5.w),d6	; $00FC24
+	and.b d6,-(a5)	; $00FC28
+	or.b d5,(a5)	; $00FC2A
+	suba.w #$1d,a5	; $00FC2C
+	move.b (a0)+,d5	; $00FC30
+	move.b (a6,d5.w),d5	; $00FC32
+	move.b (a3,d5.w),d6	; $00FC36
+	and.b d6,(a5)	; $00FC3A
+	or.b d5,(a5)	; $00FC3C
+	move.b (a0)+,d5	; $00FC3E
+	move.b (a6,d5.w),d5	; $00FC40
+	move.b (a3,d5.w),d6	; $00FC44
+	and.b d6,-(a5)	; $00FC48
+	or.b d5,(a5)	; $00FC4A
+	move.b (a0)+,d5	; $00FC4C
+	move.b (a6,d5.w),d5	; $00FC4E
+	move.b (a3,d5.w),d6	; $00FC52
+	and.b d6,-(a5)	; $00FC56
+	or.b d5,(a5)	; $00FC58
+	move.b (a0)+,d5	; $00FC5A
+	move.b (a6,d5.w),d5	; $00FC5C
+	move.b (a3,d5.w),d6	; $00FC60
+	and.b d6,-(a5)	; $00FC64
+	or.b d5,(a5)	; $00FC66
+	suba.w #$1d,a5	; $00FC68
+	move.b (a0)+,d5	; $00FC6C
+	move.b (a6,d5.w),d5	; $00FC6E
+	move.b (a3,d5.w),d6	; $00FC72
+	and.b d6,(a5)	; $00FC76
+	or.b d5,(a5)	; $00FC78
+	move.b (a0)+,d5	; $00FC7A
+	move.b (a6,d5.w),d5	; $00FC7C
+	move.b (a3,d5.w),d6	; $00FC80
+	and.b d6,-(a5)	; $00FC84
+	or.b d5,(a5)	; $00FC86
+	move.b (a0)+,d5	; $00FC88
+	move.b (a6,d5.w),d5	; $00FC8A
+	move.b (a3,d5.w),d6	; $00FC8E
+	and.b d6,-(a5)	; $00FC92
+	or.b d5,(a5)	; $00FC94
+	move.b (a0)+,d5	; $00FC96
+	move.b (a6,d5.w),d5	; $00FC98
+	move.b (a3,d5.w),d6	; $00FC9C
+	and.b d6,-(a5)	; $00FCA0
+	or.b d5,(a5)	; $00FCA2
+	suba.w #$1d,a5	; $00FCA4
+	move.b (a0)+,d5	; $00FCA8
+	move.b (a6,d5.w),d5	; $00FCAA
+	move.b (a3,d5.w),d6	; $00FCAE
+	and.b d6,(a5)	; $00FCB2
+	or.b d5,(a5)	; $00FCB4
+	move.b (a0)+,d5	; $00FCB6
+	move.b (a6,d5.w),d5	; $00FCB8
+	move.b (a3,d5.w),d6	; $00FCBC
+	and.b d6,-(a5)	; $00FCC0
+	or.b d5,(a5)	; $00FCC2
+	move.b (a0)+,d5	; $00FCC4
+	move.b (a6,d5.w),d5	; $00FCC6
+	move.b (a3,d5.w),d6	; $00FCCA
+	and.b d6,-(a5)	; $00FCCE
+	or.b d5,(a5)	; $00FCD0
+	bra.w L00E43C	; $00FCD2
+	; code $00FCD6-$00FD9B
+FUN_00fcd6:
+	move.b (a0)+,d5	; $00FCD6
+	move.b (a6,d5.w),d5	; $00FCD8
+	move.b (a3,d5.w),d6	; $00FCDC
+	and.b d6,(a5)	; $00FCE0
+	or.b d5,(a5)	; $00FCE2
+	move.b (a0)+,d5	; $00FCE4
+	move.b (a6,d5.w),d5	; $00FCE6
+	move.b (a3,d5.w),d6	; $00FCEA
+	and.b d6,-(a5)	; $00FCEE
+	or.b d5,(a5)	; $00FCF0
+	move.b (a0)+,d5	; $00FCF2
+	move.b (a6,d5.w),d5	; $00FCF4
+	move.b (a3,d5.w),d6	; $00FCF8
+	and.b d6,-(a5)	; $00FCFC
+	or.b d5,(a5)	; $00FCFE
+	move.b (a0)+,d5	; $00FD00
+	move.b (a6,d5.w),d5	; $00FD02
+	move.b (a3,d5.w),d6	; $00FD06
+	and.b d6,-(a5)	; $00FD0A
+	or.b d5,(a5)	; $00FD0C
+	suba.w #$1d,a5	; $00FD0E
+	move.b (a0)+,d5	; $00FD12
+	move.b (a6,d5.w),d5	; $00FD14
+	move.b (a3,d5.w),d6	; $00FD18
+	and.b d6,(a5)	; $00FD1C
+	or.b d5,(a5)	; $00FD1E
+	move.b (a0)+,d5	; $00FD20
+	move.b (a6,d5.w),d5	; $00FD22
+	move.b (a3,d5.w),d6	; $00FD26
+	and.b d6,-(a5)	; $00FD2A
+	or.b d5,(a5)	; $00FD2C
+	move.b (a0)+,d5	; $00FD2E
+	move.b (a6,d5.w),d5	; $00FD30
+	move.b (a3,d5.w),d6	; $00FD34
+	and.b d6,-(a5)	; $00FD38
+	or.b d5,(a5)	; $00FD3A
+	move.b (a0)+,d5	; $00FD3C
+	move.b (a6,d5.w),d5	; $00FD3E
+	move.b (a3,d5.w),d6	; $00FD42
+	and.b d6,-(a5)	; $00FD46
+	or.b d5,(a5)	; $00FD48
+	suba.w #$1d,a5	; $00FD4A
+	move.b (a0)+,d5	; $00FD4E
+	move.b (a6,d5.w),d5	; $00FD50
+	move.b (a3,d5.w),d6	; $00FD54
+	and.b d6,(a5)	; $00FD58
+	or.b d5,(a5)	; $00FD5A
+	move.b (a0)+,d5	; $00FD5C
+	move.b (a6,d5.w),d5	; $00FD5E
+	move.b (a3,d5.w),d6	; $00FD62
+	and.b d6,-(a5)	; $00FD66
+	or.b d5,(a5)	; $00FD68
+	move.b (a0)+,d5	; $00FD6A
+	move.b (a6,d5.w),d5	; $00FD6C
+	move.b (a3,d5.w),d6	; $00FD70
+	and.b d6,-(a5)	; $00FD74
+	or.b d5,(a5)	; $00FD76
+	move.b (a0)+,d5	; $00FD78
+	move.b (a6,d5.w),d5	; $00FD7A
+	move.b (a3,d5.w),d6	; $00FD7E
+	and.b d6,-(a5)	; $00FD82
+	or.b d5,(a5)	; $00FD84
+	suba.w #$1d,a5	; $00FD86
+	move.b (a0)+,d5	; $00FD8A
+	move.b (a6,d5.w),d5	; $00FD8C
+	move.b (a3,d5.w),d6	; $00FD90
+	and.b d6,(a5)	; $00FD94
+	or.b d5,(a5)	; $00FD96
+	bra.w L00E43C	; $00FD98
+	; code $00FD9C-$00FE53
+FUN_00fd9c:
+	move.b (a0)+,d5	; $00FD9C
+	move.b (a6,d5.w),d5	; $00FD9E
+	move.b (a3,d5.w),d6	; $00FDA2
+	and.b d6,(a5)	; $00FDA6
+	or.b d5,(a5)	; $00FDA8
+	suba.w #$1d,a5	; $00FDAA
+	move.b (a0)+,d5	; $00FDAE
+	move.b (a6,d5.w),d5	; $00FDB0
+	move.b (a3,d5.w),d6	; $00FDB4
+	and.b d6,(a5)	; $00FDB8
+	or.b d5,(a5)	; $00FDBA
+	move.b (a0)+,d5	; $00FDBC
+	move.b (a6,d5.w),d5	; $00FDBE
+	move.b (a3,d5.w),d6	; $00FDC2
+	and.b d6,-(a5)	; $00FDC6
+	or.b d5,(a5)	; $00FDC8
+	move.b (a0)+,d5	; $00FDCA
+	move.b (a6,d5.w),d5	; $00FDCC
+	move.b (a3,d5.w),d6	; $00FDD0
+	and.b d6,-(a5)	; $00FDD4
+	or.b d5,(a5)	; $00FDD6
+	move.b (a0)+,d5	; $00FDD8
+	move.b (a6,d5.w),d5	; $00FDDA
+	move.b (a3,d5.w),d6	; $00FDDE
+	and.b d6,-(a5)	; $00FDE2
+	or.b d5,(a5)	; $00FDE4
+	suba.w #$1d,a5	; $00FDE6
+	move.b (a0)+,d5	; $00FDEA
+	move.b (a6,d5.w),d5	; $00FDEC
+	move.b (a3,d5.w),d6	; $00FDF0
+	and.b d6,(a5)	; $00FDF4
+	or.b d5,(a5)	; $00FDF6
+	move.b (a0)+,d5	; $00FDF8
+	move.b (a6,d5.w),d5	; $00FDFA
+	move.b (a3,d5.w),d6	; $00FDFE
+	and.b d6,-(a5)	; $00FE02
+	or.b d5,(a5)	; $00FE04
+	move.b (a0)+,d5	; $00FE06
+	move.b (a6,d5.w),d5	; $00FE08
+	move.b (a3,d5.w),d6	; $00FE0C
+	and.b d6,-(a5)	; $00FE10
+	or.b d5,(a5)	; $00FE12
+	move.b (a0)+,d5	; $00FE14
+	move.b (a6,d5.w),d5	; $00FE16
+	move.b (a3,d5.w),d6	; $00FE1A
+	and.b d6,-(a5)	; $00FE1E
+	or.b d5,(a5)	; $00FE20
+	suba.w #$1d,a5	; $00FE22
+	move.b (a0)+,d5	; $00FE26
+	move.b (a6,d5.w),d5	; $00FE28
+	move.b (a3,d5.w),d6	; $00FE2C
+	and.b d6,(a5)	; $00FE30
+	or.b d5,(a5)	; $00FE32
+	move.b (a0)+,d5	; $00FE34
+	move.b (a6,d5.w),d5	; $00FE36
+	move.b (a3,d5.w),d6	; $00FE3A
+	and.b d6,-(a5)	; $00FE3E
+	or.b d5,(a5)	; $00FE40
+	move.b (a0)+,d5	; $00FE42
+	move.b (a6,d5.w),d5	; $00FE44
+	move.b (a3,d5.w),d6	; $00FE48
+	and.b d6,-(a5)	; $00FE4C
+	or.b d5,(a5)	; $00FE4E
+	bra.w L00E43C	; $00FE50
+	; code $00FE54-$00FF0B
+FUN_00fe54:
+	move.b (a0)+,d5	; $00FE54
+	move.b (a6,d5.w),d5	; $00FE56
+	move.b (a3,d5.w),d6	; $00FE5A
+	and.b d6,(a5)	; $00FE5E
+	or.b d5,(a5)	; $00FE60
+	move.b (a0)+,d5	; $00FE62
+	move.b (a6,d5.w),d5	; $00FE64
+	move.b (a3,d5.w),d6	; $00FE68
+	and.b d6,-(a5)	; $00FE6C
+	or.b d5,(a5)	; $00FE6E
+	move.b (a0)+,d5	; $00FE70
+	move.b (a6,d5.w),d5	; $00FE72
+	move.b (a3,d5.w),d6	; $00FE76
+	and.b d6,-(a5)	; $00FE7A
+	or.b d5,(a5)	; $00FE7C
+	suba.w #$1d,a5	; $00FE7E
+	move.b (a0)+,d5	; $00FE82
+	move.b (a6,d5.w),d5	; $00FE84
+	move.b (a3,d5.w),d6	; $00FE88
+	and.b d6,(a5)	; $00FE8C
+	or.b d5,(a5)	; $00FE8E
+	move.b (a0)+,d5	; $00FE90
+	move.b (a6,d5.w),d5	; $00FE92
+	move.b (a3,d5.w),d6	; $00FE96
+	and.b d6,-(a5)	; $00FE9A
+	or.b d5,(a5)	; $00FE9C
+	move.b (a0)+,d5	; $00FE9E
+	move.b (a6,d5.w),d5	; $00FEA0
+	move.b (a3,d5.w),d6	; $00FEA4
+	and.b d6,-(a5)	; $00FEA8
+	or.b d5,(a5)	; $00FEAA
+	move.b (a0)+,d5	; $00FEAC
+	move.b (a6,d5.w),d5	; $00FEAE
+	move.b (a3,d5.w),d6	; $00FEB2
+	and.b d6,-(a5)	; $00FEB6
+	or.b d5,(a5)	; $00FEB8
+	suba.w #$1d,a5	; $00FEBA
+	move.b (a0)+,d5	; $00FEBE
+	move.b (a6,d5.w),d5	; $00FEC0
+	move.b (a3,d5.w),d6	; $00FEC4
+	and.b d6,(a5)	; $00FEC8
+	or.b d5,(a5)	; $00FECA
+	move.b (a0)+,d5	; $00FECC
+	move.b (a6,d5.w),d5	; $00FECE
+	move.b (a3,d5.w),d6	; $00FED2
+	and.b d6,-(a5)	; $00FED6
+	or.b d5,(a5)	; $00FED8
+	move.b (a0)+,d5	; $00FEDA
+	move.b (a6,d5.w),d5	; $00FEDC
+	move.b (a3,d5.w),d6	; $00FEE0
+	and.b d6,-(a5)	; $00FEE4
+	or.b d5,(a5)	; $00FEE6
+	move.b (a0)+,d5	; $00FEE8
+	move.b (a6,d5.w),d5	; $00FEEA
+	move.b (a3,d5.w),d6	; $00FEEE
+	and.b d6,-(a5)	; $00FEF2
+	or.b d5,(a5)	; $00FEF4
+	suba.w #$1d,a5	; $00FEF6
+	move.b (a0)+,d5	; $00FEFA
+	move.b (a6,d5.w),d5	; $00FEFC
+	move.b (a3,d5.w),d6	; $00FF00
+	and.b d6,(a5)	; $00FF04
+	or.b d5,(a5)	; $00FF06
+	bra.w L00E43C	; $00FF08
+	; code $00FF0C-$00FFC3
+FUN_00ff0c:
+	move.b (a0)+,d5	; $00FF0C
+	move.b (a6,d5.w),d5	; $00FF0E
+	move.b (a3,d5.w),d6	; $00FF12
+	and.b d6,(a5)	; $00FF16
+	or.b d5,(a5)	; $00FF18
+	move.b (a0)+,d5	; $00FF1A
+	move.b (a6,d5.w),d5	; $00FF1C
+	move.b (a3,d5.w),d6	; $00FF20
+	and.b d6,-(a5)	; $00FF24
+	or.b d5,(a5)	; $00FF26
+	suba.w #$1d,a5	; $00FF28
+	move.b (a0)+,d5	; $00FF2C
+	move.b (a6,d5.w),d5	; $00FF2E
+	move.b (a3,d5.w),d6	; $00FF32
+	and.b d6,(a5)	; $00FF36
+	or.b d5,(a5)	; $00FF38
+	move.b (a0)+,d5	; $00FF3A
+	move.b (a6,d5.w),d5	; $00FF3C
+	move.b (a3,d5.w),d6	; $00FF40
+	and.b d6,-(a5)	; $00FF44
+	or.b d5,(a5)	; $00FF46
+	move.b (a0)+,d5	; $00FF48
+	move.b (a6,d5.w),d5	; $00FF4A
+	move.b (a3,d5.w),d6	; $00FF4E
+	and.b d6,-(a5)	; $00FF52
+	or.b d5,(a5)	; $00FF54
+	move.b (a0)+,d5	; $00FF56
+	move.b (a6,d5.w),d5	; $00FF58
+	move.b (a3,d5.w),d6	; $00FF5C
+	and.b d6,-(a5)	; $00FF60
+	or.b d5,(a5)	; $00FF62
+	suba.w #$1d,a5	; $00FF64
+	move.b (a0)+,d5	; $00FF68
+	move.b (a6,d5.w),d5	; $00FF6A
+	move.b (a3,d5.w),d6	; $00FF6E
+	and.b d6,(a5)	; $00FF72
+	or.b d5,(a5)	; $00FF74
+	move.b (a0)+,d5	; $00FF76
+	move.b (a6,d5.w),d5	; $00FF78
+	move.b (a3,d5.w),d6	; $00FF7C
+	and.b d6,-(a5)	; $00FF80
+	or.b d5,(a5)	; $00FF82
+	move.b (a0)+,d5	; $00FF84
+	move.b (a6,d5.w),d5	; $00FF86
+	move.b (a3,d5.w),d6	; $00FF8A
+	and.b d6,-(a5)	; $00FF8E
+	or.b d5,(a5)	; $00FF90
+	move.b (a0)+,d5	; $00FF92
+	move.b (a6,d5.w),d5	; $00FF94
+	move.b (a3,d5.w),d6	; $00FF98
+	and.b d6,-(a5)	; $00FF9C
+	or.b d5,(a5)	; $00FF9E
+	suba.w #$1d,a5	; $00FFA0
+	move.b (a0)+,d5	; $00FFA4
+	move.b (a6,d5.w),d5	; $00FFA6
+	move.b (a3,d5.w),d6	; $00FFAA
+	and.b d6,(a5)	; $00FFAE
+	or.b d5,(a5)	; $00FFB0
+	move.b (a0)+,d5	; $00FFB2
+	move.b (a6,d5.w),d5	; $00FFB4
+	move.b (a3,d5.w),d6	; $00FFB8
+	and.b d6,-(a5)	; $00FFBC
+	or.b d5,(a5)	; $00FFBE
+	bra.w L00E43C	; $00FFC0
+	; code $00FFC4-$010077
+FUN_00ffc4:
+	move.b (a0)+,d5	; $00FFC4
+	move.b (a6,d5.w),d5	; $00FFC6
+	move.b (a3,d5.w),d6	; $00FFCA
+	and.b d6,(a5)	; $00FFCE
+	or.b d5,(a5)	; $00FFD0
+	move.b (a0)+,d5	; $00FFD2
+	move.b (a6,d5.w),d5	; $00FFD4
+	move.b (a3,d5.w),d6	; $00FFD8
+	and.b d6,-(a5)	; $00FFDC
+	or.b d5,(a5)	; $00FFDE
+	move.b (a0)+,d5	; $00FFE0
+	move.b (a6,d5.w),d5	; $00FFE2
+	move.b (a3,d5.w),d6	; $00FFE6
+	and.b d6,-(a5)	; $00FFEA
+	or.b d5,(a5)	; $00FFEC
+	move.b (a0)+,d5	; $00FFEE
+	move.b (a6,d5.w),d5	; $00FFF0
+	move.b (a3,d5.w),d6	; $00FFF4
+	and.b d6,-(a5)	; $00FFF8
+	or.b d5,(a5)	; $00FFFA
+	suba.w #$1d,a5	; $00FFFC
+	move.b (a0)+,d5	; $010000
+	move.b (a6,d5.w),d5	; $010002
+	move.b (a3,d5.w),d6	; $010006
+	and.b d6,(a5)	; $01000A
+	or.b d5,(a5)	; $01000C
+	move.b (a0)+,d5	; $01000E
+	move.b (a6,d5.w),d5	; $010010
+	move.b (a3,d5.w),d6	; $010014
+	and.b d6,-(a5)	; $010018
+	or.b d5,(a5)	; $01001A
+	move.b (a0)+,d5	; $01001C
+	move.b (a6,d5.w),d5	; $01001E
+	move.b (a3,d5.w),d6	; $010022
+	and.b d6,-(a5)	; $010026
+	or.b d5,(a5)	; $010028
+	move.b (a0)+,d5	; $01002A
+	move.b (a6,d5.w),d5	; $01002C
+	move.b (a3,d5.w),d6	; $010030
+	and.b d6,-(a5)	; $010034
+	or.b d5,(a5)	; $010036
+	suba.w #$1d,a5	; $010038
+	move.b (a0)+,d5	; $01003C
+	move.b (a6,d5.w),d5	; $01003E
+	move.b (a3,d5.w),d6	; $010042
+	and.b d6,(a5)	; $010046
+	or.b d5,(a5)	; $010048
+	move.b (a0)+,d5	; $01004A
+	move.b (a6,d5.w),d5	; $01004C
+	move.b (a3,d5.w),d6	; $010050
+	and.b d6,-(a5)	; $010054
+	or.b d5,(a5)	; $010056
+	move.b (a0)+,d5	; $010058
+	move.b (a6,d5.w),d5	; $01005A
+	move.b (a3,d5.w),d6	; $01005E
+	and.b d6,-(a5)	; $010062
+	or.b d5,(a5)	; $010064
+	move.b (a0)+,d5	; $010066
+	move.b (a6,d5.w),d5	; $010068
+	move.b (a3,d5.w),d6	; $01006C
+	and.b d6,-(a5)	; $010070
+	or.b d5,(a5)	; $010072
+	bra.w L00E43C	; $010074
+	; code $010078-$010121
+FUN_010078:
+	move.b (a0)+,d5	; $010078
+	move.b (a6,d5.w),d5	; $01007A
+	move.b (a3,d5.w),d6	; $01007E
+	and.b d6,(a5)	; $010082
+	or.b d5,(a5)	; $010084
+	suba.w #$1d,a5	; $010086
+	move.b (a0)+,d5	; $01008A
+	move.b (a6,d5.w),d5	; $01008C
+	move.b (a3,d5.w),d6	; $010090
+	and.b d6,(a5)	; $010094
+	or.b d5,(a5)	; $010096
+	move.b (a0)+,d5	; $010098
+	move.b (a6,d5.w),d5	; $01009A
+	move.b (a3,d5.w),d6	; $01009E
+	and.b d6,-(a5)	; $0100A2
+	or.b d5,(a5)	; $0100A4
+	move.b (a0)+,d5	; $0100A6
+	move.b (a6,d5.w),d5	; $0100A8
+	move.b (a3,d5.w),d6	; $0100AC
+	and.b d6,-(a5)	; $0100B0
+	or.b d5,(a5)	; $0100B2
+	move.b (a0)+,d5	; $0100B4
+	move.b (a6,d5.w),d5	; $0100B6
+	move.b (a3,d5.w),d6	; $0100BA
+	and.b d6,-(a5)	; $0100BE
+	or.b d5,(a5)	; $0100C0
+	suba.w #$1d,a5	; $0100C2
+	move.b (a0)+,d5	; $0100C6
+	move.b (a6,d5.w),d5	; $0100C8
+	move.b (a3,d5.w),d6	; $0100CC
+	and.b d6,(a5)	; $0100D0
+	or.b d5,(a5)	; $0100D2
+	move.b (a0)+,d5	; $0100D4
+	move.b (a6,d5.w),d5	; $0100D6
+	move.b (a3,d5.w),d6	; $0100DA
+	and.b d6,-(a5)	; $0100DE
+	or.b d5,(a5)	; $0100E0
+	move.b (a0)+,d5	; $0100E2
+	move.b (a6,d5.w),d5	; $0100E4
+	move.b (a3,d5.w),d6	; $0100E8
+	and.b d6,-(a5)	; $0100EC
+	or.b d5,(a5)	; $0100EE
+	move.b (a0)+,d5	; $0100F0
+	move.b (a6,d5.w),d5	; $0100F2
+	move.b (a3,d5.w),d6	; $0100F6
+	and.b d6,-(a5)	; $0100FA
+	or.b d5,(a5)	; $0100FC
+	suba.w #$1d,a5	; $0100FE
+	move.b (a0)+,d5	; $010102
+	move.b (a6,d5.w),d5	; $010104
+	move.b (a3,d5.w),d6	; $010108
+	and.b d6,(a5)	; $01010C
+	or.b d5,(a5)	; $01010E
+	move.b (a0)+,d5	; $010110
+	move.b (a6,d5.w),d5	; $010112
+	move.b (a3,d5.w),d6	; $010116
+	and.b d6,-(a5)	; $01011A
+	or.b d5,(a5)	; $01011C
+	bra.w L00E43C	; $01011E
+	; code $010122-$0101C7
+FUN_010122:
+	move.b (a0)+,d5	; $010122
+	move.b (a6,d5.w),d5	; $010124
+	move.b (a3,d5.w),d6	; $010128
+	and.b d6,(a5)	; $01012C
+	or.b d5,(a5)	; $01012E
+	move.b (a0)+,d5	; $010130
+	move.b (a6,d5.w),d5	; $010132
+	move.b (a3,d5.w),d6	; $010136
+	and.b d6,-(a5)	; $01013A
+	or.b d5,(a5)	; $01013C
+	move.b (a0)+,d5	; $01013E
+	move.b (a6,d5.w),d5	; $010140
+	move.b (a3,d5.w),d6	; $010144
+	and.b d6,-(a5)	; $010148
+	or.b d5,(a5)	; $01014A
+	suba.w #$1d,a5	; $01014C
+	move.b (a0)+,d5	; $010150
+	move.b (a6,d5.w),d5	; $010152
+	move.b (a3,d5.w),d6	; $010156
+	and.b d6,(a5)	; $01015A
+	or.b d5,(a5)	; $01015C
+	move.b (a0)+,d5	; $01015E
+	move.b (a6,d5.w),d5	; $010160
+	move.b (a3,d5.w),d6	; $010164
+	and.b d6,-(a5)	; $010168
+	or.b d5,(a5)	; $01016A
+	move.b (a0)+,d5	; $01016C
+	move.b (a6,d5.w),d5	; $01016E
+	move.b (a3,d5.w),d6	; $010172
+	and.b d6,-(a5)	; $010176
+	or.b d5,(a5)	; $010178
+	move.b (a0)+,d5	; $01017A
+	move.b (a6,d5.w),d5	; $01017C
+	move.b (a3,d5.w),d6	; $010180
+	and.b d6,-(a5)	; $010184
+	or.b d5,(a5)	; $010186
+	suba.w #$1d,a5	; $010188
+	move.b (a0)+,d5	; $01018C
+	move.b (a6,d5.w),d5	; $01018E
+	move.b (a3,d5.w),d6	; $010192
+	and.b d6,(a5)	; $010196
+	or.b d5,(a5)	; $010198
+	move.b (a0)+,d5	; $01019A
+	move.b (a6,d5.w),d5	; $01019C
+	move.b (a3,d5.w),d6	; $0101A0
+	and.b d6,-(a5)	; $0101A4
+	or.b d5,(a5)	; $0101A6
+	move.b (a0)+,d5	; $0101A8
+	move.b (a6,d5.w),d5	; $0101AA
+	move.b (a3,d5.w),d6	; $0101AE
+	and.b d6,-(a5)	; $0101B2
+	or.b d5,(a5)	; $0101B4
+	move.b (a0)+,d5	; $0101B6
+	move.b (a6,d5.w),d5	; $0101B8
+	move.b (a3,d5.w),d6	; $0101BC
+	and.b d6,-(a5)	; $0101C0
+	or.b d5,(a5)	; $0101C2
+	bra.w L00E43C	; $0101C4
+	; code $0101C8-$010271
+FUN_0101c8:
+	move.b (a0)+,d5	; $0101C8
+	move.b (a6,d5.w),d5	; $0101CA
+	move.b (a3,d5.w),d6	; $0101CE
+	and.b d6,(a5)	; $0101D2
+	or.b d5,(a5)	; $0101D4
+	move.b (a0)+,d5	; $0101D6
+	move.b (a6,d5.w),d5	; $0101D8
+	move.b (a3,d5.w),d6	; $0101DC
+	and.b d6,-(a5)	; $0101E0
+	or.b d5,(a5)	; $0101E2
+	suba.w #$1d,a5	; $0101E4
+	move.b (a0)+,d5	; $0101E8
+	move.b (a6,d5.w),d5	; $0101EA
+	move.b (a3,d5.w),d6	; $0101EE
+	and.b d6,(a5)	; $0101F2
+	or.b d5,(a5)	; $0101F4
+	move.b (a0)+,d5	; $0101F6
+	move.b (a6,d5.w),d5	; $0101F8
+	move.b (a3,d5.w),d6	; $0101FC
+	and.b d6,-(a5)	; $010200
+	or.b d5,(a5)	; $010202
+	move.b (a0)+,d5	; $010204
+	move.b (a6,d5.w),d5	; $010206
+	move.b (a3,d5.w),d6	; $01020A
+	and.b d6,-(a5)	; $01020E
+	or.b d5,(a5)	; $010210
+	move.b (a0)+,d5	; $010212
+	move.b (a6,d5.w),d5	; $010214
+	move.b (a3,d5.w),d6	; $010218
+	and.b d6,-(a5)	; $01021C
+	or.b d5,(a5)	; $01021E
+	suba.w #$1d,a5	; $010220
+	move.b (a0)+,d5	; $010224
+	move.b (a6,d5.w),d5	; $010226
+	move.b (a3,d5.w),d6	; $01022A
+	and.b d6,(a5)	; $01022E
+	or.b d5,(a5)	; $010230
+	move.b (a0)+,d5	; $010232
+	move.b (a6,d5.w),d5	; $010234
+	move.b (a3,d5.w),d6	; $010238
+	and.b d6,-(a5)	; $01023C
+	or.b d5,(a5)	; $01023E
+	move.b (a0)+,d5	; $010240
+	move.b (a6,d5.w),d5	; $010242
+	move.b (a3,d5.w),d6	; $010246
+	and.b d6,-(a5)	; $01024A
+	or.b d5,(a5)	; $01024C
+	move.b (a0)+,d5	; $01024E
+	move.b (a6,d5.w),d5	; $010250
+	move.b (a3,d5.w),d6	; $010254
+	and.b d6,-(a5)	; $010258
+	or.b d5,(a5)	; $01025A
+	suba.w #$1d,a5	; $01025C
+	move.b (a0)+,d5	; $010260
+	move.b (a6,d5.w),d5	; $010262
+	move.b (a3,d5.w),d6	; $010266
+	and.b d6,(a5)	; $01026A
+	or.b d5,(a5)	; $01026C
+	bra.w L00E43C	; $01026E
+	; code $010272-$010317
+FUN_010272:
+	move.b (a0)+,d5	; $010272
+	move.b (a6,d5.w),d5	; $010274
+	move.b (a3,d5.w),d6	; $010278
+	and.b d6,(a5)	; $01027C
+	or.b d5,(a5)	; $01027E
+	move.b (a0)+,d5	; $010280
+	move.b (a6,d5.w),d5	; $010282
+	move.b (a3,d5.w),d6	; $010286
+	and.b d6,-(a5)	; $01028A
+	or.b d5,(a5)	; $01028C
+	move.b (a0)+,d5	; $01028E
+	move.b (a6,d5.w),d5	; $010290
+	move.b (a3,d5.w),d6	; $010294
+	and.b d6,-(a5)	; $010298
+	or.b d5,(a5)	; $01029A
+	move.b (a0)+,d5	; $01029C
+	move.b (a6,d5.w),d5	; $01029E
+	move.b (a3,d5.w),d6	; $0102A2
+	and.b d6,-(a5)	; $0102A6
+	or.b d5,(a5)	; $0102A8
+	suba.w #$1d,a5	; $0102AA
+	move.b (a0)+,d5	; $0102AE
+	move.b (a6,d5.w),d5	; $0102B0
+	move.b (a3,d5.w),d6	; $0102B4
+	and.b d6,(a5)	; $0102B8
+	or.b d5,(a5)	; $0102BA
+	move.b (a0)+,d5	; $0102BC
+	move.b (a6,d5.w),d5	; $0102BE
+	move.b (a3,d5.w),d6	; $0102C2
+	and.b d6,-(a5)	; $0102C6
+	or.b d5,(a5)	; $0102C8
+	move.b (a0)+,d5	; $0102CA
+	move.b (a6,d5.w),d5	; $0102CC
+	move.b (a3,d5.w),d6	; $0102D0
+	and.b d6,-(a5)	; $0102D4
+	or.b d5,(a5)	; $0102D6
+	move.b (a0)+,d5	; $0102D8
+	move.b (a6,d5.w),d5	; $0102DA
+	move.b (a3,d5.w),d6	; $0102DE
+	and.b d6,-(a5)	; $0102E2
+	or.b d5,(a5)	; $0102E4
+	suba.w #$1d,a5	; $0102E6
+	move.b (a0)+,d5	; $0102EA
+	move.b (a6,d5.w),d5	; $0102EC
+	move.b (a3,d5.w),d6	; $0102F0
+	and.b d6,(a5)	; $0102F4
+	or.b d5,(a5)	; $0102F6
+	move.b (a0)+,d5	; $0102F8
+	move.b (a6,d5.w),d5	; $0102FA
+	move.b (a3,d5.w),d6	; $0102FE
+	and.b d6,-(a5)	; $010302
+	or.b d5,(a5)	; $010304
+	move.b (a0)+,d5	; $010306
+	move.b (a6,d5.w),d5	; $010308
+	move.b (a3,d5.w),d6	; $01030C
+	and.b d6,-(a5)	; $010310
+	or.b d5,(a5)	; $010312
+	bra.w L00E43C	; $010314
+	; code $010318-$0103B3
+FUN_010318:
+	move.b (a0)+,d5	; $010318
+	move.b (a6,d5.w),d5	; $01031A
+	move.b (a3,d5.w),d6	; $01031E
+	and.b d6,(a5)	; $010322
+	or.b d5,(a5)	; $010324
+	suba.w #$1d,a5	; $010326
+	move.b (a0)+,d5	; $01032A
+	move.b (a6,d5.w),d5	; $01032C
+	move.b (a3,d5.w),d6	; $010330
+	and.b d6,(a5)	; $010334
+	or.b d5,(a5)	; $010336
+	move.b (a0)+,d5	; $010338
+	move.b (a6,d5.w),d5	; $01033A
+	move.b (a3,d5.w),d6	; $01033E
+	and.b d6,-(a5)	; $010342
+	or.b d5,(a5)	; $010344
+	move.b (a0)+,d5	; $010346
+	move.b (a6,d5.w),d5	; $010348
+	move.b (a3,d5.w),d6	; $01034C
+	and.b d6,-(a5)	; $010350
+	or.b d5,(a5)	; $010352
+	move.b (a0)+,d5	; $010354
+	move.b (a6,d5.w),d5	; $010356
+	move.b (a3,d5.w),d6	; $01035A
+	and.b d6,-(a5)	; $01035E
+	or.b d5,(a5)	; $010360
+	suba.w #$1d,a5	; $010362
+	move.b (a0)+,d5	; $010366
+	move.b (a6,d5.w),d5	; $010368
+	move.b (a3,d5.w),d6	; $01036C
+	and.b d6,(a5)	; $010370
+	or.b d5,(a5)	; $010372
+	move.b (a0)+,d5	; $010374
+	move.b (a6,d5.w),d5	; $010376
+	move.b (a3,d5.w),d6	; $01037A
+	and.b d6,-(a5)	; $01037E
+	or.b d5,(a5)	; $010380
+	move.b (a0)+,d5	; $010382
+	move.b (a6,d5.w),d5	; $010384
+	move.b (a3,d5.w),d6	; $010388
+	and.b d6,-(a5)	; $01038C
+	or.b d5,(a5)	; $01038E
+	move.b (a0)+,d5	; $010390
+	move.b (a6,d5.w),d5	; $010392
+	move.b (a3,d5.w),d6	; $010396
+	and.b d6,-(a5)	; $01039A
+	or.b d5,(a5)	; $01039C
+	suba.w #$1d,a5	; $01039E
+	move.b (a0)+,d5	; $0103A2
+	move.b (a6,d5.w),d5	; $0103A4
+	move.b (a3,d5.w),d6	; $0103A8
+	and.b d6,(a5)	; $0103AC
+	or.b d5,(a5)	; $0103AE
+	bra.w L00E43C	; $0103B0
+	; code $0103B4-$01044B
+FUN_0103b4:
+	move.b (a0)+,d5	; $0103B4
+	move.b (a6,d5.w),d5	; $0103B6
+	move.b (a3,d5.w),d6	; $0103BA
+	and.b d6,(a5)	; $0103BE
+	or.b d5,(a5)	; $0103C0
+	move.b (a0)+,d5	; $0103C2
+	move.b (a6,d5.w),d5	; $0103C4
+	move.b (a3,d5.w),d6	; $0103C8
+	and.b d6,-(a5)	; $0103CC
+	or.b d5,(a5)	; $0103CE
+	move.b (a0)+,d5	; $0103D0
+	move.b (a6,d5.w),d5	; $0103D2
+	move.b (a3,d5.w),d6	; $0103D6
+	and.b d6,-(a5)	; $0103DA
+	or.b d5,(a5)	; $0103DC
+	suba.w #$1d,a5	; $0103DE
+	move.b (a0)+,d5	; $0103E2
+	move.b (a6,d5.w),d5	; $0103E4
+	move.b (a3,d5.w),d6	; $0103E8
+	and.b d6,(a5)	; $0103EC
+	or.b d5,(a5)	; $0103EE
+	move.b (a0)+,d5	; $0103F0
+	move.b (a6,d5.w),d5	; $0103F2
+	move.b (a3,d5.w),d6	; $0103F6
+	and.b d6,-(a5)	; $0103FA
+	or.b d5,(a5)	; $0103FC
+	move.b (a0)+,d5	; $0103FE
+	move.b (a6,d5.w),d5	; $010400
+	move.b (a3,d5.w),d6	; $010404
+	and.b d6,-(a5)	; $010408
+	or.b d5,(a5)	; $01040A
+	move.b (a0)+,d5	; $01040C
+	move.b (a6,d5.w),d5	; $01040E
+	move.b (a3,d5.w),d6	; $010412
+	and.b d6,-(a5)	; $010416
+	or.b d5,(a5)	; $010418
+	suba.w #$1d,a5	; $01041A
+	move.b (a0)+,d5	; $01041E
+	move.b (a6,d5.w),d5	; $010420
+	move.b (a3,d5.w),d6	; $010424
+	and.b d6,(a5)	; $010428
+	or.b d5,(a5)	; $01042A
+	move.b (a0)+,d5	; $01042C
+	move.b (a6,d5.w),d5	; $01042E
+	move.b (a3,d5.w),d6	; $010432
+	and.b d6,-(a5)	; $010436
+	or.b d5,(a5)	; $010438
+	move.b (a0)+,d5	; $01043A
+	move.b (a6,d5.w),d5	; $01043C
+	move.b (a3,d5.w),d6	; $010440
+	and.b d6,-(a5)	; $010444
+	or.b d5,(a5)	; $010446
+	bra.w L00E43C	; $010448
+	; code $01044C-$0104E3
+FUN_01044c:
+	move.b (a0)+,d5	; $01044C
+	move.b (a6,d5.w),d5	; $01044E
+	move.b (a3,d5.w),d6	; $010452
+	and.b d6,(a5)	; $010456
+	or.b d5,(a5)	; $010458
+	move.b (a0)+,d5	; $01045A
+	move.b (a6,d5.w),d5	; $01045C
+	move.b (a3,d5.w),d6	; $010460
+	and.b d6,-(a5)	; $010464
+	or.b d5,(a5)	; $010466
+	suba.w #$1d,a5	; $010468
+	move.b (a0)+,d5	; $01046C
+	move.b (a6,d5.w),d5	; $01046E
+	move.b (a3,d5.w),d6	; $010472
+	and.b d6,(a5)	; $010476
+	or.b d5,(a5)	; $010478
+	move.b (a0)+,d5	; $01047A
+	move.b (a6,d5.w),d5	; $01047C
+	move.b (a3,d5.w),d6	; $010480
+	and.b d6,-(a5)	; $010484
+	or.b d5,(a5)	; $010486
+	move.b (a0)+,d5	; $010488
+	move.b (a6,d5.w),d5	; $01048A
+	move.b (a3,d5.w),d6	; $01048E
+	and.b d6,-(a5)	; $010492
+	or.b d5,(a5)	; $010494
+	move.b (a0)+,d5	; $010496
+	move.b (a6,d5.w),d5	; $010498
+	move.b (a3,d5.w),d6	; $01049C
+	and.b d6,-(a5)	; $0104A0
+	or.b d5,(a5)	; $0104A2
+	suba.w #$1d,a5	; $0104A4
+	move.b (a0)+,d5	; $0104A8
+	move.b (a6,d5.w),d5	; $0104AA
+	move.b (a3,d5.w),d6	; $0104AE
+	and.b d6,(a5)	; $0104B2
+	or.b d5,(a5)	; $0104B4
+	move.b (a0)+,d5	; $0104B6
+	move.b (a6,d5.w),d5	; $0104B8
+	move.b (a3,d5.w),d6	; $0104BC
+	and.b d6,-(a5)	; $0104C0
+	or.b d5,(a5)	; $0104C2
+	move.b (a0)+,d5	; $0104C4
+	move.b (a6,d5.w),d5	; $0104C6
+	move.b (a3,d5.w),d6	; $0104CA
+	and.b d6,-(a5)	; $0104CE
+	or.b d5,(a5)	; $0104D0
+	move.b (a0)+,d5	; $0104D2
+	move.b (a6,d5.w),d5	; $0104D4
+	move.b (a3,d5.w),d6	; $0104D8
+	and.b d6,-(a5)	; $0104DC
+	or.b d5,(a5)	; $0104DE
+	bra.w L00E43C	; $0104E0
+	; code $0104E4-$01057B
+FUN_0104e4:
+	move.b (a0)+,d5	; $0104E4
+	move.b (a6,d5.w),d5	; $0104E6
+	move.b (a3,d5.w),d6	; $0104EA
+	and.b d6,(a5)	; $0104EE
+	or.b d5,(a5)	; $0104F0
+	move.b (a0)+,d5	; $0104F2
+	move.b (a6,d5.w),d5	; $0104F4
+	move.b (a3,d5.w),d6	; $0104F8
+	and.b d6,-(a5)	; $0104FC
+	or.b d5,(a5)	; $0104FE
+	move.b (a0)+,d5	; $010500
+	move.b (a6,d5.w),d5	; $010502
+	move.b (a3,d5.w),d6	; $010506
+	and.b d6,-(a5)	; $01050A
+	or.b d5,(a5)	; $01050C
+	move.b (a0)+,d5	; $01050E
+	move.b (a6,d5.w),d5	; $010510
+	move.b (a3,d5.w),d6	; $010514
+	and.b d6,-(a5)	; $010518
+	or.b d5,(a5)	; $01051A
+	suba.w #$1d,a5	; $01051C
+	move.b (a0)+,d5	; $010520
+	move.b (a6,d5.w),d5	; $010522
+	move.b (a3,d5.w),d6	; $010526
+	and.b d6,(a5)	; $01052A
+	or.b d5,(a5)	; $01052C
+	move.b (a0)+,d5	; $01052E
+	move.b (a6,d5.w),d5	; $010530
+	move.b (a3,d5.w),d6	; $010534
+	and.b d6,-(a5)	; $010538
+	or.b d5,(a5)	; $01053A
+	move.b (a0)+,d5	; $01053C
+	move.b (a6,d5.w),d5	; $01053E
+	move.b (a3,d5.w),d6	; $010542
+	and.b d6,-(a5)	; $010546
+	or.b d5,(a5)	; $010548
+	move.b (a0)+,d5	; $01054A
+	move.b (a6,d5.w),d5	; $01054C
+	move.b (a3,d5.w),d6	; $010550
+	and.b d6,-(a5)	; $010554
+	or.b d5,(a5)	; $010556
+	suba.w #$1d,a5	; $010558
+	move.b (a0)+,d5	; $01055C
+	move.b (a6,d5.w),d5	; $01055E
+	move.b (a3,d5.w),d6	; $010562
+	and.b d6,(a5)	; $010566
+	or.b d5,(a5)	; $010568
+	move.b (a0)+,d5	; $01056A
+	move.b (a6,d5.w),d5	; $01056C
+	move.b (a3,d5.w),d6	; $010570
+	and.b d6,-(a5)	; $010574
+	or.b d5,(a5)	; $010576
+	bra.w L00E43C	; $010578
+	; code $01057C-$010605
+FUN_01057c:
+	move.b (a0)+,d5	; $01057C
+	move.b (a6,d5.w),d5	; $01057E
+	move.b (a3,d5.w),d6	; $010582
+	and.b d6,(a5)	; $010586
+	or.b d5,(a5)	; $010588
+	suba.w #$1d,a5	; $01058A
+	move.b (a0)+,d5	; $01058E
+	move.b (a6,d5.w),d5	; $010590
+	move.b (a3,d5.w),d6	; $010594
+	and.b d6,(a5)	; $010598
+	or.b d5,(a5)	; $01059A
+	move.b (a0)+,d5	; $01059C
+	move.b (a6,d5.w),d5	; $01059E
+	move.b (a3,d5.w),d6	; $0105A2
+	and.b d6,-(a5)	; $0105A6
+	or.b d5,(a5)	; $0105A8
+	move.b (a0)+,d5	; $0105AA
+	move.b (a6,d5.w),d5	; $0105AC
+	move.b (a3,d5.w),d6	; $0105B0
+	and.b d6,-(a5)	; $0105B4
+	or.b d5,(a5)	; $0105B6
+	move.b (a0)+,d5	; $0105B8
+	move.b (a6,d5.w),d5	; $0105BA
+	move.b (a3,d5.w),d6	; $0105BE
+	and.b d6,-(a5)	; $0105C2
+	or.b d5,(a5)	; $0105C4
+	suba.w #$1d,a5	; $0105C6
+	move.b (a0)+,d5	; $0105CA
+	move.b (a6,d5.w),d5	; $0105CC
+	move.b (a3,d5.w),d6	; $0105D0
+	and.b d6,(a5)	; $0105D4
+	or.b d5,(a5)	; $0105D6
+	move.b (a0)+,d5	; $0105D8
+	move.b (a6,d5.w),d5	; $0105DA
+	move.b (a3,d5.w),d6	; $0105DE
+	and.b d6,-(a5)	; $0105E2
+	or.b d5,(a5)	; $0105E4
+	move.b (a0)+,d5	; $0105E6
+	move.b (a6,d5.w),d5	; $0105E8
+	move.b (a3,d5.w),d6	; $0105EC
+	and.b d6,-(a5)	; $0105F0
+	or.b d5,(a5)	; $0105F2
+	move.b (a0)+,d5	; $0105F4
+	move.b (a6,d5.w),d5	; $0105F6
+	move.b (a3,d5.w),d6	; $0105FA
+	and.b d6,-(a5)	; $0105FE
+	or.b d5,(a5)	; $010600
+	bra.w L00E43C	; $010602
+	; code $010606-$01068F
+FUN_010606:
+	move.b (a0)+,d5	; $010606
+	move.b (a6,d5.w),d5	; $010608
+	move.b (a3,d5.w),d6	; $01060C
+	and.b d6,(a5)	; $010610
+	or.b d5,(a5)	; $010612
+	move.b (a0)+,d5	; $010614
+	move.b (a6,d5.w),d5	; $010616
+	move.b (a3,d5.w),d6	; $01061A
+	and.b d6,-(a5)	; $01061E
+	or.b d5,(a5)	; $010620
+	move.b (a0)+,d5	; $010622
+	move.b (a6,d5.w),d5	; $010624
+	move.b (a3,d5.w),d6	; $010628
+	and.b d6,-(a5)	; $01062C
+	or.b d5,(a5)	; $01062E
+	suba.w #$1d,a5	; $010630
+	move.b (a0)+,d5	; $010634
+	move.b (a6,d5.w),d5	; $010636
+	move.b (a3,d5.w),d6	; $01063A
+	and.b d6,(a5)	; $01063E
+	or.b d5,(a5)	; $010640
+	move.b (a0)+,d5	; $010642
+	move.b (a6,d5.w),d5	; $010644
+	move.b (a3,d5.w),d6	; $010648
+	and.b d6,-(a5)	; $01064C
+	or.b d5,(a5)	; $01064E
+	move.b (a0)+,d5	; $010650
+	move.b (a6,d5.w),d5	; $010652
+	move.b (a3,d5.w),d6	; $010656
+	and.b d6,-(a5)	; $01065A
+	or.b d5,(a5)	; $01065C
+	move.b (a0)+,d5	; $01065E
+	move.b (a6,d5.w),d5	; $010660
+	move.b (a3,d5.w),d6	; $010664
+	and.b d6,-(a5)	; $010668
+	or.b d5,(a5)	; $01066A
+	suba.w #$1d,a5	; $01066C
+	move.b (a0)+,d5	; $010670
+	move.b (a6,d5.w),d5	; $010672
+	move.b (a3,d5.w),d6	; $010676
+	and.b d6,(a5)	; $01067A
+	or.b d5,(a5)	; $01067C
+	move.b (a0)+,d5	; $01067E
+	move.b (a6,d5.w),d5	; $010680
+	move.b (a3,d5.w),d6	; $010684
+	and.b d6,-(a5)	; $010688
+	or.b d5,(a5)	; $01068A
+	bra.w L00E43C	; $01068C
+	; code $010690-$010719
+FUN_010690:
+	move.b (a0)+,d5	; $010690
+	move.b (a6,d5.w),d5	; $010692
+	move.b (a3,d5.w),d6	; $010696
+	and.b d6,(a5)	; $01069A
+	or.b d5,(a5)	; $01069C
+	move.b (a0)+,d5	; $01069E
+	move.b (a6,d5.w),d5	; $0106A0
+	move.b (a3,d5.w),d6	; $0106A4
+	and.b d6,-(a5)	; $0106A8
+	or.b d5,(a5)	; $0106AA
+	suba.w #$1d,a5	; $0106AC
+	move.b (a0)+,d5	; $0106B0
+	move.b (a6,d5.w),d5	; $0106B2
+	move.b (a3,d5.w),d6	; $0106B6
+	and.b d6,(a5)	; $0106BA
+	or.b d5,(a5)	; $0106BC
+	move.b (a0)+,d5	; $0106BE
+	move.b (a6,d5.w),d5	; $0106C0
+	move.b (a3,d5.w),d6	; $0106C4
+	and.b d6,-(a5)	; $0106C8
+	or.b d5,(a5)	; $0106CA
+	move.b (a0)+,d5	; $0106CC
+	move.b (a6,d5.w),d5	; $0106CE
+	move.b (a3,d5.w),d6	; $0106D2
+	and.b d6,-(a5)	; $0106D6
+	or.b d5,(a5)	; $0106D8
+	move.b (a0)+,d5	; $0106DA
+	move.b (a6,d5.w),d5	; $0106DC
+	move.b (a3,d5.w),d6	; $0106E0
+	and.b d6,-(a5)	; $0106E4
+	or.b d5,(a5)	; $0106E6
+	suba.w #$1d,a5	; $0106E8
+	move.b (a0)+,d5	; $0106EC
+	move.b (a6,d5.w),d5	; $0106EE
+	move.b (a3,d5.w),d6	; $0106F2
+	and.b d6,(a5)	; $0106F6
+	or.b d5,(a5)	; $0106F8
+	move.b (a0)+,d5	; $0106FA
+	move.b (a6,d5.w),d5	; $0106FC
+	move.b (a3,d5.w),d6	; $010700
+	and.b d6,-(a5)	; $010704
+	or.b d5,(a5)	; $010706
+	move.b (a0)+,d5	; $010708
+	move.b (a6,d5.w),d5	; $01070A
+	move.b (a3,d5.w),d6	; $01070E
+	and.b d6,-(a5)	; $010712
+	or.b d5,(a5)	; $010714
+	bra.w L00E43C	; $010716
+	; code $01071A-$0107A3
+FUN_01071a:
+	move.b (a0)+,d5	; $01071A
+	move.b (a6,d5.w),d5	; $01071C
+	move.b (a3,d5.w),d6	; $010720
+	and.b d6,(a5)	; $010724
+	or.b d5,(a5)	; $010726
+	move.b (a0)+,d5	; $010728
+	move.b (a6,d5.w),d5	; $01072A
+	move.b (a3,d5.w),d6	; $01072E
+	and.b d6,-(a5)	; $010732
+	or.b d5,(a5)	; $010734
+	move.b (a0)+,d5	; $010736
+	move.b (a6,d5.w),d5	; $010738
+	move.b (a3,d5.w),d6	; $01073C
+	and.b d6,-(a5)	; $010740
+	or.b d5,(a5)	; $010742
+	move.b (a0)+,d5	; $010744
+	move.b (a6,d5.w),d5	; $010746
+	move.b (a3,d5.w),d6	; $01074A
+	and.b d6,-(a5)	; $01074E
+	or.b d5,(a5)	; $010750
+	suba.w #$1d,a5	; $010752
+	move.b (a0)+,d5	; $010756
+	move.b (a6,d5.w),d5	; $010758
+	move.b (a3,d5.w),d6	; $01075C
+	and.b d6,(a5)	; $010760
+	or.b d5,(a5)	; $010762
+	move.b (a0)+,d5	; $010764
+	move.b (a6,d5.w),d5	; $010766
+	move.b (a3,d5.w),d6	; $01076A
+	and.b d6,-(a5)	; $01076E
+	or.b d5,(a5)	; $010770
+	move.b (a0)+,d5	; $010772
+	move.b (a6,d5.w),d5	; $010774
+	move.b (a3,d5.w),d6	; $010778
+	and.b d6,-(a5)	; $01077C
+	or.b d5,(a5)	; $01077E
+	move.b (a0)+,d5	; $010780
+	move.b (a6,d5.w),d5	; $010782
+	move.b (a3,d5.w),d6	; $010786
+	and.b d6,-(a5)	; $01078A
+	or.b d5,(a5)	; $01078C
+	suba.w #$1d,a5	; $01078E
+	move.b (a0)+,d5	; $010792
+	move.b (a6,d5.w),d5	; $010794
+	move.b (a3,d5.w),d6	; $010798
+	and.b d6,(a5)	; $01079C
+	or.b d5,(a5)	; $01079E
+	bra.w L00E43C	; $0107A0
+	; code $0107A4-$01081F
+FUN_0107a4:
+	move.b (a0)+,d5	; $0107A4
+	move.b (a6,d5.w),d5	; $0107A6
+	move.b (a3,d5.w),d6	; $0107AA
+	and.b d6,(a5)	; $0107AE
+	or.b d5,(a5)	; $0107B0
+	suba.w #$1d,a5	; $0107B2
+	move.b (a0)+,d5	; $0107B6
+	move.b (a6,d5.w),d5	; $0107B8
+	move.b (a3,d5.w),d6	; $0107BC
+	and.b d6,(a5)	; $0107C0
+	or.b d5,(a5)	; $0107C2
+	move.b (a0)+,d5	; $0107C4
+	move.b (a6,d5.w),d5	; $0107C6
+	move.b (a3,d5.w),d6	; $0107CA
+	and.b d6,-(a5)	; $0107CE
+	or.b d5,(a5)	; $0107D0
+	move.b (a0)+,d5	; $0107D2
+	move.b (a6,d5.w),d5	; $0107D4
+	move.b (a3,d5.w),d6	; $0107D8
+	and.b d6,-(a5)	; $0107DC
+	or.b d5,(a5)	; $0107DE
+	move.b (a0)+,d5	; $0107E0
+	move.b (a6,d5.w),d5	; $0107E2
+	move.b (a3,d5.w),d6	; $0107E6
+	and.b d6,-(a5)	; $0107EA
+	or.b d5,(a5)	; $0107EC
+	suba.w #$1d,a5	; $0107EE
+	move.b (a0)+,d5	; $0107F2
+	move.b (a6,d5.w),d5	; $0107F4
+	move.b (a3,d5.w),d6	; $0107F8
+	and.b d6,(a5)	; $0107FC
+	or.b d5,(a5)	; $0107FE
+	move.b (a0)+,d5	; $010800
+	move.b (a6,d5.w),d5	; $010802
+	move.b (a3,d5.w),d6	; $010806
+	and.b d6,-(a5)	; $01080A
+	or.b d5,(a5)	; $01080C
+	move.b (a0)+,d5	; $01080E
+	move.b (a6,d5.w),d5	; $010810
+	move.b (a3,d5.w),d6	; $010814
+	and.b d6,-(a5)	; $010818
+	or.b d5,(a5)	; $01081A
+	bra.w L00E43C	; $01081C
+	; code $010820-$01089B
+FUN_010820:
+	move.b (a0)+,d5	; $010820
+	move.b (a6,d5.w),d5	; $010822
+	move.b (a3,d5.w),d6	; $010826
+	and.b d6,(a5)	; $01082A
+	or.b d5,(a5)	; $01082C
+	move.b (a0)+,d5	; $01082E
+	move.b (a6,d5.w),d5	; $010830
+	move.b (a3,d5.w),d6	; $010834
+	and.b d6,-(a5)	; $010838
+	or.b d5,(a5)	; $01083A
+	move.b (a0)+,d5	; $01083C
+	move.b (a6,d5.w),d5	; $01083E
+	move.b (a3,d5.w),d6	; $010842
+	and.b d6,-(a5)	; $010846
+	or.b d5,(a5)	; $010848
+	suba.w #$1d,a5	; $01084A
+	move.b (a0)+,d5	; $01084E
+	move.b (a6,d5.w),d5	; $010850
+	move.b (a3,d5.w),d6	; $010854
+	and.b d6,(a5)	; $010858
+	or.b d5,(a5)	; $01085A
+	move.b (a0)+,d5	; $01085C
+	move.b (a6,d5.w),d5	; $01085E
+	move.b (a3,d5.w),d6	; $010862
+	and.b d6,-(a5)	; $010866
+	or.b d5,(a5)	; $010868
+	move.b (a0)+,d5	; $01086A
+	move.b (a6,d5.w),d5	; $01086C
+	move.b (a3,d5.w),d6	; $010870
+	and.b d6,-(a5)	; $010874
+	or.b d5,(a5)	; $010876
+	move.b (a0)+,d5	; $010878
+	move.b (a6,d5.w),d5	; $01087A
+	move.b (a3,d5.w),d6	; $01087E
+	and.b d6,-(a5)	; $010882
+	or.b d5,(a5)	; $010884
+	suba.w #$1d,a5	; $010886
+	move.b (a0)+,d5	; $01088A
+	move.b (a6,d5.w),d5	; $01088C
+	move.b (a3,d5.w),d6	; $010890
+	and.b d6,(a5)	; $010894
+	or.b d5,(a5)	; $010896
+	bra.w L00E43C	; $010898
+	; code $01089C-$010917
+FUN_01089c:
+	move.b (a0)+,d5	; $01089C
+	move.b (a6,d5.w),d5	; $01089E
+	move.b (a3,d5.w),d6	; $0108A2
+	and.b d6,(a5)	; $0108A6
+	or.b d5,(a5)	; $0108A8
+	move.b (a0)+,d5	; $0108AA
+	move.b (a6,d5.w),d5	; $0108AC
+	move.b (a3,d5.w),d6	; $0108B0
+	and.b d6,-(a5)	; $0108B4
+	or.b d5,(a5)	; $0108B6
+	suba.w #$1d,a5	; $0108B8
+	move.b (a0)+,d5	; $0108BC
+	move.b (a6,d5.w),d5	; $0108BE
+	move.b (a3,d5.w),d6	; $0108C2
+	and.b d6,(a5)	; $0108C6
+	or.b d5,(a5)	; $0108C8
+	move.b (a0)+,d5	; $0108CA
+	move.b (a6,d5.w),d5	; $0108CC
+	move.b (a3,d5.w),d6	; $0108D0
+	and.b d6,-(a5)	; $0108D4
+	or.b d5,(a5)	; $0108D6
+	move.b (a0)+,d5	; $0108D8
+	move.b (a6,d5.w),d5	; $0108DA
+	move.b (a3,d5.w),d6	; $0108DE
+	and.b d6,-(a5)	; $0108E2
+	or.b d5,(a5)	; $0108E4
+	move.b (a0)+,d5	; $0108E6
+	move.b (a6,d5.w),d5	; $0108E8
+	move.b (a3,d5.w),d6	; $0108EC
+	and.b d6,-(a5)	; $0108F0
+	or.b d5,(a5)	; $0108F2
+	suba.w #$1d,a5	; $0108F4
+	move.b (a0)+,d5	; $0108F8
+	move.b (a6,d5.w),d5	; $0108FA
+	move.b (a3,d5.w),d6	; $0108FE
+	and.b d6,(a5)	; $010902
+	or.b d5,(a5)	; $010904
+	move.b (a0)+,d5	; $010906
+	move.b (a6,d5.w),d5	; $010908
+	move.b (a3,d5.w),d6	; $01090C
+	and.b d6,-(a5)	; $010910
+	or.b d5,(a5)	; $010912
+	bra.w L00E43C	; $010914
+	; code $010918-$01098F
+FUN_010918:
+	move.b (a0)+,d5	; $010918
+	move.b (a6,d5.w),d5	; $01091A
+	move.b (a3,d5.w),d6	; $01091E
+	and.b d6,(a5)	; $010922
+	or.b d5,(a5)	; $010924
+	move.b (a0)+,d5	; $010926
+	move.b (a6,d5.w),d5	; $010928
+	move.b (a3,d5.w),d6	; $01092C
+	and.b d6,-(a5)	; $010930
+	or.b d5,(a5)	; $010932
+	move.b (a0)+,d5	; $010934
+	move.b (a6,d5.w),d5	; $010936
+	move.b (a3,d5.w),d6	; $01093A
+	and.b d6,-(a5)	; $01093E
+	or.b d5,(a5)	; $010940
+	move.b (a0)+,d5	; $010942
+	move.b (a6,d5.w),d5	; $010944
+	move.b (a3,d5.w),d6	; $010948
+	and.b d6,-(a5)	; $01094C
+	or.b d5,(a5)	; $01094E
+	suba.w #$1d,a5	; $010950
+	move.b (a0)+,d5	; $010954
+	move.b (a6,d5.w),d5	; $010956
+	move.b (a3,d5.w),d6	; $01095A
+	and.b d6,(a5)	; $01095E
+	or.b d5,(a5)	; $010960
+	move.b (a0)+,d5	; $010962
+	move.b (a6,d5.w),d5	; $010964
+	move.b (a3,d5.w),d6	; $010968
+	and.b d6,-(a5)	; $01096C
+	or.b d5,(a5)	; $01096E
+	move.b (a0)+,d5	; $010970
+	move.b (a6,d5.w),d5	; $010972
+	move.b (a3,d5.w),d6	; $010976
+	and.b d6,-(a5)	; $01097A
+	or.b d5,(a5)	; $01097C
+	move.b (a0)+,d5	; $01097E
+	move.b (a6,d5.w),d5	; $010980
+	move.b (a3,d5.w),d6	; $010984
+	and.b d6,-(a5)	; $010988
+	or.b d5,(a5)	; $01098A
+	bra.w L00E43C	; $01098C
+	; code $010990-$0109FD
+FUN_010990:
+	move.b (a0)+,d5	; $010990
+	move.b (a6,d5.w),d5	; $010992
+	move.b (a3,d5.w),d6	; $010996
+	and.b d6,(a5)	; $01099A
+	or.b d5,(a5)	; $01099C
+	suba.w #$1d,a5	; $01099E
+	move.b (a0)+,d5	; $0109A2
+	move.b (a6,d5.w),d5	; $0109A4
+	move.b (a3,d5.w),d6	; $0109A8
+	and.b d6,(a5)	; $0109AC
+	or.b d5,(a5)	; $0109AE
+	move.b (a0)+,d5	; $0109B0
+	move.b (a6,d5.w),d5	; $0109B2
+	move.b (a3,d5.w),d6	; $0109B6
+	and.b d6,-(a5)	; $0109BA
+	or.b d5,(a5)	; $0109BC
+	move.b (a0)+,d5	; $0109BE
+	move.b (a6,d5.w),d5	; $0109C0
+	move.b (a3,d5.w),d6	; $0109C4
+	and.b d6,-(a5)	; $0109C8
+	or.b d5,(a5)	; $0109CA
+	move.b (a0)+,d5	; $0109CC
+	move.b (a6,d5.w),d5	; $0109CE
+	move.b (a3,d5.w),d6	; $0109D2
+	and.b d6,-(a5)	; $0109D6
+	or.b d5,(a5)	; $0109D8
+	suba.w #$1d,a5	; $0109DA
+	move.b (a0)+,d5	; $0109DE
+	move.b (a6,d5.w),d5	; $0109E0
+	move.b (a3,d5.w),d6	; $0109E4
+	and.b d6,(a5)	; $0109E8
+	or.b d5,(a5)	; $0109EA
+	move.b (a0)+,d5	; $0109EC
+	move.b (a6,d5.w),d5	; $0109EE
+	move.b (a3,d5.w),d6	; $0109F2
+	and.b d6,-(a5)	; $0109F6
+	or.b d5,(a5)	; $0109F8
+	bra.w L00E43C	; $0109FA
+	; code $0109FE-$010A67
+FUN_0109fe:
+	move.b (a0)+,d5	; $0109FE
+	move.b (a6,d5.w),d5	; $010A00
+	move.b (a3,d5.w),d6	; $010A04
+	and.b d6,(a5)	; $010A08
+	or.b d5,(a5)	; $010A0A
+	move.b (a0)+,d5	; $010A0C
+	move.b (a6,d5.w),d5	; $010A0E
+	move.b (a3,d5.w),d6	; $010A12
+	and.b d6,-(a5)	; $010A16
+	or.b d5,(a5)	; $010A18
+	move.b (a0)+,d5	; $010A1A
+	move.b (a6,d5.w),d5	; $010A1C
+	move.b (a3,d5.w),d6	; $010A20
+	and.b d6,-(a5)	; $010A24
+	or.b d5,(a5)	; $010A26
+	suba.w #$1d,a5	; $010A28
+	move.b (a0)+,d5	; $010A2C
+	move.b (a6,d5.w),d5	; $010A2E
+	move.b (a3,d5.w),d6	; $010A32
+	and.b d6,(a5)	; $010A36
+	or.b d5,(a5)	; $010A38
+	move.b (a0)+,d5	; $010A3A
+	move.b (a6,d5.w),d5	; $010A3C
+	move.b (a3,d5.w),d6	; $010A40
+	and.b d6,-(a5)	; $010A44
+	or.b d5,(a5)	; $010A46
+	move.b (a0)+,d5	; $010A48
+	move.b (a6,d5.w),d5	; $010A4A
+	move.b (a3,d5.w),d6	; $010A4E
+	and.b d6,-(a5)	; $010A52
+	or.b d5,(a5)	; $010A54
+	move.b (a0)+,d5	; $010A56
+	move.b (a6,d5.w),d5	; $010A58
+	move.b (a3,d5.w),d6	; $010A5C
+	and.b d6,-(a5)	; $010A60
+	or.b d5,(a5)	; $010A62
+	bra.w L00E43C	; $010A64
+	; code $010A68-$010AD5
+FUN_010a68:
+	move.b (a0)+,d5	; $010A68
+	move.b (a6,d5.w),d5	; $010A6A
+	move.b (a3,d5.w),d6	; $010A6E
+	and.b d6,(a5)	; $010A72
+	or.b d5,(a5)	; $010A74
+	move.b (a0)+,d5	; $010A76
+	move.b (a6,d5.w),d5	; $010A78
+	move.b (a3,d5.w),d6	; $010A7C
+	and.b d6,-(a5)	; $010A80
+	or.b d5,(a5)	; $010A82
+	suba.w #$1d,a5	; $010A84
+	move.b (a0)+,d5	; $010A88
+	move.b (a6,d5.w),d5	; $010A8A
+	move.b (a3,d5.w),d6	; $010A8E
+	and.b d6,(a5)	; $010A92
+	or.b d5,(a5)	; $010A94
+	move.b (a0)+,d5	; $010A96
+	move.b (a6,d5.w),d5	; $010A98
+	move.b (a3,d5.w),d6	; $010A9C
+	and.b d6,-(a5)	; $010AA0
+	or.b d5,(a5)	; $010AA2
+	move.b (a0)+,d5	; $010AA4
+	move.b (a6,d5.w),d5	; $010AA6
+	move.b (a3,d5.w),d6	; $010AAA
+	and.b d6,-(a5)	; $010AAE
+	or.b d5,(a5)	; $010AB0
+	move.b (a0)+,d5	; $010AB2
+	move.b (a6,d5.w),d5	; $010AB4
+	move.b (a3,d5.w),d6	; $010AB8
+	and.b d6,-(a5)	; $010ABC
+	or.b d5,(a5)	; $010ABE
+	suba.w #$1d,a5	; $010AC0
+	move.b (a0)+,d5	; $010AC4
+	move.b (a6,d5.w),d5	; $010AC6
+	move.b (a3,d5.w),d6	; $010ACA
+	and.b d6,(a5)	; $010ACE
+	or.b d5,(a5)	; $010AD0
+	bra.w L00E43C	; $010AD2
+	; code $010AD6-$010B3F
+FUN_010ad6:
+	move.b (a0)+,d5	; $010AD6
+	move.b (a6,d5.w),d5	; $010AD8
+	move.b (a3,d5.w),d6	; $010ADC
+	and.b d6,(a5)	; $010AE0
+	or.b d5,(a5)	; $010AE2
+	move.b (a0)+,d5	; $010AE4
+	move.b (a6,d5.w),d5	; $010AE6
+	move.b (a3,d5.w),d6	; $010AEA
+	and.b d6,-(a5)	; $010AEE
+	or.b d5,(a5)	; $010AF0
+	move.b (a0)+,d5	; $010AF2
+	move.b (a6,d5.w),d5	; $010AF4
+	move.b (a3,d5.w),d6	; $010AF8
+	and.b d6,-(a5)	; $010AFC
+	or.b d5,(a5)	; $010AFE
+	move.b (a0)+,d5	; $010B00
+	move.b (a6,d5.w),d5	; $010B02
+	move.b (a3,d5.w),d6	; $010B06
+	and.b d6,-(a5)	; $010B0A
+	or.b d5,(a5)	; $010B0C
+	suba.w #$1d,a5	; $010B0E
+	move.b (a0)+,d5	; $010B12
+	move.b (a6,d5.w),d5	; $010B14
+	move.b (a3,d5.w),d6	; $010B18
+	and.b d6,(a5)	; $010B1C
+	or.b d5,(a5)	; $010B1E
+	move.b (a0)+,d5	; $010B20
+	move.b (a6,d5.w),d5	; $010B22
+	move.b (a3,d5.w),d6	; $010B26
+	and.b d6,-(a5)	; $010B2A
+	or.b d5,(a5)	; $010B2C
+	move.b (a0)+,d5	; $010B2E
+	move.b (a6,d5.w),d5	; $010B30
+	move.b (a3,d5.w),d6	; $010B34
+	and.b d6,-(a5)	; $010B38
+	or.b d5,(a5)	; $010B3A
+	bra.w L00E43C	; $010B3C
+	; code $010B40-$010B9F
+FUN_010b40:
+	move.b (a0)+,d5	; $010B40
+	move.b (a6,d5.w),d5	; $010B42
+	move.b (a3,d5.w),d6	; $010B46
+	and.b d6,(a5)	; $010B4A
+	or.b d5,(a5)	; $010B4C
+	suba.w #$1d,a5	; $010B4E
+	move.b (a0)+,d5	; $010B52
+	move.b (a6,d5.w),d5	; $010B54
+	move.b (a3,d5.w),d6	; $010B58
+	and.b d6,(a5)	; $010B5C
+	or.b d5,(a5)	; $010B5E
+	move.b (a0)+,d5	; $010B60
+	move.b (a6,d5.w),d5	; $010B62
+	move.b (a3,d5.w),d6	; $010B66
+	and.b d6,-(a5)	; $010B6A
+	or.b d5,(a5)	; $010B6C
+	move.b (a0)+,d5	; $010B6E
+	move.b (a6,d5.w),d5	; $010B70
+	move.b (a3,d5.w),d6	; $010B74
+	and.b d6,-(a5)	; $010B78
+	or.b d5,(a5)	; $010B7A
+	move.b (a0)+,d5	; $010B7C
+	move.b (a6,d5.w),d5	; $010B7E
+	move.b (a3,d5.w),d6	; $010B82
+	and.b d6,-(a5)	; $010B86
+	or.b d5,(a5)	; $010B88
+	suba.w #$1d,a5	; $010B8A
+	move.b (a0)+,d5	; $010B8E
+	move.b (a6,d5.w),d5	; $010B90
+	move.b (a3,d5.w),d6	; $010B94
+	and.b d6,(a5)	; $010B98
+	or.b d5,(a5)	; $010B9A
+	bra.w L00E43C	; $010B9C
+	; code $010BA0-$010BFB
+FUN_010ba0:
+	move.b (a0)+,d5	; $010BA0
+	move.b (a6,d5.w),d5	; $010BA2
+	move.b (a3,d5.w),d6	; $010BA6
+	and.b d6,(a5)	; $010BAA
+	or.b d5,(a5)	; $010BAC
+	move.b (a0)+,d5	; $010BAE
+	move.b (a6,d5.w),d5	; $010BB0
+	move.b (a3,d5.w),d6	; $010BB4
+	and.b d6,-(a5)	; $010BB8
+	or.b d5,(a5)	; $010BBA
+	move.b (a0)+,d5	; $010BBC
+	move.b (a6,d5.w),d5	; $010BBE
+	move.b (a3,d5.w),d6	; $010BC2
+	and.b d6,-(a5)	; $010BC6
+	or.b d5,(a5)	; $010BC8
+	suba.w #$1d,a5	; $010BCA
+	move.b (a0)+,d5	; $010BCE
+	move.b (a6,d5.w),d5	; $010BD0
+	move.b (a3,d5.w),d6	; $010BD4
+	and.b d6,(a5)	; $010BD8
+	or.b d5,(a5)	; $010BDA
+	move.b (a0)+,d5	; $010BDC
+	move.b (a6,d5.w),d5	; $010BDE
+	move.b (a3,d5.w),d6	; $010BE2
+	and.b d6,-(a5)	; $010BE6
+	or.b d5,(a5)	; $010BE8
+	move.b (a0)+,d5	; $010BEA
+	move.b (a6,d5.w),d5	; $010BEC
+	move.b (a3,d5.w),d6	; $010BF0
+	and.b d6,-(a5)	; $010BF4
+	or.b d5,(a5)	; $010BF6
+	bra.w L00E43C	; $010BF8
+	; code $010BFC-$010C57
+FUN_010bfc:
+	move.b (a0)+,d5	; $010BFC
+	move.b (a6,d5.w),d5	; $010BFE
+	move.b (a3,d5.w),d6	; $010C02
+	and.b d6,(a5)	; $010C06
+	or.b d5,(a5)	; $010C08
+	move.b (a0)+,d5	; $010C0A
+	move.b (a6,d5.w),d5	; $010C0C
+	move.b (a3,d5.w),d6	; $010C10
+	and.b d6,-(a5)	; $010C14
+	or.b d5,(a5)	; $010C16
+	suba.w #$1d,a5	; $010C18
+	move.b (a0)+,d5	; $010C1C
+	move.b (a6,d5.w),d5	; $010C1E
+	move.b (a3,d5.w),d6	; $010C22
+	and.b d6,(a5)	; $010C26
+	or.b d5,(a5)	; $010C28
+	move.b (a0)+,d5	; $010C2A
+	move.b (a6,d5.w),d5	; $010C2C
+	move.b (a3,d5.w),d6	; $010C30
+	and.b d6,-(a5)	; $010C34
+	or.b d5,(a5)	; $010C36
+	move.b (a0)+,d5	; $010C38
+	move.b (a6,d5.w),d5	; $010C3A
+	move.b (a3,d5.w),d6	; $010C3E
+	and.b d6,-(a5)	; $010C42
+	or.b d5,(a5)	; $010C44
+	move.b (a0)+,d5	; $010C46
+	move.b (a6,d5.w),d5	; $010C48
+	move.b (a3,d5.w),d6	; $010C4C
+	and.b d6,-(a5)	; $010C50
+	or.b d5,(a5)	; $010C52
+	bra.w L00E43C	; $010C54
+	; code $010C58-$010CB3
+FUN_010c58:
+	move.b (a0)+,d5	; $010C58
+	move.b (a6,d5.w),d5	; $010C5A
+	move.b (a3,d5.w),d6	; $010C5E
+	and.b d6,(a5)	; $010C62
+	or.b d5,(a5)	; $010C64
+	move.b (a0)+,d5	; $010C66
+	move.b (a6,d5.w),d5	; $010C68
+	move.b (a3,d5.w),d6	; $010C6C
+	and.b d6,-(a5)	; $010C70
+	or.b d5,(a5)	; $010C72
+	move.b (a0)+,d5	; $010C74
+	move.b (a6,d5.w),d5	; $010C76
+	move.b (a3,d5.w),d6	; $010C7A
+	and.b d6,-(a5)	; $010C7E
+	or.b d5,(a5)	; $010C80
+	move.b (a0)+,d5	; $010C82
+	move.b (a6,d5.w),d5	; $010C84
+	move.b (a3,d5.w),d6	; $010C88
+	and.b d6,-(a5)	; $010C8C
+	or.b d5,(a5)	; $010C8E
+	suba.w #$1d,a5	; $010C90
+	move.b (a0)+,d5	; $010C94
+	move.b (a6,d5.w),d5	; $010C96
+	move.b (a3,d5.w),d6	; $010C9A
+	and.b d6,(a5)	; $010C9E
+	or.b d5,(a5)	; $010CA0
+	move.b (a0)+,d5	; $010CA2
+	move.b (a6,d5.w),d5	; $010CA4
+	move.b (a3,d5.w),d6	; $010CA8
+	and.b d6,-(a5)	; $010CAC
+	or.b d5,(a5)	; $010CAE
+	bra.w L00E43C	; $010CB0
+	; code $010CB4-$010D01
+FUN_010cb4:
+	move.b (a0)+,d5	; $010CB4
+	move.b (a6,d5.w),d5	; $010CB6
+	move.b (a3,d5.w),d6	; $010CBA
+	and.b d6,(a5)	; $010CBE
+	or.b d5,(a5)	; $010CC0
+	suba.w #$1d,a5	; $010CC2
+	move.b (a0)+,d5	; $010CC6
+	move.b (a6,d5.w),d5	; $010CC8
+	move.b (a3,d5.w),d6	; $010CCC
+	and.b d6,(a5)	; $010CD0
+	or.b d5,(a5)	; $010CD2
+	move.b (a0)+,d5	; $010CD4
+	move.b (a6,d5.w),d5	; $010CD6
+	move.b (a3,d5.w),d6	; $010CDA
+	and.b d6,-(a5)	; $010CDE
+	or.b d5,(a5)	; $010CE0
+	move.b (a0)+,d5	; $010CE2
+	move.b (a6,d5.w),d5	; $010CE4
+	move.b (a3,d5.w),d6	; $010CE8
+	and.b d6,-(a5)	; $010CEC
+	or.b d5,(a5)	; $010CEE
+	move.b (a0)+,d5	; $010CF0
+	move.b (a6,d5.w),d5	; $010CF2
+	move.b (a3,d5.w),d6	; $010CF6
+	and.b d6,-(a5)	; $010CFA
+	or.b d5,(a5)	; $010CFC
+	bra.w L00E43C	; $010CFE
+	; code $010D02-$010D4F
+FUN_010d02:
+	move.b (a0)+,d5	; $010D02
+	move.b (a6,d5.w),d5	; $010D04
+	move.b (a3,d5.w),d6	; $010D08
+	and.b d6,(a5)	; $010D0C
+	or.b d5,(a5)	; $010D0E
+	move.b (a0)+,d5	; $010D10
+	move.b (a6,d5.w),d5	; $010D12
+	move.b (a3,d5.w),d6	; $010D16
+	and.b d6,-(a5)	; $010D1A
+	or.b d5,(a5)	; $010D1C
+	move.b (a0)+,d5	; $010D1E
+	move.b (a6,d5.w),d5	; $010D20
+	move.b (a3,d5.w),d6	; $010D24
+	and.b d6,-(a5)	; $010D28
+	or.b d5,(a5)	; $010D2A
+	suba.w #$1d,a5	; $010D2C
+	move.b (a0)+,d5	; $010D30
+	move.b (a6,d5.w),d5	; $010D32
+	move.b (a3,d5.w),d6	; $010D36
+	and.b d6,(a5)	; $010D3A
+	or.b d5,(a5)	; $010D3C
+	move.b (a0)+,d5	; $010D3E
+	move.b (a6,d5.w),d5	; $010D40
+	move.b (a3,d5.w),d6	; $010D44
+	and.b d6,-(a5)	; $010D48
+	or.b d5,(a5)	; $010D4A
+	bra.w L00E43C	; $010D4C
+	; code $010D50-$010D9D
+FUN_010d50:
+	move.b (a0)+,d5	; $010D50
+	move.b (a6,d5.w),d5	; $010D52
+	move.b (a3,d5.w),d6	; $010D56
+	and.b d6,(a5)	; $010D5A
+	or.b d5,(a5)	; $010D5C
+	move.b (a0)+,d5	; $010D5E
+	move.b (a6,d5.w),d5	; $010D60
+	move.b (a3,d5.w),d6	; $010D64
+	and.b d6,-(a5)	; $010D68
+	or.b d5,(a5)	; $010D6A
+	suba.w #$1d,a5	; $010D6C
+	move.b (a0)+,d5	; $010D70
+	move.b (a6,d5.w),d5	; $010D72
+	move.b (a3,d5.w),d6	; $010D76
+	and.b d6,(a5)	; $010D7A
+	or.b d5,(a5)	; $010D7C
+	move.b (a0)+,d5	; $010D7E
+	move.b (a6,d5.w),d5	; $010D80
+	move.b (a3,d5.w),d6	; $010D84
+	and.b d6,-(a5)	; $010D88
+	or.b d5,(a5)	; $010D8A
+	move.b (a0)+,d5	; $010D8C
+	move.b (a6,d5.w),d5	; $010D8E
+	move.b (a3,d5.w),d6	; $010D92
+	and.b d6,-(a5)	; $010D96
+	or.b d5,(a5)	; $010D98
+	bra.w L00E43C	; $010D9A
+	; code $010D9E-$010DEB
+FUN_010d9e:
+	move.b (a0)+,d5	; $010D9E
+	move.b (a6,d5.w),d5	; $010DA0
+	move.b (a3,d5.w),d6	; $010DA4
+	and.b d6,(a5)	; $010DA8
+	or.b d5,(a5)	; $010DAA
+	move.b (a0)+,d5	; $010DAC
+	move.b (a6,d5.w),d5	; $010DAE
+	move.b (a3,d5.w),d6	; $010DB2
+	and.b d6,-(a5)	; $010DB6
+	or.b d5,(a5)	; $010DB8
+	move.b (a0)+,d5	; $010DBA
+	move.b (a6,d5.w),d5	; $010DBC
+	move.b (a3,d5.w),d6	; $010DC0
+	and.b d6,-(a5)	; $010DC4
+	or.b d5,(a5)	; $010DC6
+	move.b (a0)+,d5	; $010DC8
+	move.b (a6,d5.w),d5	; $010DCA
+	move.b (a3,d5.w),d6	; $010DCE
+	and.b d6,-(a5)	; $010DD2
+	or.b d5,(a5)	; $010DD4
+	suba.w #$1d,a5	; $010DD6
+	move.b (a0)+,d5	; $010DDA
+	move.b (a6,d5.w),d5	; $010DDC
+	move.b (a3,d5.w),d6	; $010DE0
+	and.b d6,(a5)	; $010DE4
+	or.b d5,(a5)	; $010DE6
+	bra.w L00E43C	; $010DE8
+	; code $010DEC-$010E2B
+FUN_010dec:
+	move.b (a0)+,d5	; $010DEC
+	move.b (a6,d5.w),d5	; $010DEE
+	move.b (a3,d5.w),d6	; $010DF2
+	and.b d6,(a5)	; $010DF6
+	or.b d5,(a5)	; $010DF8
+	suba.w #$1d,a5	; $010DFA
+	move.b (a0)+,d5	; $010DFE
+	move.b (a6,d5.w),d5	; $010E00
+	move.b (a3,d5.w),d6	; $010E04
+	and.b d6,(a5)	; $010E08
+	or.b d5,(a5)	; $010E0A
+	move.b (a0)+,d5	; $010E0C
+	move.b (a6,d5.w),d5	; $010E0E
+	move.b (a3,d5.w),d6	; $010E12
+	and.b d6,-(a5)	; $010E16
+	or.b d5,(a5)	; $010E18
+	move.b (a0)+,d5	; $010E1A
+	move.b (a6,d5.w),d5	; $010E1C
+	move.b (a3,d5.w),d6	; $010E20
+	and.b d6,-(a5)	; $010E24
+	or.b d5,(a5)	; $010E26
+	bra.w L00E43C	; $010E28
+	; code $010E2C-$010E6B
+FUN_010e2c:
+	move.b (a0)+,d5	; $010E2C
+	move.b (a6,d5.w),d5	; $010E2E
+	move.b (a3,d5.w),d6	; $010E32
+	and.b d6,(a5)	; $010E36
+	or.b d5,(a5)	; $010E38
+	move.b (a0)+,d5	; $010E3A
+	move.b (a6,d5.w),d5	; $010E3C
+	move.b (a3,d5.w),d6	; $010E40
+	and.b d6,-(a5)	; $010E44
+	or.b d5,(a5)	; $010E46
+	move.b (a0)+,d5	; $010E48
+	move.b (a6,d5.w),d5	; $010E4A
+	move.b (a3,d5.w),d6	; $010E4E
+	and.b d6,-(a5)	; $010E52
+	or.b d5,(a5)	; $010E54
+	suba.w #$1d,a5	; $010E56
+	move.b (a0)+,d5	; $010E5A
+	move.b (a6,d5.w),d5	; $010E5C
+	move.b (a3,d5.w),d6	; $010E60
+	and.b d6,(a5)	; $010E64
+	or.b d5,(a5)	; $010E66
+	bra.w L00E43C	; $010E68
+	; code $010E6C-$010EAB
+FUN_010e6c:
+	move.b (a0)+,d5	; $010E6C
+	move.b (a6,d5.w),d5	; $010E6E
+	move.b (a3,d5.w),d6	; $010E72
+	and.b d6,(a5)	; $010E76
+	or.b d5,(a5)	; $010E78
+	move.b (a0)+,d5	; $010E7A
+	move.b (a6,d5.w),d5	; $010E7C
+	move.b (a3,d5.w),d6	; $010E80
+	and.b d6,-(a5)	; $010E84
+	or.b d5,(a5)	; $010E86
+	suba.w #$1d,a5	; $010E88
+	move.b (a0)+,d5	; $010E8C
+	move.b (a6,d5.w),d5	; $010E8E
+	move.b (a3,d5.w),d6	; $010E92
+	and.b d6,(a5)	; $010E96
+	or.b d5,(a5)	; $010E98
+	move.b (a0)+,d5	; $010E9A
+	move.b (a6,d5.w),d5	; $010E9C
+	move.b (a3,d5.w),d6	; $010EA0
+	and.b d6,-(a5)	; $010EA4
+	or.b d5,(a5)	; $010EA6
+	bra.w L00E43C	; $010EA8
+	; code $010EAC-$010EE7
+FUN_010eac:
+	move.b (a0)+,d5	; $010EAC
+	move.b (a6,d5.w),d5	; $010EAE
+	move.b (a3,d5.w),d6	; $010EB2
+	and.b d6,(a5)	; $010EB6
+	or.b d5,(a5)	; $010EB8
+	move.b (a0)+,d5	; $010EBA
+	move.b (a6,d5.w),d5	; $010EBC
+	move.b (a3,d5.w),d6	; $010EC0
+	and.b d6,-(a5)	; $010EC4
+	or.b d5,(a5)	; $010EC6
+	move.b (a0)+,d5	; $010EC8
+	move.b (a6,d5.w),d5	; $010ECA
+	move.b (a3,d5.w),d6	; $010ECE
+	and.b d6,-(a5)	; $010ED2
+	or.b d5,(a5)	; $010ED4
+	move.b (a0)+,d5	; $010ED6
+	move.b (a6,d5.w),d5	; $010ED8
+	move.b (a3,d5.w),d6	; $010EDC
+	and.b d6,-(a5)	; $010EE0
+	or.b d5,(a5)	; $010EE2
+	bra.w L00E43C	; $010EE4
+	; code $010EE8-$010F19
+FUN_010ee8:
+	move.b (a0)+,d5	; $010EE8
+	move.b (a6,d5.w),d5	; $010EEA
+	move.b (a3,d5.w),d6	; $010EEE
+	and.b d6,(a5)	; $010EF2
+	or.b d5,(a5)	; $010EF4
+	suba.w #$1d,a5	; $010EF6
+	move.b (a0)+,d5	; $010EFA
+	move.b (a6,d5.w),d5	; $010EFC
+	move.b (a3,d5.w),d6	; $010F00
+	and.b d6,(a5)	; $010F04
+	or.b d5,(a5)	; $010F06
+	move.b (a0)+,d5	; $010F08
+	move.b (a6,d5.w),d5	; $010F0A
+	move.b (a3,d5.w),d6	; $010F0E
+	and.b d6,-(a5)	; $010F12
+	or.b d5,(a5)	; $010F14
+	bra.w L00E43C	; $010F16
+	; code $010F1A-$010F47
+FUN_010f1a:
+	move.b (a0)+,d5	; $010F1A
+	move.b (a6,d5.w),d5	; $010F1C
+	move.b (a3,d5.w),d6	; $010F20
+	and.b d6,(a5)	; $010F24
+	or.b d5,(a5)	; $010F26
+	move.b (a0)+,d5	; $010F28
+	move.b (a6,d5.w),d5	; $010F2A
+	move.b (a3,d5.w),d6	; $010F2E
+	and.b d6,-(a5)	; $010F32
+	or.b d5,(a5)	; $010F34
+	move.b (a0)+,d5	; $010F36
+	move.b (a6,d5.w),d5	; $010F38
+	move.b (a3,d5.w),d6	; $010F3C
+	and.b d6,-(a5)	; $010F40
+	or.b d5,(a5)	; $010F42
+	bra.w L00E43C	; $010F44
+	; code $010F48-$010F79
+FUN_010f48:
+	move.b (a0)+,d5	; $010F48
+	move.b (a6,d5.w),d5	; $010F4A
+	move.b (a3,d5.w),d6	; $010F4E
+	and.b d6,(a5)	; $010F52
+	or.b d5,(a5)	; $010F54
+	move.b (a0)+,d5	; $010F56
+	move.b (a6,d5.w),d5	; $010F58
+	move.b (a3,d5.w),d6	; $010F5C
+	and.b d6,-(a5)	; $010F60
+	or.b d5,(a5)	; $010F62
+	suba.w #$1d,a5	; $010F64
+	move.b (a0)+,d5	; $010F68
+	move.b (a6,d5.w),d5	; $010F6A
+	move.b (a3,d5.w),d6	; $010F6E
+	and.b d6,(a5)	; $010F72
+	or.b d5,(a5)	; $010F74
+	bra.w L00E43C	; $010F76
+	; code $010F7A-$010FA7
+FUN_010f7a:
+	move.b (a0)+,d5	; $010F7A
+	move.b (a6,d5.w),d5	; $010F7C
+	move.b (a3,d5.w),d6	; $010F80
+	and.b d6,(a5)	; $010F84
+	or.b d5,(a5)	; $010F86
+	move.b (a0)+,d5	; $010F88
+	move.b (a6,d5.w),d5	; $010F8A
+	move.b (a3,d5.w),d6	; $010F8E
+	and.b d6,-(a5)	; $010F92
+	or.b d5,(a5)	; $010F94
+	move.b (a0)+,d5	; $010F96
+	move.b (a6,d5.w),d5	; $010F98
+	move.b (a3,d5.w),d6	; $010F9C
+	and.b d6,-(a5)	; $010FA0
+	or.b d5,(a5)	; $010FA2
+	bra.w L00E43C	; $010FA4
+	; code $010FA8-$010FCB
+FUN_010fa8:
+	move.b (a0)+,d5	; $010FA8
+	move.b (a6,d5.w),d5	; $010FAA
+	move.b (a3,d5.w),d6	; $010FAE
+	and.b d6,(a5)	; $010FB2
+	or.b d5,(a5)	; $010FB4
+	suba.w #$1d,a5	; $010FB6
+	move.b (a0)+,d5	; $010FBA
+	move.b (a6,d5.w),d5	; $010FBC
+	move.b (a3,d5.w),d6	; $010FC0
+	and.b d6,(a5)	; $010FC4
+	or.b d5,(a5)	; $010FC6
+	bra.w L00E43C	; $010FC8
+	; code $010FCC-$010FEB
+FUN_010fcc:
+	move.b (a0)+,d5	; $010FCC
+	move.b (a6,d5.w),d5	; $010FCE
+	move.b (a3,d5.w),d6	; $010FD2
+	and.b d6,(a5)	; $010FD6
+	or.b d5,(a5)	; $010FD8
+	move.b (a0)+,d5	; $010FDA
+	move.b (a6,d5.w),d5	; $010FDC
+	move.b (a3,d5.w),d6	; $010FE0
+	and.b d6,-(a5)	; $010FE4
+	or.b d5,(a5)	; $010FE6
+	bra.w L00E43C	; $010FE8
+	; code $010FEC-$01100B
+FUN_010fec:
+	move.b (a0)+,d5	; $010FEC
+	move.b (a6,d5.w),d5	; $010FEE
+	move.b (a3,d5.w),d6	; $010FF2
+	and.b d6,(a5)	; $010FF6
+	or.b d5,(a5)	; $010FF8
+	move.b (a0)+,d5	; $010FFA
+	move.b (a6,d5.w),d5	; $010FFC
+	move.b (a3,d5.w),d6	; $011000
+	and.b d6,-(a5)	; $011004
+	or.b d5,(a5)	; $011006
+	bra.w L00E43C	; $011008
+	; code $01100C-$01102B
+FUN_01100c:
+	move.b (a0)+,d5	; $01100C
+	move.b (a6,d5.w),d5	; $01100E
+	move.b (a3,d5.w),d6	; $011012
+	and.b d6,(a5)	; $011016
+	or.b d5,(a5)	; $011018
+	move.b (a0)+,d5	; $01101A
+	move.b (a6,d5.w),d5	; $01101C
+	move.b (a3,d5.w),d6	; $011020
+	and.b d6,-(a5)	; $011024
+	or.b d5,(a5)	; $011026
+	bra.w L00E43C	; $011028
+	; code $01102C-$01103D
+FUN_01102c:
+	move.b (a0)+,d5	; $01102C
+	move.b (a6,d5.w),d5	; $01102E
+	move.b (a3,d5.w),d6	; $011032
+	and.b d6,(a5)	; $011036
+	or.b d5,(a5)	; $011038
+	bra.w L00E43C	; $01103A
+	; code $01103E-$01104F
+FUN_01103e:
+	move.b (a0)+,d5	; $01103E
+	move.b (a6,d5.w),d5	; $011040
+	move.b (a3,d5.w),d6	; $011044
+	and.b d6,(a5)	; $011048
+	or.b d5,(a5)	; $01104A
+	bra.w L00E43C	; $01104C
+	; code $011050-$011061
+FUN_011050:
+	move.b (a0)+,d5	; $011050
+	move.b (a6,d5.w),d5	; $011052
+	move.b (a3,d5.w),d6	; $011056
+	and.b d6,(a5)	; $01105A
+	or.b d5,(a5)	; $01105C
+	bra.w L00E43C	; $01105E
+	; code $011062-$011073
+FUN_011062:
+	move.b (a0)+,d5	; $011062
+	move.b (a6,d5.w),d5	; $011064
+	move.b (a3,d5.w),d6	; $011068
+	and.b d6,(a5)	; $01106C
+	or.b d5,(a5)	; $01106E
+	bra.w L00E43C	; $011070
 	; code $011074-$011079
 L011074:
 	movem.l (a7)+,d4-d6/a3-a6	; $011074
@@ -4055,7 +8604,7 @@ L012520:
 	clr.w -(a7)	; $0125BC
 	clr.w -(a7)	; $0125BE
 	move.w #$40,-(a7)	; $0125C0
-	pea.l L00F000.l	; $0125C4
+	pea.l $f000.l	; $0125C4
 	jsr gfx_tilemap_fill(pc)	; $0125CA
 	lea.l $10(a7),a7	; $0125CE
 	move.w ram_sys_ff8640.l,-(a7)	; $0125D2
@@ -6607,7 +11156,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $014982
 	clr.w -(a7)	; $014984
 	move.w #$40,-(a7)	; $014986
-	pea.l L00F000.l	; $01498A
+	pea.l $f000.l	; $01498A
 	jsr gfx_tilemap_fill.l	; $014990
 	lea.l $10(a7),a7	; $014996
 	move.w ram_sys_ff8640.l,-(a7)	; $01499A
@@ -8024,7 +12573,7 @@ snd_music_start:
 	clr.w -(a7)	; $015DAE
 	clr.w -(a7)	; $015DB0
 	move.w #$40,-(a7)	; $015DB2
-	pea.l L00F000.l	; $015DB6
+	pea.l $f000.l	; $015DB6
 	jsr gfx_tilemap_fill.l	; $015DBC
 	lea.l $10(a7),a7	; $015DC2
 	move.w ram_sys_ff8686.l,d0	; $015DC6

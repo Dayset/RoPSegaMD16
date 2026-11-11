@@ -5,8 +5,7 @@ start,end,class,name,doc_ref,tier
 0x001394,0x00692D,binary-table,region_001394,disasm/region-classes.txt,2
 0x00692E,0x009B2D,snd-song-11,snd_song_11,docs/sound.md:386 (song 11),2
 0x009B2E,0x00D25B,binary-table,region_009b2e,disasm/region-classes.txt,2
-0x00DF58,0x00E357,jump-table,region_00df58,disasm/region-classes.txt,2
-0x00E47C,0x011073,map-terrain-table,tbl_map_terrain_00e47c,rop.s map_terrain_tile_lookup pea.l L00F000 reads a 10-byte-period table (incl. unreferenced head at 0x00E47C) (tier 1),1
+0x00DF58,0x00E357,jump-table,tbl_jump_table_00df58,rop.s map_terrain_tile_lookup lea L00DF58(pc) reads table (256 entries, 114 targets) (tier 1)
 0x01150E,0x011513,text-glyph-data,tbl_text_glyph_data_01150e,rop.s sys_unk_011416 passes L01150E to text_glyph_draw (tier 1),1
 0x01215E,0x0121B1,text-glyph-data,tbl_text_glyph_data_01215e,rop.s text_blit refs L01215E (class by consumer; tier 1),1
 0x0121B2,0x01225B,text-glyph-data,tbl_text_glyph_data_0121b2,rop.s text_blit refs L0121B2 (class by consumer; tier 1),1

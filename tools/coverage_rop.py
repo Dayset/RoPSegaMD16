@@ -22,6 +22,8 @@ ROM_SIZE = 1048576
 INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
 DCB = re.compile(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;\s*\$([0-9A-Fa-f]+)')
 TBL = re.compile(r'^\tdc\.([wb])\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$')
+VEC = re.compile(r'^\tdc\.l \S+\t; \$([0-9A-Fa-f]+) vector$')
+W = re.compile(r'^\tdc\.([wb])\s+\S+\s*;\s*\$([0-9A-Fa-f]+)$')
 RAW = re.compile(r'^\s*\.?(dc|fill|ds)\.[bwl]\b|^\s*\.fill\b')
 INSN = re.compile(r'^\s+[a-z]\S*\s.*;\s*\$[0-9A-Fa-f]{6}')
 
@@ -78,6 +80,19 @@ def main():
             start, length = num('$' + d.group(2)), num(d.group(1))
             incbin += length
             known += known_bytes(start, length, regions)
+            continue
+        v = VEC.match(line)
+        if v:  # vector-table / jump-table pointer (dc.l label, #16 item 1): data, not a fallback
+            start = num('$' + v.group(1))
+            incbin += 4
+            known += known_bytes(start, 4, regions)
+            continue
+        w = W.match(line)
+        if w:  # bare dc.w/dc.b data word (e.g. HEADER_SUM): data, not a fallback
+            unit = 2 if w.group(1) == 'w' else 1
+            start = num('$' + w.group(2))
+            incbin += unit
+            known += known_bytes(start, unit, regions)
             continue
         if RAW.match(line):
             raw += 1

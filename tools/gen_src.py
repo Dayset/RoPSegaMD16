@@ -51,6 +51,11 @@ HW_NAMES = {
 }
 # Vector-table entries that hold code addresses (#16 item 1). Each is emitted as a label, so a shift moves it.
 VEC_PTR = {0x4: 0x200, 0x70: 0x1270, 0x78: 0x1272}  # reset PC; HBlank; VBlank handler
+# Terrain dispatch table (#16): 256 x u32 big-endian code pointers at $00DF58-$00E357.
+# Consumer map_terrain_tile_lookup ($00E358) pushes the entry directly as a jump target
+# (move.l (a6,d2.w),-(a7) + rts, no base added), so each entry is emitted as a dc.l label.
+JUMP_TABLE = 0xDF58
+JUMP_TABLE_END = 0xE358  # exclusive
 SHIFT = int(os.environ.get("SHIFT", "0"), 0)  # shift test (#16 item 3): padding inserted before the code at $200
 SHIFT_AT = 0x200
 HDR_SUM = 0x18E    # header checksum word, a symbol set by build/checksum.inc (#16)
@@ -548,6 +553,28 @@ def main():
                 labelled.add(k)
                 emit_data(k + 4, b)
                 return
+        if a < JUMP_TABLE_END and b > JUMP_TABLE:
+            # terrain dispatch table: 256 x u32 code pointers as dc.l labels (#16).
+            # The `; $addr vector` comment is the accounting marker: status.py's VEC
+            # regex counts such a line as 4 incbin bytes (a dc.l line would otherwise
+            # count as a raw fallback). The word is the same marker the vector table
+            # uses for a dc.l code-pointer line.
+            if a < JUMP_TABLE:
+                emit_data(a, JUMP_TABLE)
+            lo = max(a, JUMP_TABLE)
+            hi = min(b, JUMP_TABLE_END)
+            assert lo % 4 == 0 and hi % 4 == 0, f"jump table slice ${lo:06X}-${hi:06X} not 4-aligned"
+            if lo in label_addrs and lo not in labelled:
+                # table base label (referenced by map_terrain_tile_lookup's lea.l)
+                out.append(f"{lab(lo)}:")
+                labelled.add(lo)
+            for k in range(lo, hi, 4):
+                t = int.from_bytes(rom[k:k + 4], "big")
+                assert t in label_addrs, f"jump table entry ${k:06X} -> ${t:06X} has no label"
+                out.append(f"\tdc.l {lab(t)}\t; ${k:06X} vector")
+            if b > JUMP_TABLE_END:
+                emit_data(JUMP_TABLE_END, b)
+            return
         if a < HDR_SUM < b:  # header checksum word is a symbol (#16)
             assert not any(HDR_SUM < t < HDR_SUM + 2 for t in label_addrs), "label inside header word"
             emit_data(a, HDR_SUM)
