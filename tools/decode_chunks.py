@@ -42,9 +42,10 @@ both round-trip validated on the decompressed rec-0 tilemap before use.
 
 Chunk format (both sizes): big-endian u16 words, packed tile-type +
 flags — NOT VDP tilemap format (corrected 2026-11-11; the earlier
-VDP reading is wrong). Bits 0-8 tile-type index (0-511), bit 9 flag,
-bits 10-11 undecided flags, bit 12 variant flag, bits 13-15 height /
-row count (0-7). The 2048-byte records use 307 distinct tile-type
+VDP reading is wrong). Bits 0-8 tile-type index (0-511), bit 9 height-stack
+flag, bit 10 step-tile flag (world_step_tile, tiles 0x107/0x108),
+bit 11 hazard floor (damaging ground), bit 12 variant flag,
+bits 13-15 height / row count (0-7). The 2048-byte records use 307 distinct tile-type
 indices; the 242-byte records use 211, all within 0-511. Display goes
 through the $1AE98 descriptor table (tile-type -> 0-63 tile + flips,
 within the tileset loaded at the $FF8678 base), properties through
