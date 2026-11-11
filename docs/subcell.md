@@ -17,3 +17,9 @@ Status: partial. Static findings only. The Buc cutscene offset path is not yet t
 ## Open
 - Which caller the Buc cutscene uses. Needs a `-l` address log from the cutscene state.
 - Label conflict: `$161DC` sits inside the function labelled `snd_music_start` in rop.s. Recorded as a question; not resolved here.
+
+## Cell-commit point (#28, static)
+- Position setter `$1C21A` adds whole-cell deltas to `ram_sys_ff0e8e` (X, `$1C2D8`) and `ram_sys_ff0e90` (Y, `$1C300`); mode-6 init writes them at `$1C242`/`$1C264`.
+- Redraw request: `ram_sys_ff0098 = $FFFF` at `$1BA1A`/`$1BA2A`. The checker `redraw_check` (`$1B918`) consumes it and calls `map_chunk_pos` with the committed cell (`$1B96A`).
+- So the scroll is derived from the committed cell. Sub-cell motion needs an offset between the commit and the redraw, which the original does not have.
+- Not yet implemented: the interpolation patch, input queueing, and frame-accurate checks. Those need the live capture (#31) and are not done here.
