@@ -337,10 +337,33 @@ tool `tools/decode_chunks.py`).
     tables: `$5EDC4` (per-tile properties; bits 10–15 of the
     property word are the 6-bit terrain type) and `$1AE98` (the
     display descriptor — see the column-writer section below).
-  - **bit 9: flag.** `map_chunk_pos` gates its height block on it
-    (clear → skip); exact meaning undecided.
-  - **bits 10–11: flags, undecided.** No consumer found; rare in
-    the data (bit 10 set in 302/119,889 cells, bit 11 in 1,350).
+  - **bit 9: height-stack flag.** `map_chunk_pos` draws the full
+    h-row height stack (side tiles + top) only when bit 9 is set
+    (or the cell is on the view's last row/column); when clear,
+    only the single top tile is drawn, shifted up by h×7. Set on
+    6,659/119,889 cells, 94.7% with height > 0; strongly
+    associated with an exposed south/east face (a lower neighbour
+    to the south or east) but not a deterministic function of the
+    local neighbourhood — the exact authoring rule is open.
+  - **bit 10: step-tile flag.** Read by `world_step_tile`
+    `$02A562` on tiles 0x107/0x108: after the step-grant, when the
+    tile toggles to state 1, bit 10 set → `npc_attitude_step(1)`,
+    clear → message 0x16/0x56; the handler clears it when a
+    0x107/0x108 tile has no grant entry. Cell bits 10–15 also form
+    part of the `$D601E` grant-lookup key. Set on 302/119,889
+    cells, 46% on tile 263; forms the maze walls in chunk 210 and
+    a 10×13 block in overworld chunk 23. In-fiction meaning open
+    (grant/trigger flag vs structure marker — the two uses do not
+    collapse to one fiction yet).
+  - **bit 11: hazard floor (damaging ground).** `world_ambient_event`
+    (loc 1: 26 damage standing on it; loc 5: 8 sensor cells
+    displayed remotely as tile 0xCD/0) and `world_step_event`
+    (loc 2: stepping toggles it and swaps the display tile
+    0xDB/0xDF; loc 3: 1 damage per step; loc 5: stepping on a
+    sensor cell toggles it, sfx 0x26). Set on 1,350/119,889 cells,
+    tile/terrain-independent; 14 interior rooms hold exactly 71
+    each in a solid block. Whether the fiction is lava, traps, or
+    hot floor is open.
   - **bit 12: variant flag.** Selects the display descriptor's
     high variant in `column_write`/`row_write`; also a height
     factor in `map_chunk_pos`.
@@ -553,7 +576,9 @@ column 0–63, map X, map Y base):
 - Cell bits 9, 10, 11, 13–15 are **ignored** by both writers
   (only bits 0–8 and bit 12 are read). Bits 13–15 are the height
   field used by `map_chunk_pos`; bit 9 gates its height block;
-  bits 10–11 have no found consumer. This resolves the
+  bits 10–11 have consumers elsewhere (`world_step_tile` and the
+  ambient/step event code — see the layout above), just not in the
+  writers. This resolves the
   graphics.md §8 open item ("`$16512` column writer: the cell
   semantics … are only outlined in §6.4") and the
   "`$FF8674`/`$FF8678` tile bases … not traced" item, for

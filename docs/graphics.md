@@ -479,8 +479,8 @@ returns immediately.
   descriptor entries have identical variants; 78 differ. Cell
   semantics resolved 2026-11-11 [static] — full layout in
   `docs/maps.md` (chunk cell word: bits 0–8 tile-type index
-  0–511, bit 9 flag, bits 10–11 undecided, bit 12 variant,
-  bits 13–15 height).
+  0–511, bit 9 height-stack flag, bit 10 step-tile flag,
+  bit 11 hazard floor, bit 12 variant, bits 13–15 height).
 
 ### 6.5 Palette — `$170DA` and the loaders
 
