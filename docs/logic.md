@@ -88,7 +88,7 @@ before the table). `$FF0E82` = array of 6 party member indices (words).
 | +0x0E | word | Y position |
 | +0x14 | word | name index (into `$CD431`, 16-byte entries) |
 | +0x16 | byte | arg to level-up `$26B58` call |
-| +0x18 | word | "order": **high nibble = level 0–8, low nibble = rank 1–9**; order-name table `$1AA60`, index = `((low&0xF)−1)*90 + ((high>>4)&0xF)*10` |
+| +0x18 | word | "order": **high nibble = level, low nibble = rank**. Spawn-table values (measured, all 202 records at `$CECF0`): level 0–12 (no 9), rank 0–10 — the old "level 0–8, rank 1–9" was the XP-derived level range, not the table's. XP-derived level caps at 8 (XP cap 13000). Downstream the level is used raw, no clamp at spawn: max HP = min(20+15·level, 140), max Power = (level+1)·1000 (uncapped), damage rank 7/8 = (level+1)·2, rank 9 = level+1, rank 0/10 fall to the weak branch. Order-name table `$1AA60`, index = `((low&0xF)−1)*90 + ((high>>4)&0xF)*10` — out-of-range rank/level aliases onto other entries or reads past the 810-byte table (rank 10 → NPC class-name table; rank 0 → bytes just before it). |
 | +0x1A | word | XP (cap 13000) |
 | +0x1C | word | current HP |
 | +0x1E | word | current Power |
@@ -344,7 +344,7 @@ food/water = 2000).
   slots by matching the `$D1D00` record's (+0x00, +0x02) cell key
   against the slot's struct +0x0C/+0x0E cell; returns at once if
   present. If absent, spawns it via `entity_spawn` with
-  mode = code%64 (0→3, 1→2, 2→1, 3→4), then `npc_leader_init`.
+  mode 2 (the 3/2/1/4 value that varies across the four spawn sites is a later argument, arg $E — not the mode), then `npc_leader_init`.
   The `$D1D00` table is 455 records × 10 B (the earlier "175 × 10 B,
   146 distinct pairs" count was wrong — it counted only the first
   175 records; the full table holds 426 distinct key pairs, and
