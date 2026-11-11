@@ -6,9 +6,9 @@ Measured from the repo. Issue counts are on GitHub, not here.
 |---|---:|---:|---:|
 | Routines named (tier ≥ 1) | 428 of 446 | 446 | 95% |
 | Routines at tier 0 (structural only) | 32 | — | — |
-| Bytes in code | 202,674 | 1,048,576 | 19.33% |
-| Bytes in incbin data | 845,902 | 0 | 80.67% |
+| Bytes in code | 202,756 | 1,048,576 | 19.34% |
+| Bytes in incbin data | 845,820 | 0 | 80.66% |
 | Raw fallbacks in code | 0 | 0 | — |
-| Bytes accounted (M8) | 805,895 | 1,048,576 | 76.86% |
-| Bytes unknown | 242,681 | 0 | 23.14% |
+| Bytes accounted (M8) | 817,853 | 1,048,576 | 78.00% |
+| Bytes unknown | 230,723 | 0 | 22.00% |
 | Bytes high-entropy (opaque, counted in M8) | 109,468 | 0 | 10.44% |

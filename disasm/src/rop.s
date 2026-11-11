@@ -1018,12 +1018,13 @@ L001314:
 	addq.b #$1,d2	; $001324
 	and.b #$f,d2	; $001326
 	cmp.b $ff001b.l,d2	; $00132A
-	beq.b L00133C	; $001330
+	beq.b FUN_00133c	; $001330
 	move.b d0,(a0,d1.w)	; $001332
 	move.b d2,$ff001a.l	; $001336
-L00133C:
-	; data $00133C-$001341
-	incbin "rop-original.gen",$00133C,$6
+	; code $00133C-$001341
+FUN_00133c:
+	movem.l (a7)+,d0-d2/a0	; $00133C
+	rte	; $001340
 	; code $001342-$00134F
 L001342:
 	subq.b #$1,$ff0019.l	; $001342
@@ -1879,8 +1880,26 @@ pad2_read:
 	bsr.b wait_delay	; $00DD10
 	move.b $a10005.l,d1	; $00DD12
 	bra.b L00DCB8	; $00DD18
-	; data $00DD1A-$00DD5B
-	incbin "rop-original.gen",$00DD1A,$42
+	; code $00DD1A-$00DD5B
+FUN_00dd1a:
+	rts	; $00DD1A
+	move.b #$40,$a1000d.l	; $00DD1C
+	move.b #$0,$a10007.l	; $00DD24
+	moveq #$14,d1	; $00DD2C
+L00DD2E:
+	dbra d1,L00DD2E	; $00DD2E
+	move.b $a10007.l,d0	; $00DD32
+	asl.b #$2,d0	; $00DD38
+	and.b #$c0,d0	; $00DD3A
+	move.b #$40,$a10007.l	; $00DD3E
+	moveq #$14,d1	; $00DD46
+L00DD48:
+	dbra d1,L00DD48	; $00DD48
+	move.b $a10007.l,d1	; $00DD4C
+	and.b #$3f,d1	; $00DD52
+	or.b d1,d0	; $00DD56
+	not.b d0	; $00DD58
+	rts	; $00DD5A
 	; code $00DD5C-$00DE01
 sys_lzss_decompress:
 	movea.l $8(a7),a1	; $00DD5C
@@ -2090,8 +2109,13 @@ math_mod32:
 	move.l (a7)+,d1	; $00DEFA
 	tst.l d0	; $00DEFC
 	rts	; $00DEFE
-	; data $00DF00-$00DF09
-	incbin "rop-original.gen",$00DF00,$A
+	; code $00DF00-$00DF09
+FUN_00df00:
+	move.l d1,-(a7)	; $00DF00
+	bsr.b math_udiv32	; $00DF02
+	move.l (a7)+,d1	; $00DF04
+	tst.l d0	; $00DF06
+	rts	; $00DF08
 	; code $00DF0A-$00DF57
 math_udiv32:
 	swap d1	; $00DF0A
