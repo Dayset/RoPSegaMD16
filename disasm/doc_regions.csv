@@ -183,3 +183,6 @@ start,end,class,name,doc_ref,tier
 0x0435C0,0x0436E0,lut-nibble-expand,tbl_lut_nibble_0435c0,rop.s map_terrain_tile_lookup lea L0435C0 nibble LUT (288 bytes) (tier 1),1
 0x0436E0,0x043850,lut-nibble-expand,tbl_lut_nibble_0436e0,rop.s map_terrain_tile_lookup lea L0436E0 nibble LUT (368 bytes) (tier 1),1
 0x043850,0x044228,map-chunk-data,tbl_map_chunk_data_043850,rop.s map_chunk_load pea L043850 (2520 bytes) (tier 1),1
+0x000000,0x000200,vector-init-table,tbl_vector_init_000000,rop.s rom_start pea.l L000001/L000002/L00007E read this table (vector and init words; 512 bytes) (tier 1),1
+0x00028E,0x0002FA,boot-init-table,tbl_boot_init_00028e,rop.s reset_entry lea L00028E(pc) reads init values (108 bytes) (tier 1),1
+0x00E47C,0x011074,map-terrain-table,tbl_map_terrain_00e47c,rop.s map_terrain_tile_lookup pea.l L00F000 reads a 10-byte-period table (incl. unreferenced head at 0x00E47C) (tier 1),1
