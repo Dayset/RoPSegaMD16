@@ -823,3 +823,17 @@ path (a bounds check, not a terrain check) — see above.
    before anyone relies on flips.
 8. **City markers on the world map**: which sprites/objects mark
    which cities, and how the player's position is shown.
+
+## Terrain stream byte format (checked 2026-11-11)
+
+Read from the reader loop in `map_terrain_tile_lookup` (`$E358`, loops at
+`$E39C`, `$E3E2`, `$E43C`). Each stream is a run of bytes ended by `0x00`:
+- **hi nibble**: skip count. The skip-walk advances `1 + hi` bytes per entry.
+- **lo nibble**: type selector. It indexes a word table at `$435C0` (times 2),
+  combined with `$436E0` and `$433C0`, and `$DF58` for the dispatch.
+
+`tools/terrain_stream_check.py` (read only) confirms all 176 family-1 and all
+768 family-2 streams terminate at `0x00` inside their regions. That check is
+weak on its own: any byte run eventually hits `0x00`. The stronger evidence is
+the tiling and monotonic-offset result already in this doc. The check does not
+say what each lo-nibble value means in game terms; that still needs a trace.
