@@ -7,7 +7,7 @@ these files are the machine-readable tables behind it.
 
 - `xp_levels.txt` — level thresholds (formula, not a table), max HP / max Power
   per level. Level range is 0–8 (XP 12800+ → level 8).
-- `items.txt` — the 20 item categories, table `$D66A6` (10-byte records).
+- `items.txt` — the 20 item categories, table `$D66A3` (10-byte records).
 - `price_table.txt` — the 257 price/value records, table `$D6768` (4-byte
   records: [name index][raw value]). Records 1–120 are spells, 186–216 are
   trade goods, food/water and transports.

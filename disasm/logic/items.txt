@@ -1,28 +1,28 @@
-Rings of Power — item categories, table $D66A6 (10-byte records, 20 items)
-Record: +0 word name_idx ($CD431, 16-byte entries, CATEGORY word)
-        +2 word w (base index into price table $D6768)
-        +4..+9 bytes (undecoded: see docs/logic.md)
-Item 0 is a dummy (name 'Nobody', w=0). Table ends at $D6768.
+Rings of Power — item categories, table $D66A3 (10-byte records, 20 items)
+Record: +0 byte count, +1 word w1 (cap), +3 word name_idx ($CD431,
+        16-byte entries, CATEGORY word), +5 word w (base index into
+        price table $D6768), +7 word w2, +9 byte b9.
+Item 0 is a dummy (name 'Nobody', w=0). Table ends at $D6767.
 
- item | name_idx | category   | w   | raw +4..+9
-------+----------+------------+-----+----------------
-   0  |     0    | Nobody     |   0 | 074808140001
-   1  |   146    | spells     |   1 | 074809140001
-   2  |   146    | spells     |  21 | 07480a140001
-   3  |   146    | spells     |  41 | 07480b140001
-   4  |   146    | spells     |  61 | 07480c140001
-   5  |   146    | spells     |  81 | 07480d140001
-   6  |   146    | spells     | 101 | 074800010001
-   7  |   146    | spells     | 121 | 074800010001
-   8  |   146    | spells     | 122 | 074800010001
-   9  |   146    | spells     | 123 | 0243000b0001
-  10  |   147    | rings      | 125 | 06441a020001
-  11  |   148    | services   | 136 | 0357000f0001
-  12  |   150    | keys       | 138 | 045600210001
-  13  |   151    | items      | 153 | 06441b190063
-  14  |   152    | goods      | 186 | 06161c040001
-  15  |   153    | crafts     | 211 | 05561405270f
-  16  |   155    | healing    | 215 | 070d00210001
-  17  |   154    | papers     | 220 | 002f00010001
-  18  |   152    | goods      | 253 | 064419030001
-  19  |   149    | drinks     | 254 | 00000000009d
+ item | cnt |  w1  | name_idx | category   |  w  |  w2  | b9
+------+-----+------+----------+------------+-----+------+----
+    0 |   0 |    1 |        0 | Nobody     |   0 | 1864 | 08
+    1 |  20 |    1 |      146 | spells     |   1 | 1864 | 09
+    2 |  20 |    1 |      146 | spells     |  21 | 1864 | 0A
+    3 |  20 |    1 |      146 | spells     |  41 | 1864 | 0B
+    4 |  20 |    1 |      146 | spells     |  61 | 1864 | 0C
+    5 |  20 |    1 |      146 | spells     |  81 | 1864 | 0D
+    6 |  20 |    1 |      146 | spells     | 101 | 1864 | 00
+    7 |   1 |    1 |      146 | spells     | 121 | 1864 | 00
+    8 |   1 |    1 |      146 | spells     | 122 | 1864 | 00
+    9 |   1 |    1 |      146 | spells     | 123 |  579 | 00
+   10 |  11 |    1 |      147 | rings      | 125 | 1604 | 1A
+   11 |   2 |    1 |      148 | services   | 136 |  855 | 00
+   12 |  15 |    1 |      150 | keys       | 138 | 1110 | 00
+   13 |  33 |    1 |      151 | items      | 153 | 1604 | 1B
+   14 |  25 |   99 |      152 | goods      | 186 | 1558 | 1C
+   15 |   4 |    1 |      153 | crafts     | 211 | 1366 | 14
+   16 |   5 | 9999 |      155 | healing    | 215 | 1805 | 00
+   17 |  33 |    1 |      154 | papers     | 220 |   47 | 00
+   18 |   1 |    1 |      152 | goods      | 253 | 1604 | 19
+   19 |   3 |    1 |      149 | drinks     | 254 |    0 | 00

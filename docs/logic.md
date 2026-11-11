@@ -374,11 +374,20 @@ food/water = 2000).
 
 ### 3.3 Item and price tables — verified
 
-**Item categories, table `$D66A6`, 20 records × 10 bytes**
-(`$D66A6`–`$D6768`). Record: +0 word name_idx (`$CD431`, 16-byte
-entries — a **category** word), +2 word `w` (base index into the price
-table), +4..+9 bytes (undecoded — see below). Item 0 is a dummy (name
-"Nobody", w=0). Full table in `disasm/logic/items.txt`.
+**Item categories, table `$D66A3`, 20 records × 10 bytes**
+(`$D66A3`–`$D6767`). Record: +0 byte count, +1 word `w1` (cap —
+1, except 99 for goods and 9999 for healing; read by `$2C0EE` and
+`shop_category_max` as `word at $D66A4 + quotient*10`), +3 word
+name_idx (`$CD431`, 16-byte entries — a **category** word), +5 word
+`w` (base index into the price table), +7 word `w2`, +9 byte `b9`.
+Item 0 is a dummy (name "Nobody", w=0). Full table in
+`disasm/logic/items.txt`. (Earlier revisions said the base was
+`$D66A6` with +0 name_idx / +2 `w` — 3 bytes late. The three code
+accesses pin the base to `$D66A3`: `byte at $D66A3 + cat*10` is the
+count (`shop_category_count`), `word at $D66A4 + cat*10` is `w1`
+(`shop_category_max`, `$2C0EE`), `word at $D66A8 + cat*10` is `w`
+(the shop/spell listing). So `$2C0EE`'s cap read is exact, not an
+off-by-2 read.)
 
 | item | category | w |
 |------|----------|---|
@@ -395,9 +404,9 @@ table), +4..+9 bytes (undecoded — see below). Item 0 is a dummy (name
 | 18 | goods | 253 |
 | 19 | drinks | 254 |
 
-The record's +4..+9 bytes are not yet decoded (e.g. item 0:
-`07 48 08 14 00 01`; item 13: `06 44 1b 19 00 63`; item 15:
-`05 56 14 05 27 0f`). Unknown — #021.
+The record's +7 word `w2` and +9 byte `b9` are not yet decoded
+(e.g. item 0: w2 `0x0748`, b9 `0x08`; item 13: w2 `0x0644`,
+b9 `0x1b`; item 15: w2 `0x0556`, b9 `0x14`). Unknown — #021.
 
 **Price/value table `$D6768`, 257 records × 4 bytes**
 (`$D6768`–`$D6B68`). Record: +0 word name_idx (`$CD431` — the
@@ -425,7 +434,7 @@ The record's +4..+9 bytes are not yet decoded (e.g. item 0:
   Record 253 is a second "Corpse" (raw 1). Record 257+ is not table data.
 
 The shop display (`0x28664`) shows the current item's **category** name
-via the item record (`word at $D66A6 + item*10`, ×16 → `$CD431`) and
+via the item record (the +3 name_idx field, i.e. `word at $D66A6 + item*10`, ×16 → `$CD431`) and
 the specific good's name via the price record (`word at $D6768 +
 (w+modifier)*4`, ×16 → `$CD431`). `$D6734` (a ROM word, value 186 =
 the goods category's `w`) is the shop base offset, read at `0x1FB6E`
