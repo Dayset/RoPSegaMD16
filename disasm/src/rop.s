@@ -2276,7 +2276,7 @@ L0110A8:
 	unlk a6	; $0110CC
 	rts	; $0110CE
 	; code $0110D0-$011109
-sys_unk_0110d0:
+pal_set_entry:
 	link.w a6,#$0	; $0110D0
 	move.w $8(a6),d0	; $0110D4
 	asl.w #$5,d0	; $0110D8
@@ -2296,7 +2296,7 @@ sys_unk_0110d0:
 	unlk a6	; $011106
 	rts	; $011108
 	; code $01110A-$01113B
-sys_unk_01110a:
+pal_get_entry:
 	link.w a6,#$0	; $01110A
 	move.w $8(a6),d0	; $01110E
 	asl.w #$5,d0	; $011112
@@ -2349,7 +2349,7 @@ L011198:
 	unlk a6	; $01119A
 	rts	; $01119C
 	; code $01119E-$0112BD
-sys_unk_01119e:
+text_glyph_draw_wrap:
 	link.w a6,#$0	; $01119E
 	move.l d4,-(a7)	; $0111A2
 	moveq #$0,d4	; $0111A4
@@ -2446,7 +2446,7 @@ L0112B8:
 	unlk a6	; $0112BA
 	rts	; $0112BC
 	; code $0112BE-$011415
-sys_unk_0112be:
+text_draw_proportional:
 	link.w a6,#$ff88	; $0112BE
 	movem.l d4-d7,-(a7)	; $0112C2
 	moveq #$0,d4	; $0112C6
@@ -2574,7 +2574,7 @@ L01140A:
 	unlk a6	; $011412
 	rts	; $011414
 	; code $011416-$01150D
-sys_unk_011416:
+text_draw_gauge:
 	link.w a6,#$0	; $011416
 	movem.l d4-d7/a3,-(a7)	; $01141A
 	moveq #$0,d4	; $01141E
@@ -2674,7 +2674,7 @@ L01150E:
 	; data $01150E-$011513
 	incbin "rop-original.gen",$01150E,$6
 	; code $011514-$011587
-sys_unk_011514:
+text_draw_number:
 	link.w a6,#$fff6	; $011514
 	move.l d4,-(a7)	; $011518
 	moveq #$0,d4	; $01151A
@@ -3014,7 +3014,7 @@ L0118BA:
 	unlk a6	; $0118C4
 	rts	; $0118C6
 	; code $0118C8-$011949
-sys_unk_0118c8:
+gfx_tilemap_fill_seq:
 	link.w a6,#$0	; $0118C8
 	movem.l d4-d7,-(a7)	; $0118CC
 	move.w $10(a6),d7	; $0118D0
@@ -6797,7 +6797,7 @@ L014C94:
 	move.w #$4,-(a7)	; $014CB0
 	move.w #$40,-(a7)	; $014CB4
 	pea.l L002000.w	; $014CB8
-	jsr sys_unk_0112be.l	; $014CBC
+	jsr text_draw_proportional.l	; $014CBC
 	lea.l $10(a7),a7	; $014CC2
 L014CC6:
 	pea.l L014FB5(pc)	; $014CC6
@@ -7247,7 +7247,7 @@ L0152D6:
 	move.w d0,-(a7)	; $01530A
 	move.w #$80,-(a7)	; $01530C
 	clr.l -(a7)	; $015310
-	jsr sys_unk_01119e.l	; $015312
+	jsr text_glyph_draw_wrap.l	; $015312
 	lea.l $10(a7),a7	; $015318
 	move.w #$6000,-(a7)	; $01531C
 	move.w -$8(a6),d0	; $015320
@@ -7263,7 +7263,7 @@ L0152D6:
 	move.w d0,-(a7)	; $015344
 	move.w #$80,-(a7)	; $015346
 	clr.l -(a7)	; $01534A
-	jsr sys_unk_01119e.l	; $01534C
+	jsr text_glyph_draw_wrap.l	; $01534C
 	lea.l $10(a7),a7	; $015352
 	move.w -$8(a6),d0	; $015356
 	addq.w #$1,d0	; $01535A
@@ -16917,7 +16917,7 @@ L01ECBA:
 	move.w #$b,-(a7)	; $01ED1A
 	move.w #$40,-(a7)	; $01ED1E
 	pea.l L001000.w	; $01ED22
-	jsr sys_unk_011514.l	; $01ED26
+	jsr text_draw_number.l	; $01ED26
 	lea.l $e(a7),a7	; $01ED2C
 	bra.b L01EDA6	; $01ED30
 L01ED32:
@@ -16939,7 +16939,7 @@ L01ED32:
 	move.w #$a,-(a7)	; $01ED5C
 	move.w #$40,-(a7)	; $01ED60
 	pea.l L001000.w	; $01ED64
-	jsr sys_unk_011514.l	; $01ED68
+	jsr text_draw_number.l	; $01ED68
 	lea.l $e(a7),a7	; $01ED6E
 	bra.b L01EDA6	; $01ED72
 L01ED74:
@@ -26493,7 +26493,7 @@ gfx_fill_panel_plain:
 	move.w #$2,-(a7)	; $026E1E
 	move.w #$40,-(a7)	; $026E22
 	pea.l L001000.w	; $026E26
-	jsr sys_unk_0118c8.l	; $026E2A
+	jsr gfx_tilemap_fill_seq.l	; $026E2A
 	lea.l $16(a7),a7	; $026E30
 	move.w #$fff6,-(a7)	; $026E34
 	jsr sys_unk_01e4e6.l	; $026E38
@@ -26525,7 +26525,7 @@ gfx_fill_panel_flagged:
 	move.w #$2,-(a7)	; $026E9A
 	move.w #$40,-(a7)	; $026E9E
 	pea.l L001000.w	; $026EA2
-	jsr sys_unk_0118c8.l	; $026EA6
+	jsr gfx_tilemap_fill_seq.l	; $026EA6
 	lea.l $16(a7),a7	; $026EAC
 L026EB0:
 	unlk a6	; $026EB0
@@ -26664,7 +26664,7 @@ L027078:
 	move.w #$5,-(a7)	; $0270B4
 	move.w #$40,-(a7)	; $0270B8
 	pea.l L001000.w	; $0270BC
-	jsr sys_unk_011514.l	; $0270C0
+	jsr text_draw_number.l	; $0270C0
 	lea.l $e(a7),a7	; $0270C6
 	move.w #$a000,-(a7)	; $0270CA
 	pea.l L027575(pc)	; $0270CE
@@ -26680,7 +26680,7 @@ L027078:
 	move.w #$5,-(a7)	; $0270FA
 	move.w #$40,-(a7)	; $0270FE
 	pea.l L001000.w	; $027102
-	jsr sys_unk_011514.l	; $027106
+	jsr text_draw_number.l	; $027106
 	lea.l $e(a7),a7	; $02710C
 	bra.w L0273E4	; $027110
 L027114:
@@ -26849,7 +26849,7 @@ L0272D2:
 	move.w #$6,-(a7)	; $02735E
 	move.w #$40,-(a7)	; $027362
 	pea.l L001000.w	; $027366
-	jsr sys_unk_011416.l	; $02736A
+	jsr text_draw_gauge.l	; $02736A
 	lea.l $16(a7),a7	; $027370
 	move.w #$a000,-(a7)	; $027374
 	pea.l L02757C(pc)	; $027378
@@ -27099,7 +27099,7 @@ L02764C:
 	move.w #$2,-(a7)	; $02769A
 	move.w #$40,-(a7)	; $02769E
 	pea.l L001000.w	; $0276A2
-	jsr sys_unk_0118c8.l	; $0276A6
+	jsr gfx_tilemap_fill_seq.l	; $0276A6
 	lea.l $16(a7),a7	; $0276AC
 	move.w $ff8640.l,-(a7)	; $0276B0
 	move.w #$2,-(a7)	; $0276B6
@@ -29137,7 +29137,7 @@ L029296:
 	move.w #$f,-(a7)	; $02931A
 	move.w #$40,-(a7)	; $02931E
 	pea.l L001000.w	; $029322
-	jsr sys_unk_011416.l	; $029326
+	jsr text_draw_gauge.l	; $029326
 	lea.l $16(a7),a7	; $02932C
 	bra.b L029368	; $029330
 L029332:
@@ -33524,7 +33524,7 @@ L02CD1E:
 	move.w d0,-(a7)	; $02CD40
 	move.w #$40,-(a7)	; $02CD42
 	pea.l L001000.w	; $02CD46
-	jsr sys_unk_011514.l	; $02CD4A
+	jsr text_draw_number.l	; $02CD4A
 	lea.l $e(a7),a7	; $02CD50
 	move.w #$a000,-(a7)	; $02CD54
 	move.l $8(a6),-(a7)	; $02CD58
@@ -35990,7 +35990,7 @@ L02ECD6:
 	move.w d0,-(a7)	; $02EDBC
 	move.w #$40,-(a7)	; $02EDBE
 	pea.l L001000.w	; $02EDC2
-	jsr sys_unk_011416.l	; $02EDC6
+	jsr text_draw_gauge.l	; $02EDC6
 	lea.l $16(a7),a7	; $02EDCC
 	move.w $e(a6),d0	; $02EDD0
 	cmp.w d6,d0	; $02EDD4
