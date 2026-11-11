@@ -1,28 +1,47 @@
-Rings of Power — item categories, table $D66A3 (10-byte records, 20 items)
-Record: +0 byte count, +1 word w1 (cap), +3 word name_idx ($CD431,
-        16-byte entries, CATEGORY word), +5 word w (base index into
-        price table $D6768), +7 word w2, +9 byte b9.
-Item 0 is a dummy (name 'Nobody', w=0). Table ends at $D6767.
+Rings of Power — item categories, table $D66A0 (10-byte records, 20 items)
+Record: +0 byte E, +1 byte A ($B86AE sprite record shown with the
+        item message), +2 byte B (merchant-kind key matched against
+        char struct +0x17 by shop_merchant_setup), +3 byte count,
+        +4 word w1 (cap), +6 word name_idx ($CD431, 16-byte entries,
+        CATEGORY word), +8 word w (base index into price table
+        $D6768).
+Item 0 is a dummy (name 'Nobody', w=0). Table ends at $D6767
+(price table starts $D6768). Base corrected $D66A6 -> $D66A3 ->
+$D66A0: the old "+7 word w2 / +9 byte b9" framing mis-grouped the
+trailing bytes — w2_c = (E_{c+1} << 8) | A_{c+1}, b9_c = B_{c+1}.
 
- item | cnt |  w1  | name_idx | category   |  w  |  w2  | b9
-------+-----+------+----------+------------+-----+------+----
-    0 |   0 |    1 |        0 | Nobody     |   0 | 1864 | 08
-    1 |  20 |    1 |      146 | spells     |   1 | 1864 | 09
-    2 |  20 |    1 |      146 | spells     |  21 | 1864 | 0A
-    3 |  20 |    1 |      146 | spells     |  41 | 1864 | 0B
-    4 |  20 |    1 |      146 | spells     |  61 | 1864 | 0C
-    5 |  20 |    1 |      146 | spells     |  81 | 1864 | 0D
-    6 |  20 |    1 |      146 | spells     | 101 | 1864 | 00
-    7 |   1 |    1 |      146 | spells     | 121 | 1864 | 00
-    8 |   1 |    1 |      146 | spells     | 122 | 1864 | 00
-    9 |   1 |    1 |      146 | spells     | 123 |  579 | 00
-   10 |  11 |    1 |      147 | rings      | 125 | 1604 | 1A
-   11 |   2 |    1 |      148 | services   | 136 |  855 | 00
-   12 |  15 |    1 |      150 | keys       | 138 | 1110 | 00
-   13 |  33 |    1 |      151 | items      | 153 | 1604 | 1B
-   14 |  25 |   99 |      152 | goods      | 186 | 1558 | 1C
-   15 |   4 |    1 |      153 | crafts     | 211 | 1366 | 14
-   16 |   5 | 9999 |      155 | healing    | 215 | 1805 | 00
-   17 |  33 |    1 |      154 | papers     | 220 |   47 | 00
-   18 |   1 |    1 |      152 | goods      | 253 | 1604 | 19
-   19 |   3 |    1 |      149 | drinks     | 254 |    0 | 00
+A: msg_queue_consume -> tile_record_load -> text_record_dispatch
+   ($B86AE, A); 36 tiles at VRAM tile $24, palette set 3.
+   Visually confirmed: 72 scroll, 87 gold key, 67 gold ring,
+   22 red-sailed ship.
+B: shop_merchant_setup ($02A454) scans c=0..19 for B_c == char+0x17
+   (spawn table +3), last match wins, +0x25 must be > 0.
+   8-13 -> spell cats 1-6; 26 services; 27 goods; 28 crafts;
+   20 healing; 25 drinks. B=0 cats (0,7,8,9,10,12,13,17,18) have
+   no distinct key; +0x17=0 resolves to cat 18 (last B=0).
+E: entity_spawn mode 5 ($024304) only: new struct +0x06 =
+   $200 + E_q, q = grant-code/64 (all 161 $D601E codes give q<=18).
+   +0x06 high byte 2 -> travel mode 5; grid value = E + $208.
+
+ item |  E |  A |  B | cnt |  w1  | name_idx | category   |  w
+------+----+----+----+-----+------+----------+------------+-----
+    0 |  6 | 68 |  0 |   0 |    1 |        0 | Nobody     |   0
+    1 |  7 | 72 |  8 |  20 |    1 |      146 | spells     |   1
+    2 |  7 | 72 |  9 |  20 |    1 |      146 | spells     |  21
+    3 |  7 | 72 | 10 |  20 |    1 |      146 | spells     |  41
+    4 |  7 | 72 | 11 |  20 |    1 |      146 | spells     |  61
+    5 |  7 | 72 | 12 |  20 |    1 |      146 | spells     |  81
+    6 |  7 | 72 | 13 |  20 |    1 |      146 | spells     | 101
+    7 |  7 | 72 |  0 |   1 |    1 |      146 | spells     | 121
+    8 |  7 | 72 |  0 |   1 |    1 |      146 | spells     | 122
+    9 |  7 | 72 |  0 |   1 |    1 |      146 | spells     | 123
+   10 |  2 | 67 |  0 |  11 |    1 |      147 | rings      | 125
+   11 |  6 | 68 | 26 |   2 |    1 |      148 | services   | 136
+   12 |  3 | 87 |  0 |  15 |    1 |      150 | keys       | 138
+   13 |  4 | 86 |  0 |  33 |    1 |      151 | items      | 153
+   14 |  6 | 68 | 27 |  25 |   99 |      152 | goods      | 186
+   15 |  6 | 22 | 28 |   4 |    1 |      153 | crafts     | 211
+   16 |  5 | 86 | 20 |   5 | 9999 |      155 | healing    | 215
+   17 |  7 | 13 |  0 |  33 |    1 |      154 | papers     | 220
+   18 |  0 | 47 |  0 |   1 |    1 |      152 | goods      | 253
+   19 |  6 | 68 | 25 |   3 |    1 |      149 | drinks     | 254

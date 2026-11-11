@@ -14,7 +14,7 @@ start,end,class,name,doc_ref,tier
 0x05F524,0x05F7E4,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets; base $603E4; trace-verified 175/175 tiling),2
 0x05F7E4,0x0603E4,map-terrain-stream-offsets,map_terrain_stream_offsets_2,trace: 768 u32 offsets base $603E4 monotonic; every target preceded by 00; first target $68352 (end of family 1),2
 0x0D6768,0x0D6B6C,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
-0x0D66A6,0x0D6768,table-item-category,table_item_category,docs/logic.md:320 (20 x 10 bytes stated; range to price-table start is 194 bytes; CONFLICT recorded not resolved),1
+0x0D66A0,0x0D6768,table-item-category,table_item_category,docs/logic.md:408 (20 x 10 bytes; +0 E +1 A +2 B +3 count +4 w1 +6 name_idx +8 w; A is $B86AE sprite record; B is merchant-kind key; E is vessel mode-5 sub-value),2
 0x0D6B6C,0x0D6BEA,table-spell-rank,table_spell_rank_1,docs/spells.md:99 (rank 1; stride 0x7E from pointer table $FFA7CC),2
 0x0D6BEA,0x0D6C68,table-spell-rank,table_spell_rank_2,docs/spells.md:100 (rank 2; stride 0x7E),2
 0x0D6C68,0x0D6CE6,table-spell-rank,table_spell_rank_3,docs/spells.md:101 (rank 3; stride 0x7E),2
@@ -185,6 +185,7 @@ start,end,class,name,doc_ref,tier
 0x0435C0,0x0436E0,lut-nibble-expand,tbl_lut_nibble_0435c0,rop.s map_terrain_tile_lookup lea L0435C0 nibble LUT (288 bytes) (tier 1),1
 0x0436E0,0x043850,lut-nibble-expand,tbl_lut_nibble_0436e0,rop.s map_terrain_tile_lookup lea L0436E0 nibble LUT (368 bytes) (tier 1),1
 0x043850,0x044228,map-chunk-data,tbl_map_chunk_data_043850,rop.s map_chunk_load pea L043850 (2520 bytes) (tier 1),1
+0x044228,0x05EDC4,map-chunk-streams,map_chunk_streams_044228,docs/maps.md chunk tilemaps section: streams follow the 252-record $43850 table and end where per-tile properties start at $5EDC4 (verified 2026-11-10),2
 0x000000,0x000200,vector-init-table,tbl_vector_init_000000,rop.s rom_start pea.l L000001/L000002/L00007E read this table (vector and init words; 512 bytes) (tier 1),1
 0x00028E,0x0002FA,boot-init-table,tbl_boot_init_00028e,rop.s reset_entry lea L00028E(pc) reads init values (108 bytes) (tier 1),1
 0x0CD430,0x0CECF0,str-name16-table,str_name16_cd430,docs/spells.md:30 (396 entries x 16 bytes; entry = [1-byte category][15-byte name NUL-padded]; base $CD430 per npc_find_best_char lea $CD430),2
@@ -195,11 +196,6 @@ start,end,class,name,doc_ref,tier
 0x0D2EC2,0x0D301E,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
 0x0D301E,0x0D3102,text-record-table,tbl_text_record_table_0d301e,rop.s text_record_lookup lea L0D301E (class by consumer; tier 1),1
 0x0D3102,0x0D601E,text-record-table,tbl_text_record_table_0d3102,rop.s text_event_resolve lea L0D3102 (class by consumer; tier 1),1
-0x0D66A0,0x0D66A1,entity-spawn-table,tbl_entity_spawn_table_0d66a0,rop.s entity_spawn lea L0D66A0 (class by consumer; tier 1),1
-0x0D66A1,0x0D66A2,cmd-arg-table,tbl_cmd_arg_table_0d66a1,rop.s cmd10_handler lea L0D66A1 (class by consumer; tier 1),1
-0x0D66A2,0x0D66A3,shop-merchant-table,tbl_shop_merchant_table_0d66a2,rop.s shop_merchant_setup lea L0D66A2 (class by consumer; tier 1),1
-0x0D66A3,0x0D66A4,shop-category-table,tbl_shop_category_table_0d66a3,rop.s shop_category_count lea L0D66A3 (class by consumer; tier 1),1
-0x0D66A4,0x0D66A6,word-record-table,tbl_word_record_table_0d66a4,rop.s menu_record_reload lea L0D66A4 (class by consumer; tier 1),1
 0x0D601E,0x0D63E4,enemy-record-table,tbl_enemy_record_0d601e,docs/logic.md:112 and 192 (enemy records; 6-byte stride; 0xA1 entries; word and 0x7FF gives gold/XP at FFC410; logic-audit.md:439 says 0xB8 entries via 2B5F4 so counts conflict),2
 0x05F1C4,0x05F524,map-terrain-grid,map_terrain_grid_ext,docs/maps.md:362 (terrain-grid extension in $5EDC4 format; secondary lookup $5EDC4[559..590] read by $01BB82; remaining 400 words same-format with no consumer found),1
 0x0D63E4,0x0D6644,table-location-song,table_location_song,docs/sound.md:403 (records 0-151; song = low nibble of record byte +3; placement bytes +0/+1/+2 read at $030956),2
