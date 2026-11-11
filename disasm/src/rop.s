@@ -9896,7 +9896,7 @@ L017674:
 	cmpi.w #$ffff,$a(a6)	; $017674
 	bne.b L01768A	; $01767A
 	move.l -$4(a6),-(a7)	; $01767C
-	jsr z80_unk_0eb968.l	; $017680
+	jsr snd_sfx_pointer_ff.l	; $017680
 	addq.w #$4,a7	; $017686
 	bra.b L01769E	; $017688
 L01768A:
@@ -9904,7 +9904,7 @@ L01768A:
 	ext.l d0	; $01768E
 	move.l d0,-(a7)	; $017690
 	move.l -$4(a6),-(a7)	; $017692
-	jsr z80_unk_0eb93e.l	; $017696
+	jsr snd_sfx_pointer.l	; $017696
 	addq.w #$8,a7	; $01769C
 L01769E:
 	bra.b L01764A	; $01769E
@@ -53851,7 +53851,7 @@ gfx_paint_stream_burst:
 	move.w #$35f,-(a7)	; $03D2EC
 	jsr map_terrain_tile_lookup.l	; $03D2F0
 	addq.w #$8,a7	; $03D2F6
-	jsr sys_unk_0eb9ee.l	; $03D2F8
+	jsr snd_sfx_busy.l	; $03D2F8
 	tst.w d0	; $03D2FE
 	bne.b L03D312	; $03D300
 	move.w #$ffff,-(a7)	; $03D302
@@ -54721,7 +54721,7 @@ L03DD26:
 	move.w d0,-(a7)	; $03DDCA
 	jsr gfx_paint_stream_block(pc)	; $03DDCC
 	addq.w #$8,a7	; $03DDD0
-	jsr sys_unk_0eb9ee.l	; $03DDD2
+	jsr snd_sfx_busy.l	; $03DDD2
 	tst.w d0	; $03DDD8
 	bne.b L03DDFC	; $03DDDA
 	move.w #$5,-(a7)	; $03DDDC
@@ -54800,7 +54800,7 @@ L03DE8E:
 	addq.w #$6,a7	; $03DEA0
 	tst.w d6	; $03DEA2
 	beq.b L03DEC0	; $03DEA4
-	jsr sys_unk_0eb9ee.l	; $03DEA6
+	jsr snd_sfx_busy.l	; $03DEA6
 	tst.w d0	; $03DEAC
 	bne.b L03DEC0	; $03DEAE
 	move.w #$ffff,-(a7)	; $03DEB0
@@ -54844,7 +54844,7 @@ L03DEF6:
 	swap d0	; $03DF26
 	tst.w d0	; $03DF28
 	bne.b L03DF46	; $03DF2A
-	jsr sys_unk_0eb9ee.l	; $03DF2C
+	jsr snd_sfx_busy.l	; $03DF2C
 	tst.w d0	; $03DF32
 	bne.b L03DF46	; $03DF34
 	move.w #$ffff,-(a7)	; $03DF36
@@ -61158,12 +61158,12 @@ L0EB786:
 	addi.w #$100,$ff0234.l	; $0EB78E
 	move.b $ff0234.l,$a000e6.l	; $0EB796
 	move.w #$0,$a11100.l	; $0EB7A0
-	jsr sys_unk_0ebac6(pc)	; $0EB7A8
+	jsr snd_sfx_queue_drain(pc)	; $0EB7A8
 	addq.w #$1,$ff0220.l	; $0EB7AC
 	move.w $ff0220.l,d0	; $0EB7B2
 	and.w #$f,d0	; $0EB7B8
 	bne.b L0EB7C2	; $0EB7BC
-	jsr z80_unk_0eba00(pc)	; $0EB7BE
+	jsr snd_music_streamer(pc)	; $0EB7BE
 L0EB7C2:
 	movem.l (a7)+,d0-d7/a0-a6	; $0EB7C2
 	rts	; $0EB7C6
@@ -61209,7 +61209,7 @@ L0EB82C:
 	lea.l L0EBB6E.l,a1	; $0EB856
 	movea.l #$a00000,a2	; $0EB85C
 	move.w #$1576,d0	; $0EB862
-	bsr.w sys_unk_0eb920	; $0EB866
+	bsr.w snd_copy_bytes	; $0EB866
 	move.w #$0,(a0)	; $0EB86A
 	move.w #$0,$a11100.l	; $0EB86E
 	move.w #$1f4,d0	; $0EB876
@@ -61240,7 +61240,7 @@ sound_start_song:
 	st.b $ff021e.l	; $0EB8D8
 	rts	; $0EB8DE
 	; code $0EB8E0-$0EB8F1
-sys_unk_0eb8e0:
+z80_write_val24_nobus:
 	move.b d0,$170(a0)	; $0EB8E0
 	ror.l #$8,d0	; $0EB8E4
 	move.b d0,$16f(a0)	; $0EB8E6
@@ -61263,14 +61263,14 @@ z80_write_val24:
 	move.l (a7)+,d0	; $0EB91C
 	rts	; $0EB91E
 	; code $0EB920-$0EB921
-sys_unk_0eb920:
+snd_copy_bytes:
 	bra.b z80_unk_0eb924	; $0EB920
 	; code $0EB922-$0EB923
-sys_unk_0eb922:
+snd_copy_bytes_plus1:
 	move.b (a1)+,(a2)+	; $0EB922
 	; code $0EB924-$0EB929
 z80_unk_0eb924:
-	dbra d0,sys_unk_0eb922	; $0EB924
+	dbra d0,snd_copy_bytes_plus1	; $0EB924
 	rts	; $0EB928
 	; code $0EB92A-$0EB93D
 z80_bus_request:
@@ -61279,7 +61279,7 @@ z80_bus_request:
 	movea.l #$a00000,a0	; $0EB936
 	rts	; $0EB93C
 	; code $0EB93E-$0EB967
-z80_unk_0eb93e:
+snd_sfx_pointer:
 	move.l $4(a7),d0	; $0EB93E
 	move.l $8(a7),d1	; $0EB942
 	movem.l d1/a0,-(a7)	; $0EB946
@@ -61296,7 +61296,7 @@ L0EB954:
 	movem.l (a7)+,d1/a0	; $0EB962
 	rts	; $0EB966
 	; code $0EB968-$0EB985
-z80_unk_0eb968:
+snd_sfx_pointer_ff:
 	move.l $4(a7),d0	; $0EB968
 	move.l a0,-(a7)	; $0EB96C
 	move.w sr,-(a7)	; $0EB96E
@@ -61308,7 +61308,7 @@ L0EB978:
 	movea.l (a7)+,a0	; $0EB982
 	rts	; $0EB984
 	; code $0EB986-$0EB99F
-sys_unk_0eb986:
+snd_sfx_pointer_12:
 	move.l $4(a7),d0	; $0EB986
 	move.l $8(a7),d1	; $0EB98A
 	movem.l d1/a0,-(a7)	; $0EB98E
@@ -61334,7 +61334,7 @@ snd_is_song_playing:
 L0EB9EC:
 	rts	; $0EB9EC
 	; code $0EB9EE-$0EB9FF
-sys_unk_0eb9ee:
+snd_sfx_busy:
 	moveq #$0,d0	; $0EB9EE
 	move.l a0,-(a7)	; $0EB9F0
 	move.w sr,-(a7)	; $0EB9F2
@@ -61342,7 +61342,7 @@ sys_unk_0eb9ee:
 	move.b $a(a0),d0	; $0EB9F8
 	bra.w L0EB978	; $0EB9FC
 	; code $0EBA00-$0EBA7D
-z80_unk_0eba00:
+snd_music_streamer:
 	tst.b $ff021e.l	; $0EBA00
 	beq.b L0EBA7C	; $0EBA06
 	movem.l d0-d1/a0-a2,-(a7)	; $0EBA08
@@ -61357,7 +61357,7 @@ z80_unk_0eba00:
 	beq.b L0EBA6E	; $0EBA2E
 	move.b d1,$ff021f.l	; $0EBA30
 	move.w #$ff,d0	; $0EBA36
-	bsr.w sys_unk_0eb922	; $0EBA3A
+	bsr.w snd_copy_bytes_plus1	; $0EBA3A
 	move.l a1,$ff0224.l	; $0EBA3E
 	move.l a2,$ff0228.l	; $0EBA44
 	cmpa.l $ff0230.l,a1	; $0EBA4A
@@ -61383,14 +61383,14 @@ z80_song_chunk_set:
 	move.w #$100,$a11100.l	; $0EBA98
 	move.w #$3ff,d0	; $0EBAA0
 	move.b #$16,$a000da.l	; $0EBAA4
-	bsr.w sys_unk_0eb922	; $0EBAAC
+	bsr.w snd_copy_bytes_plus1	; $0EBAAC
 	move.w #$0,$a11100.l	; $0EBAB0
 	move.l a1,$ff0224.l	; $0EBAB8
 	movem.l (a7)+,d0/a1-a2	; $0EBABE
 	move.l a1,d0	; $0EBAC2
 	rts	; $0EBAC4
 	; code $0EBAC6-$0EBAF3
-sys_unk_0ebac6:
+snd_sfx_queue_drain:
 	movem.l d0/a0-a1,-(a7)	; $0EBAC6
 	lea.l $ff0236.l,a1	; $0EBACA
 	move.l (a1)+,d0	; $0EBAD0
@@ -61403,7 +61403,7 @@ L0EBAE0:
 	beq.b L0EBAEE	; $0EBAE2
 	move.l #$0,(a1)	; $0EBAE4
 	movea.l d0,a0	; $0EBAEA
-	bsr.b sys_unk_0ebafe	; $0EBAEC
+	bsr.b snd_sfx_deliver_7	; $0EBAEC
 L0EBAEE:
 	movem.l (a7)+,d0/a0-a1	; $0EBAEE
 	rts	; $0EBAF2
@@ -61415,7 +61415,7 @@ snd_sfx_entry_a:
 snd_sfx_entry_b:
 	movea.l $4(a7),a0	; $0EBAFA
 	; code $0EBAFE-$0EBB03
-sys_unk_0ebafe:
+snd_sfx_deliver_7:
 	move.w d1,-(a7)	; $0EBAFE
 	moveq #$7,d1	; $0EBB00
 	bra.b L0EBB08	; $0EBB02
@@ -61445,7 +61445,7 @@ L0EBB42:
 	movea.l a0,a1	; $0EBB46
 	movea.l #$a0003a,a2	; $0EBB48
 	move.w #$17,d0	; $0EBB4E
-	bsr.w sys_unk_0eb920	; $0EBB52
+	bsr.w snd_copy_bytes	; $0EBB52
 L0EBB56:
 	move.w #$0,$a11100.l	; $0EBB56
 	move.w (a7)+,sr	; $0EBB5E
