@@ -41,7 +41,7 @@ addr,name,tier,note
 0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
 0x011820,gfx_tilemap_draw,1,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes
 0x0118C8,sys_unk_0118c8,0,auto: touches none
-0x01194A,gfx_unk_01194a,0,auto: touches none; tile-grid offset loop; arg-driven
+0x01194A,gfx_set_tile_vram_addr,1,static: computes tile VRAM address from args at 0xc and 0x12; calls vdp_set_write_addr
 0x011a1a,gfx_tilemap_fill,1,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16
 0x011A7C,gfx_dma_tile_upload,1,code: dma_upload of arg size at VRAM counter FF0076 (asl 5); advances FF0076 by arg
 0x011B58,sys_counter_add,1,static: returns old value of $FF0076; adds its argument to it
@@ -174,7 +174,7 @@ addr,name,tier,note
 0x02AFF2,sys_unk_02aff2,0,auto: touches $FF0142 $FF02BA $FF02BE $FF02C0 $FF02C2 $FF02CE
 0x02B190,sys_unk_02b190,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
 0x02B2B2,sys_unk_02b2b2,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
-0x02B402,world_unk_02b402,0,auto: calls world_get_step_delta and sys_struct52_find on $FF02B4 records
+0x02B402,npc_spawn_at_step,1,static: finds or spawns a record via sys_struct52_find and entity_spawn; then npc_struct_setup on $FF02B4 records
 0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
 0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
 0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
