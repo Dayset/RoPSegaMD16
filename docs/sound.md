@@ -1066,3 +1066,13 @@ carved file's `; $addr` comments. Tier: static (read from the carved source).
 through Z80 `$4000/$4001`. The carved source shows the YM writes made by the Z80
 itself (`$01B6`, `$01BC`); the 68000 only writes RAM bytes in this table. Both readings
 need a live trace to settle (#78 follow-up).
+
+## 7.6 Song grammar check (2026-11-11, `tools/song_check.py`, read only)
+
+Parsed all 18 song streams in the section 7.1 table with the grammar in section 6.
+The `0xFC 0x80` skip boundary is counted from each song's start, not from the
+absolute ROM address. With that rule, 18 of 18 songs behave as documented: 16
+loop to their full stream length with no invalid byte, and songs 8 and 16
+end at their documented `0xFC` offsets (103 and 1229).
+This is grammar-level evidence only. It doesn't check the note values, the
+`p1`/`p2` meanings (still open in section 6), or the playback.
