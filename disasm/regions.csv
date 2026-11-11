@@ -219,7 +219,6 @@ start,end,class,name,doc_ref,tier
 0x0DDBD5,0x0DDBD7,unknown,region_0ddbd5,,1
 0x0DDBD8,0x0E0A17,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1184 records),2
 0x0E0A18,0x0EB771,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
-0x0EB9A0,0x0EB9C3,unknown,region_0eb9a0,,1
 0x0EBB6E,0x0ED0E3,z80-driver-blob,snd_z80_driver,docs/sound.md:10 (0x1576 bytes uploaded to Z80 RAM),2
 0x0ED0E4,0x0ED0E7,unknown,region_0ed0e4,,1
 0x0ED0E8,0x0FCAE1,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records),2

@@ -61301,6 +61301,7 @@ snd_sfx_pointer_ff:
 	move.l a0,-(a7)	; $0EB96C
 	move.w sr,-(a7)	; $0EB96E
 	bsr.b z80_write_val24	; $0EB970
+L0EB972:
 	move.b #$ff,$a(a0)	; $0EB972
 L0EB978:
 	move.w #$0,$a11100.l	; $0EB978
@@ -61316,8 +61317,19 @@ snd_sfx_pointer_12:
 	bsr.w z80_write_val24	; $0EB994
 	move.b #$12,$b(a0)	; $0EB998
 	bra.b L0EB94E	; $0EB99E
-	; data $0EB9A0-$0EB9C3
-	incbin "rop-original.gen",$0EB9A0,$24
+	; code $0EB9A0-$0EB9C3
+z80_unk_0eb9a0:
+	move.l $4(a7),d0	; $0EB9A0
+	move.l a0,-(a7)	; $0EB9A4
+	move.w sr,-(a7)	; $0EB9A6
+	bsr.w z80_write_val24	; $0EB9A8
+	move.b #$12,$b(a0)	; $0EB9AC
+	bra.b L0EB972	; $0EB9B2
+	move.l a0,-(a7)	; $0EB9B4
+	move.w sr,-(a7)	; $0EB9B6
+	bsr.w z80_bus_request	; $0EB9B8
+	move.b #$0,$b(a0)	; $0EB9BC
+	bra.b L0EB978	; $0EB9C2
 	; code $0EB9C4-$0EB9ED
 snd_is_song_playing:
 	moveq #$0,d0	; $0EB9C4
