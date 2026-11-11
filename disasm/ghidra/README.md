@@ -47,7 +47,7 @@ immediates (`lea`/`pea`/`move.l #`) in real (Ghidra-covered) code.
 | `0x0197B0–0x01B5D5` | 7,718 B | Data (string/table block) | Class names (`Sorcerer`, `Knight`, …), `0x1A71C+` strings, `0x1B324` credits; 48 data references |
 | `0x01D73E–0x01D783` | 70 B | Data (binary table) | 1 data reference |
 | `0x01E02E–0x01E075` | 72 B | **Code** — `$1E022` jump-table case blocks | Four regular 18-byte blocks (`movea.l $A(a6),a0` + word write + `bra $1E0A0`); disassembled in this issue, not function entries (no `link` prologue; reached via the jump table) |
-| `0x023938–0x023A9D` | 358 B | Data (format strings) | Debug format-string tail (`%02i` etc.); 1 data reference |
+| `0x023938–0x023A9D` | 358 B | Format strings + **code** | `"Sp:%i …"` string ($023938–$023957) and `"%02i"`/`"\n"` strings ($023A90–$023A9D); the middle 312 B ($023958–$023A8F) are the carved `map_grid_dump` routine (two nested 32×32 loops dumping the $FFB36C/$FFB76C cell grids via `$01107A`), uncalled. The "Data (format strings)" label was stale — corrected 2026-11-11. |
 | `0x027522–0x0275AF` | 142 B | Data (menu strings) | `Help On/Off`, `Direct:`, `Lefty`/`Righty`, `Diags On/Off`; 21 data references |
 | `0x029370–0x029799` | 1,066 B | Data (message strings) | XP/gold/shop/spell-effect messages; 98 data references |
 | `0x0317E2–0x0318C5` | 228 B | Data (message strings) | `Search report sir:` etc.; 37 data references |

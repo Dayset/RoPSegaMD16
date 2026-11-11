@@ -129,6 +129,7 @@ addr,name,tier,note
 0x023628,map_grid_set_cell,1,sets record index into first free cell of grid 0 $FFB36C then grid 1 $FFB76C else error $19; maps.md:463; called from map_grid_create
 0x023770,map_grid_set_cell_1,1,sets record index into first free cell of grid 1 $FFB76C then grid 0 $FFB36C else error $19; maps.md:463; mirror of $023628
 0x0238B8,sys_each_entry_238b8,1,static: loops 56 records stride 12 pushes 4 fields and calls sys_stub_01107a
+0x023958,map_grid_dump,1,static: dumps both 32x32 RAM cell grids ($FFB36C grid 0 then $FFB76C grid 1) as %02i with $FF->99; wraparound via geom width/height divisors; uncalled debug code; calls sys_stub_01107a
 0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
 0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
 0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence

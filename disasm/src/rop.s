@@ -27206,8 +27206,111 @@ L0238C0:
 	unlk a6	; $023934
 	rts	; $023936
 L023938:
-	; data $023938-$023A9D
-	incbin "rop-original.gen",$023938,$166
+	; data $023938-$023957
+	incbin "rop-original.gen",$023938,$20
+	; code $023958-$023A8F
+map_grid_dump:
+	link.w a6,#$fffa	; $023958
+	clr.w -$4(a6)	; $02395C
+L023960:
+	clr.w -$2(a6)	; $023960
+L023964:
+	movea.l ram_sys_field_a7fc.l,a0	; $023964
+	move.w (a0),d0	; $02396A
+	add.w -$2(a6),d0	; $02396C
+	movea.l ram_sys_field_a7fc.l,a0	; $023970
+	ext.l d0	; $023976
+	divs.w (a0),d0	; $023978
+	swap d0	; $02397A
+	ext.l d0	; $02397C
+	asl.l #$5,d0	; $02397E
+	movea.l ram_sys_field_a7fc.l,a0	; $023980
+	move.w $2(a0),d1	; $023986
+	add.w -$4(a6),d1	; $02398A
+	movea.l ram_sys_field_a7fc.l,a0	; $02398E
+	ext.l d1	; $023994
+	divs.w $2(a0),d1	; $023996
+	swap d1	; $02399A
+	ext.l d1	; $02399C
+	add.l d1,d0	; $02399E
+	lea.l ram_sys_field_b36c.l,a0	; $0239A0
+	moveq #$0,d1	; $0239A6
+	move.b (a0,d0.l),d1	; $0239A8
+	move.w d1,-$6(a6)	; $0239AC
+	cmpi.w #$ff,-$6(a6)	; $0239B0
+	bne.b L0239BE	; $0239B6
+	move.w #$63,-$6(a6)	; $0239B8
+L0239BE:
+	move.w -$6(a6),-(a7)	; $0239BE
+	pea.l L023A90(pc)	; $0239C2
+	jsr sys_stub_01107a.l	; $0239C6
+	addq.w #$6,a7	; $0239CC
+	addq.w #$1,-$2(a6)	; $0239CE
+	cmpi.w #$20,-$2(a6)	; $0239D2
+	blt.b L023964	; $0239D8
+	pea.l L023A95(pc)	; $0239DA
+	jsr sys_stub_01107a.l	; $0239DE
+	addq.w #$4,a7	; $0239E4
+	addq.w #$1,-$4(a6)	; $0239E6
+	cmpi.w #$20,-$4(a6)	; $0239EA
+	blt.w L023960	; $0239F0
+	clr.w -$4(a6)	; $0239F4
+L0239F8:
+	clr.w -$2(a6)	; $0239F8
+L0239FC:
+	movea.l ram_sys_field_a7fc.l,a0	; $0239FC
+	move.w (a0),d0	; $023A02
+	add.w -$2(a6),d0	; $023A04
+	movea.l ram_sys_field_a7fc.l,a0	; $023A08
+	ext.l d0	; $023A0E
+	divs.w (a0),d0	; $023A10
+	swap d0	; $023A12
+	ext.l d0	; $023A14
+	asl.l #$5,d0	; $023A16
+	movea.l ram_sys_field_a7fc.l,a0	; $023A18
+	move.w $2(a0),d1	; $023A1E
+	add.w -$4(a6),d1	; $023A22
+	movea.l ram_sys_field_a7fc.l,a0	; $023A26
+	ext.l d1	; $023A2C
+	divs.w $2(a0),d1	; $023A2E
+	swap d1	; $023A32
+	ext.l d1	; $023A34
+	add.l d1,d0	; $023A36
+	lea.l ram_sys_field_b76c.l,a0	; $023A38
+	moveq #$0,d1	; $023A3E
+	move.b (a0,d0.l),d1	; $023A40
+	move.w d1,-$6(a6)	; $023A44
+	cmpi.w #$ff,-$6(a6)	; $023A48
+	bne.b L023A56	; $023A4E
+	move.w #$63,-$6(a6)	; $023A50
+L023A56:
+	move.w -$6(a6),-(a7)	; $023A56
+	pea.l L023A97(pc)	; $023A5A
+	jsr sys_stub_01107a.l	; $023A5E
+	addq.w #$6,a7	; $023A64
+	addq.w #$1,-$2(a6)	; $023A66
+	cmpi.w #$20,-$2(a6)	; $023A6A
+	blt.b L0239FC	; $023A70
+	pea.l L023A9C(pc)	; $023A72
+	jsr sys_stub_01107a.l	; $023A76
+	addq.w #$4,a7	; $023A7C
+	addq.w #$1,-$4(a6)	; $023A7E
+	cmpi.w #$20,-$4(a6)	; $023A82
+	blt.w L0239F8	; $023A88
+	unlk a6	; $023A8C
+	rts	; $023A8E
+L023A90:
+	; data $023A90-$023A94
+	incbin "rop-original.gen",$023A90,$5
+L023A95:
+	; data $023A95-$023A96
+	incbin "rop-original.gen",$023A95,$2
+L023A97:
+	; data $023A97-$023A9B
+	incbin "rop-original.gen",$023A97,$5
+L023A9C:
+	; data $023A9C-$023A9D
+	incbin "rop-original.gen",$023A9C,$2
 	; code $023A9E-$023ADF
 shop_merchant_init:
 	link.w a6,#$fffe	; $023A9E

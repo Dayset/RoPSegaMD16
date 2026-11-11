@@ -150,7 +150,8 @@ start,end,class,name,doc_ref,tier
 0x02C8C4,0x02C8D6,jump-table,tbl_jump_table_02c8c4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C8C4) (tier 1),1
 0x02CB7A,0x02CB88,jump-table,tbl_jump_table_02cb7a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02CB7A) (tier 1),1
 0x02D480,0x02D494,jump-table,tbl_jump_table_02d480,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02D480) (tier 1),1
-0x023938,0x023A9E,str-format-block,str_format_stat_line,rop.s sys_unk_0238b8 pea L023938 into sys_unk_01107a printf-style format text (Sp Dir Ac St Dr with %i),1
+0x023938,0x023958,str-format-block,str_format_stat_line,rop.s sys_each_entry_238b8 pea L023938 into sys_stub_01107a printf-style format text (Sp Dir Ac St Dr with %i),1
+0x023A90,0x023A9E,str-format-block,str_format_grid_dump,rop.s map_grid_dump pea L023A90/L023A97 (%02i) and L023A95/L023A9C newline into sys_stub_01107a,1
 0x02EE28,0x02EE2A,word-const-arg,word_const_02ee28,rop.s world_draw_link_icons pea L02EE28 pushes this address (2 bytes; tail reached by return; not decoded as code),1
 0x031BAA,0x031BB4,jump-table,tbl_jump_table_031baa,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L031BAA) (tier 1),1
 0x031C4C,0x031C56,jump-table,tbl_jump_table_031c4c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L031C4C) (tier 1),1
