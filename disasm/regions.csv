@@ -96,40 +96,56 @@ start,end,class,name,doc_ref,tier
 0x01EEE1,0x01EEE7,word-record-table,tbl_word_record_table_01eee1,rop.s menu_record_reload refs L01EEE1 (class by consumer; tier 1),1
 0x01EEE8,0x01EEED,word-record-table,tbl_word_record_table_01eee8,rop.s menu_record_reload refs L01EEE8 (class by consumer; tier 1),1
 0x01FADC,0x01FAED,verb-table,tbl_verb_table_01fadc,rop.s verb_exec refs L01FADC (class by consumer; tier 1),1
-0x020C3A,0x020C43,unknown,region_020c3a,,1
-0x021542,0x021549,unknown,region_021542,,1
-0x021B4C,0x021B53,unknown,region_021b4c,,1
-0x022F06,0x022F21,unknown,region_022f06,,1
-0x023076,0x023081,unknown,region_023076,,1
-0x023938,0x023A9D,unknown,region_023938,,1
-0x024EB6,0x024EBD,unknown,region_024eb6,,1
-0x02539E,0x0253A7,unknown,region_02539e,,1
-0x025D06,0x025D0D,unknown,region_025d06,,1
-0x025D66,0x025D6D,unknown,region_025d66,,1
-0x025DBC,0x025DC3,unknown,region_025dbc,,1
-0x027472,0x027479,unknown,region_027472,,1
-0x027522,0x0275AF,unknown,region_027522,,1
+0x020C3A,0x020C43,jump-table,tbl_jump_table_020c3a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L020C3A) (tier 1),1
+0x021542,0x021549,jump-table,tbl_jump_table_021542,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L021542) (tier 1),1
+0x021B4C,0x021B53,jump-table,tbl_jump_table_021b4c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L021B4C) (tier 1),1
+0x022F06,0x022F21,jump-table,tbl_jump_table_022f06,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L022F06) (tier 1),1
+0x023076,0x023081,jump-table,tbl_jump_table_023076,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L023076) (tier 1),1
+0x023938,0x023A9D,str-format-block,str_format_stat_line,rop.s sys_unk_0238b8 pea L023938 into sys_unk_01107a printf-style format text (Sp Dir Ac St Dr with %i),1
+0x024EB6,0x024EBD,jump-table,tbl_jump_table_024eb6,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L024EB6) (tier 1),1
+0x02539E,0x0253A7,jump-table,tbl_jump_table_02539e,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02539E) (tier 1),1
+0x025D06,0x025D0D,jump-table,tbl_jump_table_025d06,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025D06) (tier 1),1
+0x025D66,0x025D6D,jump-table,tbl_jump_table_025d66,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025D66) (tier 1),1
+0x025DBC,0x025DC3,jump-table,tbl_jump_table_025dbc,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L025DBC) (tier 1),1
+0x027472,0x027479,jump-table,tbl_jump_table_027472,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L027472) (tier 1),1
+0x027522,0x027529,panel-arg-data,tbl_panel_arg_data_027522,rop.s pea argument to gfx_fill_panel_flagged (L027522) (tier 1),1
+0x02752A,0x027532,panel-arg-data,tbl_panel_arg_data_02752a,rop.s pea argument to gfx_fill_panel_flagged (L02752A) (tier 1),1
+0x027533,0x02753A,panel-arg-data,tbl_panel_arg_data_027533,rop.s pea argument to gfx_fill_panel_flagged (L027533) (tier 1),1
+0x02753B,0x027540,panel-arg-data,tbl_panel_arg_data_02753b,rop.s pea argument to gfx_fill_panel_flagged (L02753B) (tier 1),1
+0x027541,0x027547,panel-arg-data,tbl_panel_arg_data_027541,rop.s pea argument to gfx_fill_panel_flagged (L027541) (tier 1),1
+0x027548,0x027550,panel-arg-data,tbl_panel_arg_data_027548,rop.s pea argument to gfx_fill_panel_flagged (L027548) (tier 1),1
+0x027551,0x02755A,panel-arg-data,tbl_panel_arg_data_027551,rop.s pea argument to gfx_fill_panel_flagged (L027551) (tier 1),1
+0x02755B,0x027562,panel-arg-data,tbl_panel_arg_data_02755b,rop.s pea argument to gfx_fill_panel_flagged (L02755B) (tier 1),1
+0x027563,0x027569,panel-arg-data,tbl_panel_arg_data_027563,rop.s pea argument to gfx_fill_panel_flagged (L027563) (tier 1),1
+0x02756A,0x02756E,panel-arg-data,tbl_panel_arg_data_02756a,rop.s pea argument to gfx_fill_panel_flagged (L02756A) (tier 1),1
+0x02756F,0x027574,panel-arg-data,tbl_panel_arg_data_02756f,rop.s pea argument to gfx_fill_panel_flagged (L02756F) (tier 1),1
+0x027575,0x02757B,panel-arg-data,tbl_panel_arg_data_027575,rop.s pea argument to gfx_fill_panel_flagged (L027575) (tier 1),1
+0x02757C,0x02757D,panel-arg-data,tbl_panel_arg_data_02757c,rop.s pea argument to gfx_fill_panel_flagged (L02757C) (tier 1),1
+0x02757E,0x027583,panel-arg-data,tbl_panel_arg_data_02757e,rop.s pea argument to gfx_fill_panel_flagged (L02757E) (tier 1),1
+0x027584,0x027588,panel-arg-data,tbl_panel_arg_data_027584,rop.s pea argument to gfx_fill_panel_flagged (L027584) (tier 1),1
+0x027589,0x02758D,panel-arg-data,tbl_panel_arg_data_027589,rop.s pea argument to gfx_fill_panel_flagged (L027589) (tier 1),1
+0x02758E,0x027594,panel-arg-data,tbl_panel_arg_data_02758e,rop.s pea argument to gfx_fill_panel_flagged (L02758E) (tier 1),1
+0x027595,0x02759B,panel-arg-data,tbl_panel_arg_data_027595,rop.s pea argument to gfx_fill_panel_flagged (L027595) (tier 1),1
+0x02759C,0x0275A3,panel-arg-data,tbl_panel_arg_data_02759c,rop.s pea argument to gfx_fill_panel_flagged (L02759C) (tier 1),1
+0x0275A4,0x0275AA,panel-arg-data,tbl_panel_arg_data_0275a4,rop.s pea argument to gfx_fill_panel_flagged (L0275A4) (tier 1),1
+0x0275AB,0x0275AF,panel-arg-data,tbl_panel_arg_data_0275ab,rop.s pea argument to gfx_fill_panel_flagged (L0275AB) (tier 1),1
 0x028138,0x02815B,word-offset-table,region_028138,,1
-0x02839A,0x0283A9,unknown,region_02839a,,1
+0x02839A,0x0283A9,jump-table,tbl_jump_table_02839a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02839A) (tier 1),1
 0x029334,0x029355,word-offset-table,region_029334,,1
 0x029370,0x029799,ascii,region_029370,,1
-0x0297CC,0x0297CD,unknown,region_0297cc,,1
-0x0297EE,0x0297EF,unknown,region_0297ee,,1
-0x029DA0,0x029DB3,unknown,region_029da0,,1
-0x029F8A,0x029FA7,unknown,region_029f8a,,1
-0x02A1EE,0x02A209,unknown,region_02a1ee,,1
-0x02ADEC,0x02ADF3,unknown,region_02adec,,1
-0x02BBB4,0x02BBBB,unknown,region_02bbb4,,1
-0x02C424,0x02C42B,unknown,region_02c424,,1
-0x02C88E,0x02C897,unknown,region_02c88e,,1
-0x02C8C4,0x02C8D5,unknown,region_02c8c4,,1
-0x02CB7A,0x02CB87,unknown,region_02cb7a,,1
-0x02CC12,0x02CC13,unknown,region_02cc12,,1
-0x02D480,0x02D493,unknown,region_02d480,,1
+0x029DA0,0x029DB3,jump-table,tbl_jump_table_029da0,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L029DA0) (tier 1),1
+0x029F8A,0x029FA7,jump-table,tbl_jump_table_029f8a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L029F8A) (tier 1),1
+0x02A1EE,0x02A209,jump-table,tbl_jump_table_02a1ee,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02A1EE) (tier 1),1
+0x02ADEC,0x02ADF3,jump-table,tbl_jump_table_02adec,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02ADEC) (tier 1),1
+0x02BBB4,0x02BBBB,jump-table,tbl_jump_table_02bbb4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02BBB4) (tier 1),1
+0x02C424,0x02C42B,jump-table,tbl_jump_table_02c424,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C424) (tier 1),1
+0x02C88E,0x02C897,jump-table,tbl_jump_table_02c88e,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C88E) (tier 1),1
+0x02C8C4,0x02C8D5,jump-table,tbl_jump_table_02c8c4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02C8C4) (tier 1),1
+0x02CB7A,0x02CB87,jump-table,tbl_jump_table_02cb7a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02CB7A) (tier 1),1
+0x02D480,0x02D493,jump-table,tbl_jump_table_02d480,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02D480) (tier 1),1
 0x02DBB8,0x02DBD7,word-offset-table,region_02dbb8,,1
 0x02E828,0x02E851,word-offset-table,region_02e828,,1
-0x02ECC8,0x02ECC9,unknown,region_02ecc8,,1
-0x02EE28,0x02EE29,unknown,region_02ee28,,1
+0x02EE28,0x02EE29,word-const-arg,word_const_02ee28,rop.s world_draw_link_icons pea L02EE28 pushes this address (2 bytes; tail reached by return; not decoded as code),1
 0x0317E2,0x0318C5,unknown,region_0317e2,,1
 0x031BAA,0x031BB3,unknown,region_031baa,,1
 0x031C4C,0x031C55,unknown,region_031c4c,,1
