@@ -6,20 +6,36 @@
  * $FF016A buffer's magic/tail bytes, and a recomputation of $4323C's
  * checksum-error count over $FF016A itself.
  *
+ * TIMING: this harness hooks the attract loop (0x35C), which runs
+ * AFTER vdp_ram_clear has zeroed all of work RAM (docs/logic-audit.md
+ * §19: the clear is intended — movea.l #$FFFF0000,a0 is $FF0000 on
+ * the 24-bit bus, $3FF7 longwords = 65,500 bytes). The clear zeroes
+ * the $FF016A buffer that save_validate ($04323C) filled just before,
+ * so at this hook $FF016A is ALWAYS zeros, whatever the EEPROM holds.
+ * The per-case (blank / valid save / cleared save) distinctions below
+ * are therefore UNREACHABLE at this timing: [1]-[4] are 0x00 and [5]
+ * is 2 in every case. The boot EEPROM state itself is observable
+ * only BEFORE the clear, at $000312 — see
+ * tools/test_boot_eeprom_harness.s (PR #129): on a fresh blank
+ * EEPROM $FF016A bytes 0/1/2/3/64/126/127 are all 0xFF, $FF0168 = 0,
+ * $FF014E = 0.
+ *
  * Build/inject exactly like test_save_harness.s (same hook, same
  * fix-all order). Run with the SAME ROM filename as the run that
- * wrote the EEPROM, so BlastEm loads the persisted image.
+ * wrote the EEPROM, so BlastEm loads the persisted image. Save runs
+ * must delete the BlastEm save dir first (fresh zero EEPROM).
  *
- * Result layout (words, in order), base $FFD004:
- *  [ 0] $FF0168: expect 0 in every case (blank EEPROM, valid save,
- *       cleared save all leave it 0 unless $B0 was held at boot)
- *  [ 1] $FF016A[0]: 0xFF blank / 0x2A valid save / 0x00 cleared save
- *  [ 2] $FF016A[1]: 0xFF blank / parity valid save / 0x00 cleared save
- *  [ 3] $FF016A[126]: 0xFF blank / tail valid save / 0x00 cleared save
- *  [ 4] $FF016A[127]: 0xFF blank / tail valid save / 0x00 cleared save
- *  [ 5] $4323C checksum-error count over $FF016A: expect 3 blank,
- *       1 or 2 valid save, 2 cleared save (never 0 on game-produced
- *       images: the check is inert for every state the game writes)
+ * Result layout (words, in order), base $FFD004 — measured dump on a
+ * fresh blank EEPROM (#112 batch 3): 0000 0000 0000 0000 / 0000 0002 A5A5:
+ *  [ 0] $FF0168: expect 0
+ *  [ 1] $FF016A[0]: expect 0x00 (buffer wiped by vdp_ram_clear; the
+ *       0xFF blank value is only observable pre-clear, at $000312)
+ *  [ 2] $FF016A[1]: expect 0x00 (same)
+ *  [ 3] $FF016A[126]: expect 0x00 (same)
+ *  [ 4] $FF016A[127]: expect 0x00 (same)
+ *  [ 5] $4323C checksum-error count over $FF016A: expect 2 (all-zero
+ *       buffer: sum=0, byte[127]=0==sum ok; byte[126]=0 vs ~0=0xFF
+ *       fail; byte[127]=0 vs ~byte[126]=0xFF fail)
  *  [ 6] canary flag: 0xA5A5 if $FFD0FE canary intact else 0xDEAD
  * $FFD000 = 0xBEEF (harness ran). $FFD002 = 0xA5A5 (canary 1).
  */

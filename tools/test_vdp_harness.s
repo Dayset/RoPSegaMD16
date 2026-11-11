@@ -18,12 +18,18 @@
  * (%d0, %a5, %sp), no .l on absolute addresses, and no .s on branches.
  *
  * Result layout (words, base $FFD004):
- *  [ 0] $FFC002 at snapshot (expect 60..70)
+ *  [ 0] $FFC002 at snapshot (expect 70: the decay enters the
+ *       [60,70] window at 70, so the snapshot fires on the first
+ *       hook hit in the window)
  *  [ 1] $FFC004  [ 2] $FFC006  [ 3] $FFC000
  *  [ 4] $FF8644 (sprite-table base var)  [ 5] $FF0076 (tile cursor)
  *  [ 6] $FF0126 (palette mode)  [ 7] $FF0E16 (step counter)
  *  [ 8..23]  VRAM $2000, 16 words (H-scroll table, first 8 lines:
- *       expect [-X, $140, +X, $140, ...] with X = $FFC002)
+ *       expect [-71, $140, +71, $140, ...] — X is pinned to 71, NOT
+ *       $FFC002. One-frame lag: the VRAM block was written with the
+ *       pre-decrement $FFC002 of 71, while the scalar [0] is read
+ *       after the decrement as 70. Measured #112 batch 3: the block
+ *       is FFB9 0140 0047 0140 repeated.)
  *  [24..55]  VRAM $A000, 32 words (Plane A/B name table, row 0)
  *  [56..71]  VRAM $DC00, 16 words (sprite table, first 4 attributes)
  *  [72..79]  VRAM $C000, 8 words (window name table, first row)

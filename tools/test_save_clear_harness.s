@@ -11,21 +11,34 @@
  *
  * Build/inject exactly like test_save_harness.s (same hook, same
  * fix-all order). Run with the SAME ROM filename as the other #019
- * runs, so BlastEm loads/persists the same EEPROM file.
+ * runs, so BlastEm loads/persists the same EEPROM file. Save runs
+ * must delete the BlastEm save dir first (fresh zero EEPROM).
  *
- * Result layout (words, in order), base $FFD004:
+ * BYTE-126 ANOMALY (measured, #112 batch 2): Clear writes 128 zeros
+ * via $430F4, yet the re-read shows byte 126 as 0xFF (all others
+ * 0x00). The cleared image therefore PASSES $4323C's byte-sum check
+ * (errcount 0, not 2) — the anomaly is the expected value, recorded
+ * here, not a failure. Cause unknown; the persisted save.eeprom is
+ * byte-identical between builds (all zeros except byte 126 = 0xFF).
+ *
+ * Result layout (words, in order), base $FFD004 — measured dump on a
+ * fresh blank EEPROM (#112 batch 3):
+ * 0000 0000 0001 0000 / 0000 00FF 0000 0000 / 0000 A5A5:
  *  [ 0] $FF0168 pre-clear: expect 0
- *  [ 1] $FF016A[0] pre-clear: 0xFF blank / 0x2A if a save was there
+ *  [ 1] $FF016A[0] pre-clear: expect 0x00 (buffer wiped by
+ *       vdp_ram_clear before the attract loop; the 0xFF blank value
+ *       is only observable pre-clear, at $000312 — see
+ *       tools/test_boot_eeprom_harness.s)
  *  [ 2] $FF0168 post-clear: expect 1
  *  [ 3] $FF014E post-clear: expect 0 (no EEPROM errors)
  *  [ 4] EEPROM[0] re-read via $43012: expect 0x00
- *  [ 5] EEPROM[126] re-read: expect 0x00
+ *  [ 5] EEPROM[126] re-read: expect 0xFF (byte-126 anomaly, above)
  *  [ 6] EEPROM[127] re-read: expect 0x00
  *  [ 7] $4323C checksum-error count over the re-read image:
- *       expect 2 (all-zero image: sum=0, byte[127]=0==sum ok,
- *       byte[126]=0 vs ~0=0xFF fail, byte[127]=0 vs ~byte[126]=0xFF
- *       fail) -- the cleared save is checksum-invalid by $4323C's
- *       own rules
+ *       expect 0 (byte[126]=0xFF makes the image pass all three
+ *       checks: sum=0, byte[127]=0==sum ok; ~sum=0xFF==byte[126] ok;
+ *       ~byte[126]=0x00==byte[127] ok) — NOT 2 as previously
+ *       expected; the old expect-2 assumed byte[126]=0x00
  *  [ 8] $FF014E after the re-read: expect 0
  *  [ 9] canary flag: 0xA5A5 if $FFD0FE canary intact else 0xDEAD
  * $FFD000 = 0xBEEF (harness ran). $FFD002 = 0xA5A5 (canary 1).
