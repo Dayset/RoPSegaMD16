@@ -156,8 +156,8 @@ addr,name,tier,note
 0x026A8C,combat_unk_026a8c,0,auto: touches $FF00AE $FF010E $FF011C $FF011E $FF02B2 $FF02BA
 0x026B08,sys_unk_026b08,0,auto: touches none
 0x026CCA,msg_queue_consume,2,logic.md:277 queue consumer calls 1E426 (pop)
-0x026DD2,gfx_unk_026dd2,0,auto: touches $FF8640 $FF8674
-0x026E44,gfx_unk_026e44,0,auto: touches $FF00AC $FF010E $FF0116 $FF0132 $FF0134 $FF013A
+0x026DD2,gfx_fill_panel_plain,1,static: wait_vblank then gfx_tilemap_fill 64 tiles at plane base; then sys_unk_0118c8 tile-rect write and sys_unk_01e4e6
+0x026E44,gfx_fill_panel_flagged,1,static: as gfx_fill_panel_plain but skips the fill when $FF00AC is set
 0x0275B0,text_event_message,2,logic.md:213 message routine 275B0 (giant event-message)
 0x02979A,sys_unk_02979a,0,auto: touches $FF0E82
 0x0297CE,sys_unk_0297ce,0,auto: touches none

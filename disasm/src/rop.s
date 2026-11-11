@@ -12715,11 +12715,11 @@ L01B97E:
 	jsr menu_record_reload.l	; $01B994
 	bra.b L01B9A2	; $01B99A
 L01B99C:
-	jsr gfx_unk_026dd2.l	; $01B99C
+	jsr gfx_fill_panel_plain.l	; $01B99C
 L01B9A2:
 	tst.w $ff009c.l	; $01B9A2
 	beq.b L01B9B0	; $01B9A8
-	jsr gfx_unk_026e44.l	; $01B9AA
+	jsr gfx_fill_panel_flagged.l	; $01B9AA
 L01B9B0:
 	clr.b $ffb08a.l	; $01B9B0
 	clr.w $ff009a.l	; $01B9B6
@@ -18826,8 +18826,8 @@ L02078E:
 	bne.b L0207D4	; $0207B4
 	clr.b $ffb08a.l	; $0207B6
 	clr.w $ff009c.l	; $0207BC
-	jsr gfx_unk_026dd2.l	; $0207C2
-	jsr gfx_unk_026e44.l	; $0207C8
+	jsr gfx_fill_panel_plain.l	; $0207C2
+	jsr gfx_fill_panel_flagged.l	; $0207C8
 	jsr menu_format.l	; $0207CE
 L0207D4:
 	bra.w L01F318	; $0207D4
@@ -18974,11 +18974,11 @@ L0209D0:
 	jsr menu_record_reload(pc)	; $0209FC
 	bra.b L020A08	; $020A00
 L020A02:
-	jsr gfx_unk_026dd2.l	; $020A02
+	jsr gfx_fill_panel_plain.l	; $020A02
 L020A08:
 	tst.w $ff009c.l	; $020A08
 	beq.b L020A16	; $020A0E
-	jsr gfx_unk_026e44.l	; $020A10
+	jsr gfx_fill_panel_flagged.l	; $020A10
 L020A16:
 	clr.b $ffb08a.l	; $020A16
 	clr.w $ff009c.l	; $020A1C
@@ -19099,11 +19099,11 @@ L020B62:
 	jsr menu_record_reload(pc)	; $020BBE
 	bra.b L020BCA	; $020BC2
 L020BC4:
-	jsr gfx_unk_026dd2.l	; $020BC4
+	jsr gfx_fill_panel_plain.l	; $020BC4
 L020BCA:
 	tst.w $ff009c.l	; $020BCA
 	beq.b L020BD8	; $020BD0
-	jsr gfx_unk_026e44.l	; $020BD2
+	jsr gfx_fill_panel_flagged.l	; $020BD2
 L020BD8:
 	clr.b $ffb08a.l	; $020BD8
 	clr.w $ff009c.l	; $020BDE
@@ -26471,7 +26471,7 @@ L026DBC:
 L026DCE:
 	bra.w L026CFE	; $026DCE
 	; code $026DD2-$026E43
-gfx_unk_026dd2:
+gfx_fill_panel_plain:
 	link.w a6,#$0	; $026DD2
 	jsr wait_vblank.l	; $026DD6
 	move.w $ff8640.l,-(a7)	; $026DDC
@@ -26501,7 +26501,7 @@ gfx_unk_026dd2:
 	unlk a6	; $026E40
 	rts	; $026E42
 	; code $026E44-$027471
-gfx_unk_026e44:
+gfx_fill_panel_flagged:
 	link.w a6,#$ffde	; $026E44
 	jsr wait_vblank.l	; $026E48
 	tst.w $ff00ac.l	; $026E4E
@@ -34139,11 +34139,11 @@ L02D4A6:
 	jsr menu_record_reload.l	; $02D4E0
 	bra.b L02D4EE	; $02D4E6
 L02D4E8:
-	jsr gfx_unk_026dd2.l	; $02D4E8
+	jsr gfx_fill_panel_plain.l	; $02D4E8
 L02D4EE:
 	tst.w $ff009c.l	; $02D4EE
 	beq.b L02D4FC	; $02D4F4
-	jsr gfx_unk_026e44.l	; $02D4F6
+	jsr gfx_fill_panel_flagged.l	; $02D4F6
 L02D4FC:
 	clr.b $ffb08a.l	; $02D4FC
 	clr.w $ff009c.l	; $02D502
