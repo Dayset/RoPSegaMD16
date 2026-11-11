@@ -652,11 +652,11 @@ disassembly; its H-scroll write is verified live in §7.2.
 
 ## 9. Open items (not solved here)
 
-- **Packed-vs-planar paradox: RESOLVED in #016 (§10.1).** The
-  decompressed tile bytes are packed and the VDP consumes them as
-  packed (live VRAM snapshot + minimal VDP test ROM). The remaining
-  open piece is re-verifying the textbook "bitplanar" claim against
-  the VDP manual / BlastEm source (§10.1 caveat).
+- **Packed-vs-planar: RESOLVED (#016 §10.1, #23).** The decompressed tile
+  bytes are packed 4bpp, 2 px per byte, high nibble first, and the VDP
+  consumes them as packed. The Mega Drive VDP's pattern format is packed
+  4bpp (8x8 tile = 32 bytes); bitplanar is the SNES, Game Boy and SMS format.
+  The earlier "textbook bitplanar" claim was wrong for this system.
 - **CRAM R/B order (new, #016 §10.2).** Corrected to
   `r=(w>>1)&7, b=(w>>9)&7` by the test ROM. The world-map sea colour
   (pal 11 code-pinned reads as browns/reds under the corrected
@@ -752,16 +752,10 @@ Evidence chain (all live, all in this issue):
    attract logo. A bitplanar format would make those bytes
    meaningless.
 
-**Caveat (do not drop this).** This contradicts the textbook "Genesis
-VDP pattern format is bitplanar" description (and Sonic's documented
-planar tiles). The resolution is proven for *this game's* data path
-(live VRAM + test ROM), but the textbook claim itself was not
-re-verified against the VDP manual or the BlastEm source — it is
-flagged for re-verification, not treated as settled. The most likely
-reading is that the textbook describes one valid layout and this
-game uses another that the VDP also accepts, but that is a
-hypothesis, not a finding. Do not present the VDP-format claim as
-unqualified fact outside this game.
+**Resolved (#23).** The earlier "Genesis VDP pattern format is bitplanar"
+description was wrong: the Mega Drive VDP uses packed 4bpp, the same as this
+game's data (see Sega Mega Drive VDP documentation and plutiedev). The live
+VRAM and test ROM evidence in §10.1 stands.
 
 **Test-ROM gotchas (recorded for reuse).** BlastEm faults on a TMSS
 write to `$A14000` for an unrecognised SHA1 — omit it. R15 must be
@@ -925,8 +919,7 @@ all decompressed clean by #005 (62/62 + 90/90).
 
 ### 10.5 What stays open (from #016)
 
-- The textbook "bitplanar" claim vs the live packed evidence — the
-  VDP-manual / BlastEm-source re-verification (see §10.1 caveat).
+- (resolved #23) The "bitplanar" claim: packed 4bpp is the Mega Drive VDP format.
 - Pal 11 / pal 13 sea-colour question: under the corrected decoding
   the world-map palette (pal 11, code-pinned) reads as browns/reds
   rather than the blue sea #006 described from the old (swapped)
