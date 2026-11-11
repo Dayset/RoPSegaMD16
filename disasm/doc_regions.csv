@@ -211,3 +211,4 @@ start,end,class,name,doc_ref,tier
 0x0D6E9C,0x0D6EBA,zero-fill,region_0d6e9c,,1
 0x0CECF0,0x0CF1AC,entity-spawn-table,tbl_entity_spawn_table_0cecf0,rop.s entity_spawn $023B84 mode 4 reads 202 x 6-byte records at $CECF0+6i (name/selector word; level-up arg; category; rank; level); npc_find_best_char $032FFA reads category at $CECF3+6i; world_camp $03019a reads +2 at $CECF2+6i,1
 0x0CF1AC,0x0D1CFC,entity-template-table,tbl_entity_template_table_0cf1ac,docs/architecture.md:237 + docs/spells.md:412; 24-byte entity templates at $CF1AC (462 total; t0-t461); consumers entity_spawn $23B84 + world_tick $021BDE,2
+0x0DC0C0,0x0DC0C2,dict-gap-ff6f,dict_gap_ff6f,disasm/text/README.md:25-27 and :287 (FF 6F between dictionary blob and offset table; meaning unknown; structural gap),0

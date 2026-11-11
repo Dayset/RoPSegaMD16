@@ -222,7 +222,7 @@ start,end,class,name,doc_ref,tier
 0x0D6E60,0x0D6E9B,table-spell-rank,table_spell_rank_param_bounds,docs/spells.md:90 (6 ranks x 10 bytes: first record index of effect param 0-8 + 21 sentinel per rank; verified 6/6 against computed w1 low-nibble boundaries; no lea consumer found),1
 0x0D6E9C,0x0D6EB9,zero-fill,region_0d6e9c,,1
 0x0D6EBA,0x0DC0BF,text-dictionary-blob,dict_blob,disasm/text/inventory.json:dictionary_blob (3466 words),2
-0x0DC0C0,0x0DC0C1,unknown,region_0dc0c0,,1
+0x0DC0C0,0x0DC0C1,dict-gap-ff6f,dict_gap_ff6f,disasm/text/README.md:25-27 and :287 (FF 6F between dictionary blob and offset table; meaning unknown; structural gap),0
 0x0DC0C2,0x0DDBD7,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3467 words x 2 bytes: start offsets for words 1-3466 plus end sentinel 0x5206 = blob length 20998; reader $013788/$013798),2
 0x0DDBD8,0x0E0A17,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1184 records),2
 0x0E0A18,0x0EB771,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
