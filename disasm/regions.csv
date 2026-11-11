@@ -176,7 +176,7 @@ start,end,class,name,doc_ref,tier
 0x0435C0,0x0436DF,lut-nibble-expand,tbl_lut_nibble_0435c0,rop.s map_terrain_tile_lookup lea L0435C0 nibble LUT (288 bytes) (tier 1),1
 0x0436E0,0x04384F,lut-nibble-expand,tbl_lut_nibble_0436e0,rop.s map_terrain_tile_lookup lea L0436E0 nibble LUT (368 bytes) (tier 1),1
 0x043850,0x044227,map-chunk-data,tbl_map_chunk_data_043850,rop.s map_chunk_load pea L043850 (2520 bytes) (tier 1),1
-0x044228,0x05EDC3,high-entropy,region_044228,,1
+0x044228,0x05EDC3,map-chunk-streams,map_chunk_streams_044228,docs/maps.md chunk tilemaps section: streams follow the 252-record $43850 table and end where per-tile properties start at $5EDC4 (verified 2026-11-10),2
 0x05EDC4,0x05F1C3,map-terrain-grid,map_terrain_grid,docs/maps.md (512 words per-tile properties),2
 0x05F1C4,0x05F523,map-terrain-grid,map_terrain_grid_ext,docs/maps.md:362 (terrain-grid extension in $5EDC4 format; secondary lookup $5EDC4[559..590] read by $01BB82; remaining 400 words same-format with no consumer found),1
 0x05F524,0x05F7E3,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets; base $603E4; trace-verified 175/175 tiling),2
