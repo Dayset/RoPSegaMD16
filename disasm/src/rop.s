@@ -60871,9 +60871,512 @@ L0435C0:
 L0436E0:
 	; data $0436E0-$04384F
 	incbin "rop-original.gen",$0436E0,$170
+	; table $043850-$044227: 252 records x 5 words
+chunk_rec_00:
 L043850:
-	; data $043850-$044227
-	incbin "rop-original.gen",$043850,$9D8
+	dc.w $0000,$0000,$0000,$0800,$0001	; table $043850
+chunk_rec_01:
+	dc.w $0000,$032D,$0000,$0800,$0001	; table $04385A
+chunk_rec_02:
+	dc.w $0000,$06CD,$0000,$0800,$0001	; table $043864
+chunk_rec_03:
+	dc.w $0000,$0A17,$0000,$0800,$0001	; table $04386E
+chunk_rec_04:
+	dc.w $0000,$0D3E,$0000,$0800,$0001	; table $043878
+chunk_rec_05:
+	dc.w $0000,$1090,$0000,$0800,$0001	; table $043882
+chunk_rec_06:
+	dc.w $0000,$132A,$0000,$0800,$0001	; table $04388C
+chunk_rec_07:
+	dc.w $0000,$15DE,$0000,$0800,$0001	; table $043896
+chunk_rec_08:
+	dc.w $0000,$1915,$0000,$0800,$0001	; table $0438A0
+chunk_rec_09:
+	dc.w $0000,$1B77,$0000,$0800,$0001	; table $0438AA
+chunk_rec_10:
+	dc.w $0000,$1E5A,$0000,$0800,$0001	; table $0438B4
+chunk_rec_11:
+	dc.w $0000,$211A,$0000,$0800,$0001	; table $0438BE
+chunk_rec_12:
+	dc.w $0000,$25A4,$0000,$0800,$0001	; table $0438C8
+chunk_rec_13:
+	dc.w $0000,$2AD9,$0000,$0800,$0001	; table $0438D2
+chunk_rec_14:
+	dc.w $0000,$2D88,$0000,$0800,$0001	; table $0438DC
+chunk_rec_15:
+	dc.w $0000,$3019,$0000,$0800,$0001	; table $0438E6
+chunk_rec_16:
+	dc.w $0000,$3275,$0000,$0800,$0001	; table $0438F0
+chunk_rec_17:
+	dc.w $0000,$3444,$0000,$0800,$0001	; table $0438FA
+chunk_rec_18:
+	dc.w $0000,$37CB,$0000,$0800,$0001	; table $043904
+chunk_rec_19:
+	dc.w $0000,$3C93,$0000,$0800,$0001	; table $04390E
+chunk_rec_20:
+	dc.w $0000,$40FA,$0000,$0800,$0001	; table $043918
+chunk_rec_21:
+	dc.w $0000,$4598,$0000,$0800,$0001	; table $043922
+chunk_rec_22:
+	dc.w $0000,$48EC,$0000,$0800,$0001	; table $04392C
+chunk_rec_23:
+	dc.w $0000,$4E34,$0000,$0800,$0001	; table $043936
+chunk_rec_24:
+	dc.w $0000,$5447,$0000,$0800,$0001	; table $043940
+chunk_rec_25:
+	dc.w $0000,$58DF,$0000,$0800,$0001	; table $04394A
+chunk_rec_26:
+	dc.w $0000,$5D3D,$0000,$0800,$0001	; table $043954
+chunk_rec_27:
+	dc.w $0000,$6002,$0000,$0800,$0001	; table $04395E
+chunk_rec_28:
+	dc.w $0000,$6231,$0000,$0800,$0001	; table $043968
+chunk_rec_29:
+	dc.w $0000,$645C,$0000,$0800,$0001	; table $043972
+chunk_rec_30:
+	dc.w $0000,$6750,$0000,$0800,$0001	; table $04397C
+chunk_rec_31:
+	dc.w $0000,$6BE8,$0000,$0800,$0001	; table $043986
+chunk_rec_32:
+	dc.w $0000,$6F57,$0000,$0800,$0001	; table $043990
+chunk_rec_33:
+	dc.w $0000,$7355,$0000,$0800,$0001	; table $04399A
+chunk_rec_34:
+	dc.w $0000,$777B,$0000,$0800,$0001	; table $0439A4
+chunk_rec_35:
+	dc.w $0000,$7B9E,$0000,$0800,$0001	; table $0439AE
+chunk_rec_36:
+	dc.w $0000,$80DB,$0000,$0800,$0001	; table $0439B8
+chunk_rec_37:
+	dc.w $0000,$867E,$0000,$0800,$0001	; table $0439C2
+chunk_rec_38:
+	dc.w $0000,$8A1B,$0000,$0800,$0001	; table $0439CC
+chunk_rec_39:
+	dc.w $0000,$8D9B,$0000,$0800,$0001	; table $0439D6
+chunk_rec_40:
+	dc.w $0000,$909F,$0000,$0800,$0001	; table $0439E0
+chunk_rec_41:
+	dc.w $0000,$939E,$0000,$0800,$0001	; table $0439EA
+chunk_rec_42:
+	dc.w $0000,$979E,$0000,$0800,$0001	; table $0439F4
+chunk_rec_43:
+	dc.w $0000,$9BC8,$0000,$0800,$0001	; table $0439FE
+chunk_rec_44:
+	dc.w $0000,$9F69,$0000,$0800,$0001	; table $043A08
+chunk_rec_45:
+	dc.w $0000,$A252,$0000,$0800,$0001	; table $043A12
+chunk_rec_46:
+	dc.w $0000,$A6D4,$0000,$0800,$0001	; table $043A1C
+chunk_rec_47:
+	dc.w $0000,$ABAF,$0000,$0800,$0001	; table $043A26
+chunk_rec_48:
+	dc.w $0000,$AFCE,$0000,$0800,$0001	; table $043A30
+chunk_rec_49:
+	dc.w $0000,$B374,$0000,$0800,$0001	; table $043A3A
+chunk_rec_50:
+	dc.w $0000,$B6A6,$0000,$0800,$0001	; table $043A44
+chunk_rec_51:
+	dc.w $0000,$BB63,$0000,$0800,$0001	; table $043A4E
+chunk_rec_52:
+	dc.w $0000,$C00C,$0000,$0800,$0001	; table $043A58
+chunk_rec_53:
+	dc.w $0000,$C49D,$0000,$0800,$0001	; table $043A62
+chunk_rec_54:
+	dc.w $0000,$C895,$0000,$0800,$0001	; table $043A6C
+chunk_rec_55:
+	dc.w $0000,$CAEA,$0000,$0800,$0001	; table $043A76
+chunk_rec_56:
+	dc.w $0000,$CF9B,$0000,$0800,$0001	; table $043A80
+chunk_rec_57:
+	dc.w $0000,$D270,$0000,$0800,$0001	; table $043A8A
+chunk_rec_58:
+	dc.w $0000,$D740,$0000,$0800,$0001	; table $043A94
+chunk_rec_59:
+	dc.w $0000,$DB3D,$0000,$0800,$0001	; table $043A9E
+chunk_rec_60:
+	dc.w $0000,$E0C3,$0000,$0800,$0001	; table $043AA8
+chunk_rec_61:
+	dc.w $0000,$E479,$0000,$0800,$0001	; table $043AB2
+chunk_rec_62:
+	dc.w $0000,$E885,$0000,$0800,$0001	; table $043ABC
+chunk_rec_63:
+	dc.w $0000,$EE00,$0000,$0800,$0001	; table $043AC6
+chunk_rec_64:
+	dc.w $0000,$F27B,$0000,$0800,$0001	; table $043AD0
+chunk_rec_65:
+	dc.w $0000,$F6EF,$0000,$0800,$0001	; table $043ADA
+chunk_rec_66:
+	dc.w $0000,$FAF2,$0000,$0800,$0001	; table $043AE4
+chunk_rec_67:
+	dc.w $0000,$FDED,$0000,$0800,$0001	; table $043AEE
+chunk_rec_68:
+	dc.w $0001,$008A,$0000,$0800,$0001	; table $043AF8
+chunk_rec_69:
+	dc.w $0001,$031F,$0000,$0800,$0001	; table $043B02
+chunk_rec_70:
+	dc.w $0001,$0764,$0000,$0800,$0001	; table $043B0C
+chunk_rec_71:
+	dc.w $0001,$0A79,$0000,$0800,$0001	; table $043B16
+chunk_rec_72:
+	dc.w $0001,$0D88,$0000,$0800,$0001	; table $043B20
+chunk_rec_73:
+	dc.w $0001,$0FD4,$0000,$0800,$0001	; table $043B2A
+chunk_rec_74:
+	dc.w $0001,$1367,$0000,$0800,$0001	; table $043B34
+chunk_rec_75:
+	dc.w $0001,$1639,$0000,$0800,$0001	; table $043B3E
+chunk_rec_76:
+	dc.w $0001,$19AE,$0000,$0800,$0001	; table $043B48
+chunk_rec_77:
+	dc.w $0001,$1C16,$0000,$00F2,$0001	; table $043B52
+chunk_rec_78:
+	dc.w $0001,$1CC2,$0000,$00F2,$0001	; table $043B5C
+chunk_rec_79:
+	dc.w $0001,$1DA9,$0000,$00F2,$0001	; table $043B66
+chunk_rec_80:
+	dc.w $0001,$1E9A,$0000,$00F2,$0001	; table $043B70
+chunk_rec_81:
+	dc.w $0001,$1F74,$0000,$00F2,$0001	; table $043B7A
+chunk_rec_82:
+	dc.w $0001,$2056,$0000,$00F2,$0001	; table $043B84
+chunk_rec_83:
+	dc.w $0001,$20C7,$0000,$00F2,$0001	; table $043B8E
+chunk_rec_84:
+	dc.w $0001,$2134,$0000,$00F2,$0001	; table $043B98
+chunk_rec_85:
+	dc.w $0001,$2180,$0000,$00F2,$0001	; table $043BA2
+chunk_rec_86:
+	dc.w $0001,$2225,$0000,$00F2,$0001	; table $043BAC
+chunk_rec_87:
+	dc.w $0001,$22D4,$0000,$00F2,$0001	; table $043BB6
+chunk_rec_88:
+	dc.w $0001,$230D,$0000,$00F2,$0001	; table $043BC0
+chunk_rec_89:
+	dc.w $0001,$2381,$0000,$00F2,$0001	; table $043BCA
+chunk_rec_90:
+	dc.w $0001,$23E6,$0000,$00F2,$0001	; table $043BD4
+chunk_rec_91:
+	dc.w $0001,$2483,$0000,$00F2,$0001	; table $043BDE
+chunk_rec_92:
+	dc.w $0001,$24E3,$0000,$00F2,$0001	; table $043BE8
+chunk_rec_93:
+	dc.w $0001,$254A,$0000,$00F2,$0001	; table $043BF2
+chunk_rec_94:
+	dc.w $0001,$25CD,$0000,$00F2,$0001	; table $043BFC
+chunk_rec_95:
+	dc.w $0001,$2694,$0000,$00F2,$0001	; table $043C06
+chunk_rec_96:
+	dc.w $0001,$2738,$0000,$00F2,$0001	; table $043C10
+chunk_rec_97:
+	dc.w $0001,$2792,$0000,$00F2,$0001	; table $043C1A
+chunk_rec_98:
+	dc.w $0001,$282C,$0000,$00F2,$0001	; table $043C24
+chunk_rec_99:
+	dc.w $0001,$2869,$0000,$00F2,$0001	; table $043C2E
+chunk_rec_100:
+	dc.w $0001,$2923,$0000,$00F2,$0001	; table $043C38
+chunk_rec_101:
+	dc.w $0001,$29AD,$0000,$00F2,$0001	; table $043C42
+chunk_rec_102:
+	dc.w $0001,$2A43,$0000,$00F2,$0001	; table $043C4C
+chunk_rec_103:
+	dc.w $0001,$2B0C,$0000,$00F2,$0001	; table $043C56
+chunk_rec_104:
+	dc.w $0001,$2BE9,$0000,$00F2,$0001	; table $043C60
+chunk_rec_105:
+	dc.w $0001,$2C46,$0000,$00F2,$0001	; table $043C6A
+chunk_rec_106:
+	dc.w $0001,$2CC9,$0000,$00F2,$0001	; table $043C74
+chunk_rec_107:
+	dc.w $0001,$2D62,$0000,$00F2,$0001	; table $043C7E
+chunk_rec_108:
+	dc.w $0001,$2DA2,$0000,$00F2,$0001	; table $043C88
+chunk_rec_109:
+	dc.w $0001,$2E29,$0000,$00F2,$0001	; table $043C92
+chunk_rec_110:
+	dc.w $0001,$2ED5,$0000,$00F2,$0001	; table $043C9C
+chunk_rec_111:
+	dc.w $0001,$2F82,$0000,$00F2,$0001	; table $043CA6
+chunk_rec_112:
+	dc.w $0001,$301C,$0000,$00F2,$0001	; table $043CB0
+chunk_rec_113:
+	dc.w $0001,$30D7,$0000,$00F2,$0001	; table $043CBA
+chunk_rec_114:
+	dc.w $0001,$313E,$0000,$00F2,$0001	; table $043CC4
+chunk_rec_115:
+	dc.w $0001,$31A8,$0000,$00F2,$0001	; table $043CCE
+chunk_rec_116:
+	dc.w $0001,$31EF,$0000,$00F2,$0001	; table $043CD8
+chunk_rec_117:
+	dc.w $0001,$32C5,$0000,$00F2,$0001	; table $043CE2
+chunk_rec_118:
+	dc.w $0001,$3368,$0000,$00F2,$0001	; table $043CEC
+chunk_rec_119:
+	dc.w $0001,$33FA,$0000,$00F2,$0001	; table $043CF6
+chunk_rec_120:
+	dc.w $0001,$344C,$0000,$00F2,$0001	; table $043D00
+chunk_rec_121:
+	dc.w $0001,$34A2,$0000,$00F2,$0001	; table $043D0A
+chunk_rec_122:
+	dc.w $0001,$3520,$0000,$00F2,$0001	; table $043D14
+chunk_rec_123:
+	dc.w $0001,$35AF,$0000,$00F2,$0001	; table $043D1E
+chunk_rec_124:
+	dc.w $0001,$3604,$0000,$00F2,$0001	; table $043D28
+chunk_rec_125:
+	dc.w $0001,$365E,$0000,$00F2,$0001	; table $043D32
+chunk_rec_126:
+	dc.w $0001,$36BF,$0000,$00F2,$0001	; table $043D3C
+chunk_rec_127:
+	dc.w $0001,$372B,$0000,$00F2,$0001	; table $043D46
+chunk_rec_128:
+	dc.w $0001,$3799,$0000,$00F2,$0001	; table $043D50
+chunk_rec_129:
+	dc.w $0001,$3801,$0000,$00F2,$0001	; table $043D5A
+chunk_rec_130:
+	dc.w $0001,$3862,$0000,$00F2,$0001	; table $043D64
+chunk_rec_131:
+	dc.w $0001,$38E8,$0000,$00F2,$0001	; table $043D6E
+chunk_rec_132:
+	dc.w $0001,$3922,$0000,$00F2,$0001	; table $043D78
+chunk_rec_133:
+	dc.w $0001,$39AF,$0000,$00F2,$0001	; table $043D82
+chunk_rec_134:
+	dc.w $0001,$3A20,$0000,$00F2,$0001	; table $043D8C
+chunk_rec_135:
+	dc.w $0001,$3AE0,$0000,$00F2,$0001	; table $043D96
+chunk_rec_136:
+	dc.w $0001,$3B76,$0000,$00F2,$0001	; table $043DA0
+chunk_rec_137:
+	dc.w $0001,$3BE0,$0000,$00F2,$0001	; table $043DAA
+chunk_rec_138:
+	dc.w $0001,$3C4D,$0000,$00F2,$0001	; table $043DB4
+chunk_rec_139:
+	dc.w $0001,$3CF5,$0000,$00F2,$0001	; table $043DBE
+chunk_rec_140:
+	dc.w $0001,$3D7F,$0000,$00F2,$0001	; table $043DC8
+chunk_rec_141:
+	dc.w $0001,$3DD7,$0000,$00F2,$0001	; table $043DD2
+chunk_rec_142:
+	dc.w $0001,$3E5C,$0000,$00F2,$0001	; table $043DDC
+chunk_rec_143:
+	dc.w $0001,$3EFF,$0000,$00F2,$0001	; table $043DE6
+chunk_rec_144:
+	dc.w $0001,$3F7C,$0000,$00F2,$0001	; table $043DF0
+chunk_rec_145:
+	dc.w $0001,$400C,$0000,$00F2,$0001	; table $043DFA
+chunk_rec_146:
+	dc.w $0001,$4092,$0000,$00F2,$0001	; table $043E04
+chunk_rec_147:
+	dc.w $0001,$4139,$0000,$00F2,$0001	; table $043E0E
+chunk_rec_148:
+	dc.w $0001,$41AC,$0000,$00F2,$0001	; table $043E18
+chunk_rec_149:
+	dc.w $0001,$423D,$0000,$00F2,$0001	; table $043E22
+chunk_rec_150:
+	dc.w $0001,$42AF,$0000,$00F2,$0001	; table $043E2C
+chunk_rec_151:
+	dc.w $0001,$4355,$0000,$00F2,$0001	; table $043E36
+chunk_rec_152:
+	dc.w $0001,$43E2,$0000,$00F2,$0001	; table $043E40
+chunk_rec_153:
+	dc.w $0001,$448E,$0000,$00F2,$0001	; table $043E4A
+chunk_rec_154:
+	dc.w $0001,$4573,$0000,$00F2,$0001	; table $043E54
+chunk_rec_155:
+	dc.w $0001,$45F9,$0000,$00F2,$0001	; table $043E5E
+chunk_rec_156:
+	dc.w $0001,$4679,$0000,$00F2,$0001	; table $043E68
+chunk_rec_157:
+	dc.w $0001,$46F4,$0000,$00F2,$0001	; table $043E72
+chunk_rec_158:
+	dc.w $0001,$4723,$0000,$00F2,$0001	; table $043E7C
+chunk_rec_159:
+	dc.w $0001,$47B2,$0000,$00F2,$0001	; table $043E86
+chunk_rec_160:
+	dc.w $0001,$4842,$0000,$00F2,$0001	; table $043E90
+chunk_rec_161:
+	dc.w $0001,$48C2,$0000,$00F2,$0001	; table $043E9A
+chunk_rec_162:
+	dc.w $0001,$4951,$0000,$00F2,$0001	; table $043EA4
+chunk_rec_163:
+	dc.w $0001,$49E4,$0000,$00F2,$0001	; table $043EAE
+chunk_rec_164:
+	dc.w $0001,$4A7E,$0000,$00F2,$0001	; table $043EB8
+chunk_rec_165:
+	dc.w $0001,$4AFF,$0000,$00F2,$0001	; table $043EC2
+chunk_rec_166:
+	dc.w $0001,$4B8F,$0000,$00F2,$0001	; table $043ECC
+chunk_rec_167:
+	dc.w $0001,$4BFA,$0000,$00F2,$0001	; table $043ED6
+chunk_rec_168:
+	dc.w $0001,$4CD7,$0000,$00F2,$0001	; table $043EE0
+chunk_rec_169:
+	dc.w $0001,$4D9F,$0000,$00F2,$0001	; table $043EEA
+chunk_rec_170:
+	dc.w $0001,$4E3E,$0000,$00F2,$0001	; table $043EF4
+chunk_rec_171:
+	dc.w $0001,$4EBC,$0000,$00F2,$0001	; table $043EFE
+chunk_rec_172:
+	dc.w $0001,$4F53,$0000,$00F2,$0001	; table $043F08
+chunk_rec_173:
+	dc.w $0001,$4FC8,$0000,$00F2,$0001	; table $043F12
+chunk_rec_174:
+	dc.w $0001,$5031,$0000,$00F2,$0001	; table $043F1C
+chunk_rec_175:
+	dc.w $0001,$50AC,$0000,$00F2,$0001	; table $043F26
+chunk_rec_176:
+	dc.w $0001,$5130,$0000,$00F2,$0001	; table $043F30
+chunk_rec_177:
+	dc.w $0001,$519C,$0000,$00F2,$0001	; table $043F3A
+chunk_rec_178:
+	dc.w $0001,$5226,$0000,$00F2,$0001	; table $043F44
+chunk_rec_179:
+	dc.w $0001,$52B5,$0000,$00F2,$0001	; table $043F4E
+chunk_rec_180:
+	dc.w $0001,$5333,$0000,$00F2,$0001	; table $043F58
+chunk_rec_181:
+	dc.w $0001,$538B,$0000,$00F2,$0001	; table $043F62
+chunk_rec_182:
+	dc.w $0001,$540D,$0000,$00F2,$0001	; table $043F6C
+chunk_rec_183:
+	dc.w $0001,$5462,$0000,$00F2,$0001	; table $043F76
+chunk_rec_184:
+	dc.w $0001,$54B9,$0000,$00F2,$0001	; table $043F80
+chunk_rec_185:
+	dc.w $0001,$550A,$0000,$00F2,$0001	; table $043F8A
+chunk_rec_186:
+	dc.w $0001,$5561,$0000,$00F2,$0001	; table $043F94
+chunk_rec_187:
+	dc.w $0001,$55B6,$0000,$00F2,$0001	; table $043F9E
+chunk_rec_188:
+	dc.w $0001,$5613,$0000,$00F2,$0001	; table $043FA8
+chunk_rec_189:
+	dc.w $0001,$56A6,$0000,$00F2,$0001	; table $043FB2
+chunk_rec_190:
+	dc.w $0001,$5739,$0000,$00F2,$0001	; table $043FBC
+chunk_rec_191:
+	dc.w $0001,$57B3,$0000,$00F2,$0001	; table $043FC6
+chunk_rec_192:
+	dc.w $0001,$5833,$0000,$00F2,$0001	; table $043FD0
+chunk_rec_193:
+	dc.w $0001,$58B7,$0000,$00F2,$0001	; table $043FDA
+chunk_rec_194:
+	dc.w $0001,$595E,$0000,$00F2,$0001	; table $043FE4
+chunk_rec_195:
+	dc.w $0001,$59CC,$0000,$00F2,$0001	; table $043FEE
+chunk_rec_196:
+	dc.w $0001,$5A39,$0000,$00F2,$0001	; table $043FF8
+chunk_rec_197:
+	dc.w $0001,$5B07,$0000,$00F2,$0001	; table $044002
+chunk_rec_198:
+	dc.w $0001,$5BBD,$0000,$00F2,$0001	; table $04400C
+chunk_rec_199:
+	dc.w $0001,$5C35,$0000,$00F2,$0001	; table $044016
+chunk_rec_200:
+	dc.w $0001,$5C99,$0000,$00F2,$0001	; table $044020
+chunk_rec_201:
+	dc.w $0001,$5D10,$0000,$00F2,$0001	; table $04402A
+chunk_rec_202:
+	dc.w $0001,$5D7B,$0000,$00F2,$0001	; table $044034
+chunk_rec_203:
+	dc.w $0001,$5DE9,$0000,$00F2,$0001	; table $04403E
+chunk_rec_204:
+	dc.w $0001,$5EA8,$0000,$00F2,$0001	; table $044048
+chunk_rec_205:
+	dc.w $0001,$5F5F,$0000,$00F2,$0001	; table $044052
+chunk_rec_206:
+	dc.w $0001,$5FDA,$0000,$00F2,$0001	; table $04405C
+chunk_rec_207:
+	dc.w $0001,$6060,$0000,$00F2,$0001	; table $044066
+chunk_rec_208:
+	dc.w $0001,$6121,$0000,$00F2,$0001	; table $044070
+chunk_rec_209:
+	dc.w $0001,$61CA,$0000,$00F2,$0001	; table $04407A
+chunk_rec_210:
+	dc.w $0001,$629E,$0000,$00F2,$0001	; table $044084
+chunk_rec_211:
+	dc.w $0001,$6320,$0000,$00F2,$0001	; table $04408E
+chunk_rec_212:
+	dc.w $0001,$63C3,$0000,$00F2,$0001	; table $044098
+chunk_rec_213:
+	dc.w $0001,$6457,$0000,$00F2,$0001	; table $0440A2
+chunk_rec_214:
+	dc.w $0001,$64E1,$0000,$00F2,$0001	; table $0440AC
+chunk_rec_215:
+	dc.w $0001,$6592,$0000,$00F2,$0001	; table $0440B6
+chunk_rec_216:
+	dc.w $0001,$6660,$0000,$00F2,$0001	; table $0440C0
+chunk_rec_217:
+	dc.w $0001,$6719,$0000,$00F2,$0001	; table $0440CA
+chunk_rec_218:
+	dc.w $0001,$677A,$0000,$00F2,$0001	; table $0440D4
+chunk_rec_219:
+	dc.w $0001,$6819,$0000,$00F2,$0001	; table $0440DE
+chunk_rec_220:
+	dc.w $0001,$68AC,$0000,$00F2,$0001	; table $0440E8
+chunk_rec_221:
+	dc.w $0001,$6963,$0000,$00F2,$0001	; table $0440F2
+chunk_rec_222:
+	dc.w $0001,$69CD,$0000,$00F2,$0001	; table $0440FC
+chunk_rec_223:
+	dc.w $0001,$6A46,$0000,$00F2,$0001	; table $044106
+chunk_rec_224:
+	dc.w $0001,$6AF0,$0000,$00F2,$0001	; table $044110
+chunk_rec_225:
+	dc.w $0001,$6B13,$0000,$00F2,$0001	; table $04411A
+chunk_rec_226:
+	dc.w $0001,$6B36,$0000,$00F2,$0001	; table $044124
+chunk_rec_227:
+	dc.w $0001,$6B59,$0000,$00F2,$0001	; table $04412E
+chunk_rec_228:
+	dc.w $0001,$6B7C,$0000,$00F2,$0001	; table $044138
+chunk_rec_229:
+	dc.w $0001,$6B9F,$0000,$00F2,$0001	; table $044142
+chunk_rec_230:
+	dc.w $0001,$6BC2,$0000,$0800,$0001	; table $04414C
+chunk_rec_231:
+	dc.w $0001,$6F81,$0000,$0800,$0001	; table $044156
+chunk_rec_232:
+	dc.w $0001,$7363,$0000,$0800,$0001	; table $044160
+chunk_rec_233:
+	dc.w $0001,$775F,$0000,$0800,$0001	; table $04416A
+chunk_rec_234:
+	dc.w $0001,$7B0E,$0000,$0800,$0001	; table $044174
+chunk_rec_235:
+	dc.w $0001,$7E55,$0000,$0800,$0001	; table $04417E
+chunk_rec_236:
+	dc.w $0001,$816F,$0000,$0800,$0001	; table $044188
+chunk_rec_237:
+	dc.w $0001,$8340,$0000,$0800,$0001	; table $044192
+chunk_rec_238:
+	dc.w $0001,$86AF,$0000,$0800,$0001	; table $04419C
+chunk_rec_239:
+	dc.w $0001,$89E9,$0000,$0800,$0001	; table $0441A6
+chunk_rec_240:
+	dc.w $0001,$8BF4,$0000,$0800,$0001	; table $0441B0
+chunk_rec_241:
+	dc.w $0001,$8F22,$0000,$0800,$0001	; table $0441BA
+chunk_rec_242:
+	dc.w $0001,$933C,$0000,$0800,$0001	; table $0441C4
+chunk_rec_243:
+	dc.w $0001,$9434,$0000,$0800,$0001	; table $0441CE
+chunk_rec_244:
+	dc.w $0001,$9783,$0000,$0800,$0001	; table $0441D8
+chunk_rec_245:
+	dc.w $0001,$987B,$0000,$0800,$0001	; table $0441E2
+chunk_rec_246:
+	dc.w $0001,$9973,$0000,$0800,$0001	; table $0441EC
+chunk_rec_247:
+	dc.w $0001,$9B6E,$0000,$0800,$0001	; table $0441F6
+chunk_rec_248:
+	dc.w $0001,$9E38,$0000,$0800,$0001	; table $044200
+chunk_rec_249:
+	dc.w $0001,$A0FC,$0000,$0800,$0001	; table $04420A
+chunk_rec_250:
+	dc.w $0001,$A586,$0000,$0800,$0001	; table $044214
+chunk_rec_251:
+	dc.w $0001,$A896,$0000,$0800,$0001	; table $04421E
 L044228:
 	; data $044228-$05EDC3
 	incbin "rop-original.gen",$044228,$1AB9C
