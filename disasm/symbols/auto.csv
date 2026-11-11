@@ -135,7 +135,7 @@ addr,name,tier,note
 0x024676,sys_unk_024676,0,auto: touches $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE $FF02C0
 0x024916,npc_struct_release,1,code: reads FF02B8 map record; calls map_record_remove; sets FF02B8 to 0xFF
 0x024984,combat_move_unit,1,static: unit slot arg at 8 and a(a6); 0x34-byte unit records at $FF02B4; calls npc_leader_init; combat_target_check; sfx_request
-0x02513E,sys_unk_02513e,0,auto: touches $FF010E $FF02B8 $FF0E8E $FF0E90 $FFA7FC
+0x02513E,map_grid_setup,1,static: calls map_grid_clear and error_show 0x18; sets flags from grid bounds 4 and 7
 0x0253FE,map_walk_check,2,maps.md:415-416;591 returns step-blocked flag (mode 0x17 walkability)
 0x025456,npc_leader_init,1,architecture.md:223 called with leader after load; role from callers
 0x02570A,sys_struct52_assign,1,code: sets FF02C0 field for index; error_show 0x1C if FF02B4 nibble empty
@@ -149,7 +149,7 @@ addr,name,tier,note
 0x025D8E,sys_unk_025d8e,0,auto: touches none
 0x025DE4,combat_target_check,1,logic.md:1159 checks target struct; nonzero -> 2140A effect
 0x025E12,sys_struct52_read_pair,1,code: index*52 into FF02B6 and FF02CB; reads two fields
-0x026076,sys_unk_026076,0,auto: touches $FF00AC $FF00AE $FF010E $FF02B2 $FF02BA $FF02CA
+0x026076,npc_attitude_result,1,static: raises attitude via npc_attitude_raise and enqueues text messages 7 and 16
 0x02619C,sys_struct52_read_field,1,code: index*52 into FF02BA; reads one word field
 0x0265BE,sys_struct52_flag_test,1,code: index*52 into FF02BA; tests word and branches
 0x0269F2,world_step_apply,1,code: calls world_get_step_delta; reads FFA7FC pointer
@@ -166,7 +166,7 @@ addr,name,tier,note
 0x02988E,sys_unk_02988e,0,auto: touches none
 0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
 0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
-0x02A2CA,combat_unk_02a2ca,0,auto: unit records $FF02DB/$FF02B2 and flag $FF010E; no clear role
+0x02A2CA,combat_select_unit,1,static: compares unit side at $FF02DB with current unit $FF02B2; sets $FF009A and $FF0120
 0x02A454,sys_unk_02a454,0,auto: touches $FF02A0 $FF02A2 $FF02A4 $FF02A6 $FF02A8 $FF02AA
 0x02A562,sys_unk_02a562,0,auto: touches $FF02B4 $FF02B6 $FF02BE $FF02C0 $FF02C2 $FF02C8
 0x02AD64,sys_unk_02ad64,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2

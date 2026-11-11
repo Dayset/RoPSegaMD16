@@ -1605,7 +1605,7 @@ L00D920:
 L00D93A:
 	move.w $ff0120.l,-(a7)	; $00D93A
 	move.w $ff0e82.l,-(a7)	; $00D940
-	jsr combat_unk_02a2ca.l	; $00D946
+	jsr combat_select_unit.l	; $00D946
 	addq.w #$4,a7	; $00D94C
 L00D94E:
 	tst.w $ff011e.l	; $00D94E
@@ -3065,7 +3065,7 @@ L011938:
 	unlk a6	; $011946
 	rts	; $011948
 	; code $01194A-$011A19
-gfx_unk_01194a:
+gfx_set_tile_vram_addr:
 	link.w a6,#$0	; $01194A
 	movem.l d4-d7/a3,-(a7)	; $01194E
 	moveq #$0,d7	; $011952
@@ -4660,7 +4660,7 @@ world_map_draw:
 	clr.w -(a7)	; $012E98
 	move.w #$40,-(a7)	; $012E9A
 	clr.l -(a7)	; $012E9E
-	jsr gfx_unk_01194a.l	; $012EA0
+	jsr gfx_set_tile_vram_addr.l	; $012EA0
 	lea.l $14(a7),a7	; $012EA6
 	jsr clear_decode_buffer.l	; $012EAA
 	move.w #$33c0,-(a7)	; $012EB0
@@ -6606,7 +6606,7 @@ L0149E4:
 	clr.w -(a7)	; $014A0A
 	move.w #$40,-(a7)	; $014A0C
 	clr.l -(a7)	; $014A10
-	jsr gfx_unk_01194a.l	; $014A12
+	jsr gfx_set_tile_vram_addr.l	; $014A12
 	lea.l $14(a7),a7	; $014A18
 	addq.w #$1,-$2(a6)	; $014A1C
 	cmpi.w #$7,-$2(a6)	; $014A20
@@ -6622,7 +6622,7 @@ L0149E4:
 	clr.w -(a7)	; $014A46
 	move.w #$40,-(a7)	; $014A48
 	clr.l -(a7)	; $014A4C
-	jsr gfx_unk_01194a.l	; $014A4E
+	jsr gfx_set_tile_vram_addr.l	; $014A4E
 	lea.l $14(a7),a7	; $014A54
 	clr.w -$2(a6)	; $014A58
 L014A5C:
@@ -6732,7 +6732,7 @@ L014B7E:
 	clr.w -(a7)	; $014BC6
 	move.w #$40,-(a7)	; $014BC8
 	clr.l -(a7)	; $014BCC
-	jsr gfx_unk_01194a.l	; $014BCE
+	jsr gfx_set_tile_vram_addr.l	; $014BCE
 	lea.l $14(a7),a7	; $014BD4
 	move.w $ff8640.l,-(a7)	; $014BD8
 	move.w #$4,-(a7)	; $014BDE
@@ -6943,7 +6943,7 @@ L014E9E:
 	clr.w -(a7)	; $014EBC
 	move.w #$40,-(a7)	; $014EBE
 	clr.l -(a7)	; $014EC2
-	jsr gfx_unk_01194a.l	; $014EC4
+	jsr gfx_set_tile_vram_addr.l	; $014EC4
 	lea.l $14(a7),a7	; $014ECA
 	bra.b L014F0A	; $014ECE
 L014ED0:
@@ -7515,7 +7515,7 @@ L015690:
 	clr.w -(a7)	; $0156B6
 	move.w #$40,-(a7)	; $0156B8
 	clr.l -(a7)	; $0156BC
-	jsr gfx_unk_01194a.l	; $0156BE
+	jsr gfx_set_tile_vram_addr.l	; $0156BE
 	lea.l $14(a7),a7	; $0156C4
 	addq.w #$8,-$12(a6)	; $0156C8
 	cmpi.w #$28,-$12(a6)	; $0156CC
@@ -7533,7 +7533,7 @@ L015690:
 	clr.w -(a7)	; $0156FA
 	move.w #$40,-(a7)	; $0156FC
 	clr.l -(a7)	; $015700
-	jsr gfx_unk_01194a.l	; $015702
+	jsr gfx_set_tile_vram_addr.l	; $015702
 	lea.l $14(a7),a7	; $015708
 	move.w $ff867a.l,-(a7)	; $01570C
 	move.w #$4,-(a7)	; $015712
@@ -8059,7 +8059,7 @@ L015E50:
 	move.w #$1,-(a7)	; $015EC2
 	move.w #$80,-(a7)	; $015EC6
 	pea.l L002000.w	; $015ECA
-	jsr gfx_unk_01194a.l	; $015ECE
+	jsr gfx_set_tile_vram_addr.l	; $015ECE
 	lea.l $14(a7),a7	; $015ED4
 	move.w #$17,-(a7)	; $015ED8
 	jsr map_decode.l	; $015EDC
@@ -8077,7 +8077,7 @@ L015E50:
 	move.w #$29,-(a7)	; $015F08
 	move.w #$80,-(a7)	; $015F0C
 	pea.l L002000.w	; $015F10
-	jsr gfx_unk_01194a.l	; $015F14
+	jsr gfx_set_tile_vram_addr.l	; $015F14
 	lea.l $14(a7),a7	; $015F1A
 	move.w #$18,-(a7)	; $015F1E
 	jsr map_decode.l	; $015F22
@@ -8095,7 +8095,7 @@ L015E50:
 	move.w #$34,-(a7)	; $015F4E
 	move.w #$80,-(a7)	; $015F52
 	pea.l L002000.w	; $015F56
-	jsr gfx_unk_01194a.l	; $015F5A
+	jsr gfx_set_tile_vram_addr.l	; $015F5A
 	lea.l $14(a7),a7	; $015F60
 	move.w #$19,-(a7)	; $015F64
 	jsr map_decode.l	; $015F68
@@ -8113,7 +8113,7 @@ L015E50:
 	move.w #$3e,-(a7)	; $015F94
 	move.w #$80,-(a7)	; $015F98
 	pea.l L002000.w	; $015F9C
-	jsr gfx_unk_01194a.l	; $015FA0
+	jsr gfx_set_tile_vram_addr.l	; $015FA0
 	lea.l $14(a7),a7	; $015FA6
 	move.w #$1a,-(a7)	; $015FAA
 	jsr map_decode.l	; $015FAE
@@ -8131,7 +8131,7 @@ L015E50:
 	move.w #$55,-(a7)	; $015FDA
 	move.w #$80,-(a7)	; $015FDE
 	pea.l L002000.w	; $015FE2
-	jsr gfx_unk_01194a.l	; $015FE6
+	jsr gfx_set_tile_vram_addr.l	; $015FE6
 	lea.l $14(a7),a7	; $015FEC
 L015FF0:
 	cmpi.w #$1,$8(a6)	; $015FF0
@@ -8152,7 +8152,7 @@ L015FF0:
 	move.w #$1,-(a7)	; $01602A
 	move.w #$80,-(a7)	; $01602E
 	pea.l L002000.w	; $016032
-	jsr gfx_unk_01194a.l	; $016036
+	jsr gfx_set_tile_vram_addr.l	; $016036
 	lea.l $14(a7),a7	; $01603C
 	move.w #$31,-(a7)	; $016040
 	jsr map_decode.l	; $016044
@@ -8170,7 +8170,7 @@ L015FF0:
 	move.w #$27,-(a7)	; $016070
 	move.w #$80,-(a7)	; $016074
 	pea.l L002000.w	; $016078
-	jsr gfx_unk_01194a.l	; $01607C
+	jsr gfx_set_tile_vram_addr.l	; $01607C
 	lea.l $14(a7),a7	; $016082
 	move.w #$32,-(a7)	; $016086
 	jsr map_decode.l	; $01608A
@@ -8188,7 +8188,7 @@ L015FF0:
 	move.w #$34,-(a7)	; $0160B6
 	move.w #$80,-(a7)	; $0160BA
 	pea.l L002000.w	; $0160BE
-	jsr gfx_unk_01194a.l	; $0160C2
+	jsr gfx_set_tile_vram_addr.l	; $0160C2
 	lea.l $14(a7),a7	; $0160C8
 	move.w #$33,-(a7)	; $0160CC
 	jsr map_decode.l	; $0160D0
@@ -8206,7 +8206,7 @@ L015FF0:
 	move.w #$37,-(a7)	; $0160FC
 	move.w #$80,-(a7)	; $016100
 	pea.l L002000.w	; $016104
-	jsr gfx_unk_01194a.l	; $016108
+	jsr gfx_set_tile_vram_addr.l	; $016108
 	lea.l $14(a7),a7	; $01610E
 	move.w #$34,-(a7)	; $016112
 	jsr map_decode.l	; $016116
@@ -8224,7 +8224,7 @@ L015FF0:
 	move.w #$4c,-(a7)	; $016142
 	move.w #$80,-(a7)	; $016146
 	pea.l L002000.w	; $01614A
-	jsr gfx_unk_01194a.l	; $01614E
+	jsr gfx_set_tile_vram_addr.l	; $01614E
 	lea.l $14(a7),a7	; $016154
 L016158:
 	move.w #$fec0,-$2(a6)	; $016158
@@ -8383,7 +8383,7 @@ sys_unk_0162fe:
 	clr.w -(a7)	; $016358
 	move.w #$40,-(a7)	; $01635A
 	clr.l -(a7)	; $01635E
-	jsr gfx_unk_01194a.l	; $016360
+	jsr gfx_set_tile_vram_addr.l	; $016360
 	lea.l $14(a7),a7	; $016366
 	tst.w $ff0114.l	; $01636A
 	beq.b L0163AC	; $016370
@@ -10104,7 +10104,7 @@ location_pic_draw:
 	clr.w -(a7)	; $0178F4
 	move.w #$40,-(a7)	; $0178F6
 	clr.l -(a7)	; $0178FA
-	jsr gfx_unk_01194a.l	; $0178FC
+	jsr gfx_set_tile_vram_addr.l	; $0178FC
 	lea.l $14(a7),a7	; $017902
 	bra.b L01795E	; $017906
 L017908:
@@ -10129,7 +10129,7 @@ L017908:
 	clr.w -(a7)	; $01794C
 	move.w #$40,-(a7)	; $01794E
 	clr.l -(a7)	; $017952
-	jsr gfx_unk_01194a.l	; $017954
+	jsr gfx_set_tile_vram_addr.l	; $017954
 	lea.l $14(a7),a7	; $01795A
 L01795E:
 	move.w #$3,-(a7)	; $01795E
@@ -10652,7 +10652,7 @@ L01809C:
 	move.w d7,-(a7)	; $0180BA
 	move.w #$80,-(a7)	; $0180BC
 	clr.l -(a7)	; $0180C0
-	jsr gfx_unk_01194a.l	; $0180C2
+	jsr gfx_set_tile_vram_addr.l	; $0180C2
 	lea.l $14(a7),a7	; $0180C8
 	add.w #$20,d7	; $0180CC
 	cmp.w #$80,d7	; $0180D0
@@ -10678,7 +10678,7 @@ L0180E4:
 	move.w d7,-(a7)	; $01810C
 	move.w #$80,-(a7)	; $01810E
 	pea.l L002000.w	; $018112
-	jsr gfx_unk_01194a.l	; $018116
+	jsr gfx_set_tile_vram_addr.l	; $018116
 	lea.l $14(a7),a7	; $01811C
 	addq.w #$8,d7	; $018120
 	cmp.w #$80,d7	; $018122
@@ -11182,7 +11182,7 @@ L0187AC:
 	clr.w -(a7)	; $0187D0
 	move.w #$40,-(a7)	; $0187D2
 	clr.l -(a7)	; $0187D6
-	jsr gfx_unk_01194a.l	; $0187D8
+	jsr gfx_set_tile_vram_addr.l	; $0187D8
 	lea.l $14(a7),a7	; $0187DE
 	addq.w #$8,d7	; $0187E2
 	cmp.w #$28,d7	; $0187E4
@@ -11200,7 +11200,7 @@ L0187AC:
 	clr.w -(a7)	; $018810
 	move.w #$40,-(a7)	; $018812
 	clr.l -(a7)	; $018816
-	jsr gfx_unk_01194a.l	; $018818
+	jsr gfx_set_tile_vram_addr.l	; $018818
 	lea.l $14(a7),a7	; $01881E
 	move.w #$39,-(a7)	; $018822
 	jsr map_decode.l	; $018826
@@ -11216,7 +11216,7 @@ L0187AC:
 	move.w #$4,-(a7)	; $01884C
 	move.w #$40,-(a7)	; $018850
 	pea.l L002000.w	; $018854
-	jsr gfx_unk_01194a.l	; $018858
+	jsr gfx_set_tile_vram_addr.l	; $018858
 	lea.l $14(a7),a7	; $01885E
 	moveq #$0,d4	; $018862
 	pea.l L0CCD38.l	; $018864
@@ -11583,7 +11583,7 @@ L018CE6:
 	clr.w -(a7)	; $018D62
 	move.w #$80,-(a7)	; $018D64
 	pea.l L002000.w	; $018D68
-	jsr gfx_unk_01194a.l	; $018D6C
+	jsr gfx_set_tile_vram_addr.l	; $018D6C
 	lea.l $14(a7),a7	; $018D72
 	pea.l L0CCBB8.l	; $018D76
 	clr.w -(a7)	; $018D7C
@@ -11842,7 +11842,7 @@ L0190FA:
 	clr.w -(a7)	; $01911E
 	move.w #$40,-(a7)	; $019120
 	clr.l -(a7)	; $019124
-	jsr gfx_unk_01194a.l	; $019126
+	jsr gfx_set_tile_vram_addr.l	; $019126
 	lea.l $14(a7),a7	; $01912C
 	addq.w #$8,d7	; $019130
 	cmp.w #$28,d7	; $019132
@@ -11860,7 +11860,7 @@ L0190FA:
 	clr.w -(a7)	; $01915E
 	move.w #$40,-(a7)	; $019160
 	clr.l -(a7)	; $019164
-	jsr gfx_unk_01194a.l	; $019166
+	jsr gfx_set_tile_vram_addr.l	; $019166
 	lea.l $14(a7),a7	; $01916C
 	move.w #$39,-(a7)	; $019170
 	jsr map_decode.l	; $019174
@@ -11876,7 +11876,7 @@ L0190FA:
 	move.w #$4,-(a7)	; $01919A
 	move.w #$40,-(a7)	; $01919E
 	pea.l L002000.w	; $0191A2
-	jsr gfx_unk_01194a.l	; $0191A6
+	jsr gfx_set_tile_vram_addr.l	; $0191A6
 	lea.l $14(a7),a7	; $0191AC
 	moveq #$0,d7	; $0191B0
 L0191B2:
@@ -15481,7 +15481,7 @@ L01DC98:
 	move.w d1,$ff0126.l	; $01DCBA
 	move.w #$ff,-(a7)	; $01DCC0
 	move.w $ff0e82.l,-(a7)	; $01DCC4
-	jsr combat_unk_02a2ca.l	; $01DCCA
+	jsr combat_select_unit.l	; $01DCCA
 	addq.w #$4,a7	; $01DCD0
 	move.w $a(a6),d0	; $01DCD2
 	ext.l d0	; $01DCD6
@@ -15605,7 +15605,7 @@ L01DE44:
 	move.w #$230,$e(a0)	; $01DE78
 	move.w #$ff,-(a7)	; $01DE7E
 	move.w $ff0e82.l,-(a7)	; $01DE82
-	jsr combat_unk_02a2ca.l	; $01DE88
+	jsr combat_select_unit.l	; $01DE88
 	addq.w #$4,a7	; $01DE8E
 	move.w d5,-(a7)	; $01DE90
 	move.w d4,-(a7)	; $01DE92
@@ -19064,7 +19064,7 @@ L020AE0:
 	bne.b L020B2C	; $020B18
 	move.w #$ff,-(a7)	; $020B1A
 	move.w $ff0e82.l,-(a7)	; $020B1E
-	jsr combat_unk_02a2ca.l	; $020B24
+	jsr combat_select_unit.l	; $020B24
 	addq.w #$4,a7	; $020B2A
 L020B2C:
 	tst.w $ff00ac.l	; $020B2C
@@ -19074,7 +19074,7 @@ L020B2C:
 	cmpi.w #$f,$ff0e7e.l	; $020B3E
 	bne.b L020B62	; $020B46
 L020B48:
-	jsr sys_unk_026076.l	; $020B48
+	jsr npc_attitude_result.l	; $020B48
 	move.w #$1,-(a7)	; $020B4E
 	jsr msg_queue_consume.l	; $020B52
 	addq.w #$2,a7	; $020B58
@@ -24241,7 +24241,7 @@ L0250E8:
 L0250EA:
 	tst.w $ff0110.l	; $0250EA
 	bne.b L0250F6	; $0250F0
-	jsr sys_unk_026076(pc)	; $0250F2
+	jsr npc_attitude_result(pc)	; $0250F2
 L0250F6:
 	bra.b L025112	; $0250F6
 L0250F8:
@@ -24258,7 +24258,7 @@ L025112:
 	move.w d4,-(a7)	; $025112
 	move.w d6,-(a7)	; $025114
 	move.w -$34(a6),-(a7)	; $025116
-	bsr.b sys_unk_02513e	; $02511A
+	bsr.b map_grid_setup	; $02511A
 	addq.w #$6,a7	; $02511C
 L02511E:
 	move.w -$34(a6),d0	; $02511E
@@ -24271,7 +24271,7 @@ L02511E:
 	move.w -$a(a6),d0	; $025136
 	bra.w L0249EE	; $02513A
 	; code $02513E-$02539D
-sys_unk_02513e:
+map_grid_setup:
 	link.w a6,#$fff2	; $02513E
 	clr.w -$a(a6)	; $025142
 	clr.w -$c(a6)	; $025146
@@ -25474,7 +25474,7 @@ L026072:
 	unlk a6	; $026072
 	rts	; $026074
 	; code $026076-$02619B
-sys_unk_026076:
+npc_attitude_result:
 	link.w a6,#$0	; $026076
 	cmpi.w #$1,$ff00ae.l	; $02607A
 	bne.b L0260B4	; $026082
@@ -26144,7 +26144,7 @@ L026914:
 	move.w #$1,-(a7)	; $026926
 	jsr combat_unk_01da6c.l	; $02692A
 	addq.w #$6,a7	; $026930
-	jsr sys_unk_026076.l	; $026932
+	jsr npc_attitude_result.l	; $026932
 L026938:
 	bra.b L02690C	; $026938
 L02693A:
@@ -29895,7 +29895,7 @@ L029CA8:
 L029CB8:
 	move.w #$ff,-(a7)	; $029CB8
 	move.w $ff0e82.l,-(a7)	; $029CBC
-	jsr combat_unk_02a2ca(pc)	; $029CC2
+	jsr combat_select_unit(pc)	; $029CC2
 	addq.w #$4,a7	; $029CC6
 	clr.w -(a7)	; $029CC8
 	jsr menu_unk_020a88.l	; $029CCA
@@ -30273,7 +30273,7 @@ L02A1AC:
 L02A1BA:
 	move.w #$ff,-(a7)	; $02A1BA
 	move.w $ff0e82.l,-(a7)	; $02A1BE
-	jsr combat_unk_02a2ca(pc)	; $02A1C4
+	jsr combat_select_unit(pc)	; $02A1C4
 	addq.w #$4,a7	; $02A1C8
 	clr.w -(a7)	; $02A1CA
 	jsr menu_unk_020a88.l	; $02A1CC
@@ -30362,7 +30362,7 @@ L02A2BC:
 	move.w -$4(a6),d0	; $02A2C4
 	bra.b L02A260	; $02A2C8
 	; code $02A2CA-$02A453
-combat_unk_02a2ca:
+combat_select_unit:
 	link.w a6,#$fffa	; $02A2CA
 	clr.w -$6(a6)	; $02A2CE
 	move.w #$ffff,$ff0120.l	; $02A2D2
@@ -31020,7 +31020,7 @@ L02AB4A:
 	move.w $ff0e82.l,-(a7)	; $02AC14
 	jsr npc_leader_init.l	; $02AC1A
 	lea.l $10(a7),a7	; $02AC20
-	jsr sys_unk_026076.l	; $02AC24
+	jsr npc_attitude_result.l	; $02AC24
 	bra.w L02AD60	; $02AC2A
 L02AC2E:
 	pea.l -$18(a6)	; $02AC2E
@@ -31194,7 +31194,7 @@ L02AE6A:
 	beq.b L02AE84	; $02AE70
 	move.w -$12(a6),-(a7)	; $02AE72
 	move.w $8(a6),-(a7)	; $02AE76
-	jsr combat_unk_02a2ca(pc)	; $02AE7A
+	jsr combat_select_unit(pc)	; $02AE7A
 	addq.w #$4,a7	; $02AE7E
 	bra.w L02AF6E	; $02AE80
 L02AE84:
@@ -31227,7 +31227,7 @@ L02AEDC:
 	beq.b L02AEF4	; $02AEE2
 	move.w -$12(a6),-(a7)	; $02AEE4
 	move.w $8(a6),-(a7)	; $02AEE8
-	jsr combat_unk_02a2ca(pc)	; $02AEEC
+	jsr combat_select_unit(pc)	; $02AEEC
 	addq.w #$4,a7	; $02AEF0
 	bra.b L02AF6E	; $02AEF2
 L02AEF4:
@@ -31260,7 +31260,7 @@ L02AF4C:
 	beq.b L02AF64	; $02AF52
 	move.w -$12(a6),-(a7)	; $02AF54
 	move.w $8(a6),-(a7)	; $02AF58
-	jsr combat_unk_02a2ca(pc)	; $02AF5C
+	jsr combat_select_unit(pc)	; $02AF5C
 	addq.w #$4,a7	; $02AF60
 	bra.b L02AF6E	; $02AF62
 L02AF64:
@@ -31590,7 +31590,7 @@ L02B3FC:
 	unlk a6	; $02B3FE
 	rts	; $02B400
 	; code $02B402-$02B501
-world_unk_02b402:
+npc_spawn_at_step:
 	link.w a6,#$fff6	; $02B402
 	move.l a3,-(a7)	; $02B406
 	cmpi.w #$6,$14(a6)	; $02B408
@@ -32145,7 +32145,7 @@ L02BB5A:
 	bne.b L02BBA6	; $02BB8A
 	move.w #$ff,-(a7)	; $02BB8C
 	move.w $ff0e82.l,-(a7)	; $02BB90
-	jsr combat_unk_02a2ca(pc)	; $02BB96
+	jsr combat_select_unit(pc)	; $02BB96
 	addq.w #$4,a7	; $02BB9A
 	clr.w -(a7)	; $02BB9C
 	jsr menu_unk_020a88.l	; $02BB9E
@@ -34305,7 +34305,7 @@ L02D6BC:
 	clr.w $ff0110.l	; $02D71A
 	move.w #$ff,-(a7)	; $02D720
 	move.w $ff0e82.l,-(a7)	; $02D724
-	jsr combat_unk_02a2ca.l	; $02D72A
+	jsr combat_select_unit.l	; $02D72A
 	addq.w #$4,a7	; $02D730
 	clr.w -(a7)	; $02D732
 	jsr menu_unk_020a88.l	; $02D734
@@ -34384,7 +34384,7 @@ L02D802:
 	move.w #$1,-(a7)	; $02D83A
 	move.w #$4,-(a7)	; $02D83E
 	move.w -$2(a6),-(a7)	; $02D842
-	jsr sys_unk_02513e.l	; $02D846
+	jsr map_grid_setup.l	; $02D846
 	addq.w #$6,a7	; $02D84C
 	bra.w L02DBEA	; $02D84E
 L02D852:
@@ -44856,7 +44856,7 @@ L036188:
 	move.w #$1,-(a7)	; $0361CE
 	move.w #$4,-(a7)	; $0361D2
 	move.w $ff0e82.l,-(a7)	; $0361D6
-	jsr sys_unk_02513e.l	; $0361DC
+	jsr map_grid_setup.l	; $0361DC
 	addq.w #$6,a7	; $0361E2
 	move.w #$ffff,$ff009c.l	; $0361E4
 	move.w #$ffff,$ff0ea8.l	; $0361EC
@@ -44954,7 +44954,7 @@ L03630E:
 	muls.w #$34,d0	; $036342
 	lea.l $ff02c8.l,a0	; $036346
 	move.w (a0,d0.l),-(a7)	; $03634C
-	jsr sys_unk_02513e.l	; $036350
+	jsr map_grid_setup.l	; $036350
 	addq.w #$6,a7	; $036356
 	move.w #$1,-$2(a6)	; $036358
 L03635E:
@@ -45163,7 +45163,7 @@ L036642:
 	clr.w $ff010e.l	; $036658
 	move.w #$ff,-(a7)	; $03665E
 	move.w $ff0e82.l,-(a7)	; $036662
-	jsr combat_unk_02a2ca.l	; $036668
+	jsr combat_select_unit.l	; $036668
 	addq.w #$4,a7	; $03666E
 	tst.w -$6(a6)	; $036670
 	beq.b L036698	; $036674
@@ -45312,7 +45312,7 @@ L0368A2:
 	move.w #$1,-(a7)	; $0368BE
 	move.w #$4,-(a7)	; $0368C2
 	move.w $ff0e82.l,-(a7)	; $0368C6
-	jsr sys_unk_02513e.l	; $0368CC
+	jsr map_grid_setup.l	; $0368CC
 	addq.w #$6,a7	; $0368D2
 	move.w #$8,-(a7)	; $0368D4
 	jsr menu_select_screen.l	; $0368D8
@@ -48241,7 +48241,7 @@ L038D84:
 	move.w d0,-(a7)	; $038D94
 	move.w -$8(a6),-(a7)	; $038D96
 	move.w -$6(a6),-(a7)	; $038D9A
-	jsr world_unk_02b402.l	; $038D9E
+	jsr npc_spawn_at_step.l	; $038D9E
 	lea.l $14(a7),a7	; $038DA4
 	tst.w d0	; $038DA8
 	beq.b L038DB0	; $038DAA
@@ -48381,7 +48381,7 @@ L038F52:
 	move.w d0,-(a7)	; $038F62
 	move.w -$8(a6),-(a7)	; $038F64
 	move.w -$6(a6),-(a7)	; $038F68
-	jsr world_unk_02b402.l	; $038F6C
+	jsr npc_spawn_at_step.l	; $038F6C
 	lea.l $14(a7),a7	; $038F72
 	tst.w d0	; $038F76
 	beq.b L038F7E	; $038F78
@@ -48501,7 +48501,7 @@ L0390EA:
 	move.w d0,-(a7)	; $0390FA
 	move.w -$8(a6),-(a7)	; $0390FC
 	move.w -$6(a6),-(a7)	; $039100
-	jsr world_unk_02b402.l	; $039104
+	jsr npc_spawn_at_step.l	; $039104
 	lea.l $14(a7),a7	; $03910A
 	tst.w d0	; $03910E
 	beq.b L039116	; $039110
@@ -48701,7 +48701,7 @@ L03937C:
 	move.w d0,-(a7)	; $03938C
 	move.w -$8(a6),-(a7)	; $03938E
 	move.w -$6(a6),-(a7)	; $039392
-	jsr world_unk_02b402.l	; $039396
+	jsr npc_spawn_at_step.l	; $039396
 	lea.l $14(a7),a7	; $03939C
 	tst.w d0	; $0393A0
 	beq.b L0393A8	; $0393A2
@@ -48961,7 +48961,7 @@ L0396B4:
 	move.w d0,-(a7)	; $0396C4
 	move.w -$8(a6),-(a7)	; $0396C6
 	move.w -$6(a6),-(a7)	; $0396CA
-	jsr world_unk_02b402.l	; $0396CE
+	jsr npc_spawn_at_step.l	; $0396CE
 	lea.l $14(a7),a7	; $0396D4
 	tst.w d0	; $0396D8
 	beq.b L0396E0	; $0396DA
@@ -57071,7 +57071,7 @@ L03FF06:
 	move.w d0,-(a7)	; $03FF16
 	move.w #$1,-(a7)	; $03FF18
 	move.w #$1,-(a7)	; $03FF1C
-	jsr world_unk_02b402.l	; $03FF20
+	jsr npc_spawn_at_step.l	; $03FF20
 	lea.l $14(a7),a7	; $03FF26
 	clr.w -(a7)	; $03FF2A
 	move.w #$a,-(a7)	; $03FF2C
@@ -57098,7 +57098,7 @@ L03FF5C:
 	move.w d0,-(a7)	; $03FF6C
 	move.w #$b,-(a7)	; $03FF6E
 	move.w #$1,-(a7)	; $03FF72
-	jsr world_unk_02b402.l	; $03FF76
+	jsr npc_spawn_at_step.l	; $03FF76
 	lea.l $14(a7),a7	; $03FF7C
 	clr.w -(a7)	; $03FF80
 	move.w #$a,-(a7)	; $03FF82
@@ -57125,7 +57125,7 @@ L03FFB2:
 	move.w d0,-(a7)	; $03FFC2
 	move.w #$b,-(a7)	; $03FFC4
 	move.w #$b,-(a7)	; $03FFC8
-	jsr world_unk_02b402.l	; $03FFCC
+	jsr npc_spawn_at_step.l	; $03FFCC
 	lea.l $14(a7),a7	; $03FFD2
 	clr.w -(a7)	; $03FFD6
 	move.w #$a,-(a7)	; $03FFD8
@@ -57152,7 +57152,7 @@ L040008:
 	move.w d0,-(a7)	; $040018
 	move.w #$1,-(a7)	; $04001A
 	move.w #$b,-(a7)	; $04001E
-	jsr world_unk_02b402.l	; $040022
+	jsr npc_spawn_at_step.l	; $040022
 	lea.l $14(a7),a7	; $040028
 	jsr map_animate_tiles.l	; $04002C
 	addq.w #$1,$ff012a.l	; $040032
@@ -58309,7 +58309,7 @@ L041056:
 	move.w d0,-(a7)	; $041066
 	move.w -$8(a6),-(a7)	; $041068
 	move.w -$6(a6),-(a7)	; $04106C
-	jsr world_unk_02b402.l	; $041070
+	jsr npc_spawn_at_step.l	; $041070
 	lea.l $14(a7),a7	; $041076
 	tst.w d0	; $04107A
 	beq.b L041082	; $04107C
