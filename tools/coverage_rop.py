@@ -81,6 +81,14 @@ def main():
         ('struct (labelled dc data)', struct, 'structured data lines (#6)'),
         ('raw .dc/.fill lines', raw, 'instruction fallbacks — must reach 0 (#7)'),
     ]
+    if '--rows' in sys.argv:
+        for line in src.read_text(errors='replace').splitlines():
+            m = INC.search(line)
+            if m:
+                start, length = num(m.group(1)), num(m.group(2))
+                cls = next((c for rs, re_, c in regions if rs <= start <= re_), 'unclassified')
+                print(f'0x{start:06X} {length:>7} {cls}')
+        return
     if '--by-class' in sys.argv:
         per = {}
         for line in src.read_text(errors='replace').splitlines():
