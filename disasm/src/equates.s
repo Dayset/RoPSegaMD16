@@ -322,7 +322,7 @@ ram_sys_field_c410	equ	$FFC410
 ram_sys_ffc412	equ	$FFC412
 ram_sys_field_c414	equ	$FFC414
 ram_sys_field_c416	equ	$FFC416
-ram_sys_field_c418	equ	$FFC418
+ram_combat_field_c418	equ	$FFC418
 ram_sys_field_c41a	equ	$FFC41A
 ram_spell_effect_c41c	equ	$FFC41C
 ram_sys_ffc9ea	equ	$FFC9EA
