@@ -24,7 +24,9 @@ start,end,class,name,doc_ref,tier
 0x01764E,0x01765B,unknown,region_01764e,,1
 0x0179C6,0x0179C9,ascii,region_0179c6,,1
 0x0197B0,0x019F8E,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
-0x019F8F,0x01B5D5,unknown,region_019f8f,,1
+0x019F8F,0x01AA5F,unknown,region_019f8f,,1
+0x01AA60,0x01ADE2,str-fixed10-table,str_stat_class_names,measured dump 2026-11-11: 10-byte null-padded records; 9 stat names (Brain..Intuition) then weapon-type and NPC/class names; 0x01AE98 region not included,1
+0x01ADE3,0x01B5D5,unknown,region_01ade3,,1
 0x01BE86,0x01BE8D,unknown,region_01be86,,1
 0x01C0A8,0x01C0AF,unknown,region_01c0a8,,1
 0x01C7BA,0x01C7C1,unknown,region_01c7ba,,1
