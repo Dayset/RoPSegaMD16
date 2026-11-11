@@ -23073,7 +23073,7 @@ L020332:
 	clr.w -(a7)	; $020348
 	move.w #$6,-(a7)	; $02034A
 	move.w #$d,-(a7)	; $02034E
-	jsr sys_unk_02dcce.l	; $020352
+	jsr sys_dispatch_action_2dcce.l	; $020352
 	addq.w #$6,a7	; $020358
 	bra.b L02036C	; $02035A
 L02035C:
@@ -23126,7 +23126,7 @@ L0203E8:
 	moveq #$0,d0	; $0203F6
 	move.b ram_sys_ffbb6f.l,d0	; $0203F8
 	move.w d0,-(a7)	; $0203FE
-	jsr sys_unk_02dcce.l	; $020400
+	jsr sys_dispatch_action_2dcce.l	; $020400
 	addq.w #$6,a7	; $020406
 	bra.w settings_menu_open	; $020408
 L02040C:
@@ -23137,7 +23137,7 @@ L02040C:
 	moveq #$0,d0	; $02041A
 	move.b ram_sys_ffbb6f.l,d0	; $02041C
 	move.w d0,-(a7)	; $020422
-	jsr sys_unk_02dcce.l	; $020424
+	jsr sys_dispatch_action_2dcce.l	; $020424
 	addq.w #$6,a7	; $02042A
 	bra.w settings_menu_open	; $02042C
 L020430:
@@ -27173,7 +27173,7 @@ L0238A8:
 	addq.w #$2,a7	; $0238B2
 	bra.w L02380A	; $0238B4
 	; code $0238B8-$023937
-sys_unk_0238b8:
+sys_each_entry_238b8:
 	link.w a6,#$fffe	; $0238B8
 	clr.w -$2(a6)	; $0238BC
 L0238C0:
@@ -39305,7 +39305,7 @@ L02DCC8:
 L02DCCA:
 	bra.w L02DC3E	; $02DCCA
 	; code $02DCCE-$02E827
-sys_unk_02dcce:
+sys_dispatch_action_2dcce:
 	link.w a6,#$ffe4	; $02DCCE
 	clr.w -$c(a6)	; $02DCD2
 	cmpi.w #$d,$8(a6)	; $02DCD6

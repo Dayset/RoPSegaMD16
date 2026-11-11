@@ -128,7 +128,7 @@ addr,name,tier,note
 0x02343A,map_promote_record,2,maps.md:503 dispatch-1 case of 1BA4E promotes record (live)
 0x023628,map_grid_set_cell,1,sets record index into first free cell of grid 0 $FFB36C then grid 1 $FFB76C else error $19; maps.md:463; called from map_grid_create
 0x023770,map_grid_set_cell_1,1,sets record index into first free cell of grid 1 $FFB76C then grid 0 $FFB36C else error $19; maps.md:463; mirror of $023628
-0x0238B8,sys_unk_0238b8,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
+0x0238B8,sys_each_entry_238b8,1,static: loops 56 records stride 12 pushes 4 fields and calls sys_stub_01107a
 0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
 0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
 0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence
@@ -196,7 +196,7 @@ addr,name,tier,note
 0x02d50c,npc_attitude_raise_by_id,1,finds char by +0x02 identity word and calls npc_attitude_raise with 0; returns -1 if not found after 56 entries
 0x02d56a,sys_event_run,1,runs 8-byte event records from $FFC384; first byte is opcode 0-15 via jump table; advances pointer by 8 per record; called from combat_turn_run
 0x02DC0C,map_walkable_test,2,logic.md:721 walkability gate 02DC0C tests struct fields
-0x02DCCE,sys_unk_02dcce,0,auto: touches $FF00AE $FF0124 $FF02B2 $FF02B8 $FF02BE $FF02C0
+0x02DCCE,sys_dispatch_action_2dcce,1,static: dispatches on arg8 codes d and e and calls map_view text_show_message shop and item helpers
 0x02E8C8,npc_find_state1_2e8c8,1,static: loops records until byte at ram_sys_ff02db equals one
 0x02e9a6,world_seen_reset,1,clears seen-at-location ring buffer; sets 32 entries of $FFC388 and $FFC3C8 to $FFFF and clears cursor $FF0122
 0x02e9ec,world_seen_record,1,appends value and current location $FF0E92 and $3FF to 32-entry ring buffer $FFC388 $FFC3C8; advances cursor $FF0122 mod 32
