@@ -37,6 +37,7 @@ ROM_SIZE = 0x100000
 Z80_START, Z80_END = 0x0EBB6E, 0x0ED0E4  # sound driver blob, end exclusive (#78)
 HDR_SUM = 0x18E    # header checksum word, a symbol set by build/checksum.inc (#16)
 RUNTIME_IMM = 0xFD098  # runtime self-check immediate, a symbol too (#16)
+RUNTIME_CMP = 0xFD096  # the cmpi.l instruction itself (its listing comment)
 RUNTIME_ORIG = 0x8F33608C  # value in the original ROM; the generator only needs to find it once
 TARGET_RE = re.compile(r"\$([0-9a-fA-F]+)")
 ABS_OP_RE = re.compile(r"^\$([0-9a-fA-F]+)(\.[lwb])?$")
@@ -541,9 +542,9 @@ def main():
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     text = "\n".join(out) + "\n"
-    cmp_old = f"cmpi.l #${RUNTIME_ORIG:08x},d0\t; ${RUNTIME_IMM:06X}"
+    cmp_old = f"cmpi.l #${RUNTIME_ORIG:08x},d0\t; ${RUNTIME_CMP:06X}"
     assert text.count(cmp_old) == 1, "runtime self-check compare not found"
-    text = text.replace(cmp_old, f"cmpi.l #RUNTIME_SUM,d0\t; ${RUNTIME_IMM:06X}")
+    text = text.replace(cmp_old, f"cmpi.l #RUNTIME_SUM,d0\t; ${RUNTIME_CMP:06X}")
     OUT.write_text(text)
     n_conv = sum(1 for v in converted.values() if v)
     print(f"wrote {OUT}: {len(code)} code ranges, {n_conv} mnemonic instructions, "
