@@ -663,9 +663,12 @@ column 0–63, map X, map Y base):
   graphics.md §8 open item ("`$16512` column writer: the cell
   semantics … are only outlined in §6.4") and the
   "`$FF8674`/`$FF8678` tile bases … not traced" item, for
-  `$FF8678` (`$FF8674` is the same mechanism — a
-  `gfx_dma_tile_upload` return stored at `$012D7E` — but the
-  `$1B918` DMA path that consumes it was not re-traced here).
+  `$FF8678`. `$FF8674` is now also resolved (2026-11-11, see
+  graphics.md §8): it is the window-plane room-render tile base
+  (`$38E` in the standard scene setup), reserved by
+  `sys_counter_add($33C)` at `$012D7E` — allocate-only, not an
+  upload return — and consumed by `redraw_check`'s DMA upload
+  (`$FF1EC0 → VRAM $FF8674×32`, `$33C0` words) at `$01B9E8`.
 
 **`$FFB36C` / `$FFB76C` — byte meanings [live].** Both are 32×32
 byte grids (1024 bytes each, contiguous: `$FFB76C` =
