@@ -25,3 +25,4 @@ start,end,class,name,doc_ref,tier
 0x0B86AE,0x0B8A31,gfx-record-table,gfx_record_table_b86ae,docs/graphics.md:886 ($B86AE table 90 records x 10 bytes; tiling test base 0xB8A32 89/89 consecutive streams),2
 0x0B8A32,0x0CC9D7,lzss-stream,gfx_lzss_streams_b86ae,docs/graphics.md:886 (streams from base 0xB8A32; consecutive tiling exact 89/89; last ends 0xCC9D8),2
 0x09638C,0x0B86AD,lzss-stream,gfx_lzss_streams_96120,docs/graphics.md:886 ($96120 streams from base 0x9638C; consecutive tiling exact 61/61; last ends 0xB86AE),2
+0x01AA60,0x01ADE3,str-fixed10-table,str_stat_class_names,measured dump 2026-11-11: 10-byte null-padded records; 9 stat names (Brain..Intuition) then weapon-type and NPC/class names; 0x01AE98 region not included,1
