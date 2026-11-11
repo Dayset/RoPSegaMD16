@@ -46,3 +46,8 @@ Work continues on the default.
 ## Q11. The high-entropy block `0x044228-0x05EDC3` (109,468 bytes).
 - Default: stays unclassified, class `high-entropy`. The pointer scan found about 2,087 hits, but 1,185 are inside the classified dialogue table, 128 are opcode misreads, 41 follow move immediates, and 342 are inside code or 176 inside text data; no pointer table was found (lead in `docs/leads.md`).
 - If the owner rules otherwise: decide whether to treat the block as LZSS payload and attempt a decoder pass, which is a larger task.
+
+## Q12 — Commit the dialogue export (assets/text/dialogue.txt)?
+- Question: the round trip (`tools/text_roundtrip.py`) now re-encodes all 1184 dialogue records byte-identical. The export it writes is game text derived from ROM bytes, which is rule 4 (distributing ROM content).
+- Default taken: commit the tool only. `assets/text/dialogue.txt` is generated locally and left untracked.
+- If the answer is different: commit the export file as well, and the round-trip check can run in CI against it.
