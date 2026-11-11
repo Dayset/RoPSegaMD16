@@ -61140,12 +61140,524 @@ L0D6734:
 L0D674D:
 	; data $0D674D-$0D6767
 	incbin "rop-original.gen",$0D674D,$1B
+	; table $0D6768-$0D6B6B: 257 records x 2 words
+price_00:
 L0D6768:
-	; data $0D6768-$0D6769
-	incbin "rop-original.gen",$0D6768,$2
+	dc.w $0000	; table $0D6768
 L0D676A:
-	; data $0D676A-$0D6B6B
-	incbin "rop-original.gen",$0D676A,$402
+	dc.w $0000	; table $0D676A
+price_01:
+	dc.w $009D,$0000	; table $0D676C
+price_02:
+	dc.w $00A4,$0024	; table $0D6770
+price_03:
+	dc.w $00A7,$0024	; table $0D6774
+price_04:
+	dc.w $00A8,$0038	; table $0D6778
+price_05:
+	dc.w $009E,$0038	; table $0D677C
+price_06:
+	dc.w $00A1,$0038	; table $0D6780
+price_07:
+	dc.w $00A5,$0038	; table $0D6784
+price_08:
+	dc.w $00A6,$0056	; table $0D6788
+price_09:
+	dc.w $00A9,$0056	; table $0D678C
+price_10:
+	dc.w $009F,$0065	; table $0D6790
+price_11:
+	dc.w $00A3,$0065	; table $0D6794
+price_12:
+	dc.w $00A2,$0067	; table $0D6798
+price_13:
+	dc.w $00AC,$0067	; table $0D679C
+price_14:
+	dc.w $00A0,$006A	; table $0D67A0
+price_15:
+	dc.w $00AA,$006A	; table $0D67A4
+price_16:
+	dc.w $00AB,$006E	; table $0D67A8
+price_17:
+	dc.w $00AE,$006E	; table $0D67AC
+price_18:
+	dc.w $00AD,$0074	; table $0D67B0
+price_19:
+	dc.w $00AF,$0074	; table $0D67B4
+price_20:
+	dc.w $00B0,$007D	; table $0D67B8
+price_21:
+	dc.w $00B3,$0000	; table $0D67BC
+price_22:
+	dc.w $00B9,$0024	; table $0D67C0
+price_23:
+	dc.w $00BF,$0024	; table $0D67C4
+price_24:
+	dc.w $00B4,$0038	; table $0D67C8
+price_25:
+	dc.w $00BA,$0038	; table $0D67CC
+price_26:
+	dc.w $00B5,$0056	; table $0D67D0
+price_27:
+	dc.w $00BB,$0056	; table $0D67D4
+price_28:
+	dc.w $00B6,$0065	; table $0D67D8
+price_29:
+	dc.w $00BC,$0065	; table $0D67DC
+price_30:
+	dc.w $00B7,$0067	; table $0D67E0
+price_31:
+	dc.w $00BD,$0067	; table $0D67E4
+price_32:
+	dc.w $00C3,$0067	; table $0D67E8
+price_33:
+	dc.w $00C0,$006A	; table $0D67EC
+price_34:
+	dc.w $00C4,$006A	; table $0D67F0
+price_35:
+	dc.w $00B8,$006E	; table $0D67F4
+price_36:
+	dc.w $00C1,$006E	; table $0D67F8
+price_37:
+	dc.w $00C5,$006E	; table $0D67FC
+price_38:
+	dc.w $00BE,$0074	; table $0D6800
+price_39:
+	dc.w $00C2,$0074	; table $0D6804
+price_40:
+	dc.w $00C6,$007D	; table $0D6808
+price_41:
+	dc.w $00C7,$0000	; table $0D680C
+price_42:
+	dc.w $00D1,$0024	; table $0D6810
+price_43:
+	dc.w $00D4,$0024	; table $0D6814
+price_44:
+	dc.w $00C8,$0038	; table $0D6818
+price_45:
+	dc.w $00CD,$0038	; table $0D681C
+price_46:
+	dc.w $00CE,$0056	; table $0D6820
+price_47:
+	dc.w $00D5,$0056	; table $0D6824
+price_48:
+	dc.w $00C9,$0065	; table $0D6828
+price_49:
+	dc.w $00D2,$0065	; table $0D682C
+price_50:
+	dc.w $00CA,$0067	; table $0D6830
+price_51:
+	dc.w $00CF,$0067	; table $0D6834
+price_52:
+	dc.w $00D6,$0067	; table $0D6838
+price_53:
+	dc.w $00CB,$006A	; table $0D683C
+price_54:
+	dc.w $00D3,$006A	; table $0D6840
+price_55:
+	dc.w $00CC,$006E	; table $0D6844
+price_56:
+	dc.w $00D7,$006E	; table $0D6848
+price_57:
+	dc.w $00D8,$006E	; table $0D684C
+price_58:
+	dc.w $00D0,$0074	; table $0D6850
+price_59:
+	dc.w $00D9,$0074	; table $0D6854
+price_60:
+	dc.w $00DA,$007D	; table $0D6858
+price_61:
+	dc.w $00DB,$0000	; table $0D685C
+price_62:
+	dc.w $00DC,$0024	; table $0D6860
+price_63:
+	dc.w $00E1,$0024	; table $0D6864
+price_64:
+	dc.w $00DD,$0038	; table $0D6868
+price_65:
+	dc.w $00E2,$0038	; table $0D686C
+price_66:
+	dc.w $00DE,$0056	; table $0D6870
+price_67:
+	dc.w $00E3,$0056	; table $0D6874
+price_68:
+	dc.w $00DF,$0065	; table $0D6878
+price_69:
+	dc.w $00E4,$0065	; table $0D687C
+price_70:
+	dc.w $00EA,$0065	; table $0D6880
+price_71:
+	dc.w $00E0,$0067	; table $0D6884
+price_72:
+	dc.w $00E5,$0067	; table $0D6888
+price_73:
+	dc.w $00E8,$006A	; table $0D688C
+price_74:
+	dc.w $00EB,$006A	; table $0D6890
+price_75:
+	dc.w $00EC,$006A	; table $0D6894
+price_76:
+	dc.w $00E6,$006E	; table $0D6898
+price_77:
+	dc.w $00E9,$006E	; table $0D689C
+price_78:
+	dc.w $00E7,$0074	; table $0D68A0
+price_79:
+	dc.w $00ED,$0074	; table $0D68A4
+price_80:
+	dc.w $00EE,$007D	; table $0D68A8
+price_81:
+	dc.w $00EF,$0000	; table $0D68AC
+price_82:
+	dc.w $00F0,$0024	; table $0D68B0
+price_83:
+	dc.w $00F6,$0024	; table $0D68B4
+price_84:
+	dc.w $00F2,$0038	; table $0D68B8
+price_85:
+	dc.w $00F7,$0038	; table $0D68BC
+price_86:
+	dc.w $00F1,$0056	; table $0D68C0
+price_87:
+	dc.w $00F3,$0056	; table $0D68C4
+price_88:
+	dc.w $00FF,$0056	; table $0D68C8
+price_89:
+	dc.w $00F4,$0065	; table $0D68CC
+price_90:
+	dc.w $00F8,$0065	; table $0D68D0
+price_91:
+	dc.w $0100,$0065	; table $0D68D4
+price_92:
+	dc.w $00F5,$0067	; table $0D68D8
+price_93:
+	dc.w $00F9,$0067	; table $0D68DC
+price_94:
+	dc.w $00FA,$006A	; table $0D68E0
+price_95:
+	dc.w $00FD,$006A	; table $0D68E4
+price_96:
+	dc.w $00FB,$006E	; table $0D68E8
+price_97:
+	dc.w $00FC,$006E	; table $0D68EC
+price_98:
+	dc.w $0101,$0074	; table $0D68F0
+price_99:
+	dc.w $00FE,$0074	; table $0D68F4
+price_100:
+	dc.w $0102,$007D	; table $0D68F8
+price_101:
+	dc.w $0103,$0000	; table $0D68FC
+price_102:
+	dc.w $0109,$0024	; table $0D6900
+price_103:
+	dc.w $010D,$0024	; table $0D6904
+price_104:
+	dc.w $0104,$0038	; table $0D6908
+price_105:
+	dc.w $010E,$0038	; table $0D690C
+price_106:
+	dc.w $0105,$0056	; table $0D6910
+price_107:
+	dc.w $010A,$0056	; table $0D6914
+price_108:
+	dc.w $0106,$0065	; table $0D6918
+price_109:
+	dc.w $010F,$0065	; table $0D691C
+price_110:
+	dc.w $0107,$0067	; table $0D6920
+price_111:
+	dc.w $010B,$0067	; table $0D6924
+price_112:
+	dc.w $0110,$0067	; table $0D6928
+price_113:
+	dc.w $0108,$006A	; table $0D692C
+price_114:
+	dc.w $0111,$006A	; table $0D6930
+price_115:
+	dc.w $010C,$006E	; table $0D6934
+price_116:
+	dc.w $0112,$006E	; table $0D6938
+price_117:
+	dc.w $0116,$006E	; table $0D693C
+price_118:
+	dc.w $0113,$0074	; table $0D6940
+price_119:
+	dc.w $0115,$0074	; table $0D6944
+price_120:
+	dc.w $0117,$007D	; table $0D6948
+price_121:
+	dc.w $0119,$0063	; table $0D694C
+price_122:
+	dc.w $0118,$0063	; table $0D6950
+price_123:
+	dc.w $011A,$0063	; table $0D6954
+price_124:
+	dc.w $011B,$0063	; table $0D6958
+price_125:
+	dc.w $0121,$0063	; table $0D695C
+price_126:
+	dc.w $0122,$0063	; table $0D6960
+price_127:
+	dc.w $0123,$0063	; table $0D6964
+price_128:
+	dc.w $0124,$0063	; table $0D6968
+price_129:
+	dc.w $0125,$0063	; table $0D696C
+price_130:
+	dc.w $0126,$0063	; table $0D6970
+price_131:
+	dc.w $0127,$0063	; table $0D6974
+price_132:
+	dc.w $0128,$0063	; table $0D6978
+price_133:
+	dc.w $0129,$0063	; table $0D697C
+price_134:
+	dc.w $012A,$0063	; table $0D6980
+price_135:
+	dc.w $012B,$0063	; table $0D6984
+price_136:
+	dc.w $011C,$001F	; table $0D6988
+price_137:
+	dc.w $011D,$001A	; table $0D698C
+price_138:
+	dc.w $0165,$0063	; table $0D6990
+price_139:
+	dc.w $0166,$0063	; table $0D6994
+price_140:
+	dc.w $0167,$0063	; table $0D6998
+price_141:
+	dc.w $0168,$0063	; table $0D699C
+price_142:
+	dc.w $0169,$0063	; table $0D69A0
+price_143:
+	dc.w $016A,$0063	; table $0D69A4
+price_144:
+	dc.w $016B,$0063	; table $0D69A8
+price_145:
+	dc.w $016C,$0063	; table $0D69AC
+price_146:
+	dc.w $016D,$0063	; table $0D69B0
+price_147:
+	dc.w $016E,$0063	; table $0D69B4
+price_148:
+	dc.w $016F,$0063	; table $0D69B8
+price_149:
+	dc.w $0170,$0063	; table $0D69BC
+price_150:
+	dc.w $0171,$0063	; table $0D69C0
+price_151:
+	dc.w $0172,$0063	; table $0D69C4
+price_152:
+	dc.w $0173,$0063	; table $0D69C8
+price_153:
+	dc.w $0144,$0063	; table $0D69CC
+price_154:
+	dc.w $0145,$0063	; table $0D69D0
+price_155:
+	dc.w $0146,$0063	; table $0D69D4
+price_156:
+	dc.w $0147,$0063	; table $0D69D8
+price_157:
+	dc.w $0148,$0063	; table $0D69DC
+price_158:
+	dc.w $0149,$0063	; table $0D69E0
+price_159:
+	dc.w $014A,$0063	; table $0D69E4
+price_160:
+	dc.w $014B,$0063	; table $0D69E8
+price_161:
+	dc.w $014C,$000A	; table $0D69EC
+price_162:
+	dc.w $014D,$0063	; table $0D69F0
+price_163:
+	dc.w $014E,$0063	; table $0D69F4
+price_164:
+	dc.w $014F,$0063	; table $0D69F8
+price_165:
+	dc.w $0150,$0063	; table $0D69FC
+price_166:
+	dc.w $0151,$0063	; table $0D6A00
+price_167:
+	dc.w $0152,$0063	; table $0D6A04
+price_168:
+	dc.w $0153,$0063	; table $0D6A08
+price_169:
+	dc.w $0154,$0063	; table $0D6A0C
+price_170:
+	dc.w $0155,$0063	; table $0D6A10
+price_171:
+	dc.w $0156,$0063	; table $0D6A14
+price_172:
+	dc.w $0157,$0063	; table $0D6A18
+price_173:
+	dc.w $0158,$0063	; table $0D6A1C
+price_174:
+	dc.w $0159,$0063	; table $0D6A20
+price_175:
+	dc.w $015A,$0063	; table $0D6A24
+price_176:
+	dc.w $015B,$0063	; table $0D6A28
+price_177:
+	dc.w $015C,$0063	; table $0D6A2C
+price_178:
+	dc.w $015D,$0063	; table $0D6A30
+price_179:
+	dc.w $015E,$0063	; table $0D6A34
+price_180:
+	dc.w $015F,$0063	; table $0D6A38
+price_181:
+	dc.w $0160,$0063	; table $0D6A3C
+price_182:
+	dc.w $0161,$0063	; table $0D6A40
+price_183:
+	dc.w $0162,$0063	; table $0D6A44
+price_184:
+	dc.w $0163,$0063	; table $0D6A48
+price_185:
+	dc.w $0164,$0063	; table $0D6A4C
+price_186:
+	dc.w $012C,$000C	; table $0D6A50
+price_187:
+	dc.w $012D,$0008	; table $0D6A54
+price_188:
+	dc.w $012E,$0038	; table $0D6A58
+price_189:
+	dc.w $012F,$001E	; table $0D6A5C
+price_190:
+	dc.w $0130,$001A	; table $0D6A60
+price_191:
+	dc.w $0131,$003C	; table $0D6A64
+price_192:
+	dc.w $009C,$006E	; table $0D6A68
+price_193:
+	dc.w $0132,$0014	; table $0D6A6C
+price_194:
+	dc.w $0133,$000A	; table $0D6A70
+price_195:
+	dc.w $0134,$0005	; table $0D6A74
+price_196:
+	dc.w $0135,$000F	; table $0D6A78
+price_197:
+	dc.w $0136,$0016	; table $0D6A7C
+price_198:
+	dc.w $0137,$0032	; table $0D6A80
+price_199:
+	dc.w $0138,$0028	; table $0D6A84
+price_200:
+	dc.w $0139,$0023	; table $0D6A88
+price_201:
+	dc.w $013A,$0050	; table $0D6A8C
+price_202:
+	dc.w $013B,$000F	; table $0D6A90
+price_203:
+	dc.w $013C,$0018	; table $0D6A94
+price_204:
+	dc.w $013D,$0018	; table $0D6A98
+price_205:
+	dc.w $013E,$0003	; table $0D6A9C
+price_206:
+	dc.w $013F,$0078	; table $0D6AA0
+price_207:
+	dc.w $0140,$0000	; table $0D6AA4
+price_208:
+	dc.w $0141,$0065	; table $0D6AA8
+price_209:
+	dc.w $0142,$0050	; table $0D6AAC
+price_210:
+	dc.w $0143,$0032	; table $0D6AB0
+price_211:
+	dc.w $0174,$0065	; table $0D6AB4
+price_212:
+	dc.w $0175,$0028	; table $0D6AB8
+price_213:
+	dc.w $0176,$0014	; table $0D6ABC
+price_214:
+	dc.w $0177,$005A	; table $0D6AC0
+price_215:
+	dc.w $0178,$0001	; table $0D6AC4
+price_216:
+	dc.w $0179,$0001	; table $0D6AC8
+price_217:
+	dc.w $017A,$002E	; table $0D6ACC
+price_218:
+	dc.w $017B,$002E	; table $0D6AD0
+price_219:
+	dc.w $017C,$0067	; table $0D6AD4
+price_220:
+	dc.w $017D,$0027	; table $0D6AD8
+price_221:
+	dc.w $017F,$0028	; table $0D6ADC
+price_222:
+	dc.w $018B,$0029	; table $0D6AE0
+price_223:
+	dc.w $018B,$002A	; table $0D6AE4
+price_224:
+	dc.w $017D,$002B	; table $0D6AE8
+price_225:
+	dc.w $017D,$002C	; table $0D6AEC
+price_226:
+	dc.w $017E,$002D	; table $0D6AF0
+price_227:
+	dc.w $0180,$002E	; table $0D6AF4
+price_228:
+	dc.w $0180,$002F	; table $0D6AF8
+price_229:
+	dc.w $0180,$0030	; table $0D6AFC
+price_230:
+	dc.w $0180,$0031	; table $0D6B00
+price_231:
+	dc.w $0180,$0032	; table $0D6B04
+price_232:
+	dc.w $0181,$0033	; table $0D6B08
+price_233:
+	dc.w $0180,$0034	; table $0D6B0C
+price_234:
+	dc.w $0183,$0035	; table $0D6B10
+price_235:
+	dc.w $0180,$0036	; table $0D6B14
+price_236:
+	dc.w $0184,$0037	; table $0D6B18
+price_237:
+	dc.w $0184,$0038	; table $0D6B1C
+price_238:
+	dc.w $0185,$0039	; table $0D6B20
+price_239:
+	dc.w $017D,$003A	; table $0D6B24
+price_240:
+	dc.w $0186,$003B	; table $0D6B28
+price_241:
+	dc.w $0180,$003C	; table $0D6B2C
+price_242:
+	dc.w $0180,$003D	; table $0D6B30
+price_243:
+	dc.w $0187,$003E	; table $0D6B34
+price_244:
+	dc.w $017D,$003F	; table $0D6B38
+price_245:
+	dc.w $0188,$0040	; table $0D6B3C
+price_246:
+	dc.w $0189,$0041	; table $0D6B40
+price_247:
+	dc.w $017D,$0042	; table $0D6B44
+price_248:
+	dc.w $017D,$0043	; table $0D6B48
+price_249:
+	dc.w $017D,$0044	; table $0D6B4C
+price_250:
+	dc.w $0188,$0045	; table $0D6B50
+price_251:
+	dc.w $018A,$0046	; table $0D6B54
+price_252:
+	dc.w $0180,$0047	; table $0D6B58
+price_253:
+	dc.w $009C,$0001	; table $0D6B5C
+price_254:
+	dc.w $011E,$000A	; table $0D6B60
+price_255:
+	dc.w $011F,$000F	; table $0D6B64
+price_256:
+	dc.w $0120,$0014	; table $0D6B68
 L0D6B6C:
 	; data $0D6B6C-$0D6BE9
 	incbin "rop-original.gen",$0D6B6C,$7E
