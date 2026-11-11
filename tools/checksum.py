@@ -10,7 +10,7 @@ Usage:
     checksum.py fix <rom> <out>         # write a copy with the header checksum fixed
     checksum.py fix --in-place <rom>    # fix the file in place (never use on the original!)
     checksum.py fix-all <rom> <out>     # fix header checksum AND runtime constant
-    checksum.py inc <image> <out.inc>   # build-time: RUNTIME_SUM / HEADER_SUM equ lines (#16)
+    checksum.py inc <image> <out.inc> [shift]  # build-time: RUNTIME_SUM / HEADER_SUM (#16)
 
 Runtime checksum (found 2026-11-09, issue #002): the game self-checks at
 boot — jsr $FD07C from the entry code at 0x300 sums 32-bit big-endian words
@@ -126,7 +126,8 @@ def main(argv):
         with open(argv[2], "rb") as f:
             data = bytearray(f.read())
         runtime = compute_runtime_checksum(bytes(data))
-        struct.pack_into(">I", data, RT_IMM_ADDR, runtime)
+        imm = RT_IMM_ADDR + (int(argv[4], 0) if len(argv) > 4 else 0)  # shift test moves the immediate
+        struct.pack_into(">I", data, imm, runtime)
         header = compute_checksum(bytes(data))
         Path(argv[3]).write_text(
             f"RUNTIME_SUM\tequ\t${runtime:08X}\n"

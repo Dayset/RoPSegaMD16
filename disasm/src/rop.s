@@ -12,8 +12,17 @@ L000001:
 	; data $000001-$000001
 	dcb.b $1,$FF	; $000001
 L000002:
-	; data $000002-$00007D
-	incbin "rop-original.gen",$000002,$7C
+	; data $000002-$000003
+	incbin "rop-original.gen",$000002,$2
+	dc.l reset_entry	; $000004 vector
+	; data $000008-$00006F
+	incbin "rop-original.gen",$000008,$68
+	dc.l hblank_empty	; $000070 vector
+	; data $000074-$000077
+	incbin "rop-original.gen",$000074,$4
+	dc.l vblank_handler	; $000078 vector
+	; data $00007C-$00007D
+	incbin "rop-original.gen",$00007C,$2
 L00007E:
 	; data $00007E-$00018D
 	incbin "rop-original.gen",$00007E,$110
