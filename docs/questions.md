@@ -18,3 +18,7 @@ Work continues on the default.
 ## Q4. What does "M8 (all bytes accounted)" mean?
 - Default: every byte is either an instruction or a documented data region; every routine is named; every computed jump target is labelled.
 - If the owner rules otherwise: the M8 gate changes; no code changes needed now.
+
+## Q5. L022 first-mod target (#022)?
+- Default: the rendering fix (GitHub #22 / L037): sub-cell walking. Order #31 repro harness -> #26 diagnose the ~3 Hz update tick -> #27 -> #28. Dayset is already on #31 and #26. Patch lands in `patches/` once the gate passes with no changes.
+- If the owner rules otherwise: replace this target in `issues/022-first-mod.md` (one system, one address range) and re-point the card order; nothing already built is wasted.
