@@ -64,7 +64,7 @@ ram_world_field_0128	equ	$FF0128
 ram_sys_field_012a	equ	$FF012A
 ram_event_code	equ	$FF012C
 ram_world_field_012e	equ	$FF012E
-ram_sys_field_0130	equ	$FF0130
+ram_combat_char_0130	equ	$FF0130
 ram_menu_field_0132	equ	$FF0132
 ram_save_field_0134	equ	$FF0134
 ram_menu_field_0136	equ	$FF0136
@@ -105,7 +105,7 @@ ram_sys_ff0236	equ	$FF0236
 ram_sys_ff023a	equ	$FF023A
 ram_menu_field_0240	equ	$FF0240
 ram_menu_field_0244	equ	$FF0244
-ram_menu_field_0245	equ	$FF0245
+ram_menu_verb_0245	equ	$FF0245
 ram_menu_field_0246	equ	$FF0246
 ram_sys_ff0248	equ	$FF0248
 ram_sys_ff024a	equ	$FF024A
@@ -116,7 +116,7 @@ ram_sys_field_0252	equ	$FF0252
 ram_sys_field_0290	equ	$FF0290
 ram_sys_field_0292	equ	$FF0292
 ram_combat_field_0294	equ	$FF0294
-ram_sys_field_0296	equ	$FF0296
+ram_combat_field_0296	equ	$FF0296
 ram_sys_field_0298	equ	$FF0298
 ram_sys_field_029a	equ	$FF029A
 ram_sys_field_029c	equ	$FF029C
@@ -128,7 +128,7 @@ ram_sys_ff02a5	equ	$FF02A5
 ram_sys_field_02a6	equ	$FF02A6
 ram_sys_verb_02a8	equ	$FF02A8
 ram_sys_field_02aa	equ	$FF02AA
-ram_sys_field_02ac	equ	$FF02AC
+ram_menu_record_02ac	equ	$FF02AC
 ram_sys_ff02ae	equ	$FF02AE
 ram_sys_ff02b0	equ	$FF02B0
 ram_party_leader	equ	$FF02B2
@@ -167,7 +167,7 @@ ram_sys_field_0e30	equ	$FF0E30
 ram_world_field_0e78	equ	$FF0E78
 ram_sys_ff0e7a	equ	$FF0E7A
 ram_menu_field_0e7e	equ	$FF0E7E
-ram_sys_field_0e80	equ	$FF0E80
+ram_text_event_0e80	equ	$FF0E80
 ram_party_index_array	equ	$FF0E82
 ram_sys_field_0e8e	equ	$FF0E8E
 ram_world_field_0e90	equ	$FF0E90
@@ -264,7 +264,7 @@ ram_sys_field_bb70	equ	$FFBB70
 ram_shop_stock_byte	equ	$FFBB72
 ram_sys_field_bb74	equ	$FFBB74
 ram_sys_field_bb7a	equ	$FFBB7A
-ram_sys_field_bb80	equ	$FFBB80
+ram_sys_verb_bb80	equ	$FFBB80
 ram_menu_record_bb82	equ	$FFBB82
 ram_sys_field_bb86	equ	$FFBB86
 ram_sys_field_bc86	equ	$FFBC86
@@ -320,8 +320,8 @@ ram_sys_field_c40c	equ	$FFC40C
 ram_sys_field_c40e	equ	$FFC40E
 ram_sys_field_c410	equ	$FFC410
 ram_sys_ffc412	equ	$FFC412
-ram_sys_field_c414	equ	$FFC414
-ram_sys_field_c416	equ	$FFC416
+ram_combat_field_c414	equ	$FFC414
+ram_combat_field_c416	equ	$FFC416
 ram_combat_field_c418	equ	$FFC418
 ram_sys_field_c41a	equ	$FFC41A
 ram_spell_effect_c41c	equ	$FFC41C
