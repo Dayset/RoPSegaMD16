@@ -519,22 +519,49 @@ phrase "the Load handler (C=14 → `0x202CC`, calls `$2A22A`/
   plays the song index from `$FFBB6F` — consistent with d0 being the
   C byte for those records; Load/Save's C=0 hits no `$2068E` case,
   hence the open routing question below.)
-- **How SYSTEM→Load (record C=0) reaches action code 81 is OPEN:**
+- **How SYSTEM→Load (record C=0) reaches action code 81 — CLOSED:**
   `$FFBB6C` (the d0 source for `$2068E`) **is** written — the setter
   exists: `move.b $C(a0), $FFBB6C` at five sites inside `$1F296`'s
   switches (`0x1F3C0`, `0x1F548`, `0x1F868`, `0x1F99A`, `0x1FA42`),
   copying the current menu record's C byte into `$FFBB6C`; plus
   `clr.b $FFBB6C` at `0x20920`/`0x20B6E` and `move.b #$10, $FFBB6C`
   at `0x20966`. (An earlier draft of this doc said no writer was
-  found — wrong; the grep output was truncated.) But that does not
-  close the routing question: the Load/Save records have C=0, so the
-  C-byte writes put 0 in `$FFBB6C`, not 81/82. How the SYSTEM-menu
-  Load/Save selection becomes `$2068E` action code 81/82 — or
-  whether it bypasses `$2068E` entirely — is still open. The
+  found — wrong; the grep output was truncated.) The routing is the
+  **B byte → submenu offset table → Yes/No submenu**: the B byte is
+  a submenu index, not a verb. `L01FEB8` (`$01FEB8`, the submenu-open
+  tail of `$1F296`) computes the next table as `$CCDB8 +
+  offset_table[B]`, where `offset_table` is 26 u16 in RAM at
+  `$FF01EA`, copied at boot by `main_init` (`$0011E8`, 288 words
+  `$FCE3C`→`$FF0000`) from ROM `$FD026`. Entry 14 = `0x0356` → LOAD
+  table `$CD10E`; entry 15 = `0x037E` → SAVE table `$CD136` (entry 8
+  = `0x023C` → SYSTEM `$CCFF4`; entry 0 = 0 → MAIN `$CCDB8`). Both
+  tables have header A=78 grp=2 and exactly two records: "Yes" A=0
+  B=0 **C=81** (LOAD) / **C=82** (SAVE) grp=1, "No" A=0 B=0 C=0
+  grp=1. So SYSTEM→Load (B=14, C=0) sets `$FFA7F8`=14 and opens the
+  LOAD table; picking "Yes" runs the A=78 handler `L01F45E`, whose
+  grp=1 case (`$01F532`) writes the record's C byte to `$FFBB6C` —
+  **81** — and sets `$FFA7F8`=0; `L01FEB8` then opens MAIN (offset
+  0) and, with `$FFA7F8`==0, falls through to `L020172`, which loads
+  d0=`$FFBB6C`=81 and `bra $2068E` → case 81 → `save_menu_load`
+  `$20652` → `$2F896`. Likewise Save → B=15 → SAVE table → "Yes"
+  C=82 → case 82 → `save_menu_save` `$20670` → `$2F11A`. "No"
+  (C=0) writes `$FFBB6C`=0 and dispatches to no `$2068E` case — it
+  cancels. The same B→table lookup is used by `sys_state_clear`
+  (`$01E562`), `menu_record_reload` (`$01E5A0`), and the `$D28E`
+  case-25 handler `cmd25_handler` (`$020A36`). The
   `$FFBB6C`/`$FFBB82`/`$FFBB6F` grep shows `$FFBB82` (record
   pointer) written at `0x1E596`/`0x1E5D2` and read widely, `$FFBB6F`
   read at `0x1EA50`/`0x1EB00`/`0x1EB1E`/`0x1EB70`/`0x1EBD8`/`0x1EC50`
   (Music case `$2063C` reads `$FFBB6F` as the song index).
+
+- **Region note:** the offset table truly starts at ROM `$FD026`,
+  but `disasm/regions.csv`'s `word-offset-table` row starts at
+  `$FD036` — it misses entries 0–7 (`$FD026–$FD035`), which sit
+  inside the `snd-sfx-records` region's last record (SFX record 61,
+  `$FD020–$FD035`; only SFX indices 0–38 are ever called, so the
+  overlap is inert). The `doc_regions.csv` SFX row still claims
+  62 records to `$FD036`. Correcting the boundary is a follow-up,
+  not done here.
 
 ---
 
@@ -803,11 +830,6 @@ see §4.6).
 - **`$FF00C0` 36-word table: meaning** — saved as 36×4-bit values;
   its attract-time contents vary between runs (§8.5); the exact
   setter(s) and semantics are open.
-- **`$FFBB6C` → action codes 81/82** — the setter exists (`move.b
-  $C(a0), $FFBB6C` at five `$1F296` sites), but it copies the record
-  C byte, which is 0 for Load/Save — so how the SYSTEM-menu
-  Load/Save selection becomes `$2068E` action code 81/82 (or whether
-  it bypasses `$2068E`) is open (§6).
 - **`$2F896`'s `0x4E` acceptance** — `$177B4` returns only
   `0x49`/`0x4B` as traced; why `$2F896` also accepts `0x4E` is open
   (§4.7).
@@ -857,5 +879,11 @@ see §4.6).
   'Goods' shop verb; the real Load is **case 81 → `$20652` →
   `$2F896`** and the real Save is **case 82 → `$20670` →
   `$2F11A`** (§6). The never-read-`$FF0168` claim is unaffected.
+- **The SYSTEM Load/Save (C=0) → 81/82 bridge is closed (§6, §10
+  open item removed):** the B byte is a submenu index; `L01FEB8`
+  opens `$CCDB8 + offset_table[B]` (26 u16 in RAM `$FF01EA`,
+  copied at boot by `main_init` from ROM `$FD026`); the LOAD
+  `$CD10E` / SAVE `$CD136` "Yes" records carry C=81/82, which the
+  A=78 handler writes to `$FFBB6C`, reaching `$2068E` cases 81/82.
 - **`docs/overview.md`:** no change needed — it does not carry the
   C=14 label.
