@@ -1303,7 +1303,7 @@ L00D542:
 	moveq #$0,d0	; $00D542
 L00D544:
 	move.w d0,-(a7)	; $00D544
-	jsr menu_unk_020a88.l	; $00D546
+	jsr menu_set_mode.l	; $00D546
 	addq.w #$2,a7	; $00D54C
 L00D54E:
 	bra.w L00D7A2	; $00D54E
@@ -12219,7 +12219,7 @@ sys_unk_01960a:
 	unlk a6	; $019616
 	rts	; $019618
 	; code $01961A-$019691
-sys_unk_01961a:
+map_chunk_cache_init:
 	link.w a6,#$fffe	; $01961A
 	movea.l $8(a6),a0	; $01961E
 	clr.w (a0)	; $019622
@@ -12512,7 +12512,7 @@ new_game_init:
 	move.w d0,$ff00b8.l	; $01B680
 	move.w #$4,-(a7)	; $01B686
 	pea.l $ffa880.l	; $01B68A
-	jsr sys_unk_01961a.l	; $01B690
+	jsr map_chunk_cache_init.l	; $01B690
 	addq.w #$6,a7	; $01B696
 	jsr grid_fill(pc)	; $01B698
 	pea.l $ff0e8e.l	; $01B69C
@@ -15334,7 +15334,7 @@ table_init_b:
 	unlk a6	; $01DA68
 	rts	; $01DA6A
 	; code $01DA6C-$01E021
-combat_unk_01da6c:
+world_location_transition:
 	link.w a6,#$fffe	; $01DA6C
 	movem.l d4-d7/a3-a4,-(a7)	; $01DA70
 	move.w #$ffff,$ff009c.l	; $01DA74
@@ -15985,7 +15985,7 @@ L01E290:
 L01E298:
 	bra.w L01E1AA	; $01E298
 	; code $01E29C-$01E38F
-sys_unk_01e29c:
+world_decompose_direction_axis:
 	link.w a6,#$0	; $01E29C
 	tst.w $a(a6)	; $01E2A0
 	bne.b L01E2C0	; $01E2A4
@@ -16201,7 +16201,7 @@ L01E4E2:
 	unlk a6	; $01E4E2
 	rts	; $01E4E4
 	; code $01E4E6-$01E561
-sys_unk_01e4e6:
+menu_cursor_draw:
 	link.w a6,#$0	; $01E4E6
 	move.w $ff8640.l,d0	; $01E4EA
 	add.w #$405f,d0	; $01E4F0
@@ -16395,7 +16395,7 @@ L01E748:
 	move.w d4,d0	; $01E756
 	sub.w d5,d0	; $01E758
 	move.w d0,-(a7)	; $01E75A
-	jsr sys_unk_01e4e6(pc)	; $01E75C
+	jsr menu_cursor_draw(pc)	; $01E75C
 	addq.w #$4,a7	; $01E760
 L01E762:
 	move.w #$a000,-(a7)	; $01E762
@@ -16524,7 +16524,7 @@ L01E892:
 	move.w d4,d0	; $01E8A2
 	sub.w d5,d0	; $01E8A4
 	move.w d0,-(a7)	; $01E8A6
-	jsr sys_unk_01e4e6(pc)	; $01E8A8
+	jsr menu_cursor_draw(pc)	; $01E8A8
 	addq.w #$4,a7	; $01E8AC
 L01E8AE:
 	lea.l -$8(a6),a0	; $01E8AE
@@ -16738,7 +16738,7 @@ L01EADC:
 	move.w d4,d0	; $01EAEC
 	sub.w d5,d0	; $01EAEE
 	move.w d0,-(a7)	; $01EAF0
-	jsr sys_unk_01e4e6(pc)	; $01EAF2
+	jsr menu_cursor_draw(pc)	; $01EAF2
 	addq.w #$4,a7	; $01EAF6
 L01EAF8:
 	move.w d4,d0	; $01EAF8
@@ -17351,7 +17351,7 @@ L01F2B8:
 	and.w #$1,d1	; $01F2EC
 	beq.b L01F31C	; $01F2F0
 	move.w #$4,-(a7)	; $01F2F2
-	jsr menu_unk_020a88(pc)	; $01F2F6
+	jsr menu_set_mode(pc)	; $01F2F6
 	addq.w #$2,a7	; $01F2FA
 	move.w $ff0eaa.l,d0	; $01F2FC
 	muls.w #$34,d0	; $01F302
@@ -17704,7 +17704,7 @@ L01F79C:
 	bra.w L01FEB8	; $01F804
 L01F808:
 	clr.w -(a7)	; $01F808
-	jsr menu_unk_020a88(pc)	; $01F80A
+	jsr menu_set_mode(pc)	; $01F80A
 	addq.w #$2,a7	; $01F80E
 	bra.w L01F318	; $01F810
 L01F814:
@@ -18802,12 +18802,12 @@ settings_menu_open:
 	tst.w -$10(a6)	; $020760
 	beq.b L020772	; $020764
 	move.w #$3,-(a7)	; $020766
-	jsr menu_unk_020a88(pc)	; $02076A
+	jsr menu_set_mode(pc)	; $02076A
 	addq.w #$2,a7	; $02076E
 	bra.b L02077A	; $020770
 L020772:
 	clr.w -(a7)	; $020772
-	jsr menu_unk_020a88(pc)	; $020774
+	jsr menu_set_mode(pc)	; $020774
 	addq.w #$2,a7	; $020778
 L02077A:
 	cmpi.w #$2,-$c(a6)	; $02077A
@@ -18857,7 +18857,7 @@ L0207F0:
 	beq.b L02082E	; $020822
 L020824:
 	clr.w -(a7)	; $020824
-	jsr menu_unk_020a88(pc)	; $020826
+	jsr menu_set_mode(pc)	; $020826
 	addq.w #$2,a7	; $02082A
 	bra.b L0207EC	; $02082C
 L02082E:
@@ -19017,7 +19017,7 @@ L020A4E:
 	jsr verb_exec(pc)	; $020A82
 	bra.b L020A4A	; $020A86
 	; code $020A88-$020BFD
-menu_unk_020a88:
+menu_set_mode:
 	link.w a6,#$0	; $020A88
 	cmpi.w #$3,$8(a6)	; $020A8C
 	bne.b L020AA8	; $020A92
@@ -26063,7 +26063,7 @@ L02680A:
 	move.b (a0,d0.l),d1	; $02683C
 	move.w d1,-(a7)	; $026840
 	move.w #$1,-(a7)	; $026842
-	jsr combat_unk_01da6c.l	; $026846
+	jsr world_location_transition.l	; $026846
 	addq.w #$6,a7	; $02684C
 	clr.l -(a7)	; $02684E
 	clr.w -(a7)	; $026850
@@ -26142,7 +26142,7 @@ L026914:
 	move.w d5,-(a7)	; $026922
 	move.w d6,-(a7)	; $026924
 	move.w #$1,-(a7)	; $026926
-	jsr combat_unk_01da6c.l	; $02692A
+	jsr world_location_transition.l	; $02692A
 	addq.w #$6,a7	; $026930
 	jsr npc_location_greet.l	; $026932
 L026938:
@@ -26263,7 +26263,7 @@ L026AAE:
 	rts	; $026AB0
 L026AB2:
 	clr.w -(a7)	; $026AB2
-	jsr menu_unk_020a88.l	; $026AB4
+	jsr menu_set_mode.l	; $026AB4
 	addq.w #$2,a7	; $026ABA
 	move.w $ff02b2.l,d0	; $026ABC
 	muls.w #$34,d0	; $026AC2
@@ -26272,7 +26272,7 @@ L026AB2:
 	move.w #$ffff,-(a7)	; $026AD2
 	clr.w -(a7)	; $026AD6
 	clr.w -(a7)	; $026AD8
-	jsr combat_unk_01da6c.l	; $026ADA
+	jsr world_location_transition.l	; $026ADA
 	addq.w #$6,a7	; $026AE0
 	clr.l -(a7)	; $026AE2
 	clr.w -(a7)	; $026AE4
@@ -26496,7 +26496,7 @@ gfx_fill_panel_plain:
 	jsr gfx_tilemap_fill_seq.l	; $026E2A
 	lea.l $16(a7),a7	; $026E30
 	move.w #$fff6,-(a7)	; $026E34
-	jsr sys_unk_01e4e6.l	; $026E38
+	jsr menu_cursor_draw.l	; $026E38
 	addq.w #$2,a7	; $026E3E
 	unlk a6	; $026E40
 	rts	; $026E42
@@ -26880,7 +26880,7 @@ L0273AA:
 	move.b $ffbb72.l,d0	; $0273D0
 	add.w #$9,d0	; $0273D6
 	move.w d0,-(a7)	; $0273DA
-	jsr sys_unk_01e4e6.l	; $0273DC
+	jsr menu_cursor_draw.l	; $0273DC
 	addq.w #$2,a7	; $0273E2
 L0273E4:
 	bra.w L02751E	; $0273E4
@@ -29900,7 +29900,7 @@ L029CB8:
 	jsr combat_select_unit(pc)	; $029CC2
 	addq.w #$4,a7	; $029CC6
 	clr.w -(a7)	; $029CC8
-	jsr menu_unk_020a88.l	; $029CCA
+	jsr menu_set_mode.l	; $029CCA
 	addq.w #$2,a7	; $029CD0
 	bra.w L029DC6	; $029CD2
 L029CD6:
@@ -30278,7 +30278,7 @@ L02A1BA:
 	jsr combat_select_unit(pc)	; $02A1C4
 	addq.w #$4,a7	; $02A1C8
 	clr.w -(a7)	; $02A1CA
-	jsr menu_unk_020a88.l	; $02A1CC
+	jsr menu_set_mode.l	; $02A1CC
 	addq.w #$2,a7	; $02A1D2
 	bra.b L02A1DE	; $02A1D4
 L02A1D6:
@@ -30990,7 +30990,7 @@ L02AB4A:
 	move.w #$ffff,-(a7)	; $02AB9A
 	move.w #$1,-(a7)	; $02AB9E
 	clr.w -(a7)	; $02ABA2
-	jsr combat_unk_01da6c.l	; $02ABA4
+	jsr world_location_transition.l	; $02ABA4
 	addq.w #$6,a7	; $02ABAA
 	lea.l $ff0e92.l,a0	; $02ABAC
 	move.w (a0),d0	; $02ABB2
@@ -31005,7 +31005,7 @@ L02AB4A:
 	move.w #$ffff,-(a7)	; $02ABD0
 	move.w -$12(a6),-(a7)	; $02ABD4
 	move.w #$1,-(a7)	; $02ABD8
-	jsr combat_unk_01da6c.l	; $02ABDC
+	jsr world_location_transition.l	; $02ABDC
 	addq.w #$6,a7	; $02ABE2
 	move.w -$a(a6),-(a7)	; $02ABE4
 	move.w -$8(a6),-(a7)	; $02ABE8
@@ -32150,7 +32150,7 @@ L02BB5A:
 	jsr combat_select_unit(pc)	; $02BB96
 	addq.w #$4,a7	; $02BB9A
 	clr.w -(a7)	; $02BB9C
-	jsr menu_unk_020a88.l	; $02BB9E
+	jsr menu_set_mode.l	; $02BB9E
 	addq.w #$2,a7	; $02BBA4
 L02BBA6:
 	move.w -$2(a6),-(a7)	; $02BBA6
@@ -34312,7 +34312,7 @@ L02D6BC:
 	jsr combat_select_unit.l	; $02D72A
 	addq.w #$4,a7	; $02D730
 	clr.w -(a7)	; $02D732
-	jsr menu_unk_020a88.l	; $02D734
+	jsr menu_set_mode.l	; $02D734
 	addq.w #$2,a7	; $02D73A
 L02D73C:
 	bra.w L02D7D2	; $02D73C
@@ -43388,7 +43388,7 @@ world_move_toward:
 	move.w -$4(a6),-(a7)	; $034D72
 	move.w -$2(a6),-(a7)	; $034D76
 	move.w $e(a6),-(a7)	; $034D7A
-	jsr sys_unk_01e29c.l	; $034D7E
+	jsr world_decompose_direction_axis.l	; $034D7E
 	lea.l $e(a7),a7	; $034D84
 	cmpi.w #$4,-$6(a6)	; $034D88
 	bne.b L034D96	; $034D8E
@@ -43437,7 +43437,7 @@ world_check_toward:
 	move.w -$4(a6),-(a7)	; $034E18
 	move.w -$2(a6),-(a7)	; $034E1C
 	move.w $e(a6),-(a7)	; $034E20
-	jsr sys_unk_01e29c.l	; $034E24
+	jsr world_decompose_direction_axis.l	; $034E24
 	lea.l $e(a7),a7	; $034E2A
 	cmpi.w #$4,-$6(a6)	; $034E2E
 	bne.b L034E3C	; $034E34
@@ -44367,7 +44367,7 @@ L035A7E:
 	move.w $a(a6),-(a7)	; $035A7E
 	move.w #$50,-(a7)	; $035A82
 	move.w #$2,-(a7)	; $035A86
-	jsr combat_unk_01da6c.l	; $035A8A
+	jsr world_location_transition.l	; $035A8A
 	addq.w #$6,a7	; $035A90
 	clr.w $ff010e.l	; $035A92
 	lea.l $ff010e.l,a0	; $035A98
@@ -45163,7 +45163,7 @@ L036642:
 	move.w #$ffff,-(a7)	; $036642
 	move.w $ff0e96.l,-(a7)	; $036646
 	move.w #$3,-(a7)	; $03664C
-	jsr combat_unk_01da6c.l	; $036650
+	jsr world_location_transition.l	; $036650
 	addq.w #$6,a7	; $036656
 	clr.w $ff010e.l	; $036658
 	move.w #$ff,-(a7)	; $03665E
