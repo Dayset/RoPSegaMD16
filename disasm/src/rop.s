@@ -61490,8 +61490,10 @@ L0EBB56:
 	st.b $ff021e.l	; $0EBB66
 	rts	; $0EBB6C
 L0EBB6E:
-	; data $0EBB6E-$0ED0E7
-	incbin "rop-original.gen",$0EBB6E,$157A
+	; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)
+	incbin "build/z80_snd_driver.bin"
+	; data $0ED0E4-$0ED0E7
+	incbin "rop-original.gen",$0ED0E4,$4
 L0ED0E8:
 	; data $0ED0E8-$0ED4F3
 	incbin "rop-original.gen",$0ED0E8,$40C
