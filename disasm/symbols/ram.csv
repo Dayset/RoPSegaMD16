@@ -93,19 +93,19 @@ addr,size,name,tier,note
 0xFF0E90,2,ram_world_field_0e90,0,13 refs; subsystem from majority of named users; role not read
 0xFF013C,2,ram_spell_effect_013c,1,static: 10 of 13 sites in spell_effect_step
 0xFF02A0,2,ram_sys_field_02a0,0,13 refs; subsystem from majority of named users; role not read
-0xFF0250,2,ram_sys_field_0250,0,13 refs; subsystem from majority of named users; role not read
-0xFFC00C,2,ram_sys_field_c00c,0,12 refs; subsystem from majority of named users; role not read
+0xFF0250,2,ram_spell_0250,1,static: 13 of 13 sites in spell_damage_calc
+0xFFC00C,2,ram_sys_c00c,1,static: 12 of 12 sites in attract_scroll subsystem sys default
 0xFF0E7E,2,ram_menu_field_0e7e,0,12 refs; subsystem from majority of named users; role not read
 0xFF02CE,4,ram_sys_field_02ce,0,12 refs; subsystem from majority of named users; role not read
-0xFFC410,2,ram_sys_field_c410,0,12 refs; subsystem from majority of named users; role not read
+0xFFC410,2,ram_text_c410,1,static: 6 of 12 sites in text_event_message
 0xFF0114,2,ram_world_field_0114,0,11 refs; subsystem from majority of named users; role not read
 0xFF013A,2,ram_save_field_013a,0,11 refs; subsystem from majority of named users; role not read
 0xFF8648,2,ram_world_field_8648,0,11 refs; subsystem from majority of named users; role not read
 0xFFC380,2,ram_sys_field_c380,0,11 refs; subsystem from majority of named users; role not read
-0xFF0292,2,ram_sys_field_0292,0,11 refs; subsystem from majority of named users; role not read
+0xFF0292,2,ram_spell_0292,1,static: 11 of 11 sites in spell_effect_step
 0xFFC008,4,ram_sys_field_c008,0,10 refs; subsystem from majority of named users; role not read
 0xFF8644,2,ram_sys_field_8644,0,10 refs; subsystem from majority of named users; role not read
-0xFF8684,2,ram_sys_field_8684,0,10 refs; subsystem from majority of named users; role not read
+0xFF8684,2,ram_sys_8684,1,static: 8 of 10 sites in scene_draw subsystem sys default
 0xFF02DA,4,ram_sys_field_02da,0,10 refs; subsystem from majority of named users; role not read
 0xFF010A,2,ram_sys_field_010a,0,9 refs; subsystem from majority of named users; role not read
 0xFF0116,2,ram_menu_field_0116,0,9 refs; subsystem from majority of named users; role not read

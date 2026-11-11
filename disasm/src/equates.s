@@ -111,10 +111,10 @@ ram_sys_ff0248	equ	$FF0248
 ram_sys_ff024a	equ	$FF024A
 ram_sys_field_024c	equ	$FF024C
 ram_sys_field_024e	equ	$FF024E
-ram_sys_field_0250	equ	$FF0250
+ram_spell_0250	equ	$FF0250
 ram_sys_field_0252	equ	$FF0252
 ram_sys_field_0290	equ	$FF0290
-ram_sys_field_0292	equ	$FF0292
+ram_spell_0292	equ	$FF0292
 ram_combat_field_0294	equ	$FF0294
 ram_combat_field_0296	equ	$FF0296
 ram_combat_field_0298	equ	$FF0298
@@ -207,7 +207,7 @@ ram_world_field_867c	equ	$FF867C
 ram_world_field_867e	equ	$FF867E
 ram_gfx_scene_8680	equ	$FF8680
 ram_sys_ff8682	equ	$FF8682
-ram_sys_field_8684	equ	$FF8684
+ram_sys_8684	equ	$FF8684
 ram_snd_music_8686	equ	$FF8686
 ram_sys_field_8688	equ	$FF8688
 ram_sys_field_868a	equ	$FF868A
@@ -278,7 +278,7 @@ ram_sys_field_c002	equ	$FFC002
 ram_sys_field_c004	equ	$FFC004
 ram_sys_field_c006	equ	$FFC006
 ram_sys_field_c008	equ	$FFC008
-ram_sys_field_c00c	equ	$FFC00C
+ram_sys_c00c	equ	$FFC00C
 ram_boot_field_c00e	equ	$FFC00E
 ram_sys_ffc010	equ	$FFC010
 ram_sys_ffc012	equ	$FFC012
@@ -318,7 +318,7 @@ ram_sys_ffc408	equ	$FFC408
 ram_sys_ffc40a	equ	$FFC40A
 ram_sys_field_c40c	equ	$FFC40C
 ram_sys_field_c40e	equ	$FFC40E
-ram_sys_field_c410	equ	$FFC410
+ram_text_c410	equ	$FFC410
 ram_sys_ffc412	equ	$FFC412
 ram_combat_field_c414	equ	$FFC414
 ram_combat_field_c416	equ	$FFC416
