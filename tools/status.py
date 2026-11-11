@@ -34,12 +34,18 @@ def measure():
             names += [(r['addr'], r['name'], r.get('tier', '1')) for r in csv.DictReader(fh)]
     if len({a for a, _, _ in names}) != len(names) or len({n for _, n, _ in names}) != len(names):
         sys.exit('status: symbol files have a duplicate address or name')
-    tier1 = sum(1 for _, _, t in names if str(t).strip() in ('1', '2'))
-    tier0 = sum(1 for _, _, t in names if str(t).strip() == '0')
-    funcs = 0
+    # Count only rows that are Ghidra functions, so named can never exceed funcs (#status-denominator).
+    func_addrs = set()
     f = Path('disasm/ghidra/functions.txt')
     if f.exists():
-        funcs = sum(1 for l in f.read_text().splitlines() if l.strip())
+        for l in f.read_text().splitlines():
+            parts = l.split()
+            if len(parts) >= 2 and parts[0] == 'FUNC':
+                func_addrs.add(int(parts[1], 16))
+    funcs = len(func_addrs)
+    names = [(a, n, t) for a, n, t in names if int(a, 16) in func_addrs]
+    tier1 = sum(1 for _, _, t in names if str(t).strip() in ('1', '2'))
+    tier0 = sum(1 for _, _, t in names if str(t).strip() == '0')
     incbin = raw = 0
     for l in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
         m = INC.search(l)
