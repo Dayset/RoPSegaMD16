@@ -971,3 +971,9 @@ all decompressed clean by #005 (62/62 + 90/90).
 The decoder is the documented `$DD5C` format (32-bit LE length, mask bytes,
 12-bit offset, 4 KB ring pre-filled with 0x20). A clean length match on every
 record is strong evidence, and it covers the whole `lzss-stream` span.
+
+**Live:** the game's own `$DD5C` decodes all 404 records live
+(62 `$96120` + 90 `$B86AE` + 252 `$43850`), output byte-sum-identical to
+the static decode, 404/404, 0 mismatches — validating `tools/dd5c.py`
+and `tools/lzss_check.py` live. (A single record-0 call had already
+matched the static decode on its first 256 bytes, checksum `0x3CA`.)
