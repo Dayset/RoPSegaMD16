@@ -556,13 +556,25 @@ mod 0, no merchant):
   `$029C8A` (the sign is the event word's type; see below).
   **Event records, ENUMERATED (2026-11-10) [static]:** the Bribe
   event (id 8) lives in the `$0D3102` conversation table (1005
-  12-byte records); 11 records have word0 == 8. The event word is
-  the record's **+10 word**, packed as (type << 12) | delta, so
-  delta = (+10 word) & `0xFFF`. `$0298D2` dispatches on the type
-  (jump table `$029F8A`): type 1 → `$02CE74(+delta)` at `$029C4E`
-  (attitude up), type 3 → `$02CE74(−delta)` at `$029C94`
-  (attitude down), type 0xF → `$025074` (a conversation-continue
-  path, no direct `$02CE74` call). The 11 Bribe records: rec 18
+  12-byte records); 11 records have word0 == 8. Each record carries
+  **two** event words, both packed as (type << 12) | delta: the **+10
+  word** (dispatched first) and the **+8 word** (dispatched only if
+  the first dispatch leaves no effect). `$0298D2` dispatches on the
+  type (jump table `$029F8A`, types 0–14; a second table `$02A1EE`,
+  types 0–13, takes the +8 word on fall-through): type 1 →
+  `$02CE74(+delta)` at `$029C4E` (attitude up), type 11 (0xB) →
+  `$02CE74(−delta)` at `$029C70` (attitude down) — the only two types
+  that reach `$02CE74`. Type 3 → `$029C94` → a delta dispatch
+  (`L029DB4`); rec 44 (delta 1) resolves to `combat_battle_end`,
+  not an attitude change. Type 0xF has **no case in either table**:
+  the merchant's reply text is shown, but no attitude function is
+  ever called — a +0x02==1 merchant's Bribe changes attitude by
+  exactly zero (live and persistent) while the 10 gold is still
+  deducted. **Corrected 2026-11-11 [static, both dispatch tables
+  fully decoded]:** the earlier note said type 3 →
+  `$02CE74(−delta)` and type 0xF → `$025074`; the down path is
+  type 11, and `$025074` is inside `combat_move_unit` `$024984`,
+  unrelated to events. The 11 Bribe records: rec 18
   (+2=1, +10=`0xF000`, type 0xF, delta 0), rec 19 (same as 18),
   rec 20 (+2=0, +10=`0x1032`, type 1, **delta 50**), rec 44
   (+2=0, +10=`0x3001`, type 3, delta 1), rec 75 (+2=0,
@@ -584,8 +596,9 @@ mod 0, no merchant):
   records tie at base `0x10000` and the winner is RNG-dependent —
   so **the Bribe's delta is not a single universal number; it
   depends on the merchant, and for most merchants it is
-  RNG-selected among the type-1 records (50, 99, 15) and the
-  type-3 record (−1)**. The +4/+5-byte match flags do not
+  RNG-selected among the tied records — the type-1 records
+  (+50, +99, +15) raise attitude, while rec 44 (type 3, delta 1)
+  ends combat instead of changing attitude. The +4/+5-byte match flags do not
   discriminate for a typical merchant (most templates have
   +0x17 = 0, so the +4-byte flag is skipped; record+5 is 0x00
   while the attitude index is non-zero). **Delta mechanism
