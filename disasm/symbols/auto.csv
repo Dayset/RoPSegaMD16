@@ -173,9 +173,9 @@ addr,name,tier,note
 0x02af72,text_item_grant_message,1,shows grant message for an item value; 100-plus checks item_category_of and enqueues message else shows message 25 or 26; called from $02A562
 0x02aff2,npc_spawn_from_char,1,spawns entity from a char type word with parameter triples then sets fields and plays SFX; called from main_loop and combat_turn_run
 0x02b190,npc_spawn_at_step,1,spawns char at a position stepped from a source char in a direction with caller-supplied struct fields; returns new index or 0
-0x02B2B2,sys_unk_02b2b2,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
+0x02B2B2,npc_pick_target_2b2b2,1,static: clamps arg14 to 7..15 then picks header or ff02c2 pair by mode word; record stride $34
 0x02b402,spell_spawn_entity,1,spawns entity at a stepped grid position for spell multihit and group effects; callers spell_multihit_scatter and spell_group_flash; replaces npc_spawn_at_step from PR #59 which would duplicate 0x02b190
-0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
+0x02B502,npc_step_2b502,1,static: clamps arg14 calls world_get_step_delta then sys_struct52_find
 0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
 0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
 0x02b68c,sys_bitmap_write,1,code: clears bit (arg&7) in bitmap then ORs in value arg e
@@ -243,8 +243,8 @@ addr,name,tier,note
 0x034CA2,npc_get_state_34ca2,1,static: returns byte at ram_sys_ff02db for record arg with stride 0x34
 0x034d32,world_move_toward,1,computes direction to target x y via $01E29C; moves char via $024984; called from $0349D4 $034AA0
 0x034dd8,world_check_toward,1,computes direction to target x y via $01E29C; checks walk via map_walk_check; returns walk result; called from $034940
-0x034ED0,sys_unk_034ed0,0,auto: touches $FF02C0 $FF02C2
-0x034FC4,sys_unk_034fc4,0,auto: touches $FF02BE $FF02C0 $FF02C2 $FF02C8 $FF02D8 $FF02DA
+0x034ED0,npc_calc_delta_34ed0,1,static: record-relative dx dy from ram_header_leader and ff02c2 stride $34
+0x034FC4,npc_get_attr_34fc4,1,static: reads record byte ff02dc masked 7f and word ff02c8 plus table ff02da ff02be
 0x0352c4,map_area_walkable,1,checks 6x6 area around char at +0x26 link walkable via map_walk_check; returns 1 if all walkable else 0
 0x03536c,map_same_block,1,returns 1 if two points are in same 4x4 block; args shifted right 2
 0x03539a,world_steps_to_char,1,steps char1 toward char2 along direction via world_get_step_delta; returns steps 0-7 or 7 if unreachable or target dead
