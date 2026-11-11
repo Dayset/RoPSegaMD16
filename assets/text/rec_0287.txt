@@ -1,0 +1,31 @@
+# rec 287 | ptr=0x0230C len=50 type=5 | entries=25
+# rendered: 'When you find him, ask him about your QUEST. Make sure to question him a couple a times -- he holds out. '
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 288 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=940 sep=space # 'When'
+2 idx=12 sep=space # 'you'
+3 idx=451 sep=space # 'find'
+4 idx=933 sep=comma # 'him'
+5 idx=4 sep=space # ' '
+6 idx=1230 sep=space # 'ask'
+7 idx=933 sep=space # 'him'
+8 idx=215 sep=space # 'about'
+9 idx=101 sep=space # 'your'
+10 idx=1212 sep=period # 'QUEST'
+11 idx=4 sep=space # ' '
+12 idx=1311 sep=space # 'Make'
+13 idx=733 sep=space # 'sure'
+14 idx=103 sep=space # 'to'
+15 idx=512 sep=space # 'question'
+16 idx=933 sep=space # 'him'
+17 idx=42 sep=space # 'a'
+18 idx=1176 sep=space # 'couple'
+19 idx=42 sep=space # 'a'
+20 idx=644 sep=space # 'times'
+21 idx=97 sep=space # '--'
+22 idx=218 sep=space # 'he'
+23 idx=1211 sep=space # 'holds'
+24 idx=251 sep=period # 'out'

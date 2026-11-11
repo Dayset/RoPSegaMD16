@@ -1,0 +1,10 @@
+# rec 89 | ptr=0x00830 len=8 type=5 | entries=4
+# rendered: 'Fenopolis - 105 north '
+# $136FC skips array[0] and renders array[1..4], inclusive of the read-past entry
+# (read-past entry: rec 90 array[0], idx=417 sep=space 'north'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=436 sep=space # 'only!'
+1 idx=437 sep=space # 'Fenopolis'
+2 idx=363 sep=space # '-'
+3 idx=438 sep=space # '105'

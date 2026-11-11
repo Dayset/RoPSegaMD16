@@ -1,0 +1,11 @@
+# rec 194 | ptr=0x01254 len=10 type=5 | entries=5
+# rendered: 'Time to die, Sorcerer! '
+# $136FC skips array[0] and renders array[1..5], inclusive of the read-past entry
+# (read-past entry: rec 195 array[0], idx=829 sep=space 'Sorcerer!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=874 sep=space # 'you!'
+1 idx=875 sep=space # 'Time'
+2 idx=103 sep=space # 'to'
+3 idx=876 sep=comma # 'die'
+4 idx=4 sep=space # ' '

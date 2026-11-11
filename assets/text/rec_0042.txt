@@ -1,0 +1,29 @@
+# rec 42 | ptr=0x003B2 len=46 type=5 | entries=23
+# rendered: "This is the Thieves' Guild, led by the mysterious Keef the Thief. It is said he came from another world. "
+# $136FC skips array[0] and renders array[1..23], inclusive of the read-past entry
+# (read-past entry: rec 43 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=84 sep=space # 'This'
+2 idx=57 sep=space # 'is'
+3 idx=14 sep=space # 'the'
+4 idx=221 sep=space # "Thieves'"
+5 idx=7 sep=comma # 'Guild'
+6 idx=4 sep=space # ' '
+7 idx=222 sep=space # 'led'
+8 idx=69 sep=space # 'by'
+9 idx=14 sep=space # 'the'
+10 idx=223 sep=space # 'mysterious'
+11 idx=224 sep=space # 'Keef'
+12 idx=14 sep=space # 'the'
+13 idx=225 sep=period # 'Thief'
+14 idx=4 sep=space # ' '
+15 idx=142 sep=space # 'It'
+16 idx=57 sep=space # 'is'
+17 idx=226 sep=space # 'said'
+18 idx=218 sep=space # 'he'
+19 idx=227 sep=space # 'came'
+20 idx=23 sep=space # 'from'
+21 idx=228 sep=space # 'another'
+22 idx=90 sep=period # 'world'

@@ -1,0 +1,26 @@
+# rec 221 | ptr=0x01704 len=40 type=5 | entries=20
+# rendered: 'I see we are all here, even Darius and Fezzik. Thank you for joining us, gentlemen. '
+# $136FC skips array[0] and renders array[1..20], inclusive of the read-past entry
+# (read-past entry: rec 222 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1032 sep=space # 'Thalmus!'
+1 idx=459 sep=space # 'I'
+2 idx=906 sep=space # 'see'
+3 idx=645 sep=space # 'we'
+4 idx=207 sep=space # 'are'
+5 idx=373 sep=space # 'all'
+6 idx=68 sep=comma # 'here'
+7 idx=4 sep=space # ' '
+8 idx=999 sep=space # 'even'
+9 idx=965 sep=space # 'Darius'
+10 idx=20 sep=space # 'and'
+11 idx=966 sep=period # 'Fezzik'
+12 idx=4 sep=space # ' '
+13 idx=1033 sep=space # 'Thank'
+14 idx=12 sep=space # 'you'
+15 idx=185 sep=space # 'for'
+16 idx=1034 sep=space # 'joining'
+17 idx=534 sep=comma # 'us'
+18 idx=4 sep=space # ' '
+19 idx=1035 sep=period # 'gentlemen'

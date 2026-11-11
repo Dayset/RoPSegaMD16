@@ -1,0 +1,16 @@
+# rec 53 | ptr=0x0050E len=20 type=5 | entries=10
+# rendered: 'A brightly lit magic neon sign says: "Lucky Luke\'s Casino!" '
+# $136FC skips array[0] and renders array[1..10], inclusive of the read-past entry
+# (read-past entry: rec 54 array[0], idx=298 sep=space 'Casino!"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=291 sep=space # 'Bin"'
+1 idx=5 sep=space # 'A'
+2 idx=292 sep=space # 'brightly'
+3 idx=293 sep=space # 'lit'
+4 idx=283 sep=space # 'magic'
+5 idx=294 sep=space # 'neon'
+6 idx=129 sep=space # 'sign'
+7 idx=295 sep=space # 'says:'
+8 idx=296 sep=space # '"Lucky'
+9 idx=297 sep=space # "Luke's"

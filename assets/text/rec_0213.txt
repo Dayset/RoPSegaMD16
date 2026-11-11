@@ -1,0 +1,33 @@
+# rec 213 | ptr=0x015A0 len=54 type=5 | entries=27
+# rendered: 'Until now these stories have been dismissed as legends, but the Six Guildmasters have uncovered evidence that the Rings of Power do indeed exist.  '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 214 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=983 sep=space # 'Until'
+2 idx=868 sep=space # 'now'
+3 idx=984 sep=space # 'these'
+4 idx=980 sep=space # 'stories'
+5 idx=161 sep=space # 'have'
+6 idx=594 sep=space # 'been'
+7 idx=985 sep=space # 'dismissed'
+8 idx=538 sep=space # 'as'
+9 idx=986 sep=comma # 'legends'
+10 idx=4 sep=space # ' '
+11 idx=175 sep=space # 'but'
+12 idx=14 sep=space # 'the'
+13 idx=977 sep=space # 'Six'
+14 idx=948 sep=space # 'Guildmasters'
+15 idx=161 sep=space # 'have'
+16 idx=987 sep=space # 'uncovered'
+17 idx=988 sep=space # 'evidence'
+18 idx=191 sep=space # 'that'
+19 idx=14 sep=space # 'the'
+20 idx=801 sep=space # 'Rings'
+21 idx=13 sep=space # 'of'
+22 idx=560 sep=space # 'Power'
+23 idx=461 sep=space # 'do'
+24 idx=989 sep=space # 'indeed'
+25 idx=990 sep=period # 'exist'
+26 idx=4 sep=space # ' '

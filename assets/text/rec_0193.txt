@@ -1,0 +1,24 @@
+# rec 193 | ptr=0x01230 len=36 type=5 | entries=18
+# rendered: "Out! I said get out! Are you deaf or something? I don't want to talk to you! "
+# $136FC skips array[0] and renders array[1..18], inclusive of the read-past entry
+# (read-past entry: rec 194 array[0], idx=874 sep=space 'you!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=871 sep=space # 'life!'
+1 idx=872 sep=space # 'Out!'
+2 idx=459 sep=space # 'I'
+3 idx=226 sep=space # 'said'
+4 idx=678 sep=space # 'get'
+5 idx=326 sep=space # 'out!'
+6 idx=844 sep=space # 'Are'
+7 idx=12 sep=space # 'you'
+8 idx=873 sep=space # 'deaf'
+9 idx=677 sep=space # 'or'
+10 idx=458 sep=question # 'something'
+11 idx=4 sep=space # ' '
+12 idx=459 sep=space # 'I'
+13 idx=471 sep=space # "don't"
+14 idx=474 sep=space # 'want'
+15 idx=103 sep=space # 'to'
+16 idx=563 sep=space # 'talk'
+17 idx=103 sep=space # 'to'

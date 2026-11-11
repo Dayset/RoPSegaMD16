@@ -1,0 +1,32 @@
+# rec 256 | ptr=0x01CF2 len=52 type=5 | entries=26
+# rendered: 'The mayor has caught one of the bandits who raided us a couple of nights ago and has him in jail at the civic center. '
+# $136FC skips array[0] and renders array[1..26], inclusive of the read-past entry
+# (read-past entry: rec 257 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=769 sep=space # 'mayor'
+3 idx=532 sep=space # 'has'
+4 idx=1174 sep=space # 'caught'
+5 idx=380 sep=space # 'one'
+6 idx=13 sep=space # 'of'
+7 idx=14 sep=space # 'the'
+8 idx=1089 sep=space # 'bandits'
+9 idx=399 sep=space # 'who'
+10 idx=1175 sep=space # 'raided'
+11 idx=534 sep=space # 'us'
+12 idx=42 sep=space # 'a'
+13 idx=1176 sep=space # 'couple'
+14 idx=13 sep=space # 'of'
+15 idx=1177 sep=space # 'nights'
+16 idx=1178 sep=space # 'ago'
+17 idx=20 sep=space # 'and'
+18 idx=532 sep=space # 'has'
+19 idx=933 sep=space # 'him'
+20 idx=76 sep=space # 'in'
+21 idx=614 sep=space # 'jail'
+22 idx=508 sep=space # 'at'
+23 idx=14 sep=space # 'the'
+24 idx=72 sep=space # 'civic'
+25 idx=71 sep=period # 'center'

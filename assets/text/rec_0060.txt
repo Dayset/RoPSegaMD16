@@ -1,0 +1,22 @@
+# rec 60 | ptr=0x005CE len=32 type=5 | entries=16
+# rendered: 'Welcome to Division, home of the divided Knights of the Holy Order of Separation. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 61 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=328 sep=space # 'drive!'
+1 idx=322 sep=space # 'Welcome'
+2 idx=103 sep=space # 'to'
+3 idx=329 sep=comma # 'Division'
+4 idx=4 sep=space # ' '
+5 idx=50 sep=space # 'home'
+6 idx=13 sep=space # 'of'
+7 idx=14 sep=space # 'the'
+8 idx=330 sep=space # 'divided'
+9 idx=15 sep=space # 'Knights'
+10 idx=13 sep=space # 'of'
+11 idx=14 sep=space # 'the'
+12 idx=16 sep=space # 'Holy'
+13 idx=17 sep=space # 'Order'
+14 idx=13 sep=space # 'of'
+15 idx=18 sep=period # 'Separation'

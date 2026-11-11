@@ -1,0 +1,15 @@
+# rec 85 | ptr=0x007E6 len=18 type=5 | entries=9
+# rendered: 'Cathedral - 64 klicks west ^Perfection - 243 east '
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 86 array[0], idx=412 sep=space 'east'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=414 sep=space # 'south'
+1 idx=141 sep=space # 'Cathedral'
+2 idx=363 sep=space # '-'
+3 idx=421 sep=space # '64'
+4 idx=411 sep=space # 'klicks'
+5 idx=422 sep=space # 'west'
+6 idx=423 sep=space # '^Perfection'
+7 idx=363 sep=space # '-'
+8 idx=424 sep=space # '243'
