@@ -3758,7 +3758,7 @@ text_blit:
 	pea.l -$f0(a6)	; $012142
 	jsr text_box(pc)	; $012146
 	lea.l $c(a7),a7	; $01214A
-	jsr sys_unk_012fb4.l	; $01214E
+	jsr sys_wait_button_press.l	; $01214E
 	jsr soft_reset.l	; $012154
 	unlk a6	; $01215A
 	rts	; $01215C
@@ -4486,7 +4486,7 @@ L012BEC:
 	unlk a6	; $012BF8
 	rts	; $012BFA
 	; code $012BFC-$012C1F
-sys_unk_012bfc:
+sys_rng_seed_frame:
 	link.w a6,#$0	; $012BFC
 	move.l #$ffff,d1	; $012C00
 	move.l $ff0010.l,d0	; $012C06
@@ -4693,9 +4693,9 @@ world_map_draw:
 	move.w #$2,-(a7)	; $012F22
 	jsr pal_load_set.l	; $012F26
 	addq.w #$6,a7	; $012F2C
-	jsr sys_unk_013d84(pc)	; $012F2E
+	jsr world_sprites_setup(pc)	; $012F2E
 	clr.w $ff0114.l	; $012F32
-	jsr sys_unk_012bfc.l	; $012F38
+	jsr sys_rng_seed_frame.l	; $012F38
 	jsr request_full_redraw.l	; $012F3E
 	unlk a6	; $012F44
 	rts	; $012F46
@@ -4737,7 +4737,7 @@ error_show:
 	unlk a6	; $012FB0
 	rts	; $012FB2
 	; code $012FB4-$012FE7
-sys_unk_012fb4:
+sys_wait_button_press:
 	link.w a6,#$fffe	; $012FB4
 	clr.w -$2(a6)	; $012FB8
 	bra.b L012FC2	; $012FBC
@@ -5462,7 +5462,7 @@ L013876:
 	unlk a6	; $01387E
 	rts	; $013880
 	; code $013882-$0138A7
-sys_unk_013882:
+text_to_upper:
 	link.w a6,#$0	; $013882
 	cmpi.w #$61,$8(a6)	; $013886
 	blt.b L0138A2	; $01388C
@@ -5820,7 +5820,7 @@ L013D80:
 	unlk a6	; $013D80
 	rts	; $013D82
 	; code $013D84-$0147CF
-sys_unk_013d84:
+world_sprites_setup:
 	link.w a6,#$fffc	; $013D84
 	jsr clear_sprite_attr.l	; $013D88
 	move.w $ff8640.l,-(a7)	; $013D8E
@@ -7123,7 +7123,7 @@ intro_helper:
 	neg.w d0	; $015116
 	move.w d0,-(a7)	; $015118
 	clr.w -(a7)	; $01511A
-	jsr sys_unk_0171d6(pc)	; $01511C
+	jsr vdp_write_hscroll_wave(pc)	; $01511C
 	lea.l $a(a7),a7	; $015120
 	move.w $ff8640.l,-(a7)	; $015124
 	move.w #$1c,-(a7)	; $01512A
@@ -7350,7 +7350,7 @@ L01542A:
 	neg.w d0	; $015444
 	move.w d0,-(a7)	; $015446
 	clr.w -(a7)	; $015448
-	jsr sys_unk_0171d6(pc)	; $01544A
+	jsr vdp_write_hscroll_wave(pc)	; $01544A
 	lea.l $a(a7),a7	; $01544E
 	bra.b L015474	; $015452
 L015454:
@@ -7363,7 +7363,7 @@ L015454:
 	neg.w d0	; $015468
 	move.w d0,-(a7)	; $01546A
 	clr.w -(a7)	; $01546C
-	jsr sys_unk_0171d6(pc)	; $01546E
+	jsr vdp_write_hscroll_wave(pc)	; $01546E
 	addq.w #$8,a7	; $015472
 L015474:
 	moveq #$c,d1	; $015474
@@ -7410,7 +7410,7 @@ L0154D4:
 	addq.w #$2,a7	; $015510
 	move.w #$ffff,$ff0128.l	; $015512
 	clr.w $ff0132.l	; $01551A
-	jsr sys_unk_012bfc.l	; $015520
+	jsr sys_rng_seed_frame.l	; $015520
 	jsr new_game_init.l	; $015526
 	jsr world_map_draw.l	; $01552C
 	jsr main_loop.l	; $015532
@@ -8262,7 +8262,7 @@ L0161AA:
 	move.w -$2(a6),d0	; $0161D4
 	neg.w d0	; $0161D8
 	move.w d0,-(a7)	; $0161DA
-	jsr sys_unk_0171d6(pc)	; $0161DC
+	jsr vdp_write_hscroll_wave(pc)	; $0161DC
 	lea.l $a(a7),a7	; $0161E0
 	tst.w -$2(a6)	; $0161E4
 	bge.b L016242	; $0161E8
@@ -8357,7 +8357,7 @@ L0162B4:
 	unlk a6	; $0162FA
 	rts	; $0162FC
 	; code $0162FE-$0163ED
-sys_unk_0162fe:
+world_map_redraw:
 	link.w a6,#$0	; $0162FE
 	jsr wait_vblank.l	; $016302
 	jsr menu_format.l	; $016308
@@ -8422,7 +8422,7 @@ L0163E4:
 	unlk a6	; $0163EA
 	rts	; $0163EC
 	; code $0163EE-$016511
-sys_unk_0163ee:
+row_write:
 	link.w a6,#$fffe	; $0163EE
 	movem.l d4/a3,-(a7)	; $0163F2
 	move.w $8(a6),d0	; $0163F6
@@ -8662,7 +8662,7 @@ L016630:
 	unlk a6	; $01664A
 	rts	; $01664C
 	; code $01664E-$0170CB
-sys_unk_01664e:
+map_view:
 	link.w a6,#$ffa4	; $01664E
 	movem.l d4-d7/a3,-(a7)	; $016652
 	clr.w -$4(a6)	; $016656
@@ -9045,7 +9045,7 @@ L016B26:
 	lsr.w #$3,d0	; $016B6C
 	and.w #$1f,d0	; $016B6E
 	move.w d0,-(a7)	; $016B72
-	jsr sys_unk_0163ee(pc)	; $016B74
+	jsr row_write(pc)	; $016B74
 	addq.w #$8,a7	; $016B78
 L016B7A:
 	btst #$1,$ff0e14.l	; $016B7A
@@ -9072,7 +9072,7 @@ L016B7A:
 	add.w #$1e,d0	; $016BBE
 	and.w #$1f,d0	; $016BC2
 	move.w d0,-(a7)	; $016BC6
-	jsr sys_unk_0163ee(pc)	; $016BC8
+	jsr row_write(pc)	; $016BC8
 	addq.w #$8,a7	; $016BCC
 L016BCE:
 	btst #$3,$ff0e14.l	; $016BCE
@@ -9427,8 +9427,8 @@ L016FBA:
 	pea.l L001000.w	; $01708A
 	jsr gfx_tilemap_fill.l	; $01708E
 	lea.l $10(a7),a7	; $017094
-	jsr sys_unk_013d84.l	; $017098
-	jsr sys_unk_0162fe(pc)	; $01709E
+	jsr world_sprites_setup.l	; $017098
+	jsr world_map_redraw(pc)	; $01709E
 	pea.l L0CCB38.l	; $0170A2
 	move.w #$1,-(a7)	; $0170A8
 	jsr pal_load_set.l	; $0170AC
@@ -9528,7 +9528,7 @@ L0171C2:
 	addq.w #$6,a7	; $0171D0
 	bra.w L017138	; $0171D2
 	; code $0171D6-$017365
-sys_unk_0171d6:
+vdp_write_hscroll_wave:
 	link.w a6,#$fff6	; $0171D6
 	move.w $10(a6),-$6(a6)	; $0171DA
 	move.w #$1,-$8(a6)	; $0171E0
@@ -9950,7 +9950,7 @@ L0176DE:
 	unlk a6	; $017702
 	rts	; $017704
 	; code $017706-$0177B3
-sys_unk_017706:
+save_write_eeprom:
 	link.w a6,#$fff8	; $017706
 	move.b #$2a,-$6(a6)	; $01770A
 	pea.l -$6(a6)	; $017710
@@ -10203,7 +10203,7 @@ L0179E4:
 	unlk a6	; $017A3C
 	rts	; $017A3E
 	; code $017A40-$017B87
-sys_unk_017a40:
+sprite_write_block:
 	link.w a6,#$0	; $017A40
 	move.w $12(a6),d0	; $017A44
 	asl.w #$4,d0	; $017A48
@@ -11636,7 +11636,7 @@ L018DF0:
 	neg.w d0	; $018E02
 	move.w d0,-(a7)	; $018E04
 	clr.w -(a7)	; $018E06
-	jsr sys_unk_0171d6(pc)	; $018E08
+	jsr vdp_write_hscroll_wave(pc)	; $018E08
 	lea.l $a(a7),a7	; $018E0C
 	jsr wait_vblank.l	; $018E10
 	move.w $ff867e.l,d0	; $018E16
@@ -12133,7 +12133,7 @@ L01937A:
 	move.w #$6,-(a7)	; $0194EA
 	move.w -$1c(a6),-(a7)	; $0194EE
 	move.w -$1e(a6),-(a7)	; $0194F2
-	jsr sys_unk_017a40(pc)	; $0194F6
+	jsr sprite_write_block(pc)	; $0194F6
 	lea.l $c(a7),a7	; $0194FA
 	move.w -$18(a6),-(a7)	; $0194FE
 	move.w -$12(a6),-(a7)	; $019502
@@ -12141,7 +12141,7 @@ L01937A:
 	move.w #$a,-(a7)	; $01950A
 	move.w -$14(a6),-(a7)	; $01950E
 	move.w -$16(a6),-(a7)	; $019512
-	jsr sys_unk_017a40(pc)	; $019516
+	jsr sprite_write_block(pc)	; $019516
 	lea.l $c(a7),a7	; $01951A
 	move.w -$10(a6),-(a7)	; $01951E
 	move.w -$a(a6),-(a7)	; $019522
@@ -12149,7 +12149,7 @@ L01937A:
 	move.w #$e,-(a7)	; $019528
 	move.w -$c(a6),-(a7)	; $01952C
 	move.w -$e(a6),-(a7)	; $019530
-	jsr sys_unk_017a40(pc)	; $019534
+	jsr sprite_write_block(pc)	; $019534
 	lea.l $c(a7),a7	; $019538
 	cmp.w #$20,d5	; $01953C
 	bgt.b L019588	; $019540
@@ -17079,7 +17079,7 @@ cmd10_handler:
 	cmpi.w #$20,$8(a6)	; $01EEF2
 	bls.b L01EF08	; $01EEF8
 	move.w $8(a6),-(a7)	; $01EEFA
-	jsr sys_unk_013882.l	; $01EEFE
+	jsr text_to_upper.l	; $01EEFE
 	addq.w #$2,a7	; $01EF04
 	bra.b L01EF0A	; $01EF06
 L01EF08:
@@ -34745,7 +34745,7 @@ L02DCFE:
 	muls.w #$34,d0	; $02DD22
 	lea.l $ff02c0.l,a0	; $02DD26
 	move.w (a0,d0.l),-(a7)	; $02DD2C
-	jsr sys_unk_01664e.l	; $02DD30
+	jsr map_view.l	; $02DD30
 	addq.w #$4,a7	; $02DD36
 	bra.b L02DD4A	; $02DD38
 L02DD3A:
@@ -36039,7 +36039,7 @@ L02EE48:
 	move.w #$2,$ff011a.l	; $02EE4E
 L02EE56:
 	jsr wait_vblank.l	; $02EE56
-	jsr sys_unk_013d84.l	; $02EE5C
+	jsr world_sprites_setup.l	; $02EE5C
 	jsr menu_format.l	; $02EE62
 	unlk a6	; $02EE68
 	rts	; $02EE6A
@@ -36778,7 +36778,7 @@ L02F82E:
 L02F884:
 	clr.w -(a7)	; $02F884
 	move.w #$2,-(a7)	; $02F886
-	jsr sys_unk_017706.l	; $02F88A
+	jsr save_write_eeprom.l	; $02F88A
 	addq.w #$4,a7	; $02F890
 	bra.w L02F12E	; $02F892
 	; code $02F896-$03010F
