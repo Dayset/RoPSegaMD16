@@ -407,20 +407,27 @@ food/water = 2000).
 
 ### 3.3 Item and price tables — verified
 
-**Item categories, table `$D66A3`, 20 records × 10 bytes**
-(`$D66A3`–`$D6767`). Record: +0 byte count, +1 word `w1` (cap —
-1, except 99 for goods and 9999 for healing; read by `$2C0EE` and
-`shop_category_max` as `word at $D66A4 + quotient*10`), +3 word
-name_idx (`$CD431`, 16-byte entries — a **category** word), +5 word
-`w` (base index into the price table), +7 word `w2`, +9 byte `b9`.
-Item 0 is a dummy (name "Nobody", w=0). Full table in
+**Item categories, table `$D66A0`, 20 records × 10 bytes**
+(`$D66A0`–`$D6767`). Record: +0 byte `E`, +1 byte `A`, +2 byte `B`,
++3 byte count, +4 word `w1` (cap — 1, except 99 for goods and 9999
+for healing; read by `$2C0EE` and `shop_category_max` as `word at
+$D66A4 + quotient*10`), +6 word name_idx (`$CD431`, 16-byte entries
+— a **category** word), +8 word `w` (base index into the price
+table). Item 0 is a dummy (name "Nobody", w=0). Full table in
 `disasm/logic/items.txt`. (Earlier revisions said the base was
-`$D66A6` with +0 name_idx / +2 `w` — 3 bytes late. The three code
-accesses pin the base to `$D66A3`: `byte at $D66A3 + cat*10` is the
-count (`shop_category_count`), `word at $D66A4 + cat*10` is `w1`
-(`shop_category_max`, `$2C0EE`), `word at $D66A8 + cat*10` is `w`
-(the shop/spell listing). So `$2C0EE`'s cap read is exact, not an
-off-by-2 read.)
+`$D66A6`, then `$D66A3` — each 3 bytes late. The code reads every
+field from its own base: `byte at $D66A0 + cat*10` is `E`
+(`entity_spawn` mode 5), `byte at $D66A1 + cat*10` is `A` (message
+picture), `byte at $D66A2 + cat*10` is `B` (`shop_merchant_setup`),
+`byte at $D66A3 + cat*10` is the count (`shop_category_count`),
+`word at $D66A4 + cat*10` is `w1` (`shop_category_max`, `$2C0EE`),
+`word at $D66A6 + cat*10` is name_idx, `word at $D66A8 + cat*10` is
+`w` (the shop/spell listing). So `$2C0EE`'s cap read is exact, not
+an off-by-2 read. The old "w2 word + b9 byte" (+7/+9 in the `$D66A3`
+framing) was a mis-grouping: `w2_c = (E_{c+1} << 8) | A_{c+1}` and
+`b9_c = B_{c+1}` — the trailing 3 bytes belong to the NEXT record,
+not this one. The three 1-byte stub rows at `$D66A0`/`$D66A1`/`$D66A2`
+in `doc_regions.csv` were the same table's leading bytes.)
 
 | item | category | w |
 |------|----------|---|
@@ -437,9 +444,44 @@ off-by-2 read.)
 | 18 | goods | 253 |
 | 19 | drinks | 254 |
 
-The record's +7 word `w2` and +9 byte `b9` are not yet decoded
-(e.g. item 0: w2 `0x0748`, b9 `0x08`; item 13: w2 `0x0644`,
-b9 `0x1b`; item 15: w2 `0x0556`, b9 `0x14`). Unknown — #021.
+- `A` — the `$B86AE` sprite record shown with the item message.
+  `msg_queue_consume` passes the queue entry's first field to
+  `tile_record_load`, which decompresses `$B86AE` record `A`
+  (`text_record_dispatch`, `$B86AE` base) and uploads it as the
+  message picture (36 tiles at VRAM tile `$24`, palette set 3).
+  Values: spells 72, rings 67, services 68, keys 87, items 86,
+  goods 68, crafts 22, healing 86, papers 13, cat 18 (goods) 47,
+  drinks 68, dummy 68. Visually confirmed against
+  `assets/gfx/sprites/`: 72 is a scroll, 87 a gold key, 67 a gold
+  ring, 22 a red-sailed ship.
+- `B` — the merchant-kind key. `shop_merchant_setup` (`$02A454`)
+  scans c = 0..19 for `B_c == char+0x17` (the spawn table's +3 byte,
+  copied to the char struct's +0x17 by `entity_spawn`), last match
+  wins (requires the char's +0x25 > 0), and makes that c the shop
+  category (`ram_shop_merchant_02a8`). Values: 8–13 → spell
+  categories 1–6 in order; 26 → services; 27 → goods; 28 → crafts;
+  20 → healing; 25 → drinks. Categories with B = 0 (0, 7, 8, 9, 10,
+  12, 13, 17, 18) have no distinct key — a char with +0x17 = 0
+  resolves to the last B = 0 category in the scan, 18 (goods,
+  w = 253); a char whose +0x17 matches no B leaves the shop category
+  at the `$7530` sentinel (no shop). The +0x17 = 8..13 chars include
+  the party spellcasters (Slash 9, Feather 10, Mortimer 11, Obliky
+  12, Alexi 13); what +0x17 means beyond the shop lookup is the
+  discipline question (see docs/spells.md §1.3).
+- `E` — the vessel mode-5 sub-value, read only by `entity_spawn`
+  mode 5 (`$024304`): the new char struct's `+0x06 = $200 + E_q`,
+  where q = grant-code/64 (the item category; the code is a `$D601E`
+  record's +0 word & `$7FF`, passed as `entity_spawn` arg `$c(a6)` by
+  `npc_attitude_event_apply` `$02B96C` and `world_enter_location`
+  `$030D2E`; if the code is `$7530`, `+0x06 = $200`). All 161
+  `$D601E` records have q ≤ 18, so the read always stays in-table.
+  `+0x06` is the packed vessel/mount value (high byte 2 → travel
+  mode 5 via `world_vessel_mode` `$025D8E`; `world_vessel_grid_value`
+  maps `$200+E` → tile `$208+E`, used by `npc_struct_setup` as the
+  entity's grid value for `combat_effect_apply`). Values: spells 7,
+  rings 2, services 6, keys 3, items 4, goods 6, crafts 6, healing 5,
+  papers 7, cat 18 (goods) 0, drinks 6, dummy 6. What vessel mode 5
+  IS (which mount/vehicle) stays open, like vessel mode 2.
 
 **Price/value table `$D6768`, 257 records × 4 bytes**
 (`$D6768`–`$D6B68`). Record: +0 word name_idx (`$CD431` — the
