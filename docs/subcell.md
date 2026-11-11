@@ -31,3 +31,10 @@ Source: BlastEm recording at 60.4 fps (640x480), walk started from `slot_0.state
 - Between steps: a small change (mean abs diff ~0.6) on nearly every frame. Consistent with sub-cell motion or per-frame animation. Not yet separated from character animation.
 - Debugger, same run type: X cell `0x0006` fixed; Y cell `0x0012`→`0x0017`, one cell per step, each Y commit preceded by an X write (`0x1C2D8` then `0x1C300`).
 - Open: map video time to keypress time (video start not aligned to the AHK F9 start); confirm the 60.4 fps rate (container reports ~30.1 fps).
+
+## Movement sequence (observed in the 60.4 fps recording, #28)
+1. Start: first cell step begins (video ≈ 9987 ms).
+2. Stop: step ends, screen holds still.
+3. World move: whole-screen scroll.
+4. Character move: character advances one cell.
+5. Sub-cell move: small per-frame motion between cell steps (mean diff ≈ 0.6).
