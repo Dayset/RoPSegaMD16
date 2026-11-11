@@ -191,11 +191,34 @@ start,end,class,name,doc_ref,tier
 0x0B8A32,0x0CC9D6,lzss-stream,gfx_lzss_streams_b86ae,docs/graphics.md:886 (streams from base 0xB8A32; consecutive tiling exact 89/89; last ends 0xCC9D8),2
 0x0CC9D7,0x0CC9D7,zero-fill,region_0cc9d7,,1
 0x0CC9D8,0x0CCDB6,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8),2
-0x0CCDB7,0x0CD430,unknown,region_0ccdb7,,1
+0x0CCDB7,0x0CCDB7,unknown,region_0ccdb7,,1
+0x0CCDB8,0x0CD42F,state-init-table,tbl_state_init_table_0ccdb8,rop.s sys_state_clear lea L0CCDB8 (class by consumer; tier 1),1
+0x0CD430,0x0CD430,npc-char-table,tbl_npc_char_table_0cd430,rop.s npc_find_best_char lea L0CD430 (class by consumer; tier 1),1
 0x0CD431,0x0D0700,str-name16-table,str_name16_cd431,docs/spells.md:30 ($CD431-$D0701 verified; NOTE doc count 893 x 16 = 14288 bytes disagrees with this span of 13009; both kept),2
-0x0D0701,0x0D63E6,unknown,region_0d0701,,1
+0x0D0701,0x0D1CFB,unknown,region_0d0701,,1
+0x0D1CFC,0x0D1CFC,npc-attitude-table,tbl_npc_attitude_table_0d1cfc,rop.s npc_attitude_event_apply lea L0D1CFC (class by consumer; tier 1),1
+0x0D1CFD,0x0D1CFF,npc-attitude-table,tbl_npc_attitude_table_0d1cfd,rop.s npc_attitude_event_apply lea L0D1CFD (class by consumer; tier 1),1
+0x0D1D00,0x0D1D01,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup lea L0D1D00 (class by consumer; tier 1),1
+0x0D1D02,0x0D1D03,world-location-table,tbl_world_location_table_0d1d02,rop.s world_location_lookup lea L0D1D02 (class by consumer; tier 1),1
+0x0D1D04,0x0D1D04,struct52-flag-table,tbl_struct52_flag_table_0d1d04,rop.s sys_struct52_flag_test lea L0D1D04 (class by consumer; tier 1),1
+0x0D1D05,0x0D2EC1,world-cost-table,tbl_world_cost_table_0d1d05,rop.s move_cost_calc lea L0D1D05 (class by consumer; tier 1),1
+0x0D2EC2,0x0D301D,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
+0x0D301E,0x0D3101,text-record-table,tbl_text_record_table_0d301e,rop.s text_record_lookup lea L0D301E (class by consumer; tier 1),1
+0x0D3102,0x0D601D,text-record-table,tbl_text_record_table_0d3102,rop.s text_event_resolve lea L0D3102 (class by consumer; tier 1),1
+0x0D601E,0x0D601F,world-step-table,tbl_world_step_table_0d601e,rop.s world_step_tile lea L0D601E (class by consumer; tier 1),1
+0x0D6020,0x0D6021,npc-attitude-table,tbl_npc_attitude_table_0d6020,rop.s npc_attitude_event_apply lea L0D6020 (class by consumer; tier 1),1
+0x0D6022,0x0D6022,world-step-table,tbl_world_step_table_0d6022,rop.s world_step_tile lea L0D6022 (class by consumer; tier 1),1
+0x0D6023,0x0D63E3,npc-attitude-table,tbl_npc_attitude_table_0d6023,rop.s npc_attitude_event_apply lea L0D6023 (class by consumer; tier 1),1
+0x0D63E4,0x0D63E4,world-location-table,tbl_world_location_table_0d63e4,rop.s world_enter_location lea L0D63E4 (class by consumer; tier 1),1
+0x0D63E5,0x0D63E5,world-location-table,tbl_world_location_table_0d63e5,rop.s world_enter_location lea L0D63E5 (class by consumer; tier 1),1
+0x0D63E6,0x0D63E6,world-location-table,tbl_world_location_table_0d63e6,rop.s world_enter_location lea L0D63E6 (class by consumer; tier 1),1
 0x0D63E7,0x0D6646,table-location-song,table_location_song,docs/sound.md (152 locations x 4 bytes stride 4),2
-0x0D6647,0x0D66A5,unknown,region_0d6647,,1
+0x0D6647,0x0D669F,unknown,region_0d6647,,1
+0x0D66A0,0x0D66A0,entity-spawn-table,tbl_entity_spawn_table_0d66a0,rop.s entity_spawn lea L0D66A0 (class by consumer; tier 1),1
+0x0D66A1,0x0D66A1,cmd-arg-table,tbl_cmd_arg_table_0d66a1,rop.s cmd10_handler lea L0D66A1 (class by consumer; tier 1),1
+0x0D66A2,0x0D66A2,shop-merchant-table,tbl_shop_merchant_table_0d66a2,rop.s shop_merchant_setup lea L0D66A2 (class by consumer; tier 1),1
+0x0D66A3,0x0D66A3,shop-category-table,tbl_shop_category_table_0d66a3,rop.s shop_category_count lea L0D66A3 (class by consumer; tier 1),1
+0x0D66A4,0x0D66A5,word-record-table,tbl_word_record_table_0d66a4,rop.s menu_record_reload lea L0D66A4 (class by consumer; tier 1),1
 0x0D66A6,0x0D6767,table-item-category,table_item_category,docs/logic.md:320 (20 x 10 bytes stated; range to price-table start is 194 bytes; CONFLICT recorded not resolved),1
 0x0D6768,0x0D6B6B,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
 0x0D6B6C,0x0D6BE9,table-spell-rank,table_spell_rank_1,docs/spells.md:99 (rank 1; stride 0x7E from pointer table $FFA7CC),2
