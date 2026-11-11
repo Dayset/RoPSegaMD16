@@ -110,7 +110,7 @@ L000318:
 	bsr.w pad1_read_boot	; $00032C
 	bsr.w vdp_ram_clear	; $000330
 	bsr.w pad1_read_boot	; $000334
-	move.w #$0,ram_sys_ffc00e.l	; $000338
+	move.w #$0,ram_boot_field_c00e.l	; $000338
 	move.w #$0,ram_sys_ffc010.l	; $000340
 L000348:
 	move.w vdp_ctrl.l,d0	; $000348
@@ -131,7 +131,7 @@ L000368:
 	andi.w #$ff,d1	; $00037E
 	bne.b L000392	; $000382
 	bsr.w attract_scroll	; $000384
-	cmpi.w #$0,ram_sys_ffc000.l	; $000388
+	cmpi.w #$0,ram_boot_field_c000.l	; $000388
 	beq.b L00035C	; $000390
 L000392:
 	move.w vdp_ctrl.l,d1	; $000392
@@ -157,7 +157,7 @@ L0003DA:
 	andi.b #$3f,d1	; $0003E4
 	or.b d1,d0	; $0003E8
 	not.b d0	; $0003EA
-	move.w d0,ram_sys_ffc00e.l	; $0003EC
+	move.w d0,ram_boot_field_c00e.l	; $0003EC
 	move.b #$40,pad_port2_ctrl.l	; $0003F2
 	move.w #$a,d1	; $0003FA
 L0003FE:
@@ -179,7 +179,7 @@ L00042A:
 	not.b d0	; $00043A
 	move.w d0,ram_sys_ffc010.l	; $00043C
 	move.w d0,d1	; $000442
-	move.w ram_sys_ffc00e.l,d0	; $000444
+	move.w ram_boot_field_c00e.l,d0	; $000444
 	rts	; $00044A
 	; code $00044C-$000461
 vdp_write_ramp_words:
@@ -256,12 +256,12 @@ L0004D8:
 	rts	; $0004E4
 	; code $0004E6-$000889
 attract_scroll:
-	tst.w ram_sys_ffc000.l	; $0004E6
+	tst.w ram_boot_field_c000.l	; $0004E6
 	bne.b L00054C	; $0004EC
-	tst.w ram_sys_ffc002.l	; $0004EE
+	tst.w ram_sys_field_c002.l	; $0004EE
 	blt.w L000524	; $0004F4
-	move.w ram_sys_ffc002.l,d0	; $0004F8
-	subq.w #$1,ram_sys_ffc002.l	; $0004FE
+	move.w ram_sys_field_c002.l,d0	; $0004F8
+	subq.w #$1,ram_sys_field_c002.l	; $0004FE
 	move.w d0,d1	; $000504
 	neg.w d0	; $000506
 	move.l #$60000000,vdp_ctrl.l	; $000508
@@ -273,21 +273,21 @@ L000514:
 	move.w #$140,(a5)	; $00051C
 	dbra d2,L000514	; $000520
 L000524:
-	subq.w #$1,ram_sys_ffc006.l	; $000524
+	subq.w #$1,ram_sys_field_c006.l	; $000524
 	bge.w L000882	; $00052A
-	move.w #$1,ram_sys_ffc006.l	; $00052E
-	tst.w ram_sys_ffc004.l	; $000536
+	move.w #$1,ram_sys_field_c006.l	; $00052E
+	tst.w ram_sys_field_c004.l	; $000536
 	bne.b L000550	; $00053C
-	tst.w ram_sys_ffc002.l	; $00053E
+	tst.w ram_sys_field_c002.l	; $00053E
 	bge.b L000550	; $000544
-	st.b ram_sys_ffc000.l	; $000546
+	st.b ram_boot_field_c000.l	; $000546
 L00054C:
 	moveq #$ff,d0	; $00054C
 	rts	; $00054E
 L000550:
-	addq.w #$1,ram_sys_ffc004.l	; $000550
-	move.w ram_sys_ffc004.l,d7	; $000556
-	lea.l ram_sys_ffd2ea.l,a3	; $00055C
+	addq.w #$1,ram_sys_field_c004.l	; $000550
+	move.w ram_sys_field_c004.l,d7	; $000556
+	lea.l ram_sys_field_d2ea.l,a3	; $00055C
 	move.w #$23f,d0	; $000562
 	move.l #$49200001,vdp_ctrl.l	; $000566
 L000570:
@@ -295,12 +295,12 @@ L000570:
 	dbra d0,L000570	; $000572
 	cmp.w #$18,d7	; $000576
 	ble.b L0005A6	; $00057A
-	clr.w ram_sys_ffc004.l	; $00057C
-	addq.w #$1,ram_sys_ffc00c.l	; $000582
-	cmpi.w #$2,ram_sys_ffc00c.l	; $000588
+	clr.w ram_sys_field_c004.l	; $00057C
+	addq.w #$1,ram_sys_field_c00c.l	; $000582
+	cmpi.w #$2,ram_sys_field_c00c.l	; $000588
 	ble.w L000882	; $000590
-	clr.w ram_sys_ffc00c.l	; $000594
-	move.w #$50,ram_sys_ffc006.l	; $00059A
+	clr.w ram_sys_field_c00c.l	; $000594
+	move.w #$50,ram_sys_field_c006.l	; $00059A
 	bra.w L000882	; $0005A2
 L0005A6:
 	move.l #$40000003,vdp_ctrl.l	; $0005A6
@@ -310,7 +310,7 @@ L0005A6:
 	cmp.w #$7,d7	; $0005BC
 	bne.w L00068C	; $0005C0
 	move.w #$1000,d1	; $0005C4
-	cmpi.w #$0,ram_sys_ffc00c.l	; $0005C8
+	cmpi.w #$0,ram_sys_field_c00c.l	; $0005C8
 	bne.b L00060C	; $0005D0
 	move.l #$c00c0000,vdp_ctrl.l	; $0005D2
 	move.w #$a0,(a5)	; $0005DC
@@ -318,11 +318,11 @@ L0005A6:
 	move.w #$a0,(a5)	; $0005EA
 	move.l #$c00a0000,vdp_ctrl.l	; $0005EE
 	move.w #$4e4,(a5)	; $0005F8
-	lea.l ram_sys_ffc036.l,a0	; $0005FC
+	lea.l ram_sys_field_c036.l,a0	; $0005FC
 	move.w #$5c04,vdp_ctrl.l	; $000602
 	bra.b L000688	; $00060A
 L00060C:
-	cmpi.w #$1,ram_sys_ffc00c.l	; $00060C
+	cmpi.w #$1,ram_sys_field_c00c.l	; $00060C
 	bne.b L000650	; $000614
 	move.l #$c0140000,vdp_ctrl.l	; $000616
 	move.w #$a42,(a5)	; $000620
@@ -330,7 +330,7 @@ L00060C:
 	move.w #$a42,(a5)	; $00062E
 	move.l #$c0060000,vdp_ctrl.l	; $000632
 	move.w #$e86,(a5)	; $00063C
-	lea.l ram_sys_ffc0c6.l,a0	; $000640
+	lea.l ram_sys_field_c0c6.l,a0	; $000640
 	move.w #$5c94,vdp_ctrl.l	; $000646
 	bra.b L000688	; $00064E
 L000650:
@@ -340,7 +340,7 @@ L000650:
 	move.w #$8a,(a5)	; $000668
 	move.l #$c0040000,vdp_ctrl.l	; $00066C
 	move.w #$ce,(a5)	; $000676
-	lea.l ram_sys_ffc07e.l,a0	; $00067A
+	lea.l ram_sys_field_c07e.l,a0	; $00067A
 	move.w #$5d24,vdp_ctrl.l	; $000680
 L000688:
 	bsr.w vdp_write_vflip_words	; $000688
@@ -351,7 +351,7 @@ L000692:
 	cmp.w #$14,d7	; $000692
 	bne.w L000760	; $000696
 	moveq #$0,d1	; $00069A
-	cmpi.w #$0,ram_sys_ffc00c.l	; $00069C
+	cmpi.w #$0,ram_sys_field_c00c.l	; $00069C
 	bne.b L0006E0	; $0006A4
 	move.l #$c00c0000,vdp_ctrl.l	; $0006A6
 	move.w #$4e4,(a5)	; $0006B0
@@ -359,11 +359,11 @@ L000692:
 	move.w #$8e8,(a5)	; $0006BE
 	move.l #$c00a0000,vdp_ctrl.l	; $0006C2
 	move.w #$a0,(a5)	; $0006CC
-	lea.l ram_sys_ffc036.l,a0	; $0006D0
+	lea.l ram_sys_field_c036.l,a0	; $0006D0
 	move.w #$5c04,vdp_ctrl.l	; $0006D6
 	bra.b L00075C	; $0006DE
 L0006E0:
-	cmpi.w #$1,ram_sys_ffc00c.l	; $0006E0
+	cmpi.w #$1,ram_sys_field_c00c.l	; $0006E0
 	bne.b L000724	; $0006E8
 	move.l #$c0140000,vdp_ctrl.l	; $0006EA
 	move.w #$e86,(a5)	; $0006F4
@@ -371,7 +371,7 @@ L0006E0:
 	move.w #$eca,(a5)	; $000702
 	move.l #$c0060000,vdp_ctrl.l	; $000706
 	move.w #$a42,(a5)	; $000710
-	lea.l ram_sys_ffc0c6.l,a0	; $000714
+	lea.l ram_sys_field_c0c6.l,a0	; $000714
 	move.w #$5c94,vdp_ctrl.l	; $00071A
 	bra.b L00075C	; $000722
 L000724:
@@ -381,24 +381,24 @@ L000724:
 	move.w #$8ee,(a5)	; $00073C
 	move.l #$c0040000,vdp_ctrl.l	; $000740
 	move.w #$8a,(a5)	; $00074A
-	lea.l ram_sys_ffc07e.l,a0	; $00074E
+	lea.l ram_sys_field_c07e.l,a0	; $00074E
 	move.w #$5d24,vdp_ctrl.l	; $000754
 L00075C:
 	bsr.w vdp_write_vflip_words	; $00075C
 L000760:
 	moveq #$1,d1	; $000760
 L000762:
-	cmpi.w #$0,ram_sys_ffc00c.l	; $000762
+	cmpi.w #$0,ram_sys_field_c00c.l	; $000762
 	bne.b L00077A	; $00076A
 	move.w #$5c00,vdp_ctrl.l	; $00076C
 	movea.l #$ffc012,a0	; $000774
 L00077A:
-	cmpi.w #$1,ram_sys_ffc00c.l	; $00077A
+	cmpi.w #$1,ram_sys_field_c00c.l	; $00077A
 	bne.b L000792	; $000782
 	move.w #$5c90,vdp_ctrl.l	; $000784
 	lea.l ram_sys_ffc0a2.l,a0	; $00078C
 L000792:
-	cmpi.w #$2,ram_sys_ffc00c.l	; $000792
+	cmpi.w #$2,ram_sys_field_c00c.l	; $000792
 	bne.b L0007AA	; $00079A
 	move.w #$5d20,vdp_ctrl.l	; $00079C
 	lea.l ram_sys_ffc05a.l,a0	; $0007A4
@@ -407,7 +407,7 @@ L0007AA:
 	move.w d7,d1	; $0007AE
 	ext.l d1	; $0007B0
 	divu.w #$3,d1	; $0007B2
-	cmpi.w #$0,ram_sys_ffc00c.l	; $0007B6
+	cmpi.w #$0,ram_sys_field_c00c.l	; $0007B6
 	bne.b L0007F4	; $0007BE
 	move.w d1,-(a7)	; $0007C0
 	asl.w #$2,d1	; $0007C2
@@ -425,7 +425,7 @@ L0007AA:
 	bsr.w vdp_palette_pulse	; $0007EE
 	bra.b L000832	; $0007F2
 L0007F4:
-	cmpi.w #$2,ram_sys_ffc00c.l	; $0007F4
+	cmpi.w #$2,ram_sys_field_c00c.l	; $0007F4
 	bne.b L000834	; $0007FC
 	move.w d1,-(a7)	; $0007FE
 	asl.w #$2,d1	; $000800
@@ -451,7 +451,7 @@ L000834:
 	bsr.w vdp_fill_rows	; $000844
 	move.w #$e86,d0	; $000848
 	bsr.w vdp_palette_pulse	; $00084C
-	lea.l ram_sys_ffd2ea.l,a3	; $000850
+	lea.l ram_sys_field_d2ea.l,a3	; $000850
 	moveq #$0,d2	; $000856
 	move.w #$23f,d0	; $000858
 L00085C:
@@ -518,7 +518,7 @@ plane_cell_index:
 	rts	; $0008DA
 	; code $0008DC-$0008F3
 sys_bitmap_pixel_addr:
-	move.l ram_sys_ffc008.l,d3	; $0008DC
+	move.l ram_sys_field_c008.l,d3	; $0008DC
 	move.l d0,d5	; $0008E2
 	swap d5	; $0008E4
 	move.w d5,d4	; $0008E6
@@ -553,7 +553,7 @@ L000922:
 	addi.w #$20,d4	; $000922
 	cmp.w d4,d7	; $000926
 	beq.b L000934	; $000928
-	move.l ram_sys_ffc008.l,(a6,d4.w)	; $00092A
+	move.l ram_sys_field_c008.l,(a6,d4.w)	; $00092A
 	bra.b L000922	; $000932
 L000934:
 	move.l d6,(a6,d7.w)	; $000934
@@ -578,7 +578,7 @@ L00096A:
 	; code $00096C-$000A13
 gfx_bitmap_dither_fill:
 	lea.l L000D92(pc),a0	; $00096C
-	lea.l ram_sys_ffd2ea.l,a6	; $000970
+	lea.l ram_sys_field_d2ea.l,a6	; $000970
 	lea.l L000DBF(pc),a2	; $000976
 	lea.l L000D9B(pc),a3	; $00097A
 	moveq #$0,d6	; $00097E
@@ -588,7 +588,7 @@ L000982:
 	ext.w d5	; $000984
 	moveq #$5,d0	; $000986
 L000988:
-	move.l #$aaaaaaaa,ram_sys_ffc008.l	; $000988
+	move.l #$aaaaaaaa,ram_sys_field_c008.l	; $000988
 	cmp.w #$1b,d6	; $000992
 	beq.b L0009A2	; $000996
 	bgt.b L00099E	; $000998
@@ -606,13 +606,13 @@ L0009A2:
 	ble.b L0009E4	; $0009AC
 	cmp.w #$1,d5	; $0009AE
 	bne.b L0009BE	; $0009B2
-	move.l #$33333333,ram_sys_ffc008.l	; $0009B4
+	move.l #$33333333,ram_sys_field_c008.l	; $0009B4
 L0009BE:
 	move.l d3,d1	; $0009BE
 	move.l a1,d2	; $0009C0
 	cmp.w #$5,d0	; $0009C2
 	bne.b L0009DA	; $0009C6
-	move.l #$dddddddd,ram_sys_ffc008.l	; $0009C8
+	move.l #$dddddddd,ram_sys_field_c008.l	; $0009C8
 	cmp.w #$8,d1	; $0009D2
 	bge.b L0009DA	; $0009D6
 	moveq #$8,d1	; $0009D8
@@ -623,7 +623,7 @@ L0009DA:
 	bra.b L000A00	; $0009E2
 L0009E4:
 	blt.b L000A00	; $0009E4
-	move.l #$33333333,ram_sys_ffc008.l	; $0009E6
+	move.l #$33333333,ram_sys_field_c008.l	; $0009E6
 	move.l d3,d1	; $0009F0
 	move.b (a2)+,d2	; $0009F2
 	ext.w d2	; $0009F4
@@ -640,7 +640,7 @@ L000A00:
 	rts	; $000A12
 	; code $000A14-$000AB1
 vdp_ram_clear:
-	clr.w ram_sys_ffc000.l	; $000A14
+	clr.w ram_boot_field_c000.l	; $000A14
 	movea.l #$c00004,a4	; $000A1A
 	movea.l #$c00000,a5	; $000A20
 	move.w #$3ff6,d0	; $000A26
@@ -746,16 +746,16 @@ L000B68:
 	ext.w d5	; $000B6A
 	moveq #$5,d0	; $000B6C
 L000B6E:
-	move.l #$bbbbbbbb,ram_sys_ffc008.l	; $000B6E
+	move.l #$bbbbbbbb,ram_sys_field_c008.l	; $000B6E
 	tst.w d5	; $000B78
 	ble.b L000BA4	; $000B7A
 	cmp.w #$1,d5	; $000B7C
 	bne.b L000B8C	; $000B80
-	move.l #$22222222,ram_sys_ffc008.l	; $000B82
+	move.l #$22222222,ram_sys_field_c008.l	; $000B82
 L000B8C:
 	cmp.w #$5,d0	; $000B8C
 	bne.b L000B9C	; $000B90
-	move.l #$eeeeeeee,ram_sys_ffc008.l	; $000B92
+	move.l #$eeeeeeee,ram_sys_field_c008.l	; $000B92
 L000B9C:
 	move.l d3,d1	; $000B9C
 	move.l a1,d2	; $000B9E
@@ -763,7 +763,7 @@ L000B9C:
 L000BA4:
 	tst.w d5	; $000BA4
 	bne.b L000BCA	; $000BA6
-	move.l #$22222222,ram_sys_ffc008.l	; $000BA8
+	move.l #$22222222,ram_sys_field_c008.l	; $000BA8
 	moveq #$0,d2	; $000BB2
 	move.b (a4)+,d2	; $000BB4
 	beq.b L000BC2	; $000BB6
@@ -793,7 +793,7 @@ L000BF8:
 	dbra d0,L000BF8	; $000BFA
 	move.l #$5c000003,vdp_ctrl.l	; $000BFE
 	lea.l ram_sys_ffc012.l,a0	; $000C08
-	lea.l ram_sys_ffc036.l,a1	; $000C0E
+	lea.l ram_sys_field_c036.l,a1	; $000C0E
 	moveq #$1,d1	; $000C14
 	moveq #$50,d2	; $000C16
 	move.w #$48,d3	; $000C18
@@ -801,14 +801,14 @@ L000BF8:
 	moveq #$12,d5	; $000C1E
 	bsr.w vdp_row_pair_write	; $000C20
 	lea.l ram_sys_ffc0a2.l,a0	; $000C24
-	lea.l ram_sys_ffc0c6.l,a1	; $000C2A
+	lea.l ram_sys_field_c0c6.l,a1	; $000C2A
 	move.w #$88,d2	; $000C30
 	move.w #$48,d3	; $000C34
 	move.w #$48,d4	; $000C38
 	moveq #$24,d5	; $000C3C
 	bsr.w vdp_row_pair_write	; $000C3E
 	lea.l ram_sys_ffc05a.l,a0	; $000C42
-	lea.l ram_sys_ffc07e.l,a1	; $000C48
+	lea.l ram_sys_field_c07e.l,a1	; $000C48
 	move.w #$b0,d2	; $000C4E
 	move.w #$46,d3	; $000C52
 	move.w #$90,d4	; $000C56
@@ -860,7 +860,7 @@ L000CCC:
 	bsr.b vdp_write_word_pair	; $000CE8
 	move.w #$7136,(a4)	; $000CEA
 	move.w d4,(a5)	; $000CEE
-	move.w #$96,ram_sys_ffc002.l	; $000CF0
+	move.w #$96,ram_sys_field_c002.l	; $000CF0
 	rts	; $000CF8
 	; code $000CFA-$000D03
 vdp_write_word_pair:
@@ -945,7 +945,7 @@ L001000:
 	; code $00119E-$00126F
 main_init:
 	movea.l #$ffec1e,a7	; $00119E
-	move.l ram_sys_ff0010.l,d7	; $0011A4
+	move.l ram_sys_field_0010.l,d7	; $0011A4
 	movea.l #$ff0000,a0	; $0011AA
 	move.l #$3fff,d0	; $0011B0
 L0011B6:
@@ -978,12 +978,12 @@ L001216:
 	move.l d0,ram_sys_ff000c.l	; $001222
 	movea.l d0,a0	; $001228
 	move.l #$4d414e58,$4(a0)	; $00122A
-	move.b #$0,ram_sys_ff0018.l	; $001232
-	move.b #$0,ram_sys_ff002c.l	; $00123A
-	move.b #$0,ram_sys_ff001a.l	; $001242
-	move.b #$0,ram_sys_ff001b.l	; $00124A
-	move.b #$3,ram_sys_ff0019.l	; $001252
-	move.l d7,ram_sys_ff0010.l	; $00125A
+	move.b #$0,ram_sys_field_0018.l	; $001232
+	move.b #$0,ram_sys_field_002c.l	; $00123A
+	move.b #$0,ram_sys_field_001a.l	; $001242
+	move.b #$0,ram_sys_field_001b.l	; $00124A
+	move.b #$3,ram_sys_field_0019.l	; $001252
+	move.l d7,ram_sys_field_0010.l	; $00125A
 	jsr sound_upload.l	; $001260
 	move.w #$2000,sr	; $001266
 	jmp game_dispatch.l	; $00126A
@@ -992,8 +992,8 @@ hblank_empty:
 	rte	; $001270
 	; code $001272-$00133B
 vblank_handler:
-	move.w #$0,ram_sys_ff0016.l	; $001272
-	addq.l #$1,ram_sys_ff0010.l	; $00127A
+	move.w #$0,ram_sys_field_0016.l	; $001272
+	addq.l #$1,ram_sys_field_0010.l	; $00127A
 	movem.l d0-d2/a0,-(a7)	; $001280
 	move.w #$100,z80_busreq.l	; $001284
 	move.b #$40,pad_port1_ctrl.l	; $00128C
@@ -1018,30 +1018,30 @@ L0012D0:
 	or.b d1,d0	; $0012EE
 	not.b d0	; $0012F0
 	jsr sound_tick.l	; $0012F2
-	cmp.b ram_sys_ff0018.l,d0	; $0012F8
+	cmp.b ram_sys_field_0018.l,d0	; $0012F8
 	beq.b L001342	; $0012FE
-	move.b d0,ram_sys_ff0018.l	; $001300
-	move.b #$3,ram_sys_ff0019.l	; $001306
+	move.b d0,ram_sys_field_0018.l	; $001300
+	move.b #$3,ram_sys_field_0019.l	; $001306
 	movem.l (a7)+,d0-d2/a0	; $00130E
 	rte	; $001312
 L001314:
 	moveq #$0,d1	; $001314
-	move.b ram_sys_ff001a.l,d1	; $001316
+	move.b ram_sys_field_001a.l,d1	; $001316
 	move.b d1,d2	; $00131C
 	lea.l ram_sys_ff001c.l,a0	; $00131E
 	addq.b #$1,d2	; $001324
 	and.b #$f,d2	; $001326
-	cmp.b ram_sys_ff001b.l,d2	; $00132A
+	cmp.b ram_sys_field_001b.l,d2	; $00132A
 	beq.b FUN_00133c	; $001330
 	move.b d0,(a0,d1.w)	; $001332
-	move.b d2,ram_sys_ff001a.l	; $001336
+	move.b d2,ram_sys_field_001a.l	; $001336
 	; code $00133C-$001341
 FUN_00133c:
 	movem.l (a7)+,d0-d2/a0	; $00133C
 	rte	; $001340
 	; code $001342-$00134F
 L001342:
-	subq.b #$1,ram_sys_ff0019.l	; $001342
+	subq.b #$1,ram_sys_field_0019.l	; $001342
 	beq.b L001314	; $001348
 	movem.l (a7)+,d0-d2/a0	; $00134A
 	rte	; $00134E
@@ -1050,19 +1050,19 @@ joypad_queue_pop:
 	moveq #$0,d0	; $001350
 	moveq #$0,d1	; $001352
 	move.w #$2700,sr	; $001354
-	move.b ram_sys_ff001b.l,d1	; $001358
+	move.b ram_sys_field_001b.l,d1	; $001358
 	lea.l ram_sys_ff001c.l,a0	; $00135E
-	cmp.b ram_sys_ff001a.l,d1	; $001364
+	cmp.b ram_sys_field_001a.l,d1	; $001364
 	beq.b L001388	; $00136A
 	move.b (a0,d1.w),d0	; $00136C
-	move.b d0,ram_sys_ff002c.l	; $001370
+	move.b d0,ram_sys_field_002c.l	; $001370
 	addq.b #$1,d1	; $001376
 	and.b #$f,d1	; $001378
-	move.b d1,ram_sys_ff001b.l	; $00137C
+	move.b d1,ram_sys_field_001b.l	; $00137C
 	move.w #$2000,sr	; $001382
 	rts	; $001386
 L001388:
-	move.b ram_sys_ff002c.l,d0	; $001388
+	move.b ram_sys_field_002c.l,d0	; $001388
 	move.w #$2000,sr	; $00138E
 	rts	; $001392
 L001394:
@@ -1110,19 +1110,19 @@ game_dispatch:
 main_loop:
 	link.w a6,#$fff6	; $00D28E
 	clr.w ram_combat_flags.l	; $00D292
-	clr.w ram_sys_ff00ac.l	; $00D298
-	move.w #$1,ram_sys_ff00ae.l	; $00D29E
+	clr.w ram_menu_field_00ac.l	; $00D298
+	move.w #$1,ram_menu_field_00ae.l	; $00D29E
 	move.w #$1,-(a7)	; $00D2A6
 	jsr msg_queue_consume.l	; $00D2AA
 	addq.w #$2,a7	; $00D2B0
 	jsr request_full_redraw.l	; $00D2B2
 	jsr redraw_check.l	; $00D2B8
 L00D2BE:
-	tst.w ram_sys_ff00ac.l	; $00D2BE
+	tst.w ram_menu_field_00ac.l	; $00D2BE
 	beq.b L00D2E0	; $00D2C4
-	cmpi.w #$32,ram_sys_ff0030.l	; $00D2C6
+	cmpi.w #$32,ram_sys_field_0030.l	; $00D2C6
 	bgt.b L00D2E0	; $00D2CE
-	lea.l ram_sys_ff02a2.l,a0	; $00D2D0
+	lea.l ram_menu_field_02a2.l,a0	; $00D2D0
 	move.w (a0),d0	; $00D2D6
 	lsr.w #$1,d0	; $00D2D8
 	and.w #$1,d0	; $00D2DA
@@ -1130,21 +1130,21 @@ L00D2BE:
 L00D2E0:
 	jsr world_tick.l	; $00D2E0
 L00D2E6:
-	tst.w ram_sys_ff011e.l	; $00D2E6
+	tst.w ram_sys_field_011e.l	; $00D2E6
 	bne.w struct52_dispatch	; $00D2EC
-	cmpi.w #$ffff,ram_sys_ff0120.l	; $00D2F0
+	cmpi.w #$ffff,ram_sys_field_0120.l	; $00D2F0
 	bne.w struct52_dispatch	; $00D2F8
-	tst.w ram_sys_ff0094.l	; $00D2FC
+	tst.w ram_world_field_0094.l	; $00D2FC
 	beq.b L00D30E	; $00D302
-	tst.w ram_sys_ff00ac.l	; $00D304
+	tst.w ram_menu_field_00ac.l	; $00D304
 	beq.w struct52_dispatch	; $00D30A
 L00D30E:
-	tst.w ram_sys_ff0128.l	; $00D30E
+	tst.w ram_world_field_0128.l	; $00D30E
 	bne.b L00D320	; $00D314
-	tst.w ram_sys_ff0112.l	; $00D316
+	tst.w ram_menu_field_0112.l	; $00D316
 	beq.w L00D3BA	; $00D31C
 L00D320:
-	tst.w ram_sys_ff0128.l	; $00D320
+	tst.w ram_world_field_0128.l	; $00D320
 	beq.b L00D398	; $00D326
 	move.b #$a,-$4(a6)	; $00D328
 	move.w #$8,-(a7)	; $00D32E
@@ -1160,18 +1160,18 @@ L00D320:
 L00D350:
 	move.w ram_party_leader.l,d0	; $00D350
 	muls.w #$34,d0	; $00D356
-	lea.l ram_sys_ff02be.l,a0	; $00D35A
+	lea.l ram_sys_field_02be.l,a0	; $00D35A
 	move.b $1(a0,d0.l),-$3(a6)	; $00D360
 L00D366:
 	jsr joypad_queue_pop.l	; $00D366
-	move.b d0,ram_sys_ff0e14.l	; $00D36C
-	move.w ram_sys_ff0e16.l,d0	; $00D372
+	move.b d0,ram_sys_field_0e14.l	; $00D36C
+	move.w ram_world_field_0e16.l,d0	; $00D372
 	ext.l d0	; $00D378
 	divs.w #$a,d0	; $00D37A
 	cmp.w #$3,d0	; $00D37E
 	beq.b L00D392	; $00D382
 	moveq #$0,d0	; $00D384
-	move.b ram_sys_ff0e14.l,d0	; $00D386
+	move.b ram_sys_field_0e14.l,d0	; $00D386
 	and.w #$f0,d0	; $00D38C
 	beq.b L00D396	; $00D390
 L00D392:
@@ -1181,9 +1181,9 @@ L00D396:
 	bra.b L00D3B8	; $00D396
 L00D398:
 	jsr joypad_queue_pop.l	; $00D398
-	move.b d0,ram_sys_ff0e14.l	; $00D39E
+	move.b d0,ram_sys_field_0e14.l	; $00D39E
 	moveq #$0,d0	; $00D3A4
-	move.b ram_sys_ff0e14.l,d0	; $00D3A6
+	move.b ram_sys_field_0e14.l,d0	; $00D3A6
 	and.w #$f0,d0	; $00D3AC
 	beq.b L00D3B8	; $00D3B0
 	jsr soft_reset.l	; $00D3B2
@@ -1205,33 +1205,33 @@ L00D3BA:
 	movea.l (a7)+,a1	; $00D3E0
 	move.l (a0)+,(a1)+	; $00D3E2
 L00D3E4:
-	tst.w ram_sys_ff00ac.l	; $00D3E4
+	tst.w ram_menu_field_00ac.l	; $00D3E4
 	beq.b L00D3FA	; $00D3EA
 	tst.b -$4(a6)	; $00D3EC
 	beq.b L00D3FA	; $00D3F0
-	clr.w ram_sys_ff0030.l	; $00D3F2
+	clr.w ram_sys_field_0030.l	; $00D3F2
 	bra.b L00D42C	; $00D3F8
 L00D3FA:
-	move.w ram_sys_ff0030.l,d0	; $00D3FA
+	move.w ram_sys_field_0030.l,d0	; $00D3FA
 	addq.w #$1,d0	; $00D400
 	cmp.w #$7530,d0	; $00D402
 	ble.b L00D40E	; $00D406
 	move.w #$7530,d0	; $00D408
 	bra.b L00D426	; $00D40C
 L00D40E:
-	move.w ram_sys_ff0030.l,d0	; $00D40E
+	move.w ram_sys_field_0030.l,d0	; $00D40E
 	addq.w #$1,d0	; $00D414
 	tst.w d0	; $00D416
 	bge.b L00D41E	; $00D418
 	moveq #$0,d0	; $00D41A
 	bra.b L00D426	; $00D41C
 L00D41E:
-	move.w ram_sys_ff0030.l,d0	; $00D41E
+	move.w ram_sys_field_0030.l,d0	; $00D41E
 	addq.w #$1,d0	; $00D424
 L00D426:
-	move.w d0,ram_sys_ff0030.l	; $00D426
+	move.w d0,ram_sys_field_0030.l	; $00D426
 L00D42C:
-	pea.l ram_sys_ff0e18.l	; $00D42C
+	pea.l ram_menu_field_0e18.l	; $00D42C
 	jsr queue_depth.l	; $00D432
 	addq.w #$4,a7	; $00D438
 	tst.w d0	; $00D43A
@@ -1242,7 +1242,7 @@ L00D42C:
 	beq.b L00D478	; $00D44A
 	cmpi.b #$28,-$4(a6)	; $00D44C
 	beq.b L00D478	; $00D452
-	tst.w ram_sys_ff0128.l	; $00D454
+	tst.w ram_world_field_0128.l	; $00D454
 	bne.b L00D478	; $00D45A
 	move.w #$ffff,-$a(a6)	; $00D45C
 	clr.b -$4(a6)	; $00D462
@@ -1254,7 +1254,7 @@ L00D42C:
 L00D478:
 	clr.w -$a(a6)	; $00D478
 L00D47C:
-	tst.w ram_sys_ff0142.l	; $00D47C
+	tst.w ram_sys_field_0142.l	; $00D47C
 	beq.b L00D49C	; $00D482
 	tst.b -$4(a6)	; $00D484
 	bne.b L00D49C	; $00D488
@@ -1263,12 +1263,12 @@ L00D47C:
 	addq.w #$2,a7	; $00D496
 	bra.w L00D7A2	; $00D498
 L00D49C:
-	clr.w ram_sys_ff0142.l	; $00D49C
+	clr.w ram_sys_field_0142.l	; $00D49C
 	moveq #$0,d0	; $00D4A2
 	move.b -$4(a6),d0	; $00D4A4
 	bra.w L00D740	; $00D4A8
 L00D4AC:
-	tst.w ram_sys_ff00ac.l	; $00D4AC
+	tst.w ram_menu_field_00ac.l	; $00D4AC
 	beq.b L00D4C6	; $00D4B2
 	moveq #$0,d0	; $00D4B4
 	move.b -$3(a6),d0	; $00D4B6
@@ -1279,7 +1279,7 @@ L00D4AC:
 L00D4C6:
 	move.w ram_party_leader.l,d0	; $00D4C6
 	muls.w #$48,d0	; $00D4CC
-	lea.l ram_sys_ff0e30.l,a0	; $00D4D0
+	lea.l ram_sys_field_0e30.l,a0	; $00D4D0
 	add.l a0,d0	; $00D4D6
 	move.l d0,-(a7)	; $00D4D8
 	moveq #$0,d0	; $00D4DA
@@ -1291,18 +1291,18 @@ L00D4C6:
 L00D4EE:
 	bra.w L00D7A2	; $00D4EE
 L00D4F2:
-	lea.l ram_sys_ff02a2.l,a0	; $00D4F2
+	lea.l ram_menu_field_02a2.l,a0	; $00D4F2
 	move.w (a0),d0	; $00D4F8
 	lsr.w #$2,d0	; $00D4FA
 	and.w #$1,d0	; $00D4FC
 	bne.w L00D7A2	; $00D500
-	tst.w ram_sys_ff00ac.l	; $00D504
+	tst.w ram_menu_field_00ac.l	; $00D504
 	bne.w L00D7A2	; $00D50A
 	lea.l ram_combat_flags.l,a0	; $00D50E
 	move.w (a0),d0	; $00D514
 	and.w #$1,d0	; $00D516
 	beq.b L00D536	; $00D51A
-	tst.w ram_sys_ff00ac.l	; $00D51C
+	tst.w ram_menu_field_00ac.l	; $00D51C
 	bne.b L00D536	; $00D522
 	move.w #$a,-(a7)	; $00D524
 	move.w #$17,-(a7)	; $00D528
@@ -1310,7 +1310,7 @@ L00D4F2:
 	addq.w #$4,a7	; $00D532
 	bra.b L00D54E	; $00D534
 L00D536:
-	tst.w ram_sys_ff00ac.l	; $00D536
+	tst.w ram_menu_field_00ac.l	; $00D536
 	bne.b L00D542	; $00D53C
 	moveq #$1,d0	; $00D53E
 	bra.b L00D544	; $00D540
@@ -1332,7 +1332,7 @@ L00D566:
 	jsr menu_record_reload.l	; $00D566
 	bra.w L00D7A2	; $00D56C
 L00D570:
-	lea.l ram_sys_ff02a2.l,a0	; $00D570
+	lea.l ram_menu_field_02a2.l,a0	; $00D570
 	move.w (a0),d0	; $00D576
 	lsr.w #$2,d0	; $00D578
 	and.w #$1,d0	; $00D57A
@@ -1347,7 +1347,7 @@ L00D570:
 L00D598:
 	bra.w L00D7A2	; $00D598
 L00D59C:
-	lea.l ram_sys_ff02a2.l,a0	; $00D59C
+	lea.l ram_menu_field_02a2.l,a0	; $00D59C
 	move.w (a0),d0	; $00D5A2
 	lsr.w #$2,d0	; $00D5A4
 	and.w #$1,d0	; $00D5A6
@@ -1365,7 +1365,7 @@ L00D5C4:
 	move.w (a0),d0	; $00D5CA
 	and.w #$1,d0	; $00D5CC
 	bne.b L00D60E	; $00D5D0
-	cmpi.w #$1,ram_sys_ff0e7e.l	; $00D5D2
+	cmpi.w #$1,ram_menu_field_0e7e.l	; $00D5D2
 	bne.b L00D5EA	; $00D5DA
 	move.w #$2,-(a7)	; $00D5DC
 	jsr msg_queue_consume.l	; $00D5E0
@@ -1376,7 +1376,7 @@ L00D5EA:
 	jsr msg_queue_consume.l	; $00D5EE
 	addq.w #$2,a7	; $00D5F4
 L00D5F6:
-	move.w #$64,ram_sys_ff0030.l	; $00D5F6
+	move.w #$64,ram_sys_field_0030.l	; $00D5F6
 	move.w #$ffff,-(a7)	; $00D5FE
 	move.w #$11,-(a7)	; $00D602
 	jsr sfx_request.l	; $00D606
@@ -1396,7 +1396,7 @@ L00D62C:
 	move.w (a0),d0	; $00D632
 	and.w #$1,d0	; $00D634
 	bne.b L00D662	; $00D638
-	tst.w ram_sys_ff013e.l	; $00D63A
+	tst.w ram_sys_field_013e.l	; $00D63A
 	beq.b L00D64C	; $00D640
 	clr.w -(a7)	; $00D642
 	jsr world_ambient_event.l	; $00D644
@@ -1411,7 +1411,7 @@ L00D64C:
 L00D662:
 	bra.w L00D7A2	; $00D662
 L00D666:
-	pea.l ram_sys_ff0e18.l	; $00D666
+	pea.l ram_menu_field_0e18.l	; $00D666
 	jsr queue_depth.l	; $00D66C
 	addq.w #$4,a7	; $00D672
 	tst.w d0	; $00D674
@@ -1425,7 +1425,7 @@ L00D666:
 L00D68E:
 	bra.w L00D7A2	; $00D68E
 L00D692:
-	move.w #$ffff,ram_sys_ff0138.l	; $00D692
+	move.w #$ffff,ram_sys_field_0138.l	; $00D692
 	bra.w L00D7A2	; $00D69A
 L00D69E:
 	move.w ram_party_leader.l,-(a7)	; $00D69E
@@ -1433,16 +1433,16 @@ L00D69E:
 	addq.w #$2,a7	; $00D6AA
 	bra.w L00D7A2	; $00D6AC
 L00D6B0:
-	tst.w ram_sys_ff0114.l	; $00D6B0
+	tst.w ram_world_field_0114.l	; $00D6B0
 	beq.b L00D6E6	; $00D6B6
-	pea.l ram_sys_ff0e18.l	; $00D6B8
+	pea.l ram_menu_field_0e18.l	; $00D6B8
 	jsr queue_depth.l	; $00D6BE
 	addq.w #$4,a7	; $00D6C4
 	tst.w d0	; $00D6C6
 	beq.b L00D6E6	; $00D6C8
-	tst.w ram_sys_ff010a.l	; $00D6CA
+	tst.w ram_sys_field_010a.l	; $00D6CA
 	bne.b L00D6E6	; $00D6D0
-	tst.w ram_sys_ff0142.l	; $00D6D2
+	tst.w ram_sys_field_0142.l	; $00D6D2
 	bne.b L00D6E6	; $00D6D8
 	move.w #$1,-(a7)	; $00D6DA
 	jsr msg_queue_consume.l	; $00D6DE
@@ -1454,7 +1454,7 @@ L00D6EA:
 	move.w (a0),d0	; $00D6F0
 	and.w #$1,d0	; $00D6F2
 	bne.b L00D73E	; $00D6F6
-	lea.l ram_sys_ff0e92.l,a0	; $00D6F8
+	lea.l ram_menu_field_0e92.l,a0	; $00D6F8
 	move.w (a0),d0	; $00D6FE
 	and.w #$3ff,d0	; $00D700
 	cmp.w #$3ff,d0	; $00D704
@@ -1508,7 +1508,7 @@ L00D740:
 	subq.l #$5,d0	; $00D79C
 	beq.w L00D6EA	; $00D79E
 L00D7A2:
-	tst.w ram_sys_ff013a.l	; $00D7A2
+	tst.w ram_save_field_013a.l	; $00D7A2
 	beq.w L00D84C	; $00D7A8
 	lea.l ram_combat_flags.l,a0	; $00D7AC
 	move.w (a0),d0	; $00D7B2
@@ -1516,7 +1516,7 @@ L00D7A2:
 	beq.w L00D84C	; $00D7B8
 	move.w ram_party_leader.l,d0	; $00D7BC
 	muls.w #$34,d0	; $00D7C2
-	lea.l ram_sys_ff02dd.l,a0	; $00D7C6
+	lea.l ram_menu_field_02dd.l,a0	; $00D7C6
 	moveq #$0,d1	; $00D7CC
 	move.b (a0,d0.l),d1	; $00D7CE
 	move.w d1,-(a7)	; $00D7D2
@@ -1524,20 +1524,20 @@ L00D7A2:
 	addq.w #$2,a7	; $00D7DA
 	tst.w d0	; $00D7DC
 	bne.b L00D84C	; $00D7DE
-	cmpi.w #$5,ram_sys_ff0ea8.l	; $00D7E0
+	cmpi.w #$5,ram_sys_field_0ea8.l	; $00D7E0
 	bge.b L00D84A	; $00D7E8
-	tst.w ram_sys_ff00ac.l	; $00D7EA
+	tst.w ram_menu_field_00ac.l	; $00D7EA
 	bne.b L00D84A	; $00D7F0
 	move.w ram_actor_index.l,d0	; $00D7F2
 	muls.w #$34,d0	; $00D7F8
-	lea.l ram_sys_ff02cc.l,a0	; $00D7FC
+	lea.l ram_world_field_02cc.l,a0	; $00D7FC
 	move.w (a0,d0.l),d1	; $00D802
 	lsr.w #$8,d1	; $00D806
 	and.w #$1,d1	; $00D808
 	bne.b L00D84A	; $00D80C
 	move.w ram_actor_index.l,d0	; $00D80E
 	muls.w #$34,d0	; $00D814
-	lea.l ram_sys_ff02db.l,a0	; $00D818
+	lea.l ram_sys_field_02db.l,a0	; $00D818
 	moveq #$0,d1	; $00D81E
 	move.b (a0,d0.l),d1	; $00D820
 	cmp.w ram_party_leader.l,d1	; $00D824
@@ -1554,29 +1554,29 @@ L00D7A2:
 L00D84A:
 	bra.b L00D8B6	; $00D84A
 L00D84C:
-	tst.w ram_sys_ff0138.l	; $00D84C
+	tst.w ram_sys_field_0138.l	; $00D84C
 	beq.b L00D8B6	; $00D852
 	lea.l ram_combat_flags.l,a0	; $00D854
 	move.w (a0),d0	; $00D85A
 	and.w #$1,d0	; $00D85C
 	beq.b L00D8B6	; $00D860
-	tst.w ram_sys_ff00ac.l	; $00D862
+	tst.w ram_menu_field_00ac.l	; $00D862
 	bne.b L00D8B6	; $00D868
 	move.w ram_actor_index.l,d0	; $00D86A
 	muls.w #$34,d0	; $00D870
-	lea.l ram_sys_ff02db.l,a0	; $00D874
+	lea.l ram_sys_field_02db.l,a0	; $00D874
 	moveq #$0,d1	; $00D87A
 	move.b (a0,d0.l),d1	; $00D87C
 	cmp.w ram_party_leader.l,d1	; $00D880
 	bne.b L00D8B6	; $00D886
-	cmpi.w #$2,ram_sys_ff0ea8.l	; $00D888
+	cmpi.w #$2,ram_sys_field_0ea8.l	; $00D888
 	bge.b L00D8B6	; $00D890
 	lea.l ram_combat_flags.l,a0	; $00D892
 	move.w (a0),d0	; $00D898
 	lsr.w #$6,d0	; $00D89A
 	and.w #$7,d0	; $00D89C
 	bne.b L00D8B6	; $00D8A0
-	clr.w ram_sys_ff0138.l	; $00D8A2
+	clr.w ram_sys_field_0138.l	; $00D8A2
 	move.w #$1,-(a7)	; $00D8A8
 	clr.w -(a7)	; $00D8AC
 	jsr cmd25_handler.l	; $00D8AE
@@ -1585,11 +1585,11 @@ L00D8B6:
 	bra.w L00D95C	; $00D8B6
 struct52_dispatch:
 	clr.b -$4(a6)	; $00D8BA
-	cmpi.w #$ffff,ram_sys_ff0120.l	; $00D8BE
+	cmpi.w #$ffff,ram_sys_field_0120.l	; $00D8BE
 	beq.w L00D94E	; $00D8C6
-	move.w ram_sys_ff0120.l,d0	; $00D8CA
+	move.w ram_sys_field_0120.l,d0	; $00D8CA
 	muls.w #$34,d0	; $00D8D0
-	lea.l ram_sys_ff02db.l,a0	; $00D8D4
+	lea.l ram_sys_field_02db.l,a0	; $00D8D4
 	moveq #$0,d1	; $00D8DA
 	move.b (a0,d0.l),d1	; $00D8DC
 	move.w d1,-$6(a6)	; $00D8E0
@@ -1618,20 +1618,20 @@ L00D920:
 	andi.w #$fc0f,(a0)	; $00D932
 	ori.w #$20,(a0)	; $00D936
 L00D93A:
-	move.w ram_sys_ff0120.l,-(a7)	; $00D93A
+	move.w ram_sys_field_0120.l,-(a7)	; $00D93A
 	move.w ram_party_index_array.l,-(a7)	; $00D940
 	jsr combat_select_unit.l	; $00D946
 	addq.w #$4,a7	; $00D94C
 L00D94E:
-	tst.w ram_sys_ff011e.l	; $00D94E
+	tst.w ram_sys_field_011e.l	; $00D94E
 	beq.b L00D95C	; $00D954
 	jsr npc_show_greeting.l	; $00D956
 L00D95C:
-	tst.w ram_sys_ff00ac.l	; $00D95C
+	tst.w ram_menu_field_00ac.l	; $00D95C
 	beq.b L00D97E	; $00D962
-	cmpi.w #$32,ram_sys_ff0030.l	; $00D964
+	cmpi.w #$32,ram_sys_field_0030.l	; $00D964
 	bgt.b L00D97E	; $00D96C
-	lea.l ram_sys_ff02a2.l,a0	; $00D96E
+	lea.l ram_menu_field_02a2.l,a0	; $00D96E
 	move.w (a0),d0	; $00D974
 	lsr.w #$1,d0	; $00D976
 	and.w #$1,d0	; $00D978
@@ -1652,12 +1652,12 @@ L00D996:
 	beq.b L00D9B2	; $00D9A0
 	cmpi.b #$25,-$4(a6)	; $00D9A2
 	beq.b L00D9B2	; $00D9A8
-	tst.w ram_sys_ff00ac.l	; $00D9AA
+	tst.w ram_menu_field_00ac.l	; $00D9AA
 	beq.b L00D9C2	; $00D9B0
 L00D9B2:
-	tst.w ram_sys_ff010a.l	; $00D9B2
+	tst.w ram_sys_field_010a.l	; $00D9B2
 	bne.b L00D9C2	; $00D9B8
-	tst.w ram_sys_ff0142.l	; $00D9BA
+	tst.w ram_sys_field_0142.l	; $00D9BA
 	beq.b L00D9CE	; $00D9C0
 L00D9C2:
 	move.w #$1,-(a7)	; $00D9C2
@@ -1732,7 +1732,7 @@ vdp_dma_copy:
 	move.w $c(a7),d2	; $00DA9A
 	move.l d3,-(a7)	; $00DA9E
 	move.w sr,-(a7)	; $00DAA0
-	move.w #$ffff,ram_sys_ff0016.l	; $00DAA2
+	move.w #$ffff,ram_sys_field_0016.l	; $00DAA2
 	move.w #$8f02,vdp_ctrl.l	; $00DAAA
 	move.w #$9300,d3	; $00DAB2
 	move.b d2,d3	; $00DAB6
@@ -1760,7 +1760,7 @@ vdp_dma_copy:
 	and.w #$3fff,d1	; $00DB02
 	add.w #$4000,d1	; $00DB06
 L00DB0A:
-	move.w ram_sys_ff0016.l,d3	; $00DB0A
+	move.w ram_sys_field_0016.l,d3	; $00DB0A
 	bne.b L00DB0A	; $00DB10
 	move.w d1,vdp_ctrl.l	; $00DB12
 	move.w d0,vdp_ctrl.l	; $00DB18
@@ -6923,7 +6923,7 @@ L011168:
 	movea.l $12(a6),a0	; $011172
 	moveq #$0,d0	; $011176
 	move.b (a0,d4.w),d0	; $011178
-	add.w ram_sys_ff8640.l,d0	; $01117C
+	add.w ram_text_field_8640.l,d0	; $01117C
 	add.w $16(a6),d0	; $011182
 	sub.w #$20,d0	; $011186
 	move.w d0,-(a7)	; $01118A
@@ -6974,14 +6974,14 @@ L0111FC:
 	move.b (a0,d4.w),d0	; $011202
 	bra.w L011294	; $011206
 L01120A:
-	move.w ram_sys_ff8640.l,d0	; $01120A
+	move.w ram_text_field_8640.l,d0	; $01120A
 	add.w $16(a6),d0	; $011210
 	move.w d0,-(a7)	; $011214
 	jsr vdp_data_write.l	; $011216
 	addq.w #$2,a7	; $01121C
 	bra.w L0112B2	; $01121E
 L011222:
-	move.w ram_sys_ff8640.l,d0	; $011222
+	move.w ram_text_field_8640.l,d0	; $011222
 	add.w $16(a6),d0	; $011228
 	add.w #$1b,d0	; $01122C
 	move.w d0,-(a7)	; $011230
@@ -6989,7 +6989,7 @@ L011222:
 	addq.w #$2,a7	; $011238
 	bra.b L0112B2	; $01123A
 L01123C:
-	move.w ram_sys_ff8640.l,d0	; $01123C
+	move.w ram_text_field_8640.l,d0	; $01123C
 	add.w $16(a6),d0	; $011242
 	add.w #$1c,d0	; $011246
 	move.w d0,-(a7)	; $01124A
@@ -6997,7 +6997,7 @@ L01123C:
 	addq.w #$2,a7	; $011252
 	bra.b L0112B2	; $011254
 L011256:
-	move.w ram_sys_ff8640.l,d0	; $011256
+	move.w ram_text_field_8640.l,d0	; $011256
 	add.w $16(a6),d0	; $01125C
 	add.w #$1d,d0	; $011260
 	move.w d0,-(a7)	; $011264
@@ -7008,7 +7008,7 @@ L011270:
 	movea.l $12(a6),a0	; $011270
 	moveq #$0,d0	; $011274
 	move.b (a0,d4.w),d0	; $011276
-	add.w ram_sys_ff8640.l,d0	; $01127A
+	add.w ram_text_field_8640.l,d0	; $01127A
 	add.w $16(a6),d0	; $011280
 	sub.w #$40,d0	; $011284
 	move.w d0,-(a7)	; $011288
@@ -7064,7 +7064,7 @@ L0112FA:
 	asl.l #$1,d0	; $011302
 	lea.l -$50(a6),a0	; $011304
 	move.w d7,d1	; $011308
-	add.w ram_sys_ff8640.l,d1	; $01130A
+	add.w ram_text_field_8640.l,d1	; $01130A
 	add.w $16(a6),d1	; $011310
 	move.w d1,(a0,d0.l)	; $011314
 	lea.l L01B46E.l,a0	; $011318
@@ -7245,7 +7245,7 @@ L0114E2:
 	move.w a3,d0	; $0114E2
 	muls.w #$5,d0	; $0114E4
 	add.w d7,d0	; $0114E8
-	add.w ram_sys_ff8642.l,d0	; $0114EA
+	add.w ram_world_field_8642.l,d0	; $0114EA
 	add.w $1c(a6),d0	; $0114F0
 	move.w d0,-(a7)	; $0114F4
 	jsr vdp_data_write.l	; $0114F6
@@ -7289,7 +7289,7 @@ L011552:
 	lea.l -$a(a6),a0	; $01155C
 	moveq #$0,d0	; $011560
 	move.b (a0,d4.w),d0	; $011562
-	add.w ram_sys_ff8640.l,d0	; $011566
+	add.w ram_text_field_8640.l,d0	; $011566
 	add.w $14(a6),d0	; $01156C
 	sub.w #$20,d0	; $011570
 	move.w d0,-(a7)	; $011574
@@ -7780,15 +7780,15 @@ gfx_dma_tile_upload:
 	asl.w #$4,d0	; $011A84
 	move.w d0,-(a7)	; $011A86
 	moveq #$0,d0	; $011A88
-	move.w ram_sys_ff0076.l,d0	; $011A8A
+	move.w ram_world_field_0076.l,d0	; $011A8A
 	asl.l #$5,d0	; $011A90
 	move.l d0,-(a7)	; $011A92
 	move.l $8(a6),-(a7)	; $011A94
 	jsr dma_upload.l	; $011A98
 	lea.l $a(a7),a7	; $011A9E
-	move.w ram_sys_ff0076.l,-$2(a6)	; $011AA2
+	move.w ram_world_field_0076.l,-$2(a6)	; $011AA2
 	move.w $c(a6),d0	; $011AAA
-	add.w d0,ram_sys_ff0076.l	; $011AAE
+	add.w d0,ram_world_field_0076.l	; $011AAE
 	move.w -$2(a6),d0	; $011AB4
 	unlk a6	; $011AB8
 	rts	; $011ABA
@@ -7810,7 +7810,7 @@ tile_upload:
 	; code $011AE4-$011B2D
 tile_record_load:
 	link.w a6,#$0	; $011AE4
-	pea.l ram_sys_ff1ec0.l	; $011AE8
+	pea.l ram_world_field_1ec0.l	; $011AE8
 	move.w $8(a6),-(a7)	; $011AEE
 	pea.l L0B86AE.l	; $011AF2
 	pea.l L0B8A32.l	; $011AF8
@@ -7821,7 +7821,7 @@ tile_record_load:
 	pea.l ram_sys_ff1ee0.l	; $011B10
 	bsr.b tile_upload_at	; $011B16
 	addq.w #$8,a7	; $011B18
-	pea.l ram_sys_ff1ec0.l	; $011B1A
+	pea.l ram_world_field_1ec0.l	; $011B1A
 	move.w $c(a6),-(a7)	; $011B20
 	jsr pal_load_set(pc)	; $011B24
 	addq.w #$6,a7	; $011B28
@@ -7846,9 +7846,9 @@ tile_upload_at:
 	; code $011B58-$011B75
 sys_counter_add:
 	link.w a6,#$fffe	; $011B58
-	move.w ram_sys_ff0076.l,-$2(a6)	; $011B5C
+	move.w ram_world_field_0076.l,-$2(a6)	; $011B5C
 	move.w $8(a6),d0	; $011B64
-	add.w d0,ram_sys_ff0076.l	; $011B68
+	add.w d0,ram_world_field_0076.l	; $011B68
 	move.w -$2(a6),d0	; $011B6E
 	unlk a6	; $011B72
 	rts	; $011B74
@@ -7856,7 +7856,7 @@ sys_counter_add:
 clear_sprite_attr:
 	link.w a6,#$0	; $011B76
 	moveq #$0,d0	; $011B7A
-	move.w ram_sys_ff8644.l,d0	; $011B7C
+	move.w ram_sys_field_8644.l,d0	; $011B7C
 	move.l d0,-(a7)	; $011B82
 	jsr vdp_set_write_addr.l	; $011B84
 	addq.w #$4,a7	; $011B8A
@@ -7878,9 +7878,9 @@ clear_sprite_attr:
 pad_latch_11bb8:
 	link.w a6,#$0	; $011BB8
 	jsr pad1_read.l	; $011BBC
-	move.b d0,ram_sys_ff0e14.l	; $011BC2
+	move.b d0,ram_sys_field_0e14.l	; $011BC2
 	jsr pad2_read.l	; $011BC8
-	move.b d0,ram_sys_ff8646.l	; $011BCE
+	move.b d0,ram_sys_field_8646.l	; $011BCE
 	unlk a6	; $011BD4
 	rts	; $011BD6
 	; code $011BD8-$011C49
@@ -7888,7 +7888,7 @@ sprite_write:
 	link.w a6,#$0	; $011BD8
 	move.w $8(a6),d0	; $011BDC
 	asl.w #$3,d0	; $011BE0
-	add.w ram_sys_ff8644.l,d0	; $011BE2
+	add.w ram_sys_field_8644.l,d0	; $011BE2
 	moveq #$0,d1	; $011BE8
 	move.w d0,d1	; $011BEA
 	move.l d1,-(a7)	; $011BEC
@@ -7927,7 +7927,7 @@ sprite_set_link:
 	link.w a6,#$0	; $011C4A
 	move.w $8(a6),d0	; $011C4E
 	asl.w #$3,d0	; $011C52
-	add.w ram_sys_ff8644.l,d0	; $011C54
+	add.w ram_sys_field_8644.l,d0	; $011C54
 	addq.w #$2,d0	; $011C5A
 	moveq #$0,d1	; $011C5C
 	move.w d0,d1	; $011C5E
@@ -8013,7 +8013,7 @@ L011D2E:
 	move.w d0,-$4(a6)	; $011D2E
 	move.w -$2(a6),d0	; $011D32
 	asl.w #$3,d0	; $011D36
-	add.w ram_sys_ff8644.l,d0	; $011D38
+	add.w ram_sys_field_8644.l,d0	; $011D38
 	moveq #$0,d1	; $011D3E
 	move.w d0,d1	; $011D40
 	move.l d1,-(a7)	; $011D42
@@ -8082,7 +8082,7 @@ L011DD8:
 	; code $011DE8-$011E05
 clear_decode_buffer:
 	link.w a6,#$0	; $011DE8
-	lea.l ram_sys_ff1ec0.l,a0	; $011DEC
+	lea.l ram_world_field_1ec0.l,a0	; $011DEC
 	move.l #$19df,d0	; $011DF2
 L011DF8:
 	move.l #$0,(a0)+	; $011DF8
@@ -8291,9 +8291,9 @@ L012066:
 	; code $012072-$01215D
 text_blit:
 	link.w a6,#$ff10	; $012072
-	clr.w ram_sys_ff0114.l	; $012076
+	clr.w ram_world_field_0114.l	; $012076
 	jsr menu_format.l	; $01207C
-	move.w ram_sys_ff8648.l,d0	; $012082
+	move.w ram_world_field_8648.l,d0	; $012082
 	add.w #$6000,d0	; $012088
 	moveq #$0,d1	; $01208C
 	move.w d0,d1	; $01208E
@@ -8307,7 +8307,7 @@ text_blit:
 	pea.l L001000.w	; $0120AC
 	jsr gfx_tilemap_draw(pc)	; $0120B0
 	lea.l $10(a7),a7	; $0120B4
-	move.w ram_sys_ff8640.l,-(a7)	; $0120B8
+	move.w ram_text_field_8640.l,-(a7)	; $0120B8
 	move.w #$6,-(a7)	; $0120BE
 	move.w #$1f,-(a7)	; $0120C2
 	move.w #$14,-(a7)	; $0120C6
@@ -8317,7 +8317,7 @@ text_blit:
 	jsr gfx_tilemap_fill(pc)	; $0120D6
 	lea.l $10(a7),a7	; $0120DA
 	move.w #$3,-(a7)	; $0120DE
-	move.w ram_sys_ff8648.l,-(a7)	; $0120E2
+	move.w ram_world_field_8648.l,-(a7)	; $0120E2
 	move.w #$26,-(a7)	; $0120E8
 	jsr tile_record_load(pc)	; $0120EC
 	addq.w #$6,a7	; $0120F0
@@ -8493,14 +8493,14 @@ window_down:
 	jsr pal_load_set(pc)	; $01241A
 	addq.w #$6,a7	; $01241E
 	jsr pad2_read.l	; $012420
-	move.b d0,ram_sys_ff8646.l	; $012426
+	move.b d0,ram_sys_field_8646.l	; $012426
 	moveq #$0,d0	; $01242C
-	move.b ram_sys_ff8646.l,d0	; $01242E
+	move.b ram_sys_field_8646.l,d0	; $01242E
 	cmp.w #$fa,d0	; $012434
 	bne.b L012440	; $012438
 	move.w #$1,-$e(a6)	; $01243A
 L012440:
-	move.w #$234,ram_sys_ff0076.l	; $012440
+	move.w #$234,ram_world_field_0076.l	; $012440
 	move.w #$67,-(a7)	; $012448
 	clr.w -(a7)	; $01244C
 	jsr map_decode.l	; $01244E
@@ -8508,7 +8508,7 @@ L012440:
 	move.l d0,-(a7)	; $012456
 	jsr gfx_dma_tile_upload(pc)	; $012458
 	addq.w #$6,a7	; $01245C
-	move.w d0,ram_sys_ff8640.l	; $01245E
+	move.w d0,ram_text_field_8640.l	; $01245E
 	move.w #$90,-(a7)	; $012464
 	move.w #$2,-(a7)	; $012468
 	jsr map_decode.l	; $01246C
@@ -8516,7 +8516,7 @@ L012440:
 	move.l d0,-(a7)	; $012474
 	jsr gfx_dma_tile_upload(pc)	; $012476
 	addq.w #$6,a7	; $01247A
-	move.w d0,ram_sys_ff866a.l	; $01247C
+	move.w d0,ram_sys_field_866a.l	; $01247C
 	move.w #$40,-(a7)	; $012482
 	move.w #$3,-(a7)	; $012486
 	jsr map_decode.l	; $01248A
@@ -8550,7 +8550,7 @@ L012440:
 	move.l d0,-(a7)	; $0124F2
 	jsr gfx_dma_tile_upload(pc)	; $0124F4
 	addq.w #$6,a7	; $0124F8
-	move.w d0,ram_sys_ff8672.l	; $0124FA
+	move.w d0,ram_sys_field_8672.l	; $0124FA
 	bra.b L012520	; $012500
 L012502:
 	move.w #$100,-(a7)	; $012502
@@ -8560,7 +8560,7 @@ L012502:
 	move.l d0,-(a7)	; $012512
 	jsr gfx_dma_tile_upload(pc)	; $012514
 	addq.w #$6,a7	; $012518
-	move.w d0,ram_sys_ff8672.l	; $01251A
+	move.w d0,ram_sys_field_8672.l	; $01251A
 L012520:
 	move.w #$8208,-(a7)	; $012520
 	jsr vdp_ctrl_write.l	; $012524
@@ -8574,7 +8574,7 @@ L012520:
 	move.w #$8522,-(a7)	; $012544
 	jsr vdp_ctrl_write.l	; $012548
 	addq.w #$2,a7	; $01254E
-	move.w #$4400,ram_sys_ff8644.l	; $012550
+	move.w #$4400,ram_sys_field_8644.l	; $012550
 	move.w #$8d10,-(a7)	; $012558
 	jsr vdp_ctrl_write.l	; $01255C
 	addq.w #$2,a7	; $012562
@@ -8598,7 +8598,7 @@ L012520:
 	jsr vdp_write_block.l	; $0125A2
 	addq.w #$8,a7	; $0125A8
 	jsr clear_sprite_attr(pc)	; $0125AA
-	move.w ram_sys_ff8640.l,-(a7)	; $0125AE
+	move.w ram_text_field_8640.l,-(a7)	; $0125AE
 	move.w #$1c,-(a7)	; $0125B4
 	move.w #$40,-(a7)	; $0125B8
 	clr.w -(a7)	; $0125BC
@@ -8607,7 +8607,7 @@ L012520:
 	pea.l $f000.l	; $0125C4
 	jsr gfx_tilemap_fill(pc)	; $0125CA
 	lea.l $10(a7),a7	; $0125CE
-	move.w ram_sys_ff8640.l,-(a7)	; $0125D2
+	move.w ram_text_field_8640.l,-(a7)	; $0125D2
 	move.w #$20,-(a7)	; $0125D8
 	move.w #$80,-(a7)	; $0125DC
 	clr.w -(a7)	; $0125E0
@@ -8616,7 +8616,7 @@ L012520:
 	pea.l L002000.w	; $0125E8
 	jsr gfx_tilemap_fill(pc)	; $0125EC
 	lea.l $10(a7),a7	; $0125F0
-	move.w ram_sys_ff8640.l,-(a7)	; $0125F4
+	move.w ram_text_field_8640.l,-(a7)	; $0125F4
 	move.w #$20,-(a7)	; $0125FA
 	move.w #$80,-(a7)	; $0125FE
 	clr.w -(a7)	; $012602
@@ -8685,7 +8685,7 @@ L012682:
 	blt.b L01266C	; $0126BC
 	tst.w -$e(a6)	; $0126BE
 	beq.b L0126F8	; $0126C2
-	move.w ram_sys_ff866a.l,d0	; $0126C4
+	move.w ram_sys_field_866a.l,d0	; $0126C4
 	add.w #$800,d0	; $0126CA
 	move.w d0,-(a7)	; $0126CE
 	move.w #$ffff,-(a7)	; $0126D0
@@ -8700,7 +8700,7 @@ L012682:
 	lea.l $12(a7),a7	; $0126F2
 	bra.b L01272A	; $0126F6
 L0126F8:
-	move.w ram_sys_ff8672.l,d0	; $0126F8
+	move.w ram_sys_field_8672.l,d0	; $0126F8
 	add.w #$4000,d0	; $0126FE
 	move.w d0,-(a7)	; $012702
 	move.w #$ffff,-(a7)	; $012704
@@ -8792,7 +8792,7 @@ L0127CE:
 L01282A:
 	tst.w -$e(a6)	; $01282A
 	beq.b L012864	; $01282E
-	move.w ram_sys_ff866a.l,d0	; $012830
+	move.w ram_sys_field_866a.l,d0	; $012830
 	add.w #$800,d0	; $012836
 	move.w d0,-(a7)	; $01283A
 	move.w -$12(a6),-(a7)	; $01283C
@@ -8807,7 +8807,7 @@ L01282A:
 	lea.l $12(a7),a7	; $01285E
 	bra.b L012896	; $012862
 L012864:
-	move.w ram_sys_ff8672.l,d0	; $012864
+	move.w ram_sys_field_8672.l,d0	; $012864
 	add.w #$4000,d0	; $01286A
 	move.w d0,-(a7)	; $01286E
 	move.w -$12(a6),-(a7)	; $012870
@@ -8853,7 +8853,7 @@ L0128D8:
 L0128E2:
 	tst.w -$e(a6)	; $0128E2
 	beq.b L01291C	; $0128E6
-	move.w ram_sys_ff8672.l,d0	; $0128E8
+	move.w ram_sys_field_8672.l,d0	; $0128E8
 	add.w #$4000,d0	; $0128EE
 	move.w d0,-(a7)	; $0128F2
 	move.w #$ffff,-(a7)	; $0128F4
@@ -8868,7 +8868,7 @@ L0128E2:
 	lea.l $12(a7),a7	; $012916
 	bra.b L01294E	; $01291A
 L01291C:
-	move.w ram_sys_ff866a.l,d0	; $01291C
+	move.w ram_sys_field_866a.l,d0	; $01291C
 	add.w #$800,d0	; $012922
 	move.w d0,-(a7)	; $012926
 	move.w #$ffff,-(a7)	; $012928
@@ -8923,7 +8923,7 @@ L01294E:
 	clr.w -(a7)	; $0129F0
 	jsr pal_load_set(pc)	; $0129F2
 	addq.w #$6,a7	; $0129F6
-	move.w ram_sys_ff8672.l,-(a7)	; $0129F8
+	move.w ram_sys_field_8672.l,-(a7)	; $0129F8
 	move.w #$10,-(a7)	; $0129FE
 	move.w #$4,-(a7)	; $012A02
 	move.w #$3,-(a7)	; $012A06
@@ -8936,7 +8936,7 @@ L01294E:
 	lea.l $12(a7),a7	; $012A20
 	bra.b L012A58	; $012A24
 L012A26:
-	move.w ram_sys_ff866a.l,d0	; $012A26
+	move.w ram_sys_field_866a.l,d0	; $012A26
 	add.w #$800,d0	; $012A2C
 	move.w d0,-(a7)	; $012A30
 	move.w #$10,-(a7)	; $012A32
@@ -8982,9 +8982,9 @@ L012A58:
 	lea.l $c(a7),a7	; $012AC4
 L012AC8:
 	jsr joypad_queue_pop.l	; $012AC8
-	move.b d0,ram_sys_ff0e14.l	; $012ACE
+	move.b d0,ram_sys_field_0e14.l	; $012ACE
 	moveq #$0,d0	; $012AD4
-	move.b ram_sys_ff0e14.l,d0	; $012AD6
+	move.b ram_sys_field_0e14.l,d0	; $012AD6
 	and.w #$f0,d0	; $012ADC
 	bne.b L012AEA	; $012AE0
 	cmpi.w #$1b58,-$2(a6)	; $012AE2
@@ -8994,7 +8994,7 @@ L012AEA:
 	bne.b L012B10	; $012AEE
 	move.w #$7,-$c(a6)	; $012AF0
 	moveq #$0,d0	; $012AF6
-	move.b ram_sys_ff0e14.l,d0	; $012AF8
+	move.b ram_sys_field_0e14.l,d0	; $012AF8
 	and.w #$f0,d0	; $012AFE
 	beq.b L012B10	; $012B02
 	move.w #$ffff,-$18(a6)	; $012B04
@@ -9037,11 +9037,11 @@ L012B40:
 rand_next:
 	link.w a6,#$0	; $012B82
 	move.l #$41c64e6d,d1	; $012B86
-	move.l ram_sys_ff0072.l,d0	; $012B8C
+	move.l ram_sys_field_0072.l,d0	; $012B8C
 	jsr mul32.l	; $012B92
 	add.l #$3039,d0	; $012B98
-	move.l d0,ram_sys_ff0072.l	; $012B9E
-	move.l ram_sys_ff0072.l,d0	; $012BA4
+	move.l d0,ram_sys_field_0072.l	; $012B9E
+	move.l ram_sys_field_0072.l,d0	; $012BA4
 	moveq #$10,d1	; $012BAA
 	lsr.l d1,d0	; $012BAC
 	moveq #$0,d1	; $012BAE
@@ -9049,7 +9049,7 @@ rand_next:
 	and.l #$7fff,d1	; $012BB2
 	tst.l d1	; $012BB8
 	bcc.b L012BD6	; $012BBA
-	move.l ram_sys_ff0072.l,d0	; $012BBC
+	move.l ram_sys_field_0072.l,d0	; $012BBC
 	moveq #$10,d1	; $012BC2
 	lsr.l d1,d0	; $012BC4
 	moveq #$0,d1	; $012BC6
@@ -9059,7 +9059,7 @@ rand_next:
 	neg.l d0	; $012BD2
 	bra.b L012BEC	; $012BD4
 L012BD6:
-	move.l ram_sys_ff0072.l,d0	; $012BD6
+	move.l ram_sys_field_0072.l,d0	; $012BD6
 	moveq #$10,d1	; $012BDC
 	lsr.l d1,d0	; $012BDE
 	move.w d0,d1	; $012BE0
@@ -9076,11 +9076,11 @@ L012BEC:
 sys_rng_seed_frame:
 	link.w a6,#$0	; $012BFC
 	move.l #$ffff,d1	; $012C00
-	move.l ram_sys_ff0010.l,d0	; $012C06
+	move.l ram_sys_field_0010.l,d0	; $012C06
 	jsr math_mod32.l	; $012C0C
 	moveq #$0,d1	; $012C12
 	move.w d0,d1	; $012C14
-	move.l d1,ram_sys_ff0072.l	; $012C16
+	move.l d1,ram_sys_field_0072.l	; $012C16
 	unlk a6	; $012C1C
 	rts	; $012C1E
 	; code $012C20-$012F47
@@ -9120,7 +9120,7 @@ world_map_draw:
 	move.w #$8512,-(a7)	; $012CA6
 	jsr vdp_ctrl_write.l	; $012CAA
 	addq.w #$2,a7	; $012CB0
-	move.w #$2400,ram_sys_ff8644.l	; $012CB2
+	move.w #$2400,ram_sys_field_8644.l	; $012CB2
 	move.w #$8d08,-(a7)	; $012CBA
 	jsr vdp_ctrl_write.l	; $012CBE
 	addq.w #$2,a7	; $012CC4
@@ -9140,7 +9140,7 @@ world_map_draw:
 	clr.w -(a7)	; $012CF6
 	jsr vdp_set_scroll.l	; $012CF8
 	addq.w #$8,a7	; $012CFE
-	move.w #$134,ram_sys_ff0076.l	; $012D00
+	move.w #$134,ram_world_field_0076.l	; $012D00
 	move.w #$67,-(a7)	; $012D08
 	clr.w -(a7)	; $012D0C
 	jsr map_decode(pc)	; $012D0E
@@ -9148,7 +9148,7 @@ world_map_draw:
 	move.l d0,-(a7)	; $012D14
 	jsr gfx_dma_tile_upload.l	; $012D16
 	addq.w #$6,a7	; $012D1C
-	move.w d0,ram_sys_ff8640.l	; $012D1E
+	move.w d0,ram_text_field_8640.l	; $012D1E
 	move.w #$19,-(a7)	; $012D24
 	move.w #$1,-(a7)	; $012D28
 	jsr map_decode(pc)	; $012D2C
@@ -9156,7 +9156,7 @@ world_map_draw:
 	move.l d0,-(a7)	; $012D32
 	jsr gfx_dma_tile_upload.l	; $012D34
 	addq.w #$6,a7	; $012D3A
-	move.w d0,ram_sys_ff8642.l	; $012D3C
+	move.w d0,ram_world_field_8642.l	; $012D3C
 	move.w #$1b6,-(a7)	; $012D42
 	move.w #$6,-(a7)	; $012D46
 	jsr map_decode(pc)	; $012D4A
@@ -9164,15 +9164,15 @@ world_map_draw:
 	move.l d0,-(a7)	; $012D50
 	jsr gfx_dma_tile_upload.l	; $012D52
 	addq.w #$6,a7	; $012D58
-	move.w d0,ram_sys_ff8676.l	; $012D5A
+	move.w d0,ram_world_field_8676.l	; $012D5A
 	move.w #$24,-(a7)	; $012D60
 	jsr sys_counter_add.l	; $012D64
 	addq.w #$2,a7	; $012D6A
-	move.w d0,ram_sys_ff8648.l	; $012D6C
+	move.w d0,ram_world_field_8648.l	; $012D6C
 	move.w #$33c,-(a7)	; $012D72
 	jsr sys_counter_add.l	; $012D76
 	addq.w #$2,a7	; $012D7C
-	move.w d0,ram_sys_ff8674.l	; $012D7E
+	move.w d0,ram_world_field_8674.l	; $012D7E
 	move.w #$60,-(a7)	; $012D84
 	move.w #$b,-(a7)	; $012D88
 	jsr map_decode(pc)	; $012D8C
@@ -9180,7 +9180,7 @@ world_map_draw:
 	move.l d0,-(a7)	; $012D92
 	jsr gfx_dma_tile_upload.l	; $012D94
 	addq.w #$6,a7	; $012D9A
-	move.w d0,ram_sys_ff867a.l	; $012D9C
+	move.w d0,ram_world_field_867a.l	; $012D9C
 	move.w #$80,-(a7)	; $012DA2
 	move.w #$10,-(a7)	; $012DA6
 	jsr map_decode(pc)	; $012DAA
@@ -9188,8 +9188,8 @@ world_map_draw:
 	move.l d0,-(a7)	; $012DB0
 	jsr gfx_dma_tile_upload.l	; $012DB2
 	addq.w #$6,a7	; $012DB8
-	move.w d0,ram_sys_ff867c.l	; $012DBA
-	move.w ram_sys_ff867c.l,ram_sys_ff8678.l	; $012DC0
+	move.w d0,ram_world_field_867c.l	; $012DBA
+	move.w ram_world_field_867c.l,ram_world_field_8678.l	; $012DC0
 	move.w #$4c,-(a7)	; $012DCA
 	move.w #$11,-(a7)	; $012DCE
 	jsr map_decode(pc)	; $012DD2
@@ -9197,8 +9197,8 @@ world_map_draw:
 	move.l d0,-(a7)	; $012DD8
 	jsr gfx_dma_tile_upload.l	; $012DDA
 	addq.w #$6,a7	; $012DE0
-	move.w d0,ram_sys_ff867e.l	; $012DE2
-	move.w ram_sys_ff8640.l,-(a7)	; $012DE8
+	move.w d0,ram_world_field_867e.l	; $012DE2
+	move.w ram_text_field_8640.l,-(a7)	; $012DE8
 	move.w #$20,-(a7)	; $012DEE
 	move.w #$80,-(a7)	; $012DF2
 	clr.w -(a7)	; $012DF6
@@ -9207,7 +9207,7 @@ world_map_draw:
 	clr.l -(a7)	; $012DFE
 	jsr gfx_tilemap_fill.l	; $012E00
 	lea.l $10(a7),a7	; $012E06
-	move.w ram_sys_ff8640.l,-(a7)	; $012E0A
+	move.w ram_text_field_8640.l,-(a7)	; $012E0A
 	move.w #$20,-(a7)	; $012E10
 	move.w #$80,-(a7)	; $012E14
 	clr.w -(a7)	; $012E18
@@ -9216,7 +9216,7 @@ world_map_draw:
 	clr.l -(a7)	; $012E20
 	jsr gfx_tilemap_fill.l	; $012E22
 	lea.l $10(a7),a7	; $012E28
-	move.w ram_sys_ff8640.l,-(a7)	; $012E2C
+	move.w ram_text_field_8640.l,-(a7)	; $012E2C
 	move.w #$1c,-(a7)	; $012E32
 	move.w #$40,-(a7)	; $012E36
 	clr.w -(a7)	; $012E3A
@@ -9225,7 +9225,7 @@ world_map_draw:
 	pea.l L001000.w	; $012E42
 	jsr gfx_tilemap_fill.l	; $012E46
 	lea.l $10(a7),a7	; $012E4C
-	move.w ram_sys_ff8674.l,-(a7)	; $012E50
+	move.w ram_world_field_8674.l,-(a7)	; $012E50
 	move.w #$17,-(a7)	; $012E56
 	move.w #$24,-(a7)	; $012E5A
 	clr.w -(a7)	; $012E5E
@@ -9238,7 +9238,7 @@ world_map_draw:
 	jsr map_decode(pc)	; $012E7A
 	addq.w #$2,a7	; $012E7E
 	move.l d0,-(a7)	; $012E80
-	move.w ram_sys_ff8676.l,d0	; $012E82
+	move.w ram_world_field_8676.l,d0	; $012E82
 	add.w #$2000,d0	; $012E88
 	move.w d0,-(a7)	; $012E8C
 	move.w #$1c,-(a7)	; $012E8E
@@ -9251,20 +9251,20 @@ world_map_draw:
 	lea.l $14(a7),a7	; $012EA6
 	jsr clear_decode_buffer.l	; $012EAA
 	move.w #$33c0,-(a7)	; $012EB0
-	move.w ram_sys_ff8674.l,d0	; $012EB4
+	move.w ram_world_field_8674.l,d0	; $012EB4
 	asl.w #$5,d0	; $012EBA
 	moveq #$0,d1	; $012EBC
 	move.w d0,d1	; $012EBE
 	move.l d1,-(a7)	; $012EC0
-	pea.l ram_sys_ff1ec0.l	; $012EC2
+	pea.l ram_world_field_1ec0.l	; $012EC2
 	jsr dma_upload.l	; $012EC8
 	lea.l $a(a7),a7	; $012ECE
 	move.w #$8174,-(a7)	; $012ED2
 	jsr vdp_ctrl_write.l	; $012ED6
 	addq.w #$2,a7	; $012EDC
-	clr.w ram_sys_ff0e78.l	; $012EDE
+	clr.w ram_world_field_0e78.l	; $012EDE
 	move.w #$3,-(a7)	; $012EE4
-	move.w ram_sys_ff8648.l,-(a7)	; $012EE8
+	move.w ram_world_field_8648.l,-(a7)	; $012EE8
 	move.w #$17,-(a7)	; $012EEE
 	jsr tile_record_load.l	; $012EF2
 	addq.w #$6,a7	; $012EF8
@@ -9281,7 +9281,7 @@ world_map_draw:
 	jsr pal_load_set.l	; $012F26
 	addq.w #$6,a7	; $012F2C
 	jsr world_sprites_setup(pc)	; $012F2E
-	clr.w ram_sys_ff0114.l	; $012F32
+	clr.w ram_world_field_0114.l	; $012F32
 	jsr sys_rng_seed_frame.l	; $012F38
 	jsr request_full_redraw.l	; $012F3E
 	unlk a6	; $012F44
@@ -9290,13 +9290,13 @@ world_map_draw:
 pad_poll_queued_12f48:
 	link.w a6,#$0	; $012F48
 	jsr joypad_queue_pop.l	; $012F4C
-	move.b d0,ram_sys_ff0e14.l	; $012F52
+	move.b d0,ram_sys_field_0e14.l	; $012F52
 	jsr pad2_read.l	; $012F58
-	move.b d0,ram_sys_ff8646.l	; $012F5E
-	tst.b ram_sys_ff0e14.l	; $012F64
+	move.b d0,ram_sys_field_8646.l	; $012F5E
+	tst.b ram_sys_field_0e14.l	; $012F64
 	bne.b L012F78	; $012F6A
 	jsr joypad_queue_pop.l	; $012F6C
-	move.b d0,ram_sys_ff0e14.l	; $012F72
+	move.b d0,ram_sys_field_0e14.l	; $012F72
 L012F78:
 	move.w #$ff,d0	; $012F78
 	unlk a6	; $012F7C
@@ -9304,9 +9304,9 @@ L012F78:
 	; code $012F80-$012F9F
 pad_any_held_12f80:
 	link.w a6,#$0	; $012F80
-	tst.b ram_sys_ff0e14.l	; $012F84
+	tst.b ram_sys_field_0e14.l	; $012F84
 	bne.b L012F9A	; $012F8A
-	tst.b ram_sys_ff8646.l	; $012F8C
+	tst.b ram_sys_field_8646.l	; $012F8C
 	bne.b L012F9A	; $012F92
 	moveq #$0,d0	; $012F94
 L012F96:
@@ -9335,9 +9335,9 @@ L012FC2:
 	bcs.b L012FBE	; $012FC8
 L012FCA:
 	jsr joypad_queue_pop.l	; $012FCA
-	move.b d0,ram_sys_ff0e14.l	; $012FD0
+	move.b d0,ram_sys_field_0e14.l	; $012FD0
 	moveq #$0,d0	; $012FD6
-	move.b ram_sys_ff0e14.l,d0	; $012FD8
+	move.b ram_sys_field_0e14.l,d0	; $012FD8
 	and.w #$f0,d0	; $012FDE
 	beq.b L012FCA	; $012FE2
 	unlk a6	; $012FE4
@@ -9354,7 +9354,7 @@ menu_verb_input:
 	move.w #$ff,-$2(a6)	; $013004
 	move.b d4,d5	; $01300A
 	and.b #$f,d5	; $01300C
-	tst.w ram_sys_ff0116.l	; $013010
+	tst.w ram_menu_field_0116.l	; $013010
 	beq.w L0130A0	; $013016
 	moveq #$0,d0	; $01301A
 	move.b d5,d0	; $01301C
@@ -9372,7 +9372,7 @@ L01302C:
 	moveq #$2,d6	; $01302C
 	bra.b L01309C	; $01302E
 L013030:
-	tst.w ram_sys_ff0134.l	; $013030
+	tst.w ram_save_field_0134.l	; $013030
 	beq.b L013074	; $013036
 	moveq #$0,d0	; $013038
 	move.b d5,d0	; $01303A
@@ -9438,7 +9438,7 @@ L0130B2:
 	moveq #$3,d6	; $0130B2
 	bra.b L013122	; $0130B4
 L0130B6:
-	tst.w ram_sys_ff0134.l	; $0130B6
+	tst.w ram_save_field_0134.l	; $0130B6
 	beq.b L0130FA	; $0130BC
 	moveq #$0,d0	; $0130BE
 	move.b d5,d0	; $0130C0
@@ -9487,44 +9487,44 @@ L013110:
 	jmp *+2(pc,d0.w)	; $01311E
 L013122:
 	move.b d6,-$3(a6)	; $013122
-	tst.w ram_sys_ff00ac.l	; $013126
+	tst.w ram_menu_field_00ac.l	; $013126
 	bne.b L013144	; $01312C
 	lea.l ram_combat_flags.l,a0	; $01312E
 	move.w (a0),d0	; $013134
 	and.w #$1,d0	; $013136
 	bne.b L013144	; $01313A
-	move.w d6,ram_sys_ff0136.l	; $01313C
+	move.w d6,ram_menu_field_0136.l	; $01313C
 	bra.b L01314C	; $013142
 L013144:
-	move.w #$4,ram_sys_ff0136.l	; $013144
+	move.w #$4,ram_menu_field_0136.l	; $013144
 L01314C:
-	tst.w ram_sys_ff0112.l	; $01314C
+	tst.w ram_menu_field_0112.l	; $01314C
 	beq.b L013170	; $013152
-	lea.l ram_sys_ff0240.l,a0	; $013154
+	lea.l ram_menu_field_0240.l,a0	; $013154
 	lea.l -$4(a6),a1	; $01315A
 	move.l (a1)+,(a0)+	; $01315E
-	lea.l ram_sys_ff0240.l,a0	; $013160
+	lea.l ram_menu_field_0240.l,a0	; $013160
 	move.l a0,d0	; $013166
 L013168:
 	movem.l (a7)+,d4-d6	; $013168
 	unlk a6	; $01316C
 	rts	; $01316E
 L013170:
-	tst.w ram_sys_ff0110.l	; $013170
+	tst.w ram_menu_field_0110.l	; $013170
 	beq.b L0131E2	; $013176
 	btst #$6,d4	; $013178
 	beq.b L013188	; $01317C
-	btst #$6,ram_sys_ff0244.l	; $01317E
+	btst #$6,ram_menu_field_0244.l	; $01317E
 	beq.b L0131C0	; $013186
 L013188:
 	btst #$4,d4	; $013188
 	beq.b L013198	; $01318C
-	btst #$4,ram_sys_ff0244.l	; $01318E
+	btst #$4,ram_menu_field_0244.l	; $01318E
 	beq.b L0131C0	; $013196
 L013198:
 	btst #$5,d4	; $013198
 	beq.b L0131A8	; $01319C
-	btst #$5,ram_sys_ff0244.l	; $01319E
+	btst #$5,ram_menu_field_0244.l	; $01319E
 	beq.b L0131C0	; $0131A6
 L0131A8:
 	moveq #$0,d0	; $0131A8
@@ -9532,29 +9532,29 @@ L0131A8:
 	btst #$7,d0	; $0131AC
 	beq.b L0131C6	; $0131B0
 	moveq #$0,d0	; $0131B2
-	move.b ram_sys_ff0244.l,d0	; $0131B4
+	move.b ram_menu_field_0244.l,d0	; $0131B4
 	btst #$7,d0	; $0131BA
 	bne.b L0131C6	; $0131BE
 L0131C0:
 	move.b #$25,-$4(a6)	; $0131C0
 L0131C6:
-	move.b d4,ram_sys_ff0244.l	; $0131C6
-	lea.l ram_sys_ff0240.l,a0	; $0131CC
+	move.b d4,ram_menu_field_0244.l	; $0131C6
+	lea.l ram_menu_field_0240.l,a0	; $0131CC
 	lea.l -$4(a6),a1	; $0131D2
 	move.l (a1)+,(a0)+	; $0131D6
-	lea.l ram_sys_ff0240.l,a0	; $0131D8
+	lea.l ram_menu_field_0240.l,a0	; $0131D8
 	move.l a0,d0	; $0131DE
 	bra.b L013168	; $0131E0
 L0131E2:
 	moveq #$0,d0	; $0131E2
-	move.b ram_sys_ff0086.l,d0	; $0131E4
+	move.b ram_menu_field_0086.l,d0	; $0131E4
 	cmp.w d6,d0	; $0131EA
 	beq.b L0131F6	; $0131EC
-	move.b #$4,ram_sys_ff0086.l	; $0131EE
+	move.b #$4,ram_menu_field_0086.l	; $0131EE
 L0131F6:
 	cmp.w #$4,d6	; $0131F6
 	beq.b L013214	; $0131FA
-	cmpi.b #$4,ram_sys_ff0086.l	; $0131FC
+	cmpi.b #$4,ram_menu_field_0086.l	; $0131FC
 	bne.b L013214	; $013204
 	move.b d4,d0	; $013206
 	and.b #$70,d0	; $013208
@@ -9563,9 +9563,9 @@ L0131F6:
 L013214:
 	btst #$6,d4	; $013214
 	beq.b L013274	; $013218
-	btst #$6,ram_sys_ff0244.l	; $01321A
+	btst #$6,ram_menu_field_0244.l	; $01321A
 	bne.b L013274	; $013222
-	tst.w ram_sys_ff00ac.l	; $013224
+	tst.w ram_menu_field_00ac.l	; $013224
 	bne.b L01326E	; $01322A
 	lea.l ram_combat_flags.l,a0	; $01322C
 	move.w (a0),d0	; $013232
@@ -9574,13 +9574,13 @@ L013214:
 	move.b #$2d,-$4(a6)	; $01323A
 	bra.b L01326C	; $013240
 L013242:
-	move.b d4,ram_sys_ff0245.l	; $013242
-	clr.b ram_sys_ff0246.l	; $013248
+	move.b d4,ram_menu_field_0245.l	; $013242
+	clr.b ram_menu_field_0246.l	; $013248
 	cmp.w #$4,d6	; $01324E
 	beq.b L013268	; $013252
 	move.b #$28,-$4(a6)	; $013254
-	move.b d6,ram_sys_ff0086.l	; $01325A
-	move.b d4,ram_sys_ff0246.l	; $013260
+	move.b d6,ram_menu_field_0086.l	; $01325A
+	move.b d4,ram_menu_field_0246.l	; $013260
 	bra.b L01326C	; $013266
 L013268:
 	clr.b -$4(a6)	; $013268
@@ -9589,44 +9589,44 @@ L01326C:
 L01326E:
 	move.b #$25,-$4(a6)	; $01326E
 L013274:
-	btst #$6,ram_sys_ff0245.l	; $013274
+	btst #$6,ram_menu_field_0245.l	; $013274
 	beq.b L0132C4	; $01327C
 	btst #$6,d4	; $01327E
 	beq.b L0132C4	; $013282
-	btst #$6,ram_sys_ff0244.l	; $013284
+	btst #$6,ram_menu_field_0244.l	; $013284
 	beq.b L0132C4	; $01328C
 	moveq #$0,d0	; $01328E
-	move.b ram_sys_ff0086.l,d0	; $013290
+	move.b ram_menu_field_0086.l,d0	; $013290
 	cmp.w d6,d0	; $013296
 	beq.b L0132C4	; $013298
 	cmp.w #$4,d6	; $01329A
 	beq.b L0132C4	; $01329E
-	cmpi.w #$1,ram_sys_ff00ae.l	; $0132A0
+	cmpi.w #$1,ram_menu_field_00ae.l	; $0132A0
 	bne.b L0132B8	; $0132A8
-	tst.w ram_sys_ff00ac.l	; $0132AA
+	tst.w ram_menu_field_00ac.l	; $0132AA
 	bne.b L0132B8	; $0132B0
 	move.b #$28,-$4(a6)	; $0132B2
 L0132B8:
-	move.b d4,ram_sys_ff0246.l	; $0132B8
-	move.b d6,ram_sys_ff0086.l	; $0132BE
+	move.b d4,ram_menu_field_0246.l	; $0132B8
+	move.b d6,ram_menu_field_0086.l	; $0132BE
 L0132C4:
-	btst #$6,ram_sys_ff0245.l	; $0132C4
+	btst #$6,ram_menu_field_0245.l	; $0132C4
 	beq.b L01333A	; $0132CC
 	btst #$6,d4	; $0132CE
 	bne.b L01333A	; $0132D2
-	move.b d6,ram_sys_ff0086.l	; $0132D4
-	clr.b ram_sys_ff0245.l	; $0132DA
+	move.b d6,ram_menu_field_0086.l	; $0132D4
+	clr.b ram_menu_field_0245.l	; $0132DA
 	cmp.w #$4,d6	; $0132E0
 	bne.b L01331C	; $0132E4
-	tst.b ram_sys_ff0246.l	; $0132E6
+	tst.b ram_menu_field_0246.l	; $0132E6
 	bne.b L01331C	; $0132EC
-	cmpi.w #$2,ram_sys_ff00ae.l	; $0132EE
+	cmpi.w #$2,ram_menu_field_00ae.l	; $0132EE
 	bne.b L01331C	; $0132F6
 	lea.l ram_combat_flags.l,a0	; $0132F8
 	move.w (a0),d0	; $0132FE
 	and.w #$1,d0	; $013300
 	beq.b L013316	; $013304
-	tst.w ram_sys_ff00ac.l	; $013306
+	tst.w ram_menu_field_00ac.l	; $013306
 	bne.b L013316	; $01330C
 	move.b #$2d,-$4(a6)	; $01330E
 	bra.b L01331C	; $013314
@@ -9635,31 +9635,31 @@ L013316:
 L01331C:
 	cmp.w #$4,d6	; $01331C
 	bne.b L01333A	; $013320
-	tst.b ram_sys_ff0246.l	; $013322
+	tst.b ram_menu_field_0246.l	; $013322
 	bne.b L01333A	; $013328
-	cmpi.w #$1,ram_sys_ff00ae.l	; $01332A
+	cmpi.w #$1,ram_menu_field_00ae.l	; $01332A
 	bne.b L01333A	; $013332
 	move.b #$28,-$4(a6)	; $013334
 L01333A:
 	btst #$4,d4	; $01333A
 	beq.b L013396	; $01333E
-	btst #$4,ram_sys_ff0244.l	; $013340
+	btst #$4,ram_menu_field_0244.l	; $013340
 	bne.b L013396	; $013348
-	tst.w ram_sys_ff00ac.l	; $01334A
+	tst.w ram_menu_field_00ac.l	; $01334A
 	bne.b L013390	; $013350
-	move.b d4,ram_sys_ff0245.l	; $013352
-	clr.b ram_sys_ff0246.l	; $013358
+	move.b d4,ram_menu_field_0245.l	; $013352
+	clr.b ram_menu_field_0246.l	; $013358
 	cmp.w #$4,d6	; $01335E
 	beq.b L01338A	; $013362
-	cmpi.w #$1,ram_sys_ff00ae.l	; $013364
+	cmpi.w #$1,ram_menu_field_00ae.l	; $013364
 	bne.b L013376	; $01336C
 	move.b #$1e,-$4(a6)	; $01336E
 	bra.b L01337C	; $013374
 L013376:
 	move.b #$23,-$4(a6)	; $013376
 L01337C:
-	move.b d6,ram_sys_ff0086.l	; $01337C
-	move.b d4,ram_sys_ff0246.l	; $013382
+	move.b d6,ram_menu_field_0086.l	; $01337C
+	move.b d4,ram_menu_field_0246.l	; $013382
 	bra.b L01338E	; $013388
 L01338A:
 	clr.b -$4(a6)	; $01338A
@@ -9668,68 +9668,68 @@ L01338E:
 L013390:
 	move.b #$15,-$4(a6)	; $013390
 L013396:
-	btst #$4,ram_sys_ff0245.l	; $013396
+	btst #$4,ram_menu_field_0245.l	; $013396
 	beq.b L0133E6	; $01339E
 	btst #$4,d4	; $0133A0
 	beq.b L0133E6	; $0133A4
-	btst #$4,ram_sys_ff0244.l	; $0133A6
+	btst #$4,ram_menu_field_0244.l	; $0133A6
 	beq.b L0133E6	; $0133AE
 	moveq #$0,d0	; $0133B0
-	move.b ram_sys_ff0086.l,d0	; $0133B2
+	move.b ram_menu_field_0086.l,d0	; $0133B2
 	cmp.w d6,d0	; $0133B8
 	beq.b L0133E6	; $0133BA
 	cmp.w #$4,d6	; $0133BC
 	beq.b L0133E6	; $0133C0
-	cmpi.w #$1,ram_sys_ff00ae.l	; $0133C2
+	cmpi.w #$1,ram_menu_field_00ae.l	; $0133C2
 	bne.b L0133D4	; $0133CA
 	move.b #$1e,-$4(a6)	; $0133CC
 	bra.b L0133DA	; $0133D2
 L0133D4:
 	move.b #$23,-$4(a6)	; $0133D4
 L0133DA:
-	move.b d4,ram_sys_ff0246.l	; $0133DA
-	move.b d6,ram_sys_ff0086.l	; $0133E0
+	move.b d4,ram_menu_field_0246.l	; $0133DA
+	move.b d6,ram_menu_field_0086.l	; $0133E0
 L0133E6:
-	btst #$4,ram_sys_ff0245.l	; $0133E6
+	btst #$4,ram_menu_field_0245.l	; $0133E6
 	beq.b L01343E	; $0133EE
 	btst #$4,d4	; $0133F0
 	bne.b L01343E	; $0133F4
-	move.b d6,ram_sys_ff0086.l	; $0133F6
-	clr.b ram_sys_ff0245.l	; $0133FC
+	move.b d6,ram_menu_field_0086.l	; $0133F6
+	clr.b ram_menu_field_0245.l	; $0133FC
 	cmp.w #$4,d6	; $013402
 	bne.b L013420	; $013406
-	tst.b ram_sys_ff0246.l	; $013408
+	tst.b ram_menu_field_0246.l	; $013408
 	bne.b L013420	; $01340E
-	cmpi.w #$2,ram_sys_ff00ae.l	; $013410
+	cmpi.w #$2,ram_menu_field_00ae.l	; $013410
 	bne.b L013420	; $013418
 	move.b #$23,-$4(a6)	; $01341A
 L013420:
 	cmp.w #$4,d6	; $013420
 	bne.b L01343E	; $013424
-	tst.b ram_sys_ff0246.l	; $013426
+	tst.b ram_menu_field_0246.l	; $013426
 	bne.b L01343E	; $01342C
-	cmpi.w #$1,ram_sys_ff00ae.l	; $01342E
+	cmpi.w #$1,ram_menu_field_00ae.l	; $01342E
 	bne.b L01343E	; $013436
 	move.b #$1e,-$4(a6)	; $013438
 L01343E:
 	btst #$5,d4	; $01343E
 	beq.b L01349A	; $013442
-	btst #$5,ram_sys_ff0244.l	; $013444
+	btst #$5,ram_menu_field_0244.l	; $013444
 	bne.b L01349A	; $01344C
-	tst.w ram_sys_ff00ac.l	; $01344E
+	tst.w ram_menu_field_00ac.l	; $01344E
 	bne.b L013494	; $013454
-	cmpi.w #$1,ram_sys_ff00ae.l	; $013456
+	cmpi.w #$1,ram_menu_field_00ae.l	; $013456
 	bne.b L013468	; $01345E
 	move.b #$32,-$4(a6)	; $013460
 	bra.b L013492	; $013466
 L013468:
-	move.b d4,ram_sys_ff0245.l	; $013468
-	clr.b ram_sys_ff0246.l	; $01346E
+	move.b d4,ram_menu_field_0245.l	; $013468
+	clr.b ram_menu_field_0246.l	; $01346E
 	cmp.w #$4,d6	; $013474
 	beq.b L01348E	; $013478
 	move.b #$37,-$4(a6)	; $01347A
-	move.b d6,ram_sys_ff0086.l	; $013480
-	move.b d4,ram_sys_ff0246.l	; $013486
+	move.b d6,ram_menu_field_0086.l	; $013480
+	move.b d4,ram_menu_field_0246.l	; $013486
 	bra.b L013492	; $01348C
 L01348E:
 	clr.b -$4(a6)	; $01348E
@@ -9738,47 +9738,47 @@ L013492:
 L013494:
 	move.b #$16,-$4(a6)	; $013494
 L01349A:
-	btst #$5,ram_sys_ff0245.l	; $01349A
+	btst #$5,ram_menu_field_0245.l	; $01349A
 	beq.b L0134EA	; $0134A2
 	btst #$5,d4	; $0134A4
 	beq.b L0134EA	; $0134A8
-	btst #$5,ram_sys_ff0244.l	; $0134AA
+	btst #$5,ram_menu_field_0244.l	; $0134AA
 	beq.b L0134EA	; $0134B2
 	moveq #$0,d0	; $0134B4
-	move.b ram_sys_ff0086.l,d0	; $0134B6
+	move.b ram_menu_field_0086.l,d0	; $0134B6
 	cmp.w d6,d0	; $0134BC
 	beq.b L0134EA	; $0134BE
 	cmp.w #$4,d6	; $0134C0
 	beq.b L0134EA	; $0134C4
-	cmpi.w #$1,ram_sys_ff00ae.l	; $0134C6
+	cmpi.w #$1,ram_menu_field_00ae.l	; $0134C6
 	bne.b L0134D8	; $0134CE
 	move.b #$32,-$4(a6)	; $0134D0
 	bra.b L0134DE	; $0134D6
 L0134D8:
 	move.b #$37,-$4(a6)	; $0134D8
 L0134DE:
-	move.b d4,ram_sys_ff0246.l	; $0134DE
-	move.b d6,ram_sys_ff0086.l	; $0134E4
+	move.b d4,ram_menu_field_0246.l	; $0134DE
+	move.b d6,ram_menu_field_0086.l	; $0134E4
 L0134EA:
-	btst #$5,ram_sys_ff0245.l	; $0134EA
+	btst #$5,ram_menu_field_0245.l	; $0134EA
 	beq.b L013542	; $0134F2
 	btst #$5,d4	; $0134F4
 	bne.b L013542	; $0134F8
-	move.b d6,ram_sys_ff0086.l	; $0134FA
-	clr.b ram_sys_ff0245.l	; $013500
+	move.b d6,ram_menu_field_0086.l	; $0134FA
+	clr.b ram_menu_field_0245.l	; $013500
 	cmp.w #$4,d6	; $013506
 	bne.b L013524	; $01350A
-	tst.b ram_sys_ff0246.l	; $01350C
+	tst.b ram_menu_field_0246.l	; $01350C
 	bne.b L013524	; $013512
-	cmpi.w #$2,ram_sys_ff00ae.l	; $013514
+	cmpi.w #$2,ram_menu_field_00ae.l	; $013514
 	bne.b L013524	; $01351C
 	move.b #$37,-$4(a6)	; $01351E
 L013524:
 	cmp.w #$4,d6	; $013524
 	bne.b L013542	; $013528
-	tst.b ram_sys_ff0246.l	; $01352A
+	tst.b ram_menu_field_0246.l	; $01352A
 	bne.b L013542	; $013530
-	cmpi.w #$1,ram_sys_ff00ae.l	; $013532
+	cmpi.w #$1,ram_menu_field_00ae.l	; $013532
 	bne.b L013542	; $01353A
 	move.b #$32,-$4(a6)	; $01353C
 L013542:
@@ -9787,13 +9787,13 @@ L013542:
 	btst #$7,d0	; $013546
 	beq.w L013636	; $01354A
 	moveq #$0,d0	; $01354E
-	move.b ram_sys_ff0244.l,d0	; $013550
+	move.b ram_menu_field_0244.l,d0	; $013550
 	btst #$7,d0	; $013556
 	bne.w L013636	; $01355A
 	move.b #$14,-$4(a6)	; $01355E
 	btst #$6,d4	; $013564
 	beq.b L013596	; $013568
-	tst.w ram_sys_ff00ac.l	; $01356A
+	tst.w ram_menu_field_00ac.l	; $01356A
 	bne.b L013596	; $013570
 	lea.l ram_combat_flags.l,a0	; $013572
 	move.w (a0),d0	; $013578
@@ -9802,7 +9802,7 @@ L013542:
 	move.b #$18,-$4(a6)	; $013580
 	move.b #$6,-$3(a6)	; $013586
 	clr.w -$2(a6)	; $01358C
-	clr.b ram_sys_ff0245.l	; $013590
+	clr.b ram_menu_field_0245.l	; $013590
 L013596:
 	btst #$4,d4	; $013596
 	beq.b L013604	; $01359A
@@ -9810,16 +9810,16 @@ L013596:
 	move.w (a0),d0	; $0135A2
 	and.w #$1,d0	; $0135A4
 	bne.b L013604	; $0135A8
-	cmpi.w #$2,ram_sys_ff00ae.l	; $0135AA
+	cmpi.w #$2,ram_menu_field_00ae.l	; $0135AA
 	bne.b L0135E0	; $0135B2
-	tst.w ram_sys_ff00ac.l	; $0135B4
+	tst.w ram_menu_field_00ac.l	; $0135B4
 	beq.b L0135DE	; $0135BA
-	cmpi.b #$17,ram_sys_ffa7f8.l	; $0135BC
+	cmpi.b #$17,ram_menu_field_a7f8.l	; $0135BC
 	bne.b L0135DE	; $0135C4
 	move.b #$19,-$4(a6)	; $0135C6
 	move.b #$17,-$3(a6)	; $0135CC
 	move.w #$a,-$2(a6)	; $0135D2
-	clr.b ram_sys_ff0245.l	; $0135D8
+	clr.b ram_menu_field_0245.l	; $0135D8
 L0135DE:
 	bra.b L013604	; $0135DE
 L0135E0:
@@ -9830,7 +9830,7 @@ L0135E0:
 	move.b #$19,-$4(a6)	; $0135EE
 	clr.b -$3(a6)	; $0135F4
 	move.w #$4,-$2(a6)	; $0135F8
-	clr.b ram_sys_ff0245.l	; $0135FE
+	clr.b ram_menu_field_0245.l	; $0135FE
 L013604:
 	btst #$5,d4	; $013604
 	beq.b L013636	; $013608
@@ -9838,18 +9838,18 @@ L013604:
 	move.w (a0),d0	; $013610
 	and.w #$1,d0	; $013612
 	bne.b L013636	; $013616
-	tst.w ram_sys_ff00ac.l	; $013618
+	tst.w ram_menu_field_00ac.l	; $013618
 	bne.b L013636	; $01361E
 	move.b #$19,-$4(a6)	; $013620
 	clr.b -$3(a6)	; $013626
 	move.w #$3,-$2(a6)	; $01362A
-	clr.b ram_sys_ff0245.l	; $013630
+	clr.b ram_menu_field_0245.l	; $013630
 L013636:
-	move.b d4,ram_sys_ff0244.l	; $013636
-	lea.l ram_sys_ff0240.l,a0	; $01363C
+	move.b d4,ram_menu_field_0244.l	; $013636
+	lea.l ram_menu_field_0240.l,a0	; $01363C
 	lea.l -$4(a6),a1	; $013642
 	move.l (a1)+,(a0)+	; $013646
-	lea.l ram_sys_ff0240.l,a0	; $013648
+	lea.l ram_menu_field_0240.l,a0	; $013648
 	move.l a0,d0	; $01364E
 	bra.w L013168	; $013650
 	; code $013654-$0136FB
@@ -10029,22 +10029,22 @@ L013824:
 	; code $01383C-$013869
 map_decode:
 	link.w a6,#$0	; $01383C
-	pea.l ram_sys_ff1ec0.l	; $013840
+	pea.l ram_world_field_1ec0.l	; $013840
 	move.w $8(a6),-(a7)	; $013846
 	pea.l L096120.l	; $01384A
 	pea.l L09638C.l	; $013850
 	jsr text_record_dispatch(pc)	; $013856
 	lea.l $e(a7),a7	; $01385A
-	lea.l ram_sys_ff1ec0.l,a0	; $01385E
+	lea.l ram_world_field_1ec0.l,a0	; $01385E
 	move.l a0,d0	; $013864
 	unlk a6	; $013866
 	rts	; $013868
 	; code $01386A-$013881
 wait_vblank:
 	link.w a6,#$0	; $01386A
-	move.w #$ffff,ram_sys_ff0016.l	; $01386E
+	move.w #$ffff,ram_sys_field_0016.l	; $01386E
 L013876:
-	move.w ram_sys_ff0016.l,d0	; $013876
+	move.w ram_sys_field_0016.l,d0	; $013876
 	bne.b L013876	; $01387C
 	unlk a6	; $01387E
 	rts	; $013880
@@ -10071,16 +10071,16 @@ menu_format:
 	move.w #$43,-$a(a6)	; $0138B6
 	move.w ram_party_leader.l,d0	; $0138BC
 	muls.w #$34,d0	; $0138C2
-	lea.l ram_sys_ff02ba.l,a0	; $0138C6
+	lea.l ram_menu_field_02ba.l,a0	; $0138C6
 	move.w (a0,d0.l),-$12(a6)	; $0138CC
-	move.w ram_sys_ff0136.l,d0	; $0138D2
+	move.w ram_menu_field_0136.l,d0	; $0138D2
 	muls.w #$6,d0	; $0138D8
 	lea.l L01B446.l,a0	; $0138DC
 	add.l a0,d0	; $0138E2
 	move.l d0,-$16(a6)	; $0138E4
 	movea.l -$16(a6),a0	; $0138E8
 	move.w (a0),d0	; $0138EC
-	add.w ram_sys_ff867e.l,d0	; $0138EE
+	add.w ram_world_field_867e.l,d0	; $0138EE
 	add.w #$48,d0	; $0138F4
 	move.w d0,-(a7)	; $0138F8
 	clr.w -(a7)	; $0138FA
@@ -10093,11 +10093,11 @@ menu_format:
 	move.w #$43,-(a7)	; $013912
 	jsr sprite_write.l	; $013916
 	lea.l $e(a7),a7	; $01391C
-	cmpi.w #$4,ram_sys_ff0e7e.l	; $013920
+	cmpi.w #$4,ram_menu_field_0e7e.l	; $013920
 	bne.b L013930	; $013928
 	move.w #$3f,-$8(a6)	; $01392A
 L013930:
-	tst.w ram_sys_ff0132.l	; $013930
+	tst.w ram_menu_field_0132.l	; $013930
 	beq.w L013C62	; $013936
 	cmpi.w #$43,-$8(a6)	; $01393A
 	beq.b L01394A	; $013940
@@ -10106,36 +10106,36 @@ L013930:
 L01394A:
 	move.w #$37,-$8(a6)	; $01394A
 L013950:
-	tst.w ram_sys_ff00ac.l	; $013950
+	tst.w ram_menu_field_00ac.l	; $013950
 	beq.b L013986	; $013956
-	move.w ram_sys_ff867e.l,d0	; $013958
+	move.w ram_world_field_867e.l,d0	; $013958
 	add.w #$18,d0	; $01395E
 	move.w d0,-$c(a6)	; $013962
-	move.w ram_sys_ff867e.l,d0	; $013966
+	move.w ram_world_field_867e.l,d0	; $013966
 	add.w #$1c,d0	; $01396C
 	move.w d0,-$e(a6)	; $013970
-	move.w ram_sys_ff867e.l,d0	; $013974
+	move.w ram_world_field_867e.l,d0	; $013974
 	add.w #$20,d0	; $01397A
 	move.w d0,-$10(a6)	; $01397E
 	bra.w L013A66	; $013982
 L013986:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $013986
+	cmpi.w #$1,ram_menu_field_00ae.l	; $013986
 	bne.b L0139E6	; $01398E
 	tst.w -$12(a6)	; $013990
 	beq.b L01399E	; $013994
 	cmpi.w #$2,-$12(a6)	; $013996
 	bne.b L0139AE	; $01399C
 L01399E:
-	move.w ram_sys_ff867e.l,d0	; $01399E
+	move.w ram_world_field_867e.l,d0	; $01399E
 	add.w #$28,d0	; $0139A4
 	move.w d0,-$c(a6)	; $0139A8
 	bra.b L0139BA	; $0139AC
 L0139AE:
-	move.w ram_sys_ff867e.l,d0	; $0139AE
+	move.w ram_world_field_867e.l,d0	; $0139AE
 	addq.w #$8,d0	; $0139B4
 	move.w d0,-$c(a6)	; $0139B6
 L0139BA:
-	move.w ram_sys_ff867e.l,d0	; $0139BA
+	move.w ram_world_field_867e.l,d0	; $0139BA
 	addq.w #$4,d0	; $0139C0
 	move.w d0,-$e(a6)	; $0139C2
 	tst.w -$12(a6)	; $0139C6
@@ -10143,7 +10143,7 @@ L0139BA:
 	move.w #$ff,-$10(a6)	; $0139CC
 	bra.b L0139E2	; $0139D2
 L0139D4:
-	move.w ram_sys_ff867e.l,d0	; $0139D4
+	move.w ram_world_field_867e.l,d0	; $0139D4
 	add.w #$c,d0	; $0139DA
 	move.w d0,-$10(a6)	; $0139DE
 L0139E2:
@@ -10153,20 +10153,20 @@ L0139E6:
 	move.w (a0),d0	; $0139EC
 	and.w #$1,d0	; $0139EE
 	beq.b L013A10	; $0139F2
-	move.w ram_sys_ff867e.l,d0	; $0139F4
+	move.w ram_world_field_867e.l,d0	; $0139F4
 	add.w #$24,d0	; $0139FA
 	move.w d0,-$c(a6)	; $0139FE
 	move.w #$ff,-$e(a6)	; $013A02
 	move.w #$ff,-$10(a6)	; $013A08
 	bra.b L013A66	; $013A0E
 L013A10:
-	move.w ram_sys_ff867e.l,d0	; $013A10
+	move.w ram_world_field_867e.l,d0	; $013A10
 	add.w #$18,d0	; $013A16
 	move.w d0,-$c(a6)	; $013A1A
-	move.w ram_sys_ff867e.l,d0	; $013A1E
+	move.w ram_world_field_867e.l,d0	; $013A1E
 	add.w #$10,d0	; $013A24
 	move.w d0,-$e(a6)	; $013A28
-	lea.l ram_sys_ff0e92.l,a0	; $013A2C
+	lea.l ram_menu_field_0e92.l,a0	; $013A2C
 	move.w (a0),d0	; $013A32
 	and.w #$3ff,d0	; $013A34
 	cmp.w #$3ff,d0	; $013A38
@@ -10174,16 +10174,16 @@ L013A10:
 	jsr world_check_other_char.l	; $013A3E
 	tst.w d0	; $013A44
 	beq.b L013A58	; $013A46
-	move.w ram_sys_ff867e.l,d0	; $013A48
+	move.w ram_world_field_867e.l,d0	; $013A48
 	add.w #$c,d0	; $013A4E
 	move.w d0,-$10(a6)	; $013A52
 	bra.b L013A66	; $013A56
 L013A58:
-	move.w ram_sys_ff867e.l,d0	; $013A58
+	move.w ram_world_field_867e.l,d0	; $013A58
 	add.w #$14,d0	; $013A5E
 	move.w d0,-$10(a6)	; $013A62
 L013A66:
-	move.w ram_sys_ff867e.l,d0	; $013A66
+	move.w ram_world_field_867e.l,d0	; $013A66
 	add.w #$18,d0	; $013A6C
 	cmp.w -$c(a6),d0	; $013A70
 	bne.w L013AF8	; $013A74
@@ -10191,40 +10191,40 @@ L013A66:
 	move.w (a0),d0	; $013A7E
 	and.w #$1,d0	; $013A80
 	bne.b L013AF2	; $013A84
-	pea.l ram_sys_ff0e18.l	; $013A86
+	pea.l ram_menu_field_0e18.l	; $013A86
 	jsr queue_depth.l	; $013A8C
 	addq.w #$4,a7	; $013A92
 	tst.w d0	; $013A94
 	bne.b L013AF8	; $013A96
-	tst.w ram_sys_ffa7fa.l	; $013A98
+	tst.w ram_menu_field_a7fa.l	; $013A98
 	bne.b L013AF8	; $013A9E
 	move.w ram_party_leader.l,d0	; $013AA0
 	muls.w #$34,d0	; $013AA6
-	lea.l ram_sys_ff02dd.l,a0	; $013AAA
+	lea.l ram_menu_field_02dd.l,a0	; $013AAA
 	moveq #$0,d1	; $013AB0
 	move.b (a0,d0.l),d1	; $013AB2
 	cmp.w #$ff,d1	; $013AB6
 	beq.b L013AF2	; $013ABA
 	move.w ram_party_leader.l,d0	; $013ABC
 	muls.w #$34,d0	; $013AC2
-	lea.l ram_sys_ff02dd.l,a0	; $013AC6
+	lea.l ram_menu_field_02dd.l,a0	; $013AC6
 	moveq #$0,d1	; $013ACC
 	move.b (a0,d0.l),d1	; $013ACE
 	cmp.w #$ff,d1	; $013AD2
 	beq.b L013AF8	; $013AD6
-	lea.l ram_sys_ff02a2.l,a0	; $013AD8
+	lea.l ram_menu_field_02a2.l,a0	; $013AD8
 	move.w (a0),d0	; $013ADE
 	lsr.w #$3,d0	; $013AE0
 	and.w #$1,d0	; $013AE2
 	bne.b L013AF2	; $013AE6
-	cmpi.w #$1,ram_sys_ff0e7e.l	; $013AE8
+	cmpi.w #$1,ram_menu_field_0e7e.l	; $013AE8
 	beq.b L013AF8	; $013AF0
 L013AF2:
 	move.w #$ff,-$c(a6)	; $013AF2
 L013AF8:
 	cmpi.w #$ff,-$c(a6)	; $013AF8
 	bne.b L013B28	; $013AFE
-	move.w ram_sys_ff8640.l,-(a7)	; $013B00
+	move.w ram_text_field_8640.l,-(a7)	; $013B00
 	move.w #$3c,-(a7)	; $013B06
 	clr.w -(a7)	; $013B0A
 	move.w #$3,-(a7)	; $013B0C
@@ -10249,7 +10249,7 @@ L013B28:
 L013B52:
 	cmpi.w #$ff,-$e(a6)	; $013B52
 	bne.b L013B82	; $013B58
-	move.w ram_sys_ff8640.l,-(a7)	; $013B5A
+	move.w ram_text_field_8640.l,-(a7)	; $013B5A
 	move.w #$3d,-(a7)	; $013B60
 	clr.w -(a7)	; $013B64
 	move.w #$3,-(a7)	; $013B66
@@ -10274,7 +10274,7 @@ L013B82:
 L013BAC:
 	cmpi.w #$ff,-$10(a6)	; $013BAC
 	bne.b L013BDC	; $013BB2
-	move.w ram_sys_ff8640.l,-(a7)	; $013BB4
+	move.w ram_text_field_8640.l,-(a7)	; $013BB4
 	move.w #$3e,-(a7)	; $013BBA
 	clr.w -(a7)	; $013BBE
 	move.w #$3,-(a7)	; $013BC0
@@ -10297,9 +10297,9 @@ L013BDC:
 	jsr sprite_write.l	; $013BFC
 	lea.l $e(a7),a7	; $013C02
 L013C06:
-	tst.w ram_sys_ff00ac.l	; $013C06
+	tst.w ram_menu_field_00ac.l	; $013C06
 	beq.b L013C36	; $013C0C
-	move.w ram_sys_ff8640.l,-(a7)	; $013C0E
+	move.w ram_text_field_8640.l,-(a7)	; $013C0E
 	move.w #$2f,-(a7)	; $013C14
 	clr.w -(a7)	; $013C18
 	move.w #$3,-(a7)	; $013C1A
@@ -10310,7 +10310,7 @@ L013C06:
 	lea.l $e(a7),a7	; $013C30
 	bra.b L013C62	; $013C34
 L013C36:
-	move.w ram_sys_ff867e.l,d0	; $013C36
+	move.w ram_world_field_867e.l,d0	; $013C36
 	add.w #$4000,d0	; $013C3C
 	move.w d0,-(a7)	; $013C40
 	move.w #$2f,-(a7)	; $013C42
@@ -10324,7 +10324,7 @@ L013C36:
 L013C62:
 	cmpi.w #$3f,-$8(a6)	; $013C62
 	bne.b L013CAA	; $013C68
-	move.w ram_sys_ff867e.l,d0	; $013C6A
+	move.w ram_world_field_867e.l,d0	; $013C6A
 	add.w #$3c,d0	; $013C70
 	moveq #$0,d1	; $013C74
 	move.w d0,d1	; $013C76
@@ -10342,7 +10342,7 @@ L013C62:
 	lea.l $12(a7),a7	; $013CA6
 L013CAA:
 	jsr wait_vblank(pc)	; $013CAA
-	tst.w ram_sys_ff0114.l	; $013CAE
+	tst.w ram_world_field_0114.l	; $013CAE
 	bne.b L013D1C	; $013CB4
 	move.w #$2,-(a7)	; $013CB6
 	clr.w -(a7)	; $013CBA
@@ -10350,7 +10350,7 @@ L013CAA:
 	clr.w -(a7)	; $013CBE
 	jsr sprite_set_link.l	; $013CC0
 	addq.w #$8,a7	; $013CC6
-	tst.w ram_sys_ff00ac.l	; $013CC8
+	tst.w ram_menu_field_00ac.l	; $013CC8
 	beq.b L013D02	; $013CCE
 	move.w #$1e,-(a7)	; $013CD0
 	move.w #$3,-(a7)	; $013CD4
@@ -10381,7 +10381,7 @@ L013D1C:
 	clr.w -(a7)	; $013D24
 	jsr sprite_set_link.l	; $013D26
 	addq.w #$8,a7	; $013D2C
-	tst.w ram_sys_ff00ac.l	; $013D2E
+	tst.w ram_menu_field_00ac.l	; $013D2E
 	beq.b L013D68	; $013D34
 	move.w #$1e,-(a7)	; $013D36
 	move.w #$3,-(a7)	; $013D3A
@@ -10410,7 +10410,7 @@ L013D80:
 world_sprites_setup:
 	link.w a6,#$fffc	; $013D84
 	jsr clear_sprite_attr.l	; $013D88
-	move.w ram_sys_ff8640.l,-(a7)	; $013D8E
+	move.w ram_text_field_8640.l,-(a7)	; $013D8E
 	clr.w -(a7)	; $013D94
 	clr.w -(a7)	; $013D96
 	clr.w -(a7)	; $013D98
@@ -10419,7 +10419,7 @@ world_sprites_setup:
 	clr.w -(a7)	; $013D9E
 	jsr sprite_write.l	; $013DA0
 	lea.l $e(a7),a7	; $013DA6
-	move.w ram_sys_ff8640.l,d0	; $013DAA
+	move.w ram_text_field_8640.l,d0	; $013DAA
 	add.w #$205b,d0	; $013DB0
 	move.w d0,-(a7)	; $013DB4
 	clr.w -(a7)	; $013DB6
@@ -10430,7 +10430,7 @@ world_sprites_setup:
 	move.w #$1,-(a7)	; $013DC0
 	jsr sprite_write.l	; $013DC4
 	lea.l $e(a7),a7	; $013DCA
-	move.w ram_sys_ff867a.l,d0	; $013DCE
+	move.w ram_world_field_867a.l,d0	; $013DCE
 	add.w #$2000,d0	; $013DD4
 	move.w d0,-(a7)	; $013DD8
 	move.w #$3,-(a7)	; $013DDA
@@ -10441,7 +10441,7 @@ world_sprites_setup:
 	move.w #$2,-(a7)	; $013DEE
 	jsr sprite_write.l	; $013DF2
 	lea.l $e(a7),a7	; $013DF8
-	move.w ram_sys_ff867a.l,d0	; $013DFC
+	move.w ram_world_field_867a.l,d0	; $013DFC
 	add.w #$2020,d0	; $013E02
 	move.w d0,-(a7)	; $013E06
 	move.w #$4,-(a7)	; $013E08
@@ -10452,7 +10452,7 @@ world_sprites_setup:
 	move.w #$3,-(a7)	; $013E1C
 	jsr sprite_write.l	; $013E20
 	lea.l $e(a7),a7	; $013E26
-	move.w ram_sys_ff867a.l,d0	; $013E2A
+	move.w ram_world_field_867a.l,d0	; $013E2A
 	add.w #$2020,d0	; $013E30
 	move.w d0,-(a7)	; $013E34
 	move.w #$5,-(a7)	; $013E36
@@ -10463,7 +10463,7 @@ world_sprites_setup:
 	move.w #$4,-(a7)	; $013E4A
 	jsr sprite_write.l	; $013E4E
 	lea.l $e(a7),a7	; $013E54
-	move.w ram_sys_ff867a.l,d0	; $013E58
+	move.w ram_world_field_867a.l,d0	; $013E58
 	add.w #$2020,d0	; $013E5E
 	move.w d0,-(a7)	; $013E62
 	move.w #$6,-(a7)	; $013E64
@@ -10474,7 +10474,7 @@ world_sprites_setup:
 	move.w #$5,-(a7)	; $013E78
 	jsr sprite_write.l	; $013E7C
 	lea.l $e(a7),a7	; $013E82
-	move.w ram_sys_ff867a.l,d0	; $013E86
+	move.w ram_world_field_867a.l,d0	; $013E86
 	add.w #$2020,d0	; $013E8C
 	move.w d0,-(a7)	; $013E90
 	move.w #$7,-(a7)	; $013E92
@@ -10485,7 +10485,7 @@ world_sprites_setup:
 	move.w #$6,-(a7)	; $013EA6
 	jsr sprite_write.l	; $013EAA
 	lea.l $e(a7),a7	; $013EB0
-	move.w ram_sys_ff867a.l,d0	; $013EB4
+	move.w ram_world_field_867a.l,d0	; $013EB4
 	add.w #$2020,d0	; $013EBA
 	move.w d0,-(a7)	; $013EBE
 	move.w #$8,-(a7)	; $013EC0
@@ -10496,7 +10496,7 @@ world_sprites_setup:
 	move.w #$7,-(a7)	; $013ED4
 	jsr sprite_write.l	; $013ED8
 	lea.l $e(a7),a7	; $013EDE
-	move.w ram_sys_ff867a.l,d0	; $013EE2
+	move.w ram_world_field_867a.l,d0	; $013EE2
 	add.w #$2020,d0	; $013EE8
 	move.w d0,-(a7)	; $013EEC
 	move.w #$9,-(a7)	; $013EEE
@@ -10507,7 +10507,7 @@ world_sprites_setup:
 	move.w #$8,-(a7)	; $013F02
 	jsr sprite_write.l	; $013F06
 	lea.l $e(a7),a7	; $013F0C
-	move.w ram_sys_ff867a.l,d0	; $013F10
+	move.w ram_world_field_867a.l,d0	; $013F10
 	add.w #$2020,d0	; $013F16
 	move.w d0,-(a7)	; $013F1A
 	move.w #$a,-(a7)	; $013F1C
@@ -10518,7 +10518,7 @@ world_sprites_setup:
 	move.w #$9,-(a7)	; $013F30
 	jsr sprite_write.l	; $013F34
 	lea.l $e(a7),a7	; $013F3A
-	move.w ram_sys_ff867a.l,d0	; $013F3E
+	move.w ram_world_field_867a.l,d0	; $013F3E
 	add.w #$2020,d0	; $013F44
 	move.w d0,-(a7)	; $013F48
 	move.w #$b,-(a7)	; $013F4A
@@ -10529,7 +10529,7 @@ world_sprites_setup:
 	move.w #$a,-(a7)	; $013F5E
 	jsr sprite_write.l	; $013F62
 	lea.l $e(a7),a7	; $013F68
-	move.w ram_sys_ff867a.l,d0	; $013F6C
+	move.w ram_world_field_867a.l,d0	; $013F6C
 	add.w #$2030,d0	; $013F72
 	move.w d0,-(a7)	; $013F76
 	move.w #$c,-(a7)	; $013F78
@@ -10540,7 +10540,7 @@ world_sprites_setup:
 	move.w #$b,-(a7)	; $013F8C
 	jsr sprite_write.l	; $013F90
 	lea.l $e(a7),a7	; $013F96
-	move.w ram_sys_ff867a.l,d0	; $013F9A
+	move.w ram_world_field_867a.l,d0	; $013F9A
 	add.w #$3000,d0	; $013FA0
 	move.w d0,-(a7)	; $013FA4
 	move.w #$d,-(a7)	; $013FA6
@@ -10551,7 +10551,7 @@ world_sprites_setup:
 	move.w #$c,-(a7)	; $013FBA
 	jsr sprite_write.l	; $013FBE
 	lea.l $e(a7),a7	; $013FC4
-	move.w ram_sys_ff867a.l,d0	; $013FC8
+	move.w ram_world_field_867a.l,d0	; $013FC8
 	add.w #$3020,d0	; $013FCE
 	move.w d0,-(a7)	; $013FD2
 	move.w #$e,-(a7)	; $013FD4
@@ -10562,7 +10562,7 @@ world_sprites_setup:
 	move.w #$d,-(a7)	; $013FE8
 	jsr sprite_write.l	; $013FEC
 	lea.l $e(a7),a7	; $013FF2
-	move.w ram_sys_ff867a.l,d0	; $013FF6
+	move.w ram_world_field_867a.l,d0	; $013FF6
 	add.w #$3020,d0	; $013FFC
 	move.w d0,-(a7)	; $014000
 	move.w #$f,-(a7)	; $014002
@@ -10573,7 +10573,7 @@ world_sprites_setup:
 	move.w #$e,-(a7)	; $014016
 	jsr sprite_write.l	; $01401A
 	lea.l $e(a7),a7	; $014020
-	move.w ram_sys_ff867a.l,d0	; $014024
+	move.w ram_world_field_867a.l,d0	; $014024
 	add.w #$3020,d0	; $01402A
 	move.w d0,-(a7)	; $01402E
 	move.w #$10,-(a7)	; $014030
@@ -10584,7 +10584,7 @@ world_sprites_setup:
 	move.w #$f,-(a7)	; $014044
 	jsr sprite_write.l	; $014048
 	lea.l $e(a7),a7	; $01404E
-	move.w ram_sys_ff867a.l,d0	; $014052
+	move.w ram_world_field_867a.l,d0	; $014052
 	add.w #$3020,d0	; $014058
 	move.w d0,-(a7)	; $01405C
 	move.w #$11,-(a7)	; $01405E
@@ -10595,7 +10595,7 @@ world_sprites_setup:
 	move.w #$10,-(a7)	; $014072
 	jsr sprite_write.l	; $014076
 	lea.l $e(a7),a7	; $01407C
-	move.w ram_sys_ff867a.l,d0	; $014080
+	move.w ram_world_field_867a.l,d0	; $014080
 	add.w #$3020,d0	; $014086
 	move.w d0,-(a7)	; $01408A
 	move.w #$12,-(a7)	; $01408C
@@ -10606,7 +10606,7 @@ world_sprites_setup:
 	move.w #$11,-(a7)	; $0140A0
 	jsr sprite_write.l	; $0140A4
 	lea.l $e(a7),a7	; $0140AA
-	move.w ram_sys_ff867a.l,d0	; $0140AE
+	move.w ram_world_field_867a.l,d0	; $0140AE
 	add.w #$3020,d0	; $0140B4
 	move.w d0,-(a7)	; $0140B8
 	move.w #$13,-(a7)	; $0140BA
@@ -10617,7 +10617,7 @@ world_sprites_setup:
 	move.w #$12,-(a7)	; $0140CE
 	jsr sprite_write.l	; $0140D2
 	lea.l $e(a7),a7	; $0140D8
-	move.w ram_sys_ff867a.l,d0	; $0140DC
+	move.w ram_world_field_867a.l,d0	; $0140DC
 	add.w #$3020,d0	; $0140E2
 	move.w d0,-(a7)	; $0140E6
 	move.w #$14,-(a7)	; $0140E8
@@ -10628,7 +10628,7 @@ world_sprites_setup:
 	move.w #$13,-(a7)	; $0140FC
 	jsr sprite_write.l	; $014100
 	lea.l $e(a7),a7	; $014106
-	move.w ram_sys_ff867a.l,d0	; $01410A
+	move.w ram_world_field_867a.l,d0	; $01410A
 	add.w #$3020,d0	; $014110
 	move.w d0,-(a7)	; $014114
 	move.w #$15,-(a7)	; $014116
@@ -10639,7 +10639,7 @@ world_sprites_setup:
 	move.w #$14,-(a7)	; $01412A
 	jsr sprite_write.l	; $01412E
 	lea.l $e(a7),a7	; $014134
-	move.w ram_sys_ff867a.l,d0	; $014138
+	move.w ram_world_field_867a.l,d0	; $014138
 	add.w #$3030,d0	; $01413E
 	move.w d0,-(a7)	; $014142
 	move.w #$16,-(a7)	; $014144
@@ -10650,7 +10650,7 @@ world_sprites_setup:
 	move.w #$15,-(a7)	; $014158
 	jsr sprite_write.l	; $01415C
 	lea.l $e(a7),a7	; $014162
-	move.w ram_sys_ff867a.l,d0	; $014166
+	move.w ram_world_field_867a.l,d0	; $014166
 	add.w #$2000,d0	; $01416C
 	move.w d0,-(a7)	; $014170
 	move.w #$17,-(a7)	; $014172
@@ -10661,7 +10661,7 @@ world_sprites_setup:
 	move.w #$16,-(a7)	; $014186
 	jsr sprite_write.l	; $01418A
 	lea.l $e(a7),a7	; $014190
-	move.w ram_sys_ff867a.l,d0	; $014194
+	move.w ram_world_field_867a.l,d0	; $014194
 	add.w #$2030,d0	; $01419A
 	move.w d0,-(a7)	; $01419E
 	move.w #$18,-(a7)	; $0141A0
@@ -10672,7 +10672,7 @@ world_sprites_setup:
 	move.w #$17,-(a7)	; $0141B4
 	jsr sprite_write.l	; $0141B8
 	lea.l $e(a7),a7	; $0141BE
-	move.w ram_sys_ff867a.l,d0	; $0141C2
+	move.w ram_world_field_867a.l,d0	; $0141C2
 	add.w #$3000,d0	; $0141C8
 	move.w d0,-(a7)	; $0141CC
 	move.w #$19,-(a7)	; $0141CE
@@ -10683,7 +10683,7 @@ world_sprites_setup:
 	move.w #$18,-(a7)	; $0141E2
 	jsr sprite_write.l	; $0141E6
 	lea.l $e(a7),a7	; $0141EC
-	move.w ram_sys_ff867a.l,d0	; $0141F0
+	move.w ram_world_field_867a.l,d0	; $0141F0
 	add.w #$3030,d0	; $0141F6
 	move.w d0,-(a7)	; $0141FA
 	move.w #$1a,-(a7)	; $0141FC
@@ -10694,7 +10694,7 @@ world_sprites_setup:
 	move.w #$19,-(a7)	; $014210
 	jsr sprite_write.l	; $014214
 	lea.l $e(a7),a7	; $01421A
-	move.w ram_sys_ff867a.l,d0	; $01421E
+	move.w ram_world_field_867a.l,d0	; $01421E
 	add.w #$2000,d0	; $014224
 	move.w d0,-(a7)	; $014228
 	move.w #$1b,-(a7)	; $01422A
@@ -10705,7 +10705,7 @@ world_sprites_setup:
 	move.w #$1a,-(a7)	; $01423E
 	jsr sprite_write.l	; $014242
 	lea.l $e(a7),a7	; $014248
-	move.w ram_sys_ff867a.l,d0	; $01424C
+	move.w ram_world_field_867a.l,d0	; $01424C
 	add.w #$2030,d0	; $014252
 	move.w d0,-(a7)	; $014256
 	move.w #$1c,-(a7)	; $014258
@@ -10716,7 +10716,7 @@ world_sprites_setup:
 	move.w #$1b,-(a7)	; $01426C
 	jsr sprite_write.l	; $014270
 	lea.l $e(a7),a7	; $014276
-	move.w ram_sys_ff867a.l,d0	; $01427A
+	move.w ram_world_field_867a.l,d0	; $01427A
 	add.w #$3000,d0	; $014280
 	move.w d0,-(a7)	; $014284
 	move.w #$1d,-(a7)	; $014286
@@ -10727,7 +10727,7 @@ world_sprites_setup:
 	move.w #$1c,-(a7)	; $01429A
 	jsr sprite_write.l	; $01429E
 	lea.l $e(a7),a7	; $0142A4
-	move.w ram_sys_ff867a.l,d0	; $0142A8
+	move.w ram_world_field_867a.l,d0	; $0142A8
 	add.w #$3030,d0	; $0142AE
 	move.w d0,-(a7)	; $0142B2
 	move.w #$1e,-(a7)	; $0142B4
@@ -10738,7 +10738,7 @@ world_sprites_setup:
 	move.w #$1d,-(a7)	; $0142C8
 	jsr sprite_write.l	; $0142CC
 	lea.l $e(a7),a7	; $0142D2
-	move.w ram_sys_ff8640.l,d0	; $0142D6
+	move.w ram_text_field_8640.l,d0	; $0142D6
 	add.w #$405f,d0	; $0142DC
 	move.w d0,-(a7)	; $0142E0
 	move.w #$1f,-(a7)	; $0142E2
@@ -10749,7 +10749,7 @@ world_sprites_setup:
 	move.w #$1e,-(a7)	; $0142F0
 	jsr sprite_write.l	; $0142F4
 	lea.l $e(a7),a7	; $0142FA
-	move.w ram_sys_ff8640.l,d0	; $0142FE
+	move.w ram_text_field_8640.l,d0	; $0142FE
 	add.w #$4063,d0	; $014304
 	move.w d0,-(a7)	; $014308
 	move.w #$20,-(a7)	; $01430A
@@ -10760,7 +10760,7 @@ world_sprites_setup:
 	move.w #$1f,-(a7)	; $014318
 	jsr sprite_write.l	; $01431C
 	lea.l $e(a7),a7	; $014322
-	move.w ram_sys_ff867a.l,d0	; $014326
+	move.w ram_world_field_867a.l,d0	; $014326
 	add.w #$2000,d0	; $01432C
 	move.w d0,-(a7)	; $014330
 	move.w #$21,-(a7)	; $014332
@@ -10771,7 +10771,7 @@ world_sprites_setup:
 	move.w #$20,-(a7)	; $014346
 	jsr sprite_write.l	; $01434A
 	lea.l $e(a7),a7	; $014350
-	move.w ram_sys_ff867a.l,d0	; $014354
+	move.w ram_world_field_867a.l,d0	; $014354
 	add.w #$2020,d0	; $01435A
 	move.w d0,-(a7)	; $01435E
 	move.w #$22,-(a7)	; $014360
@@ -10782,7 +10782,7 @@ world_sprites_setup:
 	move.w #$21,-(a7)	; $014374
 	jsr sprite_write.l	; $014378
 	lea.l $e(a7),a7	; $01437E
-	move.w ram_sys_ff867a.l,d0	; $014382
+	move.w ram_world_field_867a.l,d0	; $014382
 	add.w #$2030,d0	; $014388
 	move.w d0,-(a7)	; $01438C
 	move.w #$23,-(a7)	; $01438E
@@ -10793,7 +10793,7 @@ world_sprites_setup:
 	move.w #$22,-(a7)	; $0143A2
 	jsr sprite_write.l	; $0143A6
 	lea.l $e(a7),a7	; $0143AC
-	move.w ram_sys_ff867a.l,d0	; $0143B0
+	move.w ram_world_field_867a.l,d0	; $0143B0
 	add.w #$2010,d0	; $0143B6
 	move.w d0,-(a7)	; $0143BA
 	move.w #$24,-(a7)	; $0143BC
@@ -10804,7 +10804,7 @@ world_sprites_setup:
 	move.w #$23,-(a7)	; $0143D0
 	jsr sprite_write.l	; $0143D4
 	lea.l $e(a7),a7	; $0143DA
-	move.w ram_sys_ff867a.l,d0	; $0143DE
+	move.w ram_world_field_867a.l,d0	; $0143DE
 	add.w #$2040,d0	; $0143E4
 	move.w d0,-(a7)	; $0143E8
 	move.w #$25,-(a7)	; $0143EA
@@ -10815,7 +10815,7 @@ world_sprites_setup:
 	move.w #$24,-(a7)	; $0143FE
 	jsr sprite_write.l	; $014402
 	lea.l $e(a7),a7	; $014408
-	move.w ram_sys_ff867a.l,d0	; $01440C
+	move.w ram_world_field_867a.l,d0	; $01440C
 	add.w #$2050,d0	; $014412
 	move.w d0,-(a7)	; $014416
 	move.w #$26,-(a7)	; $014418
@@ -10826,7 +10826,7 @@ world_sprites_setup:
 	move.w #$25,-(a7)	; $01442C
 	jsr sprite_write.l	; $014430
 	lea.l $e(a7),a7	; $014436
-	move.w ram_sys_ff867a.l,d0	; $01443A
+	move.w ram_world_field_867a.l,d0	; $01443A
 	add.w #$2010,d0	; $014440
 	move.w d0,-(a7)	; $014444
 	move.w #$27,-(a7)	; $014446
@@ -10837,7 +10837,7 @@ world_sprites_setup:
 	move.w #$26,-(a7)	; $01445A
 	jsr sprite_write.l	; $01445E
 	lea.l $e(a7),a7	; $014464
-	move.w ram_sys_ff867a.l,d0	; $014468
+	move.w ram_world_field_867a.l,d0	; $014468
 	add.w #$2040,d0	; $01446E
 	move.w d0,-(a7)	; $014472
 	move.w #$28,-(a7)	; $014474
@@ -10848,7 +10848,7 @@ world_sprites_setup:
 	move.w #$27,-(a7)	; $014488
 	jsr sprite_write.l	; $01448C
 	lea.l $e(a7),a7	; $014492
-	move.w ram_sys_ff867a.l,d0	; $014496
+	move.w ram_world_field_867a.l,d0	; $014496
 	add.w #$2050,d0	; $01449C
 	move.w d0,-(a7)	; $0144A0
 	move.w #$29,-(a7)	; $0144A2
@@ -10859,7 +10859,7 @@ world_sprites_setup:
 	move.w #$28,-(a7)	; $0144B6
 	jsr sprite_write.l	; $0144BA
 	lea.l $e(a7),a7	; $0144C0
-	move.w ram_sys_ff867a.l,d0	; $0144C4
+	move.w ram_world_field_867a.l,d0	; $0144C4
 	add.w #$2010,d0	; $0144CA
 	move.w d0,-(a7)	; $0144CE
 	move.w #$2a,-(a7)	; $0144D0
@@ -10870,7 +10870,7 @@ world_sprites_setup:
 	move.w #$29,-(a7)	; $0144E4
 	jsr sprite_write.l	; $0144E8
 	lea.l $e(a7),a7	; $0144EE
-	move.w ram_sys_ff867a.l,d0	; $0144F2
+	move.w ram_world_field_867a.l,d0	; $0144F2
 	add.w #$2040,d0	; $0144F8
 	move.w d0,-(a7)	; $0144FC
 	move.w #$2b,-(a7)	; $0144FE
@@ -10881,7 +10881,7 @@ world_sprites_setup:
 	move.w #$2a,-(a7)	; $014512
 	jsr sprite_write.l	; $014516
 	lea.l $e(a7),a7	; $01451C
-	move.w ram_sys_ff867a.l,d0	; $014520
+	move.w ram_world_field_867a.l,d0	; $014520
 	add.w #$2050,d0	; $014526
 	move.w d0,-(a7)	; $01452A
 	move.w #$2c,-(a7)	; $01452C
@@ -10892,7 +10892,7 @@ world_sprites_setup:
 	move.w #$2b,-(a7)	; $014540
 	jsr sprite_write.l	; $014544
 	lea.l $e(a7),a7	; $01454A
-	move.w ram_sys_ff867a.l,d0	; $01454E
+	move.w ram_world_field_867a.l,d0	; $01454E
 	add.w #$3000,d0	; $014554
 	move.w d0,-(a7)	; $014558
 	move.w #$2d,-(a7)	; $01455A
@@ -10903,7 +10903,7 @@ world_sprites_setup:
 	move.w #$2c,-(a7)	; $01456E
 	jsr sprite_write.l	; $014572
 	lea.l $e(a7),a7	; $014578
-	move.w ram_sys_ff867a.l,d0	; $01457C
+	move.w ram_world_field_867a.l,d0	; $01457C
 	add.w #$3020,d0	; $014582
 	move.w d0,-(a7)	; $014586
 	move.w #$2e,-(a7)	; $014588
@@ -10914,7 +10914,7 @@ world_sprites_setup:
 	move.w #$2d,-(a7)	; $01459C
 	jsr sprite_write.l	; $0145A0
 	lea.l $e(a7),a7	; $0145A6
-	move.w ram_sys_ff867a.l,d0	; $0145AA
+	move.w ram_world_field_867a.l,d0	; $0145AA
 	add.w #$3030,d0	; $0145B0
 	move.w d0,-(a7)	; $0145B4
 	move.w #$1,-(a7)	; $0145B6
@@ -10925,7 +10925,7 @@ world_sprites_setup:
 	move.w #$2e,-(a7)	; $0145CA
 	jsr sprite_write.l	; $0145CE
 	lea.l $e(a7),a7	; $0145D4
-	move.w ram_sys_ff867c.l,d0	; $0145D8
+	move.w ram_world_field_867c.l,d0	; $0145D8
 	add.w #$4000,d0	; $0145DE
 	move.w d0,-(a7)	; $0145E2
 	move.w #$43,-(a7)	; $0145E4
@@ -10938,9 +10938,9 @@ world_sprites_setup:
 	move.w #$2f,-(a7)	; $014600
 	jsr sprite_grid_write.l	; $014604
 	lea.l $12(a7),a7	; $01460A
-	tst.w ram_sys_ff0116.l	; $01460E
+	tst.w ram_menu_field_0116.l	; $01460E
 	beq.w L0146D4	; $014614
-	move.w ram_sys_ff867e.l,d0	; $014618
+	move.w ram_world_field_867e.l,d0	; $014618
 	add.w #$402c,d0	; $01461E
 	move.w d0,-(a7)	; $014622
 	move.w #$38,-(a7)	; $014624
@@ -10951,7 +10951,7 @@ world_sprites_setup:
 	move.w #$37,-(a7)	; $014638
 	jsr sprite_write.l	; $01463C
 	lea.l $e(a7),a7	; $014642
-	move.w ram_sys_ff867e.l,d0	; $014646
+	move.w ram_world_field_867e.l,d0	; $014646
 	add.w #$582c,d0	; $01464C
 	move.w d0,-(a7)	; $014650
 	move.w #$39,-(a7)	; $014652
@@ -10962,7 +10962,7 @@ world_sprites_setup:
 	move.w #$38,-(a7)	; $014666
 	jsr sprite_write.l	; $01466A
 	lea.l $e(a7),a7	; $014670
-	move.w ram_sys_ff867e.l,d0	; $014674
+	move.w ram_world_field_867e.l,d0	; $014674
 	add.w #$502c,d0	; $01467A
 	move.w d0,-(a7)	; $01467E
 	move.w #$3a,-(a7)	; $014680
@@ -10973,7 +10973,7 @@ world_sprites_setup:
 	move.w #$39,-(a7)	; $014694
 	jsr sprite_write.l	; $014698
 	lea.l $e(a7),a7	; $01469E
-	move.w ram_sys_ff867e.l,d0	; $0146A2
+	move.w ram_world_field_867e.l,d0	; $0146A2
 	add.w #$482c,d0	; $0146A8
 	move.w d0,-(a7)	; $0146AC
 	move.w #$3b,-(a7)	; $0146AE
@@ -10986,7 +10986,7 @@ world_sprites_setup:
 	lea.l $e(a7),a7	; $0146CC
 	bra.w L01478C	; $0146D0
 L0146D4:
-	move.w ram_sys_ff867e.l,d0	; $0146D4
+	move.w ram_world_field_867e.l,d0	; $0146D4
 	add.w #$482c,d0	; $0146DA
 	move.w d0,-(a7)	; $0146DE
 	move.w #$38,-(a7)	; $0146E0
@@ -10997,7 +10997,7 @@ L0146D4:
 	move.w #$37,-(a7)	; $0146F4
 	jsr sprite_write.l	; $0146F8
 	lea.l $e(a7),a7	; $0146FE
-	move.w ram_sys_ff867e.l,d0	; $014702
+	move.w ram_world_field_867e.l,d0	; $014702
 	add.w #$502c,d0	; $014708
 	move.w d0,-(a7)	; $01470C
 	move.w #$39,-(a7)	; $01470E
@@ -11008,7 +11008,7 @@ L0146D4:
 	move.w #$38,-(a7)	; $014722
 	jsr sprite_write.l	; $014726
 	lea.l $e(a7),a7	; $01472C
-	move.w ram_sys_ff867e.l,d0	; $014730
+	move.w ram_world_field_867e.l,d0	; $014730
 	add.w #$402c,d0	; $014736
 	move.w d0,-(a7)	; $01473A
 	move.w #$3a,-(a7)	; $01473C
@@ -11019,7 +11019,7 @@ L0146D4:
 	move.w #$39,-(a7)	; $014750
 	jsr sprite_write.l	; $014754
 	lea.l $e(a7),a7	; $01475A
-	move.w ram_sys_ff867e.l,d0	; $01475E
+	move.w ram_world_field_867e.l,d0	; $01475E
 	add.w #$582c,d0	; $014764
 	move.w d0,-(a7)	; $014768
 	move.w #$3b,-(a7)	; $01476A
@@ -11031,7 +11031,7 @@ L0146D4:
 	jsr sprite_write.l	; $014782
 	lea.l $e(a7),a7	; $014788
 L01478C:
-	move.w ram_sys_ff867e.l,d0	; $01478C
+	move.w ram_world_field_867e.l,d0	; $01478C
 	add.w #$30,d0	; $014792
 	moveq #$0,d1	; $014796
 	move.w d0,d1	; $014798
@@ -11086,7 +11086,7 @@ gfx_plane_write:
 	lea.l $e(a7),a7	; $014864
 	lea.l ram_sys_ff4ec0.l,a0	; $014868
 	move.l a0,-$54(a6)	; $01486E
-	move.w #$234,ram_sys_ff0076.l	; $014872
+	move.w #$234,ram_world_field_0076.l	; $014872
 	move.w #$10e,-(a7)	; $01487A
 	move.w #$24,-(a7)	; $01487E
 	jsr map_decode.l	; $014882
@@ -11094,7 +11094,7 @@ gfx_plane_write:
 	move.l d0,-(a7)	; $01488A
 	jsr gfx_dma_tile_upload.l	; $01488C
 	addq.w #$6,a7	; $014892
-	move.w d0,ram_sys_ff8640.l	; $014894
+	move.w d0,ram_text_field_8640.l	; $014894
 	move.w #$176,-(a7)	; $01489A
 	move.w #$c,-(a7)	; $01489E
 	jsr map_decode.l	; $0148A2
@@ -11102,7 +11102,7 @@ gfx_plane_write:
 	move.l d0,-(a7)	; $0148AA
 	jsr gfx_dma_tile_upload.l	; $0148AC
 	addq.w #$6,a7	; $0148B2
-	move.w d0,ram_sys_ff8676.l	; $0148B4
+	move.w d0,ram_world_field_8676.l	; $0148B4
 	move.w #$24,-(a7)	; $0148BA
 	jsr sys_counter_add.l	; $0148BE
 	addq.w #$2,a7	; $0148C4
@@ -11127,7 +11127,7 @@ gfx_plane_write:
 	move.w #$8522,-(a7)	; $01490E
 	jsr vdp_ctrl_write.l	; $014912
 	addq.w #$2,a7	; $014918
-	move.w #$4400,ram_sys_ff8644.l	; $01491A
+	move.w #$4400,ram_sys_field_8644.l	; $01491A
 	move.w #$8d10,-(a7)	; $014922
 	jsr vdp_ctrl_write.l	; $014926
 	addq.w #$2,a7	; $01492C
@@ -11150,7 +11150,7 @@ gfx_plane_write:
 	clr.w -(a7)	; $01496A
 	jsr vdp_write_block.l	; $01496C
 	addq.w #$8,a7	; $014972
-	move.w ram_sys_ff8640.l,-(a7)	; $014974
+	move.w ram_text_field_8640.l,-(a7)	; $014974
 	move.w #$1c,-(a7)	; $01497A
 	move.w #$40,-(a7)	; $01497E
 	clr.w -(a7)	; $014982
@@ -11159,7 +11159,7 @@ gfx_plane_write:
 	pea.l $f000.l	; $01498A
 	jsr gfx_tilemap_fill.l	; $014990
 	lea.l $10(a7),a7	; $014996
-	move.w ram_sys_ff8640.l,-(a7)	; $01499A
+	move.w ram_text_field_8640.l,-(a7)	; $01499A
 	move.w #$40,-(a7)	; $0149A0
 	move.w #$40,-(a7)	; $0149A4
 	clr.w -(a7)	; $0149A8
@@ -11168,7 +11168,7 @@ gfx_plane_write:
 	pea.l L002000.w	; $0149B0
 	jsr gfx_tilemap_fill.l	; $0149B4
 	lea.l $10(a7),a7	; $0149BA
-	move.w ram_sys_ff8640.l,-(a7)	; $0149BE
+	move.w ram_text_field_8640.l,-(a7)	; $0149BE
 	move.w #$40,-(a7)	; $0149C4
 	move.w #$40,-(a7)	; $0149C8
 	clr.w -(a7)	; $0149CC
@@ -11183,7 +11183,7 @@ L0149E4:
 	jsr map_decode.l	; $0149E8
 	addq.w #$2,a7	; $0149EE
 	move.l d0,-(a7)	; $0149F0
-	move.w ram_sys_ff8676.l,-(a7)	; $0149F2
+	move.w ram_world_field_8676.l,-(a7)	; $0149F2
 	move.w #$8,-(a7)	; $0149F8
 	move.w #$28,-(a7)	; $0149FC
 	move.w -$2(a6),d0	; $014A00
@@ -11202,7 +11202,7 @@ L0149E4:
 	jsr map_decode.l	; $014A2C
 	addq.w #$2,a7	; $014A32
 	move.l d0,-(a7)	; $014A34
-	move.w ram_sys_ff8676.l,-(a7)	; $014A36
+	move.w ram_world_field_8676.l,-(a7)	; $014A36
 	move.w #$8,-(a7)	; $014A3C
 	move.w #$28,-(a7)	; $014A40
 	clr.w -(a7)	; $014A44
@@ -11312,7 +11312,7 @@ L014B7E:
 	jsr map_decode.l	; $014BAA
 	addq.w #$2,a7	; $014BB0
 	move.l d0,-(a7)	; $014BB2
-	move.w ram_sys_ff8676.l,-(a7)	; $014BB4
+	move.w ram_world_field_8676.l,-(a7)	; $014BB4
 	move.w #$8,-(a7)	; $014BBA
 	move.w #$28,-(a7)	; $014BBE
 	move.w -$4(a6),-(a7)	; $014BC2
@@ -11321,7 +11321,7 @@ L014B7E:
 	clr.l -(a7)	; $014BCC
 	jsr gfx_set_tile_vram_addr.l	; $014BCE
 	lea.l $14(a7),a7	; $014BD4
-	move.w ram_sys_ff8640.l,-(a7)	; $014BD8
+	move.w ram_text_field_8640.l,-(a7)	; $014BD8
 	move.w #$4,-(a7)	; $014BDE
 	move.w #$28,-(a7)	; $014BE2
 	move.w -$4(a6),d0	; $014BE6
@@ -11400,7 +11400,7 @@ L014CC6:
 	divs.w #$40,d0	; $014CEA
 	swap d0	; $014CEE
 	move.w d0,-$6(a6)	; $014CF0
-	move.w ram_sys_ff8640.l,-(a7)	; $014CF4
+	move.w ram_text_field_8640.l,-(a7)	; $014CF4
 	move.w #$3,-(a7)	; $014CFA
 	move.w #$28,-(a7)	; $014CFE
 	move.w -$6(a6),-(a7)	; $014D02
@@ -11418,7 +11418,7 @@ L014CC6:
 	divs.w #$40,d0	; $014D32
 	swap d0	; $014D36
 	move.w d0,-$6(a6)	; $014D38
-	move.w ram_sys_ff8640.l,-(a7)	; $014D3C
+	move.w ram_text_field_8640.l,-(a7)	; $014D3C
 	move.w #$1,-(a7)	; $014D42
 	move.w #$28,-(a7)	; $014D46
 	move.w -$6(a6),-(a7)	; $014D4A
@@ -11440,7 +11440,7 @@ L014CC6:
 	move.w d0,-(a7)	; $014D84
 	jsr tile_record_load.l	; $014D86
 	addq.w #$6,a7	; $014D8C
-	move.w ram_sys_ff8640.l,-(a7)	; $014D8E
+	move.w ram_text_field_8640.l,-(a7)	; $014D8E
 	move.w #$8,-(a7)	; $014D94
 	move.w #$28,-(a7)	; $014D98
 	move.w -$6(a6),-(a7)	; $014D9C
@@ -11501,11 +11501,11 @@ L014E3A:
 	ble.w L014F0E	; $014E50
 L014E54:
 	jsr joypad_queue_pop.l	; $014E54
-	move.b d0,ram_sys_ff0e14.l	; $014E5A
+	move.b d0,ram_sys_field_0e14.l	; $014E5A
 	addq.w #$1,-$a(a6)	; $014E60
 	jsr wait_vblank.l	; $014E64
 	moveq #$0,d0	; $014E6A
-	move.b ram_sys_ff0e14.l,d0	; $014E6C
+	move.b ram_sys_field_0e14.l,d0	; $014E6C
 	and.w #$f0,d0	; $014E72
 	bne.w L014F54	; $014E76
 	clr.w -(a7)	; $014E7A
@@ -11523,7 +11523,7 @@ L014E9E:
 	jsr map_decode.l	; $014EA2
 	addq.w #$2,a7	; $014EA8
 	move.l d0,-(a7)	; $014EAA
-	move.w ram_sys_ff8676.l,-(a7)	; $014EAC
+	move.w ram_world_field_8676.l,-(a7)	; $014EAC
 	move.w #$8,-(a7)	; $014EB2
 	move.w #$28,-(a7)	; $014EB6
 	clr.w -(a7)	; $014EBA
@@ -11534,7 +11534,7 @@ L014E9E:
 	lea.l $14(a7),a7	; $014ECA
 	bra.b L014F0A	; $014ECE
 L014ED0:
-	move.b ram_sys_ff0e14.l,d0	; $014ED0
+	move.b ram_sys_field_0e14.l,d0	; $014ED0
 	and.b #$f,d0	; $014ED6
 	bne.b L014F06	; $014EDA
 	tst.w $a(a6)	; $014EDC
@@ -11568,10 +11568,10 @@ L014F1A:
 	clr.l -$58(a6)	; $014F28
 L014F2C:
 	jsr joypad_queue_pop.l	; $014F2C
-	move.b d0,ram_sys_ff0e14.l	; $014F32
+	move.b d0,ram_sys_field_0e14.l	; $014F32
 	addq.l #$1,-$58(a6)	; $014F38
 	moveq #$0,d0	; $014F3C
-	move.b ram_sys_ff0e14.l,d0	; $014F3E
+	move.b ram_sys_field_0e14.l,d0	; $014F3E
 	and.w #$f0,d0	; $014F44
 	bne.b L014F54	; $014F48
 	cmpi.l #$4e20,-$58(a6)	; $014F4A
@@ -11651,7 +11651,7 @@ intro_helper:
 	clr.w -(a7)	; $015026
 	jsr snd_music_start(pc)	; $015028
 	addq.w #$2,a7	; $01502C
-	move.w ram_sys_ff8686.l,ram_sys_ff0076.l	; $01502E
+	move.w ram_sys_field_8686.l,ram_world_field_0076.l	; $01502E
 	move.w #$150,-(a7)	; $015038
 	move.w #$1d,-(a7)	; $01503C
 	jsr map_decode.l	; $015040
@@ -11667,7 +11667,7 @@ intro_helper:
 	move.l d0,-(a7)	; $015068
 	jsr gfx_dma_tile_upload.l	; $01506A
 	addq.w #$6,a7	; $015070
-	move.w d0,ram_sys_ff8642.l	; $015072
+	move.w d0,ram_world_field_8642.l	; $015072
 	move.w #$40,-(a7)	; $015078
 	move.w #$1f,-(a7)	; $01507C
 	jsr map_decode.l	; $015080
@@ -11675,7 +11675,7 @@ intro_helper:
 	move.l d0,-(a7)	; $015088
 	jsr gfx_dma_tile_upload.l	; $01508A
 	addq.w #$6,a7	; $015090
-	move.w d0,ram_sys_ff867e.l	; $015092
+	move.w d0,ram_world_field_867e.l	; $015092
 	jsr wait_vblank.l	; $015098
 	pea.l L0CCAF8.l	; $01509E
 	clr.w -(a7)	; $0150A4
@@ -11712,7 +11712,7 @@ intro_helper:
 	clr.w -(a7)	; $01511A
 	jsr vdp_write_hscroll_wave(pc)	; $01511C
 	lea.l $a(a7),a7	; $015120
-	move.w ram_sys_ff8640.l,-(a7)	; $015124
+	move.w ram_text_field_8640.l,-(a7)	; $015124
 	move.w #$1c,-(a7)	; $01512A
 	move.w #$80,-(a7)	; $01512E
 	clr.w -(a7)	; $015132
@@ -11721,7 +11721,7 @@ intro_helper:
 	pea.l L002000.w	; $01513A
 	jsr gfx_tilemap_fill.l	; $01513E
 	lea.l $10(a7),a7	; $015144
-	move.w ram_sys_ff867e.l,d0	; $015148
+	move.w ram_world_field_867e.l,d0	; $015148
 	add.w #$4000,d0	; $01514E
 	move.w d0,-(a7)	; $015152
 	move.w #$1,-(a7)	; $015154
@@ -11732,7 +11732,7 @@ intro_helper:
 	clr.w -(a7)	; $015168
 	jsr sprite_write.l	; $01516A
 	lea.l $e(a7),a7	; $015170
-	move.w ram_sys_ff8642.l,d0	; $015174
+	move.w ram_world_field_8642.l,d0	; $015174
 	add.w #$4000,d0	; $01517A
 	move.w d0,-(a7)	; $01517E
 	move.w #$2,-(a7)	; $015180
@@ -11745,7 +11745,7 @@ intro_helper:
 	move.w #$1,-(a7)	; $01519C
 	jsr sprite_grid_write.l	; $0151A0
 	lea.l $12(a7),a7	; $0151A6
-	move.w ram_sys_ff8642.l,d0	; $0151AA
+	move.w ram_world_field_8642.l,d0	; $0151AA
 	add.w #$400c,d0	; $0151B0
 	move.w d0,-(a7)	; $0151B4
 	move.w #$3,-(a7)	; $0151B6
@@ -11769,7 +11769,7 @@ intro_helper:
 	move.w #$3,-(a7)	; $0151FC
 	jsr sprite_grid_write.l	; $015200
 	lea.l $12(a7),a7	; $015206
-	move.w ram_sys_ff8680.l,d0	; $01520A
+	move.w ram_sys_field_8680.l,d0	; $01520A
 	add.w #$6000,d0	; $015210
 	moveq #$0,d1	; $015214
 	move.w d0,d1	; $015216
@@ -11783,7 +11783,7 @@ intro_helper:
 	pea.l L002000.w	; $015232
 	jsr gfx_tilemap_draw.l	; $015236
 	lea.l $10(a7),a7	; $01523C
-	move.w ram_sys_ff8684.l,d0	; $015240
+	move.w ram_sys_field_8684.l,d0	; $015240
 	add.w #$6000,d0	; $015246
 	move.w d0,-(a7)	; $01524A
 	move.w #$13,-(a7)	; $01524C
@@ -11866,7 +11866,7 @@ L01536A:
 L015376:
 	addq.l #$1,-$1a(a6)	; $015376
 	jsr joypad_queue_pop.l	; $01537A
-	move.b d0,ram_sys_ff0e14.l	; $015380
+	move.b d0,ram_sys_field_0e14.l	; $015380
 	addq.w #$4,-$2(a6)	; $015386
 	tst.w -$a(a6)	; $01538A
 	bge.b L015398	; $01538E
@@ -11960,7 +11960,7 @@ L015474:
 	asl.l #$1,d0	; $015482
 	lea.l ram_sys_ff007a.l,a0	; $015484
 	move.w (a0,d0.l),d1	; $01548A
-	add.w ram_sys_ff867e.l,d1	; $01548E
+	add.w ram_world_field_867e.l,d1	; $01548E
 	add.w #$4000,d1	; $015494
 	move.w d1,-(a7)	; $015498
 	move.w #$1,-(a7)	; $01549A
@@ -11972,7 +11972,7 @@ L015474:
 	jsr sprite_write.l	; $0154B0
 	lea.l $e(a7),a7	; $0154B6
 	moveq #$0,d0	; $0154BA
-	move.b ram_sys_ff0e14.l,d0	; $0154BC
+	move.b ram_sys_field_0e14.l,d0	; $0154BC
 	and.w #$f0,d0	; $0154C2
 	bne.b L0154D4	; $0154C6
 	cmpi.l #$bb8,-$1a(a6)	; $0154C8
@@ -11995,8 +11995,8 @@ L0154D4:
 	clr.w -(a7)	; $01550A
 	jsr snd_music_start(pc)	; $01550C
 	addq.w #$2,a7	; $015510
-	move.w #$ffff,ram_sys_ff0128.l	; $015512
-	clr.w ram_sys_ff0132.l	; $01551A
+	move.w #$ffff,ram_world_field_0128.l	; $015512
+	clr.w ram_menu_field_0132.l	; $01551A
 	jsr sys_rng_seed_frame.l	; $015520
 	jsr new_game_init.l	; $015526
 	jsr world_map_draw.l	; $01552C
@@ -12036,7 +12036,7 @@ L015544:
 	move.w #$9011,-(a7)	; $0155B4
 	jsr vdp_ctrl_write.l	; $0155B8
 	addq.w #$2,a7	; $0155BE
-	move.w #$234,ram_sys_ff0076.l	; $0155C0
+	move.w #$234,ram_world_field_0076.l	; $0155C0
 	move.w #$60,-(a7)	; $0155C8
 	move.w #$b,-(a7)	; $0155CC
 	jsr map_decode.l	; $0155D0
@@ -12044,7 +12044,7 @@ L015544:
 	move.l d0,-(a7)	; $0155D8
 	jsr gfx_dma_tile_upload.l	; $0155DA
 	addq.w #$6,a7	; $0155E0
-	move.w d0,ram_sys_ff867a.l	; $0155E2
+	move.w d0,ram_world_field_867a.l	; $0155E2
 	move.w #$67,-(a7)	; $0155E8
 	clr.w -(a7)	; $0155EC
 	jsr map_decode.l	; $0155EE
@@ -12052,7 +12052,7 @@ L015544:
 	move.l d0,-(a7)	; $0155F6
 	jsr gfx_dma_tile_upload.l	; $0155F8
 	addq.w #$6,a7	; $0155FE
-	move.w d0,ram_sys_ff8640.l	; $015600
+	move.w d0,ram_text_field_8640.l	; $015600
 	move.w #$24a,-(a7)	; $015606
 	move.w #$25,-(a7)	; $01560A
 	jsr map_decode.l	; $01560E
@@ -12060,7 +12060,7 @@ L015544:
 	move.l d0,-(a7)	; $015616
 	jsr gfx_dma_tile_upload.l	; $015618
 	addq.w #$6,a7	; $01561E
-	move.w d0,ram_sys_ff8642.l	; $015620
+	move.w d0,ram_world_field_8642.l	; $015620
 	move.w #$84,-(a7)	; $015626
 	move.w #$26,-(a7)	; $01562A
 	jsr map_decode.l	; $01562E
@@ -12068,8 +12068,8 @@ L015544:
 	move.l d0,-(a7)	; $015636
 	jsr gfx_dma_tile_upload.l	; $015638
 	addq.w #$6,a7	; $01563E
-	move.w d0,ram_sys_ff867e.l	; $015640
-	move.w ram_sys_ff8640.l,-(a7)	; $015646
+	move.w d0,ram_world_field_867e.l	; $015640
+	move.w ram_text_field_8640.l,-(a7)	; $015646
 	move.w #$40,-(a7)	; $01564C
 	move.w #$40,-(a7)	; $015650
 	clr.w -(a7)	; $015654
@@ -12078,7 +12078,7 @@ L015544:
 	pea.l L002000.w	; $01565C
 	jsr gfx_tilemap_fill.l	; $015660
 	lea.l $10(a7),a7	; $015666
-	move.w ram_sys_ff8640.l,-(a7)	; $01566A
+	move.w ram_text_field_8640.l,-(a7)	; $01566A
 	move.w #$40,-(a7)	; $015670
 	move.w #$40,-(a7)	; $015674
 	clr.w -(a7)	; $015678
@@ -12093,7 +12093,7 @@ L015690:
 	jsr map_decode.l	; $015694
 	addq.w #$2,a7	; $01569A
 	move.l d0,-(a7)	; $01569C
-	move.w ram_sys_ff8642.l,d0	; $01569E
+	move.w ram_world_field_8642.l,d0	; $01569E
 	add.w #$6000,d0	; $0156A4
 	move.w d0,-(a7)	; $0156A8
 	move.w #$8,-(a7)	; $0156AA
@@ -12111,7 +12111,7 @@ L015690:
 	jsr map_decode.l	; $0156D8
 	addq.w #$2,a7	; $0156DE
 	move.l d0,-(a7)	; $0156E0
-	move.w ram_sys_ff8642.l,d0	; $0156E2
+	move.w ram_world_field_8642.l,d0	; $0156E2
 	add.w #$6000,d0	; $0156E8
 	move.w d0,-(a7)	; $0156EC
 	move.w #$18,-(a7)	; $0156EE
@@ -12122,7 +12122,7 @@ L015690:
 	clr.l -(a7)	; $015700
 	jsr gfx_set_tile_vram_addr.l	; $015702
 	lea.l $14(a7),a7	; $015708
-	move.w ram_sys_ff867a.l,-(a7)	; $01570C
+	move.w ram_world_field_867a.l,-(a7)	; $01570C
 	move.w #$4,-(a7)	; $015712
 	move.w #$3,-(a7)	; $015716
 	move.w #$3,-(a7)	; $01571A
@@ -12131,7 +12131,7 @@ L015690:
 	move.w #$3,-(a7)	; $015726
 	jsr sprite_write.l	; $01572A
 	lea.l $e(a7),a7	; $015730
-	move.w ram_sys_ff867a.l,d0	; $015734
+	move.w ram_world_field_867a.l,d0	; $015734
 	add.w #$20,d0	; $01573A
 	move.w d0,-(a7)	; $01573E
 	move.w #$5,-(a7)	; $015740
@@ -12142,7 +12142,7 @@ L015690:
 	move.w #$4,-(a7)	; $015754
 	jsr sprite_write.l	; $015758
 	lea.l $e(a7),a7	; $01575E
-	move.w ram_sys_ff867a.l,d0	; $015762
+	move.w ram_world_field_867a.l,d0	; $015762
 	add.w #$30,d0	; $015768
 	move.w d0,-(a7)	; $01576C
 	move.w #$6,-(a7)	; $01576E
@@ -12153,7 +12153,7 @@ L015690:
 	move.w #$5,-(a7)	; $015782
 	jsr sprite_write.l	; $015786
 	lea.l $e(a7),a7	; $01578C
-	move.w ram_sys_ff867a.l,d0	; $015790
+	move.w ram_world_field_867a.l,d0	; $015790
 	add.w #$1000,d0	; $015796
 	move.w d0,-(a7)	; $01579A
 	move.w #$7,-(a7)	; $01579C
@@ -12164,7 +12164,7 @@ L015690:
 	move.w #$6,-(a7)	; $0157B0
 	jsr sprite_write.l	; $0157B4
 	lea.l $e(a7),a7	; $0157BA
-	move.w ram_sys_ff867a.l,d0	; $0157BE
+	move.w ram_world_field_867a.l,d0	; $0157BE
 	add.w #$1020,d0	; $0157C4
 	move.w d0,-(a7)	; $0157C8
 	move.w #$8,-(a7)	; $0157CA
@@ -12175,7 +12175,7 @@ L015690:
 	move.w #$7,-(a7)	; $0157DE
 	jsr sprite_write.l	; $0157E2
 	lea.l $e(a7),a7	; $0157E8
-	move.w ram_sys_ff867a.l,d0	; $0157EC
+	move.w ram_world_field_867a.l,d0	; $0157EC
 	add.w #$1030,d0	; $0157F2
 	move.w d0,-(a7)	; $0157F6
 	clr.w -(a7)	; $0157F8
@@ -12252,8 +12252,8 @@ L0158D0:
 	addq.w #$6,a7	; $01591C
 L01591E:
 	jsr joypad_queue_pop.l	; $01591E
-	move.b d0,ram_sys_ff0e14.l	; $015924
-	btst #$0,ram_sys_ff0e14.l	; $01592A
+	move.b d0,ram_sys_field_0e14.l	; $015924
+	btst #$0,ram_sys_field_0e14.l	; $01592A
 	beq.b L015958	; $015932
 	move.w -$2(a6),d0	; $015934
 	subq.w #$1,d0	; $015938
@@ -12267,7 +12267,7 @@ L01591E:
 L015952:
 	move.w #$1,-$4(a6)	; $015952
 L015958:
-	btst #$1,ram_sys_ff0e14.l	; $015958
+	btst #$1,ram_sys_field_0e14.l	; $015958
 	beq.b L01597A	; $015960
 	move.w -$2(a6),d0	; $015962
 	addq.w #$1,d0	; $015966
@@ -12279,7 +12279,7 @@ L015958:
 L01597A:
 	tst.w -$4(a6)	; $01597A
 	beq.w L015A2C	; $01597E
-	move.w ram_sys_ff8640.l,d0	; $015982
+	move.w ram_text_field_8640.l,d0	; $015982
 	add.w #$405f,d0	; $015988
 	move.w d0,-(a7)	; $01598C
 	move.w #$1,-(a7)	; $01598E
@@ -12293,7 +12293,7 @@ L01597A:
 	clr.w -(a7)	; $0159A8
 	jsr sprite_write.l	; $0159AA
 	lea.l $e(a7),a7	; $0159B0
-	move.w ram_sys_ff8640.l,d0	; $0159B4
+	move.w ram_text_field_8640.l,d0	; $0159B4
 	add.w #$4063,d0	; $0159BA
 	move.w d0,-(a7)	; $0159BE
 	move.w #$2,-(a7)	; $0159C0
@@ -12307,7 +12307,7 @@ L01597A:
 	move.w #$1,-(a7)	; $0159DA
 	jsr sprite_write.l	; $0159DE
 	lea.l $e(a7),a7	; $0159E4
-	move.w ram_sys_ff8640.l,d0	; $0159E8
+	move.w ram_text_field_8640.l,d0	; $0159E8
 	add.w #$4063,d0	; $0159EE
 	move.w d0,-(a7)	; $0159F2
 	move.w #$3,-(a7)	; $0159F4
@@ -12328,7 +12328,7 @@ L015A20:
 	bcs.b L015A20	; $015A2A
 L015A2C:
 	moveq #$0,d0	; $015A2C
-	move.b ram_sys_ff0e14.l,d0	; $015A2E
+	move.b ram_sys_field_0e14.l,d0	; $015A2E
 	and.w #$f0,d0	; $015A34
 	beq.w L01591E	; $015A38
 	move.w #$ffff,-(a7)	; $015A3C
@@ -12354,14 +12354,14 @@ L015A64:
 L015A70:
 	tst.w -$2(a6)	; $015A70
 	bne.b L015A80	; $015A74
-	move.w #$ffff,ram_sys_ff0108.l	; $015A76
+	move.w #$ffff,ram_sys_field_0108.l	; $015A76
 	bra.b L015A86	; $015A7E
 L015A80:
-	clr.w ram_sys_ff0108.l	; $015A80
+	clr.w ram_sys_field_0108.l	; $015A80
 L015A86:
 	jsr wait_vblank.l	; $015A86
 	jsr clear_sprite_attr.l	; $015A8C
-	move.w ram_sys_ff8640.l,-(a7)	; $015A92
+	move.w ram_text_field_8640.l,-(a7)	; $015A92
 	move.w #$40,-(a7)	; $015A98
 	move.w #$40,-(a7)	; $015A9C
 	clr.w -(a7)	; $015AA0
@@ -12383,7 +12383,7 @@ L015AC6:
 	addq.w #$8,a7	; $015ADC
 	cmpi.w #$d8,-$2(a6)	; $015ADE
 	bne.b L015B1E	; $015AE4
-	move.w ram_sys_ff867e.l,d0	; $015AE6
+	move.w ram_world_field_867e.l,d0	; $015AE6
 	add.w #$2000,d0	; $015AEC
 	move.w d0,-(a7)	; $015AF0
 	move.w #$4,-(a7)	; $015AF2
@@ -12484,7 +12484,7 @@ snd_music_start:
 	move.w #$3,-(a7)	; $015C46
 	jsr pal_load_set.l	; $015C4A
 	addq.w #$6,a7	; $015C50
-	move.w #$234,ram_sys_ff0076.l	; $015C52
+	move.w #$234,ram_world_field_0076.l	; $015C52
 	move.w #$30,-(a7)	; $015C5A
 	move.w #$1b,-(a7)	; $015C5E
 	jsr map_decode.l	; $015C62
@@ -12492,7 +12492,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015C6A
 	jsr gfx_dma_tile_upload.l	; $015C6C
 	addq.w #$6,a7	; $015C72
-	move.w d0,ram_sys_ff8688.l	; $015C74
+	move.w d0,ram_sys_field_8688.l	; $015C74
 	move.w #$180,-(a7)	; $015C7A
 	move.w #$1c,-(a7)	; $015C7E
 	jsr map_decode.l	; $015C82
@@ -12500,7 +12500,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015C8A
 	jsr gfx_dma_tile_upload.l	; $015C8C
 	addq.w #$6,a7	; $015C92
-	move.w d0,ram_sys_ff868a.l	; $015C94
+	move.w d0,ram_sys_field_868a.l	; $015C94
 	move.w #$78,-(a7)	; $015C9A
 	move.w #$12,-(a7)	; $015C9E
 	jsr map_decode.l	; $015CA2
@@ -12508,7 +12508,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015CAA
 	jsr gfx_dma_tile_upload.l	; $015CAC
 	addq.w #$6,a7	; $015CB2
-	move.w d0,ram_sys_ff8680.l	; $015CB4
+	move.w d0,ram_sys_field_8680.l	; $015CB4
 	move.w #$18f,-(a7)	; $015CBA
 	move.w #$14,-(a7)	; $015CBE
 	jsr map_decode.l	; $015CC2
@@ -12516,7 +12516,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015CCA
 	jsr gfx_dma_tile_upload.l	; $015CCC
 	addq.w #$6,a7	; $015CD2
-	move.w d0,ram_sys_ff8684.l	; $015CD4
+	move.w d0,ram_sys_field_8684.l	; $015CD4
 	move.w #$1e,-(a7)	; $015CDA
 	move.w #$13,-(a7)	; $015CDE
 	jsr map_decode.l	; $015CE2
@@ -12524,7 +12524,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015CEA
 	jsr gfx_dma_tile_upload.l	; $015CEC
 	addq.w #$6,a7	; $015CF2
-	move.w d0,ram_sys_ff8640.l	; $015CF4
+	move.w d0,ram_text_field_8640.l	; $015CF4
 	move.w #$37,-(a7)	; $015CFA
 	move.w #$15,-(a7)	; $015CFE
 	jsr map_decode.l	; $015D02
@@ -12532,7 +12532,7 @@ snd_music_start:
 	move.l d0,-(a7)	; $015D0A
 	jsr gfx_dma_tile_upload.l	; $015D0C
 	addq.w #$6,a7	; $015D12
-	move.w d0,ram_sys_ff8686.l	; $015D14
+	move.w d0,ram_sys_field_8686.l	; $015D14
 	move.w #$8208,-(a7)	; $015D1A
 	jsr vdp_ctrl_write.l	; $015D1E
 	addq.w #$2,a7	; $015D24
@@ -12545,7 +12545,7 @@ snd_music_start:
 	move.w #$8522,-(a7)	; $015D3E
 	jsr vdp_ctrl_write.l	; $015D42
 	addq.w #$2,a7	; $015D48
-	move.w #$4400,ram_sys_ff8644.l	; $015D4A
+	move.w #$4400,ram_sys_field_8644.l	; $015D4A
 	move.w #$8d10,-(a7)	; $015D52
 	jsr vdp_ctrl_write.l	; $015D56
 	addq.w #$2,a7	; $015D5C
@@ -12565,7 +12565,7 @@ snd_music_start:
 	clr.w -(a7)	; $015D90
 	jsr vdp_write_block.l	; $015D92
 	addq.w #$8,a7	; $015D98
-	move.w ram_sys_ff8686.l,d0	; $015D9A
+	move.w ram_sys_field_8686.l,d0	; $015D9A
 	add.w #$6000,d0	; $015DA0
 	move.w d0,-(a7)	; $015DA4
 	move.w #$1c,-(a7)	; $015DA6
@@ -12576,7 +12576,7 @@ snd_music_start:
 	pea.l $f000.l	; $015DB6
 	jsr gfx_tilemap_fill.l	; $015DBC
 	lea.l $10(a7),a7	; $015DC2
-	move.w ram_sys_ff8686.l,d0	; $015DC6
+	move.w ram_sys_field_8686.l,d0	; $015DC6
 	add.w #$6000,d0	; $015DCC
 	move.w d0,-(a7)	; $015DD0
 	move.w #$20,-(a7)	; $015DD2
@@ -12587,7 +12587,7 @@ snd_music_start:
 	clr.l -(a7)	; $015DE2
 	jsr gfx_tilemap_fill.l	; $015DE4
 	lea.l $10(a7),a7	; $015DEA
-	move.w ram_sys_ff8686.l,d0	; $015DEE
+	move.w ram_sys_field_8686.l,d0	; $015DEE
 	add.w #$6000,d0	; $015DF4
 	move.w d0,-(a7)	; $015DF8
 	move.w #$20,-(a7)	; $015DFA
@@ -12600,7 +12600,7 @@ snd_music_start:
 	lea.l $10(a7),a7	; $015E14
 	clr.w -$6(a6)	; $015E18
 L015E1C:
-	move.w ram_sys_ff8688.l,-(a7)	; $015E1C
+	move.w ram_sys_field_8688.l,-(a7)	; $015E1C
 	move.w #$c,-(a7)	; $015E22
 	move.w #$4,-(a7)	; $015E26
 	clr.w -(a7)	; $015E2A
@@ -12614,7 +12614,7 @@ L015E1C:
 	bcs.b L015E1C	; $015E4A
 	clr.w -$6(a6)	; $015E4C
 L015E50:
-	move.w ram_sys_ff868a.l,d0	; $015E50
+	move.w ram_sys_field_868a.l,d0	; $015E50
 	add.w #$2000,d0	; $015E56
 	move.w d0,-(a7)	; $015E5A
 	move.w #$c,-(a7)	; $015E5C
@@ -12634,7 +12634,7 @@ L015E50:
 	jsr map_decode.l	; $015E96
 	addq.w #$2,a7	; $015E9C
 	move.l d0,-(a7)	; $015E9E
-	move.w ram_sys_ff8686.l,d0	; $015EA0
+	move.w ram_sys_field_8686.l,d0	; $015EA0
 	add.w #$4000,d0	; $015EA6
 	moveq #$0,d1	; $015EAA
 	move.w d0,d1	; $015EAC
@@ -12652,7 +12652,7 @@ L015E50:
 	jsr map_decode.l	; $015EDC
 	addq.w #$2,a7	; $015EE2
 	move.l d0,-(a7)	; $015EE4
-	move.w ram_sys_ff8686.l,d0	; $015EE6
+	move.w ram_sys_field_8686.l,d0	; $015EE6
 	add.w #$4000,d0	; $015EEC
 	moveq #$0,d1	; $015EF0
 	move.w d0,d1	; $015EF2
@@ -12670,7 +12670,7 @@ L015E50:
 	jsr map_decode.l	; $015F22
 	addq.w #$2,a7	; $015F28
 	move.l d0,-(a7)	; $015F2A
-	move.w ram_sys_ff8686.l,d0	; $015F2C
+	move.w ram_sys_field_8686.l,d0	; $015F2C
 	add.w #$4000,d0	; $015F32
 	moveq #$0,d1	; $015F36
 	move.w d0,d1	; $015F38
@@ -12688,7 +12688,7 @@ L015E50:
 	jsr map_decode.l	; $015F68
 	addq.w #$2,a7	; $015F6E
 	move.l d0,-(a7)	; $015F70
-	move.w ram_sys_ff8686.l,d0	; $015F72
+	move.w ram_sys_field_8686.l,d0	; $015F72
 	add.w #$4000,d0	; $015F78
 	moveq #$0,d1	; $015F7C
 	move.w d0,d1	; $015F7E
@@ -12706,7 +12706,7 @@ L015E50:
 	jsr map_decode.l	; $015FAE
 	addq.w #$2,a7	; $015FB4
 	move.l d0,-(a7)	; $015FB6
-	move.w ram_sys_ff8686.l,d0	; $015FB8
+	move.w ram_sys_field_8686.l,d0	; $015FB8
 	add.w #$4000,d0	; $015FBE
 	moveq #$0,d1	; $015FC2
 	move.w d0,d1	; $015FC4
@@ -12727,7 +12727,7 @@ L015FF0:
 	jsr map_decode.l	; $015FFE
 	addq.w #$2,a7	; $016004
 	move.l d0,-(a7)	; $016006
-	move.w ram_sys_ff8686.l,d0	; $016008
+	move.w ram_sys_field_8686.l,d0	; $016008
 	add.w #$4000,d0	; $01600E
 	moveq #$0,d1	; $016012
 	move.w d0,d1	; $016014
@@ -12745,7 +12745,7 @@ L015FF0:
 	jsr map_decode.l	; $016044
 	addq.w #$2,a7	; $01604A
 	move.l d0,-(a7)	; $01604C
-	move.w ram_sys_ff8686.l,d0	; $01604E
+	move.w ram_sys_field_8686.l,d0	; $01604E
 	add.w #$4000,d0	; $016054
 	moveq #$0,d1	; $016058
 	move.w d0,d1	; $01605A
@@ -12763,7 +12763,7 @@ L015FF0:
 	jsr map_decode.l	; $01608A
 	addq.w #$2,a7	; $016090
 	move.l d0,-(a7)	; $016092
-	move.w ram_sys_ff8686.l,d0	; $016094
+	move.w ram_sys_field_8686.l,d0	; $016094
 	add.w #$4000,d0	; $01609A
 	moveq #$0,d1	; $01609E
 	move.w d0,d1	; $0160A0
@@ -12781,7 +12781,7 @@ L015FF0:
 	jsr map_decode.l	; $0160D0
 	addq.w #$2,a7	; $0160D6
 	move.l d0,-(a7)	; $0160D8
-	move.w ram_sys_ff8686.l,d0	; $0160DA
+	move.w ram_sys_field_8686.l,d0	; $0160DA
 	add.w #$4000,d0	; $0160E0
 	moveq #$0,d1	; $0160E4
 	move.w d0,d1	; $0160E6
@@ -12799,7 +12799,7 @@ L015FF0:
 	jsr map_decode.l	; $016116
 	addq.w #$2,a7	; $01611C
 	move.l d0,-(a7)	; $01611E
-	move.w ram_sys_ff8686.l,d0	; $016120
+	move.w ram_sys_field_8686.l,d0	; $016120
 	add.w #$4000,d0	; $016126
 	moveq #$0,d1	; $01612A
 	move.w d0,d1	; $01612C
@@ -12835,7 +12835,7 @@ L016158:
 	addq.w #$6,a7	; $0161A8
 L0161AA:
 	jsr joypad_queue_pop.l	; $0161AA
-	move.b d0,ram_sys_ff0e14.l	; $0161B0
+	move.b d0,ram_sys_field_0e14.l	; $0161B0
 	addq.w #$4,-$2(a6)	; $0161B6
 	jsr wait_vblank.l	; $0161BA
 	clr.w -(a7)	; $0161C0
@@ -12919,7 +12919,7 @@ L016286:
 	addq.w #$2,a7	; $01629A
 L01629C:
 	moveq #$0,d0	; $01629C
-	move.b ram_sys_ff0e14.l,d0	; $01629E
+	move.b ram_sys_field_0e14.l,d0	; $01629E
 	and.w #$f0,d0	; $0162A4
 	bne.b L0162B4	; $0162A8
 	cmpi.w #$3e8,-$2(a6)	; $0162AA
@@ -12948,7 +12948,7 @@ world_map_redraw:
 	link.w a6,#$0	; $0162FE
 	jsr wait_vblank.l	; $016302
 	jsr menu_format.l	; $016308
-	move.w ram_sys_ff8674.l,-(a7)	; $01630E
+	move.w ram_world_field_8674.l,-(a7)	; $01630E
 	move.w #$17,-(a7)	; $016314
 	move.w #$24,-(a7)	; $016318
 	clr.w -(a7)	; $01631C
@@ -12961,7 +12961,7 @@ world_map_redraw:
 	jsr map_decode.l	; $016338
 	addq.w #$2,a7	; $01633E
 	move.l d0,-(a7)	; $016340
-	move.w ram_sys_ff8676.l,d0	; $016342
+	move.w ram_world_field_8676.l,d0	; $016342
 	add.w #$2000,d0	; $016348
 	move.w d0,-(a7)	; $01634C
 	move.w #$1c,-(a7)	; $01634E
@@ -12972,9 +12972,9 @@ world_map_redraw:
 	clr.l -(a7)	; $01635E
 	jsr gfx_set_tile_vram_addr.l	; $016360
 	lea.l $14(a7),a7	; $016366
-	tst.w ram_sys_ff0114.l	; $01636A
+	tst.w ram_world_field_0114.l	; $01636A
 	beq.b L0163AC	; $016370
-	move.w ram_sys_ff8648.l,d0	; $016372
+	move.w ram_world_field_8648.l,d0	; $016372
 	add.w #$6000,d0	; $016378
 	moveq #$0,d1	; $01637C
 	move.w d0,d1	; $01637E
@@ -12990,7 +12990,7 @@ world_map_redraw:
 	lea.l $10(a7),a7	; $0163A6
 	bra.b L0163E4	; $0163AA
 L0163AC:
-	move.w ram_sys_ff8648.l,d0	; $0163AC
+	move.w ram_world_field_8648.l,d0	; $0163AC
 	add.w #$6000,d0	; $0163B2
 	moveq #$0,d1	; $0163B6
 	move.w d0,d1	; $0163B8
@@ -13083,7 +13083,7 @@ L01649C:
 	lsr.w #$2,d0	; $0164A2
 	and.w #$3f,d0	; $0164A4
 	add.w d0,d1	; $0164A8
-	add.w ram_sys_ff8678.l,d1	; $0164AA
+	add.w ram_world_field_8678.l,d1	; $0164AA
 	move.w d1,-(a7)	; $0164B0
 	jsr vdp_data_write.l	; $0164B2
 	addq.w #$2,a7	; $0164B8
@@ -13114,7 +13114,7 @@ L0164E2:
 	rol.w #$6,d0	; $0164E8
 	and.w #$3f,d0	; $0164EA
 	add.w d0,d1	; $0164EE
-	add.w ram_sys_ff8678.l,d1	; $0164F0
+	add.w ram_world_field_8678.l,d1	; $0164F0
 	move.w d1,-(a7)	; $0164F6
 	jsr vdp_data_write.l	; $0164F8
 	addq.w #$2,a7	; $0164FE
@@ -13203,7 +13203,7 @@ L0165CC:
 	lsr.w #$2,d0	; $0165D2
 	and.w #$3f,d0	; $0165D4
 	add.w d0,d1	; $0165D8
-	add.w ram_sys_ff8678.l,d1	; $0165DA
+	add.w ram_world_field_8678.l,d1	; $0165DA
 	move.w d1,-(a7)	; $0165E0
 	jsr vdp_data_write.l	; $0165E2
 	addq.w #$2,a7	; $0165E8
@@ -13234,7 +13234,7 @@ L016612:
 	rol.w #$6,d0	; $016618
 	and.w #$3f,d0	; $01661A
 	add.w d0,d1	; $01661E
-	add.w ram_sys_ff8678.l,d1	; $016620
+	add.w ram_world_field_8678.l,d1	; $016620
 	move.w d1,-(a7)	; $016626
 	jsr vdp_data_write.l	; $016628
 	addq.w #$2,a7	; $01662E
@@ -13256,7 +13256,7 @@ map_view:
 	clr.w -$6(a6)	; $01665A
 	clr.w -$8(a6)	; $01665E
 	clr.w -$12(a6)	; $016662
-	cmpi.w #$2,ram_sys_ff00ae.l	; $016666
+	cmpi.w #$2,ram_menu_field_00ae.l	; $016666
 	bne.b L016678	; $01666E
 L016670:
 	movem.l (a7)+,d4-d7/a3	; $016670
@@ -13288,7 +13288,7 @@ L0166C8:
 	move.w $a(a6),d7	; $0166D0
 	sub.w #$e,d7	; $0166D4
 	jsr joypad_queue_pop.l	; $0166D8
-	move.b d0,ram_sys_ff0e14.l	; $0166DE
+	move.b d0,ram_sys_field_0e14.l	; $0166DE
 	jsr wait_vblank.l	; $0166E4
 	move.w -$4(a6),-(a7)	; $0166EA
 	move.w -$4(a6),-(a7)	; $0166EE
@@ -13296,7 +13296,7 @@ L0166C8:
 	move.w -$6(a6),-(a7)	; $0166F6
 	jsr vdp_set_scroll.l	; $0166FA
 	addq.w #$8,a7	; $016700
-	move.w ram_sys_ff8640.l,-(a7)	; $016702
+	move.w ram_text_field_8640.l,-(a7)	; $016702
 	move.w #$1c,-(a7)	; $016708
 	move.w #$40,-(a7)	; $01670C
 	clr.w -(a7)	; $016710
@@ -13312,7 +13312,7 @@ L0166C8:
 	jsr sprite_set_link.l	; $016730
 	addq.w #$8,a7	; $016736
 	move.w #$40,-(a7)	; $016738
-	move.w ram_sys_ff8678.l,-(a7)	; $01673C
+	move.w ram_world_field_8678.l,-(a7)	; $01673C
 	move.w #$a,-(a7)	; $016742
 	jsr map_decode.l	; $016746
 	addq.w #$2,a7	; $01674C
@@ -13320,7 +13320,7 @@ L0166C8:
 	jsr tile_upload.l	; $016750
 	addq.w #$8,a7	; $016756
 	move.w #$148,-(a7)	; $016758
-	move.w ram_sys_ff8676.l,-(a7)	; $01675C
+	move.w ram_world_field_8676.l,-(a7)	; $01675C
 	move.w #$21,-(a7)	; $016762
 	jsr map_decode.l	; $016766
 	addq.w #$2,a7	; $01676C
@@ -13328,7 +13328,7 @@ L0166C8:
 	jsr tile_upload.l	; $016770
 	addq.w #$8,a7	; $016776
 	moveq #$0,d0	; $016778
-	move.w ram_sys_ff8676.l,d0	; $01677A
+	move.w ram_world_field_8676.l,d0	; $01677A
 	add.l #$a000,d0	; $016780
 	move.w d0,-(a7)	; $016786
 	move.w #$3,-(a7)	; $016788
@@ -13340,7 +13340,7 @@ L0166C8:
 	jsr gfx_tilemap_draw.l	; $01679C
 	lea.l $10(a7),a7	; $0167A2
 	moveq #$0,d0	; $0167A6
-	move.w ram_sys_ff8676.l,d0	; $0167A8
+	move.w ram_world_field_8676.l,d0	; $0167A8
 	add.l #$a078,d0	; $0167AE
 	move.w d0,-(a7)	; $0167B4
 	move.w #$3,-(a7)	; $0167B6
@@ -13352,7 +13352,7 @@ L0166C8:
 	jsr gfx_tilemap_draw.l	; $0167CC
 	lea.l $10(a7),a7	; $0167D2
 	moveq #$0,d0	; $0167D6
-	move.w ram_sys_ff8676.l,d0	; $0167D8
+	move.w ram_world_field_8676.l,d0	; $0167D8
 	add.l #$a0f0,d0	; $0167DE
 	move.w d0,-(a7)	; $0167E4
 	move.w #$b,-(a7)	; $0167E6
@@ -13364,7 +13364,7 @@ L0166C8:
 	jsr gfx_tilemap_draw.l	; $0167FC
 	lea.l $10(a7),a7	; $016802
 	moveq #$0,d0	; $016806
-	move.w ram_sys_ff8676.l,d0	; $016808
+	move.w ram_world_field_8676.l,d0	; $016808
 	add.l #$a0f0,d0	; $01680E
 	move.w d0,-(a7)	; $016814
 	move.w #$b,-(a7)	; $016816
@@ -13376,7 +13376,7 @@ L0166C8:
 	jsr gfx_tilemap_draw.l	; $01682C
 	lea.l $10(a7),a7	; $016832
 	moveq #$0,d0	; $016836
-	move.w ram_sys_ff8676.l,d0	; $016838
+	move.w ram_world_field_8676.l,d0	; $016838
 	add.l #$a11c,d0	; $01683E
 	move.w d0,-(a7)	; $016844
 	move.w #$b,-(a7)	; $016846
@@ -13388,7 +13388,7 @@ L0166C8:
 	jsr gfx_tilemap_draw.l	; $01685E
 	lea.l $10(a7),a7	; $016864
 	moveq #$0,d0	; $016868
-	move.w ram_sys_ff8676.l,d0	; $01686A
+	move.w ram_world_field_8676.l,d0	; $01686A
 	add.l #$a11c,d0	; $016870
 	move.w d0,-(a7)	; $016876
 	move.w #$b,-(a7)	; $016878
@@ -13409,7 +13409,7 @@ L0166C8:
 	pea.l L001000.w	; $0168B6
 	jsr text_glyph_draw.l	; $0168BA
 	lea.l $10(a7),a7	; $0168C0
-	move.w ram_sys_ff8640.l,d0	; $0168C4
+	move.w ram_text_field_8640.l,d0	; $0168C4
 	add.w #$5f,d0	; $0168CA
 	move.w d0,-(a7)	; $0168CE
 	move.w #$3,-(a7)	; $0168D0
@@ -13420,7 +13420,7 @@ L0166C8:
 	move.w #$2,-(a7)	; $0168E2
 	jsr sprite_write.l	; $0168E6
 	lea.l $e(a7),a7	; $0168EC
-	move.w ram_sys_ff8640.l,d0	; $0168F0
+	move.w ram_text_field_8640.l,d0	; $0168F0
 	add.w #$5f,d0	; $0168F6
 	move.w d0,-(a7)	; $0168FA
 	move.w #$4,-(a7)	; $0168FC
@@ -13431,7 +13431,7 @@ L0166C8:
 	move.w #$3,-(a7)	; $01690E
 	jsr sprite_write.l	; $016912
 	lea.l $e(a7),a7	; $016918
-	move.w ram_sys_ff8640.l,d0	; $01691C
+	move.w ram_text_field_8640.l,d0	; $01691C
 	add.w #$5f,d0	; $016922
 	move.w d0,-(a7)	; $016926
 	move.w #$5,-(a7)	; $016928
@@ -13442,7 +13442,7 @@ L0166C8:
 	move.w #$4,-(a7)	; $01693A
 	jsr sprite_write.l	; $01693E
 	lea.l $e(a7),a7	; $016944
-	move.w ram_sys_ff8640.l,d0	; $016948
+	move.w ram_text_field_8640.l,d0	; $016948
 	add.w #$63,d0	; $01694E
 	move.w d0,-(a7)	; $016952
 	clr.w -(a7)	; $016954
@@ -13455,7 +13455,7 @@ L0166C8:
 	lea.l $e(a7),a7	; $01696E
 	bra.b L0169C6	; $016972
 L016974:
-	move.w ram_sys_ff8640.l,d0	; $016974
+	move.w ram_text_field_8640.l,d0	; $016974
 	add.w #$2000,d0	; $01697A
 	move.w d0,-(a7)	; $01697E
 	move.w #$5,-(a7)	; $016980
@@ -13466,7 +13466,7 @@ L016974:
 	move.w #$2,-(a7)	; $016990
 	jsr sprite_write.l	; $016994
 	lea.l $e(a7),a7	; $01699A
-	move.w ram_sys_ff8640.l,d0	; $01699E
+	move.w ram_text_field_8640.l,d0	; $01699E
 	add.w #$2000,d0	; $0169A4
 	move.w d0,-(a7)	; $0169A8
 	clr.w -(a7)	; $0169AA
@@ -13479,7 +13479,7 @@ L016974:
 	lea.l $e(a7),a7	; $0169C2
 L0169C6:
 	jsr joypad_queue_pop.l	; $0169C6
-	move.b d0,ram_sys_ff0e14.l	; $0169CC
+	move.b d0,ram_sys_field_0e14.l	; $0169CC
 	moveq #$0,d4	; $0169D2
 L0169D4:
 	move.w d4,d0	; $0169D4
@@ -13541,7 +13541,7 @@ L016A52:
 	lsr.w #$2,d0	; $016A58
 	and.w #$3f,d0	; $016A5A
 	add.w d0,d1	; $016A5E
-	add.w ram_sys_ff8678.l,d1	; $016A60
+	add.w ram_world_field_8678.l,d1	; $016A60
 	move.w d1,-(a7)	; $016A66
 	jsr vdp_data_write.l	; $016A68
 	addq.w #$2,a7	; $016A6E
@@ -13572,7 +13572,7 @@ L016A98:
 	rol.w #$6,d0	; $016A9E
 	and.w #$3f,d0	; $016AA0
 	add.w d0,d1	; $016AA4
-	add.w ram_sys_ff8678.l,d1	; $016AA6
+	add.w ram_world_field_8678.l,d1	; $016AA6
 	move.w d1,-(a7)	; $016AAC
 	jsr vdp_data_write.l	; $016AAE
 	addq.w #$2,a7	; $016AB4
@@ -13584,7 +13584,7 @@ L016AB6:
 	cmp.w #$20,d4	; $016AC2
 	blt.w L0169D4	; $016AC6
 	jsr joypad_queue_pop.l	; $016ACA
-	move.b d0,ram_sys_ff0e14.l	; $016AD0
+	move.b d0,ram_sys_field_0e14.l	; $016AD0
 	pea.l L0CCB18.l	; $016AD6
 	clr.w -(a7)	; $016ADC
 	jsr pal_load_set.l	; $016ADE
@@ -13599,9 +13599,9 @@ L016AB6:
 	moveq #$0,d4	; $016B02
 L016B04:
 	jsr joypad_queue_pop.l	; $016B04
-	move.b d0,ram_sys_ff0e14.l	; $016B0A
+	move.b d0,ram_sys_field_0e14.l	; $016B0A
 	jsr pad2_read.l	; $016B10
-	move.b d0,ram_sys_ff8646.l	; $016B16
+	move.b d0,ram_sys_field_8646.l	; $016B16
 	tst.w d4	; $016B1C
 	bne.b L016B24	; $016B1E
 	moveq #$1,d4	; $016B20
@@ -13609,14 +13609,14 @@ L016B04:
 L016B24:
 	moveq #$0,d4	; $016B24
 L016B26:
-	btst #$0,ram_sys_ff0e14.l	; $016B26
+	btst #$0,ram_sys_field_0e14.l	; $016B26
 	beq.b L016B7A	; $016B2E
 	subq.w #$8,-$6(a6)	; $016B30
-	movea.l ram_sys_ffa7fc.l,a0	; $016B34
+	movea.l ram_sys_field_a7fc.l,a0	; $016B34
 	move.w $2(a0),d0	; $016B3A
 	add.w d7,d0	; $016B3E
 	subq.w #$1,d0	; $016B40
-	movea.l ram_sys_ffa7fc.l,a0	; $016B42
+	movea.l ram_sys_field_a7fc.l,a0	; $016B42
 	move.w d0,d7	; $016B48
 	ext.l d7	; $016B4A
 	divs.w $2(a0),d7	; $016B4C
@@ -13635,12 +13635,12 @@ L016B26:
 	jsr row_write(pc)	; $016B74
 	addq.w #$8,a7	; $016B78
 L016B7A:
-	btst #$1,ram_sys_ff0e14.l	; $016B7A
+	btst #$1,ram_sys_field_0e14.l	; $016B7A
 	beq.b L016BCE	; $016B82
 	addq.w #$8,-$6(a6)	; $016B84
 	move.w d7,d0	; $016B88
 	addq.w #$1,d0	; $016B8A
-	movea.l ram_sys_ffa7fc.l,a0	; $016B8C
+	movea.l ram_sys_field_a7fc.l,a0	; $016B8C
 	move.w d0,d7	; $016B92
 	ext.l d7	; $016B94
 	divs.w $2(a0),d7	; $016B96
@@ -13662,12 +13662,12 @@ L016B7A:
 	jsr row_write(pc)	; $016BC8
 	addq.w #$8,a7	; $016BCC
 L016BCE:
-	btst #$3,ram_sys_ff0e14.l	; $016BCE
+	btst #$3,ram_sys_field_0e14.l	; $016BCE
 	beq.b L016C20	; $016BD6
 	addq.w #$8,-$4(a6)	; $016BD8
 	move.w d6,d0	; $016BDC
 	addq.w #$1,d0	; $016BDE
-	movea.l ram_sys_ffa7fc.l,a0	; $016BE0
+	movea.l ram_sys_field_a7fc.l,a0	; $016BE0
 	move.w d0,d6	; $016BE6
 	ext.l d6	; $016BE8
 	divs.w (a0),d6	; $016BEA
@@ -13689,14 +13689,14 @@ L016BCE:
 	jsr column_write(pc)	; $016C1A
 	addq.w #$8,a7	; $016C1E
 L016C20:
-	btst #$2,ram_sys_ff0e14.l	; $016C20
+	btst #$2,ram_sys_field_0e14.l	; $016C20
 	beq.b L016C70	; $016C28
 	subq.w #$8,-$4(a6)	; $016C2A
-	movea.l ram_sys_ffa7fc.l,a0	; $016C2E
+	movea.l ram_sys_field_a7fc.l,a0	; $016C2E
 	move.w (a0),d0	; $016C34
 	add.w d6,d0	; $016C36
 	subq.w #$1,d0	; $016C38
-	movea.l ram_sys_ffa7fc.l,a0	; $016C3A
+	movea.l ram_sys_field_a7fc.l,a0	; $016C3A
 	move.w d0,d6	; $016C40
 	ext.l d6	; $016C42
 	divs.w (a0),d6	; $016C44
@@ -13716,19 +13716,19 @@ L016C20:
 	addq.w #$8,a7	; $016C6E
 L016C70:
 	moveq #$0,d0	; $016C70
-	move.b ram_sys_ff8646.l,d0	; $016C72
+	move.b ram_sys_field_8646.l,d0	; $016C72
 	cmp.w #$e0,d0	; $016C78
 	bne.b L016CB0	; $016C7C
 	move.w d7,d0	; $016C7E
 	add.w #$e,d0	; $016C80
-	movea.l ram_sys_ffa7fc.l,a0	; $016C84
+	movea.l ram_sys_field_a7fc.l,a0	; $016C84
 	ext.l d0	; $016C8A
 	divs.w $2(a0),d0	; $016C8C
 	swap d0	; $016C90
 	move.w d0,-(a7)	; $016C92
 	move.w d6,d0	; $016C94
 	add.w #$14,d0	; $016C96
-	movea.l ram_sys_ffa7fc.l,a0	; $016C9A
+	movea.l ram_sys_field_a7fc.l,a0	; $016C9A
 	ext.l d0	; $016CA0
 	divs.w (a0),d0	; $016CA2
 	swap d0	; $016CA4
@@ -13737,29 +13737,29 @@ L016C70:
 	addq.w #$4,a7	; $016CAE
 L016CB0:
 	moveq #$0,d0	; $016CB0
-	move.b ram_sys_ff8646.l,d0	; $016CB2
+	move.b ram_sys_field_8646.l,d0	; $016CB2
 	cmp.w #$a5,d0	; $016CB8
 	bne.b L016D32	; $016CBC
 	move.w ram_party_index_array.l,d0	; $016CBE
 	muls.w #$34,d0	; $016CC4
-	lea.l ram_sys_ff02d4.l,a0	; $016CC8
+	lea.l ram_world_field_02d4.l,a0	; $016CC8
 	move.w #$8c,(a0,d0.l)	; $016CCE
 	move.w ram_party_index_array.l,d0	; $016CD4
 	muls.w #$34,d0	; $016CDA
-	lea.l ram_sys_ff02d0.l,a0	; $016CDE
+	lea.l ram_world_field_02d0.l,a0	; $016CDE
 	move.w #$8c,(a0,d0.l)	; $016CE4
 	move.w ram_party_index_array.l,d0	; $016CEA
 	muls.w #$34,d0	; $016CF0
-	lea.l ram_sys_ff02d6.l,a0	; $016CF4
+	lea.l ram_world_field_02d6.l,a0	; $016CF4
 	move.w #$2328,(a0,d0.l)	; $016CFA
 	move.w ram_party_index_array.l,d0	; $016D00
 	muls.w #$34,d0	; $016D06
-	lea.l ram_sys_ff02d2.l,a0	; $016D0A
+	lea.l ram_world_field_02d2.l,a0	; $016D0A
 	move.w #$2328,(a0,d0.l)	; $016D10
 	move.w ram_party_index_array.l,d0	; $016D16
 	muls.w #$34,d0	; $016D1C
 	movea.l d0,a0	; $016D20
-	lea.l ram_sys_ff02cc.l,a1	; $016D22
+	lea.l ram_world_field_02cc.l,a1	; $016D22
 	adda.l a1,a0	; $016D28
 	andi.w #$ff0f,(a0)	; $016D2A
 	ori.w #$80,(a0)	; $016D2E
@@ -13796,11 +13796,11 @@ L016D88:
 	move.w ram_party_leader.l,d0	; $016D88
 	muls.w #$34,d0	; $016D8E
 	lea.l ram_header_leader.l,a0	; $016D92
-	movea.l ram_sys_ffa7fc.l,a1	; $016D98
+	movea.l ram_sys_field_a7fc.l,a1	; $016D98
 	move.w (a0,d0.l),d1	; $016D9E
 	add.w (a1),d1	; $016DA2
 	sub.w d6,d1	; $016DA4
-	movea.l ram_sys_ffa7fc.l,a0	; $016DA6
+	movea.l ram_sys_field_a7fc.l,a0	; $016DA6
 	ext.l d1	; $016DAC
 	divs.w (a0),d1	; $016DAE
 	swap d1	; $016DB0
@@ -13808,11 +13808,11 @@ L016D88:
 	move.w ram_party_leader.l,d0	; $016DB6
 	muls.w #$34,d0	; $016DBC
 	lea.l ram_npc_field_02c2.l,a0	; $016DC0
-	movea.l ram_sys_ffa7fc.l,a1	; $016DC6
+	movea.l ram_sys_field_a7fc.l,a1	; $016DC6
 	move.w (a0,d0.l),d1	; $016DCC
 	add.w $2(a1),d1	; $016DD0
 	sub.w d7,d1	; $016DD4
-	movea.l ram_sys_ffa7fc.l,a0	; $016DD6
+	movea.l ram_sys_field_a7fc.l,a0	; $016DD6
 	ext.l d1	; $016DDC
 	divs.w $2(a0),d1	; $016DDE
 	swap d1	; $016DE2
@@ -13821,7 +13821,7 @@ L016D88:
 	bge.b L016E62	; $016DEE
 	cmpi.w #$20,-$10(a6)	; $016DF0
 	bge.b L016E62	; $016DF6
-	move.w ram_sys_ff8640.l,d0	; $016DF8
+	move.w ram_text_field_8640.l,d0	; $016DF8
 	add.w #$205b,d0	; $016DFE
 	move.w d0,-(a7)	; $016E02
 	clr.w -(a7)	; $016E04
@@ -13868,14 +13868,14 @@ L016E76:
 	beq.w L016FBA	; $016E7A
 	move.w d6,d0	; $016E7E
 	add.w #$14,d0	; $016E80
-	movea.l ram_sys_ffa7fc.l,a0	; $016E84
+	movea.l ram_sys_field_a7fc.l,a0	; $016E84
 	ext.l d0	; $016E8A
 	divs.w (a0),d0	; $016E8C
 	swap d0	; $016E8E
 	move.w d0,-$14(a6)	; $016E90
 	move.w d7,d0	; $016E94
 	add.w #$e,d0	; $016E96
-	movea.l ram_sys_ffa7fc.l,a0	; $016E9A
+	movea.l ram_sys_field_a7fc.l,a0	; $016E9A
 	ext.l d0	; $016EA0
 	divs.w $2(a0),d0	; $016EA2
 	swap d0	; $016EA6
@@ -13956,7 +13956,7 @@ L016E76:
 	lea.l $10(a7),a7	; $016FB6
 L016FBA:
 	moveq #$0,d0	; $016FBA
-	move.b ram_sys_ff0e14.l,d0	; $016FBC
+	move.b ram_sys_field_0e14.l,d0	; $016FBC
 	and.w #$b0,d0	; $016FC2
 	beq.w L016B04	; $016FC6
 	jsr snd_location_song_pick.l	; $016FCA
@@ -13971,7 +13971,7 @@ L016FBA:
 	move.w #$1,-(a7)	; $016FEE
 	jsr pal_load_set.l	; $016FF2
 	addq.w #$6,a7	; $016FF8
-	move.w ram_sys_ff8640.l,d0	; $016FFA
+	move.w ram_text_field_8640.l,d0	; $016FFA
 	add.w #$205b,d0	; $017000
 	move.w d0,-(a7)	; $017004
 	clr.w -(a7)	; $017006
@@ -13990,7 +13990,7 @@ L016FBA:
 	jsr vdp_set_scroll.l	; $01702C
 	addq.w #$8,a7	; $017032
 	move.w #$80,-(a7)	; $017034
-	move.w ram_sys_ff867c.l,-(a7)	; $017038
+	move.w ram_world_field_867c.l,-(a7)	; $017038
 	move.w #$10,-(a7)	; $01703E
 	jsr map_decode.l	; $017042
 	addq.w #$2,a7	; $017048
@@ -13998,14 +13998,14 @@ L016FBA:
 	jsr tile_upload.l	; $01704C
 	addq.w #$8,a7	; $017052
 	move.w #$1b6,-(a7)	; $017054
-	move.w ram_sys_ff8676.l,-(a7)	; $017058
+	move.w ram_world_field_8676.l,-(a7)	; $017058
 	move.w #$6,-(a7)	; $01705E
 	jsr map_decode.l	; $017062
 	addq.w #$2,a7	; $017068
 	move.l d0,-(a7)	; $01706A
 	jsr tile_upload.l	; $01706C
 	addq.w #$8,a7	; $017072
-	move.w ram_sys_ff8640.l,-(a7)	; $017074
+	move.w ram_text_field_8640.l,-(a7)	; $017074
 	move.w #$1c,-(a7)	; $01707A
 	move.w #$40,-(a7)	; $01707E
 	clr.w -(a7)	; $017082
@@ -14044,19 +14044,19 @@ L0170D5:
 	; code $0170DA-$0171D5
 palette_fade:
 	link.w a6,#$fffc	; $0170DA
-	move.w ram_sys_ff0126.l,-$2(a6)	; $0170DE
-	move.w ram_sys_ff0e16.l,d0	; $0170E6
+	move.w ram_world_field_0126.l,-$2(a6)	; $0170DE
+	move.w ram_world_field_0e16.l,d0	; $0170E6
 	ext.l d0	; $0170EC
 	divs.w #$12,d0	; $0170EE
 	move.w d0,-$4(a6)	; $0170F2
-	clr.w ram_sys_ff0124.l	; $0170F6
+	clr.w ram_world_field_0124.l	; $0170F6
 	cmpi.w #$2,-$2(a6)	; $0170FC
 	bne.b L01713C	; $017102
 	tst.w -$4(a6)	; $017104
 	bne.b L01713C	; $017108
 	pea.l L0CCC38.l	; $01710A
 	pea.l L0CCB18.l	; $017110
-	move.w ram_sys_ff0e16.l,d0	; $017116
+	move.w ram_world_field_0e16.l,d0	; $017116
 	ext.l d0	; $01711C
 	divs.w #$12,d0	; $01711E
 	swap d0	; $017122
@@ -14076,7 +14076,7 @@ L01713C:
 	bne.b L01717C	; $01714A
 	pea.l L0CCB18.l	; $01714C
 	pea.l L0CCC38.l	; $017152
-	move.w ram_sys_ff0e16.l,d0	; $017158
+	move.w ram_world_field_0e16.l,d0	; $017158
 	ext.l d0	; $01715E
 	divs.w #$12,d0	; $017160
 	swap d0	; $017164
@@ -14271,7 +14271,7 @@ L017390:
 	; code $0173BC-$0173EB
 song_request:
 	link.w a6,#$0	; $0173BC
-	move.w ram_sys_ff012e.l,d0	; $0173C0
+	move.w ram_world_field_012e.l,d0	; $0173C0
 	cmp.w $8(a6),d0	; $0173C6
 	bne.b L0173DA	; $0173CA
 	jsr snd_is_song_playing.l	; $0173CC
@@ -14281,7 +14281,7 @@ L0173D6:
 	unlk a6	; $0173D6
 	rts	; $0173D8
 L0173DA:
-	move.w $8(a6),ram_sys_ff012e.l	; $0173DA
+	move.w $8(a6),ram_world_field_012e.l	; $0173DA
 	move.w $8(a6),-(a7)	; $0173E2
 	bsr.b song_play_direct	; $0173E6
 	addq.w #$2,a7	; $0173E8
@@ -14405,13 +14405,13 @@ sfx_request:
 	link.w a6,#$fffc	; $017586
 	cmpi.w #$5a,$8(a6)	; $01758A
 	bge.b L0175EE	; $017590
-	move.w ram_sys_ff0088.l,d0	; $017592
+	move.w ram_sys_field_0088.l,d0	; $017592
 	addq.w #$1,d0	; $017598
 	ext.l d0	; $01759A
 	divs.w #$2,d0	; $01759C
 	swap d0	; $0175A0
-	move.w d0,ram_sys_ff0088.l	; $0175A2
-	tst.w ram_sys_ff0088.l	; $0175A8
+	move.w d0,ram_sys_field_0088.l	; $0175A2
+	tst.w ram_sys_field_0088.l	; $0175A8
 	beq.b L0175CE	; $0175AE
 	move.w $8(a6),d0	; $0175B0
 	muls.w #$16,d0	; $0175B4
@@ -14511,7 +14511,7 @@ L0176B8:
 	move.w d4,d0	; $0176B8
 	asl.w #$4,d0	; $0176BA
 	add.w d5,d0	; $0176BC
-	lea.l ram_sys_ffa800.l,a0	; $0176BE
+	lea.l ram_save_field_a800.l,a0	; $0176BE
 	moveq #$0,d1	; $0176C4
 	move.b (a0,d0.w),d1	; $0176C6
 	lsr.w d6,d1	; $0176CA
@@ -14544,7 +14544,7 @@ save_write_eeprom:
 	clr.l -(a7)	; $017714
 	jsr sys_wrap_stack_arg.l	; $017716
 	addq.w #$8,a7	; $01771C
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $01771E
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $01771E
 	bne.b L01772E	; $017726
 	moveq #$4a,d0	; $017728
 L01772A:
@@ -14557,7 +14557,7 @@ L01772E:
 	pea.l L000001.w	; $01773A
 	jsr sys_wrap_stack_arg.l	; $01773E
 	addq.w #$8,a7	; $017744
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $017746
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $017746
 	bne.b L017754	; $01774E
 	moveq #$4a,d0	; $017750
 	bra.b L01772A	; $017752
@@ -14567,7 +14567,7 @@ L01775A:
 	move.w -$8(a6),d0	; $01775A
 	subq.w #$2,d0	; $01775E
 	ext.l d0	; $017760
-	lea.l ram_sys_ffa800.l,a0	; $017762
+	lea.l ram_save_field_a800.l,a0	; $017762
 	add.l a0,d0	; $017768
 	move.l d0,-(a7)	; $01776A
 	move.w -$8(a6),d0	; $01776C
@@ -14575,7 +14575,7 @@ L01775A:
 	move.l d0,-(a7)	; $017772
 	jsr sys_wrap_stack_arg.l	; $017774
 	addq.w #$8,a7	; $01777A
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $01777C
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $01777C
 	bne.b L01778A	; $017784
 	moveq #$4a,d0	; $017786
 	bra.b L01772A	; $017788
@@ -14600,7 +14600,7 @@ save_validate_magic:
 	clr.w -$8(a6)	; $0177B8
 L0177BC:
 	move.w -$8(a6),d0	; $0177BC
-	lea.l ram_sys_ffa800.l,a0	; $0177C0
+	lea.l ram_save_field_a800.l,a0	; $0177C0
 	clr.b (a0,d0.w)	; $0177C6
 	addq.w #$1,-$8(a6)	; $0177CA
 	cmpi.w #$80,-$8(a6)	; $0177CE
@@ -14610,7 +14610,7 @@ L0177BC:
 	clr.l -(a7)	; $0177DE
 	jsr eeprom_read.l	; $0177E0
 	lea.l $c(a7),a7	; $0177E6
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $0177EA
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $0177EA
 	bne.b L0177FA	; $0177F2
 	moveq #$4b,d0	; $0177F4
 L0177F6:
@@ -14622,17 +14622,17 @@ L0177FA:
 	pea.l L000001.w	; $017802
 	jsr eeprom_read.l	; $017806
 	lea.l $c(a7),a7	; $01780C
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $017810
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $017810
 	bne.b L01781E	; $017818
 	moveq #$4b,d0	; $01781A
 	bra.b L0177F6	; $01781C
 L01781E:
-	pea.l ram_sys_ffa800.l	; $01781E
+	pea.l ram_save_field_a800.l	; $01781E
 	pea.l L00007E.w	; $017824
 	pea.l L000002.w	; $017828
 	jsr eeprom_read.l	; $01782C
 	lea.l $c(a7),a7	; $017832
-	cmpi.w #$ffff,ram_sys_ff014e.l	; $017836
+	cmpi.w #$ffff,ram_sys_field_014e.l	; $017836
 	bne.b L017844	; $01783E
 	moveq #$4b,d0	; $017840
 	bra.b L0177F6	; $017842
@@ -14671,7 +14671,7 @@ location_pic_draw:
 	tst.w $8(a6)	; $0178AA
 	bne.b L017908	; $0178AE
 	move.w #$1b6,-(a7)	; $0178B0
-	move.w ram_sys_ff8676.l,-(a7)	; $0178B4
+	move.w ram_world_field_8676.l,-(a7)	; $0178B4
 	move.w #$6,-(a7)	; $0178BA
 	jsr map_decode.l	; $0178BE
 	addq.w #$2,a7	; $0178C4
@@ -14682,7 +14682,7 @@ location_pic_draw:
 	jsr map_decode.l	; $0178D4
 	addq.w #$2,a7	; $0178DA
 	move.l d0,-(a7)	; $0178DC
-	move.w ram_sys_ff8676.l,d0	; $0178DE
+	move.w ram_world_field_8676.l,d0	; $0178DE
 	add.w #$2000,d0	; $0178E4
 	move.w d0,-(a7)	; $0178E8
 	move.w #$1c,-(a7)	; $0178EA
@@ -14696,7 +14696,7 @@ location_pic_draw:
 	bra.b L01795E	; $017906
 L017908:
 	move.w #$119,-(a7)	; $017908
-	move.w ram_sys_ff8676.l,-(a7)	; $01790C
+	move.w ram_world_field_8676.l,-(a7)	; $01790C
 	move.w #$22,-(a7)	; $017912
 	jsr map_decode.l	; $017916
 	addq.w #$2,a7	; $01791C
@@ -14707,7 +14707,7 @@ L017908:
 	jsr map_decode.l	; $01792C
 	addq.w #$2,a7	; $017932
 	move.l d0,-(a7)	; $017934
-	move.w ram_sys_ff8676.l,d0	; $017936
+	move.w ram_world_field_8676.l,d0	; $017936
 	add.w #$4000,d0	; $01793C
 	move.w d0,-(a7)	; $017940
 	move.w #$1c,-(a7)	; $017942
@@ -14720,8 +14720,8 @@ L017908:
 	lea.l $14(a7),a7	; $01795A
 L01795E:
 	move.w #$3,-(a7)	; $01795E
-	move.w ram_sys_ff8648.l,-(a7)	; $017962
-	move.w ram_sys_ff0e78.l,-(a7)	; $017968
+	move.w ram_world_field_8648.l,-(a7)	; $017962
+	move.w ram_world_field_0e78.l,-(a7)	; $017968
 	jsr tile_record_load.l	; $01796E
 	addq.w #$6,a7	; $017974
 	jsr palette_fade(pc)	; $017976
@@ -14798,7 +14798,7 @@ sprite_write_block:
 	moveq #$d,d2	; $017A4E
 	asl.w d2,d1	; $017A50
 	add.w d1,d0	; $017A52
-	add.w ram_sys_ff867e.l,d0	; $017A54
+	add.w ram_world_field_867e.l,d0	; $017A54
 	add.w #$21,d0	; $017A5A
 	move.w d0,-(a7)	; $017A5E
 	move.w $c(a6),d0	; $017A60
@@ -14821,7 +14821,7 @@ sprite_write_block:
 	moveq #$d,d2	; $017A9C
 	asl.w d2,d1	; $017A9E
 	add.w d1,d0	; $017AA0
-	add.w ram_sys_ff867e.l,d0	; $017AA2
+	add.w ram_world_field_867e.l,d0	; $017AA2
 	add.w #$821,d0	; $017AA8
 	move.w d0,-(a7)	; $017AAC
 	move.w $c(a6),d0	; $017AAE
@@ -14846,7 +14846,7 @@ sprite_write_block:
 	moveq #$d,d2	; $017AEE
 	asl.w d2,d1	; $017AF0
 	add.w d1,d0	; $017AF2
-	add.w ram_sys_ff867e.l,d0	; $017AF4
+	add.w ram_world_field_867e.l,d0	; $017AF4
 	add.w #$1021,d0	; $017AFA
 	move.w d0,-(a7)	; $017AFE
 	move.w $c(a6),d0	; $017B00
@@ -14871,7 +14871,7 @@ sprite_write_block:
 	moveq #$d,d2	; $017B40
 	asl.w d2,d1	; $017B42
 	add.w d1,d0	; $017B44
-	add.w ram_sys_ff867e.l,d0	; $017B46
+	add.w ram_world_field_867e.l,d0	; $017B46
 	add.w #$1821,d0	; $017B4C
 	move.w d0,-(a7)	; $017B50
 	move.w $e(a6),-(a7)	; $017B52
@@ -14901,7 +14901,7 @@ scene_draw:
 	move.w #$37,-(a7)	; $017B9C
 	jsr gfx_plane_write(pc)	; $017BA0
 	addq.w #$4,a7	; $017BA4
-	move.w #$234,ram_sys_ff0076.l	; $017BA6
+	move.w #$234,ram_world_field_0076.l	; $017BA6
 	move.w #$90,-(a7)	; $017BAE
 	move.w #$29,-(a7)	; $017BB2
 	jsr map_decode.l	; $017BB6
@@ -14909,7 +14909,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017BBE
 	jsr gfx_dma_tile_upload.l	; $017BC0
 	addq.w #$6,a7	; $017BC6
-	move.w d0,ram_sys_ff8688.l	; $017BC8
+	move.w d0,ram_sys_field_8688.l	; $017BC8
 	move.w #$22,-(a7)	; $017BCE
 	move.w #$2a,-(a7)	; $017BD2
 	jsr map_decode.l	; $017BD6
@@ -14917,7 +14917,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017BDE
 	jsr gfx_dma_tile_upload.l	; $017BE0
 	addq.w #$6,a7	; $017BE6
-	move.w d0,ram_sys_ff868a.l	; $017BE8
+	move.w d0,ram_sys_field_868a.l	; $017BE8
 	move.w #$140,-(a7)	; $017BEE
 	move.w #$2e,-(a7)	; $017BF2
 	jsr map_decode.l	; $017BF6
@@ -14925,7 +14925,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017BFE
 	jsr gfx_dma_tile_upload.l	; $017C00
 	addq.w #$6,a7	; $017C06
-	move.w d0,ram_sys_ff8684.l	; $017C08
+	move.w d0,ram_sys_field_8684.l	; $017C08
 	move.w #$4b,-(a7)	; $017C0E
 	move.w #$2f,-(a7)	; $017C12
 	jsr map_decode.l	; $017C16
@@ -14933,7 +14933,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017C1E
 	jsr gfx_dma_tile_upload.l	; $017C20
 	addq.w #$6,a7	; $017C26
-	move.w d0,ram_sys_ff8642.l	; $017C28
+	move.w d0,ram_world_field_8642.l	; $017C28
 	move.w #$40,-(a7)	; $017C2E
 	move.w #$1f,-(a7)	; $017C32
 	jsr map_decode.l	; $017C36
@@ -14941,7 +14941,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017C3E
 	jsr gfx_dma_tile_upload.l	; $017C40
 	addq.w #$6,a7	; $017C46
-	move.w d0,ram_sys_ff867e.l	; $017C48
+	move.w d0,ram_world_field_867e.l	; $017C48
 	move.w #$1c,-(a7)	; $017C4E
 	move.w #$2d,-(a7)	; $017C52
 	jsr map_decode.l	; $017C56
@@ -14949,7 +14949,7 @@ scene_draw:
 	move.l d0,-(a7)	; $017C5E
 	jsr gfx_dma_tile_upload.l	; $017C60
 	addq.w #$6,a7	; $017C66
-	move.w d0,ram_sys_ff8680.l	; $017C68
+	move.w d0,ram_sys_field_8680.l	; $017C68
 	move.w #$8208,-(a7)	; $017C6E
 	jsr vdp_ctrl_write.l	; $017C72
 	addq.w #$2,a7	; $017C78
@@ -14962,7 +14962,7 @@ scene_draw:
 	move.w #$8522,-(a7)	; $017C92
 	jsr vdp_ctrl_write.l	; $017C96
 	addq.w #$2,a7	; $017C9C
-	move.w #$4400,ram_sys_ff8644.l	; $017C9E
+	move.w #$4400,ram_sys_field_8644.l	; $017C9E
 	move.w #$8d10,-(a7)	; $017CA6
 	jsr vdp_ctrl_write.l	; $017CAA
 	addq.w #$2,a7	; $017CB0
@@ -14996,7 +14996,7 @@ scene_draw:
 	addq.w #$2,a7	; $017D16
 	jsr wait_vblank.l	; $017D18
 	jsr clear_sprite_attr.l	; $017D1E
-	move.w ram_sys_ff8684.l,d0	; $017D24
+	move.w ram_sys_field_8684.l,d0	; $017D24
 	add.w #$4000,d0	; $017D2A
 	moveq #$0,d1	; $017D2E
 	move.w d0,d1	; $017D30
@@ -15012,7 +15012,7 @@ scene_draw:
 	clr.w -(a7)	; $017D56
 	jsr sprite_grid_write.l	; $017D58
 	lea.l $12(a7),a7	; $017D5E
-	move.w ram_sys_ff8680.l,d0	; $017D62
+	move.w ram_sys_field_8680.l,d0	; $017D62
 	add.w #$2800,d0	; $017D68
 	move.w d0,-(a7)	; $017D6C
 	move.w #$20,-(a7)	; $017D6E
@@ -15025,7 +15025,7 @@ scene_draw:
 	move.w #$1d,-(a7)	; $017D88
 	jsr sprite_grid_write.l	; $017D8C
 	lea.l $12(a7),a7	; $017D92
-	move.w ram_sys_ff8680.l,d0	; $017D96
+	move.w ram_sys_field_8680.l,d0	; $017D96
 	add.w #$2000,d0	; $017D9C
 	move.w d0,-(a7)	; $017DA0
 	move.w #$23,-(a7)	; $017DA2
@@ -15038,7 +15038,7 @@ scene_draw:
 	move.w #$20,-(a7)	; $017DBC
 	jsr sprite_grid_write.l	; $017DC0
 	lea.l $12(a7),a7	; $017DC6
-	move.w ram_sys_ff8680.l,d0	; $017DCA
+	move.w ram_sys_field_8680.l,d0	; $017DCA
 	add.w #$3800,d0	; $017DD0
 	move.w d0,-(a7)	; $017DD4
 	move.w #$26,-(a7)	; $017DD6
@@ -15051,7 +15051,7 @@ scene_draw:
 	move.w #$23,-(a7)	; $017DF0
 	jsr sprite_grid_write.l	; $017DF4
 	lea.l $12(a7),a7	; $017DFA
-	move.w ram_sys_ff8680.l,d0	; $017DFE
+	move.w ram_sys_field_8680.l,d0	; $017DFE
 	add.w #$3000,d0	; $017E04
 	move.w d0,-(a7)	; $017E08
 	move.w #$29,-(a7)	; $017E0A
@@ -15064,7 +15064,7 @@ scene_draw:
 	move.w #$26,-(a7)	; $017E24
 	jsr sprite_grid_write.l	; $017E28
 	lea.l $12(a7),a7	; $017E2E
-	move.w ram_sys_ff8680.l,d0	; $017E32
+	move.w ram_sys_field_8680.l,d0	; $017E32
 	add.w #$280c,d0	; $017E38
 	move.w d0,-(a7)	; $017E3C
 	move.w #$2b,-(a7)	; $017E3E
@@ -15077,7 +15077,7 @@ scene_draw:
 	move.w #$29,-(a7)	; $017E58
 	jsr sprite_grid_write.l	; $017E5C
 	lea.l $12(a7),a7	; $017E62
-	move.w ram_sys_ff8680.l,d0	; $017E66
+	move.w ram_sys_field_8680.l,d0	; $017E66
 	add.w #$200c,d0	; $017E6C
 	move.w d0,-(a7)	; $017E70
 	move.w #$2d,-(a7)	; $017E72
@@ -15090,7 +15090,7 @@ scene_draw:
 	move.w #$2b,-(a7)	; $017E8C
 	jsr sprite_grid_write.l	; $017E90
 	lea.l $12(a7),a7	; $017E96
-	move.w ram_sys_ff8680.l,d0	; $017E9A
+	move.w ram_sys_field_8680.l,d0	; $017E9A
 	add.w #$380c,d0	; $017EA0
 	move.w d0,-(a7)	; $017EA4
 	move.w #$2f,-(a7)	; $017EA6
@@ -15103,7 +15103,7 @@ scene_draw:
 	move.w #$2d,-(a7)	; $017EC0
 	jsr sprite_grid_write.l	; $017EC4
 	lea.l $12(a7),a7	; $017ECA
-	move.w ram_sys_ff8680.l,d0	; $017ECE
+	move.w ram_sys_field_8680.l,d0	; $017ECE
 	add.w #$300c,d0	; $017ED4
 	move.w d0,-(a7)	; $017ED8
 	move.w #$31,-(a7)	; $017EDA
@@ -15116,7 +15116,7 @@ scene_draw:
 	move.w #$2f,-(a7)	; $017EF4
 	jsr sprite_grid_write.l	; $017EF8
 	lea.l $12(a7),a7	; $017EFE
-	move.w ram_sys_ff8680.l,d0	; $017F02
+	move.w ram_sys_field_8680.l,d0	; $017F02
 	add.w #$2014,d0	; $017F08
 	move.w d0,-(a7)	; $017F0C
 	move.w #$32,-(a7)	; $017F0E
@@ -15127,7 +15127,7 @@ scene_draw:
 	move.w #$31,-(a7)	; $017F22
 	jsr sprite_write.l	; $017F26
 	lea.l $e(a7),a7	; $017F2C
-	move.w ram_sys_ff8680.l,d0	; $017F30
+	move.w ram_sys_field_8680.l,d0	; $017F30
 	add.w #$2814,d0	; $017F36
 	move.w d0,-(a7)	; $017F3A
 	move.w #$14,-(a7)	; $017F3C
@@ -15139,7 +15139,7 @@ scene_draw:
 	jsr sprite_write.l	; $017F54
 	lea.l $e(a7),a7	; $017F5A
 	moveq #$0,d0	; $017F5E
-	move.w ram_sys_ff8688.l,d0	; $017F60
+	move.w ram_sys_field_8688.l,d0	; $017F60
 	add.l #$8000,d0	; $017F66
 	move.w d0,-(a7)	; $017F6C
 	move.w #$1d,-(a7)	; $017F6E
@@ -15152,7 +15152,7 @@ scene_draw:
 	move.w #$14,-(a7)	; $017F8A
 	jsr sprite_grid_write.l	; $017F8E
 	lea.l $12(a7),a7	; $017F94
-	move.w ram_sys_ff8642.l,d0	; $017F98
+	move.w ram_world_field_8642.l,d0	; $017F98
 	add.w #$4040,d0	; $017F9E
 	moveq #$0,d1	; $017FA2
 	move.w d0,d1	; $017FA4
@@ -15168,7 +15168,7 @@ scene_draw:
 	lea.l $e(a7),a7	; $017FCC
 	moveq #$0,d7	; $017FD0
 L017FD2:
-	move.w ram_sys_ff8642.l,d0	; $017FD2
+	move.w ram_world_field_8642.l,d0	; $017FD2
 	add.w #$4049,d0	; $017FD8
 	moveq #$0,d1	; $017FDC
 	move.w d0,d1	; $017FDE
@@ -15192,7 +15192,7 @@ L017FD2:
 	addq.w #$1,d7	; $018014
 	cmp.w #$a,d7	; $018016
 	bcs.b L017FD2	; $01801A
-	move.w ram_sys_ff8642.l,d0	; $01801C
+	move.w ram_world_field_8642.l,d0	; $01801C
 	add.w #$4049,d0	; $018022
 	moveq #$0,d1	; $018026
 	move.w d0,d1	; $018028
@@ -15206,7 +15206,7 @@ L017FD2:
 	move.w #$47,-(a7)	; $018044
 	jsr sprite_write.l	; $018048
 	lea.l $e(a7),a7	; $01804E
-	move.w ram_sys_ff868a.l,-(a7)	; $018052
+	move.w ram_sys_field_868a.l,-(a7)	; $018052
 	move.w #$20,-(a7)	; $018058
 	move.w #$80,-(a7)	; $01805C
 	clr.w -(a7)	; $018060
@@ -15215,7 +15215,7 @@ L017FD2:
 	clr.l -(a7)	; $018068
 	jsr gfx_tilemap_fill.l	; $01806A
 	lea.l $10(a7),a7	; $018070
-	move.w ram_sys_ff868a.l,-(a7)	; $018074
+	move.w ram_sys_field_868a.l,-(a7)	; $018074
 	move.w #$20,-(a7)	; $01807A
 	move.w #$80,-(a7)	; $01807E
 	clr.w -(a7)	; $018082
@@ -15232,7 +15232,7 @@ L01809C:
 	jsr map_decode.l	; $0180A0
 	addq.w #$2,a7	; $0180A6
 	move.l d0,-(a7)	; $0180A8
-	move.w ram_sys_ff868a.l,-(a7)	; $0180AA
+	move.w ram_sys_field_868a.l,-(a7)	; $0180AA
 	move.w #$9,-(a7)	; $0180B0
 	move.w #$20,-(a7)	; $0180B4
 	move.w d6,-(a7)	; $0180B8
@@ -15256,7 +15256,7 @@ L0180E4:
 	addq.w #$2,a7	; $0180EE
 	move.l d0,-(a7)	; $0180F0
 	moveq #$0,d0	; $0180F2
-	move.w ram_sys_ff868a.l,d0	; $0180F4
+	move.w ram_sys_field_868a.l,d0	; $0180F4
 	add.l #$8000,d0	; $0180FA
 	move.w d0,-(a7)	; $018100
 	move.w #$7,-(a7)	; $018102
@@ -15379,7 +15379,7 @@ L018212:
 	asl.l #$1,d0	; $01823A
 	lea.l ram_sys_ff007a.l,a0	; $01823C
 	move.w (a0,d0.l),d1	; $018242
-	add.w ram_sys_ff867e.l,d1	; $018246
+	add.w ram_world_field_867e.l,d1	; $018246
 	move.w d1,-$6(a6)	; $01824C
 	move.w #$62,-$2(a6)	; $018250
 	moveq #$a,d0	; $018256
@@ -15408,12 +15408,12 @@ L018270:
 	sub.w #$f,d0	; $01829A
 	lsr.w #$1,d0	; $01829E
 	asl.w #$4,d0	; $0182A0
-	add.w ram_sys_ff8642.l,d0	; $0182A2
+	add.w ram_world_field_8642.l,d0	; $0182A2
 	move.w d0,-$6(a6)	; $0182A8
 	cmp.w #$17,d7	; $0182AC
 	bcs.b L0182C0	; $0182B0
 	move.w #$ff81,-$2(a6)	; $0182B2
-	move.w ram_sys_ff8642.l,-$6(a6)	; $0182B8
+	move.w ram_world_field_8642.l,-$6(a6)	; $0182B8
 L0182C0:
 	jsr wait_vblank.l	; $0182C0
 	move.w d4,d0	; $0182C6
@@ -15427,7 +15427,7 @@ L0182C0:
 	cmp.w #$96,d4	; $0182DE
 	bge.b L01831E	; $0182E2
 	moveq #$0,d0	; $0182E4
-	move.w ram_sys_ff8688.l,d0	; $0182E6
+	move.w ram_sys_field_8688.l,d0	; $0182E6
 	add.l #$8000,d0	; $0182EC
 	move.w d0,-(a7)	; $0182F2
 	move.w #$1d,-(a7)	; $0182F4
@@ -15489,7 +15489,7 @@ L018384:
 	move.w #$1,-(a7)	; $0183CE
 	jsr sfx_request(pc)	; $0183D2
 	addq.w #$4,a7	; $0183D6
-	move.w ram_sys_ff8684.l,d0	; $0183D8
+	move.w ram_sys_field_8684.l,d0	; $0183D8
 	add.w #$4000,d0	; $0183DE
 	moveq #$0,d1	; $0183E2
 	move.w d0,d1	; $0183E4
@@ -15526,7 +15526,7 @@ L01841E:
 	jsr pal_load_set.l	; $018458
 	addq.w #$6,a7	; $01845E
 L018460:
-	move.w ram_sys_ff8684.l,d0	; $018460
+	move.w ram_sys_field_8684.l,d0	; $018460
 	add.w #$4000,d0	; $018466
 	moveq #$0,d1	; $01846A
 	move.w d0,d1	; $01846C
@@ -15547,7 +15547,7 @@ L018460:
 	lea.l $12(a7),a7	; $01849E
 	moveq #$a,d6	; $0184A2
 	sub.w a3,d6	; $0184A4
-	move.w ram_sys_ff8642.l,d0	; $0184A6
+	move.w ram_world_field_8642.l,d0	; $0184A6
 	add.w #$4040,d0	; $0184AC
 	moveq #$0,d1	; $0184B0
 	move.w d0,d1	; $0184B2
@@ -15566,7 +15566,7 @@ L018460:
 	lea.l $e(a7),a7	; $0184E0
 	moveq #$0,d7	; $0184E4
 L0184E6:
-	move.w ram_sys_ff8642.l,d0	; $0184E6
+	move.w ram_world_field_8642.l,d0	; $0184E6
 	add.w #$4049,d0	; $0184EC
 	moveq #$0,d1	; $0184F0
 	move.w d0,d1	; $0184F2
@@ -15592,7 +15592,7 @@ L0184E6:
 	addq.w #$1,d7	; $01852C
 	cmp.w #$a,d7	; $01852E
 	bcs.b L0184E6	; $018532
-	move.w ram_sys_ff8642.l,d0	; $018534
+	move.w ram_world_field_8642.l,d0	; $018534
 	add.w #$4049,d0	; $01853A
 	moveq #$0,d1	; $01853E
 	move.w d0,d1	; $018540
@@ -15632,7 +15632,7 @@ L01857A:
 	move.w #$1,-(a7)	; $0185C0
 	jsr sfx_request(pc)	; $0185C4
 	addq.w #$4,a7	; $0185C8
-	move.w ram_sys_ff8680.l,-(a7)	; $0185CA
+	move.w ram_sys_field_8680.l,-(a7)	; $0185CA
 	clr.w -(a7)	; $0185D0
 	clr.w -(a7)	; $0185D2
 	clr.w -(a7)	; $0185D4
@@ -15703,7 +15703,7 @@ L01865A:
 	move.w #$9011,-(a7)	; $0186D0
 	jsr vdp_ctrl_write.l	; $0186D4
 	addq.w #$2,a7	; $0186DA
-	move.w #$234,ram_sys_ff0076.l	; $0186DC
+	move.w #$234,ram_world_field_0076.l	; $0186DC
 	move.w #$1e,-(a7)	; $0186E4
 	move.w #$13,-(a7)	; $0186E8
 	jsr map_decode.l	; $0186EC
@@ -15711,7 +15711,7 @@ L01865A:
 	move.l d0,-(a7)	; $0186F4
 	jsr gfx_dma_tile_upload.l	; $0186F6
 	addq.w #$6,a7	; $0186FC
-	move.w d0,ram_sys_ff8640.l	; $0186FE
+	move.w d0,ram_text_field_8640.l	; $0186FE
 	move.w #$24a,-(a7)	; $018704
 	move.w #$25,-(a7)	; $018708
 	jsr map_decode.l	; $01870C
@@ -15719,7 +15719,7 @@ L01865A:
 	move.l d0,-(a7)	; $018714
 	jsr gfx_dma_tile_upload.l	; $018716
 	addq.w #$6,a7	; $01871C
-	move.w d0,ram_sys_ff8642.l	; $01871E
+	move.w d0,ram_world_field_8642.l	; $01871E
 	move.w #$122,-(a7)	; $018724
 	move.w #$38,-(a7)	; $018728
 	jsr map_decode.l	; $01872C
@@ -15727,7 +15727,7 @@ L01865A:
 	move.l d0,-(a7)	; $018734
 	jsr gfx_dma_tile_upload.l	; $018736
 	addq.w #$6,a7	; $01873C
-	move.w d0,ram_sys_ff8684.l	; $01873E
+	move.w d0,ram_sys_field_8684.l	; $01873E
 	move.w #$51,-(a7)	; $018744
 	move.w #$3a,-(a7)	; $018748
 	jsr map_decode.l	; $01874C
@@ -15735,8 +15735,8 @@ L01865A:
 	move.l d0,-(a7)	; $018754
 	jsr gfx_dma_tile_upload.l	; $018756
 	addq.w #$6,a7	; $01875C
-	move.w d0,ram_sys_ff867e.l	; $01875E
-	move.w ram_sys_ff8640.l,-(a7)	; $018764
+	move.w d0,ram_world_field_867e.l	; $01875E
+	move.w ram_text_field_8640.l,-(a7)	; $018764
 	move.w #$40,-(a7)	; $01876A
 	move.w #$40,-(a7)	; $01876E
 	clr.w -(a7)	; $018772
@@ -15745,7 +15745,7 @@ L01865A:
 	pea.l L002000.w	; $01877A
 	jsr gfx_tilemap_fill.l	; $01877E
 	lea.l $10(a7),a7	; $018784
-	move.w ram_sys_ff8640.l,-(a7)	; $018788
+	move.w ram_text_field_8640.l,-(a7)	; $018788
 	move.w #$40,-(a7)	; $01878E
 	move.w #$40,-(a7)	; $018792
 	clr.w -(a7)	; $018796
@@ -15760,7 +15760,7 @@ L0187AC:
 	jsr map_decode.l	; $0187B0
 	addq.w #$2,a7	; $0187B6
 	move.l d0,-(a7)	; $0187B8
-	move.w ram_sys_ff8642.l,d0	; $0187BA
+	move.w ram_world_field_8642.l,d0	; $0187BA
 	add.w #$6000,d0	; $0187C0
 	move.w d0,-(a7)	; $0187C4
 	move.w #$8,-(a7)	; $0187C6
@@ -15778,7 +15778,7 @@ L0187AC:
 	jsr map_decode.l	; $0187EE
 	addq.w #$2,a7	; $0187F4
 	move.l d0,-(a7)	; $0187F6
-	move.w ram_sys_ff8642.l,d0	; $0187F8
+	move.w ram_world_field_8642.l,d0	; $0187F8
 	add.w #$6000,d0	; $0187FE
 	move.w d0,-(a7)	; $018802
 	move.w #$18,-(a7)	; $018804
@@ -15794,7 +15794,7 @@ L0187AC:
 	addq.w #$2,a7	; $01882C
 	move.l d0,-(a7)	; $01882E
 	moveq #$0,d0	; $018830
-	move.w ram_sys_ff8684.l,d0	; $018832
+	move.w ram_sys_field_8684.l,d0	; $018832
 	add.l #$8000,d0	; $018838
 	move.w d0,-(a7)	; $01883E
 	move.w #$15,-(a7)	; $018840
@@ -15846,7 +15846,7 @@ L0188AC:
 	move.w -$2(a6),-(a7)	; $0188C6
 	jsr vdp_write_block.l	; $0188CA
 	addq.w #$8,a7	; $0188D0
-	move.w ram_sys_ff867e.l,d0	; $0188D2
+	move.w ram_world_field_867e.l,d0	; $0188D2
 	add.w d7,d0	; $0188D8
 	add.w #$18,d0	; $0188DA
 	move.w d0,-(a7)	; $0188DE
@@ -15863,7 +15863,7 @@ L0188AC:
 	clr.w -(a7)	; $018902
 	jsr sprite_write.l	; $018904
 	lea.l $e(a7),a7	; $01890A
-	move.w ram_sys_ff867e.l,d0	; $01890E
+	move.w ram_world_field_867e.l,d0	; $01890E
 	add.w a4,d0	; $018914
 	moveq #$0,d1	; $018916
 	move.w d0,d1	; $018918
@@ -15879,7 +15879,7 @@ L0188AC:
 	move.w #$1,-(a7)	; $01893C
 	jsr sprite_write.l	; $018940
 	lea.l $e(a7),a7	; $018946
-	move.w ram_sys_ff867e.l,d0	; $01894A
+	move.w ram_world_field_867e.l,d0	; $01894A
 	add.w a4,d0	; $018950
 	move.w d0,-(a7)	; $018952
 	move.w #$3,-(a7)	; $018954
@@ -15892,7 +15892,7 @@ L0188AC:
 	move.w #$2,-(a7)	; $01896E
 	jsr sprite_write.l	; $018972
 	lea.l $e(a7),a7	; $018978
-	move.w ram_sys_ff867e.l,d0	; $01897C
+	move.w ram_world_field_867e.l,d0	; $01897C
 	add.w a4,d0	; $018982
 	move.w d0,-(a7)	; $018984
 	move.w #$4,-(a7)	; $018986
@@ -15905,7 +15905,7 @@ L0188AC:
 	move.w #$3,-(a7)	; $0189A0
 	jsr sprite_write.l	; $0189A4
 	lea.l $e(a7),a7	; $0189AA
-	move.w ram_sys_ff867e.l,d0	; $0189AE
+	move.w ram_world_field_867e.l,d0	; $0189AE
 	add.w a4,d0	; $0189B4
 	add.w #$c,d0	; $0189B6
 	moveq #$0,d1	; $0189BA
@@ -15922,7 +15922,7 @@ L0188AC:
 	move.w #$4,-(a7)	; $0189E0
 	jsr sprite_write.l	; $0189E4
 	lea.l $e(a7),a7	; $0189EA
-	move.w ram_sys_ff867e.l,d0	; $0189EE
+	move.w ram_world_field_867e.l,d0	; $0189EE
 	add.w a4,d0	; $0189F4
 	add.w #$c,d0	; $0189F6
 	moveq #$0,d1	; $0189FA
@@ -15939,7 +15939,7 @@ L0188AC:
 	move.w #$5,-(a7)	; $018A20
 	jsr sprite_write.l	; $018A24
 	lea.l $e(a7),a7	; $018A2A
-	move.w ram_sys_ff867e.l,d0	; $018A2E
+	move.w ram_world_field_867e.l,d0	; $018A2E
 	add.w a4,d0	; $018A34
 	add.w #$c,d0	; $018A36
 	moveq #$0,d1	; $018A3A
@@ -16026,7 +16026,7 @@ L018AF6:
 	move.w #$3,-(a7)	; $018B38
 	jsr pal_load_set.l	; $018B3C
 	addq.w #$6,a7	; $018B42
-	move.w #$234,ram_sys_ff0076.l	; $018B44
+	move.w #$234,ram_world_field_0076.l	; $018B44
 	move.w #$30,-(a7)	; $018B4C
 	move.w #$1b,-(a7)	; $018B50
 	jsr map_decode.l	; $018B54
@@ -16034,7 +16034,7 @@ L018AF6:
 	move.l d0,-(a7)	; $018B5C
 	jsr gfx_dma_tile_upload.l	; $018B5E
 	addq.w #$6,a7	; $018B64
-	move.w d0,ram_sys_ff8688.l	; $018B66
+	move.w d0,ram_sys_field_8688.l	; $018B66
 	move.w #$180,-(a7)	; $018B6C
 	move.w #$1c,-(a7)	; $018B70
 	jsr map_decode.l	; $018B74
@@ -16042,7 +16042,7 @@ L018AF6:
 	move.l d0,-(a7)	; $018B7C
 	jsr gfx_dma_tile_upload.l	; $018B7E
 	addq.w #$6,a7	; $018B84
-	move.w d0,ram_sys_ff868a.l	; $018B86
+	move.w d0,ram_sys_field_868a.l	; $018B86
 	move.w #$1e,-(a7)	; $018B8C
 	move.w #$13,-(a7)	; $018B90
 	jsr map_decode.l	; $018B94
@@ -16050,7 +16050,7 @@ L018AF6:
 	move.l d0,-(a7)	; $018B9C
 	jsr gfx_dma_tile_upload.l	; $018B9E
 	addq.w #$6,a7	; $018BA4
-	move.w d0,ram_sys_ff8640.l	; $018BA6
+	move.w d0,ram_text_field_8640.l	; $018BA6
 	move.w #$218,-(a7)	; $018BAC
 	move.w #$35,-(a7)	; $018BB0
 	jsr map_decode.l	; $018BB4
@@ -16058,7 +16058,7 @@ L018AF6:
 	move.l d0,-(a7)	; $018BBC
 	jsr gfx_dma_tile_upload.l	; $018BBE
 	addq.w #$6,a7	; $018BC4
-	move.w d0,ram_sys_ff8642.l	; $018BC6
+	move.w d0,ram_world_field_8642.l	; $018BC6
 	move.w #$170,-(a7)	; $018BCC
 	move.w #$3c,-(a7)	; $018BD0
 	jsr map_decode.l	; $018BD4
@@ -16066,7 +16066,7 @@ L018AF6:
 	move.l d0,-(a7)	; $018BDC
 	jsr gfx_dma_tile_upload.l	; $018BDE
 	addq.w #$6,a7	; $018BE4
-	move.w d0,ram_sys_ff867e.l	; $018BE6
+	move.w d0,ram_world_field_867e.l	; $018BE6
 	move.w #$8208,-(a7)	; $018BEC
 	jsr vdp_ctrl_write.l	; $018BF0
 	addq.w #$2,a7	; $018BF6
@@ -16079,7 +16079,7 @@ L018AF6:
 	move.w #$8522,-(a7)	; $018C10
 	jsr vdp_ctrl_write.l	; $018C14
 	addq.w #$2,a7	; $018C1A
-	move.w #$4400,ram_sys_ff8644.l	; $018C1C
+	move.w #$4400,ram_sys_field_8644.l	; $018C1C
 	move.w #$8d10,-(a7)	; $018C24
 	jsr vdp_ctrl_write.l	; $018C28
 	addq.w #$2,a7	; $018C2E
@@ -16100,7 +16100,7 @@ L018AF6:
 	jsr vdp_write_block.l	; $018C64
 	addq.w #$8,a7	; $018C6A
 	jsr clear_sprite_attr.l	; $018C6C
-	move.w ram_sys_ff8640.l,-(a7)	; $018C72
+	move.w ram_text_field_8640.l,-(a7)	; $018C72
 	move.w #$20,-(a7)	; $018C78
 	move.w #$80,-(a7)	; $018C7C
 	clr.w -(a7)	; $018C80
@@ -16109,7 +16109,7 @@ L018AF6:
 	clr.l -(a7)	; $018C88
 	jsr gfx_tilemap_fill.l	; $018C8A
 	lea.l $10(a7),a7	; $018C90
-	move.w ram_sys_ff8640.l,-(a7)	; $018C94
+	move.w ram_text_field_8640.l,-(a7)	; $018C94
 	move.w #$20,-(a7)	; $018C9A
 	move.w #$80,-(a7)	; $018C9E
 	clr.w -(a7)	; $018CA2
@@ -16120,7 +16120,7 @@ L018AF6:
 	lea.l $10(a7),a7	; $018CB4
 	moveq #$0,d6	; $018CB8
 L018CBA:
-	move.w ram_sys_ff8688.l,-(a7)	; $018CBA
+	move.w ram_sys_field_8688.l,-(a7)	; $018CBA
 	move.w #$c,-(a7)	; $018CC0
 	move.w #$4,-(a7)	; $018CC4
 	clr.w -(a7)	; $018CC8
@@ -16134,7 +16134,7 @@ L018CBA:
 	bcs.b L018CBA	; $018CE2
 	moveq #$0,d6	; $018CE4
 L018CE6:
-	move.w ram_sys_ff868a.l,d0	; $018CE6
+	move.w ram_sys_field_868a.l,d0	; $018CE6
 	add.w #$2000,d0	; $018CEC
 	move.w d0,-(a7)	; $018CF0
 	move.w #$c,-(a7)	; $018CF2
@@ -16148,7 +16148,7 @@ L018CE6:
 	add.w #$20,d6	; $018D10
 	cmp.w #$80,d6	; $018D14
 	bcs.b L018CE6	; $018D18
-	move.w ram_sys_ff8640.l,-(a7)	; $018D1A
+	move.w ram_text_field_8640.l,-(a7)	; $018D1A
 	move.w #$2,-(a7)	; $018D20
 	move.w #$80,-(a7)	; $018D24
 	clr.w -(a7)	; $018D28
@@ -16161,7 +16161,7 @@ L018CE6:
 	jsr map_decode.l	; $018D40
 	addq.w #$2,a7	; $018D46
 	move.l d0,-(a7)	; $018D48
-	move.w ram_sys_ff8642.l,d0	; $018D4A
+	move.w ram_world_field_8642.l,d0	; $018D4A
 	add.w #$4000,d0	; $018D50
 	move.w d0,-(a7)	; $018D54
 	move.w #$19,-(a7)	; $018D56
@@ -16226,7 +16226,7 @@ L018DF0:
 	jsr vdp_write_hscroll_wave(pc)	; $018E08
 	lea.l $a(a7),a7	; $018E0C
 	jsr wait_vblank.l	; $018E10
-	move.w ram_sys_ff867e.l,d0	; $018E16
+	move.w ram_world_field_867e.l,d0	; $018E16
 	add.w #$6000,d0	; $018E1C
 	move.w d0,-(a7)	; $018E20
 	move.w #$6,-(a7)	; $018E22
@@ -16241,7 +16241,7 @@ L018DF0:
 	clr.w -(a7)	; $018E42
 	jsr sprite_grid_write.l	; $018E44
 	lea.l $12(a7),a7	; $018E4A
-	move.w ram_sys_ff867e.l,d0	; $018E4E
+	move.w ram_world_field_867e.l,d0	; $018E4E
 	add.w #$6060,d0	; $018E54
 	move.w d0,-(a7)	; $018E58
 	move.w #$c,-(a7)	; $018E5A
@@ -16256,7 +16256,7 @@ L018DF0:
 	move.w #$6,-(a7)	; $018E7A
 	jsr sprite_grid_write.l	; $018E7E
 	lea.l $12(a7),a7	; $018E84
-	move.w ram_sys_ff867e.l,d0	; $018E88
+	move.w ram_world_field_867e.l,d0	; $018E88
 	add.w #$60c0,d0	; $018E8E
 	move.w d0,-(a7)	; $018E92
 	move.w #$10,-(a7)	; $018E94
@@ -16271,7 +16271,7 @@ L018DF0:
 	move.w #$c,-(a7)	; $018EB4
 	jsr sprite_grid_write.l	; $018EB8
 	lea.l $12(a7),a7	; $018EBE
-	move.w ram_sys_ff867e.l,d0	; $018EC2
+	move.w ram_world_field_867e.l,d0	; $018EC2
 	add.w #$6100,d0	; $018EC8
 	move.w d0,-(a7)	; $018ECC
 	move.w #$13,-(a7)	; $018ECE
@@ -16286,7 +16286,7 @@ L018DF0:
 	move.w #$10,-(a7)	; $018EEE
 	jsr sprite_grid_write.l	; $018EF2
 	lea.l $12(a7),a7	; $018EF8
-	move.w ram_sys_ff867e.l,d0	; $018EFC
+	move.w ram_world_field_867e.l,d0	; $018EFC
 	add.w #$6900,d0	; $018F02
 	move.w d0,-(a7)	; $018F06
 	move.w #$16,-(a7)	; $018F08
@@ -16301,7 +16301,7 @@ L018DF0:
 	move.w #$13,-(a7)	; $018F28
 	jsr sprite_grid_write.l	; $018F2C
 	lea.l $12(a7),a7	; $018F32
-	move.w ram_sys_ff867e.l,d0	; $018F36
+	move.w ram_world_field_867e.l,d0	; $018F36
 	add.w #$6130,d0	; $018F3C
 	move.w d0,-(a7)	; $018F40
 	move.w #$1a,-(a7)	; $018F42
@@ -16316,7 +16316,7 @@ L018DF0:
 	move.w #$16,-(a7)	; $018F62
 	jsr sprite_grid_write.l	; $018F66
 	lea.l $12(a7),a7	; $018F6C
-	move.w ram_sys_ff867e.l,d0	; $018F70
+	move.w ram_world_field_867e.l,d0	; $018F70
 	add.w #$6930,d0	; $018F76
 	move.w d0,-(a7)	; $018F7A
 	clr.w -(a7)	; $018F7C
@@ -16363,7 +16363,7 @@ L018DF0:
 	move.w #$9011,-(a7)	; $01901E
 	jsr vdp_ctrl_write.l	; $019022
 	addq.w #$2,a7	; $019028
-	move.w #$234,ram_sys_ff0076.l	; $01902A
+	move.w #$234,ram_world_field_0076.l	; $01902A
 	move.w #$1e,-(a7)	; $019032
 	move.w #$13,-(a7)	; $019036
 	jsr map_decode.l	; $01903A
@@ -16371,7 +16371,7 @@ L018DF0:
 	move.l d0,-(a7)	; $019042
 	jsr gfx_dma_tile_upload.l	; $019044
 	addq.w #$6,a7	; $01904A
-	move.w d0,ram_sys_ff8640.l	; $01904C
+	move.w d0,ram_text_field_8640.l	; $01904C
 	move.w #$24a,-(a7)	; $019052
 	move.w #$25,-(a7)	; $019056
 	jsr map_decode.l	; $01905A
@@ -16379,7 +16379,7 @@ L018DF0:
 	move.l d0,-(a7)	; $019062
 	jsr gfx_dma_tile_upload.l	; $019064
 	addq.w #$6,a7	; $01906A
-	move.w d0,ram_sys_ff8642.l	; $01906C
+	move.w d0,ram_world_field_8642.l	; $01906C
 	move.w #$122,-(a7)	; $019072
 	move.w #$38,-(a7)	; $019076
 	jsr map_decode.l	; $01907A
@@ -16387,7 +16387,7 @@ L018DF0:
 	move.l d0,-(a7)	; $019082
 	jsr gfx_dma_tile_upload.l	; $019084
 	addq.w #$6,a7	; $01908A
-	move.w d0,ram_sys_ff8684.l	; $01908C
+	move.w d0,ram_sys_field_8684.l	; $01908C
 	move.w #$51,-(a7)	; $019092
 	move.w #$3a,-(a7)	; $019096
 	jsr map_decode.l	; $01909A
@@ -16395,8 +16395,8 @@ L018DF0:
 	move.l d0,-(a7)	; $0190A2
 	jsr gfx_dma_tile_upload.l	; $0190A4
 	addq.w #$6,a7	; $0190AA
-	move.w d0,ram_sys_ff867e.l	; $0190AC
-	move.w ram_sys_ff8640.l,-(a7)	; $0190B2
+	move.w d0,ram_world_field_867e.l	; $0190AC
+	move.w ram_text_field_8640.l,-(a7)	; $0190B2
 	move.w #$40,-(a7)	; $0190B8
 	move.w #$40,-(a7)	; $0190BC
 	clr.w -(a7)	; $0190C0
@@ -16405,7 +16405,7 @@ L018DF0:
 	pea.l L002000.w	; $0190C8
 	jsr gfx_tilemap_fill.l	; $0190CC
 	lea.l $10(a7),a7	; $0190D2
-	move.w ram_sys_ff8640.l,-(a7)	; $0190D6
+	move.w ram_text_field_8640.l,-(a7)	; $0190D6
 	move.w #$40,-(a7)	; $0190DC
 	move.w #$40,-(a7)	; $0190E0
 	clr.w -(a7)	; $0190E4
@@ -16420,7 +16420,7 @@ L0190FA:
 	jsr map_decode.l	; $0190FE
 	addq.w #$2,a7	; $019104
 	move.l d0,-(a7)	; $019106
-	move.w ram_sys_ff8642.l,d0	; $019108
+	move.w ram_world_field_8642.l,d0	; $019108
 	add.w #$6000,d0	; $01910E
 	move.w d0,-(a7)	; $019112
 	move.w #$8,-(a7)	; $019114
@@ -16438,7 +16438,7 @@ L0190FA:
 	jsr map_decode.l	; $01913C
 	addq.w #$2,a7	; $019142
 	move.l d0,-(a7)	; $019144
-	move.w ram_sys_ff8642.l,d0	; $019146
+	move.w ram_world_field_8642.l,d0	; $019146
 	add.w #$6000,d0	; $01914C
 	move.w d0,-(a7)	; $019150
 	move.w #$18,-(a7)	; $019152
@@ -16454,7 +16454,7 @@ L0190FA:
 	addq.w #$2,a7	; $01917A
 	move.l d0,-(a7)	; $01917C
 	moveq #$0,d0	; $01917E
-	move.w ram_sys_ff8684.l,d0	; $019180
+	move.w ram_sys_field_8684.l,d0	; $019180
 	add.l #$8000,d0	; $019186
 	move.w d0,-(a7)	; $01918C
 	move.w #$15,-(a7)	; $01918E
@@ -16621,7 +16621,7 @@ L019370:
 	bcs.w L01927C	; $019376
 L01937A:
 	jsr wait_vblank.l	; $01937A
-	move.w ram_sys_ff867e.l,d0	; $019380
+	move.w ram_world_field_867e.l,d0	; $019380
 	add.w a4,d0	; $019386
 	moveq #$0,d1	; $019388
 	move.w d0,d1	; $01938A
@@ -16637,7 +16637,7 @@ L01937A:
 	clr.w -(a7)	; $0193AE
 	jsr sprite_write.l	; $0193B0
 	lea.l $e(a7),a7	; $0193B6
-	move.w ram_sys_ff867e.l,d0	; $0193BA
+	move.w ram_world_field_867e.l,d0	; $0193BA
 	add.w a4,d0	; $0193C0
 	move.w d0,-(a7)	; $0193C2
 	move.w #$2,-(a7)	; $0193C4
@@ -16650,7 +16650,7 @@ L01937A:
 	move.w #$1,-(a7)	; $0193DE
 	jsr sprite_write.l	; $0193E2
 	lea.l $e(a7),a7	; $0193E8
-	move.w ram_sys_ff867e.l,d0	; $0193EC
+	move.w ram_world_field_867e.l,d0	; $0193EC
 	add.w a4,d0	; $0193F2
 	move.w d0,-(a7)	; $0193F4
 	move.w #$3,-(a7)	; $0193F6
@@ -16663,7 +16663,7 @@ L01937A:
 	move.w #$2,-(a7)	; $019410
 	jsr sprite_write.l	; $019414
 	lea.l $e(a7),a7	; $01941A
-	move.w ram_sys_ff867e.l,d0	; $01941E
+	move.w ram_world_field_867e.l,d0	; $01941E
 	add.w a4,d0	; $019424
 	add.w #$c,d0	; $019426
 	moveq #$0,d1	; $01942A
@@ -16680,7 +16680,7 @@ L01937A:
 	move.w #$3,-(a7)	; $019450
 	jsr sprite_write.l	; $019454
 	lea.l $e(a7),a7	; $01945A
-	move.w ram_sys_ff867e.l,d0	; $01945E
+	move.w ram_world_field_867e.l,d0	; $01945E
 	add.w a4,d0	; $019464
 	add.w #$c,d0	; $019466
 	moveq #$0,d1	; $01946A
@@ -16697,7 +16697,7 @@ L01937A:
 	move.w #$4,-(a7)	; $019490
 	jsr sprite_write.l	; $019494
 	lea.l $e(a7),a7	; $01949A
-	move.w ram_sys_ff867e.l,d0	; $01949E
+	move.w ram_world_field_867e.l,d0	; $01949E
 	add.w a4,d0	; $0194A4
 	add.w #$c,d0	; $0194A6
 	moveq #$0,d1	; $0194AA
@@ -16782,7 +16782,7 @@ L0195A6:
 	jsr snd_music_start(pc)	; $0195BE
 	addq.w #$2,a7	; $0195C2
 	jsr world_map_draw.l	; $0195C4
-	move.w ram_sys_ff8648.l,d0	; $0195CA
+	move.w ram_world_field_8648.l,d0	; $0195CA
 	add.w #$6000,d0	; $0195D0
 	moveq #$0,d1	; $0195D4
 	move.w d0,d1	; $0195D6
@@ -16848,16 +16848,16 @@ L019670:
 map_chunk_load:
 	link.w a6,#$fffc	; $019692
 	moveq #$0,d0	; $019696
-	move.b ram_sys_ffa894.l,d0	; $019698
+	move.b ram_sys_field_a894.l,d0	; $019698
 	addq.w #$1,d0	; $01969E
 	and.w #$3,d0	; $0196A0
-	move.b d0,ram_sys_ffa894.l	; $0196A4
-	move.w ram_sys_ffa880.l,d0	; $0196AA
+	move.b d0,ram_sys_field_a894.l	; $0196A4
+	move.w ram_sys_field_a880.l,d0	; $0196AA
 	cmp.w ram_sys_ffa882.l,d0	; $0196B0
 	bge.b L0196EC	; $0196B6
-	addq.w #$1,ram_sys_ffa880.l	; $0196B8
+	addq.w #$1,ram_sys_field_a880.l	; $0196B8
 	moveq #$0,d0	; $0196BE
-	move.b ram_sys_ffa894.l,d0	; $0196C0
+	move.b ram_sys_field_a894.l,d0	; $0196C0
 	moveq #$b,d1	; $0196C6
 	asl.l d1,d0	; $0196C8
 	lea.l ram_sys_ff868c.l,a0	; $0196CA
@@ -16866,40 +16866,40 @@ map_chunk_load:
 	move.w $8(a6),d0	; $0196D6
 	ext.l d0	; $0196DA
 	asl.l #$2,d0	; $0196DC
-	lea.l ram_sys_ffa896.l,a0	; $0196DE
+	lea.l ram_sys_field_a896.l,a0	; $0196DE
 	move.l -$4(a6),(a0,d0.l)	; $0196E4
 	bra.b L019764	; $0196EA
 L0196EC:
 	moveq #$0,d0	; $0196EC
-	move.b ram_sys_ffa894.l,d0	; $0196EE
+	move.b ram_sys_field_a894.l,d0	; $0196EE
 	asl.l #$1,d0	; $0196F4
-	lea.l ram_sys_ffa884.l,a0	; $0196F6
+	lea.l ram_sys_field_a884.l,a0	; $0196F6
 	move.w (a0,d0.l),d1	; $0196FC
 	ext.l d1	; $019700
 	asl.l #$2,d1	; $019702
-	lea.l ram_sys_ffa896.l,a0	; $019704
+	lea.l ram_sys_field_a896.l,a0	; $019704
 	move.l (a0,d1.l),-$4(a6)	; $01970A
 	moveq #$0,d0	; $019710
-	move.b ram_sys_ffa894.l,d0	; $019712
+	move.b ram_sys_field_a894.l,d0	; $019712
 	asl.l #$1,d0	; $019718
-	lea.l ram_sys_ffa884.l,a0	; $01971A
+	lea.l ram_sys_field_a884.l,a0	; $01971A
 	move.w (a0,d0.l),d1	; $019720
 	ext.l d1	; $019724
 	asl.l #$2,d1	; $019726
-	lea.l ram_sys_ffa896.l,a0	; $019728
+	lea.l ram_sys_field_a896.l,a0	; $019728
 	move.w $8(a6),d0	; $01972E
 	ext.l d0	; $019732
 	asl.l #$2,d0	; $019734
-	lea.l ram_sys_ffa896.l,a1	; $019736
+	lea.l ram_sys_field_a896.l,a1	; $019736
 	move.l (a0,d1.l),(a1,d0.l)	; $01973C
 	moveq #$0,d0	; $019742
-	move.b ram_sys_ffa894.l,d0	; $019744
+	move.b ram_sys_field_a894.l,d0	; $019744
 	asl.l #$1,d0	; $01974A
-	lea.l ram_sys_ffa884.l,a0	; $01974C
+	lea.l ram_sys_field_a884.l,a0	; $01974C
 	move.w (a0,d0.l),d1	; $019752
 	ext.l d1	; $019756
 	asl.l #$2,d1	; $019758
-	lea.l ram_sys_ffa896.l,a0	; $01975A
+	lea.l ram_sys_field_a896.l,a0	; $01975A
 	clr.l (a0,d1.l)	; $019760
 L019764:
 	move.l -$4(a6),-(a7)	; $019764
@@ -16909,12 +16909,12 @@ L019764:
 	jsr text_record_dispatch.l	; $019778
 	lea.l $e(a7),a7	; $01977E
 	moveq #$0,d0	; $019782
-	move.b ram_sys_ffa894.l,d0	; $019784
+	move.b ram_sys_field_a894.l,d0	; $019784
 	asl.l #$1,d0	; $01978A
-	lea.l ram_sys_ffa884.l,a0	; $01978C
+	lea.l ram_sys_field_a884.l,a0	; $01978C
 	move.w $8(a6),(a0,d0.l)	; $019792
 	moveq #$0,d0	; $019798
-	move.b ram_sys_ffa894.l,d0	; $01979A
+	move.b ram_sys_field_a894.l,d0	; $01979A
 	asl.l #$1,d0	; $0197A0
 	lea.l ram_sys_ffa88c.l,a0	; $0197A2
 	clr.w (a0,d0.l)	; $0197A8
@@ -17068,10 +17068,10 @@ L01B5CC:
 new_game_init:
 	link.w a6,#$fff4	; $01B5D6
 	move.w #$8,-(a7)	; $01B5DA
-	pea.l ram_sys_ff0e18.l	; $01B5DE
+	pea.l ram_menu_field_0e18.l	; $01B5DE
 	jsr queue_init.l	; $01B5E4
 	addq.w #$6,a7	; $01B5EA
-	move.w #$ffff,ram_sys_ffc324.l	; $01B5EC
+	move.w #$ffff,ram_sys_field_c324.l	; $01B5EC
 	lea.l L0D6B6C.l,a0	; $01B5F4
 	move.l a0,ram_actor_hp.l	; $01B5FA
 	lea.l L0D6BEA.l,a0	; $01B600
@@ -17098,11 +17098,11 @@ new_game_init:
 	add.w #$20,d0	; $01B67C
 	move.w d0,ram_sys_ff00b8.l	; $01B680
 	move.w #$4,-(a7)	; $01B686
-	pea.l ram_sys_ffa880.l	; $01B68A
+	pea.l ram_sys_field_a880.l	; $01B68A
 	jsr map_chunk_cache_init.l	; $01B690
 	addq.w #$6,a7	; $01B696
 	jsr grid_fill(pc)	; $01B698
-	pea.l ram_sys_ff0e8e.l	; $01B69C
+	pea.l ram_sys_field_0e8e.l	; $01B69C
 	jsr table_init_a(pc)	; $01B6A2
 	addq.w #$4,a7	; $01B6A6
 	move.w #$1,-(a7)	; $01B6A8
@@ -17110,7 +17110,7 @@ new_game_init:
 	move.w #$20,-(a7)	; $01B6B0
 	move.w #$e0,-(a7)	; $01B6B4
 	move.w #$160,-(a7)	; $01B6B8
-	pea.l ram_sys_ffb08c.l	; $01B6BC
+	pea.l ram_sys_field_b08c.l	; $01B6BC
 	jsr table_init_b(pc)	; $01B6C2
 	lea.l $e(a7),a7	; $01B6C6
 	clr.w -(a7)	; $01B6CA
@@ -17140,14 +17140,14 @@ new_game_init:
 	move.w #$ff,-(a7)	; $01B72A
 	jsr shop_merchant_setup.l	; $01B72E
 	addq.w #$2,a7	; $01B734
-	clr.w ram_sys_ff0e78.l	; $01B736
-	clr.w ram_sys_ff0e7e.l	; $01B73C
+	clr.w ram_world_field_0e78.l	; $01B736
+	clr.w ram_menu_field_0e7e.l	; $01B73C
 	jsr map_prepare.l	; $01B742
-	lea.l ram_sys_ffb08c.l,a0	; $01B748
-	move.l a0,ram_sys_ffa7fc.l	; $01B74E
+	lea.l ram_sys_field_b08c.l,a0	; $01B748
+	move.l a0,ram_sys_field_a7fc.l	; $01B74E
 	jsr shop_merchant_init.l	; $01B754
 	jsr shop_merchant_scan.l	; $01B75A
-	tst.w ram_sys_ff0128.l	; $01B760
+	tst.w ram_world_field_0128.l	; $01B760
 	bne.b L01B7AC	; $01B766
 	move.w #$7d,-(a7)	; $01B768
 	move.w #$6f,-(a7)	; $01B76C
@@ -17164,7 +17164,7 @@ new_game_init:
 	jsr entity_spawn.l	; $01B792
 	lea.l $e(a7),a7	; $01B798
 	move.w d0,ram_party_leader.l	; $01B79C
-	move.w #$21c,ram_sys_ff0e16.l	; $01B7A2
+	move.w #$21c,ram_world_field_0e16.l	; $01B7A2
 	bra.b L01B81A	; $01B7AA
 L01B7AC:
 	move.w #$160,-(a7)	; $01B7AC
@@ -17193,7 +17193,7 @@ L01B7AC:
 	jsr entity_spawn.l	; $01B802
 	lea.l $e(a7),a7	; $01B808
 	move.w d0,ram_party_leader.l	; $01B80C
-	move.w #$834,ram_sys_ff0e16.l	; $01B812
+	move.w #$834,ram_world_field_0e16.l	; $01B812
 L01B81A:
 	move.w #$ffff,-(a7)	; $01B81A
 	move.w #$ffff,-(a7)	; $01B81E
@@ -17215,7 +17215,7 @@ L01B81A:
 	move.w #$20,-(a7)	; $01B866
 	move.w ram_party_leader.l,d0	; $01B86A
 	muls.w #$48,d0	; $01B870
-	lea.l ram_sys_ff0e30.l,a0	; $01B874
+	lea.l ram_sys_field_0e30.l,a0	; $01B874
 	add.l a0,d0	; $01B87A
 	move.l d0,-(a7)	; $01B87C
 	jsr queue_init.l	; $01B87E
@@ -17231,9 +17231,9 @@ L01B81A:
 	move.w #$ff,-(a7)	; $01B8A8
 	jsr shop_merchant_setup.l	; $01B8AC
 	addq.w #$2,a7	; $01B8B2
-	tst.w ram_sys_ff0128.l	; $01B8B4
+	tst.w ram_world_field_0128.l	; $01B8B4
 	bne.b L01B8E0	; $01B8BA
-	tst.w ram_sys_ff0108.l	; $01B8BC
+	tst.w ram_sys_field_0108.l	; $01B8BC
 	bne.b L01B8E0	; $01B8C2
 	move.w #$1c,-(a7)	; $01B8C4
 	move.w #$17,-(a7)	; $01B8C8
@@ -17243,9 +17243,9 @@ L01B81A:
 	jsr msg_queue_consume.l	; $01B8D8
 	addq.w #$2,a7	; $01B8DE
 L01B8E0:
-	tst.w ram_sys_ff0108.l	; $01B8E0
+	tst.w ram_sys_field_0108.l	; $01B8E0
 	beq.b L01B914	; $01B8E6
-	clr.w ram_sys_ff0108.l	; $01B8E8
+	clr.w ram_sys_field_0108.l	; $01B8E8
 	jsr save_deserialise.l	; $01B8EE
 	move.w d0,-$2(a6)	; $01B8F4
 	move.w -$2(a6),-(a7)	; $01B8F8
@@ -17261,11 +17261,11 @@ L01B914:
 	; code $01B918-$01BA15
 redraw_check:
 	link.w a6,#$fffe	; $01B918
-	tst.w ram_sys_ff009c.l	; $01B91C
+	tst.w ram_sys_field_009c.l	; $01B91C
 	bne.b L01B934	; $01B922
-	tst.b ram_sys_ffb08a.l	; $01B924
+	tst.b ram_sys_field_b08a.l	; $01B924
 	bne.b L01B934	; $01B92A
-	tst.w ram_sys_ff009a.l	; $01B92C
+	tst.w ram_sys_field_009a.l	; $01B92C
 	beq.b L01B938	; $01B932
 L01B934:
 	moveq #$1,d0	; $01B934
@@ -17274,7 +17274,7 @@ L01B938:
 	moveq #$0,d0	; $01B938
 L01B93A:
 	move.b d0,-$1(a6)	; $01B93A
-	tst.w ram_sys_ff0098.l	; $01B93E
+	tst.w ram_sys_field_0098.l	; $01B93E
 	bne.b L01B950	; $01B944
 	tst.b -$1(a6)	; $01B946
 	bne.b L01B950	; $01B94A
@@ -17282,69 +17282,69 @@ L01B94C:
 	unlk a6	; $01B94C
 	rts	; $01B94E
 L01B950:
-	tst.w ram_sys_ff0098.l	; $01B950
+	tst.w ram_sys_field_0098.l	; $01B950
 	beq.b L01B970	; $01B956
 	jsr clear_decode_buffer.l	; $01B958
-	move.w ram_sys_ff0e90.l,-(a7)	; $01B95E
-	move.w ram_sys_ff0e8e.l,-(a7)	; $01B964
+	move.w ram_world_field_0e90.l,-(a7)	; $01B95E
+	move.w ram_sys_field_0e8e.l,-(a7)	; $01B964
 	jsr map_chunk_pos(pc)	; $01B96A
 	addq.w #$4,a7	; $01B96E
 L01B970:
-	tst.w ram_sys_ff009a.l	; $01B970
+	tst.w ram_sys_field_009a.l	; $01B970
 	beq.b L01B97E	; $01B976
 	jsr text_event_message.l	; $01B978
 L01B97E:
 	jsr menu_format.l	; $01B97E
-	tst.b ram_sys_ffb08a.l	; $01B984
+	tst.b ram_sys_field_b08a.l	; $01B984
 	beq.b L01B9A2	; $01B98A
-	tst.w ram_sys_ff00ac.l	; $01B98C
+	tst.w ram_menu_field_00ac.l	; $01B98C
 	beq.b L01B99C	; $01B992
 	jsr menu_record_reload.l	; $01B994
 	bra.b L01B9A2	; $01B99A
 L01B99C:
 	jsr gfx_fill_panel_plain.l	; $01B99C
 L01B9A2:
-	tst.w ram_sys_ff009c.l	; $01B9A2
+	tst.w ram_sys_field_009c.l	; $01B9A2
 	beq.b L01B9B0	; $01B9A8
 	jsr gfx_fill_panel_flagged.l	; $01B9AA
 L01B9B0:
-	clr.b ram_sys_ffb08a.l	; $01B9B0
-	clr.w ram_sys_ff009a.l	; $01B9B6
-	clr.w ram_sys_ff009c.l	; $01B9BC
-	tst.w ram_sys_ff0098.l	; $01B9C2
+	clr.b ram_sys_field_b08a.l	; $01B9B0
+	clr.w ram_sys_field_009a.l	; $01B9B6
+	clr.w ram_sys_field_009c.l	; $01B9BC
+	tst.w ram_sys_field_0098.l	; $01B9C2
 	beq.b L01B9F2	; $01B9C8
-	clr.w ram_sys_ff0098.l	; $01B9CA
+	clr.w ram_sys_field_0098.l	; $01B9CA
 	move.w #$33c0,-(a7)	; $01B9D0
-	move.w ram_sys_ff8674.l,d0	; $01B9D4
+	move.w ram_world_field_8674.l,d0	; $01B9D4
 	asl.w #$5,d0	; $01B9DA
 	moveq #$0,d1	; $01B9DC
 	move.w d0,d1	; $01B9DE
 	move.l d1,-(a7)	; $01B9E0
-	pea.l ram_sys_ff1ec0.l	; $01B9E2
+	pea.l ram_world_field_1ec0.l	; $01B9E2
 	jsr dma_upload.l	; $01B9E8
 	lea.l $a(a7),a7	; $01B9EE
 L01B9F2:
-	cmpi.w #$ffff,ram_sys_ff009e.l	; $01B9F2
+	cmpi.w #$ffff,ram_sys_field_009e.l	; $01B9F2
 	beq.b L01BA12	; $01B9FA
-	move.w ram_sys_ff009e.l,-(a7)	; $01B9FC
+	move.w ram_sys_field_009e.l,-(a7)	; $01B9FC
 	jsr location_pic_draw.l	; $01BA02
 	addq.w #$2,a7	; $01BA08
-	move.w #$ffff,ram_sys_ff009e.l	; $01BA0A
+	move.w #$ffff,ram_sys_field_009e.l	; $01BA0A
 L01BA12:
 	bra.w L01B94C	; $01BA12
 	; code $01BA16-$01BA25
 redraw_flag_set:
 	link.w a6,#$0	; $01BA16
-	move.w #$ffff,ram_sys_ff0098.l	; $01BA1A
+	move.w #$ffff,ram_sys_field_0098.l	; $01BA1A
 	unlk a6	; $01BA22
 	rts	; $01BA24
 	; code $01BA26-$01BA4D
 request_full_redraw:
 	link.w a6,#$0	; $01BA26
-	move.w #$ffff,ram_sys_ff0098.l	; $01BA2A
-	move.b #$ff,ram_sys_ffb08a.l	; $01BA32
-	move.w #$ffff,ram_sys_ff009a.l	; $01BA3A
-	move.w #$ffff,ram_sys_ff009c.l	; $01BA42
+	move.w #$ffff,ram_sys_field_0098.l	; $01BA2A
+	move.b #$ff,ram_sys_field_b08a.l	; $01BA32
+	move.w #$ffff,ram_sys_field_009a.l	; $01BA3A
+	move.w #$ffff,ram_sys_field_009c.l	; $01BA42
 	unlk a6	; $01BA4A
 	rts	; $01BA4C
 	; code $01BA4E-$01BE85
@@ -17403,7 +17403,7 @@ L01BA66:
 	add.l d1,d0	; $01BADC
 	lea.l ram_sys_ffaf42.l,a0	; $01BADE
 	move.w (a0,d0.l),-$c(a6)	; $01BAE4
-	tst.w ram_sys_ff0092.l	; $01BAEA
+	tst.w ram_world_field_0092.l	; $01BAEA
 	beq.b L01BB04	; $01BAF0
 	lea.l -$6(a6),a0	; $01BAF2
 	move.w (a0),d0	; $01BAF6
@@ -17412,7 +17412,7 @@ L01BA66:
 	beq.b L01BB04	; $01BAFE
 	addq.w #$1,-$2(a6)	; $01BB00
 L01BB04:
-	tst.w ram_sys_ff0092.l	; $01BB04
+	tst.w ram_world_field_0092.l	; $01BB04
 	beq.b L01BB1E	; $01BB0A
 	lea.l -$6(a6),a0	; $01BB0C
 	move.w (a0),d0	; $01BB10
@@ -17549,49 +17549,49 @@ L01BC56:
 	move.w -$2(a6),-(a7)	; $01BC80
 	jsr map_terrain_tile_lookup.l	; $01BC84
 	addq.w #$8,a7	; $01BC8A
-	movea.l ram_sys_ffa7fc.l,a0	; $01BC8C
+	movea.l ram_sys_field_a7fc.l,a0	; $01BC8C
 	move.w (a0),d0	; $01BC92
 	add.w d7,d0	; $01BC94
 	add.w -$16(a6),d0	; $01BC96
-	movea.l ram_sys_ffa7fc.l,a0	; $01BC9A
+	movea.l ram_sys_field_a7fc.l,a0	; $01BC9A
 	ext.l d0	; $01BCA0
 	divs.w (a0),d0	; $01BCA2
 	swap d0	; $01BCA4
 	ext.l d0	; $01BCA6
 	asl.l #$5,d0	; $01BCA8
-	movea.l ram_sys_ffa7fc.l,a0	; $01BCAA
+	movea.l ram_sys_field_a7fc.l,a0	; $01BCAA
 	move.w $2(a0),d1	; $01BCB0
 	add.w a3,d1	; $01BCB4
 	add.w -$14(a6),d1	; $01BCB6
-	movea.l ram_sys_ffa7fc.l,a0	; $01BCBA
+	movea.l ram_sys_field_a7fc.l,a0	; $01BCBA
 	ext.l d1	; $01BCC0
 	divs.w $2(a0),d1	; $01BCC2
 	swap d1	; $01BCC6
 	ext.l d1	; $01BCC8
 	add.l d1,d0	; $01BCCA
-	lea.l ram_sys_ffb36c.l,a0	; $01BCCC
+	lea.l ram_sys_field_b36c.l,a0	; $01BCCC
 	move.b (a0,d0.l),-$1b(a6)	; $01BCD2
-	movea.l ram_sys_ffa7fc.l,a0	; $01BCD8
+	movea.l ram_sys_field_a7fc.l,a0	; $01BCD8
 	move.w (a0),d0	; $01BCDE
 	add.w d7,d0	; $01BCE0
 	add.w -$16(a6),d0	; $01BCE2
-	movea.l ram_sys_ffa7fc.l,a0	; $01BCE6
+	movea.l ram_sys_field_a7fc.l,a0	; $01BCE6
 	ext.l d0	; $01BCEC
 	divs.w (a0),d0	; $01BCEE
 	swap d0	; $01BCF0
 	ext.l d0	; $01BCF2
 	asl.l #$5,d0	; $01BCF4
-	movea.l ram_sys_ffa7fc.l,a0	; $01BCF6
+	movea.l ram_sys_field_a7fc.l,a0	; $01BCF6
 	move.w $2(a0),d1	; $01BCFC
 	add.w a3,d1	; $01BD00
 	add.w -$14(a6),d1	; $01BD02
-	movea.l ram_sys_ffa7fc.l,a0	; $01BD06
+	movea.l ram_sys_field_a7fc.l,a0	; $01BD06
 	ext.l d1	; $01BD0C
 	divs.w $2(a0),d1	; $01BD0E
 	swap d1	; $01BD12
 	ext.l d1	; $01BD14
 	add.l d1,d0	; $01BD16
-	lea.l ram_sys_ffb76c.l,a0	; $01BD18
+	lea.l ram_sys_field_b76c.l,a0	; $01BD18
 	move.b (a0,d0.l),-$1c(a6)	; $01BD1E
 	moveq #$0,d0	; $01BD24
 	move.b -$1c(a6),d0	; $01BD26
@@ -17601,7 +17601,7 @@ L01BC56:
 	move.b -$1c(a6),d0	; $01BD34
 	moveq #$c,d1	; $01BD38
 	jsr mul32.l	; $01BD3A
-	lea.l ram_sys_ffb0cc.l,a0	; $01BD40
+	lea.l ram_sys_field_b0cc.l,a0	; $01BD40
 	add.l a0,d0	; $01BD46
 	move.l d0,-$1a(a6)	; $01BD48
 	movea.l -$1a(a6),a0	; $01BD4C
@@ -17727,7 +17727,7 @@ L01BEA0:
 	move.b -$1b(a6),d0	; $01BEB0
 	moveq #$c,d1	; $01BEB4
 	jsr mul32.l	; $01BEB6
-	lea.l ram_sys_ffb0cc.l,a0	; $01BEBC
+	lea.l ram_sys_field_b0cc.l,a0	; $01BEBC
 	add.l a0,d0	; $01BEC2
 	move.l d0,-$1a(a6)	; $01BEC4
 	movea.l -$1a(a6),a0	; $01BEC8
@@ -17764,49 +17764,49 @@ L01BF22:
 	move.b -$1c(a6),d0	; $01BF24
 	cmp.w #$ff,d0	; $01BF28
 	bne.w L01BFC8	; $01BF2C
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF30
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF30
 	move.w (a0),d0	; $01BF36
 	add.w d7,d0	; $01BF38
 	add.w -$16(a6),d0	; $01BF3A
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF3E
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF3E
 	ext.l d0	; $01BF44
 	divs.w (a0),d0	; $01BF46
 	swap d0	; $01BF48
 	ext.l d0	; $01BF4A
 	asl.l #$5,d0	; $01BF4C
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF4E
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF4E
 	move.w $2(a0),d1	; $01BF54
 	add.w a3,d1	; $01BF58
 	add.w -$14(a6),d1	; $01BF5A
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF5E
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF5E
 	ext.l d1	; $01BF64
 	divs.w $2(a0),d1	; $01BF66
 	swap d1	; $01BF6A
 	ext.l d1	; $01BF6C
 	add.l d1,d0	; $01BF6E
-	lea.l ram_sys_ffb36c.l,a0	; $01BF70
+	lea.l ram_sys_field_b36c.l,a0	; $01BF70
 	move.b #$ff,(a0,d0.l)	; $01BF76
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF7C
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF7C
 	move.w (a0),d0	; $01BF82
 	add.w d7,d0	; $01BF84
 	add.w -$16(a6),d0	; $01BF86
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF8A
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF8A
 	ext.l d0	; $01BF90
 	divs.w (a0),d0	; $01BF92
 	swap d0	; $01BF94
 	ext.l d0	; $01BF96
 	asl.l #$5,d0	; $01BF98
-	movea.l ram_sys_ffa7fc.l,a0	; $01BF9A
+	movea.l ram_sys_field_a7fc.l,a0	; $01BF9A
 	move.w $2(a0),d1	; $01BFA0
 	add.w a3,d1	; $01BFA4
 	add.w -$14(a6),d1	; $01BFA6
-	movea.l ram_sys_ffa7fc.l,a0	; $01BFAA
+	movea.l ram_sys_field_a7fc.l,a0	; $01BFAA
 	ext.l d1	; $01BFB0
 	divs.w $2(a0),d1	; $01BFB2
 	swap d1	; $01BFB6
 	ext.l d1	; $01BFB8
 	add.l d1,d0	; $01BFBA
-	lea.l ram_sys_ffb76c.l,a0	; $01BFBC
+	lea.l ram_sys_field_b76c.l,a0	; $01BFBC
 	move.b -$1b(a6),(a0,d0.l)	; $01BFC2
 L01BFC8:
 	lea.l -$4(a6),a0	; $01BFC8
@@ -17900,7 +17900,7 @@ L01C0C2:
 	addq.w #$1,d4	; $01C0CC
 	cmp.w #$a,d4	; $01C0CE
 	blt.w L01BA64	; $01C0D2
-	tst.w ram_sys_ff013c.l	; $01C0D6
+	tst.w ram_sys_field_013c.l	; $01C0D6
 	beq.b L01C0E4	; $01C0DC
 	jsr spell_effect_step.l	; $01C0DE
 L01C0E4:
@@ -17954,18 +17954,18 @@ L01C0F8:
 map_chunk_cache_read:
 	link.w a6,#$fffc	; $01C176
 	movem.l d4-d5,-(a7)	; $01C17A
-	movea.l ram_sys_ffa7fc.l,a0	; $01C17E
+	movea.l ram_sys_field_a7fc.l,a0	; $01C17E
 	move.w $2(a0),d0	; $01C184
 	add.w $a(a6),d0	; $01C188
-	movea.l ram_sys_ffa7fc.l,a0	; $01C18C
+	movea.l ram_sys_field_a7fc.l,a0	; $01C18C
 	move.w d0,d5	; $01C192
 	ext.l d5	; $01C194
 	divs.w $2(a0),d5	; $01C196
 	swap d5	; $01C19A
-	movea.l ram_sys_ffa7fc.l,a0	; $01C19C
+	movea.l ram_sys_field_a7fc.l,a0	; $01C19C
 	move.w (a0),d0	; $01C1A2
 	add.w $8(a6),d0	; $01C1A4
-	movea.l ram_sys_ffa7fc.l,a0	; $01C1A8
+	movea.l ram_sys_field_a7fc.l,a0	; $01C1A8
 	move.w d0,d4	; $01C1AE
 	ext.l d4	; $01C1B0
 	divs.w (a0),d4	; $01C1B2
@@ -17980,13 +17980,13 @@ map_chunk_cache_read:
 	move.l d0,-$4(a6)	; $01C1C8
 	lea.l ram_sys_ff0248.l,a0	; $01C1CC
 	move.w d5,d0	; $01C1D2
-	movea.l ram_sys_ffa7fc.l,a1	; $01C1D4
+	movea.l ram_sys_field_a7fc.l,a1	; $01C1D4
 	ext.l d0	; $01C1DA
 	divs.w $4(a1),d0	; $01C1DC
 	swap d0	; $01C1E0
-	movea.l ram_sys_ffa7fc.l,a1	; $01C1E2
+	movea.l ram_sys_field_a7fc.l,a1	; $01C1E2
 	muls.w $4(a1),d0	; $01C1E8
-	movea.l ram_sys_ffa7fc.l,a1	; $01C1EC
+	movea.l ram_sys_field_a7fc.l,a1	; $01C1EC
 	move.w d4,d1	; $01C1F2
 	ext.l d1	; $01C1F4
 	divs.w $4(a1),d1	; $01C1F6
@@ -18008,22 +18008,22 @@ leader_spawn:
 	movem.l d4-d5,-(a7)	; $01C21E
 	cmpi.w #$6,$8(a6)	; $01C222
 	bne.b L01C26E	; $01C228
-	movea.l ram_sys_ffa7fc.l,a0	; $01C22A
+	movea.l ram_sys_field_a7fc.l,a0	; $01C22A
 	move.w (a0),d0	; $01C230
 	add.w $a(a6),d0	; $01C232
-	movea.l ram_sys_ffa7fc.l,a0	; $01C236
+	movea.l ram_sys_field_a7fc.l,a0	; $01C236
 	ext.l d0	; $01C23C
 	divs.w (a0),d0	; $01C23E
 	swap d0	; $01C240
-	move.w d0,ram_sys_ff0e8e.l	; $01C242
-	movea.l ram_sys_ffa7fc.l,a0	; $01C248
+	move.w d0,ram_sys_field_0e8e.l	; $01C242
+	movea.l ram_sys_field_a7fc.l,a0	; $01C248
 	move.w $2(a0),d0	; $01C24E
 	add.w $c(a6),d0	; $01C252
-	movea.l ram_sys_ffa7fc.l,a0	; $01C256
+	movea.l ram_sys_field_a7fc.l,a0	; $01C256
 	ext.l d0	; $01C25C
 	divs.w $2(a0),d0	; $01C25E
 	swap d0	; $01C262
-	move.w d0,ram_sys_ff0e90.l	; $01C264
+	move.w d0,ram_world_field_0e90.l	; $01C264
 	bra.w L01C7DA	; $01C26A
 L01C26E:
 	cmpi.w #$5,$8(a6)	; $01C26E
@@ -18045,25 +18045,25 @@ L01C298:
 	addq.w #$6,a7	; $01C2B2
 	move.w $8(a6),-$4(a6)	; $01C2B4
 L01C2BA:
-	movea.l ram_sys_ffa7fc.l,a0	; $01C2BA
+	movea.l ram_sys_field_a7fc.l,a0	; $01C2BA
 	move.w (a0),d0	; $01C2C0
-	add.w ram_sys_ff0e8e.l,d0	; $01C2C2
+	add.w ram_sys_field_0e8e.l,d0	; $01C2C2
 	add.w -$c(a6),d0	; $01C2C8
-	movea.l ram_sys_ffa7fc.l,a0	; $01C2CC
+	movea.l ram_sys_field_a7fc.l,a0	; $01C2CC
 	ext.l d0	; $01C2D2
 	divs.w (a0),d0	; $01C2D4
 	swap d0	; $01C2D6
-	move.w d0,ram_sys_ff0e8e.l	; $01C2D8
-	movea.l ram_sys_ffa7fc.l,a0	; $01C2DE
+	move.w d0,ram_sys_field_0e8e.l	; $01C2D8
+	movea.l ram_sys_field_a7fc.l,a0	; $01C2DE
 	move.w $2(a0),d0	; $01C2E4
-	add.w ram_sys_ff0e90.l,d0	; $01C2E8
+	add.w ram_world_field_0e90.l,d0	; $01C2E8
 	add.w -$a(a6),d0	; $01C2EE
-	movea.l ram_sys_ffa7fc.l,a0	; $01C2F2
+	movea.l ram_sys_field_a7fc.l,a0	; $01C2F2
 	ext.l d0	; $01C2F8
 	divs.w $2(a0),d0	; $01C2FA
 	swap d0	; $01C2FE
-	move.w d0,ram_sys_ff0e90.l	; $01C300
-	movea.l ram_sys_ffa7fc.l,a0	; $01C306
+	move.w d0,ram_world_field_0e90.l	; $01C300
+	movea.l ram_sys_field_a7fc.l,a0	; $01C306
 	tst.w $c(a0)	; $01C30C
 	beq.w L01C7DA	; $01C310
 	cmpi.w #$4,-$4(a6)	; $01C314
@@ -18144,14 +18144,14 @@ L01C3E8:
 	subq.w #$1,d1	; $01C3F0
 	ext.l d1	; $01C3F2
 	add.l d1,d0	; $01C3F4
-	lea.l ram_sys_ffb36c.l,a0	; $01C3F6
+	lea.l ram_sys_field_b36c.l,a0	; $01C3F6
 	move.w d5,d1	; $01C3FC
 	ext.l d1	; $01C3FE
 	asl.l #$5,d1	; $01C400
 	move.w d4,d2	; $01C402
 	ext.l d2	; $01C404
 	add.l d2,d1	; $01C406
-	lea.l ram_sys_ffb36c.l,a1	; $01C408
+	lea.l ram_sys_field_b36c.l,a1	; $01C408
 	move.b (a0,d0.l),(a1,d1.l)	; $01C40E
 	move.w d5,d0	; $01C414
 	ext.l d0	; $01C416
@@ -18160,14 +18160,14 @@ L01C3E8:
 	subq.w #$1,d1	; $01C41C
 	ext.l d1	; $01C41E
 	add.l d1,d0	; $01C420
-	lea.l ram_sys_ffb76c.l,a0	; $01C422
+	lea.l ram_sys_field_b76c.l,a0	; $01C422
 	move.w d5,d1	; $01C428
 	ext.l d1	; $01C42A
 	asl.l #$5,d1	; $01C42C
 	move.w d4,d2	; $01C42E
 	ext.l d2	; $01C430
 	add.l d2,d1	; $01C432
-	lea.l ram_sys_ffb76c.l,a1	; $01C434
+	lea.l ram_sys_field_b76c.l,a1	; $01C434
 	move.b (a0,d0.l),(a1,d1.l)	; $01C43A
 	addq.w #$1,d5	; $01C440
 	cmp.w #$a,d5	; $01C442
@@ -18249,14 +18249,14 @@ L01C512:
 	addq.w #$1,d1	; $01C51A
 	ext.l d1	; $01C51C
 	add.l d1,d0	; $01C51E
-	lea.l ram_sys_ffb36c.l,a0	; $01C520
+	lea.l ram_sys_field_b36c.l,a0	; $01C520
 	move.w d5,d1	; $01C526
 	ext.l d1	; $01C528
 	asl.l #$5,d1	; $01C52A
 	move.w d4,d2	; $01C52C
 	ext.l d2	; $01C52E
 	add.l d2,d1	; $01C530
-	lea.l ram_sys_ffb36c.l,a1	; $01C532
+	lea.l ram_sys_field_b36c.l,a1	; $01C532
 	move.b (a0,d0.l),(a1,d1.l)	; $01C538
 	move.w d5,d0	; $01C53E
 	ext.l d0	; $01C540
@@ -18265,14 +18265,14 @@ L01C512:
 	addq.w #$1,d1	; $01C546
 	ext.l d1	; $01C548
 	add.l d1,d0	; $01C54A
-	lea.l ram_sys_ffb76c.l,a0	; $01C54C
+	lea.l ram_sys_field_b76c.l,a0	; $01C54C
 	move.w d5,d1	; $01C552
 	ext.l d1	; $01C554
 	asl.l #$5,d1	; $01C556
 	move.w d4,d2	; $01C558
 	ext.l d2	; $01C55A
 	add.l d2,d1	; $01C55C
-	lea.l ram_sys_ffb76c.l,a1	; $01C55E
+	lea.l ram_sys_field_b76c.l,a1	; $01C55E
 	move.b (a0,d0.l),(a1,d1.l)	; $01C564
 	addq.w #$1,d5	; $01C56A
 	cmp.w #$a,d5	; $01C56C
@@ -18348,14 +18348,14 @@ L01C632:
 	move.w d5,d1	; $01C63A
 	ext.l d1	; $01C63C
 	add.l d1,d0	; $01C63E
-	lea.l ram_sys_ffb36c.l,a0	; $01C640
+	lea.l ram_sys_field_b36c.l,a0	; $01C640
 	move.w d4,d1	; $01C646
 	ext.l d1	; $01C648
 	asl.l #$5,d1	; $01C64A
 	move.w d5,d2	; $01C64C
 	ext.l d2	; $01C64E
 	add.l d2,d1	; $01C650
-	lea.l ram_sys_ffb36c.l,a1	; $01C652
+	lea.l ram_sys_field_b36c.l,a1	; $01C652
 	move.b (a0,d0.l),(a1,d1.l)	; $01C658
 	move.w d4,d0	; $01C65E
 	addq.w #$1,d0	; $01C660
@@ -18364,14 +18364,14 @@ L01C632:
 	move.w d5,d1	; $01C666
 	ext.l d1	; $01C668
 	add.l d1,d0	; $01C66A
-	lea.l ram_sys_ffb76c.l,a0	; $01C66C
+	lea.l ram_sys_field_b76c.l,a0	; $01C66C
 	move.w d4,d1	; $01C672
 	ext.l d1	; $01C674
 	asl.l #$5,d1	; $01C676
 	move.w d5,d2	; $01C678
 	ext.l d2	; $01C67A
 	add.l d2,d1	; $01C67C
-	lea.l ram_sys_ffb76c.l,a1	; $01C67E
+	lea.l ram_sys_field_b76c.l,a1	; $01C67E
 	move.b (a0,d0.l),(a1,d1.l)	; $01C684
 	addq.w #$1,d5	; $01C68A
 	cmp.w #$a,d5	; $01C68C
@@ -18447,14 +18447,14 @@ L01C752:
 	move.w d5,d1	; $01C75A
 	ext.l d1	; $01C75C
 	add.l d1,d0	; $01C75E
-	lea.l ram_sys_ffb36c.l,a0	; $01C760
+	lea.l ram_sys_field_b36c.l,a0	; $01C760
 	move.w d4,d1	; $01C766
 	ext.l d1	; $01C768
 	asl.l #$5,d1	; $01C76A
 	move.w d5,d2	; $01C76C
 	ext.l d2	; $01C76E
 	add.l d2,d1	; $01C770
-	lea.l ram_sys_ffb36c.l,a1	; $01C772
+	lea.l ram_sys_field_b36c.l,a1	; $01C772
 	move.b (a0,d0.l),(a1,d1.l)	; $01C778
 	move.w d4,d0	; $01C77E
 	subq.w #$1,d0	; $01C780
@@ -18463,14 +18463,14 @@ L01C752:
 	move.w d5,d1	; $01C786
 	ext.l d1	; $01C788
 	add.l d1,d0	; $01C78A
-	lea.l ram_sys_ffb76c.l,a0	; $01C78C
+	lea.l ram_sys_field_b76c.l,a0	; $01C78C
 	move.w d4,d1	; $01C792
 	ext.l d1	; $01C794
 	asl.l #$5,d1	; $01C796
 	move.w d5,d2	; $01C798
 	ext.l d2	; $01C79A
 	add.l d2,d1	; $01C79C
-	lea.l ram_sys_ffb76c.l,a1	; $01C79E
+	lea.l ram_sys_field_b76c.l,a1	; $01C79E
 	move.b (a0,d0.l),(a1,d1.l)	; $01C7A4
 	addq.w #$1,d5	; $01C7AA
 	cmp.w #$a,d5	; $01C7AC
@@ -18492,8 +18492,8 @@ L01C7C2:
 L01C7D4:
 	jsr map_grid_place_chars.l	; $01C7D4
 L01C7DA:
-	move.w ram_sys_ff0e90.l,-(a7)	; $01C7DA
-	move.w ram_sys_ff0e8e.l,-(a7)	; $01C7E0
+	move.w ram_world_field_0e90.l,-(a7)	; $01C7DA
+	move.w ram_sys_field_0e8e.l,-(a7)	; $01C7E0
 	bsr.b location_divide	; $01C7E6
 	addq.w #$4,a7	; $01C7E8
 	move.w d0,ram_sys_ff0e94.l	; $01C7EA
@@ -18508,7 +18508,7 @@ map_chunk_load_buf:
 	move.w $8(a6),d0	; $01C806
 	ext.l d0	; $01C80A
 	asl.l #$2,d0	; $01C80C
-	lea.l ram_sys_ffa896.l,a0	; $01C80E
+	lea.l ram_sys_field_a896.l,a0	; $01C80E
 	tst.l (a0,d0.l)	; $01C814
 	bne.b L01C826	; $01C818
 	move.w $8(a6),-(a7)	; $01C81A
@@ -18518,7 +18518,7 @@ L01C826:
 	move.w $8(a6),d0	; $01C826
 	ext.l d0	; $01C82A
 	asl.l #$2,d0	; $01C82C
-	lea.l ram_sys_ffa896.l,a0	; $01C82E
+	lea.l ram_sys_field_a896.l,a0	; $01C82E
 	move.l d0,d1	; $01C834
 	move.l (a0,d1.l),d0	; $01C836
 	unlk a6	; $01C83A
@@ -18527,23 +18527,23 @@ L01C826:
 location_divide:
 	link.w a6,#$0	; $01C83E
 	move.w $a(a6),d0	; $01C842
-	movea.l ram_sys_ffa7fc.l,a0	; $01C846
+	movea.l ram_sys_field_a7fc.l,a0	; $01C846
 	ext.l d0	; $01C84C
 	divs.w $4(a0),d0	; $01C84E
-	movea.l ram_sys_ffa7fc.l,a0	; $01C852
+	movea.l ram_sys_field_a7fc.l,a0	; $01C852
 	muls.w $6(a0),d0	; $01C858
-	movea.l ram_sys_ffa7fc.l,a0	; $01C85C
+	movea.l ram_sys_field_a7fc.l,a0	; $01C85C
 	move.w $8(a6),d1	; $01C862
 	ext.l d1	; $01C866
 	divs.w $4(a0),d1	; $01C868
 	add.w d1,d0	; $01C86C
 	move.w d0,-(a7)	; $01C86E
-	cmpi.w #$ffff,ram_sys_ff0e98.l	; $01C870
+	cmpi.w #$ffff,ram_sys_field_0e98.l	; $01C870
 	bne.b L01C87E	; $01C878
 	moveq #$0,d0	; $01C87A
 	bra.b L01C888	; $01C87C
 L01C87E:
-	move.w ram_sys_ff0e98.l,d0	; $01C87E
+	move.w ram_sys_field_0e98.l,d0	; $01C87E
 	add.w #$4d,d0	; $01C884
 L01C888:
 	move.w d0,d1	; $01C888
@@ -18652,7 +18652,7 @@ L01C98C:
 	movea.l $8(a6),a1	; $01C9DA
 	move.w $2(a0),d5	; $01C9DE
 	add.w $c(a1),d5	; $01C9E2
-	cmpi.w #$2,ram_sys_ff00ae.l	; $01C9E6
+	cmpi.w #$2,ram_menu_field_00ae.l	; $01C9E6
 	bne.b L01CA66	; $01C9EE
 	tst.w d5	; $01C9F0
 	bge.b L01CA04	; $01C9F2
@@ -18662,10 +18662,10 @@ L01C98C:
 	moveq #$0,d0	; $01CA00
 	bra.b L01C984	; $01CA02
 L01CA04:
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA04
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA04
 	cmp.w $2(a0),d5	; $01CA0A
 	blt.b L01CA2C	; $01CA0E
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA10
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA10
 	move.w $2(a0),d5	; $01CA16
 	subq.w #$1,d5	; $01CA1A
 	movea.l $8(a6),a0	; $01CA1C
@@ -18681,10 +18681,10 @@ L01CA2C:
 	moveq #$0,d0	; $01CA3C
 	bra.w L01C984	; $01CA3E
 L01CA42:
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA42
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA42
 	cmp.w (a0),d4	; $01CA48
 	blt.b L01CA66	; $01CA4A
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA4C
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA4C
 	move.w (a0),d4	; $01CA52
 	subq.w #$1,d4	; $01CA54
 	movea.l $8(a6),a0	; $01CA56
@@ -18692,18 +18692,18 @@ L01CA42:
 	moveq #$0,d0	; $01CA60
 	bra.w L01C984	; $01CA62
 L01CA66:
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA66
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA66
 	move.w (a0),d0	; $01CA6C
 	add.w d4,d0	; $01CA6E
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA70
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA70
 	move.w d0,d4	; $01CA76
 	ext.l d4	; $01CA78
 	divs.w (a0),d4	; $01CA7A
 	swap d4	; $01CA7C
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA7E
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA7E
 	move.w $2(a0),d0	; $01CA84
 	add.w d5,d0	; $01CA88
-	movea.l ram_sys_ffa7fc.l,a0	; $01CA8A
+	movea.l ram_sys_field_a7fc.l,a0	; $01CA8A
 	move.w d0,d5	; $01CA90
 	ext.l d5	; $01CA92
 	divs.w $2(a0),d5	; $01CA94
@@ -18822,16 +18822,16 @@ L01CB9E:
 	movea.l $8(a6),a0	; $01CC08
 	move.w $1e(a0),d0	; $01CC0C
 	muls.w #$34,d0	; $01CC10
-	lea.l ram_sys_ff02d2.l,a0	; $01CC14
+	lea.l ram_world_field_02d2.l,a0	; $01CC14
 	cmpi.w #$ffff,(a0,d0.l)	; $01CC1A
 	bne.b L01CC50	; $01CC20
 	movea.l $8(a6),a0	; $01CC22
 	move.w $1e(a0),d0	; $01CC26
 	muls.w #$34,d0	; $01CC2A
-	lea.l ram_sys_ff02d0.l,a0	; $01CC2E
+	lea.l ram_world_field_02d0.l,a0	; $01CC2E
 	move.w -$14(a6),d1	; $01CC34
 	muls.w #$34,d1	; $01CC38
-	lea.l ram_sys_ff02db.l,a1	; $01CC3C
+	lea.l ram_sys_field_02db.l,a1	; $01CC3C
 	moveq #$0,d2	; $01CC42
 	move.b (a1,d1.l),d2	; $01CC44
 	move.w (a0,d0.l),d1	; $01CC48
@@ -18841,13 +18841,13 @@ L01CC50:
 	movea.l $8(a6),a0	; $01CC50
 	move.w $1e(a0),d0	; $01CC54
 	muls.w #$34,d0	; $01CC58
-	lea.l ram_sys_ff02d2.l,a0	; $01CC5C
+	lea.l ram_world_field_02d2.l,a0	; $01CC5C
 	cmpi.w #$ffff,(a0,d0.l)	; $01CC62
 	beq.b L01CC8C	; $01CC68
 	movea.l $8(a6),a0	; $01CC6A
 	move.w $1e(a0),d0	; $01CC6E
 	muls.w #$34,d0	; $01CC72
-	lea.l ram_sys_ff02d2.l,a0	; $01CC76
+	lea.l ram_world_field_02d2.l,a0	; $01CC76
 	move.w (a0,d0.l),d1	; $01CC7C
 	cmp.w -$14(a6),d1	; $01CC80
 	beq.b L01CC8C	; $01CC84
@@ -18871,7 +18871,7 @@ L01CC8C:
 	bne.b L01CCFA	; $01CCC4
 	move.w -$14(a6),d0	; $01CCC6
 	muls.w #$34,d0	; $01CCCA
-	lea.l ram_sys_ff02ba.l,a0	; $01CCCE
+	lea.l ram_menu_field_02ba.l,a0	; $01CCCE
 	move.w (a0,d0.l),-(a7)	; $01CCD4
 	jsr world_get_mode_portrait.l	; $01CCD8
 	addq.w #$2,a7	; $01CCDE
@@ -18899,7 +18899,7 @@ L01CCFA:
 	bne.b L01CD6A	; $01CD32
 	move.w -$14(a6),d0	; $01CD34
 	muls.w #$34,d0	; $01CD38
-	lea.l ram_sys_ff02ba.l,a0	; $01CD3C
+	lea.l ram_menu_field_02ba.l,a0	; $01CD3C
 	move.w (a0,d0.l),-(a7)	; $01CD42
 	jsr world_get_mode_portrait.l	; $01CD46
 	addq.w #$2,a7	; $01CD4C
@@ -18948,7 +18948,7 @@ L01CDDE:
 	bne.b L01CE20	; $01CDF8
 	move.w -$14(a6),d0	; $01CDFA
 	muls.w #$34,d0	; $01CDFE
-	lea.l ram_sys_ff02ba.l,a0	; $01CE02
+	lea.l ram_menu_field_02ba.l,a0	; $01CE02
 	cmpi.w #$3,(a0,d0.l)	; $01CE08
 	bne.b L01CE20	; $01CE0E
 	cmpi.w #$2,-$1c(a6)	; $01CE10
@@ -18981,51 +18981,51 @@ L01CE5C:
 	move.w d0,-$16(a6)	; $01CE6C
 	cmpi.w #$ffff,-$16(a6)	; $01CE70
 	bne.w L01CF1C	; $01CE76
-	movea.l ram_sys_ffa7fc.l,a0	; $01CE7A
+	movea.l ram_sys_field_a7fc.l,a0	; $01CE7A
 	tst.w $c(a0)	; $01CE80
 	bne.w L01CF38	; $01CE84
-	movea.l ram_sys_ffa7fc.l,a0	; $01CE88
+	movea.l ram_sys_field_a7fc.l,a0	; $01CE88
 	move.w (a0),d0	; $01CE8E
 	add.w d4,d0	; $01CE90
-	movea.l ram_sys_ffa7fc.l,a0	; $01CE92
+	movea.l ram_sys_field_a7fc.l,a0	; $01CE92
 	ext.l d0	; $01CE98
 	divs.w (a0),d0	; $01CE9A
 	swap d0	; $01CE9C
 	ext.l d0	; $01CE9E
 	asl.l #$5,d0	; $01CEA0
-	movea.l ram_sys_ffa7fc.l,a0	; $01CEA2
+	movea.l ram_sys_field_a7fc.l,a0	; $01CEA2
 	move.w $2(a0),d1	; $01CEA8
 	add.w d5,d1	; $01CEAC
-	movea.l ram_sys_ffa7fc.l,a0	; $01CEAE
+	movea.l ram_sys_field_a7fc.l,a0	; $01CEAE
 	ext.l d1	; $01CEB4
 	divs.w $2(a0),d1	; $01CEB6
 	swap d1	; $01CEBA
 	ext.l d1	; $01CEBC
 	add.l d1,d0	; $01CEBE
-	lea.l ram_sys_ffb36c.l,a0	; $01CEC0
+	lea.l ram_sys_field_b36c.l,a0	; $01CEC0
 	moveq #$0,d1	; $01CEC6
 	move.b (a0,d0.l),d1	; $01CEC8
 	cmp.w #$ff,d1	; $01CECC
 	beq.b L01CF38	; $01CED0
-	movea.l ram_sys_ffa7fc.l,a0	; $01CED2
+	movea.l ram_sys_field_a7fc.l,a0	; $01CED2
 	move.w (a0),d0	; $01CED8
 	add.w d4,d0	; $01CEDA
-	movea.l ram_sys_ffa7fc.l,a0	; $01CEDC
+	movea.l ram_sys_field_a7fc.l,a0	; $01CEDC
 	ext.l d0	; $01CEE2
 	divs.w (a0),d0	; $01CEE4
 	swap d0	; $01CEE6
 	ext.l d0	; $01CEE8
 	asl.l #$5,d0	; $01CEEA
-	movea.l ram_sys_ffa7fc.l,a0	; $01CEEC
+	movea.l ram_sys_field_a7fc.l,a0	; $01CEEC
 	move.w $2(a0),d1	; $01CEF2
 	add.w d5,d1	; $01CEF6
-	movea.l ram_sys_ffa7fc.l,a0	; $01CEF8
+	movea.l ram_sys_field_a7fc.l,a0	; $01CEF8
 	ext.l d1	; $01CEFE
 	divs.w $2(a0),d1	; $01CF00
 	swap d1	; $01CF04
 	ext.l d1	; $01CF06
 	add.l d1,d0	; $01CF08
-	lea.l ram_sys_ffb76c.l,a0	; $01CF0A
+	lea.l ram_sys_field_b76c.l,a0	; $01CF0A
 	moveq #$0,d1	; $01CF10
 	move.b (a0,d0.l),d1	; $01CF12
 	cmp.w #$ff,d1	; $01CF16
@@ -19705,7 +19705,7 @@ L01D796:
 	bne.b L01D7D0	; $01D7BA
 	move.w -$18(a6),d0	; $01D7BC
 	and.w #$3ff,d0	; $01D7C0
-	lea.l ram_sys_ff0e92.l,a0	; $01D7C4
+	lea.l ram_menu_field_0e92.l,a0	; $01D7C4
 	andi.w #$fc00,(a0)	; $01D7CA
 	or.w d0,(a0)	; $01D7CE
 L01D7D0:
@@ -19924,11 +19924,11 @@ table_init_b:
 world_location_transition:
 	link.w a6,#$fffe	; $01DA6C
 	movem.l d4-d7/a3-a4,-(a7)	; $01DA70
-	move.w #$ffff,ram_sys_ff009c.l	; $01DA74
-	clr.w ram_sys_ff0142.l	; $01DA7C
+	move.w #$ffff,ram_sys_field_009c.l	; $01DA74
+	clr.w ram_sys_field_0142.l	; $01DA7C
 	jsr sys_record12_scan.l	; $01DA82
-	clr.w ram_sys_ff0092.l	; $01DA88
-	clr.w ram_sys_ff0094.l	; $01DA8E
+	clr.w ram_world_field_0092.l	; $01DA88
+	clr.w ram_world_field_0094.l	; $01DA8E
 	cmpi.w #$1,$8(a6)	; $01DA94
 	beq.b L01DAA6	; $01DA9A
 	cmpi.w #$3,$8(a6)	; $01DA9C
@@ -19939,11 +19939,11 @@ L01DAA6:
 	move.w ram_party_leader.l,d0	; $01DAB0
 	muls.w #$34,d0	; $01DAB6
 	lea.l ram_header_leader.l,a0	; $01DABA
-	move.w (a0,d0.l),ram_sys_ff0e9a.l	; $01DAC0
+	move.w (a0,d0.l),ram_sys_field_0e9a.l	; $01DAC0
 	move.w ram_party_leader.l,d0	; $01DAC8
 	muls.w #$34,d0	; $01DACE
 	lea.l ram_npc_field_02c2.l,a0	; $01DAD2
-	move.w (a0,d0.l),ram_sys_ff0e9c.l	; $01DAD8
+	move.w (a0,d0.l),ram_sys_field_0e9c.l	; $01DAD8
 	cmpi.w #$ffff,$c(a6)	; $01DAE0
 	beq.w L01DB96	; $01DAE6
 	move.w $c(a6),d0	; $01DAEA
@@ -19967,7 +19967,7 @@ L01DAA6:
 	move.w (a0,d0.l),d1	; $01DB3E
 	lsr.w #$4,d1	; $01DB42
 	and.w #$3f,d1	; $01DB44
-	move.w d1,ram_sys_ff0ea2.l	; $01DB48
+	move.w d1,ram_sys_field_0ea2.l	; $01DB48
 	move.w #$ffff,-(a7)	; $01DB4E
 	move.w #$ffff,-(a7)	; $01DB52
 	move.w #$ffff,-(a7)	; $01DB56
@@ -19975,7 +19975,7 @@ L01DAA6:
 	move.w #$ffff,-(a7)	; $01DB5E
 	move.w $c(a6),d0	; $01DB62
 	muls.w #$34,d0	; $01DB66
-	lea.l ram_sys_ff02b6.l,a0	; $01DB6A
+	lea.l ram_sys_field_02b6.l,a0	; $01DB6A
 	move.w (a0,d0.l),d1	; $01DB70
 	muls.w #$18,d1	; $01DB74
 	lea.l L0CF1BF.l,a0	; $01DB78
@@ -20015,14 +20015,14 @@ L01DBC8:
 	cmp.w #$e6,d0	; $01DBF4
 	blt.b L01DC08	; $01DBF8
 	lea.l ram_sys_ffb0ac.l,a0	; $01DBFA
-	move.l a0,ram_sys_ffa7fc.l	; $01DC00
+	move.l a0,ram_sys_field_a7fc.l	; $01DC00
 	bra.b L01DC14	; $01DC06
 L01DC08:
 	lea.l ram_sys_ffb09c.l,a0	; $01DC08
-	move.l a0,ram_sys_ffa7fc.l	; $01DC0E
+	move.l a0,ram_sys_field_a7fc.l	; $01DC0E
 L01DC14:
-	move.w $a(a6),ram_sys_ff0e98.l	; $01DC14
-	move.w #$2,ram_sys_ff00ae.l	; $01DC1C
+	move.w $a(a6),ram_sys_field_0e98.l	; $01DC14
+	move.w #$2,ram_menu_field_00ae.l	; $01DC1C
 	jsr world_enter_location.l	; $01DC24
 	cmpi.w #$3,$8(a6)	; $01DC2A
 	bne.b L01DC76	; $01DC30
@@ -20031,7 +20031,7 @@ L01DC14:
 	move.w ram_party_index_array.l,-(a7)	; $01DC36
 	jsr sys_struct52_assign.l	; $01DC3C
 	addq.w #$6,a7	; $01DC42
-	clr.w ram_sys_ff009e.l	; $01DC44
+	clr.w ram_sys_field_009e.l	; $01DC44
 	move.w #$14,-(a7)	; $01DC4A
 	jsr song_play_direct.l	; $01DC4E
 	addq.w #$2,a7	; $01DC54
@@ -20042,7 +20042,7 @@ L01DC14:
 	moveq #$0,d1	; $01DC64
 	move.b (a0,d0.l),d1	; $01DC66
 	and.w #$f,d1	; $01DC6A
-	move.w d1,ram_sys_ff012e.l	; $01DC6E
+	move.w d1,ram_world_field_012e.l	; $01DC6E
 	bra.b L01DC98	; $01DC74
 L01DC76:
 	move.w $a(a6),d0	; $01DC76
@@ -20056,7 +20056,7 @@ L01DC76:
 	jsr song_request.l	; $01DC90
 	addq.w #$2,a7	; $01DC96
 L01DC98:
-	move.w #$ffff,ram_sys_ff0124.l	; $01DC98
+	move.w #$ffff,ram_world_field_0124.l	; $01DC98
 	move.w $a(a6),d0	; $01DCA0
 	ext.l d0	; $01DCA4
 	asl.l #$2,d0	; $01DCA6
@@ -20065,7 +20065,7 @@ L01DC98:
 	move.b (a0,d0.l),d1	; $01DCB0
 	and.w #$7f,d1	; $01DCB4
 	lsr.w #$4,d1	; $01DCB8
-	move.w d1,ram_sys_ff0126.l	; $01DCBA
+	move.w d1,ram_world_field_0126.l	; $01DCBA
 	move.w #$ff,-(a7)	; $01DCC0
 	move.w ram_party_index_array.l,-(a7)	; $01DCC4
 	jsr combat_select_unit.l	; $01DCCA
@@ -20074,23 +20074,23 @@ L01DC98:
 	ext.l d0	; $01DCD6
 	bra.b L01DD1A	; $01DCD8
 L01DCDA:
-	move.w #$1,ram_sys_ff013e.l	; $01DCDA
+	move.w #$1,ram_sys_field_013e.l	; $01DCDA
 	bra.b L01DD38	; $01DCE2
 L01DCE4:
-	move.w #$2,ram_sys_ff013e.l	; $01DCE4
+	move.w #$2,ram_sys_field_013e.l	; $01DCE4
 	bra.b L01DD38	; $01DCEC
 L01DCEE:
-	move.w #$3,ram_sys_ff013e.l	; $01DCEE
+	move.w #$3,ram_sys_field_013e.l	; $01DCEE
 	bra.b L01DD38	; $01DCF6
 L01DCF8:
-	move.w #$5,ram_sys_ff013e.l	; $01DCF8
+	move.w #$5,ram_sys_field_013e.l	; $01DCF8
 	bra.b L01DD38	; $01DD00
 L01DD02:
-	move.w #$6,ram_sys_ff013e.l	; $01DD02
+	move.w #$6,ram_sys_field_013e.l	; $01DD02
 	bra.b L01DD38	; $01DD0A
 L01DD0C:
-	clr.w ram_sys_ff013e.l	; $01DD0C
-	clr.w ram_sys_ff0140.l	; $01DD12
+	clr.w ram_sys_field_013e.l	; $01DD0C
+	clr.w ram_sys_field_0140.l	; $01DD12
 	bra.b L01DD38	; $01DD18
 L01DD1A:
 	sub.l #$9e,d0	; $01DD1A
@@ -20113,11 +20113,11 @@ L01DD38:
 	move.b (a0,d0.l),d1	; $01DD48
 	btst #$7,d1	; $01DD4C
 	beq.b L01DD5A	; $01DD50
-	move.w #$ffff,ram_sys_ff0140.l	; $01DD52
+	move.w #$ffff,ram_sys_field_0140.l	; $01DD52
 L01DD5A:
-	cmpi.w #$3,ram_sys_ff0126.l	; $01DD5A
+	cmpi.w #$3,ram_world_field_0126.l	; $01DD5A
 	bne.b L01DD6C	; $01DD62
-	move.w #$4,ram_sys_ff013e.l	; $01DD64
+	move.w #$4,ram_sys_field_013e.l	; $01DD64
 L01DD6C:
 	tst.w $8(a6)	; $01DD6C
 	bne.w L01DF08	; $01DD70
@@ -20142,7 +20142,7 @@ L01DD7E:
 	move.w a4,-(a7)	; $01DDB0
 	jsr sys_struct52_nibble_read.l	; $01DDB2
 	addq.w #$2,a7	; $01DDB8
-	cmpi.w #$2,ram_sys_ff0ea2.l	; $01DDBA
+	cmpi.w #$2,ram_sys_field_0ea2.l	; $01DDBA
 	bne.b L01DDD0	; $01DDC2
 	move.w a4,-(a7)	; $01DDC4
 	jsr combat_attacker_check.l	; $01DDC6
@@ -20167,28 +20167,28 @@ L01DDDE:
 	move.w #$5,-(a7)	; $01DDF6
 	jsr world_release_chars_by_type.l	; $01DDFA
 	addq.w #$2,a7	; $01DE00
-	lea.l ram_sys_ffb08c.l,a0	; $01DE02
-	move.l a0,ram_sys_ffa7fc.l	; $01DE08
+	lea.l ram_sys_field_b08c.l,a0	; $01DE02
+	move.l a0,ram_sys_field_a7fc.l	; $01DE08
 	cmpi.w #$1,$a(a6)	; $01DE0E
 	beq.b L01DE44	; $01DE14
-	lea.l ram_sys_ff0e92.l,a0	; $01DE16
+	lea.l ram_menu_field_0e92.l,a0	; $01DE16
 	andi.w #$fc00,(a0)	; $01DE1C
 	ori.w #$3ff,(a0)	; $01DE20
-	move.w #$ffff,ram_sys_ff0124.l	; $01DE24
-	move.w #$2,ram_sys_ff0126.l	; $01DE2C
+	move.w #$ffff,ram_world_field_0124.l	; $01DE24
+	move.w #$2,ram_world_field_0126.l	; $01DE2C
 	jsr snd_location_song_pick.l	; $01DE34
 	move.w d0,-(a7)	; $01DE3A
 	jsr song_request.l	; $01DE3C
 	addq.w #$2,a7	; $01DE42
 L01DE44:
-	move.w #$ffff,ram_sys_ff0e98.l	; $01DE44
-	move.w ram_sys_ff0e9a.l,d4	; $01DE4C
-	move.w ram_sys_ff0e9c.l,d5	; $01DE52
+	move.w #$ffff,ram_sys_field_0e98.l	; $01DE44
+	move.w ram_sys_field_0e9a.l,d4	; $01DE4C
+	move.w ram_sys_field_0e9c.l,d5	; $01DE52
 	move.w ram_sys_ff0e9e.l,d6	; $01DE58
 	move.w ram_sys_ff0ea0.l,d7	; $01DE5E
-	movea.w ram_sys_ff0ea2.l,a4	; $01DE64
-	move.w #$1,ram_sys_ff00ae.l	; $01DE6A
-	movea.l ram_sys_ffa7fc.l,a0	; $01DE72
+	movea.w ram_sys_field_0ea2.l,a4	; $01DE64
+	move.w #$1,ram_menu_field_00ae.l	; $01DE6A
+	movea.l ram_sys_field_a7fc.l,a0	; $01DE72
 	move.w #$230,$e(a0)	; $01DE78
 	move.w #$ff,-(a7)	; $01DE7E
 	move.w ram_party_index_array.l,-(a7)	; $01DE82
@@ -20224,8 +20224,8 @@ L01DE44:
 	addq.w #$6,a7	; $01DEF4
 L01DEF6:
 	jsr map_grid_place_chars.l	; $01DEF6
-	clr.w ram_sys_ff013e.l	; $01DEFC
-	clr.w ram_sys_ff0140.l	; $01DF02
+	clr.w ram_sys_field_013e.l	; $01DEFC
+	clr.w ram_sys_field_0140.l	; $01DF02
 L01DF08:
 	cmpi.w #$2,$8(a6)	; $01DF08
 	bne.w L01E01A	; $01DF0E
@@ -20237,7 +20237,7 @@ L01DF08:
 	muls.w #$34,d0	; $01DF30
 	lea.l ram_npc_field_02c2.l,a0	; $01DF34
 	move.w (a0,d0.l),ram_sys_ff0ea6.l	; $01DF3A
-	move.w ram_sys_ff0e98.l,ram_sys_ff0e96.l	; $01DF42
+	move.w ram_sys_field_0e98.l,ram_sys_ff0e96.l	; $01DF42
 	move.w $c(a6),-(a7)	; $01DF4C
 	jsr sys_struct52_nibble_read.l	; $01DF50
 	addq.w #$2,a7	; $01DF56
@@ -20264,8 +20264,8 @@ L01DF08:
 	adda.l a1,a0	; $01DFA6
 	andi.w #$7fff,(a0)	; $01DFA8
 	lea.l ram_sys_ffb0bc.l,a0	; $01DFAC
-	move.l a0,ram_sys_ffa7fc.l	; $01DFB2
-	move.w $a(a6),ram_sys_ff0e98.l	; $01DFB8
+	move.l a0,ram_sys_field_a7fc.l	; $01DFB2
+	move.w $a(a6),ram_sys_field_0e98.l	; $01DFB8
 	clr.w -(a7)	; $01DFC0
 	move.w #$7,-(a7)	; $01DFC2
 	move.w #$5,-(a7)	; $01DFC6
@@ -20278,12 +20278,12 @@ L01DF08:
 	move.w $c(a6),-(a7)	; $01DFE4
 	jsr npc_place_group.l	; $01DFE8
 	addq.w #$8,a7	; $01DFEE
-	move.w #$6,ram_sys_ff012e.l	; $01DFF0
-	move.w #$1,ram_sys_ff009e.l	; $01DFF8
-	move.w #$ffff,ram_sys_ff0124.l	; $01E000
-	clr.w ram_sys_ff0126.l	; $01E008
-	clr.w ram_sys_ff013e.l	; $01E00E
-	clr.w ram_sys_ff0140.l	; $01E014
+	move.w #$6,ram_world_field_012e.l	; $01DFF0
+	move.w #$1,ram_sys_field_009e.l	; $01DFF8
+	move.w #$ffff,ram_world_field_0124.l	; $01E000
+	clr.w ram_world_field_0126.l	; $01E008
+	clr.w ram_sys_field_013e.l	; $01E00E
+	clr.w ram_sys_field_0140.l	; $01E014
 L01E01A:
 	movem.l (a7)+,d4-d7/a3-a4	; $01E01A
 	unlk a6	; $01E01E
@@ -20790,7 +20790,7 @@ L01E4E2:
 	; code $01E4E6-$01E561
 menu_cursor_draw:
 	link.w a6,#$0	; $01E4E6
-	move.w ram_sys_ff8640.l,d0	; $01E4EA
+	move.w ram_text_field_8640.l,d0	; $01E4EA
 	add.w #$405f,d0	; $01E4F0
 	move.w d0,-(a7)	; $01E4F4
 	move.w #$1f,-(a7)	; $01E4F6
@@ -20806,7 +20806,7 @@ menu_cursor_draw:
 	move.w #$1e,-(a7)	; $01E516
 	jsr sprite_write.l	; $01E51A
 	lea.l $e(a7),a7	; $01E520
-	move.w ram_sys_ff8640.l,d0	; $01E524
+	move.w ram_text_field_8640.l,d0	; $01E524
 	add.w #$4063,d0	; $01E52A
 	move.w d0,-(a7)	; $01E52E
 	move.w #$20,-(a7)	; $01E530
@@ -20827,46 +20827,46 @@ menu_cursor_draw:
 	; code $01E562-$01E59F
 sys_state_clear:
 	link.w a6,#$0	; $01E562
-	clr.b ram_sys_ffa7f8.l	; $01E566
+	clr.b ram_menu_field_a7f8.l	; $01E566
 	clr.b ram_shop_stock_byte.l	; $01E56C
-	clr.b ram_sys_ffbb80.l	; $01E572
+	clr.b ram_sys_field_bb80.l	; $01E572
 	moveq #$0,d0	; $01E578
-	move.b ram_sys_ffa7f8.l,d0	; $01E57A
+	move.b ram_menu_field_a7f8.l,d0	; $01E57A
 	asl.l #$1,d0	; $01E580
-	lea.l ram_sys_ff01ea.l,a0	; $01E582
+	lea.l ram_sys_field_01ea.l,a0	; $01E582
 	moveq #$0,d1	; $01E588
 	move.w (a0,d0.l),d1	; $01E58A
 	lea.l L0CCDB8.l,a0	; $01E58E
 	add.l a0,d1	; $01E594
-	move.l d1,ram_sys_ffbb82.l	; $01E596
+	move.l d1,ram_sys_field_bb82.l	; $01E596
 	unlk a6	; $01E59C
 	rts	; $01E59E
 	; code $01E5A0-$01EEC1
 menu_record_reload:
 	link.w a6,#$ff90	; $01E5A0
 	movem.l d4-d7/a3-a4,-(a7)	; $01E5A4
-	movea.w ram_sys_ff02a8.l,a3	; $01E5A8
-	movea.w ram_sys_ff02aa.l,a4	; $01E5AE
+	movea.w ram_sys_field_02a8.l,a3	; $01E5A8
+	movea.w ram_sys_field_02aa.l,a4	; $01E5AE
 	moveq #$0,d0	; $01E5B4
-	move.b ram_sys_ffa7f8.l,d0	; $01E5B6
+	move.b ram_menu_field_a7f8.l,d0	; $01E5B6
 	asl.l #$1,d0	; $01E5BC
-	lea.l ram_sys_ff01ea.l,a0	; $01E5BE
+	lea.l ram_sys_field_01ea.l,a0	; $01E5BE
 	moveq #$0,d1	; $01E5C4
 	move.w (a0,d0.l),d1	; $01E5C6
 	lea.l L0CCDB8.l,a0	; $01E5CA
 	add.l a0,d1	; $01E5D0
-	move.l d1,ram_sys_ffbb82.l	; $01E5D2
-	movea.l ram_sys_ffbb82.l,a0	; $01E5D8
+	move.l d1,ram_sys_field_bb82.l	; $01E5D2
+	movea.l ram_sys_field_bb82.l,a0	; $01E5D8
 	cmpi.b #$49,$a(a0)	; $01E5DE
 	beq.b L01E630	; $01E5E4
-	movea.l ram_sys_ffbb82.l,a0	; $01E5E6
+	movea.l ram_sys_field_bb82.l,a0	; $01E5E6
 	cmpi.b #$4c,$a(a0)	; $01E5EC
 	beq.b L01E630	; $01E5F2
-	movea.l ram_sys_ffbb82.l,a0	; $01E5F4
+	movea.l ram_sys_field_bb82.l,a0	; $01E5F4
 	cmpi.b #$42,$a(a0)	; $01E5FA
 	beq.b L01E630	; $01E600
 	jsr wait_vblank.l	; $01E602
-	move.w ram_sys_ff8640.l,-(a7)	; $01E608
+	move.w ram_text_field_8640.l,-(a7)	; $01E608
 	move.w #$9,-(a7)	; $01E60E
 	move.w #$a,-(a7)	; $01E612
 	move.w #$2,-(a7)	; $01E616
@@ -20876,16 +20876,16 @@ menu_record_reload:
 	jsr gfx_tilemap_fill.l	; $01E626
 	lea.l $10(a7),a7	; $01E62C
 L01E630:
-	movea.l ram_sys_ffbb82.l,a0	; $01E630
+	movea.l ram_sys_field_bb82.l,a0	; $01E630
 	moveq #$0,d0	; $01E636
 	move.b $a(a0),d0	; $01E638
 	bra.w L01EE8C	; $01E63C
 L01E640:
-	movea.l ram_sys_ffbb82.l,a0	; $01E640
+	movea.l ram_sys_field_bb82.l,a0	; $01E640
 	adda.l #$c,a0	; $01E646
 	move.l a0,-$c(a6)	; $01E64C
 	move.w #$c000,-(a7)	; $01E650
-	move.l ram_sys_ffbb82.l,-(a7)	; $01E654
+	move.l ram_sys_field_bb82.l,-(a7)	; $01E654
 	move.w #$2,-(a7)	; $01E65A
 	move.w #$3,-(a7)	; $01E65E
 	move.w #$40,-(a7)	; $01E662
@@ -20896,7 +20896,7 @@ L01E640:
 	move.b ram_shop_stock_byte.l,d0	; $01E676
 	subq.w #$4,d0	; $01E67C
 	move.w d0,-(a7)	; $01E67E
-	movea.l ram_sys_ffbb82.l,a0	; $01E680
+	movea.l ram_sys_field_bb82.l,a0	; $01E680
 	moveq #$0,d0	; $01E686
 	move.b $b(a0),d0	; $01E688
 	subq.w #$8,d0	; $01E68C
@@ -20905,7 +20905,7 @@ L01E640:
 	moveq #$20,d0	; $01E694
 	bra.b L01E6BC	; $01E696
 L01E698:
-	movea.l ram_sys_ffbb82.l,a0	; $01E698
+	movea.l ram_sys_field_bb82.l,a0	; $01E698
 	moveq #$0,d0	; $01E69E
 	move.b $b(a0),d0	; $01E6A0
 	subq.w #$8,d0	; $01E6A4
@@ -20914,7 +20914,7 @@ L01E698:
 	moveq #$0,d0	; $01E6AA
 	bra.b L01E6BC	; $01E6AC
 L01E6AE:
-	movea.l ram_sys_ffbb82.l,a0	; $01E6AE
+	movea.l ram_sys_field_bb82.l,a0	; $01E6AE
 	moveq #$0,d0	; $01E6B4
 	move.b $b(a0),d0	; $01E6B6
 	subq.w #$8,d0	; $01E6BA
@@ -20922,7 +20922,7 @@ L01E6BC:
 	move.w (a7)+,d1	; $01E6BC
 	cmp.w d0,d1	; $01E6BE
 	ble.b L01E700	; $01E6C0
-	movea.l ram_sys_ffbb82.l,a0	; $01E6C2
+	movea.l ram_sys_field_bb82.l,a0	; $01E6C2
 	moveq #$0,d0	; $01E6C8
 	move.b $b(a0),d0	; $01E6CA
 	subq.w #$8,d0	; $01E6CE
@@ -20931,7 +20931,7 @@ L01E6BC:
 	moveq #$20,d0	; $01E6D6
 	bra.b L01E6FE	; $01E6D8
 L01E6DA:
-	movea.l ram_sys_ffbb82.l,a0	; $01E6DA
+	movea.l ram_sys_field_bb82.l,a0	; $01E6DA
 	moveq #$0,d0	; $01E6E0
 	move.b $b(a0),d0	; $01E6E2
 	subq.w #$8,d0	; $01E6E6
@@ -20940,7 +20940,7 @@ L01E6DA:
 	moveq #$0,d0	; $01E6EC
 	bra.b L01E6FE	; $01E6EE
 L01E6F0:
-	movea.l ram_sys_ffbb82.l,a0	; $01E6F0
+	movea.l ram_sys_field_bb82.l,a0	; $01E6F0
 	moveq #$0,d0	; $01E6F6
 	move.b $b(a0),d0	; $01E6F8
 	subq.w #$8,d0	; $01E6FC
@@ -21004,12 +21004,12 @@ L01E762:
 L01E794:
 	move.w d5,d0	; $01E794
 	addq.w #$8,d0	; $01E796
-	movea.l ram_sys_ffbb82.l,a0	; $01E798
+	movea.l ram_sys_field_bb82.l,a0	; $01E798
 	moveq #$0,d1	; $01E79E
 	move.b $b(a0),d1	; $01E7A0
 	cmp.w d1,d0	; $01E7A4
 	ble.b L01E7B6	; $01E7A6
-	movea.l ram_sys_ffbb82.l,a0	; $01E7A8
+	movea.l ram_sys_field_bb82.l,a0	; $01E7A8
 	moveq #$0,d0	; $01E7AE
 	move.b $b(a0),d0	; $01E7B0
 	bra.b L01E7C6	; $01E7B4
@@ -21028,7 +21028,7 @@ L01E7C6:
 	blt.w L01E748	; $01E7C8
 	move.w d5,d0	; $01E7CC
 	addq.w #$8,d0	; $01E7CE
-	movea.l ram_sys_ffbb82.l,a0	; $01E7D0
+	movea.l ram_sys_field_bb82.l,a0	; $01E7D0
 	moveq #$0,d1	; $01E7D6
 	move.b $b(a0),d1	; $01E7D8
 	cmp.w d1,d0	; $01E7DC
@@ -21048,41 +21048,41 @@ L01E806:
 	move.b ram_shop_stock_byte.l,d0	; $01E808
 	subq.w #$4,d0	; $01E80E
 	move.w d0,-(a7)	; $01E810
-	move.w ram_sys_ff02ac.l,d0	; $01E812
+	move.w ram_sys_field_02ac.l,d0	; $01E812
 	subq.w #$8,d0	; $01E818
 	cmp.w #$20,d0	; $01E81A
 	ble.b L01E824	; $01E81E
 	moveq #$20,d0	; $01E820
 	bra.b L01E83C	; $01E822
 L01E824:
-	move.w ram_sys_ff02ac.l,d0	; $01E824
+	move.w ram_sys_field_02ac.l,d0	; $01E824
 	subq.w #$8,d0	; $01E82A
 	tst.w d0	; $01E82C
 	bge.b L01E834	; $01E82E
 	moveq #$0,d0	; $01E830
 	bra.b L01E83C	; $01E832
 L01E834:
-	move.w ram_sys_ff02ac.l,d0	; $01E834
+	move.w ram_sys_field_02ac.l,d0	; $01E834
 	subq.w #$8,d0	; $01E83A
 L01E83C:
 	move.w (a7)+,d1	; $01E83C
 	cmp.w d0,d1	; $01E83E
 	ble.b L01E86E	; $01E840
-	move.w ram_sys_ff02ac.l,d0	; $01E842
+	move.w ram_sys_field_02ac.l,d0	; $01E842
 	subq.w #$8,d0	; $01E848
 	cmp.w #$20,d0	; $01E84A
 	ble.b L01E854	; $01E84E
 	moveq #$20,d0	; $01E850
 	bra.b L01E86C	; $01E852
 L01E854:
-	move.w ram_sys_ff02ac.l,d0	; $01E854
+	move.w ram_sys_field_02ac.l,d0	; $01E854
 	subq.w #$8,d0	; $01E85A
 	tst.w d0	; $01E85C
 	bge.b L01E864	; $01E85E
 	moveq #$0,d0	; $01E860
 	bra.b L01E86C	; $01E862
 L01E864:
-	move.w ram_sys_ff02ac.l,d0	; $01E864
+	move.w ram_sys_field_02ac.l,d0	; $01E864
 	subq.w #$8,d0	; $01E86A
 L01E86C:
 	bra.b L01E88A	; $01E86C
@@ -21157,9 +21157,9 @@ L01E8AE:
 L01E922:
 	move.w d5,d0	; $01E922
 	addq.w #$8,d0	; $01E924
-	cmp.w ram_sys_ff02ac.l,d0	; $01E926
+	cmp.w ram_sys_field_02ac.l,d0	; $01E926
 	ble.b L01E936	; $01E92C
-	move.w ram_sys_ff02ac.l,d0	; $01E92E
+	move.w ram_sys_field_02ac.l,d0	; $01E92E
 	bra.b L01E946	; $01E934
 L01E936:
 	move.w d5,d0	; $01E936
@@ -21175,7 +21175,7 @@ L01E946:
 	cmp.w d0,d4	; $01E946
 	blt.w L01E892	; $01E948
 	jsr wait_vblank.l	; $01E94C
-	move.w ram_sys_ff8640.l,-(a7)	; $01E952
+	move.w ram_text_field_8640.l,-(a7)	; $01E952
 	move.w #$9,-(a7)	; $01E958
 	move.w #$a,-(a7)	; $01E95C
 	move.w #$2,-(a7)	; $01E960
@@ -21185,7 +21185,7 @@ L01E946:
 	jsr gfx_tilemap_fill.l	; $01E970
 	lea.l $10(a7),a7	; $01E976
 	move.w #$c000,-(a7)	; $01E97A
-	move.l ram_sys_ffbb82.l,-(a7)	; $01E97E
+	move.l ram_sys_field_bb82.l,-(a7)	; $01E97E
 	move.w #$2,-(a7)	; $01E984
 	move.w #$3,-(a7)	; $01E988
 	move.w #$40,-(a7)	; $01E98C
@@ -21222,23 +21222,23 @@ L01E9C8:
 	lea.l $10(a7),a7	; $01E9F2
 	addq.w #$1,d4	; $01E9F6
 L01E9F8:
-	cmpi.w #$8,ram_sys_ff02ac.l	; $01E9F8
+	cmpi.w #$8,ram_sys_field_02ac.l	; $01E9F8
 	ble.b L01EA06	; $01EA00
 	moveq #$8,d0	; $01EA02
 	bra.b L01EA18	; $01EA04
 L01EA06:
-	tst.w ram_sys_ff02ac.l	; $01EA06
+	tst.w ram_sys_field_02ac.l	; $01EA06
 	bge.b L01EA12	; $01EA0C
 	moveq #$0,d0	; $01EA0E
 	bra.b L01EA18	; $01EA10
 L01EA12:
-	move.w ram_sys_ff02ac.l,d0	; $01EA12
+	move.w ram_sys_field_02ac.l,d0	; $01EA12
 L01EA18:
 	cmp.w d0,d4	; $01EA18
 	blt.b L01E9C8	; $01EA1A
 	move.w d5,d0	; $01EA1C
 	addq.w #$8,d0	; $01EA1E
-	cmp.w ram_sys_ff02ac.l,d0	; $01EA20
+	cmp.w ram_sys_field_02ac.l,d0	; $01EA20
 	bge.b L01EA4A	; $01EA26
 	move.w #$a000,-(a7)	; $01EA28
 	pea.l L01EEC8(pc)	; $01EA2C
@@ -21252,7 +21252,7 @@ L01EA4A:
 	bra.w L01EEB4	; $01EA4A
 L01EA4E:
 	moveq #$0,d0	; $01EA4E
-	move.b ram_sys_ffbb6f.l,d0	; $01EA50
+	move.b ram_sys_field_bb6f.l,d0	; $01EA50
 	move.w d0,-(a7)	; $01EA56
 	move.w ram_party_leader.l,-(a7)	; $01EA58
 	jsr shop_count_category_items.l	; $01EA5E
@@ -21332,7 +21332,7 @@ L01EAF8:
 	addq.w #$1,d0	; $01EAFA
 	move.w d0,-(a7)	; $01EAFC
 	moveq #$0,d0	; $01EAFE
-	move.b ram_sys_ffbb6f.l,d0	; $01EB00
+	move.b ram_sys_field_bb6f.l,d0	; $01EB00
 	move.w d0,-(a7)	; $01EB06
 	move.w ram_party_leader.l,-(a7)	; $01EB08
 	jsr shop_find_nth_category_item.l	; $01EB0E
@@ -21340,7 +21340,7 @@ L01EAF8:
 	move.w d0,d7	; $01EB16
 	lea.l -$8(a6),a0	; $01EB18
 	moveq #$0,d0	; $01EB1C
-	move.b ram_sys_ffbb6f.l,d0	; $01EB1E
+	move.b ram_sys_field_bb6f.l,d0	; $01EB1E
 	muls.w #$a,d0	; $01EB24
 	lea.l L0D66A8.l,a1	; $01EB28
 	move.w (a1,d0.l),d1	; $01EB2E
@@ -21366,7 +21366,7 @@ L01EAF8:
 	jsr strcpy.l	; $01EB66
 	addq.w #$8,a7	; $01EB6C
 	moveq #$0,d0	; $01EB6E
-	move.b ram_sys_ffbb6f.l,d0	; $01EB70
+	move.b ram_sys_field_bb6f.l,d0	; $01EB70
 	asl.w #$6,d0	; $01EB76
 	add.w d7,d0	; $01EB78
 	move.w d0,-(a7)	; $01EB7A
@@ -21414,7 +21414,7 @@ L01EBD0:
 L01EBD2:
 	move.w d0,-$2(a6)	; $01EBD2
 	moveq #$0,d0	; $01EBD6
-	move.b ram_sys_ffbb6f.l,d0	; $01EBD8
+	move.b ram_sys_field_bb6f.l,d0	; $01EBD8
 	moveq #$a,d1	; $01EBDE
 	jsr mul32.l	; $01EBE0
 	lea.l L0D66A4.l,a0	; $01EBE6
@@ -21423,7 +21423,7 @@ L01EBD2:
 	and.w #$1,d0	; $01EBF4
 	move.w d0,-$4(a6)	; $01EBF8
 	jsr wait_vblank.l	; $01EBFC
-	move.w ram_sys_ff8640.l,-(a7)	; $01EC02
+	move.w ram_text_field_8640.l,-(a7)	; $01EC02
 	move.w #$9,-(a7)	; $01EC08
 	move.w #$a,-(a7)	; $01EC0C
 	move.w #$2,-(a7)	; $01EC10
@@ -21433,7 +21433,7 @@ L01EBD2:
 	jsr gfx_tilemap_fill.l	; $01EC20
 	lea.l $10(a7),a7	; $01EC26
 	move.w #$c000,-(a7)	; $01EC2A
-	move.l ram_sys_ffbb82.l,-(a7)	; $01EC2E
+	move.l ram_sys_field_bb82.l,-(a7)	; $01EC2E
 	move.w #$2,-(a7)	; $01EC34
 	move.w #$3,-(a7)	; $01EC38
 	move.w #$40,-(a7)	; $01EC3C
@@ -21441,7 +21441,7 @@ L01EBD2:
 	jsr text_glyph_draw.l	; $01EC44
 	lea.l $10(a7),a7	; $01EC4A
 	moveq #$0,d0	; $01EC4E
-	move.b ram_sys_ffbb6f.l,d0	; $01EC50
+	move.b ram_sys_field_bb6f.l,d0	; $01EC50
 	moveq #$a,d1	; $01EC56
 	jsr mul32.l	; $01EC58
 	lea.l L0D66A4.l,a0	; $01EC5E
@@ -21566,7 +21566,7 @@ L01EDDA:
 	bra.w L01EEB4	; $01EDDA
 L01EDDE:
 	move.w #$c000,-(a7)	; $01EDDE
-	move.l ram_sys_ffbb82.l,-(a7)	; $01EDE2
+	move.l ram_sys_field_bb82.l,-(a7)	; $01EDE2
 	move.w #$2,-(a7)	; $01EDE8
 	move.w #$3,-(a7)	; $01EDEC
 	move.w #$40,-(a7)	; $01EDF0
@@ -21620,7 +21620,7 @@ L01EE8C:
 	subq.l #$5,d0	; $01EEAE
 	beq.w L01E640	; $01EEB0
 L01EEB4:
-	clr.b ram_sys_ffb08a.l	; $01EEB4
+	clr.b ram_sys_field_b08a.l	; $01EEB4
 	movem.l (a7)+,d4-d7/a3-a4	; $01EEBA
 	unlk a6	; $01EEBE
 	rts	; $01EEC0
@@ -21673,16 +21673,16 @@ L01EF08:
 	moveq #$4,d0	; $01EF08
 L01EF0A:
 	move.w d0,-$6(a6)	; $01EF0A
-	movea.l ram_sys_ffbb82.l,a0	; $01EF0E
+	movea.l ram_sys_field_bb82.l,a0	; $01EF0E
 	adda.l #$c,a0	; $01EF14
 	move.l a0,-$4(a6)	; $01EF1A
-	movea.l ram_sys_ffbb82.l,a0	; $01EF1E
+	movea.l ram_sys_field_bb82.l,a0	; $01EF1E
 	moveq #$0,d0	; $01EF24
 	move.b $a(a0),d0	; $01EF26
 	bra.w L01F26A	; $01EF2A
 L01EF2E:
 	move.w $8(a6),d0	; $01EF2E
-	cmp.w ram_sys_ff0118.l,d0	; $01EF32
+	cmp.w ram_sys_field_0118.l,d0	; $01EF32
 	bne.b L01EF60	; $01EF38
 	tst.b ram_shop_stock_byte.l	; $01EF3A
 	bne.b L01EF4A	; $01EF40
@@ -21691,30 +21691,30 @@ L01EF2E:
 L01EF4A:
 	subq.b #$1,ram_shop_stock_byte.l	; $01EF4A
 L01EF50:
-	move.b #$ff,ram_sys_ffb08a.l	; $01EF50
-	move.w #$ffff,ram_sys_ff009c.l	; $01EF58
+	move.b #$ff,ram_sys_field_b08a.l	; $01EF50
+	move.w #$ffff,ram_sys_field_009c.l	; $01EF58
 L01EF60:
 	move.w $8(a6),d0	; $01EF60
-	cmp.w ram_sys_ff011a.l,d0	; $01EF64
+	cmp.w ram_sys_field_011a.l,d0	; $01EF64
 	bne.b L01EFA8	; $01EF6A
 	addq.b #$1,ram_shop_stock_byte.l	; $01EF6C
-	movea.l ram_sys_ffbb82.l,a0	; $01EF72
+	movea.l ram_sys_field_bb82.l,a0	; $01EF72
 	move.b ram_shop_stock_byte.l,d0	; $01EF78
 	cmp.b $b(a0),d0	; $01EF7E
 	bcs.b L01EF98	; $01EF82
-	movea.l ram_sys_ffbb82.l,a0	; $01EF84
+	movea.l ram_sys_field_bb82.l,a0	; $01EF84
 	moveq #$0,d0	; $01EF8A
 	move.b $b(a0),d0	; $01EF8C
 	subq.w #$1,d0	; $01EF90
 	move.b d0,ram_shop_stock_byte.l	; $01EF92
 L01EF98:
-	move.b #$ff,ram_sys_ffb08a.l	; $01EF98
-	move.w #$ffff,ram_sys_ff009c.l	; $01EFA0
+	move.b #$ff,ram_sys_field_b08a.l	; $01EF98
+	move.w #$ffff,ram_sys_field_009c.l	; $01EFA0
 L01EFA8:
 	bra.w L01F292	; $01EFA8
 L01EFAC:
 	move.w $8(a6),d0	; $01EFAC
-	cmp.w ram_sys_ff0118.l,d0	; $01EFB0
+	cmp.w ram_sys_field_0118.l,d0	; $01EFB0
 	bne.b L01EFDE	; $01EFB6
 	tst.b ram_shop_stock_byte.l	; $01EFB8
 	bne.b L01EFC8	; $01EFBE
@@ -21723,28 +21723,28 @@ L01EFAC:
 L01EFC8:
 	subq.b #$1,ram_shop_stock_byte.l	; $01EFC8
 L01EFCE:
-	move.b #$ff,ram_sys_ffb08a.l	; $01EFCE
-	move.w #$ffff,ram_sys_ff009c.l	; $01EFD6
+	move.b #$ff,ram_sys_field_b08a.l	; $01EFCE
+	move.w #$ffff,ram_sys_field_009c.l	; $01EFD6
 L01EFDE:
 	move.w $8(a6),d0	; $01EFDE
-	cmp.w ram_sys_ff011a.l,d0	; $01EFE2
+	cmp.w ram_sys_field_011a.l,d0	; $01EFE2
 	bne.b L01F01E	; $01EFE8
 	addq.b #$1,ram_shop_stock_byte.l	; $01EFEA
 	moveq #$0,d0	; $01EFF0
 	move.b ram_shop_stock_byte.l,d0	; $01EFF2
-	cmp.w ram_sys_ff02ac.l,d0	; $01EFF8
+	cmp.w ram_sys_field_02ac.l,d0	; $01EFF8
 	bcs.b L01F00E	; $01EFFE
-	move.w ram_sys_ff02ac.l,d0	; $01F000
+	move.w ram_sys_field_02ac.l,d0	; $01F000
 	subq.w #$1,d0	; $01F006
 	move.b d0,ram_shop_stock_byte.l	; $01F008
 L01F00E:
-	move.b #$ff,ram_sys_ffb08a.l	; $01F00E
-	move.w #$ffff,ram_sys_ff009c.l	; $01F016
+	move.b #$ff,ram_sys_field_b08a.l	; $01F00E
+	move.w #$ffff,ram_sys_field_009c.l	; $01F016
 L01F01E:
 	clr.l -(a7)	; $01F01E
 	move.w #$7530,-(a7)	; $01F020
 	move.w #$9,-(a7)	; $01F024
-	move.w ram_sys_ff02a8.l,d0	; $01F028
+	move.w ram_sys_field_02a8.l,d0	; $01F028
 	mulu.w #$a,d0	; $01F02E
 	lea.l L0D66A1.l,a0	; $01F032
 	moveq #$0,d1	; $01F038
@@ -21755,11 +21755,11 @@ L01F01E:
 	move.w #$1,-(a7)	; $01F04A
 	jsr msg_queue_consume.l	; $01F04E
 	addq.w #$2,a7	; $01F054
-	move.w #$ffff,ram_sys_ff009a.l	; $01F056
+	move.w #$ffff,ram_sys_field_009a.l	; $01F056
 	bra.w L01F292	; $01F05E
 L01F062:
 	move.w $8(a6),d0	; $01F062
-	cmp.w ram_sys_ff0118.l,d0	; $01F066
+	cmp.w ram_sys_field_0118.l,d0	; $01F066
 	bne.b L01F094	; $01F06C
 	tst.b ram_shop_stock_byte.l	; $01F06E
 	bne.b L01F07E	; $01F074
@@ -21768,18 +21768,18 @@ L01F062:
 L01F07E:
 	subq.b #$1,ram_shop_stock_byte.l	; $01F07E
 L01F084:
-	move.b #$ff,ram_sys_ffb08a.l	; $01F084
-	move.w #$ffff,ram_sys_ff009c.l	; $01F08C
+	move.b #$ff,ram_sys_field_b08a.l	; $01F084
+	move.w #$ffff,ram_sys_field_009c.l	; $01F08C
 L01F094:
 	move.w $8(a6),d0	; $01F094
-	cmp.w ram_sys_ff011a.l,d0	; $01F098
+	cmp.w ram_sys_field_011a.l,d0	; $01F098
 	bne.b L01F0FE	; $01F09E
 	addq.b #$1,ram_shop_stock_byte.l	; $01F0A0
 	moveq #$0,d0	; $01F0A6
 	move.b ram_shop_stock_byte.l,d0	; $01F0A8
 	move.w d0,-(a7)	; $01F0AE
 	moveq #$0,d0	; $01F0B0
-	move.b ram_sys_ffbb6f.l,d0	; $01F0B2
+	move.b ram_sys_field_bb6f.l,d0	; $01F0B2
 	move.w d0,-(a7)	; $01F0B8
 	move.w ram_party_leader.l,-(a7)	; $01F0BA
 	jsr shop_count_category_items.l	; $01F0C0
@@ -21788,7 +21788,7 @@ L01F094:
 	cmp.w d0,d1	; $01F0CA
 	bcs.b L01F0EE	; $01F0CC
 	moveq #$0,d0	; $01F0CE
-	move.b ram_sys_ffbb6f.l,d0	; $01F0D0
+	move.b ram_sys_field_bb6f.l,d0	; $01F0D0
 	move.w d0,-(a7)	; $01F0D6
 	move.w ram_party_leader.l,-(a7)	; $01F0D8
 	jsr shop_count_category_items.l	; $01F0DE
@@ -21796,10 +21796,10 @@ L01F094:
 	subq.w #$1,d0	; $01F0E6
 	move.b d0,ram_shop_stock_byte.l	; $01F0E8
 L01F0EE:
-	move.w #$ffff,ram_sys_ff009c.l	; $01F0EE
-	move.b #$ff,ram_sys_ffb08a.l	; $01F0F6
+	move.w #$ffff,ram_sys_field_009c.l	; $01F0EE
+	move.b #$ff,ram_sys_field_b08a.l	; $01F0F6
 L01F0FE:
-	movea.l ram_sys_ffbb82.l,a0	; $01F0FE
+	movea.l ram_sys_field_bb82.l,a0	; $01F0FE
 	cmpi.b #$4c,$a(a0)	; $01F104
 	bne.b L01F15A	; $01F10A
 	clr.l -(a7)	; $01F10C
@@ -21808,7 +21808,7 @@ L01F0FE:
 	addq.w #$1,d0	; $01F116
 	move.w d0,-(a7)	; $01F118
 	moveq #$0,d0	; $01F11A
-	move.b ram_sys_ffbb6f.l,d0	; $01F11C
+	move.b ram_sys_field_bb6f.l,d0	; $01F11C
 	move.w d0,-(a7)	; $01F122
 	move.w ram_party_leader.l,-(a7)	; $01F124
 	jsr shop_find_nth_category_item.l	; $01F12A
@@ -21821,28 +21821,28 @@ L01F0FE:
 	move.w #$1,-(a7)	; $01F146
 	jsr msg_queue_consume.l	; $01F14A
 	addq.w #$2,a7	; $01F150
-	move.w #$ffff,ram_sys_ff009a.l	; $01F152
+	move.w #$ffff,ram_sys_field_009a.l	; $01F152
 L01F15A:
-	cmpi.b #$15,ram_sys_ffa7f8.l	; $01F15A
+	cmpi.b #$15,ram_menu_field_a7f8.l	; $01F15A
 	bne.b L01F1E2	; $01F162
 	moveq #$0,d0	; $01F164
 	move.b ram_shop_stock_byte.l,d0	; $01F166
 	addq.w #$1,d0	; $01F16C
 	move.w d0,-(a7)	; $01F16E
 	moveq #$0,d0	; $01F170
-	move.b ram_sys_ffbb6f.l,d0	; $01F172
+	move.b ram_sys_field_bb6f.l,d0	; $01F172
 	move.w d0,-(a7)	; $01F178
 	move.w ram_party_leader.l,-(a7)	; $01F17A
 	jsr shop_find_nth_category_item.l	; $01F180
 	addq.w #$6,a7	; $01F186
-	move.b d0,ram_sys_ffbb70.l	; $01F188
+	move.b d0,ram_sys_field_bb70.l	; $01F188
 	moveq #$0,d0	; $01F18E
-	move.b ram_sys_ffbb6f.l,d0	; $01F190
+	move.b ram_sys_field_bb6f.l,d0	; $01F190
 	muls.w #$a,d0	; $01F196
 	lea.l L0D66A8.l,a0	; $01F19A
 	move.w (a0,d0.l),d1	; $01F1A0
 	moveq #$0,d0	; $01F1A4
-	move.b ram_sys_ffbb70.l,d0	; $01F1A6
+	move.b ram_sys_field_bb70.l,d0	; $01F1A6
 	add.w d0,d1	; $01F1AC
 	ext.l d1	; $01F1AE
 	asl.l #$2,d1	; $01F1B0
@@ -21855,12 +21855,12 @@ L01F15A:
 	move.w #$1,-(a7)	; $01F1CE
 	jsr msg_queue_consume.l	; $01F1D2
 	addq.w #$2,a7	; $01F1D8
-	move.w #$ffff,ram_sys_ff009a.l	; $01F1DA
+	move.w #$ffff,ram_sys_field_009a.l	; $01F1DA
 L01F1E2:
 	bra.w L01F292	; $01F1E2
 L01F1E6:
 	move.w $8(a6),d0	; $01F1E6
-	cmp.w ram_sys_ff0118.l,d0	; $01F1EA
+	cmp.w ram_sys_field_0118.l,d0	; $01F1EA
 	bne.b L01F226	; $01F1F0
 	tst.b ram_shop_stock_byte.l	; $01F1F2
 	bne.b L01F210	; $01F1F8
@@ -21873,11 +21873,11 @@ L01F1E6:
 L01F210:
 	subq.b #$1,ram_shop_stock_byte.l	; $01F210
 L01F216:
-	move.b #$ff,ram_sys_ffb08a.l	; $01F216
-	move.w #$ffff,ram_sys_ff009c.l	; $01F21E
+	move.b #$ff,ram_sys_field_b08a.l	; $01F216
+	move.w #$ffff,ram_sys_field_009c.l	; $01F21E
 L01F226:
 	move.w $8(a6),d0	; $01F226
-	cmp.w ram_sys_ff011a.l,d0	; $01F22A
+	cmp.w ram_sys_field_011a.l,d0	; $01F22A
 	bne.b L01F268	; $01F230
 	addq.b #$1,ram_shop_stock_byte.l	; $01F232
 	moveq #$0,d0	; $01F238
@@ -21893,7 +21893,7 @@ L01F226:
 	divu.w d0,d1	; $01F256
 	swap d1	; $01F258
 	move.b d1,ram_shop_stock_byte.l	; $01F25A
-	move.w #$ffff,ram_sys_ff009c.l	; $01F260
+	move.w #$ffff,ram_sys_field_009c.l	; $01F260
 L01F268:
 	bra.b L01F292	; $01F268
 L01F26A:
@@ -21918,12 +21918,12 @@ verb_exec:
 	clr.w -$c(a6)	; $01F29A
 	clr.w -$10(a6)	; $01F29E
 	move.w #$11,-$12(a6)	; $01F2A2
-	movea.l ram_sys_ffbb82.l,a0	; $01F2A8
+	movea.l ram_sys_field_bb82.l,a0	; $01F2A8
 	moveq #$0,d0	; $01F2AE
 	move.b $a(a0),d0	; $01F2B0
 	bra.w L01FE8A	; $01F2B4
 L01F2B8:
-	movea.l ram_sys_ffbb82.l,a0	; $01F2B8
+	movea.l ram_sys_field_bb82.l,a0	; $01F2B8
 	adda.l #$c,a0	; $01F2BE
 	move.l a0,-$4(a6)	; $01F2C4
 	lea.l ram_combat_flags.l,a0	; $01F2C8
@@ -21932,7 +21932,7 @@ L01F2B8:
 	beq.b L01F31C	; $01F2D4
 	move.w ram_actor_index.l,d0	; $01F2D6
 	muls.w #$34,d0	; $01F2DC
-	lea.l ram_sys_ff02e0.l,a0	; $01F2E0
+	lea.l ram_world_field_02e0.l,a0	; $01F2E0
 	move.w (a0,d0.l),d1	; $01F2E6
 	rol.w #$3,d1	; $01F2EA
 	and.w #$1,d1	; $01F2EC
@@ -21943,7 +21943,7 @@ L01F2B8:
 	move.w ram_actor_index.l,d0	; $01F2FC
 	muls.w #$34,d0	; $01F302
 	movea.l d0,a0	; $01F306
-	lea.l ram_sys_ff02cc.l,a1	; $01F308
+	lea.l ram_world_field_02cc.l,a1	; $01F308
 	adda.l a1,a0	; $01F30E
 	andi.w #$feff,(a0)	; $01F310
 	ori.w #$100,(a0)	; $01F314
@@ -21951,7 +21951,7 @@ L01F318:
 	unlk a6	; $01F318
 	rts	; $01F31A
 L01F31C:
-	cmpi.b #$19,ram_sys_ffa7f8.l	; $01F31C
+	cmpi.b #$19,ram_menu_field_a7f8.l	; $01F31C
 	bne.b L01F36C	; $01F324
 	lea.l ram_combat_flags.l,a0	; $01F326
 	move.w (a0),d0	; $01F32C
@@ -21962,7 +21962,7 @@ L01F31C:
 	addq.w #$1,d0	; $01F33C
 	move.w d0,-(a7)	; $01F33E
 	moveq #$0,d0	; $01F340
-	move.b ram_sys_ffbb6f.l,d0	; $01F342
+	move.b ram_sys_field_bb6f.l,d0	; $01F342
 	move.w d0,-(a7)	; $01F348
 	move.w ram_party_leader.l,-(a7)	; $01F34A
 	jsr shop_find_nth_category_item.l	; $01F350
@@ -21974,18 +21974,18 @@ L01F31C:
 	tst.w d0	; $01F368
 	bne.b L01F384	; $01F36A
 L01F36C:
-	cmpi.b #$19,ram_sys_ffa7f8.l	; $01F36C
+	cmpi.b #$19,ram_menu_field_a7f8.l	; $01F36C
 	beq.w L01F454	; $01F374
-	cmpi.b #$15,ram_sys_ffa7f8.l	; $01F378
+	cmpi.b #$15,ram_menu_field_a7f8.l	; $01F378
 	beq.w L01F454	; $01F380
 L01F384:
 	moveq #$0,d0	; $01F384
-	move.b ram_sys_ffbb80.l,d0	; $01F386
-	lea.l ram_sys_ffbb74.l,a0	; $01F38C
-	move.b ram_sys_ffa7f8.l,(a0,d0.l)	; $01F392
+	move.b ram_sys_field_bb80.l,d0	; $01F386
+	lea.l ram_sys_field_bb74.l,a0	; $01F38C
+	move.b ram_menu_field_a7f8.l,(a0,d0.l)	; $01F392
 	moveq #$0,d0	; $01F39A
-	move.b ram_sys_ffbb80.l,d0	; $01F39C
-	lea.l ram_sys_ffbb7a.l,a0	; $01F3A2
+	move.b ram_sys_field_bb80.l,d0	; $01F39C
+	lea.l ram_sys_field_bb7a.l,a0	; $01F3A2
 	move.b ram_shop_stock_byte.l,(a0,d0.l)	; $01F3A8
 	movea.l -$4(a6),a0	; $01F3B0
 	moveq #$0,d0	; $01F3B4
@@ -21993,11 +21993,11 @@ L01F384:
 	bra.b L01F404	; $01F3BA
 L01F3BC:
 	movea.l -$4(a6),a0	; $01F3BC
-	move.b $c(a0),ram_sys_ffbb6c.l	; $01F3C0
+	move.b $c(a0),ram_sys_field_bb6c.l	; $01F3C0
 	bra.b L01F410	; $01F3C8
 L01F3CA:
 	movea.l -$4(a6),a0	; $01F3CA
-	move.b $c(a0),ram_sys_ffbb6d.l	; $01F3CE
+	move.b $c(a0),ram_sys_field_bb6d.l	; $01F3CE
 	bra.b L01F410	; $01F3D6
 L01F3D8:
 	moveq #$0,d0	; $01F3D8
@@ -22005,12 +22005,12 @@ L01F3D8:
 	addq.w #$1,d0	; $01F3E0
 	move.w d0,-(a7)	; $01F3E2
 	moveq #$0,d0	; $01F3E4
-	move.b ram_sys_ffbb6f.l,d0	; $01F3E6
+	move.b ram_sys_field_bb6f.l,d0	; $01F3E6
 	move.w d0,-(a7)	; $01F3EC
 	move.w ram_party_leader.l,-(a7)	; $01F3EE
 	jsr shop_find_nth_category_item.l	; $01F3F4
 	addq.w #$6,a7	; $01F3FA
-	move.b d0,ram_sys_ffbb6f.l	; $01F3FC
+	move.b d0,ram_sys_field_bb6f.l	; $01F3FC
 	bra.b L01F410	; $01F402
 L01F404:
 	subq.l #$1,d0	; $01F404
@@ -22025,23 +22025,23 @@ L01F410:
 	addq.w #$1,d0	; $01F418
 	move.w d0,-(a7)	; $01F41A
 	moveq #$0,d0	; $01F41C
-	move.b ram_sys_ffbb6f.l,d0	; $01F41E
+	move.b ram_sys_field_bb6f.l,d0	; $01F41E
 	move.w d0,-(a7)	; $01F424
 	move.w ram_party_leader.l,-(a7)	; $01F426
 	jsr shop_find_nth_category_item.l	; $01F42C
 	addq.w #$6,a7	; $01F432
-	move.b d0,ram_sys_ffbb70.l	; $01F434
+	move.b d0,ram_sys_field_bb70.l	; $01F434
 	movea.l -$4(a6),a0	; $01F43A
-	move.b $b(a0),ram_sys_ffa7f8.l	; $01F43E
+	move.b $b(a0),ram_menu_field_a7f8.l	; $01F43E
 	clr.b ram_shop_stock_byte.l	; $01F446
-	addq.b #$1,ram_sys_ffbb80.l	; $01F44C
+	addq.b #$1,ram_sys_field_bb80.l	; $01F44C
 	bra.b L01F45A	; $01F452
 L01F454:
 	move.w #$14,-$12(a6)	; $01F454
 L01F45A:
 	bra.w L01FEB8	; $01F45A
 L01F45E:
-	movea.l ram_sys_ffbb82.l,a0	; $01F45E
+	movea.l ram_sys_field_bb82.l,a0	; $01F45E
 	adda.l #$c,a0	; $01F464
 	move.l a0,-$4(a6)	; $01F46A
 	moveq #$0,d0	; $01F46E
@@ -22054,7 +22054,7 @@ L01F45E:
 	bne.b L01F4C8	; $01F48A
 	move.w ram_party_leader.l,d0	; $01F48C
 	muls.w #$34,d0	; $01F492
-	lea.l ram_sys_ff02dd.l,a0	; $01F496
+	lea.l ram_menu_field_02dd.l,a0	; $01F496
 	moveq #$0,d1	; $01F49C
 	move.b (a0,d0.l),d1	; $01F49E
 	cmp.w #$ff,d1	; $01F4A2
@@ -22077,12 +22077,12 @@ L01F4C8:
 	cmpi.b #$32,$b(a0)	; $01F4DE
 	beq.w L01F602	; $01F4E4
 	moveq #$0,d0	; $01F4E8
-	move.b ram_sys_ffbb80.l,d0	; $01F4EA
-	lea.l ram_sys_ffbb74.l,a0	; $01F4F0
-	move.b ram_sys_ffa7f8.l,(a0,d0.l)	; $01F4F6
+	move.b ram_sys_field_bb80.l,d0	; $01F4EA
+	lea.l ram_sys_field_bb74.l,a0	; $01F4F0
+	move.b ram_menu_field_a7f8.l,(a0,d0.l)	; $01F4F6
 	moveq #$0,d0	; $01F4FE
-	move.b ram_sys_ffbb80.l,d0	; $01F500
-	lea.l ram_sys_ffbb7a.l,a0	; $01F506
+	move.b ram_sys_field_bb80.l,d0	; $01F500
+	lea.l ram_sys_field_bb7a.l,a0	; $01F506
 	move.b ram_shop_stock_byte.l,(a0,d0.l)	; $01F50C
 	moveq #$0,d0	; $01F514
 	move.b ram_shop_stock_byte.l,d0	; $01F516
@@ -22100,7 +22100,7 @@ L01F532:
 	jsr mul32.l	; $01F53C
 	movea.l d0,a0	; $01F542
 	adda.l -$4(a6),a0	; $01F544
-	move.b $c(a0),ram_sys_ffbb6c.l	; $01F548
+	move.b $c(a0),ram_sys_field_bb6c.l	; $01F548
 	bra.b L01F57A	; $01F550
 L01F552:
 	moveq #$0,d0	; $01F552
@@ -22109,7 +22109,7 @@ L01F552:
 	jsr mul32.l	; $01F55C
 	movea.l d0,a0	; $01F562
 	adda.l -$4(a6),a0	; $01F564
-	move.b $c(a0),ram_sys_ffbb6f.l	; $01F568
+	move.b $c(a0),ram_sys_field_bb6f.l	; $01F568
 	bra.b L01F57A	; $01F570
 L01F572:
 	subq.l #$1,d0	; $01F572
@@ -22123,10 +22123,10 @@ L01F57A:
 	jsr mul32.l	; $01F584
 	movea.l d0,a0	; $01F58A
 	adda.l -$4(a6),a0	; $01F58C
-	move.b $b(a0),ram_sys_ffa7f8.l	; $01F590
+	move.b $b(a0),ram_menu_field_a7f8.l	; $01F590
 	clr.b ram_shop_stock_byte.l	; $01F598
-	addq.b #$1,ram_sys_ffbb80.l	; $01F59E
-	cmpi.b #$18,ram_sys_ffa7f8.l	; $01F5A4
+	addq.b #$1,ram_sys_field_bb80.l	; $01F59E
+	cmpi.b #$18,ram_menu_field_a7f8.l	; $01F5A4
 	bne.b L01F600	; $01F5AC
 	lea.l ram_combat_flags.l,a0	; $01F5AE
 	move.w (a0),d0	; $01F5B4
@@ -22134,18 +22134,18 @@ L01F57A:
 	beq.b L01F600	; $01F5BA
 	move.w ram_actor_index.l,d0	; $01F5BC
 	muls.w #$34,d0	; $01F5C2
-	lea.l ram_sys_ff02db.l,a0	; $01F5C6
+	lea.l ram_sys_field_02db.l,a0	; $01F5C6
 	moveq #$0,d1	; $01F5CC
 	move.b (a0,d0.l),d1	; $01F5CE
 	cmp.w ram_party_leader.l,d1	; $01F5D2
 	bne.b L01F600	; $01F5D8
-	move.b #$19,ram_sys_ffa7f8.l	; $01F5DA
+	move.b #$19,ram_menu_field_a7f8.l	; $01F5DA
 	move.w ram_actor_index.l,d0	; $01F5E2
 	muls.w #$34,d0	; $01F5E8
-	lea.l ram_sys_ff02cc.l,a0	; $01F5EC
+	lea.l ram_world_field_02cc.l,a0	; $01F5EC
 	move.w (a0,d0.l),d1	; $01F5F2
 	and.w #$f,d1	; $01F5F6
-	move.b d1,ram_sys_ffbb6f.l	; $01F5FA
+	move.b d1,ram_sys_field_bb6f.l	; $01F5FA
 L01F600:
 	bra.b L01F608	; $01F600
 L01F602:
@@ -22153,7 +22153,7 @@ L01F602:
 L01F608:
 	bra.w L01FEB8	; $01F608
 L01F60C:
-	movea.l ram_sys_ffbb82.l,a0	; $01F60C
+	movea.l ram_sys_field_bb82.l,a0	; $01F60C
 	adda.l #$c,a0	; $01F612
 	move.l a0,-$4(a6)	; $01F618
 	moveq #$0,d0	; $01F61C
@@ -22164,16 +22164,16 @@ L01F60C:
 	adda.l -$4(a6),a0	; $01F62E
 	cmpi.b #$5,$b(a0)	; $01F632
 	bne.w L01F6DC	; $01F638
-	cmpi.w #$7530,ram_sys_ff02a8.l	; $01F63C
+	cmpi.w #$7530,ram_sys_field_02a8.l	; $01F63C
 	bne.w L01F6DC	; $01F644
 	move.w ram_party_leader.l,d0	; $01F648
 	muls.w #$34,d0	; $01F64E
-	lea.l ram_sys_ff02dd.l,a0	; $01F652
+	lea.l ram_menu_field_02dd.l,a0	; $01F652
 	moveq #$0,d1	; $01F658
 	move.b (a0,d0.l),d1	; $01F65A
 	cmp.w #$ff,d1	; $01F65E
 	bne.b L01F6AE	; $01F662
-	lea.l ram_sys_ff02a2.l,a0	; $01F664
+	lea.l ram_menu_field_02a2.l,a0	; $01F664
 	move.w (a0),d0	; $01F66A
 	lsr.w #$1,d0	; $01F66C
 	and.w #$1,d0	; $01F66E
@@ -22189,14 +22189,14 @@ L01F60C:
 	move.w -$e(a6),d0	; $01F696
 	lsl.w #$1,d0	; $01F69A
 	and.w #$2,d0	; $01F69C
-	lea.l ram_sys_ff02a2.l,a0	; $01F6A0
+	lea.l ram_menu_field_02a2.l,a0	; $01F6A0
 	andi.w #$fffd,(a0)	; $01F6A6
 	or.w d0,(a0)	; $01F6AA
 	bra.b L01F6CC	; $01F6AC
 L01F6AE:
 	move.w #$34,-(a7)	; $01F6AE
 	clr.w -(a7)	; $01F6B2
-	move.w ram_sys_ff02a0.l,-(a7)	; $01F6B4
+	move.w ram_sys_field_02a0.l,-(a7)	; $01F6B4
 	jsr npc_attitude_raise.l	; $01F6BA
 	addq.w #$4,a7	; $01F6C0
 	move.w d0,-(a7)	; $01F6C2
@@ -22216,16 +22216,16 @@ L01F6DC:
 	adda.l -$4(a6),a0	; $01F6EE
 	cmpi.b #$a,$b(a0)	; $01F6F2
 	bne.w L01F79C	; $01F6F8
-	cmpi.w #$e,ram_sys_ff02a8.l	; $01F6FC
+	cmpi.w #$e,ram_sys_field_02a8.l	; $01F6FC
 	beq.w L01F79C	; $01F704
 	move.w ram_party_leader.l,d0	; $01F708
 	muls.w #$34,d0	; $01F70E
-	lea.l ram_sys_ff02dd.l,a0	; $01F712
+	lea.l ram_menu_field_02dd.l,a0	; $01F712
 	moveq #$0,d1	; $01F718
 	move.b (a0,d0.l),d1	; $01F71A
 	cmp.w #$ff,d1	; $01F71E
 	bne.b L01F76E	; $01F722
-	lea.l ram_sys_ff02a2.l,a0	; $01F724
+	lea.l ram_menu_field_02a2.l,a0	; $01F724
 	move.w (a0),d0	; $01F72A
 	lsr.w #$1,d0	; $01F72C
 	and.w #$1,d0	; $01F72E
@@ -22241,14 +22241,14 @@ L01F6DC:
 	move.w -$e(a6),d0	; $01F756
 	lsl.w #$1,d0	; $01F75A
 	and.w #$2,d0	; $01F75C
-	lea.l ram_sys_ff02a2.l,a0	; $01F760
+	lea.l ram_menu_field_02a2.l,a0	; $01F760
 	andi.w #$fffd,(a0)	; $01F766
 	or.w d0,(a0)	; $01F76A
 	bra.b L01F78C	; $01F76C
 L01F76E:
 	move.w #$37,-(a7)	; $01F76E
 	clr.w -(a7)	; $01F772
-	move.w ram_sys_ff02a0.l,-(a7)	; $01F774
+	move.w ram_sys_field_02a0.l,-(a7)	; $01F774
 	jsr npc_attitude_raise.l	; $01F77A
 	addq.w #$4,a7	; $01F780
 	move.w d0,-(a7)	; $01F782
@@ -22274,7 +22274,7 @@ L01F79C:
 	bne.b L01F814	; $01F7C6
 	move.w ram_party_leader.l,d0	; $01F7C8
 	muls.w #$34,d0	; $01F7CE
-	lea.l ram_sys_ff02dd.l,a0	; $01F7D2
+	lea.l ram_menu_field_02dd.l,a0	; $01F7D2
 	moveq #$0,d1	; $01F7D8
 	move.b (a0,d0.l),d1	; $01F7DA
 	move.w d1,-(a7)	; $01F7DE
@@ -22319,7 +22319,7 @@ L01F852:
 	jsr mul32.l	; $01F85C
 	movea.l d0,a0	; $01F862
 	adda.l -$4(a6),a0	; $01F864
-	move.b $c(a0),ram_sys_ffbb6c.l	; $01F868
+	move.b $c(a0),ram_sys_field_bb6c.l	; $01F868
 	bra.b L01F89A	; $01F870
 L01F872:
 	moveq #$0,d0	; $01F872
@@ -22328,7 +22328,7 @@ L01F872:
 	jsr mul32.l	; $01F87C
 	movea.l d0,a0	; $01F882
 	adda.l -$4(a6),a0	; $01F884
-	move.b $c(a0),ram_sys_ffbb6f.l	; $01F888
+	move.b $c(a0),ram_sys_field_bb6f.l	; $01F888
 	bra.b L01F89A	; $01F890
 L01F892:
 	subq.l #$1,d0	; $01F892
@@ -22348,12 +22348,12 @@ L01F89A:
 	tst.w -$a(a6)	; $01F8BA
 	beq.b L01F918	; $01F8BE
 	moveq #$0,d0	; $01F8C0
-	move.b ram_sys_ffbb80.l,d0	; $01F8C2
-	lea.l ram_sys_ffbb74.l,a0	; $01F8C8
-	move.b ram_sys_ffa7f8.l,(a0,d0.l)	; $01F8CE
+	move.b ram_sys_field_bb80.l,d0	; $01F8C2
+	lea.l ram_sys_field_bb74.l,a0	; $01F8C8
+	move.b ram_menu_field_a7f8.l,(a0,d0.l)	; $01F8CE
 	moveq #$0,d0	; $01F8D6
-	move.b ram_sys_ffbb80.l,d0	; $01F8D8
-	lea.l ram_sys_ffbb7a.l,a0	; $01F8DE
+	move.b ram_sys_field_bb80.l,d0	; $01F8D8
+	lea.l ram_sys_field_bb7a.l,a0	; $01F8DE
 	move.b ram_shop_stock_byte.l,(a0,d0.l)	; $01F8E4
 	moveq #$0,d0	; $01F8EC
 	move.b ram_shop_stock_byte.l,d0	; $01F8EE
@@ -22361,9 +22361,9 @@ L01F89A:
 	jsr mul32.l	; $01F8F6
 	movea.l d0,a0	; $01F8FC
 	adda.l -$4(a6),a0	; $01F8FE
-	move.b $b(a0),ram_sys_ffa7f8.l	; $01F902
+	move.b $b(a0),ram_menu_field_a7f8.l	; $01F902
 	clr.b ram_shop_stock_byte.l	; $01F90A
-	addq.b #$1,ram_sys_ffbb80.l	; $01F910
+	addq.b #$1,ram_sys_field_bb80.l	; $01F910
 	bra.b L01F91E	; $01F916
 L01F918:
 	move.w #$2,-$c(a6)	; $01F918
@@ -22374,16 +22374,16 @@ L01F920:
 L01F926:
 	bra.w L01FEB8	; $01F926
 L01F92A:
-	movea.l ram_sys_ffbb82.l,a0	; $01F92A
+	movea.l ram_sys_field_bb82.l,a0	; $01F92A
 	adda.l #$c,a0	; $01F930
 	move.l a0,-$4(a6)	; $01F936
 	moveq #$0,d0	; $01F93A
-	move.b ram_sys_ffbb80.l,d0	; $01F93C
-	lea.l ram_sys_ffbb74.l,a0	; $01F942
-	move.b ram_sys_ffa7f8.l,(a0,d0.l)	; $01F948
+	move.b ram_sys_field_bb80.l,d0	; $01F93C
+	lea.l ram_sys_field_bb74.l,a0	; $01F942
+	move.b ram_menu_field_a7f8.l,(a0,d0.l)	; $01F948
 	moveq #$0,d0	; $01F950
-	move.b ram_sys_ffbb80.l,d0	; $01F952
-	lea.l ram_sys_ffbb7a.l,a0	; $01F958
+	move.b ram_sys_field_bb80.l,d0	; $01F952
+	lea.l ram_sys_field_bb7a.l,a0	; $01F958
 	move.b ram_shop_stock_byte.l,(a0,d0.l)	; $01F95E
 	moveq #$0,d0	; $01F966
 	move.b ram_shop_stock_byte.l,d0	; $01F968
@@ -22399,7 +22399,7 @@ L01F92A:
 	jsr mul32.l	; $01F98E
 	movea.l d0,a0	; $01F994
 	adda.l -$4(a6),a0	; $01F996
-	move.b $c(a0),ram_sys_ffbb6c.l	; $01F99A
+	move.b $c(a0),ram_sys_field_bb6c.l	; $01F99A
 L01F9A2:
 	moveq #$0,d0	; $01F9A2
 	move.b ram_shop_stock_byte.l,d0	; $01F9A4
@@ -22407,21 +22407,21 @@ L01F9A2:
 	jsr mul32.l	; $01F9AC
 	movea.l d0,a0	; $01F9B2
 	adda.l -$4(a6),a0	; $01F9B4
-	move.b $b(a0),ram_sys_ffa7f8.l	; $01F9B8
+	move.b $b(a0),ram_menu_field_a7f8.l	; $01F9B8
 	clr.b ram_shop_stock_byte.l	; $01F9C0
-	addq.b #$1,ram_sys_ffbb80.l	; $01F9C6
+	addq.b #$1,ram_sys_field_bb80.l	; $01F9C6
 	bra.w L01FEB8	; $01F9CC
 L01F9D0:
-	movea.l ram_sys_ffbb82.l,a0	; $01F9D0
+	movea.l ram_sys_field_bb82.l,a0	; $01F9D0
 	adda.l #$c,a0	; $01F9D6
 	move.l a0,-$4(a6)	; $01F9DC
 	moveq #$0,d0	; $01F9E0
-	move.b ram_sys_ffbb80.l,d0	; $01F9E2
-	lea.l ram_sys_ffbb74.l,a0	; $01F9E8
-	move.b ram_sys_ffa7f8.l,(a0,d0.l)	; $01F9EE
+	move.b ram_sys_field_bb80.l,d0	; $01F9E2
+	lea.l ram_sys_field_bb74.l,a0	; $01F9E8
+	move.b ram_menu_field_a7f8.l,(a0,d0.l)	; $01F9EE
 	moveq #$0,d0	; $01F9F6
-	move.b ram_sys_ffbb80.l,d0	; $01F9F8
-	lea.l ram_sys_ffbb7a.l,a0	; $01F9FE
+	move.b ram_sys_field_bb80.l,d0	; $01F9F8
+	lea.l ram_sys_field_bb7a.l,a0	; $01F9FE
 	move.b ram_shop_stock_byte.l,(a0,d0.l)	; $01FA04
 	moveq #$0,d0	; $01FA0C
 	move.b ram_shop_stock_byte.l,d0	; $01FA0E
@@ -22439,7 +22439,7 @@ L01FA2C:
 	jsr mul32.l	; $01FA36
 	movea.l d0,a0	; $01FA3C
 	adda.l -$4(a6),a0	; $01FA3E
-	move.b $c(a0),ram_sys_ffbb6c.l	; $01FA42
+	move.b $c(a0),ram_sys_field_bb6c.l	; $01FA42
 	bra.w L01FB00	; $01FA4A
 L01FA4E:
 	moveq #$0,d0	; $01FA4E
@@ -22449,7 +22449,7 @@ L01FA4E:
 	move.w #$43,-(a7)	; $01FA5A
 	jsr world_party_nth_index.l	; $01FA5E
 	addq.w #$4,a7	; $01FA64
-	move.b d0,ram_sys_ffbb6d.l	; $01FA66
+	move.b d0,ram_sys_field_bb6d.l	; $01FA66
 	bra.w L01FB00	; $01FA6C
 L01FA70:
 	moveq #$0,d0	; $01FA70
@@ -22458,7 +22458,7 @@ L01FA70:
 	jsr mul32.l	; $01FA7A
 	movea.l d0,a0	; $01FA80
 	adda.l -$4(a6),a0	; $01FA82
-	move.b $c(a0),ram_sys_ffbb6d.l	; $01FA86
+	move.b $c(a0),ram_sys_field_bb6d.l	; $01FA86
 	bra.b L01FB00	; $01FA8E
 L01FA90:
 	moveq #$0,d0	; $01FA90
@@ -22468,7 +22468,7 @@ L01FA90:
 	move.w #$43,-(a7)	; $01FA9C
 	jsr world_party_nth_index.l	; $01FAA0
 	addq.w #$4,a7	; $01FAA6
-	move.b d0,ram_sys_ffbb6e.l	; $01FAA8
+	move.b d0,ram_sys_field_bb6e.l	; $01FAA8
 	bra.b L01FB00	; $01FAAE
 L01FAB0:
 	moveq #$0,d0	; $01FAB0
@@ -22481,7 +22481,7 @@ L01FAB0:
 	muls.w #$e,d0	; $01FAC8
 	movea.l d0,a0	; $01FACC
 	adda.l -$4(a6),a0	; $01FACE
-	move.b $c(a0),ram_sys_ffbb6f.l	; $01FAD2
+	move.b $c(a0),ram_sys_field_bb6f.l	; $01FAD2
 	bra.b L01FB00	; $01FADA
 L01FADC:
 	; data $01FADC-$01FAED
@@ -22500,9 +22500,9 @@ L01FB00:
 	jsr mul32.l	; $01FB0A
 	movea.l d0,a0	; $01FB10
 	adda.l -$4(a6),a0	; $01FB12
-	move.b $b(a0),ram_sys_ffa7f8.l	; $01FB16
+	move.b $b(a0),ram_menu_field_a7f8.l	; $01FB16
 	clr.b ram_shop_stock_byte.l	; $01FB1E
-	addq.b #$1,ram_sys_ffbb80.l	; $01FB24
+	addq.b #$1,ram_sys_field_bb80.l	; $01FB24
 	bra.w L01FEB8	; $01FB2A
 L01FB2E:
 	moveq #$0,d0	; $01FB2E
@@ -22510,7 +22510,7 @@ L01FB2E:
 	addq.w #$1,d0	; $01FB36
 	move.w d0,-(a7)	; $01FB38
 	moveq #$0,d0	; $01FB3A
-	move.b ram_sys_ffbb6f.l,d0	; $01FB3C
+	move.b ram_sys_field_bb6f.l,d0	; $01FB3C
 	move.w d0,-(a7)	; $01FB42
 	move.w ram_party_leader.l,-(a7)	; $01FB44
 	jsr shop_find_nth_category_item.l	; $01FB4A
@@ -22543,7 +22543,7 @@ L01FB2E:
 	addq.w #$8,a7	; $01FBB4
 	move.w #$1,-(a7)	; $01FBB6
 	move.w #$ffff,-(a7)	; $01FBBA
-	move.w ram_sys_ff02a8.l,d0	; $01FBBE
+	move.w ram_sys_field_02a8.l,d0	; $01FBBE
 	asl.w #$6,d0	; $01FBC4
 	add.w -$e(a6),d0	; $01FBC6
 	move.w d0,-(a7)	; $01FBCA
@@ -22558,7 +22558,7 @@ L01FB2E:
 	move.w #$44,-(a7)	; $01FBEA
 	jsr text_enqueue_message.l	; $01FBEE
 	lea.l $a(a7),a7	; $01FBF4
-	move.w ram_sys_ff02a8.l,d0	; $01FBF8
+	move.w ram_sys_field_02a8.l,d0	; $01FBF8
 	asl.w #$6,d0	; $01FBFE
 	add.w -$e(a6),d0	; $01FC00
 	move.w d0,-(a7)	; $01FC04
@@ -22568,13 +22568,13 @@ L01FB2E:
 	tst.w d0	; $01FC14
 	bne.b L01FC72	; $01FC16
 	subq.b #$1,ram_shop_stock_byte.l	; $01FC18
-	move.b #$ff,ram_sys_ffb08a.l	; $01FC1E
+	move.b #$ff,ram_sys_field_b08a.l	; $01FC1E
 	moveq #$0,d0	; $01FC26
 	move.b ram_shop_stock_byte.l,d0	; $01FC28
 	addq.w #$1,d0	; $01FC2E
 	move.w d0,-(a7)	; $01FC30
 	moveq #$0,d0	; $01FC32
-	move.b ram_sys_ffbb6f.l,d0	; $01FC34
+	move.b ram_sys_field_bb6f.l,d0	; $01FC34
 	move.w d0,-(a7)	; $01FC3A
 	move.w ram_party_leader.l,-(a7)	; $01FC3C
 	jsr shop_find_nth_category_item.l	; $01FC42
@@ -22602,15 +22602,15 @@ L01FC74:
 	jsr text_enqueue_message.l	; $01FC8E
 	lea.l $a(a7),a7	; $01FC94
 L01FC98:
-	move.w #$ffff,ram_sys_ff009a.l	; $01FC98
+	move.w #$ffff,ram_sys_field_009a.l	; $01FC98
 	bra.w L01FEB8	; $01FCA0
 L01FCA4:
 	moveq #$0,d0	; $01FCA4
 	move.b ram_shop_stock_byte.l,d0	; $01FCA6
-	add.w ram_sys_ff02aa.l,d0	; $01FCAC
+	add.w ram_sys_field_02aa.l,d0	; $01FCAC
 	move.w d0,-$e(a6)	; $01FCB2
 	lea.l -$1a(a6),a0	; $01FCB6
-	move.w ram_sys_ff02a8.l,d0	; $01FCBA
+	move.w ram_sys_field_02a8.l,d0	; $01FCBA
 	mulu.w #$a,d0	; $01FCC0
 	lea.l L0D66A8.l,a1	; $01FCC4
 	move.w (a1,d0.l),d1	; $01FCCA
@@ -22623,11 +22623,11 @@ L01FCA4:
 	move.l (a1)+,(a0)+	; $01FCE0
 	move.w ram_party_leader.l,d0	; $01FCE2
 	muls.w #$34,d0	; $01FCE8
-	lea.l ram_sys_ff02de.l,a0	; $01FCEC
+	lea.l ram_world_field_02de.l,a0	; $01FCEC
 	move.l d0,-(a7)	; $01FCF2
 	move.l a0,-(a7)	; $01FCF4
 	move.w -$e(a6),-(a7)	; $01FCF6
-	move.w ram_sys_ff02a8.l,-(a7)	; $01FCFA
+	move.w ram_sys_field_02a8.l,-(a7)	; $01FCFA
 	jsr shop_price_calc.l	; $01FD00
 	addq.w #$4,a7	; $01FD06
 	movea.l (a7)+,a0	; $01FD08
@@ -22635,7 +22635,7 @@ L01FCA4:
 	move.w (a0,d1.l),d2	; $01FD0C
 	cmp.w d0,d2	; $01FD10
 	bcs.w L01FE4E	; $01FD12
-	move.w ram_sys_ff02a8.l,d0	; $01FD16
+	move.w ram_sys_field_02a8.l,d0	; $01FD16
 	asl.w #$6,d0	; $01FD1C
 	add.w -$e(a6),d0	; $01FD1E
 	move.w d0,-(a7)	; $01FD22
@@ -22643,7 +22643,7 @@ L01FCA4:
 	jsr item_category_of.l	; $01FD2A
 	addq.w #$4,a7	; $01FD30
 	move.w d0,-(a7)	; $01FD32
-	move.w ram_sys_ff02a8.l,d0	; $01FD34
+	move.w ram_sys_field_02a8.l,d0	; $01FD34
 	asl.w #$6,d0	; $01FD3A
 	add.w -$e(a6),d0	; $01FD3C
 	move.w d0,-(a7)	; $01FD40
@@ -22656,7 +22656,7 @@ L01FCA4:
 	clr.l -(a7)	; $01FD56
 	move.w #$7919,-(a7)	; $01FD58
 	move.w #$9,-(a7)	; $01FD5C
-	move.w ram_sys_ff02a8.l,d0	; $01FD60
+	move.w ram_sys_field_02a8.l,d0	; $01FD60
 	mulu.w #$a,d0	; $01FD66
 	lea.l L0D66A1.l,a0	; $01FD6A
 	moveq #$0,d1	; $01FD70
@@ -22666,9 +22666,9 @@ L01FCA4:
 	lea.l $a(a7),a7	; $01FD7E
 	bra.w L01FE4C	; $01FD82
 L01FD86:
-	cmpi.w #$6,ram_sys_ff02a8.l	; $01FD86
+	cmpi.w #$6,ram_sys_field_02a8.l	; $01FD86
 	bhi.b L01FDC4	; $01FD8E
-	move.w ram_sys_ff02a8.l,d0	; $01FD90
+	move.w ram_sys_field_02a8.l,d0	; $01FD90
 	subq.w #$1,d0	; $01FD96
 	moveq #$0,d1	; $01FD98
 	move.w d0,d1	; $01FD9A
@@ -22685,7 +22685,7 @@ L01FD86:
 L01FDC4:
 	move.w #$1,-(a7)	; $01FDC4
 	move.w -$e(a6),-(a7)	; $01FDC8
-	move.w ram_sys_ff02a8.l,-(a7)	; $01FDCC
+	move.w ram_sys_field_02a8.l,-(a7)	; $01FDCC
 	jsr shop_price_calc.l	; $01FDD2
 	addq.w #$4,a7	; $01FDD8
 	neg.w d0	; $01FDDA
@@ -22696,21 +22696,21 @@ L01FDC4:
 	addq.w #$8,a7	; $01FDEE
 	move.w #$1,-(a7)	; $01FDF0
 	move.w #$1,-(a7)	; $01FDF4
-	move.w ram_sys_ff02a8.l,d0	; $01FDF8
+	move.w ram_sys_field_02a8.l,d0	; $01FDF8
 	asl.w #$6,d0	; $01FDFE
 	add.w -$e(a6),d0	; $01FE00
 	move.w d0,-(a7)	; $01FE04
 	move.w ram_party_leader.l,-(a7)	; $01FE06
 	jsr inv_apply_resource.l	; $01FE0C
 	addq.w #$8,a7	; $01FE12
-	tst.w ram_sys_ff00ac.l	; $01FE14
+	tst.w ram_menu_field_00ac.l	; $01FE14
 	bne.b L01FE20	; $01FE1A
 	bra.w L01F318	; $01FE1C
 L01FE20:
 	clr.l -(a7)	; $01FE20
 	move.w -$e(a6),-(a7)	; $01FE22
 	move.w #$9,-(a7)	; $01FE26
-	move.w ram_sys_ff02a8.l,d0	; $01FE2A
+	move.w ram_sys_field_02a8.l,d0	; $01FE2A
 	mulu.w #$a,d0	; $01FE30
 	lea.l L0D66A1.l,a0	; $01FE34
 	moveq #$0,d1	; $01FE3A
@@ -22725,7 +22725,7 @@ L01FE4E:
 	clr.l -(a7)	; $01FE54
 	move.w #$7918,-(a7)	; $01FE56
 	move.w #$9,-(a7)	; $01FE5A
-	move.w ram_sys_ff02a8.l,d0	; $01FE5E
+	move.w ram_sys_field_02a8.l,d0	; $01FE5E
 	mulu.w #$a,d0	; $01FE64
 	lea.l L0D66A1.l,a0	; $01FE68
 	moveq #$0,d1	; $01FE6E
@@ -22734,7 +22734,7 @@ L01FE4E:
 	jsr text_enqueue_message.l	; $01FE76
 	lea.l $a(a7),a7	; $01FE7C
 L01FE80:
-	move.w #$ffff,ram_sys_ff009a.l	; $01FE80
+	move.w #$ffff,ram_sys_field_009a.l	; $01FE80
 	bra.b L01FEB8	; $01FE88
 L01FE8A:
 	sub.l #$42,d0	; $01FE8A
@@ -22752,17 +22752,17 @@ L01FE8A:
 	subq.l #$5,d0	; $01FEB2
 	beq.w L01F60C	; $01FEB4
 L01FEB8:
-	move.l ram_sys_ffbb82.l,-$16(a6)	; $01FEB8
+	move.l ram_sys_field_bb82.l,-$16(a6)	; $01FEB8
 	moveq #$0,d0	; $01FEC0
-	move.b ram_sys_ffa7f8.l,d0	; $01FEC2
+	move.b ram_menu_field_a7f8.l,d0	; $01FEC2
 	asl.l #$1,d0	; $01FEC8
-	lea.l ram_sys_ff01ea.l,a0	; $01FECA
+	lea.l ram_sys_field_01ea.l,a0	; $01FECA
 	moveq #$0,d1	; $01FED0
 	move.w (a0,d0.l),d1	; $01FED2
 	lea.l L0CCDB8.l,a0	; $01FED6
 	add.l a0,d1	; $01FEDC
-	move.l d1,ram_sys_ffbb82.l	; $01FEDE
-	movea.l ram_sys_ffbb82.l,a0	; $01FEE4
+	move.l d1,ram_sys_field_bb82.l	; $01FEDE
+	movea.l ram_sys_field_bb82.l,a0	; $01FEE4
 	moveq #$0,d0	; $01FEEA
 	move.b $a(a0),d0	; $01FEEC
 	bra.w L020148	; $01FEF0
@@ -22773,14 +22773,14 @@ L01FEF4:
 	beq.b L01FF40	; $01FF00
 	move.w ram_actor_index.l,d0	; $01FF02
 	muls.w #$34,d0	; $01FF08
-	lea.l ram_sys_ff02db.l,a0	; $01FF0C
+	lea.l ram_sys_field_02db.l,a0	; $01FF0C
 	moveq #$0,d1	; $01FF12
 	move.b (a0,d0.l),d1	; $01FF14
 	cmp.w ram_party_leader.l,d1	; $01FF18
 	bne.b L01FF40	; $01FF1E
 	move.w ram_actor_index.l,d0	; $01FF20
 	muls.w #$34,d0	; $01FF26
-	lea.l ram_sys_ff02cc.l,a0	; $01FF2A
+	lea.l ram_world_field_02cc.l,a0	; $01FF2A
 	move.w (a0,d0.l),d1	; $01FF30
 	and.w #$f,d1	; $01FF34
 	subq.w #$1,d1	; $01FF38
@@ -22797,7 +22797,7 @@ L01FF44:
 	addq.w #$1,d0	; $01FF5A
 	move.w d0,-(a7)	; $01FF5C
 	moveq #$0,d0	; $01FF5E
-	move.b ram_sys_ffbb6f.l,d0	; $01FF60
+	move.b ram_sys_field_bb6f.l,d0	; $01FF60
 	move.w d0,-(a7)	; $01FF66
 	move.w ram_party_leader.l,-(a7)	; $01FF68
 	jsr shop_find_nth_category_item.l	; $01FF6E
@@ -22820,10 +22820,10 @@ L01FFAE:
 	move.w #$1,-(a7)	; $01FFAE
 	jsr msg_queue_consume.l	; $01FFB2
 	addq.w #$2,a7	; $01FFB8
-	move.w #$ffff,ram_sys_ff009a.l	; $01FFBA
+	move.w #$ffff,ram_sys_field_009a.l	; $01FFBA
 	bra.w L020162	; $01FFC2
 L01FFC6:
-	cmpi.b #$6,ram_sys_ffbb6f.l	; $01FFC6
+	cmpi.b #$6,ram_sys_field_bb6f.l	; $01FFC6
 	bgt.b L020030	; $01FFCE
 	lea.l ram_combat_flags.l,a0	; $01FFD0
 	move.w (a0),d0	; $01FFD6
@@ -22832,16 +22832,16 @@ L01FFC6:
 	cmpi.w #$11,-$12(a6)	; $01FFDE
 	bne.b L020030	; $01FFE4
 	moveq #$0,d0	; $01FFE6
-	move.b ram_sys_ffbb6f.l,d0	; $01FFE8
+	move.b ram_sys_field_bb6f.l,d0	; $01FFE8
 	muls.w #$34,d0	; $01FFEE
-	lea.l ram_sys_ff02d9.l,a0	; $01FFF2
+	lea.l ram_sys_field_02d9.l,a0	; $01FFF2
 	moveq #$0,d1	; $01FFF8
 	move.b (a0,d0.l),d1	; $01FFFA
 	move.w d1,-(a7)	; $01FFFE
 	moveq #$0,d0	; $020000
-	move.b ram_sys_ffbb6f.l,d0	; $020002
+	move.b ram_sys_field_bb6f.l,d0	; $020002
 	muls.w #$34,d0	; $020008
-	lea.l ram_sys_ff02cc.l,a0	; $02000C
+	lea.l ram_world_field_02cc.l,a0	; $02000C
 	move.w (a0,d0.l),d1	; $020012
 	and.w #$f,d1	; $020016
 	move.w d1,-(a7)	; $02001A
@@ -22850,26 +22850,26 @@ L01FFC6:
 	addq.w #$6,a7	; $020028
 	move.b d0,ram_shop_stock_byte.l	; $02002A
 L020030:
-	cmpi.b #$15,ram_sys_ffa7f8.l	; $020030
+	cmpi.b #$15,ram_menu_field_a7f8.l	; $020030
 	bne.w L0200CA	; $020038
 	moveq #$0,d0	; $02003C
 	move.b ram_shop_stock_byte.l,d0	; $02003E
 	addq.w #$1,d0	; $020044
 	move.w d0,-(a7)	; $020046
 	moveq #$0,d0	; $020048
-	move.b ram_sys_ffbb6f.l,d0	; $02004A
+	move.b ram_sys_field_bb6f.l,d0	; $02004A
 	move.w d0,-(a7)	; $020050
 	move.w ram_party_leader.l,-(a7)	; $020052
 	jsr shop_find_nth_category_item.l	; $020058
 	addq.w #$6,a7	; $02005E
-	move.b d0,ram_sys_ffbb70.l	; $020060
+	move.b d0,ram_sys_field_bb70.l	; $020060
 	moveq #$0,d0	; $020066
-	move.b ram_sys_ffbb6f.l,d0	; $020068
+	move.b ram_sys_field_bb6f.l,d0	; $020068
 	muls.w #$a,d0	; $02006E
 	lea.l L0D66A8.l,a0	; $020072
 	move.w (a0,d0.l),d1	; $020078
 	moveq #$0,d0	; $02007C
-	move.b ram_sys_ffbb70.l,d0	; $02007E
+	move.b ram_sys_field_bb70.l,d0	; $02007E
 	add.w d0,d1	; $020084
 	ext.l d1	; $020086
 	asl.l #$2,d1	; $020088
@@ -22889,7 +22889,7 @@ L020030:
 	jsr msg_queue_consume.l	; $0200C2
 	addq.w #$2,a7	; $0200C8
 L0200CA:
-	move.w #$ffff,ram_sys_ff009a.l	; $0200CA
+	move.w #$ffff,ram_sys_field_009a.l	; $0200CA
 	bra.w L020162	; $0200D2
 L0200D6:
 	movea.l -$16(a6),a0	; $0200D6
@@ -22898,7 +22898,7 @@ L0200D6:
 	clr.l -(a7)	; $0200E2
 	move.w #$7530,-(a7)	; $0200E4
 	move.w #$9,-(a7)	; $0200E8
-	move.w ram_sys_ff02a8.l,d0	; $0200EC
+	move.w ram_sys_field_02a8.l,d0	; $0200EC
 	mulu.w #$a,d0	; $0200F2
 	lea.l L0D66A1.l,a0	; $0200F6
 	moveq #$0,d1	; $0200FC
@@ -22919,7 +22919,7 @@ L020132:
 	move.w #$1,-(a7)	; $020132
 	jsr msg_queue_consume.l	; $020136
 	addq.w #$2,a7	; $02013C
-	move.w #$ffff,ram_sys_ff009a.l	; $02013E
+	move.w #$ffff,ram_sys_field_009a.l	; $02013E
 	bra.b L020162	; $020146
 L020148:
 	sub.l #$42,d0	; $020148
@@ -22931,13 +22931,13 @@ L020148:
 	subq.l #$3,d0	; $02015C
 	beq.w L01FF44	; $02015E
 L020162:
-	tst.b ram_sys_ffa7f8.l	; $020162
+	tst.b ram_menu_field_a7f8.l	; $020162
 	beq.b L020172	; $020168
 	tst.w -$c(a6)	; $02016A
 	beq.w L02077A	; $02016E
 L020172:
 	moveq #$0,d0	; $020172
-	move.b ram_sys_ffbb6c.l,d0	; $020174
+	move.b ram_sys_field_bb6c.l,d0	; $020174
 	move.w d0,-$6(a6)	; $02017A
 	move.w -$6(a6),d0	; $02017E
 	ext.l d0	; $020182
@@ -22948,7 +22948,7 @@ L020188:
 L020194:
 	clr.l -(a7)	; $020194
 	moveq #$0,d0	; $020196
-	move.b ram_sys_ffbb6d.l,d0	; $020198
+	move.b ram_sys_field_bb6d.l,d0	; $020198
 	moveq #$0,d1	; $02019E
 	move.w d0,d1	; $0201A0
 	asl.l #$1,d1	; $0201A2
@@ -22956,14 +22956,14 @@ L020194:
 	move.w (a0,d1.l),-(a7)	; $0201AA
 	move.w #$2,-(a7)	; $0201AE
 	moveq #$0,d0	; $0201B2
-	move.b ram_sys_ffbb6d.l,d0	; $0201B4
+	move.b ram_sys_field_bb6d.l,d0	; $0201B4
 	moveq #$0,d1	; $0201BA
 	move.w d0,d1	; $0201BC
 	asl.l #$1,d1	; $0201BE
 	lea.l ram_party_index_array.l,a0	; $0201C0
 	move.w (a0,d1.l),d0	; $0201C6
 	muls.w #$34,d0	; $0201CA
-	lea.l ram_sys_ff02ca.l,a0	; $0201CE
+	lea.l ram_sys_field_02ca.l,a0	; $0201CE
 	moveq #$0,d1	; $0201D4
 	move.b (a0,d0.l),d1	; $0201D6
 	move.w d1,-(a7)	; $0201DA
@@ -22979,7 +22979,7 @@ L0201EA:
 	jsr npc_attitude_raise.l	; $0201FE
 	addq.w #$4,a7	; $020204
 	muls.w #$34,d0	; $020206
-	lea.l ram_sys_ff02ca.l,a0	; $02020A
+	lea.l ram_sys_field_02ca.l,a0	; $02020A
 	moveq #$0,d1	; $020210
 	move.b (a0,d0.l),d1	; $020212
 	move.w d1,-(a7)	; $020216
@@ -23014,10 +23014,10 @@ L020252:
 	bra.w settings_menu_open	; $02027A
 L02027E:
 	moveq #$0,d0	; $02027E
-	move.b ram_sys_ffbb70.l,d0	; $020280
+	move.b ram_sys_field_bb70.l,d0	; $020280
 	move.w d0,-(a7)	; $020286
 	moveq #$0,d0	; $020288
-	move.b ram_sys_ffbb6f.l,d0	; $02028A
+	move.b ram_sys_field_bb6f.l,d0	; $02028A
 	move.w d0,-(a7)	; $020290
 	jsr spell_assign_by_rank.l	; $020292
 	addq.w #$4,a7	; $020298
@@ -23058,7 +23058,7 @@ L0202FA:
 	bra.w settings_menu_open	; $020318
 L02031C:
 	moveq #$0,d0	; $02031C
-	move.b ram_sys_ffbb6f.l,d0	; $02031E
+	move.b ram_sys_field_bb6f.l,d0	; $02031E
 	move.w d0,-(a7)	; $020324
 	jsr spell_dispatch_effect.l	; $020326
 	addq.w #$2,a7	; $02032C
@@ -23084,12 +23084,12 @@ L02035C:
 L02036C:
 	bra.w settings_menu_open	; $02036C
 L020370:
-	tst.w ram_sys_ff0132.l	; $020370
+	tst.w ram_menu_field_0132.l	; $020370
 	bne.b L020382	; $020376
-	move.w #$1,ram_sys_ff0132.l	; $020378
+	move.w #$1,ram_menu_field_0132.l	; $020378
 	bra.b L020388	; $020380
 L020382:
-	clr.w ram_sys_ff0132.l	; $020382
+	clr.w ram_menu_field_0132.l	; $020382
 L020388:
 	bra.w settings_menu_open	; $020388
 L02038C:
@@ -23101,7 +23101,7 @@ L02038C:
 	jsr npc_attitude_raise.l	; $02039E
 	addq.w #$4,a7	; $0203A4
 	muls.w #$34,d0	; $0203A6
-	lea.l ram_sys_ff02ca.l,a0	; $0203AA
+	lea.l ram_sys_field_02ca.l,a0	; $0203AA
 	moveq #$0,d1	; $0203B0
 	move.b (a0,d0.l),d1	; $0203B2
 	move.w d1,-(a7)	; $0203B6
@@ -23109,22 +23109,22 @@ L02038C:
 	lea.l $a(a7),a7	; $0203BE
 	bra.w settings_menu_open	; $0203C2
 L0203C6:
-	tst.w ram_sys_ff0116.l	; $0203C6
+	tst.w ram_menu_field_0116.l	; $0203C6
 	bne.b L0203D8	; $0203CC
-	move.w #$1,ram_sys_ff0116.l	; $0203CE
+	move.w #$1,ram_menu_field_0116.l	; $0203CE
 	bra.b L0203DE	; $0203D6
 L0203D8:
-	clr.w ram_sys_ff0116.l	; $0203D8
+	clr.w ram_menu_field_0116.l	; $0203D8
 L0203DE:
 	jsr sys_direct_apply.l	; $0203DE
 	bra.w settings_menu_open	; $0203E4
 L0203E8:
 	move.w #$1,-(a7)	; $0203E8
 	moveq #$0,d0	; $0203EC
-	move.b ram_sys_ffbb70.l,d0	; $0203EE
+	move.b ram_sys_field_bb70.l,d0	; $0203EE
 	move.w d0,-(a7)	; $0203F4
 	moveq #$0,d0	; $0203F6
-	move.b ram_sys_ffbb6f.l,d0	; $0203F8
+	move.b ram_sys_field_bb6f.l,d0	; $0203F8
 	move.w d0,-(a7)	; $0203FE
 	jsr sys_dispatch_action_2dcce.l	; $020400
 	addq.w #$6,a7	; $020406
@@ -23132,16 +23132,16 @@ L0203E8:
 L02040C:
 	move.w #$1,-(a7)	; $02040C
 	moveq #$0,d0	; $020410
-	move.b ram_sys_ffbb70.l,d0	; $020412
+	move.b ram_sys_field_bb70.l,d0	; $020412
 	move.w d0,-(a7)	; $020418
 	moveq #$0,d0	; $02041A
-	move.b ram_sys_ffbb6f.l,d0	; $02041C
+	move.b ram_sys_field_bb6f.l,d0	; $02041C
 	move.w d0,-(a7)	; $020422
 	jsr sys_dispatch_action_2dcce.l	; $020424
 	addq.w #$6,a7	; $02042A
 	bra.w settings_menu_open	; $02042C
 L020430:
-	pea.l ram_sys_ff0e18.l	; $020430
+	pea.l ram_menu_field_0e18.l	; $020430
 	jsr queue_depth(pc)	; $020436
 	addq.w #$4,a7	; $02043A
 	tst.w d0	; $02043C
@@ -23159,14 +23159,14 @@ L02045E:
 L020462:
 	bra.w settings_menu_open	; $020462
 L020466:
-	pea.l ram_sys_ff0e18.l	; $020466
+	pea.l ram_menu_field_0e18.l	; $020466
 	jsr queue_depth(pc)	; $02046C
 	addq.w #$4,a7	; $020470
 	tst.w d0	; $020472
 	bne.b L0204C6	; $020474
 	move.w ram_party_leader.l,d0	; $020476
 	muls.w #$34,d0	; $02047C
-	lea.l ram_sys_ff02de.l,a0	; $020480
+	lea.l ram_world_field_02de.l,a0	; $020480
 	cmpi.w #$a,(a0,d0.l)	; $020486
 	bcs.b L0204C6	; $02048C
 	move.w #$1,-(a7)	; $02048E
@@ -23193,7 +23193,7 @@ L0204CE:
 	addq.w #$2,a7	; $0204D6
 	bra.w settings_menu_open	; $0204D8
 L0204DC:
-	pea.l ram_sys_ff0e18.l	; $0204DC
+	pea.l ram_menu_field_0e18.l	; $0204DC
 	jsr queue_depth(pc)	; $0204E2
 	addq.w #$4,a7	; $0204E6
 	tst.w d0	; $0204E8
@@ -23210,7 +23210,7 @@ L0204DC:
 L020510:
 	bra.w settings_menu_open	; $020510
 L020514:
-	pea.l ram_sys_ff0e18.l	; $020514
+	pea.l ram_menu_field_0e18.l	; $020514
 	jsr queue_depth(pc)	; $02051A
 	addq.w #$4,a7	; $02051E
 	tst.w d0	; $020520
@@ -23227,7 +23227,7 @@ L020514:
 L020548:
 	bra.w settings_menu_open	; $020548
 L02054C:
-	pea.l ram_sys_ff0e18.l	; $02054C
+	pea.l ram_menu_field_0e18.l	; $02054C
 	jsr queue_depth(pc)	; $020552
 	addq.w #$4,a7	; $020556
 	tst.w d0	; $020558
@@ -23244,7 +23244,7 @@ L02054C:
 L020580:
 	bra.w settings_menu_open	; $020580
 L020584:
-	pea.l ram_sys_ff0e18.l	; $020584
+	pea.l ram_menu_field_0e18.l	; $020584
 	jsr queue_depth(pc)	; $02058A
 	addq.w #$4,a7	; $02058E
 	tst.w d0	; $020590
@@ -23261,21 +23261,21 @@ L020584:
 L0205B8:
 	bra.w settings_menu_open	; $0205B8
 L0205BC:
-	tst.w ram_sys_ff0134.l	; $0205BC
+	tst.w ram_save_field_0134.l	; $0205BC
 	bne.b L0205CE	; $0205C2
-	move.w #$1,ram_sys_ff0134.l	; $0205C4
+	move.w #$1,ram_save_field_0134.l	; $0205C4
 	bra.b L0205D4	; $0205CC
 L0205CE:
-	clr.w ram_sys_ff0134.l	; $0205CE
+	clr.w ram_save_field_0134.l	; $0205CE
 L0205D4:
 	bra.w settings_menu_open	; $0205D4
 L0205D8:
-	tst.w ram_sys_ff013a.l	; $0205D8
+	tst.w ram_save_field_013a.l	; $0205D8
 	bne.b L0205EA	; $0205DE
-	move.w #$1,ram_sys_ff013a.l	; $0205E0
+	move.w #$1,ram_save_field_013a.l	; $0205E0
 	bra.b L0205F0	; $0205E8
 L0205EA:
-	clr.w ram_sys_ff013a.l	; $0205EA
+	clr.w ram_save_field_013a.l	; $0205EA
 L0205F0:
 	bra.w settings_menu_open	; $0205F0
 L0205F4:
@@ -23288,10 +23288,10 @@ L0205F4:
 	jsr npc_attitude_positive.l	; $02060A
 	addq.w #$4,a7	; $020610
 	moveq #$0,d0	; $020612
-	move.b ram_sys_ffbb6f.l,d0	; $020614
+	move.b ram_sys_field_bb6f.l,d0	; $020614
 	asl.w #$6,d0	; $02061A
 	moveq #$0,d1	; $02061C
-	move.b ram_sys_ffbb70.l,d1	; $02061E
+	move.b ram_sys_field_bb70.l,d1	; $02061E
 	add.w d1,d0	; $020624
 	move.w d0,ram_sys_ff02b0.l	; $020626
 	move.w #$ffff,-$10(a6)	; $02062C
@@ -23299,7 +23299,7 @@ L0205F4:
 	bra.w settings_menu_open	; $020638
 L02063C:
 	moveq #$0,d0	; $02063C
-	move.b ram_sys_ffbb6f.l,d0	; $02063E
+	move.b ram_sys_field_bb6f.l,d0	; $02063E
 	move.w d0,-(a7)	; $020644
 	jsr song_play_direct.l	; $020646
 	addq.w #$2,a7	; $02064C
@@ -23384,7 +23384,7 @@ L02068E:
 	sub.l #$95,d0	; $02074E
 	beq.w L020188	; $020754
 settings_menu_open:
-	tst.b ram_sys_ffa7f8.l	; $020758
+	tst.b ram_menu_field_a7f8.l	; $020758
 	bne.b L02077A	; $02075E
 	tst.w -$10(a6)	; $020760
 	beq.b L020772	; $020764
@@ -23407,12 +23407,12 @@ L02078E:
 	move.w -$12(a6),-(a7)	; $020792
 	jsr sfx_request.l	; $020796
 	addq.w #$4,a7	; $02079C
-	move.b #$ff,ram_sys_ffb08a.l	; $02079E
-	move.w #$ffff,ram_sys_ff009c.l	; $0207A6
-	tst.w ram_sys_ff00ac.l	; $0207AE
+	move.b #$ff,ram_sys_field_b08a.l	; $02079E
+	move.w #$ffff,ram_sys_field_009c.l	; $0207A6
+	tst.w ram_menu_field_00ac.l	; $0207AE
 	bne.b L0207D4	; $0207B4
-	clr.b ram_sys_ffb08a.l	; $0207B6
-	clr.w ram_sys_ff009c.l	; $0207BC
+	clr.b ram_sys_field_b08a.l	; $0207B6
+	clr.w ram_sys_field_009c.l	; $0207BC
 	jsr gfx_fill_panel_plain.l	; $0207C2
 	jsr gfx_fill_panel_flagged.l	; $0207C8
 	jsr menu_format.l	; $0207CE
@@ -23421,7 +23421,7 @@ L0207D4:
 	; code $0207D8-$020883
 cmd22_handler:
 	link.w a6,#$0	; $0207D8
-	lea.l ram_sys_ff02a2.l,a0	; $0207DC
+	lea.l ram_menu_field_02a2.l,a0	; $0207DC
 	move.w (a0),d0	; $0207E2
 	lsr.w #$2,d0	; $0207E4
 	and.w #$1,d0	; $0207E6
@@ -23430,13 +23430,13 @@ L0207EC:
 	unlk a6	; $0207EC
 	rts	; $0207EE
 L0207F0:
-	tst.b ram_sys_ffbb80.l	; $0207F0
+	tst.b ram_sys_field_bb80.l	; $0207F0
 	beq.b L020824	; $0207F6
-	cmpi.b #$17,ram_sys_ffa7f8.l	; $0207F8
+	cmpi.b #$17,ram_menu_field_a7f8.l	; $0207F8
 	beq.b L020824	; $020800
-	cmpi.b #$1,ram_sys_ffa7f8.l	; $020802
+	cmpi.b #$1,ram_menu_field_a7f8.l	; $020802
 	beq.b L020824	; $02080A
-	cmpi.b #$19,ram_sys_ffa7f8.l	; $02080C
+	cmpi.b #$19,ram_menu_field_a7f8.l	; $02080C
 	bne.b L02082E	; $020814
 	lea.l ram_combat_flags.l,a0	; $020816
 	move.w (a0),d0	; $02081C
@@ -23452,29 +23452,29 @@ L02082E:
 	move.w #$e,-(a7)	; $020832
 	jsr sfx_request.l	; $020836
 	addq.w #$4,a7	; $02083C
-	subq.b #$1,ram_sys_ffbb80.l	; $02083E
+	subq.b #$1,ram_sys_field_bb80.l	; $02083E
 	moveq #$0,d0	; $020844
-	move.b ram_sys_ffbb80.l,d0	; $020846
-	lea.l ram_sys_ffbb74.l,a0	; $02084C
-	move.b (a0,d0.l),ram_sys_ffa7f8.l	; $020852
+	move.b ram_sys_field_bb80.l,d0	; $020846
+	lea.l ram_sys_field_bb74.l,a0	; $02084C
+	move.b (a0,d0.l),ram_menu_field_a7f8.l	; $020852
 	moveq #$0,d0	; $02085A
-	move.b ram_sys_ffbb80.l,d0	; $02085C
-	lea.l ram_sys_ffbb7a.l,a0	; $020862
+	move.b ram_sys_field_bb80.l,d0	; $02085C
+	lea.l ram_sys_field_bb7a.l,a0	; $020862
 	move.b (a0,d0.l),ram_shop_stock_byte.l	; $020868
-	move.b #$ff,ram_sys_ffb08a.l	; $020870
-	move.w #$ffff,ram_sys_ff009c.l	; $020878
+	move.b #$ff,ram_sys_field_b08a.l	; $020870
+	move.w #$ffff,ram_sys_field_009c.l	; $020878
 	bra.w L0207EC	; $020880
 	; code $020884-$020A35
 cmd24_handler:
 	link.w a6,#$fffc	; $020884
-	tst.w ram_sys_ff00ac.l	; $020888
+	tst.w ram_menu_field_00ac.l	; $020888
 	beq.b L02089E	; $02088E
 	lea.l ram_combat_flags.l,a0	; $020890
 	move.w (a0),d0	; $020896
 	and.w #$1,d0	; $020898
 	bne.b L0208BE	; $02089C
 L02089E:
-	tst.w ram_sys_ff00ac.l	; $02089E
+	tst.w ram_menu_field_00ac.l	; $02089E
 	beq.b L0208C2	; $0208A4
 	cmpi.w #$17,$8(a6)	; $0208A6
 	beq.b L0208C2	; $0208AC
@@ -23490,7 +23490,7 @@ L0208C2:
 	bne.b L020904	; $0208C8
 	move.w ram_party_leader.l,d0	; $0208CA
 	muls.w #$34,d0	; $0208D0
-	lea.l ram_sys_ff02dd.l,a0	; $0208D4
+	lea.l ram_menu_field_02dd.l,a0	; $0208D4
 	moveq #$0,d1	; $0208DA
 	move.b (a0,d0.l),d1	; $0208DC
 	cmp.w #$ff,d1	; $0208E0
@@ -23504,30 +23504,30 @@ L0208C2:
 	addq.w #$2,a7	; $020900
 	bra.b L0208BE	; $020902
 L020904:
-	movea.l ram_sys_ffbb82.l,a0	; $020904
+	movea.l ram_sys_field_bb82.l,a0	; $020904
 	adda.l #$c,a0	; $02090A
 	move.l a0,-$4(a6)	; $020910
-	clr.b ram_sys_ffbb74.l	; $020914
-	clr.b ram_sys_ffbb7a.l	; $02091A
-	clr.b ram_sys_ffbb6c.l	; $020920
-	clr.b ram_sys_ffbb6d.l	; $020926
-	clr.b ram_sys_ffbb6e.l	; $02092C
-	clr.b ram_sys_ffbb6f.l	; $020932
-	move.b $9(a6),ram_sys_ffa7f8.l	; $020938
+	clr.b ram_sys_field_bb74.l	; $020914
+	clr.b ram_sys_field_bb7a.l	; $02091A
+	clr.b ram_sys_field_bb6c.l	; $020920
+	clr.b ram_sys_field_bb6d.l	; $020926
+	clr.b ram_sys_field_bb6e.l	; $02092C
+	clr.b ram_sys_field_bb6f.l	; $020932
+	move.b $9(a6),ram_menu_field_a7f8.l	; $020938
 	move.b $b(a6),ram_shop_stock_byte.l	; $020940
-	move.b #$1,ram_sys_ffbb80.l	; $020948
-	clr.w ram_sys_ff0138.l	; $020950
-	move.w #$ffff,ram_sys_ff00ac.l	; $020956
+	move.b #$1,ram_sys_field_bb80.l	; $020948
+	clr.w ram_sys_field_0138.l	; $020950
+	move.w #$ffff,ram_menu_field_00ac.l	; $020956
 	cmpi.w #$1,$8(a6)	; $02095E
 	bne.b L0209C0	; $020964
-	move.b #$10,ram_sys_ffbb6c.l	; $020966
+	move.b #$10,ram_sys_field_bb6c.l	; $020966
 	lea.l ram_combat_flags.l,a0	; $02096E
 	move.w (a0),d0	; $020974
 	and.w #$1,d0	; $020976
 	bne.b L0209C0	; $02097A
 	move.w ram_party_leader.l,d0	; $02097C
 	muls.w #$34,d0	; $020982
-	lea.l ram_sys_ff02dd.l,a0	; $020986
+	lea.l ram_menu_field_02dd.l,a0	; $020986
 	moveq #$0,d1	; $02098C
 	move.b (a0,d0.l),d1	; $02098E
 	move.w d1,-(a7)	; $020992
@@ -23538,7 +23538,7 @@ L020904:
 	move.w (a0),d0	; $0209A4
 	and.w #$1,d0	; $0209A6
 	beq.b L0209B4	; $0209AA
-	clr.w ram_sys_ff00ac.l	; $0209AC
+	clr.w ram_menu_field_00ac.l	; $0209AC
 	bra.b L0209C0	; $0209B2
 L0209B4:
 	move.w #$1,-(a7)	; $0209B4
@@ -23547,28 +23547,28 @@ L0209B4:
 L0209C0:
 	cmpi.w #$11,$8(a6)	; $0209C0
 	bne.b L0209D0	; $0209C6
-	move.b #$d,ram_sys_ffbb6f.l	; $0209C8
+	move.b #$d,ram_sys_field_bb6f.l	; $0209C8
 L0209D0:
-	move.b #$ff,ram_sys_ffb08a.l	; $0209D0
-	move.w #$ffff,ram_sys_ff009c.l	; $0209D8
+	move.b #$ff,ram_sys_field_b08a.l	; $0209D0
+	move.w #$ffff,ram_sys_field_009c.l	; $0209D8
 	tst.w $c(a6)	; $0209E0
 	beq.b L020A22	; $0209E4
 	jsr menu_format.l	; $0209E6
-	tst.b ram_sys_ffb08a.l	; $0209EC
+	tst.b ram_sys_field_b08a.l	; $0209EC
 	beq.b L020A08	; $0209F2
-	tst.w ram_sys_ff00ac.l	; $0209F4
+	tst.w ram_menu_field_00ac.l	; $0209F4
 	beq.b L020A02	; $0209FA
 	jsr menu_record_reload(pc)	; $0209FC
 	bra.b L020A08	; $020A00
 L020A02:
 	jsr gfx_fill_panel_plain.l	; $020A02
 L020A08:
-	tst.w ram_sys_ff009c.l	; $020A08
+	tst.w ram_sys_field_009c.l	; $020A08
 	beq.b L020A16	; $020A0E
 	jsr gfx_fill_panel_flagged.l	; $020A10
 L020A16:
-	clr.b ram_sys_ffb08a.l	; $020A16
-	clr.w ram_sys_ff009c.l	; $020A1C
+	clr.b ram_sys_field_b08a.l	; $020A16
+	clr.w ram_sys_field_009c.l	; $020A1C
 L020A22:
 	move.w #$ffff,-(a7)	; $020A22
 	move.w #$1f,-(a7)	; $020A26
@@ -23578,7 +23578,7 @@ L020A22:
 	; code $020A36-$020A87
 cmd25_handler:
 	link.w a6,#$0	; $020A36
-	lea.l ram_sys_ff02a2.l,a0	; $020A3A
+	lea.l ram_menu_field_02a2.l,a0	; $020A3A
 	move.w (a0),d0	; $020A40
 	lsr.w #$2,d0	; $020A42
 	and.w #$1,d0	; $020A44
@@ -23593,14 +23593,14 @@ L020A4E:
 	jsr cmd24_handler(pc)	; $020A58
 	addq.w #$6,a7	; $020A5C
 	moveq #$0,d0	; $020A5E
-	move.b ram_sys_ffa7f8.l,d0	; $020A60
+	move.b ram_menu_field_a7f8.l,d0	; $020A60
 	asl.l #$1,d0	; $020A66
-	lea.l ram_sys_ff01ea.l,a0	; $020A68
+	lea.l ram_sys_field_01ea.l,a0	; $020A68
 	moveq #$0,d1	; $020A6E
 	move.w (a0,d0.l),d1	; $020A70
 	lea.l L0CCDB8.l,a0	; $020A74
 	add.l a0,d1	; $020A7A
-	move.l d1,ram_sys_ffbb82.l	; $020A7C
+	move.l d1,ram_sys_field_bb82.l	; $020A7C
 	jsr verb_exec(pc)	; $020A82
 	bra.b L020A4A	; $020A86
 	; code $020A88-$020BFD
@@ -23617,12 +23617,12 @@ L020AA4:
 	unlk a6	; $020AA4
 	rts	; $020AA6
 L020AA8:
-	move.w ram_sys_ff00ac.l,d0	; $020AA8
+	move.w ram_menu_field_00ac.l,d0	; $020AA8
 	cmp.w $8(a6),d0	; $020AAE
 	beq.b L020AD2	; $020AB2
 	tst.w $8(a6)	; $020AB4
 	bne.b L020AD4	; $020AB8
-	cmpi.b #$19,ram_sys_ffa7f8.l	; $020ABA
+	cmpi.b #$19,ram_menu_field_a7f8.l	; $020ABA
 	bne.b L020AD4	; $020AC2
 	lea.l ram_combat_flags.l,a0	; $020AC4
 	move.w (a0),d0	; $020ACA
@@ -23635,12 +23635,12 @@ L020AD4:
 	bne.b L020AE0	; $020ADA
 	clr.w $8(a6)	; $020ADC
 L020AE0:
-	move.w $8(a6),ram_sys_ff00ac.l	; $020AE0
-	tst.w ram_sys_ff00ac.l	; $020AE8
+	move.w $8(a6),ram_menu_field_00ac.l	; $020AE0
+	tst.w ram_menu_field_00ac.l	; $020AE8
 	bne.b L020B2C	; $020AEE
 	move.w ram_party_leader.l,d0	; $020AF0
 	muls.w #$34,d0	; $020AF6
-	lea.l ram_sys_ff02dd.l,a0	; $020AFA
+	lea.l ram_menu_field_02dd.l,a0	; $020AFA
 	moveq #$0,d1	; $020B00
 	move.b (a0,d0.l),d1	; $020B02
 	cmp.w #$ff,d1	; $020B06
@@ -23654,47 +23654,47 @@ L020AE0:
 	jsr combat_select_unit.l	; $020B24
 	addq.w #$4,a7	; $020B2A
 L020B2C:
-	tst.w ram_sys_ff00ac.l	; $020B2C
+	tst.w ram_menu_field_00ac.l	; $020B2C
 	bne.b L020B62	; $020B32
-	cmpi.w #$9,ram_sys_ff0e7e.l	; $020B34
+	cmpi.w #$9,ram_menu_field_0e7e.l	; $020B34
 	beq.b L020B48	; $020B3C
-	cmpi.w #$f,ram_sys_ff0e7e.l	; $020B3E
+	cmpi.w #$f,ram_menu_field_0e7e.l	; $020B3E
 	bne.b L020B62	; $020B46
 L020B48:
 	jsr npc_location_greet.l	; $020B48
 	move.w #$1,-(a7)	; $020B4E
 	jsr msg_queue_consume.l	; $020B52
 	addq.w #$2,a7	; $020B58
-	move.w #$ffff,ram_sys_ff009a.l	; $020B5A
+	move.w #$ffff,ram_sys_field_009a.l	; $020B5A
 L020B62:
-	clr.b ram_sys_ffbb74.l	; $020B62
-	clr.b ram_sys_ffbb7a.l	; $020B68
-	clr.b ram_sys_ffbb6c.l	; $020B6E
-	clr.b ram_sys_ffbb6d.l	; $020B74
-	clr.b ram_sys_ffbb6e.l	; $020B7A
-	clr.b ram_sys_ffbb6f.l	; $020B80
-	clr.b ram_sys_ffa7f8.l	; $020B86
+	clr.b ram_sys_field_bb74.l	; $020B62
+	clr.b ram_sys_field_bb7a.l	; $020B68
+	clr.b ram_sys_field_bb6c.l	; $020B6E
+	clr.b ram_sys_field_bb6d.l	; $020B74
+	clr.b ram_sys_field_bb6e.l	; $020B7A
+	clr.b ram_sys_field_bb6f.l	; $020B80
+	clr.b ram_menu_field_a7f8.l	; $020B86
 	clr.b ram_shop_stock_byte.l	; $020B8C
-	clr.b ram_sys_ffbb80.l	; $020B92
-	move.b #$ff,ram_sys_ffb08a.l	; $020B98
-	move.w #$ffff,ram_sys_ff009c.l	; $020BA0
+	clr.b ram_sys_field_bb80.l	; $020B92
+	move.b #$ff,ram_sys_field_b08a.l	; $020B98
+	move.w #$ffff,ram_sys_field_009c.l	; $020BA0
 	jsr menu_format.l	; $020BA8
-	tst.b ram_sys_ffb08a.l	; $020BAE
+	tst.b ram_sys_field_b08a.l	; $020BAE
 	beq.b L020BCA	; $020BB4
-	tst.w ram_sys_ff00ac.l	; $020BB6
+	tst.w ram_menu_field_00ac.l	; $020BB6
 	beq.b L020BC4	; $020BBC
 	jsr menu_record_reload(pc)	; $020BBE
 	bra.b L020BCA	; $020BC2
 L020BC4:
 	jsr gfx_fill_panel_plain.l	; $020BC4
 L020BCA:
-	tst.w ram_sys_ff009c.l	; $020BCA
+	tst.w ram_sys_field_009c.l	; $020BCA
 	beq.b L020BD8	; $020BD0
 	jsr gfx_fill_panel_flagged.l	; $020BD2
 L020BD8:
-	clr.b ram_sys_ffb08a.l	; $020BD8
-	clr.w ram_sys_ff009c.l	; $020BDE
-	clr.w ram_sys_ff0138.l	; $020BE4
+	clr.b ram_sys_field_b08a.l	; $020BD8
+	clr.w ram_sys_field_009c.l	; $020BDE
+	clr.w ram_sys_field_0138.l	; $020BE4
 	move.w #$ffff,-(a7)	; $020BEA
 	move.w #$1f,-(a7)	; $020BEE
 	jsr sfx_request.l	; $020BF2
@@ -23757,7 +23757,7 @@ L020C76:
 	move.w -$4(a6),d1	; $020C7E
 	ext.l d1	; $020C82
 	add.l d1,d0	; $020C84
-	lea.l ram_sys_ffb36c.l,a0	; $020C86
+	lea.l ram_sys_field_b36c.l,a0	; $020C86
 	move.b #$ff,(a0,d0.l)	; $020C8C
 	move.w -$2(a6),d0	; $020C92
 	ext.l d0	; $020C96
@@ -23765,7 +23765,7 @@ L020C76:
 	move.w -$4(a6),d1	; $020C9A
 	ext.l d1	; $020C9E
 	add.l d1,d0	; $020CA0
-	lea.l ram_sys_ffb76c.l,a0	; $020CA2
+	lea.l ram_sys_field_b76c.l,a0	; $020CA2
 	move.b #$ff,(a0,d0.l)	; $020CA8
 	addq.w #$1,-$4(a6)	; $020CAE
 	cmpi.w #$20,-$4(a6)	; $020CB2
@@ -23782,7 +23782,7 @@ sys_record12_scan_20cca:
 L020CD2:
 	move.w -$2(a6),d0	; $020CD2
 	muls.w #$c,d0	; $020CD6
-	lea.l ram_sys_ffb0cc.l,a0	; $020CDA
+	lea.l ram_sys_field_b0cc.l,a0	; $020CDA
 	move.w #$270f,(a0,d0.l)	; $020CE0
 	addq.w #$1,-$2(a6)	; $020CE6
 	cmpi.w #$38,-$2(a6)	; $020CEA
@@ -23792,7 +23792,7 @@ L020CD2:
 	; code $020CF6-$020D09
 shop_merchant_clear_all:
 	link.w a6,#$0	; $020CF6
-	clr.w ram_sys_ff0096.l	; $020CFA
+	clr.w ram_sys_field_0096.l	; $020CFA
 	jsr table_fill_ff(pc)	; $020D00
 	bsr.b sys_record12_scan_20cca	; $020D04
 	unlk a6	; $020D06
@@ -23804,12 +23804,12 @@ sys_record12_scan:
 L020D12:
 	move.w -$2(a6),d0	; $020D12
 	muls.w #$c,d0	; $020D16
-	lea.l ram_sys_ffb0cc.l,a0	; $020D1A
+	lea.l ram_sys_field_b0cc.l,a0	; $020D1A
 	cmpi.w #$270f,(a0,d0.l)	; $020D20
 	beq.b L020D48	; $020D26
 	move.w -$2(a6),d0	; $020D28
 	muls.w #$c,d0	; $020D2C
-	lea.l ram_sys_ffb0d2.l,a0	; $020D30
+	lea.l ram_sys_field_b0d2.l,a0	; $020D30
 	cmpi.w #$1,(a0,d0.l)	; $020D36
 	beq.b L020D48	; $020D3C
 	move.w -$2(a6),-(a7)	; $020D3E
@@ -23824,16 +23824,16 @@ L020D48:
 	; code $020D58-$020D9D
 map_scroll_offset:
 	link.w a6,#$0	; $020D58
-	movea.l ram_sys_ffa7fc.l,a0	; $020D5C
+	movea.l ram_sys_field_a7fc.l,a0	; $020D5C
 	tst.w $c(a0)	; $020D62
 	beq.b L020D8C	; $020D66
 	movea.l $8(a6),a0	; $020D68
-	move.w ram_sys_ff0e8e.l,d0	; $020D6C
+	move.w ram_sys_field_0e8e.l,d0	; $020D6C
 	subq.w #$6,d0	; $020D72
 	neg.w d0	; $020D74
 	move.w d0,(a0)	; $020D76
 	movea.l $8(a6),a0	; $020D78
-	move.w ram_sys_ff0e90.l,d0	; $020D7C
+	move.w ram_world_field_0e90.l,d0	; $020D7C
 	subq.w #$6,d0	; $020D82
 	neg.w d0	; $020D84
 	move.w d0,$2(a0)	; $020D86
@@ -23852,16 +23852,16 @@ map_scroll_adjust:
 	movem.l d4-d6,-(a7)	; $020DA2
 	moveq #$0,d5	; $020DA6
 	moveq #$0,d6	; $020DA8
-	movea.l ram_sys_ffa7fc.l,a0	; $020DAA
+	movea.l ram_sys_field_a7fc.l,a0	; $020DAA
 	tst.w $c(a0)	; $020DB0
 	beq.b L020DDA	; $020DB4
 	movea.l $8(a6),a0	; $020DB6
-	move.w ram_sys_ff0e8e.l,d0	; $020DBA
+	move.w ram_sys_field_0e8e.l,d0	; $020DBA
 	subq.w #$6,d0	; $020DC0
 	neg.w d0	; $020DC2
 	move.w d0,(a0)	; $020DC4
 	movea.l $8(a6),a0	; $020DC6
-	move.w ram_sys_ff0e90.l,d0	; $020DCA
+	move.w ram_world_field_0e90.l,d0	; $020DCA
 	subq.w #$6,d0	; $020DD0
 	neg.w d0	; $020DD2
 	move.w d0,$2(a0)	; $020DD4
@@ -23872,15 +23872,15 @@ L020DDA:
 	movea.l $8(a6),a0	; $020DE0
 	clr.w $2(a0)	; $020DE4
 L020DE8:
-	cmpi.w #$c,ram_sys_ff0e8e.l	; $020DE8
+	cmpi.w #$c,ram_sys_field_0e8e.l	; $020DE8
 	bge.b L020DF6	; $020DF0
 	moveq #$1,d5	; $020DF2
 	moveq #$0,d4	; $020DF4
 L020DF6:
-	movea.l ram_sys_ffa7fc.l,a0	; $020DF6
+	movea.l ram_sys_field_a7fc.l,a0	; $020DF6
 	move.w (a0),d0	; $020DFC
 	sub.w #$c,d0	; $020DFE
-	move.w ram_sys_ff0e8e.l,d1	; $020E02
+	move.w ram_sys_field_0e8e.l,d1	; $020E02
 	cmp.w d0,d1	; $020E08
 	ble.b L020E10	; $020E0A
 	moveq #$1,d5	; $020E0C
@@ -23888,28 +23888,28 @@ L020DF6:
 L020E10:
 	tst.w d5	; $020E10
 	beq.b L020E5E	; $020E12
-	movea.l ram_sys_ffa7fc.l,a0	; $020E14
+	movea.l ram_sys_field_a7fc.l,a0	; $020E14
 	tst.w $c(a0)	; $020E1A
 	beq.b L020E5E	; $020E1E
 	tst.w d4	; $020E20
 	bne.b L020E40	; $020E22
-	move.w ram_sys_ff0e8e.l,d0	; $020E24
+	move.w ram_sys_field_0e8e.l,d0	; $020E24
 	add.w #$c,d0	; $020E2A
 	move.w $c(a6),d1	; $020E2E
 	cmp.w d0,d1	; $020E32
 	ble.b L020E40	; $020E34
-	movea.l ram_sys_ffa7fc.l,a0	; $020E36
+	movea.l ram_sys_field_a7fc.l,a0	; $020E36
 	move.w (a0),d6	; $020E3C
 	neg.w d6	; $020E3E
 L020E40:
 	tst.w d4	; $020E40
 	beq.b L020E5E	; $020E42
-	move.w ram_sys_ff0e8e.l,d0	; $020E44
+	move.w ram_sys_field_0e8e.l,d0	; $020E44
 	sub.w #$c,d0	; $020E4A
 	move.w $c(a6),d1	; $020E4E
 	cmp.w d0,d1	; $020E52
 	bge.b L020E5E	; $020E54
-	movea.l ram_sys_ffa7fc.l,a0	; $020E56
+	movea.l ram_sys_field_a7fc.l,a0	; $020E56
 	move.w (a0),d6	; $020E5C
 L020E5E:
 	movea.l $8(a6),a0	; $020E5E
@@ -23935,48 +23935,48 @@ L020E96:
 	move.w $8(a6),d0	; $020E96
 L020E9A:
 	move.w d0,-$6(a6)	; $020E9A
-	movea.l ram_sys_ffa7fc.l,a0	; $020E9E
+	movea.l ram_sys_field_a7fc.l,a0	; $020E9E
 	move.w (a0),d0	; $020EA4
 	add.w $e(a6),d0	; $020EA6
-	movea.l ram_sys_ffa7fc.l,a0	; $020EAA
+	movea.l ram_sys_field_a7fc.l,a0	; $020EAA
 	ext.l d0	; $020EB0
 	divs.w (a0),d0	; $020EB2
 	swap d0	; $020EB4
 	ext.l d0	; $020EB6
 	asl.l #$5,d0	; $020EB8
-	movea.l ram_sys_ffa7fc.l,a0	; $020EBA
+	movea.l ram_sys_field_a7fc.l,a0	; $020EBA
 	move.w $2(a0),d1	; $020EC0
 	add.w $10(a6),d1	; $020EC4
-	movea.l ram_sys_ffa7fc.l,a0	; $020EC8
+	movea.l ram_sys_field_a7fc.l,a0	; $020EC8
 	ext.l d1	; $020ECE
 	divs.w $2(a0),d1	; $020ED0
 	swap d1	; $020ED4
 	ext.l d1	; $020ED6
 	add.l d1,d0	; $020ED8
-	lea.l ram_sys_ffb36c.l,a0	; $020EDA
+	lea.l ram_sys_field_b36c.l,a0	; $020EDA
 	moveq #$0,d1	; $020EE0
 	move.b (a0,d0.l),d1	; $020EE2
 	cmp.w #$ff,d1	; $020EE6
 	beq.b L020F3C	; $020EEA
-	movea.l ram_sys_ffa7fc.l,a0	; $020EEC
+	movea.l ram_sys_field_a7fc.l,a0	; $020EEC
 	move.w (a0),d0	; $020EF2
 	add.w $e(a6),d0	; $020EF4
-	movea.l ram_sys_ffa7fc.l,a0	; $020EF8
+	movea.l ram_sys_field_a7fc.l,a0	; $020EF8
 	ext.l d0	; $020EFE
 	divs.w (a0),d0	; $020F00
 	swap d0	; $020F02
 	ext.l d0	; $020F04
 	asl.l #$5,d0	; $020F06
-	movea.l ram_sys_ffa7fc.l,a0	; $020F08
+	movea.l ram_sys_field_a7fc.l,a0	; $020F08
 	move.w $2(a0),d1	; $020F0E
 	add.w $10(a6),d1	; $020F12
-	movea.l ram_sys_ffa7fc.l,a0	; $020F16
+	movea.l ram_sys_field_a7fc.l,a0	; $020F16
 	ext.l d1	; $020F1C
 	divs.w $2(a0),d1	; $020F1E
 	swap d1	; $020F22
 	ext.l d1	; $020F24
 	add.l d1,d0	; $020F26
-	lea.l ram_sys_ffb76c.l,a0	; $020F28
+	lea.l ram_sys_field_b76c.l,a0	; $020F28
 	moveq #$0,d1	; $020F2E
 	move.b (a0,d0.l),d1	; $020F30
 	cmp.w #$ff,d1	; $020F34
@@ -23986,7 +23986,7 @@ L020F3C:
 L020F40:
 	move.w -$4(a6),d0	; $020F40
 	muls.w #$c,d0	; $020F44
-	lea.l ram_sys_ffb0cc.l,a0	; $020F48
+	lea.l ram_sys_field_b0cc.l,a0	; $020F48
 	cmpi.w #$270f,(a0,d0.l)	; $020F4E
 	bne.b L020F5E	; $020F54
 	move.w -$4(a6),-$2(a6)	; $020F56
@@ -24017,30 +24017,30 @@ L020F98:
 	jsr map_grid_set_cell_1(pc)	; $020FA4
 	addq.w #$6,a7	; $020FA8
 L020FAA:
-	addq.w #$1,ram_sys_ff0096.l	; $020FAA
+	addq.w #$1,ram_sys_field_0096.l	; $020FAA
 	move.w -$2(a6),d0	; $020FB0
 	muls.w #$c,d0	; $020FB4
-	lea.l ram_sys_ffb0cc.l,a0	; $020FB8
+	lea.l ram_sys_field_b0cc.l,a0	; $020FB8
 	move.w -$6(a6),(a0,d0.l)	; $020FBE
 	move.w -$2(a6),d0	; $020FC4
 	muls.w #$c,d0	; $020FC8
-	lea.l ram_sys_ffb0d0.l,a0	; $020FCC
+	lea.l ram_sys_field_b0d0.l,a0	; $020FCC
 	move.w $a(a6),(a0,d0.l)	; $020FD2
 	move.w -$2(a6),d0	; $020FD8
 	muls.w #$c,d0	; $020FDC
-	lea.l ram_sys_ffb0ce.l,a0	; $020FE0
+	lea.l ram_sys_field_b0ce.l,a0	; $020FE0
 	move.w $c(a6),(a0,d0.l)	; $020FE6
 	move.w -$2(a6),d0	; $020FEC
 	muls.w #$c,d0	; $020FF0
-	lea.l ram_sys_ffb0d6.l,a0	; $020FF4
+	lea.l ram_sys_field_b0d6.l,a0	; $020FF4
 	move.w $14(a6),(a0,d0.l)	; $020FFA
 	move.w -$2(a6),d0	; $021000
 	muls.w #$c,d0	; $021004
-	lea.l ram_sys_ffb0d2.l,a0	; $021008
+	lea.l ram_sys_field_b0d2.l,a0	; $021008
 	move.w $12(a6),(a0,d0.l)	; $02100E
 	move.w -$2(a6),d0	; $021014
 	muls.w #$c,d0	; $021018
-	lea.l ram_sys_ffb0d4.l,a0	; $02101C
+	lea.l ram_sys_field_b0d4.l,a0	; $02101C
 	clr.w (a0,d0.l)	; $021022
 	move.w -$2(a6),d0	; $021026
 L02102A:
@@ -24066,7 +24066,7 @@ L02104A:
 	moveq #$0,d1	; $021050
 	move.w d5,d1	; $021052
 	add.l d1,d0	; $021054
-	lea.l ram_sys_ffb36c.l,a0	; $021056
+	lea.l ram_sys_field_b36c.l,a0	; $021056
 	moveq #$0,d1	; $02105C
 	move.b (a0,d0.l),d1	; $02105E
 	cmp.w $8(a6),d1	; $021062
@@ -24089,7 +24089,7 @@ L021088:
 	moveq #$0,d1	; $02108E
 	move.w d5,d1	; $021090
 	add.l d1,d0	; $021092
-	lea.l ram_sys_ffb76c.l,a0	; $021094
+	lea.l ram_sys_field_b76c.l,a0	; $021094
 	moveq #$0,d1	; $02109A
 	move.b (a0,d0.l),d1	; $02109C
 	cmp.w $8(a6),d1	; $0210A0
@@ -24116,7 +24116,7 @@ map_record_remove:
 	link.w a6,#$fff8	; $0210D8
 	move.w $8(a6),d0	; $0210DC
 	muls.w #$c,d0	; $0210E0
-	lea.l ram_sys_ffb0cc.l,a0	; $0210E4
+	lea.l ram_sys_field_b0cc.l,a0	; $0210E4
 	cmpi.w #$270f,(a0,d0.l)	; $0210EA
 	bne.b L0210FE	; $0210F0
 	move.w #$e7,-(a7)	; $0210F2
@@ -24136,34 +24136,34 @@ L0210FE:
 L021122:
 	move.w $8(a6),d0	; $021122
 	muls.w #$c,d0	; $021126
-	lea.l ram_sys_ffb0cc.l,a0	; $02112A
+	lea.l ram_sys_field_b0cc.l,a0	; $02112A
 	move.w #$270f,(a0,d0.l)	; $021130
 	move.w -$4(a6),d0	; $021136
 	ext.l d0	; $02113A
 	moveq #$a,d1	; $02113C
 	asl.l d1,d0	; $02113E
-	movea.l ram_sys_ffa7fc.l,a0	; $021140
+	movea.l ram_sys_field_a7fc.l,a0	; $021140
 	move.w (a0),d1	; $021146
 	add.w -$8(a6),d1	; $021148
-	movea.l ram_sys_ffa7fc.l,a0	; $02114C
+	movea.l ram_sys_field_a7fc.l,a0	; $02114C
 	ext.l d1	; $021152
 	divs.w (a0),d1	; $021154
 	swap d1	; $021156
 	ext.l d1	; $021158
 	asl.l #$5,d1	; $02115A
 	add.l d1,d0	; $02115C
-	movea.l ram_sys_ffa7fc.l,a0	; $02115E
+	movea.l ram_sys_field_a7fc.l,a0	; $02115E
 	move.w $2(a0),d1	; $021164
 	add.w -$6(a6),d1	; $021168
-	movea.l ram_sys_ffa7fc.l,a0	; $02116C
+	movea.l ram_sys_field_a7fc.l,a0	; $02116C
 	ext.l d1	; $021172
 	divs.w $2(a0),d1	; $021174
 	swap d1	; $021178
 	ext.l d1	; $02117A
 	add.l d1,d0	; $02117C
-	lea.l ram_sys_ffb36c.l,a0	; $02117E
+	lea.l ram_sys_field_b36c.l,a0	; $02117E
 	move.b #$ff,(a0,d0.l)	; $021184
-	subq.w #$1,ram_sys_ff0096.l	; $02118A
+	subq.w #$1,ram_sys_field_0096.l	; $02118A
 	unlk a6	; $021190
 	rts	; $021192
 	; code $021194-$0212FB
@@ -24180,7 +24180,7 @@ L0211AE:
 L0211B2:
 	move.w $8(a6),d0	; $0211B2
 	muls.w #$c,d0	; $0211B6
-	lea.l ram_sys_ffb0cc.l,a0	; $0211BA
+	lea.l ram_sys_field_b0cc.l,a0	; $0211BA
 	cmpi.w #$270f,(a0,d0.l)	; $0211C0
 	bne.b L0211D4	; $0211C6
 	move.w #$e8,-(a7)	; $0211C8
@@ -24232,28 +24232,28 @@ L02124E:
 	ext.l d0	; $021252
 	moveq #$a,d1	; $021254
 	asl.l d1,d0	; $021256
-	movea.l ram_sys_ffa7fc.l,a0	; $021258
+	movea.l ram_sys_field_a7fc.l,a0	; $021258
 	move.w (a0),d1	; $02125E
 	add.w -$6(a6),d1	; $021260
-	movea.l ram_sys_ffa7fc.l,a0	; $021264
+	movea.l ram_sys_field_a7fc.l,a0	; $021264
 	ext.l d1	; $02126A
 	divs.w (a0),d1	; $02126C
 	swap d1	; $02126E
 	ext.l d1	; $021270
 	asl.l #$5,d1	; $021272
 	add.l d1,d0	; $021274
-	movea.l ram_sys_ffa7fc.l,a0	; $021276
+	movea.l ram_sys_field_a7fc.l,a0	; $021276
 	move.w $2(a0),d1	; $02127C
 	add.w -$4(a6),d1	; $021280
-	movea.l ram_sys_ffa7fc.l,a0	; $021284
+	movea.l ram_sys_field_a7fc.l,a0	; $021284
 	ext.l d1	; $02128A
 	divs.w $2(a0),d1	; $02128C
 	swap d1	; $021290
 	ext.l d1	; $021292
 	add.l d1,d0	; $021294
-	lea.l ram_sys_ffb36c.l,a0	; $021296
+	lea.l ram_sys_field_b36c.l,a0	; $021296
 	move.b #$ff,(a0,d0.l)	; $02129C
-	movea.l ram_sys_ffa7fc.l,a0	; $0212A2
+	movea.l ram_sys_field_a7fc.l,a0	; $0212A2
 	tst.w $c(a0)	; $0212A8
 	beq.b L0212F8	; $0212AC
 	cmpi.w #$1,-$c(a6)	; $0212AE
@@ -24287,7 +24287,7 @@ map_place_record:
 	movem.l d4-d5,-(a7)	; $021300
 	move.w $8(a6),d0	; $021304
 	muls.w #$c,d0	; $021308
-	lea.l ram_sys_ffb0cc.l,a0	; $02130C
+	lea.l ram_sys_field_b0cc.l,a0	; $02130C
 	cmpi.w #$270f,(a0,d0.l)	; $021312
 	bne.b L021326	; $021318
 	move.w #$ea,-(a7)	; $02131A
@@ -24314,28 +24314,28 @@ L021346:
 	ext.l d0	; $02135C
 	moveq #$a,d1	; $02135E
 	asl.l d1,d0	; $021360
-	movea.l ram_sys_ffa7fc.l,a0	; $021362
+	movea.l ram_sys_field_a7fc.l,a0	; $021362
 	move.w (a0),d1	; $021368
 	add.w -$6(a6),d1	; $02136A
-	movea.l ram_sys_ffa7fc.l,a0	; $02136E
+	movea.l ram_sys_field_a7fc.l,a0	; $02136E
 	ext.l d1	; $021374
 	divs.w (a0),d1	; $021376
 	swap d1	; $021378
 	ext.l d1	; $02137A
 	asl.l #$5,d1	; $02137C
 	add.l d1,d0	; $02137E
-	movea.l ram_sys_ffa7fc.l,a0	; $021380
+	movea.l ram_sys_field_a7fc.l,a0	; $021380
 	move.w $2(a0),d1	; $021386
 	add.w -$4(a6),d1	; $02138A
-	movea.l ram_sys_ffa7fc.l,a0	; $02138E
+	movea.l ram_sys_field_a7fc.l,a0	; $02138E
 	ext.l d1	; $021394
 	divs.w $2(a0),d1	; $021396
 	swap d1	; $02139A
 	ext.l d1	; $02139C
 	add.l d1,d0	; $02139E
-	lea.l ram_sys_ffb36c.l,a0	; $0213A0
+	lea.l ram_sys_field_b36c.l,a0	; $0213A0
 	move.b #$ff,(a0,d0.l)	; $0213A6
-	movea.l ram_sys_ffa7fc.l,a0	; $0213AC
+	movea.l ram_sys_field_a7fc.l,a0	; $0213AC
 	tst.w $c(a0)	; $0213B2
 	beq.b L021402	; $0213B6
 	cmpi.w #$1,$a(a6)	; $0213B8
@@ -24370,7 +24370,7 @@ combat_effect_apply:
 	link.w a6,#$0	; $02140A
 	move.w $8(a6),d0	; $02140E
 	muls.w #$c,d0	; $021412
-	lea.l ram_sys_ffb0cc.l,a0	; $021416
+	lea.l ram_sys_field_b0cc.l,a0	; $021416
 	cmpi.w #$270f,(a0,d0.l)	; $02141C
 	bne.b L021430	; $021422
 	move.w #$e9,-(a7)	; $021424
@@ -24381,14 +24381,14 @@ L021430:
 	beq.b L02144C	; $021436
 	move.w $8(a6),d0	; $021438
 	muls.w #$c,d0	; $02143C
-	lea.l ram_sys_ffb0cc.l,a0	; $021440
+	lea.l ram_sys_field_b0cc.l,a0	; $021440
 	move.w $c(a6),(a0,d0.l)	; $021446
 L02144C:
 	cmpi.w #$ffff,$e(a6)	; $02144C
 	beq.b L021468	; $021452
 	move.w $8(a6),d0	; $021454
 	muls.w #$c,d0	; $021458
-	lea.l ram_sys_ffb0ce.l,a0	; $02145C
+	lea.l ram_sys_field_b0ce.l,a0	; $02145C
 	move.w $e(a6),(a0,d0.l)	; $021462
 L021468:
 	cmpi.w #$ffff,$10(a6)	; $021468
@@ -24397,7 +24397,7 @@ L021468:
 	bne.b L021498	; $021474
 	move.w $8(a6),d0	; $021476
 	muls.w #$c,d0	; $02147A
-	lea.l ram_sys_ffb0d0.l,a0	; $02147E
+	lea.l ram_sys_field_b0d0.l,a0	; $02147E
 	cmpi.w #$24,(a0,d0.l)	; $021484
 	blt.b L021498	; $02148A
 	move.w #$3c,-(a7)	; $02148C
@@ -24406,21 +24406,21 @@ L021468:
 L021498:
 	move.w $8(a6),d0	; $021498
 	muls.w #$c,d0	; $02149C
-	lea.l ram_sys_ffb0d0.l,a0	; $0214A0
+	lea.l ram_sys_field_b0d0.l,a0	; $0214A0
 	move.w $10(a6),(a0,d0.l)	; $0214A6
 L0214AC:
 	cmpi.w #$ffff,$12(a6)	; $0214AC
 	beq.b L0214C8	; $0214B2
 	move.w $8(a6),d0	; $0214B4
 	muls.w #$c,d0	; $0214B8
-	lea.l ram_sys_ffb0d2.l,a0	; $0214BC
+	lea.l ram_sys_field_b0d2.l,a0	; $0214BC
 	move.w $12(a6),(a0,d0.l)	; $0214C2
 L0214C8:
 	cmpi.w #$ffff,$14(a6)	; $0214C8
 	beq.b L0214E4	; $0214CE
 	move.w $8(a6),d0	; $0214D0
 	muls.w #$c,d0	; $0214D4
-	lea.l ram_sys_ffb0d6.l,a0	; $0214D8
+	lea.l ram_sys_field_b0d6.l,a0	; $0214D8
 	move.w $14(a6),(a0,d0.l)	; $0214DE
 L0214E4:
 	unlk a6	; $0214E4
@@ -24487,39 +24487,39 @@ L02155C:
 world_tick:
 	link.w a6,#$fff4	; $02155E
 	movem.l d4-d7/a3-a4,-(a7)	; $021562
-	movea.l ram_sys_ffa7fc.l,a0	; $021566
-	movea.l ram_sys_ffa7fc.l,a1	; $02156C
+	movea.l ram_sys_field_a7fc.l,a0	; $021566
+	movea.l ram_sys_field_a7fc.l,a1	; $02156C
 	move.w $a(a1),d0	; $021572
 	addq.w #$1,d0	; $021576
 	ext.l d0	; $021578
 	divs.w #$4,d0	; $02157A
 	swap d0	; $02157E
 	move.w d0,$a(a0)	; $021580
-	move.w ram_sys_ff0092.l,d0	; $021584
+	move.w ram_world_field_0092.l,d0	; $021584
 	addq.w #$1,d0	; $02158A
 	ext.l d0	; $02158C
 	divs.w #$2,d0	; $02158E
 	swap d0	; $021592
-	move.w d0,ram_sys_ff0092.l	; $021594
-	movea.l ram_sys_ffa7fc.l,a0	; $02159A
-	movea.l ram_sys_ffa7fc.l,a1	; $0215A0
+	move.w d0,ram_world_field_0092.l	; $021594
+	movea.l ram_sys_field_a7fc.l,a0	; $02159A
+	movea.l ram_sys_field_a7fc.l,a1	; $0215A0
 	move.w $a(a0),d0	; $0215A6
 	ext.l d0	; $0215AA
 	divs.w $8(a1),d0	; $0215AC
 	swap d0	; $0215B0
-	move.w d0,ram_sys_ff0094.l	; $0215B2
-	move.w ram_sys_ff0e16.l,d0	; $0215B8
+	move.w d0,ram_world_field_0094.l	; $0215B2
+	move.w ram_world_field_0e16.l,d0	; $0215B8
 	addq.w #$1,d0	; $0215BE
 	ext.l d0	; $0215C0
 	divs.w #$960,d0	; $0215C2
 	swap d0	; $0215C6
-	move.w d0,ram_sys_ff0e16.l	; $0215C8
-	move.w ram_sys_ff0e16.l,d4	; $0215CE
+	move.w d0,ram_world_field_0e16.l	; $0215C8
+	move.w ram_world_field_0e16.l,d4	; $0215CE
 	ext.l d4	; $0215D4
 	divs.w #$12,d4	; $0215D6
-	tst.w ram_sys_ff0124.l	; $0215DA
+	tst.w ram_world_field_0124.l	; $0215DA
 	bne.b L0215F6	; $0215E0
-	cmpi.w #$2,ram_sys_ff0126.l	; $0215E2
+	cmpi.w #$2,ram_world_field_0126.l	; $0215E2
 	bne.b L0215FC	; $0215EA
 	tst.w d4	; $0215EC
 	beq.b L0215F6	; $0215EE
@@ -24528,33 +24528,33 @@ world_tick:
 L0215F6:
 	jsr palette_fade.l	; $0215F6
 L0215FC:
-	move.w ram_sys_ff0e16.l,d0	; $0215FC
+	move.w ram_world_field_0e16.l,d0	; $0215FC
 	and.w #$7,d0	; $021602
 	bne.b L021620	; $021606
 	jsr snd_is_song_playing.l	; $021608
 	tst.w d0	; $02160E
 	bne.b L021620	; $021610
-	move.w ram_sys_ff012e.l,-(a7)	; $021612
+	move.w ram_world_field_012e.l,-(a7)	; $021612
 	jsr song_play_direct.l	; $021618
 	addq.w #$2,a7	; $02161E
 L021620:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $021620
+	cmpi.w #$1,ram_menu_field_00ae.l	; $021620
 	bne.w L021FDE	; $021628
-	move.w ram_sys_ff0144.l,d0	; $02162C
+	move.w ram_world_field_0144.l,d0	; $02162C
 	addq.w #$1,d0	; $021632
 	ext.l d0	; $021634
 	divs.w #$c8,d0	; $021636
 	swap d0	; $02163A
-	move.w d0,ram_sys_ff0144.l	; $02163C
+	move.w d0,ram_world_field_0144.l	; $02163C
 	move.w ram_party_leader.l,d0	; $021642
 	muls.w #$34,d0	; $021648
-	lea.l ram_sys_ff02ba.l,a0	; $02164C
+	lea.l ram_menu_field_02ba.l,a0	; $02164C
 	move.l d0,d1	; $021652
 	moveq #$0,d0	; $021654
 	move.w (a0,d1.l),d0	; $021656
 	bra.b L021676	; $02165A
 L02165C:
-	tst.w ram_sys_ff0092.l	; $02165C
+	tst.w ram_world_field_0092.l	; $02165C
 	beq.b L021674	; $021662
 	move.w #$ffff,-(a7)	; $021664
 	move.w #$24,-(a7)	; $021668
@@ -24566,23 +24566,23 @@ L021676:
 	subq.l #$4,d0	; $021676
 	beq.b L02165C	; $021678
 L02167A:
-	tst.w ram_sys_ff0114.l	; $02167A
+	tst.w ram_world_field_0114.l	; $02167A
 	beq.b L02169C	; $021680
-	move.w ram_sys_ff0144.l,d0	; $021682
+	move.w ram_world_field_0144.l,d0	; $021682
 	ext.l d0	; $021688
 	divs.w #$a,d0	; $02168A
 	swap d0	; $02168E
 	tst.w d0	; $021690
 	bne.b L02169C	; $021692
-	move.w #$ffff,ram_sys_ff009a.l	; $021694
+	move.w #$ffff,ram_sys_field_009a.l	; $021694
 L02169C:
-	move.w ram_sys_ff0144.l,d0	; $02169C
+	move.w ram_world_field_0144.l,d0	; $02169C
 	ext.l d0	; $0216A2
 	divs.w #$32,d0	; $0216A4
 	swap d0	; $0216A8
 	tst.w d0	; $0216AA
 	bne.w L021FDE	; $0216AC
-	tst.w ram_sys_ff0144.l	; $0216B0
+	tst.w ram_world_field_0144.l	; $0216B0
 	bne.b L021712	; $0216B6
 	moveq #$0,d4	; $0216B8
 L0216BA:
@@ -24595,7 +24595,7 @@ L0216BA:
 	bne.b L02170A	; $0216D2
 	move.w d4,d0	; $0216D4
 	muls.w #$34,d0	; $0216D6
-	lea.l ram_sys_ff02b8.l,a0	; $0216DA
+	lea.l ram_world_field_02b8.l,a0	; $0216DA
 	cmpi.w #$ff,(a0,d0.l)	; $0216E0
 	bne.b L02170A	; $0216E6
 	move.w d4,d0	; $0216E8
@@ -24614,20 +24614,20 @@ L02170A:
 	blt.b L0216BA	; $021710
 L021712:
 	moveq #$5,d7	; $021712
-	cmpi.w #$1f4,ram_sys_ffc364.l	; $021714
+	cmpi.w #$1f4,ram_world_field_c364.l	; $021714
 	ble.b L02172A	; $02171C
-	cmpi.w #$1f4,ram_sys_ffc366.l	; $02171E
+	cmpi.w #$1f4,ram_world_field_c366.l	; $02171E
 	bgt.w L021850	; $021726
 L02172A:
-	tst.w ram_sys_ff00ac.l	; $02172A
+	tst.w ram_menu_field_00ac.l	; $02172A
 	bne.w L021850	; $021730
-	tst.w ram_sys_ff0112.l	; $021734
+	tst.w ram_menu_field_0112.l	; $021734
 	bne.w L021850	; $02173A
-	tst.w ram_sys_ff0128.l	; $02173E
+	tst.w ram_world_field_0128.l	; $02173E
 	bne.w L021850	; $021744
-	cmpi.w #$1,ram_sys_ffc364.l	; $021748
+	cmpi.w #$1,ram_world_field_c364.l	; $021748
 	ble.b L02175E	; $021750
-	cmpi.w #$1,ram_sys_ffc366.l	; $021752
+	cmpi.w #$1,ram_world_field_c366.l	; $021752
 	bgt.w L021830	; $02175A
 L02175E:
 	move.w #$2,-(a7)	; $02175E
@@ -24639,10 +24639,10 @@ L02175E:
 	clr.w -(a7)	; $021776
 	jsr pal_load_set.l	; $021778
 	addq.w #$6,a7	; $02177E
-	move.w #$ffff,ram_sys_ff0124.l	; $021780
+	move.w #$ffff,ram_world_field_0124.l	; $021780
 	move.w ram_party_leader.l,d0	; $021788
 	muls.w #$34,d0	; $02178E
-	lea.l ram_sys_ff02ba.l,a0	; $021792
+	lea.l ram_menu_field_02ba.l,a0	; $021792
 	cmpi.w #$1,(a0,d0.l)	; $021798
 	bne.w L02182E	; $02179E
 	move.w #$4,-(a7)	; $0217A2
@@ -24691,9 +24691,9 @@ L021840:
 	jsr sfx_request.l	; $021848
 	addq.w #$4,a7	; $02184E
 L021850:
-	tst.w ram_sys_ff00ac.l	; $021850
+	tst.w ram_menu_field_00ac.l	; $021850
 	bne.w L0219C2	; $021856
-	tst.w ram_sys_ff0112.l	; $02185A
+	tst.w ram_menu_field_0112.l	; $02185A
 	bne.w L0219C2	; $021860
 	moveq #$0,d4	; $021864
 L021866:
@@ -24706,31 +24706,31 @@ L021866:
 	beq.w L0219B8	; $021878
 	move.w d5,d0	; $02187C
 	muls.w #$34,d0	; $02187E
-	lea.l ram_sys_ff02e0.l,a0	; $021882
+	lea.l ram_world_field_02e0.l,a0	; $021882
 	move.w (a0,d0.l),d1	; $021888
 	rol.w #$3,d1	; $02188C
 	and.w #$1,d1	; $02188E
 	bne.w L0219B8	; $021892
 	move.w d5,d0	; $021896
 	muls.w #$34,d0	; $021898
-	lea.l ram_sys_ff02d0.l,a0	; $02189C
+	lea.l ram_world_field_02d0.l,a0	; $02189C
 	move.w (a0,d0.l),d1	; $0218A2
 	add.w d7,d1	; $0218A6
 	move.w d5,d0	; $0218A8
 	muls.w #$34,d0	; $0218AA
-	lea.l ram_sys_ff02d4.l,a0	; $0218AE
+	lea.l ram_world_field_02d4.l,a0	; $0218AE
 	cmp.w (a0,d0.l),d1	; $0218B4
 	ble.b L0218CE	; $0218B8
 	move.w d5,d0	; $0218BA
 	muls.w #$34,d0	; $0218BC
-	lea.l ram_sys_ff02d4.l,a0	; $0218C0
+	lea.l ram_world_field_02d4.l,a0	; $0218C0
 	move.l d0,d1	; $0218C6
 	move.w (a0,d1.l),d0	; $0218C8
 	bra.b L0218FC	; $0218CC
 L0218CE:
 	move.w d5,d0	; $0218CE
 	muls.w #$34,d0	; $0218D0
-	lea.l ram_sys_ff02d0.l,a0	; $0218D4
+	lea.l ram_world_field_02d0.l,a0	; $0218D4
 	move.w (a0,d0.l),d1	; $0218DA
 	add.w d7,d1	; $0218DE
 	tst.w d1	; $0218E0
@@ -24740,18 +24740,18 @@ L0218CE:
 L0218E8:
 	move.w d5,d0	; $0218E8
 	muls.w #$34,d0	; $0218EA
-	lea.l ram_sys_ff02d0.l,a0	; $0218EE
+	lea.l ram_world_field_02d0.l,a0	; $0218EE
 	move.l d0,d1	; $0218F4
 	move.w (a0,d1.l),d0	; $0218F6
 	add.w d7,d0	; $0218FA
 L0218FC:
 	move.w d5,d1	; $0218FC
 	muls.w #$34,d1	; $0218FE
-	lea.l ram_sys_ff02d0.l,a0	; $021902
+	lea.l ram_world_field_02d0.l,a0	; $021902
 	move.w d0,(a0,d1.l)	; $021908
 	move.w d5,d0	; $02190C
 	muls.w #$34,d0	; $02190E
-	lea.l ram_sys_ff02d2.l,a0	; $021912
+	lea.l ram_world_field_02d2.l,a0	; $021912
 	move.w d7,d1	; $021918
 	muls.w #$a,d1	; $02191A
 	move.w (a0,d0.l),d2	; $02191E
@@ -24759,19 +24759,19 @@ L0218FC:
 	add.w #$1e,d2	; $021924
 	move.w d5,d0	; $021928
 	muls.w #$34,d0	; $02192A
-	lea.l ram_sys_ff02d6.l,a0	; $02192E
+	lea.l ram_world_field_02d6.l,a0	; $02192E
 	cmp.w (a0,d0.l),d2	; $021934
 	ble.b L02194E	; $021938
 	move.w d5,d0	; $02193A
 	muls.w #$34,d0	; $02193C
-	lea.l ram_sys_ff02d6.l,a0	; $021940
+	lea.l ram_world_field_02d6.l,a0	; $021940
 	move.l d0,d1	; $021946
 	move.w (a0,d1.l),d0	; $021948
 	bra.b L021990	; $02194C
 L02194E:
 	move.w d5,d0	; $02194E
 	muls.w #$34,d0	; $021950
-	lea.l ram_sys_ff02d2.l,a0	; $021954
+	lea.l ram_world_field_02d2.l,a0	; $021954
 	move.w d7,d1	; $02195A
 	muls.w #$a,d1	; $02195C
 	move.w (a0,d0.l),d2	; $021960
@@ -24784,7 +24784,7 @@ L02194E:
 L021972:
 	move.w d5,d0	; $021972
 	muls.w #$34,d0	; $021974
-	lea.l ram_sys_ff02d2.l,a0	; $021978
+	lea.l ram_world_field_02d2.l,a0	; $021978
 	move.l d0,d1	; $02197E
 	move.w (a0,d1.l),d0	; $021980
 	move.w d7,d1	; $021984
@@ -24794,7 +24794,7 @@ L021972:
 L021990:
 	move.w d5,d1	; $021990
 	muls.w #$34,d1	; $021992
-	lea.l ram_sys_ff02d2.l,a0	; $021996
+	lea.l ram_world_field_02d2.l,a0	; $021996
 	move.w d0,(a0,d1.l)	; $02199C
 	move.w d5,d0	; $0219A0
 	muls.w #$34,d0	; $0219A2
@@ -24808,16 +24808,16 @@ L0219B8:
 	cmp.w #$6,d4	; $0219BA
 	blt.w L021866	; $0219BE
 L0219C2:
-	tst.w ram_sys_ff00ac.l	; $0219C2
+	tst.w ram_menu_field_00ac.l	; $0219C2
 	bne.w L021A9C	; $0219C8
 	move.w ram_party_leader.l,d0	; $0219CC
 	muls.w #$34,d0	; $0219D2
-	lea.l ram_sys_ff02de.l,a0	; $0219D6
+	lea.l ram_world_field_02de.l,a0	; $0219D6
 	tst.w (a0,d0.l)	; $0219DC
 	bhi.w L021A9C	; $0219E0
 	move.w ram_party_leader.l,d0	; $0219E4
 	muls.w #$34,d0	; $0219EA
-	lea.l ram_sys_ff02ba.l,a0	; $0219EE
+	lea.l ram_menu_field_02ba.l,a0	; $0219EE
 	cmpi.w #$3,(a0,d0.l)	; $0219F4
 	bne.w L021A9C	; $0219FA
 	move.w #$3,-(a7)	; $0219FE
@@ -24858,20 +24858,20 @@ L0219C2:
 	jsr sfx_request.l	; $021A94
 	addq.w #$4,a7	; $021A9A
 L021A9C:
-	move.w #$ffff,ram_sys_ff009c.l	; $021A9C
-	move.w ram_sys_ff0e8e.l,d7	; $021AA4
-	movea.w ram_sys_ff0e90.l,a3	; $021AAA
+	move.w #$ffff,ram_sys_field_009c.l	; $021A9C
+	move.w ram_sys_field_0e8e.l,d7	; $021AA4
+	movea.w ram_world_field_0e90.l,a3	; $021AAA
 	move.w #$4,-(a7)	; $021AB0
 	jsr rand_next.l	; $021AB4
 	addq.w #$2,a7	; $021ABA
 	ext.l d0	; $021ABC
 	bra.w L021B54	; $021ABE
 L021AC2:
-	movea.l ram_sys_ffa7fc.l,a0	; $021AC2
+	movea.l ram_sys_field_a7fc.l,a0	; $021AC2
 	move.w $2(a0),d0	; $021AC8
 	add.w a3,d0	; $021ACC
 	sub.w #$a,d0	; $021ACE
-	movea.l ram_sys_ffa7fc.l,a0	; $021AD2
+	movea.l ram_sys_field_a7fc.l,a0	; $021AD2
 	ext.l d0	; $021AD8
 	divs.w $2(a0),d0	; $021ADA
 	swap d0	; $021ADE
@@ -24881,7 +24881,7 @@ L021AC2:
 L021AEA:
 	move.w d7,d0	; $021AEA
 	add.w #$a,d0	; $021AEC
-	movea.l ram_sys_ffa7fc.l,a0	; $021AF0
+	movea.l ram_sys_field_a7fc.l,a0	; $021AF0
 	move.w d0,d7	; $021AF6
 	ext.l d7	; $021AF8
 	divs.w (a0),d7	; $021AFA
@@ -24891,7 +24891,7 @@ L021AEA:
 L021B06:
 	move.w a3,d0	; $021B06
 	add.w #$a,d0	; $021B08
-	movea.l ram_sys_ffa7fc.l,a0	; $021B0C
+	movea.l ram_sys_field_a7fc.l,a0	; $021B0C
 	ext.l d0	; $021B12
 	divs.w $2(a0),d0	; $021B14
 	swap d0	; $021B18
@@ -24899,11 +24899,11 @@ L021B06:
 	clr.w -$6(a6)	; $021B1C
 	bra.b L021B66	; $021B20
 L021B22:
-	movea.l ram_sys_ffa7fc.l,a0	; $021B22
+	movea.l ram_sys_field_a7fc.l,a0	; $021B22
 	move.w (a0),d0	; $021B28
 	add.w d7,d0	; $021B2A
 	sub.w #$a,d0	; $021B2C
-	movea.l ram_sys_ffa7fc.l,a0	; $021B30
+	movea.l ram_sys_field_a7fc.l,a0	; $021B30
 	move.w d0,d7	; $021B36
 	ext.l d7	; $021B38
 	divs.w (a0),d7	; $021B3A
@@ -25048,11 +25048,11 @@ L021CC2:
 	addq.w #$2,a7	; $021CCC
 	tst.w d0	; $021CCE
 	bne.w L021FDE	; $021CD0
-	tst.w ram_sys_ff00ac.l	; $021CD4
+	tst.w ram_menu_field_00ac.l	; $021CD4
 	bne.w L021FDE	; $021CDA
 	move.w ram_party_leader.l,d0	; $021CDE
 	muls.w #$34,d0	; $021CE4
-	lea.l ram_sys_ff02ba.l,a0	; $021CE8
+	lea.l ram_menu_field_02ba.l,a0	; $021CE8
 	move.w (a0,d0.l),d5	; $021CEE
 	move.w ram_party_leader.l,d0	; $021CF2
 	muls.w #$34,d0	; $021CF8
@@ -25083,7 +25083,7 @@ L021D2E:
 	lea.l ram_party_index_array.l,a0	; $021D4A
 	move.w (a0,d0.l),d1	; $021D50
 	muls.w #$34,d1	; $021D54
-	lea.l ram_sys_ff02cc.l,a0	; $021D58
+	lea.l ram_world_field_02cc.l,a0	; $021D58
 	move.w (a0,d1.l),d0	; $021D5E
 	lsr.w #$4,d0	; $021D62
 	and.w #$f,d0	; $021D64
@@ -25178,7 +25178,7 @@ L021E1C:
 	lea.l L0CF1C2.l,a0	; $021E84
 	cmpi.b #$5a,(a0,d0.l)	; $021E8A
 	bne.b L021EA4	; $021E90
-	move.w ram_sys_ff0e16.l,d0	; $021E92
+	move.w ram_world_field_0e16.l,d0	; $021E92
 	ext.l d0	; $021E98
 	divs.w #$12,d0	; $021E9A
 	cmp.w #$1e,d0	; $021E9E
@@ -25189,7 +25189,7 @@ L021EA4:
 	lea.l L0CF1C2.l,a0	; $021EAA
 	cmpi.b #$5b,(a0,d0.l)	; $021EB0
 	bne.b L021ED2	; $021EB6
-	move.w ram_sys_ff0e16.l,d0	; $021EB8
+	move.w ram_world_field_0e16.l,d0	; $021EB8
 	ext.l d0	; $021EBE
 	divs.w #$12,d0	; $021EC0
 	cmp.w #$1e,d0	; $021EC4
@@ -25273,9 +25273,9 @@ L021FDE:
 npc_merchant_attitude_tick:
 	link.w a6,#$0	; $021FE6
 	movem.l d4-d6,-(a7)	; $021FEA
-	cmpi.w #$ff,ram_sys_ff02a0.l	; $021FEE
+	cmpi.w #$ff,ram_sys_field_02a0.l	; $021FEE
 	bne.b L022036	; $021FF6
-	lea.l ram_sys_ff02a2.l,a0	; $021FF8
+	lea.l ram_menu_field_02a2.l,a0	; $021FF8
 	move.w (a0),d0	; $021FFE
 	lsr.w #$1,d0	; $022000
 	and.w #$1,d0	; $022002
@@ -25288,27 +25288,27 @@ npc_merchant_attitude_tick:
 	move.w d0,-(a7)	; $02201E
 	jsr npc_attitude_positive.l	; $022020
 	addq.w #$4,a7	; $022026
-	lea.l ram_sys_ff02a2.l,a0	; $022028
+	lea.l ram_menu_field_02a2.l,a0	; $022028
 	andi.w #$fffd,(a0)	; $02202E
 L022032:
 	bra.w L0222CC	; $022032
 L022036:
-	lea.l ram_sys_ff02a2.l,a0	; $022036
+	lea.l ram_menu_field_02a2.l,a0	; $022036
 	move.w (a0),d0	; $02203C
 	lsr.w #$1,d0	; $02203E
 	and.w #$1,d0	; $022040
 	beq.w L022240	; $022044
-	lea.l ram_sys_ff02a2.l,a0	; $022048
+	lea.l ram_menu_field_02a2.l,a0	; $022048
 	andi.w #$fffd,(a0)	; $02204E
 	moveq #$0,d0	; $022052
 	move.b ram_sys_ff02a5.l,d0	; $022054
 	move.w d0,d4	; $02205A
 	clr.w -(a7)	; $02205C
-	move.w ram_sys_ff02a0.l,-(a7)	; $02205E
+	move.w ram_sys_field_02a0.l,-(a7)	; $02205E
 	jsr npc_attitude_raise.l	; $022064
 	addq.w #$4,a7	; $02206A
 	move.w d0,d5	; $02206C
-	lea.l ram_sys_ff02a2.l,a0	; $02206E
+	lea.l ram_menu_field_02a2.l,a0	; $02206E
 	move.w (a0),d0	; $022074
 	lsr.w #$2,d0	; $022076
 	and.w #$1,d0	; $022078
@@ -25329,7 +25329,7 @@ L0220A2:
 	ext.l d0	; $0220A4
 	bra.w L022208	; $0220A6
 L0220AA:
-	lea.l ram_sys_ff02a2.l,a0	; $0220AA
+	lea.l ram_menu_field_02a2.l,a0	; $0220AA
 	move.w (a0),d0	; $0220B0
 	and.w #$1,d0	; $0220B2
 	beq.b L0220C8	; $0220B6
@@ -25339,7 +25339,7 @@ L0220AA:
 	addq.w #$4,a7	; $0220C4
 	bra.b L0220E4	; $0220C6
 L0220C8:
-	lea.l ram_sys_ff02a2.l,a0	; $0220C8
+	lea.l ram_menu_field_02a2.l,a0	; $0220C8
 	andi.w #$fffe,(a0)	; $0220CE
 	ori.w #$1,(a0)	; $0220D2
 	move.w #$a,-(a7)	; $0220D6
@@ -25367,7 +25367,7 @@ L02210C:
 	addq.w #$4,a7	; $022118
 	bra.w L02223C	; $02211A
 L02211E:
-	lea.l ram_sys_ff02a2.l,a0	; $02211E
+	lea.l ram_menu_field_02a2.l,a0	; $02211E
 	move.w (a0),d0	; $022124
 	lsr.w #$2,d0	; $022126
 	and.w #$1,d0	; $022128
@@ -25378,7 +25378,7 @@ L02211E:
 	addq.w #$4,a7	; $02213A
 	bra.b L022156	; $02213C
 L02213E:
-	lea.l ram_sys_ff02a2.l,a0	; $02213E
+	lea.l ram_menu_field_02a2.l,a0	; $02213E
 	andi.w #$fffb,(a0)	; $022144
 	move.w #$ffff,-(a7)	; $022148
 	move.w d5,-(a7)	; $02214C
@@ -25387,7 +25387,7 @@ L02213E:
 L022156:
 	bra.w L02223C	; $022156
 L02215A:
-	lea.l ram_sys_ff02a2.l,a0	; $02215A
+	lea.l ram_menu_field_02a2.l,a0	; $02215A
 	move.w (a0),d0	; $022160
 	lsr.w #$2,d0	; $022162
 	and.w #$1,d0	; $022164
@@ -25398,7 +25398,7 @@ L02215A:
 	addq.w #$4,a7	; $022176
 	bra.b L022192	; $022178
 L02217A:
-	lea.l ram_sys_ff02a2.l,a0	; $02217A
+	lea.l ram_menu_field_02a2.l,a0	; $02217A
 	andi.w #$fffb,(a0)	; $022180
 	move.w #$fffe,-(a7)	; $022184
 	move.w d5,-(a7)	; $022188
@@ -25407,7 +25407,7 @@ L02217A:
 L022192:
 	bra.w L02223C	; $022192
 L022196:
-	lea.l ram_sys_ff02a2.l,a0	; $022196
+	lea.l ram_menu_field_02a2.l,a0	; $022196
 	move.w (a0),d0	; $02219C
 	lsr.w #$2,d0	; $02219E
 	and.w #$1,d0	; $0221A0
@@ -25418,7 +25418,7 @@ L022196:
 	addq.w #$4,a7	; $0221B2
 	bra.b L0221EC	; $0221B4
 L0221B6:
-	lea.l ram_sys_ff02a2.l,a0	; $0221B6
+	lea.l ram_menu_field_02a2.l,a0	; $0221B6
 	andi.w #$fffb,(a0)	; $0221BC
 	move.w ram_sys_ff02ae.l,d0	; $0221C0
 	cmp.w ram_sys_ff02b0.l,d0	; $0221C6
@@ -25466,19 +25466,19 @@ L02223C:
 	bra.w L0222CC	; $02223C
 L022240:
 	moveq #$0,d0	; $022240
-	move.b ram_sys_ff02a4.l,d0	; $022242
+	move.b ram_sys_field_02a4.l,d0	; $022242
 	move.w d0,d4	; $022248
 	clr.w -(a7)	; $02224A
-	move.w ram_sys_ff02a0.l,-(a7)	; $02224C
+	move.w ram_sys_field_02a0.l,-(a7)	; $02224C
 	jsr npc_attitude_raise.l	; $022252
 	addq.w #$4,a7	; $022258
 	move.w d0,d5	; $02225A
-	lea.l ram_sys_ff02a2.l,a0	; $02225C
+	lea.l ram_menu_field_02a2.l,a0	; $02225C
 	move.w (a0),d0	; $022262
 	lsr.w #$2,d0	; $022264
 	and.w #$1,d0	; $022266
 	beq.b L022286	; $02226A
-	cmpi.w #$1,ram_sys_ff010a.l	; $02226C
+	cmpi.w #$1,ram_sys_field_010a.l	; $02226C
 	ble.b L022284	; $022274
 	move.w #$2e,-(a7)	; $022276
 	move.w d5,-(a7)	; $02227A
@@ -25487,13 +25487,13 @@ L022240:
 L022284:
 	bra.b L0222CC	; $022284
 L022286:
-	cmpi.w #$1,ram_sys_ff010a.l	; $022286
+	cmpi.w #$1,ram_sys_field_010a.l	; $022286
 	ble.b L0222CC	; $02228E
-	tst.w ram_sys_ff0110.l	; $022290
+	tst.w ram_menu_field_0110.l	; $022290
 	bne.b L0222CC	; $022296
-	tst.w ram_sys_ff0112.l	; $022298
+	tst.w ram_menu_field_0112.l	; $022298
 	bne.b L0222CC	; $02229E
-	tst.b ram_sys_ff02a4.l	; $0222A0
+	tst.b ram_sys_field_02a4.l	; $0222A0
 	beq.b L0222BA	; $0222A6
 	move.w d4,-(a7)	; $0222A8
 	move.w d5,d0	; $0222AA
@@ -25533,7 +25533,7 @@ L0222DE:
 	bne.b L022340	; $02230A
 	move.w d4,d0	; $02230C
 	muls.w #$34,d0	; $02230E
-	lea.l ram_sys_ff02b8.l,a0	; $022312
+	lea.l ram_world_field_02b8.l,a0	; $022312
 	move.w (a0,d0.l),d6	; $022318
 	move.w #$ffff,-(a7)	; $02231C
 	move.w #$ffff,-(a7)	; $022320
@@ -25555,11 +25555,11 @@ L022340:
 	bne.w L02240A	; $022358
 	move.w d4,d0	; $02235C
 	muls.w #$34,d0	; $02235E
-	lea.l ram_sys_ff02b8.l,a0	; $022362
+	lea.l ram_world_field_02b8.l,a0	; $022362
 	move.w (a0,d0.l),d6	; $022368
 	move.w d6,d0	; $02236C
 	muls.w #$c,d0	; $02236E
-	lea.l ram_sys_ffb0d0.l,a0	; $022372
+	lea.l ram_sys_field_b0d0.l,a0	; $022372
 	move.w (a0,d0.l),d5	; $022378
 	cmp.w #$ff,d6	; $02237C
 	beq.b L0223C8	; $022380
@@ -25616,16 +25616,16 @@ combat_char_action:
 	link.w a6,#$fffc	; $02241C
 	movem.l d4-d7/a3-a4,-(a7)	; $022420
 	suba.l a4,a4	; $022424
-	tst.w ram_sys_ff0130.l	; $022426
+	tst.w ram_sys_field_0130.l	; $022426
 	beq.w L022552	; $02242C
-	move.w ram_sys_ff0130.l,d0	; $022430
+	move.w ram_sys_field_0130.l,d0	; $022430
 	cmp.w ram_actor_index.l,d0	; $022436
 	beq.w L022552	; $02243C
-	cmpi.w #$64,ram_sys_ff0130.l	; $022440
+	cmpi.w #$64,ram_sys_field_0130.l	; $022440
 	bge.w L0224FC	; $022448
-	move.w ram_sys_ff0130.l,d0	; $02244C
+	move.w ram_sys_field_0130.l,d0	; $02244C
 	muls.w #$34,d0	; $022452
-	lea.l ram_sys_ff02be.l,a0	; $022456
+	lea.l ram_sys_field_02be.l,a0	; $022456
 	move.w (a0,d0.l),-(a7)	; $02245C
 	jsr world_reverse_dir.l	; $022460
 	addq.w #$2,a7	; $022466
@@ -25633,11 +25633,11 @@ combat_char_action:
 	clr.w -(a7)	; $02246A
 	move.w d6,-(a7)	; $02246C
 	move.w #$6,-(a7)	; $02246E
-	move.w ram_sys_ff0130.l,d0	; $022472
+	move.w ram_sys_field_0130.l,d0	; $022472
 	muls.w #$34,d0	; $022478
 	lea.l ram_npc_field_02c2.l,a0	; $02247C
 	move.w (a0,d0.l),-(a7)	; $022482
-	move.w ram_sys_ff0130.l,d0	; $022486
+	move.w ram_sys_field_0130.l,d0	; $022486
 	muls.w #$34,d0	; $02248C
 	lea.l ram_header_leader.l,a0	; $022490
 	move.w (a0,d0.l),-(a7)	; $022496
@@ -25649,16 +25649,16 @@ combat_char_action:
 	move.w d6,d0	; $0224AA
 	add.w #$10,d0	; $0224AC
 	move.w d0,-(a7)	; $0224B0
-	move.w ram_sys_ff0130.l,-(a7)	; $0224B2
+	move.w ram_sys_field_0130.l,-(a7)	; $0224B2
 	jsr combat_move_unit.l	; $0224B8
 	addq.w #$4,a7	; $0224BE
 	movea.w d0,a3	; $0224C0
 	cmpa.w #$c8,a3	; $0224C2
 	blt.b L0224D0	; $0224C6
-	clr.w ram_sys_ff0130.l	; $0224C8
+	clr.w ram_sys_field_0130.l	; $0224C8
 	bra.b L0224F2	; $0224CE
 L0224D0:
-	addi.w #$64,ram_sys_ff0130.l	; $0224D0
+	addi.w #$64,ram_sys_field_0130.l	; $0224D0
 	move.w #$2,-(a7)	; $0224D8
 	move.w a3,-(a7)	; $0224DC
 	jsr world_check_char_ahead.l	; $0224DE
@@ -25672,14 +25672,14 @@ L0224EA:
 L0224F2:
 	bra.b L0224FA	; $0224F2
 L0224F4:
-	clr.w ram_sys_ff0130.l	; $0224F4
+	clr.w ram_sys_field_0130.l	; $0224F4
 L0224FA:
 	bra.b L022552	; $0224FA
 L0224FC:
-	move.w ram_sys_ff0130.l,d0	; $0224FC
+	move.w ram_sys_field_0130.l,d0	; $0224FC
 	sub.w #$64,d0	; $022502
 	muls.w #$34,d0	; $022506
-	lea.l ram_sys_ff02be.l,a0	; $02250A
+	lea.l ram_sys_field_02be.l,a0	; $02250A
 	move.w (a0,d0.l),-(a7)	; $022510
 	jsr world_reverse_dir.l	; $022514
 	addq.w #$2,a7	; $02251A
@@ -25691,12 +25691,12 @@ L0224FC:
 	move.w #$ffff,-(a7)	; $02252C
 	move.w #$ffff,-(a7)	; $022530
 	clr.w -(a7)	; $022534
-	move.w ram_sys_ff0130.l,d0	; $022536
+	move.w ram_sys_field_0130.l,d0	; $022536
 	sub.w #$64,d0	; $02253C
 	move.w d0,-(a7)	; $022540
 	jsr npc_leader_init.l	; $022542
 	lea.l $10(a7),a7	; $022548
-	clr.w ram_sys_ff0130.l	; $02254C
+	clr.w ram_sys_field_0130.l	; $02254C
 L022552:
 	move.w ram_actor_index.l,d5	; $022552
 	move.w d5,d0	; $022558
@@ -25816,11 +25816,11 @@ combat_turn_run:
 	movem.l d4-d7/a3-a4,-(a7)	; $0226C0
 	tst.w ram_sys_field_012a.l	; $0226C4
 	beq.b L0226DA	; $0226CA
-	move.w ram_sys_ff0094.l,-(a7)	; $0226CC
+	move.w ram_world_field_0094.l,-(a7)	; $0226CC
 	jsr combat_action_main.l	; $0226D2
 	addq.w #$2,a7	; $0226D8
 L0226DA:
-	tst.w ram_sys_ff013e.l	; $0226DA
+	tst.w ram_sys_field_013e.l	; $0226DA
 	beq.b L0226FA	; $0226E0
 	lea.l ram_combat_flags.l,a0	; $0226E2
 	move.w (a0),d0	; $0226E8
@@ -25830,22 +25830,22 @@ L0226DA:
 	jsr world_ambient_event.l	; $0226F2
 	addq.w #$2,a7	; $0226F8
 L0226FA:
-	tst.w ram_sys_ff0094.l	; $0226FA
+	tst.w ram_world_field_0094.l	; $0226FA
 	bne.w L022790	; $022700
-	tst.w ram_sys_ff0110.l	; $022704
+	tst.w ram_menu_field_0110.l	; $022704
 	beq.b L022718	; $02270A
-	movea.l ram_sys_ffa7fc.l,a0	; $02270C
+	movea.l ram_sys_field_a7fc.l,a0	; $02270C
 	tst.w $a(a0)	; $022712
 	bne.b L022764	; $022716
 L022718:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $022718
+	cmpi.w #$2,ram_menu_field_00ae.l	; $022718
 	bne.b L022728	; $022720
 	jsr combat_apply_turn_effects(pc)	; $022722
 	bra.b L022764	; $022726
 L022728:
 	move.w ram_party_leader.l,d0	; $022728
 	muls.w #$34,d0	; $02272E
-	lea.l ram_sys_ff02ba.l,a0	; $022732
+	lea.l ram_menu_field_02ba.l,a0	; $022732
 	tst.w (a0,d0.l)	; $022738
 	bne.b L022764	; $02273C
 	move.w #$ffff,-(a7)	; $02273E
@@ -25858,9 +25858,9 @@ L022728:
 	jsr combat_effect_apply(pc)	; $02275C
 	lea.l $e(a7),a7	; $022760
 L022764:
-	tst.w ram_sys_ff0110.l	; $022764
+	tst.w ram_menu_field_0110.l	; $022764
 	beq.b L02277E	; $02276A
-	movea.l ram_sys_ffa7fc.l,a0	; $02276C
+	movea.l ram_sys_field_a7fc.l,a0	; $02276C
 	tst.w $a(a0)	; $022772
 	bne.b L02277E	; $022776
 	jsr sys_event_run.l	; $022778
@@ -25871,9 +25871,9 @@ L02277E:
 	bne.b L022790	; $02278A
 	jsr npc_merchant_attitude_tick(pc)	; $02278C
 L022790:
-	tst.w ram_sys_ff0094.l	; $022790
+	tst.w ram_world_field_0094.l	; $022790
 	bne.w L022F3E	; $022796
-	tst.w ram_sys_ff00ac.l	; $02279A
+	tst.w ram_menu_field_00ac.l	; $02279A
 	bne.w L022F3E	; $0227A0
 	lea.l ram_combat_flags.l,a0	; $0227A4
 	move.w (a0),d0	; $0227AA
@@ -25881,23 +25881,23 @@ L022790:
 	beq.b L0227C6	; $0227B0
 	tst.w ram_sys_field_012a.l	; $0227B2
 	bne.b L0227C6	; $0227B8
-	tst.w ram_sys_ff0112.l	; $0227BA
+	tst.w ram_menu_field_0112.l	; $0227BA
 	bne.b L0227C6	; $0227C0
 	jsr combat_char_action(pc)	; $0227C2
 L0227C6:
-	tst.w ram_sys_ff0110.l	; $0227C6
+	tst.w ram_menu_field_0110.l	; $0227C6
 	bne.w L022F3E	; $0227CC
-	tst.w ram_sys_ff0112.l	; $0227D0
+	tst.w ram_menu_field_0112.l	; $0227D0
 	bne.w L022F3E	; $0227D6
-	addq.b #$1,ram_sys_ff0146.l	; $0227DA
+	addq.b #$1,ram_sys_field_0146.l	; $0227DA
 	moveq #$0,d0	; $0227E0
-	move.b ram_sys_ff0146.l,d0	; $0227E2
+	move.b ram_sys_field_0146.l,d0	; $0227E2
 	swap d0	; $0227E8
 	clr.w d0	; $0227EA
 	swap d0	; $0227EC
 	divu.w #$4,d0	; $0227EE
 	swap d0	; $0227F2
-	move.b d0,ram_sys_ff0146.l	; $0227F4
+	move.b d0,ram_sys_field_0146.l	; $0227F4
 	moveq #$0,d4	; $0227FA
 L0227FC:
 	move.w d4,d0	; $0227FC
@@ -25911,7 +25911,7 @@ L0227FC:
 	move.w (a0,d0.l),d1	; $02281A
 	and.w #$f,d1	; $02281E
 	beq.w L022F34	; $022822
-	cmpi.w #$2,ram_sys_ff00ae.l	; $022826
+	cmpi.w #$2,ram_menu_field_00ae.l	; $022826
 	bne.w L022A18	; $02282E
 	move.w d4,d0	; $022832
 	muls.w #$34,d0	; $022834
@@ -25946,7 +25946,7 @@ L0227FC:
 	bne.w L022962	; $0228A4
 	move.w ram_party_leader.l,d0	; $0228A8
 	muls.w #$48,d0	; $0228AE
-	lea.l ram_sys_ff0e30.l,a0	; $0228B2
+	lea.l ram_sys_field_0e30.l,a0	; $0228B2
 	add.l a0,d0	; $0228B8
 	move.l d0,-(a7)	; $0228BA
 	pea.l -$e(a6)	; $0228BC
@@ -26003,7 +26003,7 @@ L022962:
 L022972:
 	cmp.w ram_party_leader.l,d4	; $022972
 	beq.w L022A18	; $022978
-	cmpi.b #$1,ram_sys_ff0146.l	; $02297C
+	cmpi.b #$1,ram_sys_field_0146.l	; $02297C
 	bhi.b L0229A0	; $022984
 	move.w -$6(a6),d0	; $022986
 	muls.w #$34,d0	; $02298A
@@ -26058,7 +26058,7 @@ L022A12:
 	tst.w d5	; $022A14
 	bge.b L0229E0	; $022A16
 L022A18:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $022A18
+	cmpi.w #$1,ram_menu_field_00ae.l	; $022A18
 	bne.w L022F34	; $022A20
 	move.w d4,d0	; $022A24
 	muls.w #$34,d0	; $022A26
@@ -26079,7 +26079,7 @@ L022A18:
 L022A5E:
 	move.w ram_party_leader.l,d0	; $022A5E
 	muls.w #$48,d0	; $022A64
-	lea.l ram_sys_ff0e30.l,a0	; $022A68
+	lea.l ram_sys_field_0e30.l,a0	; $022A68
 	add.l a0,d0	; $022A6E
 	move.l d0,-(a7)	; $022A70
 	pea.l -$e(a6)	; $022A72
@@ -26103,12 +26103,12 @@ L022A5E:
 	bne.b L022AEE	; $022AB6
 	move.w d4,d0	; $022AB8
 	muls.w #$34,d0	; $022ABA
-	lea.l ram_sys_ff02ba.l,a0	; $022ABE
+	lea.l ram_menu_field_02ba.l,a0	; $022ABE
 	cmpi.w #$4,(a0,d0.l)	; $022AC4
 	beq.b L022AE0	; $022ACA
 	move.w d4,d0	; $022ACC
 	muls.w #$34,d0	; $022ACE
-	lea.l ram_sys_ff02ba.l,a0	; $022AD2
+	lea.l ram_menu_field_02ba.l,a0	; $022AD2
 	cmpi.w #$3,(a0,d0.l)	; $022AD8
 	bne.b L022AEE	; $022ADE
 L022AE0:
@@ -26136,17 +26136,17 @@ L022AFA:
 L022B1C:
 	move.w d4,d0	; $022B1C
 	muls.w #$34,d0	; $022B1E
-	lea.l ram_sys_ff02be.l,a0	; $022B22
+	lea.l ram_sys_field_02be.l,a0	; $022B22
 	move.w (a0,d0.l),-$e(a6)	; $022B28
 L022B2E:
 	cmpi.w #$4,-$e(a6)	; $022B2E
 	bcc.b L022B64	; $022B34
 	move.w d4,d0	; $022B36
 	muls.w #$34,d0	; $022B38
-	lea.l ram_sys_ff02b8.l,a0	; $022B3C
+	lea.l ram_world_field_02b8.l,a0	; $022B3C
 	cmpi.w #$ff,(a0,d0.l)	; $022B42
 	bne.b L022B56	; $022B48
-	movea.l ram_sys_ffa7fc.l,a0	; $022B4A
+	movea.l ram_sys_field_a7fc.l,a0	; $022B4A
 	tst.w $a(a0)	; $022B50
 	bne.b L022B64	; $022B54
 L022B56:
@@ -26159,7 +26159,7 @@ L022B64:
 L022B68:
 	move.w d4,d0	; $022B68
 	muls.w #$34,d0	; $022B6A
-	lea.l ram_sys_ff02be.l,a0	; $022B6E
+	lea.l ram_sys_field_02be.l,a0	; $022B6E
 	move.w (a0,d0.l),-$e(a6)	; $022B74
 	move.w #$3,-(a7)	; $022B7A
 	jsr rand_next.l	; $022B7E
@@ -26308,7 +26308,7 @@ L022D98:
 	bcc.b L022DD2	; $022D9E
 	move.w d4,d0	; $022DA0
 	muls.w #$34,d0	; $022DA2
-	lea.l ram_sys_ff02b8.l,a0	; $022DA6
+	lea.l ram_world_field_02b8.l,a0	; $022DA6
 	cmpi.w #$ff,(a0,d0.l)	; $022DAC
 	bne.b L022DC4	; $022DB2
 	move.w #$3,-(a7)	; $022DB4
@@ -26326,7 +26326,7 @@ L022DD2:
 L022DD6:
 	move.w d4,d0	; $022DD6
 	muls.w #$34,d0	; $022DD8
-	lea.l ram_sys_ff02be.l,a0	; $022DDC
+	lea.l ram_sys_field_02be.l,a0	; $022DDC
 	move.w (a0,d0.l),-$e(a6)	; $022DE2
 	move.w #$3,-(a7)	; $022DE8
 	jsr rand_next.l	; $022DEC
@@ -26376,7 +26376,7 @@ L022E8E:
 	bcc.b L022EC8	; $022E94
 	move.w d4,d0	; $022E96
 	muls.w #$34,d0	; $022E98
-	lea.l ram_sys_ff02b8.l,a0	; $022E9C
+	lea.l ram_world_field_02b8.l,a0	; $022E9C
 	cmpi.w #$ff,(a0,d0.l)	; $022EA2
 	bne.b L022EBA	; $022EA8
 	move.w #$3,-(a7)	; $022EAA
@@ -26394,7 +26394,7 @@ L022EC8:
 L022ECA:
 	move.w d4,d0	; $022ECA
 	muls.w #$34,d0	; $022ECC
-	lea.l ram_sys_ff02b6.l,a0	; $022ED0
+	lea.l ram_sys_field_02b6.l,a0	; $022ED0
 	cmpi.w #$fe,(a0,d0.l)	; $022ED6
 	bne.b L022EEA	; $022EDC
 	move.w d4,-(a7)	; $022EDE
@@ -26404,7 +26404,7 @@ L022ECA:
 L022EEA:
 	move.w d4,d0	; $022EEA
 	muls.w #$34,d0	; $022EEC
-	lea.l ram_sys_ff02be.l,a0	; $022EF0
+	lea.l ram_sys_field_02be.l,a0	; $022EF0
 	move.w (a0,d0.l),-(a7)	; $022EF6
 	move.w d4,-(a7)	; $022EFA
 	jsr combat_move_unit.l	; $022EFC
@@ -26426,7 +26426,7 @@ L022F34:
 	cmp.w #$38,d4	; $022F36
 	blt.w L0227FC	; $022F3A
 L022F3E:
-	move.w ram_sys_ff0096.l,d7	; $022F3E
+	move.w ram_sys_field_0096.l,d7	; $022F3E
 	tst.w d7	; $022F44
 	ble.w L02309C	; $022F46
 	moveq #$0,d4	; $022F4A
@@ -26435,32 +26435,32 @@ L022F3E:
 L022F52:
 	move.w d4,d0	; $022F52
 	muls.w #$c,d0	; $022F54
-	lea.l ram_sys_ffb0cc.l,a0	; $022F58
+	lea.l ram_sys_field_b0cc.l,a0	; $022F58
 	cmpi.w #$270f,(a0,d0.l)	; $022F5E
 	beq.w L023094	; $022F64
 	addq.w #$1,d6	; $022F68
 	move.w d4,d0	; $022F6A
 	muls.w #$c,d0	; $022F6C
-	lea.l ram_sys_ffb0d0.l,a0	; $022F70
+	lea.l ram_sys_field_b0d0.l,a0	; $022F70
 	move.w d4,d1	; $022F76
 	muls.w #$c,d1	; $022F78
-	lea.l ram_sys_ffb0ce.l,a1	; $022F7C
+	lea.l ram_sys_field_b0ce.l,a1	; $022F7C
 	move.w (a0,d0.l),d2	; $022F82
 	add.w (a1,d1.l),d2	; $022F86
 	muls.w #$24,d2	; $022F8A
 	lea.l L0197B0.l,a0	; $022F8E
 	movea.l d2,a4	; $022F94
 	adda.l a0,a4	; $022F96
-	movea.l ram_sys_ffa7fc.l,a0	; $022F98
+	movea.l ram_sys_field_a7fc.l,a0	; $022F98
 	move.w $a(a0),d0	; $022F9E
 	cmp.w $22(a4),d0	; $022FA2
 	beq.b L022FCE	; $022FA6
 	move.w d4,d0	; $022FA8
 	muls.w #$c,d0	; $022FAA
-	lea.l ram_sys_ffb0d0.l,a0	; $022FAE
+	lea.l ram_sys_field_b0d0.l,a0	; $022FAE
 	cmpi.w #$28,(a0,d0.l)	; $022FB4
 	bne.w L023094	; $022FBA
-	movea.l ram_sys_ffa7fc.l,a0	; $022FBE
+	movea.l ram_sys_field_a7fc.l,a0	; $022FBE
 	cmpi.w #$3,$a(a0)	; $022FC4
 	bne.w L023094	; $022FCA
 L022FCE:
@@ -26492,14 +26492,14 @@ L023008:
 	addq.w #$4,a7	; $023012
 	bra.b L023094	; $023014
 L023016:
-	tst.w ram_sys_ff010c.l	; $023016
+	tst.w ram_sys_field_010c.l	; $023016
 	beq.b L023074	; $02301C
 	move.w #$ffff,-(a7)	; $02301E
 	move.w #$3,-(a7)	; $023022
 	jsr sfx_request.l	; $023026
 	addq.w #$4,a7	; $02302C
-	move.w ram_sys_ffc378.l,-(a7)	; $02302E
-	move.w ram_sys_ffc376.l,-(a7)	; $023034
+	move.w ram_sys_field_c378.l,-(a7)	; $02302E
+	move.w ram_sys_field_c376.l,-(a7)	; $023034
 	move.w ram_sys_ffc368.l,-(a7)	; $02303A
 	move.w ram_sys_ffc372.l,-(a7)	; $023040
 	move.w ram_sys_ffc370.l,-(a7)	; $023046
@@ -26509,7 +26509,7 @@ L023016:
 	move.w ram_sys_ffc36a.l,-(a7)	; $02305E
 	jsr npc_spawn_at_step.l	; $023064
 	lea.l $12(a7),a7	; $02306A
-	clr.w ram_sys_ff010c.l	; $02306E
+	clr.w ram_sys_field_010c.l	; $02306E
 L023074:
 	bra.b L023094	; $023074
 L023076:
@@ -26528,7 +26528,7 @@ L023096:
 	cmp.w d7,d6	; $023096
 	blt.w L022F52	; $023098
 L02309C:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $02309C
+	cmpi.w #$2,ram_menu_field_00ae.l	; $02309C
 	bne.w L0231CA	; $0230A4
 	moveq #$0,d4	; $0230A8
 L0230AA:
@@ -26578,7 +26578,7 @@ L023140:
 L023142:
 	move.w d4,d0	; $023142
 	muls.w #$34,d0	; $023144
-	lea.l ram_sys_ff02d2.l,a0	; $023148
+	lea.l ram_world_field_02d2.l,a0	; $023148
 	move.w (a0,d0.l),d5	; $02314E
 	cmp.w #$ffff,d5	; $023152
 	bne.b L02316C	; $023156
@@ -26629,7 +26629,7 @@ hero_track:
 	move.w $4(a0),d0	; $0231E6
 	add.w $2(a1),d0	; $0231EA
 	muls.w #$24,d0	; $0231EE
-	movea.l ram_sys_ffa7fc.l,a0	; $0231F2
+	movea.l ram_sys_field_a7fc.l,a0	; $0231F2
 	move.w $a(a0),d1	; $0231F8
 	ext.l d1	; $0231FC
 	asl.l #$3,d1	; $0231FE
@@ -26720,7 +26720,7 @@ L0232FA:
 	movea.l $8(a6),a0	; $0232FA
 	cmpi.w #$21c,(a0)	; $0232FE
 	bne.b L023350	; $023302
-	movea.l ram_sys_ffa7fc.l,a0	; $023304
+	movea.l ram_sys_field_a7fc.l,a0	; $023304
 	move.w $a(a0),d0	; $02330A
 	addq.w #$8,d0	; $02330E
 	muls.w #$24,d0	; $023310
@@ -26744,13 +26744,13 @@ L0232FA:
 	addq.w #$8,a7	; $02334C
 	bra.b L0233AE	; $02334E
 L023350:
-	move.w ram_sys_ff0148.l,d0	; $023350
+	move.w ram_sys_field_0148.l,d0	; $023350
 	addq.w #$1,d0	; $023356
 	ext.l d0	; $023358
 	divs.w #$4,d0	; $02335A
 	swap d0	; $02335E
 	addq.w #$8,d0	; $023360
-	move.w d0,ram_sys_ff0148.l	; $023362
+	move.w d0,ram_sys_field_0148.l	; $023362
 	movea.l $8(a6),a0	; $023368
 	cmpi.w #$1,$2(a0)	; $02336C
 	bgt.b L023378	; $023372
@@ -26762,9 +26762,9 @@ L02337A:
 	move.w d0,-(a7)	; $02337A
 	move.w $e(a6),d0	; $02337C
 	add.w $10(a6),d0	; $023380
-	sub.w ram_sys_ff0148.l,d0	; $023384
+	sub.w ram_sys_field_0148.l,d0	; $023384
 	move.w d0,-(a7)	; $02338A
-	move.w ram_sys_ff0148.l,d0	; $02338C
+	move.w ram_sys_field_0148.l,d0	; $02338C
 	ext.l d0	; $023392
 	divs.w #$3,d0	; $023394
 	swap d0	; $023398
@@ -26796,7 +26796,7 @@ L0233D0:
 	adda.l a0,a3	; $0233E6
 	bra.b L023404	; $0233E8
 L0233EA:
-	movea.l ram_sys_ffa7fc.l,a0	; $0233EA
+	movea.l ram_sys_field_a7fc.l,a0	; $0233EA
 	move.w $a(a0),d0	; $0233F0
 	addq.w #$8,d0	; $0233F4
 	muls.w #$24,d0	; $0233F6
@@ -26842,7 +26842,7 @@ L023462:
 	move.w $2(a0),d0	; $023466
 	add.w d4,d0	; $02346A
 	muls.w #$24,d0	; $02346C
-	movea.l ram_sys_ffa7fc.l,a0	; $023470
+	movea.l ram_sys_field_a7fc.l,a0	; $023470
 	move.w $a(a0),d1	; $023476
 	ext.l d1	; $02347A
 	asl.l #$3,d1	; $02347C
@@ -26931,7 +26931,7 @@ L023534:
 	move.w $4(a3),d0	; $02358E
 	add.w $c(a6),d0	; $023592
 	move.w d0,-(a7)	; $023596
-	move.w ram_sys_ff0092.l,d0	; $023598
+	move.w ram_world_field_0092.l,d0	; $023598
 	add.w #$222,d0	; $02359E
 	move.w d0,-(a7)	; $0235A2
 	jsr map_terrain_tile_lookup.l	; $0235A4
@@ -26948,7 +26948,7 @@ L0235AC:
 	move.w $4(a3),d0	; $0235C8
 	add.w $c(a6),d0	; $0235CC
 	move.w d0,-(a7)	; $0235D0
-	move.w ram_sys_ff0092.l,d0	; $0235D2
+	move.w ram_world_field_0092.l,d0	; $0235D2
 	add.w #$224,d0	; $0235D8
 	move.w d0,-(a7)	; $0235DC
 	jsr map_terrain_tile_lookup.l	; $0235DE
@@ -26965,7 +26965,7 @@ L0235E6:
 	move.w $4(a3),d0	; $023602
 	add.w $c(a6),d0	; $023606
 	move.w d0,-(a7)	; $02360A
-	move.w ram_sys_ff0092.l,d0	; $02360C
+	move.w ram_world_field_0092.l,d0	; $02360C
 	add.w #$22e,d0	; $023612
 	move.w d0,-(a7)	; $023616
 	jsr map_terrain_tile_lookup.l	; $023618
@@ -26977,95 +26977,95 @@ L023620:
 	; code $023628-$02376F
 map_grid_set_cell:
 	link.w a6,#$0	; $023628
-	movea.l ram_sys_ffa7fc.l,a0	; $02362C
+	movea.l ram_sys_field_a7fc.l,a0	; $02362C
 	move.w (a0),d0	; $023632
 	add.w $a(a6),d0	; $023634
-	movea.l ram_sys_ffa7fc.l,a0	; $023638
+	movea.l ram_sys_field_a7fc.l,a0	; $023638
 	ext.l d0	; $02363E
 	divs.w (a0),d0	; $023640
 	swap d0	; $023642
 	ext.l d0	; $023644
 	asl.l #$5,d0	; $023646
-	movea.l ram_sys_ffa7fc.l,a0	; $023648
+	movea.l ram_sys_field_a7fc.l,a0	; $023648
 	move.w $2(a0),d1	; $02364E
 	add.w $c(a6),d1	; $023652
-	movea.l ram_sys_ffa7fc.l,a0	; $023656
+	movea.l ram_sys_field_a7fc.l,a0	; $023656
 	ext.l d1	; $02365C
 	divs.w $2(a0),d1	; $02365E
 	swap d1	; $023662
 	ext.l d1	; $023664
 	add.l d1,d0	; $023666
-	lea.l ram_sys_ffb36c.l,a0	; $023668
+	lea.l ram_sys_field_b36c.l,a0	; $023668
 	moveq #$0,d1	; $02366E
 	move.b (a0,d0.l),d1	; $023670
 	cmp.w #$ff,d1	; $023674
 	bne.b L0236C6	; $023678
-	movea.l ram_sys_ffa7fc.l,a0	; $02367A
+	movea.l ram_sys_field_a7fc.l,a0	; $02367A
 	move.w (a0),d0	; $023680
 	add.w $a(a6),d0	; $023682
-	movea.l ram_sys_ffa7fc.l,a0	; $023686
+	movea.l ram_sys_field_a7fc.l,a0	; $023686
 	ext.l d0	; $02368C
 	divs.w (a0),d0	; $02368E
 	swap d0	; $023690
 	ext.l d0	; $023692
 	asl.l #$5,d0	; $023694
-	movea.l ram_sys_ffa7fc.l,a0	; $023696
+	movea.l ram_sys_field_a7fc.l,a0	; $023696
 	move.w $2(a0),d1	; $02369C
 	add.w $c(a6),d1	; $0236A0
-	movea.l ram_sys_ffa7fc.l,a0	; $0236A4
+	movea.l ram_sys_field_a7fc.l,a0	; $0236A4
 	ext.l d1	; $0236AA
 	divs.w $2(a0),d1	; $0236AC
 	swap d1	; $0236B0
 	ext.l d1	; $0236B2
 	add.l d1,d0	; $0236B4
-	lea.l ram_sys_ffb36c.l,a0	; $0236B6
+	lea.l ram_sys_field_b36c.l,a0	; $0236B6
 	move.b $9(a6),(a0,d0.l)	; $0236BC
 L0236C2:
 	unlk a6	; $0236C2
 	rts	; $0236C4
 L0236C6:
-	movea.l ram_sys_ffa7fc.l,a0	; $0236C6
+	movea.l ram_sys_field_a7fc.l,a0	; $0236C6
 	move.w (a0),d0	; $0236CC
 	add.w $a(a6),d0	; $0236CE
-	movea.l ram_sys_ffa7fc.l,a0	; $0236D2
+	movea.l ram_sys_field_a7fc.l,a0	; $0236D2
 	ext.l d0	; $0236D8
 	divs.w (a0),d0	; $0236DA
 	swap d0	; $0236DC
 	ext.l d0	; $0236DE
 	asl.l #$5,d0	; $0236E0
-	movea.l ram_sys_ffa7fc.l,a0	; $0236E2
+	movea.l ram_sys_field_a7fc.l,a0	; $0236E2
 	move.w $2(a0),d1	; $0236E8
 	add.w $c(a6),d1	; $0236EC
-	movea.l ram_sys_ffa7fc.l,a0	; $0236F0
+	movea.l ram_sys_field_a7fc.l,a0	; $0236F0
 	ext.l d1	; $0236F6
 	divs.w $2(a0),d1	; $0236F8
 	swap d1	; $0236FC
 	ext.l d1	; $0236FE
 	add.l d1,d0	; $023700
-	lea.l ram_sys_ffb76c.l,a0	; $023702
+	lea.l ram_sys_field_b76c.l,a0	; $023702
 	moveq #$0,d1	; $023708
 	move.b (a0,d0.l),d1	; $02370A
 	cmp.w #$ff,d1	; $02370E
 	bne.b L023760	; $023712
-	movea.l ram_sys_ffa7fc.l,a0	; $023714
+	movea.l ram_sys_field_a7fc.l,a0	; $023714
 	move.w (a0),d0	; $02371A
 	add.w $a(a6),d0	; $02371C
-	movea.l ram_sys_ffa7fc.l,a0	; $023720
+	movea.l ram_sys_field_a7fc.l,a0	; $023720
 	ext.l d0	; $023726
 	divs.w (a0),d0	; $023728
 	swap d0	; $02372A
 	ext.l d0	; $02372C
 	asl.l #$5,d0	; $02372E
-	movea.l ram_sys_ffa7fc.l,a0	; $023730
+	movea.l ram_sys_field_a7fc.l,a0	; $023730
 	move.w $2(a0),d1	; $023736
 	add.w $c(a6),d1	; $02373A
-	movea.l ram_sys_ffa7fc.l,a0	; $02373E
+	movea.l ram_sys_field_a7fc.l,a0	; $02373E
 	ext.l d1	; $023744
 	divs.w $2(a0),d1	; $023746
 	swap d1	; $02374A
 	ext.l d1	; $02374C
 	add.l d1,d0	; $02374E
-	lea.l ram_sys_ffb76c.l,a0	; $023750
+	lea.l ram_sys_field_b76c.l,a0	; $023750
 	move.b $9(a6),(a0,d0.l)	; $023756
 	bra.w L0236C2	; $02375C
 L023760:
@@ -27076,95 +27076,95 @@ L023760:
 	; code $023770-$0238B7
 map_grid_set_cell_1:
 	link.w a6,#$0	; $023770
-	movea.l ram_sys_ffa7fc.l,a0	; $023774
+	movea.l ram_sys_field_a7fc.l,a0	; $023774
 	move.w (a0),d0	; $02377A
 	add.w $a(a6),d0	; $02377C
-	movea.l ram_sys_ffa7fc.l,a0	; $023780
+	movea.l ram_sys_field_a7fc.l,a0	; $023780
 	ext.l d0	; $023786
 	divs.w (a0),d0	; $023788
 	swap d0	; $02378A
 	ext.l d0	; $02378C
 	asl.l #$5,d0	; $02378E
-	movea.l ram_sys_ffa7fc.l,a0	; $023790
+	movea.l ram_sys_field_a7fc.l,a0	; $023790
 	move.w $2(a0),d1	; $023796
 	add.w $c(a6),d1	; $02379A
-	movea.l ram_sys_ffa7fc.l,a0	; $02379E
+	movea.l ram_sys_field_a7fc.l,a0	; $02379E
 	ext.l d1	; $0237A4
 	divs.w $2(a0),d1	; $0237A6
 	swap d1	; $0237AA
 	ext.l d1	; $0237AC
 	add.l d1,d0	; $0237AE
-	lea.l ram_sys_ffb76c.l,a0	; $0237B0
+	lea.l ram_sys_field_b76c.l,a0	; $0237B0
 	moveq #$0,d1	; $0237B6
 	move.b (a0,d0.l),d1	; $0237B8
 	cmp.w #$ff,d1	; $0237BC
 	bne.b L02380E	; $0237C0
-	movea.l ram_sys_ffa7fc.l,a0	; $0237C2
+	movea.l ram_sys_field_a7fc.l,a0	; $0237C2
 	move.w (a0),d0	; $0237C8
 	add.w $a(a6),d0	; $0237CA
-	movea.l ram_sys_ffa7fc.l,a0	; $0237CE
+	movea.l ram_sys_field_a7fc.l,a0	; $0237CE
 	ext.l d0	; $0237D4
 	divs.w (a0),d0	; $0237D6
 	swap d0	; $0237D8
 	ext.l d0	; $0237DA
 	asl.l #$5,d0	; $0237DC
-	movea.l ram_sys_ffa7fc.l,a0	; $0237DE
+	movea.l ram_sys_field_a7fc.l,a0	; $0237DE
 	move.w $2(a0),d1	; $0237E4
 	add.w $c(a6),d1	; $0237E8
-	movea.l ram_sys_ffa7fc.l,a0	; $0237EC
+	movea.l ram_sys_field_a7fc.l,a0	; $0237EC
 	ext.l d1	; $0237F2
 	divs.w $2(a0),d1	; $0237F4
 	swap d1	; $0237F8
 	ext.l d1	; $0237FA
 	add.l d1,d0	; $0237FC
-	lea.l ram_sys_ffb76c.l,a0	; $0237FE
+	lea.l ram_sys_field_b76c.l,a0	; $0237FE
 	move.b $9(a6),(a0,d0.l)	; $023804
 L02380A:
 	unlk a6	; $02380A
 	rts	; $02380C
 L02380E:
-	movea.l ram_sys_ffa7fc.l,a0	; $02380E
+	movea.l ram_sys_field_a7fc.l,a0	; $02380E
 	move.w (a0),d0	; $023814
 	add.w $a(a6),d0	; $023816
-	movea.l ram_sys_ffa7fc.l,a0	; $02381A
+	movea.l ram_sys_field_a7fc.l,a0	; $02381A
 	ext.l d0	; $023820
 	divs.w (a0),d0	; $023822
 	swap d0	; $023824
 	ext.l d0	; $023826
 	asl.l #$5,d0	; $023828
-	movea.l ram_sys_ffa7fc.l,a0	; $02382A
+	movea.l ram_sys_field_a7fc.l,a0	; $02382A
 	move.w $2(a0),d1	; $023830
 	add.w $c(a6),d1	; $023834
-	movea.l ram_sys_ffa7fc.l,a0	; $023838
+	movea.l ram_sys_field_a7fc.l,a0	; $023838
 	ext.l d1	; $02383E
 	divs.w $2(a0),d1	; $023840
 	swap d1	; $023844
 	ext.l d1	; $023846
 	add.l d1,d0	; $023848
-	lea.l ram_sys_ffb36c.l,a0	; $02384A
+	lea.l ram_sys_field_b36c.l,a0	; $02384A
 	moveq #$0,d1	; $023850
 	move.b (a0,d0.l),d1	; $023852
 	cmp.w #$ff,d1	; $023856
 	bne.b L0238A8	; $02385A
-	movea.l ram_sys_ffa7fc.l,a0	; $02385C
+	movea.l ram_sys_field_a7fc.l,a0	; $02385C
 	move.w (a0),d0	; $023862
 	add.w $a(a6),d0	; $023864
-	movea.l ram_sys_ffa7fc.l,a0	; $023868
+	movea.l ram_sys_field_a7fc.l,a0	; $023868
 	ext.l d0	; $02386E
 	divs.w (a0),d0	; $023870
 	swap d0	; $023872
 	ext.l d0	; $023874
 	asl.l #$5,d0	; $023876
-	movea.l ram_sys_ffa7fc.l,a0	; $023878
+	movea.l ram_sys_field_a7fc.l,a0	; $023878
 	move.w $2(a0),d1	; $02387E
 	add.w $c(a6),d1	; $023882
-	movea.l ram_sys_ffa7fc.l,a0	; $023886
+	movea.l ram_sys_field_a7fc.l,a0	; $023886
 	ext.l d1	; $02388C
 	divs.w $2(a0),d1	; $02388E
 	swap d1	; $023892
 	ext.l d1	; $023894
 	add.l d1,d0	; $023896
-	lea.l ram_sys_ffb36c.l,a0	; $023898
+	lea.l ram_sys_field_b36c.l,a0	; $023898
 	move.b $9(a6),(a0,d0.l)	; $02389E
 	bra.w L02380A	; $0238A4
 L0238A8:
@@ -27179,23 +27179,23 @@ sys_each_entry_238b8:
 L0238C0:
 	move.w -$2(a6),d0	; $0238C0
 	muls.w #$c,d0	; $0238C4
-	lea.l ram_sys_ffb0d6.l,a0	; $0238C8
+	lea.l ram_sys_field_b0d6.l,a0	; $0238C8
 	move.w (a0,d0.l),-(a7)	; $0238CE
 	move.w -$2(a6),d0	; $0238D2
 	muls.w #$c,d0	; $0238D6
-	lea.l ram_sys_ffb0d2.l,a0	; $0238DA
+	lea.l ram_sys_field_b0d2.l,a0	; $0238DA
 	move.w (a0,d0.l),-(a7)	; $0238E0
 	move.w -$2(a6),d0	; $0238E4
 	muls.w #$c,d0	; $0238E8
-	lea.l ram_sys_ffb0d0.l,a0	; $0238EC
+	lea.l ram_sys_field_b0d0.l,a0	; $0238EC
 	move.w (a0,d0.l),-(a7)	; $0238F2
 	move.w -$2(a6),d0	; $0238F6
 	muls.w #$c,d0	; $0238FA
-	lea.l ram_sys_ffb0ce.l,a0	; $0238FE
+	lea.l ram_sys_field_b0ce.l,a0	; $0238FE
 	move.w (a0,d0.l),-(a7)	; $023904
 	move.w -$2(a6),d0	; $023908
 	muls.w #$c,d0	; $02390C
-	lea.l ram_sys_ffb0cc.l,a0	; $023910
+	lea.l ram_sys_field_b0cc.l,a0	; $023910
 	move.w (a0,d0.l),-(a7)	; $023916
 	pea.l L023938(pc)	; $02391A
 	jsr sys_stub_01107a.l	; $02391E
@@ -27221,7 +27221,7 @@ L023AA6:
 	andi.w #$fff0,(a0)	; $023AB8
 	move.w -$2(a6),d0	; $023ABC
 	muls.w #$34,d0	; $023AC0
-	lea.l ram_sys_ff02b8.l,a0	; $023AC4
+	lea.l ram_world_field_02b8.l,a0	; $023AC4
 	move.w #$ff,(a0,d0.l)	; $023ACA
 	addq.w #$1,-$2(a6)	; $023AD0
 	cmpi.w #$38,-$2(a6)	; $023AD4
@@ -27240,7 +27240,7 @@ combat_attacker_check:
 	bne.b L023B20	; $023AFE
 	move.w $8(a6),d0	; $023B00
 	muls.w #$34,d0	; $023B04
-	lea.l ram_sys_ff02db.l,a0	; $023B08
+	lea.l ram_sys_field_02db.l,a0	; $023B08
 	cmpi.b #$1,(a0,d0.l)	; $023B0E
 	bne.b L023B20	; $023B14
 	move.w $8(a6),-(a7)	; $023B16
@@ -27249,12 +27249,12 @@ combat_attacker_check:
 L023B20:
 	move.w $8(a6),d0	; $023B20
 	muls.w #$34,d0	; $023B24
-	lea.l ram_sys_ff02b8.l,a0	; $023B28
+	lea.l ram_world_field_02b8.l,a0	; $023B28
 	cmpi.w #$ff,(a0,d0.l)	; $023B2E
 	beq.b L023B50	; $023B34
 	move.w $8(a6),d0	; $023B36
 	muls.w #$34,d0	; $023B3A
-	lea.l ram_sys_ff02b8.l,a0	; $023B3E
+	lea.l ram_world_field_02b8.l,a0	; $023B3E
 	move.w (a0,d0.l),-(a7)	; $023B44
 	jsr map_record_remove.l	; $023B48
 	addq.w #$2,a7	; $023B4E
@@ -27409,11 +27409,11 @@ L023D0E:
 L023D22:
 	move.w d4,d0	; $023D22
 	muls.w #$34,d0	; $023D24
-	lea.l ram_sys_ff02b6.l,a0	; $023D28
+	lea.l ram_sys_field_02b6.l,a0	; $023D28
 	move.w $c(a6),(a0,d0.l)	; $023D2E
 	move.w d4,d0	; $023D34
 	muls.w #$34,d0	; $023D36
-	lea.l ram_sys_ff02b8.l,a0	; $023D3A
+	lea.l ram_world_field_02b8.l,a0	; $023D3A
 	move.w #$ff,(a0,d0.l)	; $023D40
 	cmpi.w #$ffff,$c(a6)	; $023D46
 	beq.w L0241D8	; $023D4C
@@ -27446,7 +27446,7 @@ L023D5C:
 	bne.b L023DC0	; $023DA8
 	move.w d4,d0	; $023DAA
 	muls.w #$34,d0	; $023DAC
-	lea.l ram_sys_ff02d4.l,a0	; $023DB0
+	lea.l ram_world_field_02d4.l,a0	; $023DB0
 	move.w ram_sys_ffc408.l,(a0,d0.l)	; $023DB6
 	bra.b L023DE0	; $023DBE
 L023DC0:
@@ -27455,7 +27455,7 @@ L023DC0:
 	lea.l L0CF1B8.l,a0	; $023DC8
 	move.w d4,d1	; $023DCE
 	muls.w #$34,d1	; $023DD0
-	lea.l ram_sys_ff02d4.l,a1	; $023DD4
+	lea.l ram_world_field_02d4.l,a1	; $023DD4
 	move.w (a0,d0.l),(a1,d1.l)	; $023DDA
 L023DE0:
 	move.w $c(a6),d0	; $023DE0
@@ -27464,7 +27464,7 @@ L023DE0:
 	move.w (a0,d0.l),d1	; $023DEE
 	ext.l d1	; $023DF2
 	asl.l #$1,d1	; $023DF4
-	lea.l ram_sys_ff00c0.l,a0	; $023DF6
+	lea.l ram_save_field_00c0.l,a0	; $023DF6
 	move.w $c(a6),d0	; $023DFC
 	muls.w #$18,d0	; $023E00
 	lea.l L0CF1BE.l,a1	; $023E04
@@ -27503,32 +27503,32 @@ L023E58:
 L023E6E:
 	move.w d4,d1	; $023E6E
 	muls.w #$34,d1	; $023E70
-	lea.l ram_sys_ff02d6.l,a0	; $023E74
+	lea.l ram_world_field_02d6.l,a0	; $023E74
 	move.w d0,(a0,d1.l)	; $023E7A
 	move.w $c(a6),d0	; $023E7E
 	muls.w #$18,d0	; $023E82
 	lea.l L0CF1BA.l,a0	; $023E86
 	move.w d4,d1	; $023E8C
 	muls.w #$34,d1	; $023E8E
-	lea.l ram_sys_ff02d8.l,a1	; $023E92
+	lea.l ram_sys_field_02d8.l,a1	; $023E92
 	move.b (a0,d0.l),(a1,d1.l)	; $023E98
 	move.w $c(a6),d0	; $023E9E
 	muls.w #$18,d0	; $023EA2
 	lea.l L0CF1BB.l,a0	; $023EA6
 	move.w d4,d1	; $023EAC
 	muls.w #$34,d1	; $023EAE
-	lea.l ram_sys_ff02d9.l,a1	; $023EB2
+	lea.l ram_sys_field_02d9.l,a1	; $023EB2
 	move.b (a0,d0.l),(a1,d1.l)	; $023EB8
 	move.w $c(a6),d0	; $023EBE
 	muls.w #$18,d0	; $023EC2
 	lea.l L0CF1BE.l,a0	; $023EC6
 	move.w d4,d1	; $023ECC
 	muls.w #$34,d1	; $023ECE
-	lea.l ram_sys_ff02da.l,a1	; $023ED2
+	lea.l ram_sys_field_02da.l,a1	; $023ED2
 	move.b (a0,d0.l),(a1,d1.l)	; $023ED8
 	move.w d4,d0	; $023EDE
 	muls.w #$34,d0	; $023EE0
-	lea.l ram_sys_ff02db.l,a0	; $023EE4
+	lea.l ram_sys_field_02db.l,a0	; $023EE4
 	clr.b (a0,d0.l)	; $023EEA
 	move.w d4,d0	; $023EEE
 	muls.w #$34,d0	; $023EF0
@@ -27536,11 +27536,11 @@ L023E6E:
 	move.b #$2,(a0,d0.l)	; $023EFA
 	move.w d4,d0	; $023F00
 	muls.w #$34,d0	; $023F02
-	lea.l ram_sys_ff02dd.l,a0	; $023F06
+	lea.l ram_menu_field_02dd.l,a0	; $023F06
 	move.b #$ff,(a0,d0.l)	; $023F0C
 	move.w d4,d0	; $023F12
 	muls.w #$34,d0	; $023F14
-	lea.l ram_sys_ff02de.l,a0	; $023F18
+	lea.l ram_world_field_02de.l,a0	; $023F18
 	move.w #$3e8,(a0,d0.l)	; $023F1E
 	moveq #$0,d5	; $023F24
 L023F26:
@@ -27549,7 +27549,7 @@ L023F26:
 	move.w d5,d1	; $023F2C
 	ext.l d1	; $023F2E
 	add.l d1,d0	; $023F30
-	lea.l ram_sys_ff02e2.l,a0	; $023F32
+	lea.l ram_sys_field_02e2.l,a0	; $023F32
 	clr.b (a0,d0.l)	; $023F38
 	addq.w #$1,d5	; $023F3C
 	cmp.w #$2,d5	; $023F3E
@@ -27590,14 +27590,14 @@ L023FA8:
 	lea.l L0CECF2.l,a0	; $023FB0
 	move.w d4,d1	; $023FB6
 	muls.w #$34,d1	; $023FB8
-	lea.l ram_sys_ff02ca.l,a1	; $023FBC
+	lea.l ram_sys_field_02ca.l,a1	; $023FBC
 	move.b (a0,d0.l),(a1,d1.l)	; $023FC2
 	move.w $c(a6),d0	; $023FC8
 	muls.w #$6,d0	; $023FCC
 	lea.l L0CECF3.l,a0	; $023FD0
 	move.w d4,d1	; $023FD6
 	muls.w #$34,d1	; $023FD8
-	lea.l ram_sys_ff02cb.l,a1	; $023FDC
+	lea.l ram_sys_field_02cb.l,a1	; $023FDC
 	move.b (a0,d0.l),(a1,d1.l)	; $023FE2
 	move.w $c(a6),d0	; $023FE8
 	muls.w #$6,d0	; $023FEC
@@ -27608,7 +27608,7 @@ L023FA8:
 	move.w d4,d0	; $024000
 	muls.w #$34,d0	; $024002
 	movea.l d0,a0	; $024006
-	lea.l ram_sys_ff02cc.l,a1	; $024008
+	lea.l ram_world_field_02cc.l,a1	; $024008
 	adda.l a1,a0	; $02400E
 	andi.w #$fff0,(a0)	; $024010
 	or.w d1,(a0)	; $024014
@@ -27622,17 +27622,17 @@ L023FA8:
 	move.w d4,d0	; $024030
 	muls.w #$34,d0	; $024032
 	movea.l d0,a0	; $024036
-	lea.l ram_sys_ff02cc.l,a1	; $024038
+	lea.l ram_world_field_02cc.l,a1	; $024038
 	adda.l a1,a0	; $02403E
 	andi.w #$ff0f,(a0)	; $024040
 	or.w d1,(a0)	; $024044
 	move.w d4,d0	; $024046
 	muls.w #$34,d0	; $024048
-	lea.l ram_sys_ff02ce.l,a0	; $02404C
+	lea.l ram_sys_field_02ce.l,a0	; $02404C
 	clr.w (a0,d0.l)	; $024052
 	move.w d4,d0	; $024056
 	muls.w #$34,d0	; $024058
-	lea.l ram_sys_ff02cc.l,a0	; $02405C
+	lea.l ram_world_field_02cc.l,a0	; $02405C
 	move.w (a0,d0.l),d1	; $024062
 	lsr.w #$4,d1	; $024066
 	and.w #$f,d1	; $024068
@@ -27641,18 +27641,18 @@ L023FA8:
 	addq.w #$2,a7	; $024074
 	move.w d4,d1	; $024076
 	muls.w #$34,d1	; $024078
-	lea.l ram_sys_ff02d4.l,a0	; $02407C
+	lea.l ram_world_field_02d4.l,a0	; $02407C
 	move.w d0,(a0,d1.l)	; $024082
 	move.w d4,d0	; $024086
 	muls.w #$34,d0	; $024088
-	lea.l ram_sys_ff02d4.l,a0	; $02408C
+	lea.l ram_world_field_02d4.l,a0	; $02408C
 	move.w d4,d1	; $024092
 	muls.w #$34,d1	; $024094
-	lea.l ram_sys_ff02d0.l,a1	; $024098
+	lea.l ram_world_field_02d0.l,a1	; $024098
 	move.w (a0,d0.l),(a1,d1.l)	; $02409E
 	move.w d4,d0	; $0240A4
 	muls.w #$34,d0	; $0240A6
-	lea.l ram_sys_ff02cc.l,a0	; $0240AA
+	lea.l ram_world_field_02cc.l,a0	; $0240AA
 	move.w (a0,d0.l),d1	; $0240B0
 	lsr.w #$4,d1	; $0240B4
 	and.w #$f,d1	; $0240B6
@@ -27661,53 +27661,53 @@ L023FA8:
 	addq.w #$2,a7	; $0240C2
 	move.w d4,d1	; $0240C4
 	muls.w #$34,d1	; $0240C6
-	lea.l ram_sys_ff02d6.l,a0	; $0240CA
+	lea.l ram_world_field_02d6.l,a0	; $0240CA
 	move.w d0,(a0,d1.l)	; $0240D0
 	move.w d4,d0	; $0240D4
 	muls.w #$34,d0	; $0240D6
-	lea.l ram_sys_ff02d6.l,a0	; $0240DA
+	lea.l ram_world_field_02d6.l,a0	; $0240DA
 	move.w d4,d1	; $0240E0
 	muls.w #$34,d1	; $0240E2
-	lea.l ram_sys_ff02d2.l,a1	; $0240E6
+	lea.l ram_world_field_02d2.l,a1	; $0240E6
 	move.w (a0,d0.l),(a1,d1.l)	; $0240EC
 	move.w d4,d0	; $0240F2
 	muls.w #$34,d0	; $0240F4
 	movea.l d0,a0	; $0240F8
-	lea.l ram_sys_ff02e0.l,a1	; $0240FA
+	lea.l ram_world_field_02e0.l,a1	; $0240FA
 	adda.l a1,a0	; $024100
 	andi.w #$ff00,(a0)	; $024102
 	move.w d4,d0	; $024106
 	muls.w #$34,d0	; $024108
-	lea.l ram_sys_ff02d9.l,a0	; $02410C
+	lea.l ram_sys_field_02d9.l,a0	; $02410C
 	clr.b (a0,d0.l)	; $024112
 	move.w d4,d0	; $024116
 	muls.w #$34,d0	; $024118
 	movea.l d0,a0	; $02411C
-	lea.l ram_sys_ff02e0.l,a1	; $02411E
+	lea.l ram_world_field_02e0.l,a1	; $02411E
 	adda.l a1,a0	; $024124
 	andi.w #$dfff,(a0)	; $024126
 	move.w d4,d0	; $02412A
 	muls.w #$34,d0	; $02412C
 	movea.l d0,a0	; $024130
-	lea.l ram_sys_ff02de.l,a1	; $024132
+	lea.l ram_world_field_02de.l,a1	; $024132
 	adda.l a1,a0	; $024138
 	andi.w #$feff,(a0)	; $02413A
 	move.w d4,d0	; $02413E
 	muls.w #$34,d0	; $024140
 	movea.l d0,a0	; $024144
-	lea.l ram_sys_ff02de.l,a1	; $024146
+	lea.l ram_world_field_02de.l,a1	; $024146
 	adda.l a1,a0	; $02414C
 	andi.w #$fdff,(a0)	; $02414E
 	move.w d4,d0	; $024152
 	muls.w #$34,d0	; $024154
 	movea.l d0,a0	; $024158
-	lea.l ram_sys_ff02de.l,a1	; $02415A
+	lea.l ram_world_field_02de.l,a1	; $02415A
 	adda.l a1,a0	; $024160
 	andi.w #$fbff,(a0)	; $024162
 	move.w d4,d0	; $024166
 	muls.w #$34,d0	; $024168
 	movea.l d0,a0	; $02416C
-	lea.l ram_sys_ff02de.l,a1	; $02416E
+	lea.l ram_world_field_02de.l,a1	; $02416E
 	adda.l a1,a0	; $024174
 	andi.w #$f7ff,(a0)	; $024176
 	moveq #$0,d5	; $02417A
@@ -27717,14 +27717,14 @@ L02417C:
 	move.w d5,d1	; $024182
 	ext.l d1	; $024184
 	add.l d1,d0	; $024186
-	lea.l ram_sys_ff02e2.l,a0	; $024188
+	lea.l ram_sys_field_02e2.l,a0	; $024188
 	clr.b (a0,d0.l)	; $02418E
 	addq.w #$1,d5	; $024192
 	cmp.w #$6,d5	; $024194
 	blt.b L02417C	; $024198
 	move.w d4,d0	; $02419A
 	muls.w #$34,d0	; $02419C
-	lea.l ram_sys_ff02e2.l,a0	; $0241A0
+	lea.l ram_sys_field_02e2.l,a0	; $0241A0
 	move.b #$1,(a0,d0.l)	; $0241A6
 L0241AC:
 	cmpi.w #$5,$8(a6)	; $0241AC
@@ -27735,20 +27735,20 @@ L0241AC:
 	move.w #$ffff,(a0,d0.l)	; $0241C0
 	move.w d4,d0	; $0241C6
 	muls.w #$34,d0	; $0241C8
-	lea.l ram_sys_ff02ca.l,a0	; $0241CC
+	lea.l ram_sys_field_02ca.l,a0	; $0241CC
 	move.w #$1,(a0,d0.l)	; $0241D2
 L0241D8:
 	cmpi.w #$ffff,$e(a6)	; $0241D8
 	beq.b L024256	; $0241DE
 	move.w d4,d0	; $0241E0
 	muls.w #$34,d0	; $0241E2
-	lea.l ram_sys_ff02ba.l,a0	; $0241E6
+	lea.l ram_menu_field_02ba.l,a0	; $0241E6
 	move.w $e(a6),(a0,d0.l)	; $0241EC
 	cmpi.w #$4,$8(a6)	; $0241F2
 	bne.b L02420E	; $0241F8
 	move.w d4,d0	; $0241FA
 	muls.w #$34,d0	; $0241FC
-	lea.l ram_sys_ff02bc.l,a0	; $024200
+	lea.l ram_sys_field_02bc.l,a0	; $024200
 	move.w #$4,(a0,d0.l)	; $024206
 	bra.b L024252	; $02420C
 L02420E:
@@ -27765,13 +27765,13 @@ L02421E:
 	bne.b L024242	; $02422C
 	move.w d4,d0	; $02422E
 	muls.w #$34,d0	; $024230
-	lea.l ram_sys_ff02bc.l,a0	; $024234
+	lea.l ram_sys_field_02bc.l,a0	; $024234
 	move.w #$4,(a0,d0.l)	; $02423A
 	bra.b L024252	; $024240
 L024242:
 	move.w d4,d0	; $024242
 	muls.w #$34,d0	; $024244
-	lea.l ram_sys_ff02bc.l,a0	; $024248
+	lea.l ram_sys_field_02bc.l,a0	; $024248
 	clr.w (a0,d0.l)	; $02424E
 L024252:
 	bra.w L024334	; $024252
@@ -27780,18 +27780,18 @@ L024256:
 	bne.b L024280	; $02425C
 	move.w d4,d0	; $02425E
 	muls.w #$34,d0	; $024260
-	lea.l ram_sys_ff02ba.l,a0	; $024264
+	lea.l ram_menu_field_02ba.l,a0	; $024264
 	clr.w (a0,d0.l)	; $02426A
 	move.w d4,d0	; $02426E
 	muls.w #$34,d0	; $024270
-	lea.l ram_sys_ff02bc.l,a0	; $024274
+	lea.l ram_sys_field_02bc.l,a0	; $024274
 	move.w #$4,(a0,d0.l)	; $02427A
 L024280:
 	cmpi.w #$4,$8(a6)	; $024280
 	bne.b L0242A2	; $024286
 	move.w d4,d0	; $024288
 	muls.w #$34,d0	; $02428A
-	lea.l ram_sys_ff02bc.l,a0	; $02428E
+	lea.l ram_sys_field_02bc.l,a0	; $02428E
 	move.w #$4,(a0,d0.l)	; $024294
 	move.w d4,-(a7)	; $02429A
 	jsr sys_struct52_read_pair(pc)	; $02429C
@@ -27801,13 +27801,13 @@ L0242A2:
 	bne.b L0242D2	; $0242A8
 	move.w d4,d0	; $0242AA
 	muls.w #$34,d0	; $0242AC
-	lea.l ram_sys_ff02ba.l,a0	; $0242B0
+	lea.l ram_menu_field_02ba.l,a0	; $0242B0
 	move.w $c(a6),d1	; $0242B6
 	add.w #$300,d1	; $0242BA
 	move.w d1,(a0,d0.l)	; $0242BE
 	move.w d4,d0	; $0242C2
 	muls.w #$34,d0	; $0242C4
-	lea.l ram_sys_ff02bc.l,a0	; $0242C8
+	lea.l ram_sys_field_02bc.l,a0	; $0242C8
 	clr.w (a0,d0.l)	; $0242CE
 L0242D2:
 	cmpi.w #$5,$8(a6)	; $0242D2
@@ -27816,7 +27816,7 @@ L0242D2:
 	beq.b L024312	; $0242E0
 	move.w d4,d0	; $0242E2
 	muls.w #$34,d0	; $0242E4
-	lea.l ram_sys_ff02ba.l,a0	; $0242E8
+	lea.l ram_menu_field_02ba.l,a0	; $0242E8
 	move.w $c(a6),d1	; $0242EE
 	ext.l d1	; $0242F2
 	divs.w #$40,d1	; $0242F4
@@ -27830,12 +27830,12 @@ L0242D2:
 L024312:
 	move.w d4,d0	; $024312
 	muls.w #$34,d0	; $024314
-	lea.l ram_sys_ff02ba.l,a0	; $024318
+	lea.l ram_menu_field_02ba.l,a0	; $024318
 	move.w #$200,(a0,d0.l)	; $02431E
 L024324:
 	move.w d4,d0	; $024324
 	muls.w #$34,d0	; $024326
-	lea.l ram_sys_ff02bc.l,a0	; $02432A
+	lea.l ram_sys_field_02bc.l,a0	; $02432A
 	clr.w (a0,d0.l)	; $024330
 L024334:
 	cmpi.w #$6,$8(a6)	; $024334
@@ -27846,24 +27846,24 @@ L024334:
 	move.w #$19,(a0,d0.l)	; $024348
 	move.w d4,d0	; $02434E
 	muls.w #$34,d0	; $024350
-	lea.l ram_sys_ff02ca.l,a0	; $024354
+	lea.l ram_sys_field_02ca.l,a0	; $024354
 	move.w #$19,(a0,d0.l)	; $02435A
 	move.w d4,d0	; $024360
 	muls.w #$34,d0	; $024362
-	lea.l ram_sys_ff02cc.l,a0	; $024366
+	lea.l ram_world_field_02cc.l,a0	; $024366
 	move.w #$ffff,(a0,d0.l)	; $02436C
 	move.w d4,d0	; $024372
 	muls.w #$34,d0	; $024374
-	lea.l ram_sys_ff02ce.l,a0	; $024378
+	lea.l ram_sys_field_02ce.l,a0	; $024378
 	move.w #$16,(a0,d0.l)	; $02437E
 	move.w d4,d0	; $024384
 	muls.w #$34,d0	; $024386
-	lea.l ram_sys_ff02d0.l,a0	; $02438A
+	lea.l ram_world_field_02d0.l,a0	; $02438A
 	move.w #$ffff,(a0,d0.l)	; $024390
 L024396:
 	move.w d4,d0	; $024396
 	muls.w #$34,d0	; $024398
-	lea.l ram_sys_ff02be.l,a0	; $02439C
+	lea.l ram_sys_field_02be.l,a0	; $02439C
 	move.w $10(a6),(a0,d0.l)	; $0243A2
 	move.w d4,d0	; $0243A8
 	muls.w #$34,d0	; $0243AA
@@ -27898,7 +27898,7 @@ npc_struct_setup:
 	move.w $8(a6),d0	; $02441A
 	muls.w #$34,d0	; $02441E
 	movea.l d0,a0	; $024422
-	lea.l ram_sys_ff02c4.l,a1	; $024424
+	lea.l ram_sys_field_02c4.l,a1	; $024424
 	adda.l a1,a0	; $02442A
 	move.w $8(a6),d0	; $02442C
 	muls.w #$34,d0	; $024430
@@ -27906,7 +27906,7 @@ npc_struct_setup:
 	lea.l ram_header_leader.l,a2	; $024436
 	adda.l a2,a1	; $02443C
 	move.l (a1)+,(a0)+	; $02443E
-	movea.l ram_sys_ffa7fc.l,a0	; $024440
+	movea.l ram_sys_field_a7fc.l,a0	; $024440
 	tst.w $c(a0)	; $024446
 	beq.b L02446C	; $02444A
 	tst.w d4	; $02444C
@@ -27926,7 +27926,7 @@ L024464:
 L02446C:
 	move.w $8(a6),d0	; $02446C
 	muls.w #$34,d0	; $024470
-	lea.l ram_sys_ff02ba.l,a0	; $024474
+	lea.l ram_menu_field_02ba.l,a0	; $024474
 	move.w (a0,d0.l),-(a7)	; $02447A
 	jsr world_vessel_grid_value(pc)	; $02447E
 	addq.w #$2,a7	; $024482
@@ -27949,7 +27949,7 @@ L0244A4:
 	bne.b L0244E2	; $0244BE
 	move.w $8(a6),d0	; $0244C0
 	muls.w #$34,d0	; $0244C4
-	lea.l ram_sys_ff02db.l,a0	; $0244C8
+	lea.l ram_sys_field_02db.l,a0	; $0244C8
 	moveq #$0,d1	; $0244CE
 	move.b (a0,d0.l),d1	; $0244D0
 	cmp.w ram_party_leader.l,d1	; $0244D4
@@ -27965,7 +27965,7 @@ L0244E2:
 	bne.b L02451A	; $0244FC
 	move.w $8(a6),d0	; $0244FE
 	muls.w #$34,d0	; $024502
-	lea.l ram_sys_ff02ba.l,a0	; $024506
+	lea.l ram_menu_field_02ba.l,a0	; $024506
 	cmpi.w #$4,(a0,d0.l)	; $02450C
 	bne.b L02451A	; $024512
 	move.w #$1e,-$8(a6)	; $024514
@@ -27979,14 +27979,14 @@ L02451A:
 	bne.b L024552	; $024534
 	move.w $8(a6),d0	; $024536
 	muls.w #$34,d0	; $02453A
-	lea.l ram_sys_ff02ba.l,a0	; $02453E
+	lea.l ram_menu_field_02ba.l,a0	; $02453E
 	cmpi.w #$4,(a0,d0.l)	; $024544
 	bne.b L024552	; $02454A
 	move.w #$a,-$8(a6)	; $02454C
 L024552:
 	move.w $8(a6),d0	; $024552
 	muls.w #$34,d0	; $024556
-	lea.l ram_sys_ff02b8.l,a0	; $02455A
+	lea.l ram_world_field_02b8.l,a0	; $02455A
 	cmpi.w #$ff,(a0,d0.l)	; $024560
 	beq.b L0245D8	; $024566
 	move.w #$ffff,-(a7)	; $024568
@@ -27994,7 +27994,7 @@ L024552:
 	move.w #$ffff,-(a7)	; $024570
 	move.w $8(a6),d0	; $024574
 	muls.w #$34,d0	; $024578
-	lea.l ram_sys_ff02be.l,a0	; $02457C
+	lea.l ram_sys_field_02be.l,a0	; $02457C
 	move.w (a0,d0.l),-(a7)	; $024582
 	tst.w d6	; $024586
 	bge.b L024590	; $024588
@@ -28008,22 +28008,22 @@ L024592:
 	clr.w -(a7)	; $024594
 	move.w $8(a6),d0	; $024596
 	muls.w #$34,d0	; $02459A
-	lea.l ram_sys_ff02b8.l,a0	; $02459E
+	lea.l ram_world_field_02b8.l,a0	; $02459E
 	move.w (a0,d0.l),-(a7)	; $0245A4
 	jsr combat_effect_apply.l	; $0245A8
 	lea.l $e(a7),a7	; $0245AE
 	move.w $8(a6),d0	; $0245B2
 	muls.w #$34,d0	; $0245B6
-	lea.l ram_sys_ff02b8.l,a0	; $0245BA
+	lea.l ram_world_field_02b8.l,a0	; $0245BA
 	move.w (a0,d0.l),d1	; $0245C0
 	mulu.w #$c,d1	; $0245C4
-	lea.l ram_sys_ffb0d4.l,a0	; $0245C8
+	lea.l ram_sys_field_b0d4.l,a0	; $0245C8
 	move.w -$8(a6),(a0,d1.l)	; $0245CE
 	bra.w L02465E	; $0245D4
 L0245D8:
 	move.w $8(a6),d0	; $0245D8
 	muls.w #$34,d0	; $0245DC
-	lea.l ram_sys_ff02ba.l,a0	; $0245E0
+	lea.l ram_menu_field_02ba.l,a0	; $0245E0
 	move.w (a0,d0.l),-(a7)	; $0245E6
 	jsr world_vessel_class(pc)	; $0245EA
 	addq.w #$2,a7	; $0245EE
@@ -28033,30 +28033,30 @@ L0245D8:
 	move.w d4,-(a7)	; $0245F8
 	move.w $8(a6),d0	; $0245FA
 	muls.w #$34,d0	; $0245FE
-	lea.l ram_sys_ff02be.l,a0	; $024602
+	lea.l ram_sys_field_02be.l,a0	; $024602
 	move.w (a0,d0.l),-(a7)	; $024608
 	move.w $8(a6),d0	; $02460C
 	muls.w #$34,d0	; $024610
-	lea.l ram_sys_ff02bc.l,a0	; $024614
+	lea.l ram_sys_field_02bc.l,a0	; $024614
 	move.w (a0,d0.l),-(a7)	; $02461A
 	move.w d6,-(a7)	; $02461E
 	jsr map_grid_create.l	; $024620
 	lea.l $e(a7),a7	; $024626
 	move.w $8(a6),d1	; $02462A
 	muls.w #$34,d1	; $02462E
-	lea.l ram_sys_ff02b8.l,a0	; $024632
+	lea.l ram_world_field_02b8.l,a0	; $024632
 	move.w d0,(a0,d1.l)	; $024638
 	move.w $8(a6),d0	; $02463C
 	muls.w #$34,d0	; $024640
-	lea.l ram_sys_ff02b8.l,a0	; $024644
+	lea.l ram_world_field_02b8.l,a0	; $024644
 	move.w (a0,d0.l),d1	; $02464A
 	mulu.w #$c,d1	; $02464E
-	lea.l ram_sys_ffb0d4.l,a0	; $024652
+	lea.l ram_sys_field_b0d4.l,a0	; $024652
 	move.w -$8(a6),(a0,d1.l)	; $024658
 L02465E:
 	move.w $8(a6),d0	; $02465E
 	muls.w #$34,d0	; $024662
-	lea.l ram_sys_ff02b8.l,a0	; $024666
+	lea.l ram_world_field_02b8.l,a0	; $024666
 	move.l d0,d1	; $02466C
 	move.w (a0,d1.l),d0	; $02466E
 	bra.w L024464	; $024672
@@ -28069,15 +28069,15 @@ map_grid_place_chars:
 	pea.l -$6(a6)	; $024684
 	jsr map_scroll_offset.l	; $024688
 	addq.w #$4,a7	; $02468E
-	cmpi.w #$c,ram_sys_ff0e8e.l	; $024690
+	cmpi.w #$c,ram_sys_field_0e8e.l	; $024690
 	bge.b L0246A0	; $024698
 	movea.w #$1,a4	; $02469A
 	suba.l a3,a3	; $02469E
 L0246A0:
-	movea.l ram_sys_ffa7fc.l,a0	; $0246A0
+	movea.l ram_sys_field_a7fc.l,a0	; $0246A0
 	move.w (a0),d0	; $0246A6
 	sub.w #$c,d0	; $0246A8
-	move.w ram_sys_ff0e8e.l,d1	; $0246AC
+	move.w ram_sys_field_0e8e.l,d1	; $0246AC
 	cmp.w d0,d1	; $0246B2
 	ble.b L0246BE	; $0246B4
 	movea.w #$1,a4	; $0246B6
@@ -28093,7 +28093,7 @@ L0246C0:
 	beq.w L024904	; $0246D4
 	move.w d7,d0	; $0246D8
 	muls.w #$34,d0	; $0246DA
-	lea.l ram_sys_ff02b8.l,a0	; $0246DE
+	lea.l ram_world_field_02b8.l,a0	; $0246DE
 	cmpi.w #$ff,(a0,d0.l)	; $0246E4
 	bne.w L024904	; $0246EA
 	move.w d7,d0	; $0246EE
@@ -28121,7 +28121,7 @@ L02473E:
 	clr.w -$8(a6)	; $02473E
 	move.w a4,d0	; $024742
 	beq.b L0247AE	; $024744
-	movea.l ram_sys_ffa7fc.l,a0	; $024746
+	movea.l ram_sys_field_a7fc.l,a0	; $024746
 	tst.w $c(a0)	; $02474C
 	beq.b L0247AE	; $024750
 	move.w a3,d0	; $024752
@@ -28129,12 +28129,12 @@ L02473E:
 	move.w d7,d0	; $024756
 	muls.w #$34,d0	; $024758
 	lea.l ram_header_leader.l,a0	; $02475C
-	move.w ram_sys_ff0e8e.l,d1	; $024762
+	move.w ram_sys_field_0e8e.l,d1	; $024762
 	add.w #$c,d1	; $024768
 	move.w (a0,d0.l),d2	; $02476C
 	cmp.w d1,d2	; $024770
 	ble.b L024782	; $024772
-	movea.l ram_sys_ffa7fc.l,a0	; $024774
+	movea.l ram_sys_field_a7fc.l,a0	; $024774
 	move.w (a0),d0	; $02477A
 	neg.w d0	; $02477C
 	move.w d0,-$8(a6)	; $02477E
@@ -28144,12 +28144,12 @@ L024782:
 	move.w d7,d0	; $024786
 	muls.w #$34,d0	; $024788
 	lea.l ram_header_leader.l,a0	; $02478C
-	move.w ram_sys_ff0e8e.l,d1	; $024792
+	move.w ram_sys_field_0e8e.l,d1	; $024792
 	sub.w #$c,d1	; $024798
 	move.w (a0,d0.l),d2	; $02479C
 	cmp.w d1,d2	; $0247A0
 	bge.b L0247AE	; $0247A2
-	movea.l ram_sys_ffa7fc.l,a0	; $0247A4
+	movea.l ram_sys_field_a7fc.l,a0	; $0247A4
 	move.w (a0),-$8(a6)	; $0247AA
 L0247AE:
 	move.w d7,d0	; $0247AE
@@ -28164,7 +28164,7 @@ L0247AE:
 	lea.l ram_npc_field_02c2.l,a0	; $0247CE
 	move.w (a0,d0.l),d5	; $0247D4
 	add.w -$4(a6),d5	; $0247D8
-	movea.l ram_sys_ffa7fc.l,a0	; $0247DC
+	movea.l ram_sys_field_a7fc.l,a0	; $0247DC
 	tst.w $c(a0)	; $0247E2
 	beq.b L024804	; $0247E6
 	tst.w d4	; $0247E8
@@ -28178,14 +28178,14 @@ L0247AE:
 L024804:
 	move.w d7,d0	; $024804
 	muls.w #$34,d0	; $024806
-	lea.l ram_sys_ff02ba.l,a0	; $02480A
+	lea.l ram_menu_field_02ba.l,a0	; $02480A
 	move.w (a0,d0.l),-(a7)	; $024810
 	jsr world_vessel_grid_value(pc)	; $024814
 	addq.w #$2,a7	; $024818
 	move.w d0,d6	; $02481A
 	move.w d7,d0	; $02481C
 	muls.w #$34,d0	; $02481E
-	lea.l ram_sys_ff02ba.l,a0	; $024822
+	lea.l ram_menu_field_02ba.l,a0	; $024822
 	move.w (a0,d0.l),-(a7)	; $024828
 	jsr world_vessel_class(pc)	; $02482C
 	addq.w #$2,a7	; $024830
@@ -28195,11 +28195,11 @@ L024804:
 	move.w d4,-(a7)	; $02483A
 	move.w d7,d0	; $02483C
 	muls.w #$34,d0	; $02483E
-	lea.l ram_sys_ff02be.l,a0	; $024842
+	lea.l ram_sys_field_02be.l,a0	; $024842
 	move.w (a0,d0.l),-(a7)	; $024848
 	move.w d7,d0	; $02484C
 	muls.w #$34,d0	; $02484E
-	lea.l ram_sys_ff02bc.l,a0	; $024852
+	lea.l ram_sys_field_02bc.l,a0	; $024852
 	move.w (a0,d0.l),-(a7)	; $024858
 	move.w d6,d0	; $02485C
 	neg.w d0	; $02485E
@@ -28208,7 +28208,7 @@ L024804:
 	lea.l $e(a7),a7	; $024868
 	move.w d7,d1	; $02486C
 	muls.w #$34,d1	; $02486E
-	lea.l ram_sys_ff02b8.l,a0	; $024872
+	lea.l ram_world_field_02b8.l,a0	; $024872
 	move.w d0,(a0,d1.l)	; $024878
 	move.w d7,d0	; $02487C
 	muls.w #$34,d0	; $02487E
@@ -28219,7 +28219,7 @@ L024804:
 	bne.b L0248B0	; $024894
 	move.w d7,d0	; $024896
 	muls.w #$34,d0	; $024898
-	lea.l ram_sys_ff02ba.l,a0	; $02489C
+	lea.l ram_menu_field_02ba.l,a0	; $02489C
 	cmpi.w #$4,(a0,d0.l)	; $0248A2
 	bne.b L0248B0	; $0248A8
 	move.w #$1e,-$a(a6)	; $0248AA
@@ -28233,17 +28233,17 @@ L0248B0:
 	bne.b L0248E4	; $0248C8
 	move.w d7,d0	; $0248CA
 	muls.w #$34,d0	; $0248CC
-	lea.l ram_sys_ff02ba.l,a0	; $0248D0
+	lea.l ram_menu_field_02ba.l,a0	; $0248D0
 	cmpi.w #$4,(a0,d0.l)	; $0248D6
 	bne.b L0248E4	; $0248DC
 	move.w #$a,-$a(a6)	; $0248DE
 L0248E4:
 	move.w d7,d0	; $0248E4
 	muls.w #$34,d0	; $0248E6
-	lea.l ram_sys_ff02b8.l,a0	; $0248EA
+	lea.l ram_world_field_02b8.l,a0	; $0248EA
 	move.w (a0,d0.l),d1	; $0248F0
 	mulu.w #$c,d1	; $0248F4
-	lea.l ram_sys_ffb0d4.l,a0	; $0248F8
+	lea.l ram_sys_field_b0d4.l,a0	; $0248F8
 	move.w -$a(a6),(a0,d1.l)	; $0248FE
 L024904:
 	addq.w #$1,d7	; $024904
@@ -28257,7 +28257,7 @@ npc_struct_release:
 	link.w a6,#$fffe	; $024916
 	move.w $8(a6),d0	; $02491A
 	muls.w #$34,d0	; $02491E
-	lea.l ram_sys_ff02b8.l,a0	; $024922
+	lea.l ram_world_field_02b8.l,a0	; $024922
 	move.w (a0,d0.l),-$2(a6)	; $024928
 	cmpi.w #$ff,-$2(a6)	; $02492E
 	beq.b L02497C	; $024934
@@ -28266,7 +28266,7 @@ npc_struct_release:
 	addq.w #$2,a7	; $024940
 	move.w $8(a6),d0	; $024942
 	muls.w #$34,d0	; $024946
-	lea.l ram_sys_ff02b8.l,a0	; $02494A
+	lea.l ram_world_field_02b8.l,a0	; $02494A
 	move.w #$ff,(a0,d0.l)	; $024950
 	move.w $8(a6),d0	; $024956
 	muls.w #$34,d0	; $02495A
@@ -28330,7 +28330,7 @@ L0249F6:
 	move.w #$ffff,-(a7)	; $0249FA
 	move.w -$34(a6),d0	; $0249FE
 	muls.w #$34,d0	; $024A02
-	lea.l ram_sys_ff02ce.l,a0	; $024A06
+	lea.l ram_sys_field_02ce.l,a0	; $024A06
 	move.w (a0,d0.l),d1	; $024A0C
 	add.w #$300,d1	; $024A10
 	move.w d1,-(a7)	; $024A14
@@ -28343,11 +28343,11 @@ L0249F6:
 	lea.l $10(a7),a7	; $024A2C
 	move.w -$34(a6),d0	; $024A30
 	muls.w #$34,d0	; $024A34
-	lea.l ram_sys_ff02b6.l,a0	; $024A38
+	lea.l ram_sys_field_02b6.l,a0	; $024A38
 	move.w #$fe,(a0,d0.l)	; $024A3E
 	move.w -$34(a6),d0	; $024A44
 	muls.w #$34,d0	; $024A48
-	lea.l ram_sys_ff02d2.l,a0	; $024A4C
+	lea.l ram_world_field_02d2.l,a0	; $024A4C
 	cmpi.w #$ffff,(a0,d0.l)	; $024A52
 	bne.b L024A6A	; $024A58
 	move.w #$ffff,-(a7)	; $024A5A
@@ -28408,14 +28408,14 @@ L024ABA:
 	move.w (a0,d0.l),-$20(a6)	; $024B0E
 	move.w -$34(a6),d0	; $024B14
 	muls.w #$34,d0	; $024B18
-	lea.l ram_sys_ff02ba.l,a0	; $024B1C
+	lea.l ram_menu_field_02ba.l,a0	; $024B1C
 	move.w (a0,d0.l),-(a7)	; $024B22
 	jsr world_vessel_mode(pc)	; $024B26
 	addq.w #$2,a7	; $024B2A
 	move.w d0,-$1a(a6)	; $024B2C
 	move.w -$34(a6),d0	; $024B30
 	muls.w #$34,d0	; $024B34
-	lea.l ram_sys_ff02be.l,a0	; $024B38
+	lea.l ram_sys_field_02be.l,a0	; $024B38
 	move.w (a0,d0.l),-$14(a6)	; $024B3E
 	move.w -$34(a6),-$4(a6)	; $024B44
 	cmpa.w #$6,a3	; $024B4A
@@ -28471,7 +28471,7 @@ L024BDA:
 	lsr.w #$4,d1	; $024BFA
 	and.w #$3f,d1	; $024BFC
 	bne.b L024C12	; $024C00
-	move.w #$ffff,ram_sys_ff011e.l	; $024C02
+	move.w #$ffff,ram_sys_field_011e.l	; $024C02
 	move.w -$a(a6),d0	; $024C0A
 	bra.w L0249EE	; $024C0E
 L024C12:
@@ -28487,7 +28487,7 @@ L024C12:
 	beq.b L024C52	; $024C3C
 	move.w -$34(a6),d0	; $024C3E
 	muls.w #$34,d0	; $024C42
-	lea.l ram_sys_ff02cc.l,a0	; $024C46
+	lea.l ram_world_field_02cc.l,a0	; $024C46
 	tst.w (a0,d0.l)	; $024C4C
 	bne.b L024C66	; $024C50
 L024C52:
@@ -28504,7 +28504,7 @@ L024C66:
 	move.w #$ffff,-(a7)	; $024C78
 	move.w -$34(a6),d0	; $024C7C
 	muls.w #$34,d0	; $024C80
-	lea.l ram_sys_ff02ce.l,a0	; $024C84
+	lea.l ram_sys_field_02ce.l,a0	; $024C84
 	move.w (a0,d0.l),d1	; $024C8A
 	add.w #$300,d1	; $024C8E
 	move.w d1,-(a7)	; $024C92
@@ -28517,11 +28517,11 @@ L024C66:
 	lea.l $10(a7),a7	; $024CAA
 	move.w -$34(a6),d0	; $024CAE
 	muls.w #$34,d0	; $024CB2
-	lea.l ram_sys_ff02b6.l,a0	; $024CB6
+	lea.l ram_sys_field_02b6.l,a0	; $024CB6
 	move.w #$fe,(a0,d0.l)	; $024CBC
 	move.w -$34(a6),d0	; $024CC2
 	muls.w #$34,d0	; $024CC6
-	lea.l ram_sys_ff02d2.l,a0	; $024CCA
+	lea.l ram_world_field_02d2.l,a0	; $024CCA
 	cmpi.w #$ffff,(a0,d0.l)	; $024CD0
 	bne.b L024CE8	; $024CD6
 	move.w #$ffff,-(a7)	; $024CD8
@@ -28537,11 +28537,11 @@ L024CE8:
 	move.w -$34(a6),d1	; $024CFA
 	muls.w #$34,d1	; $024CFE
 	lea.l ram_header_leader.l,a1	; $024D02
-	movea.l ram_sys_ffa7fc.l,a2	; $024D08
+	movea.l ram_sys_field_a7fc.l,a2	; $024D08
 	move.w (a1,d1.l),d2	; $024D0E
 	add.w (a2),d2	; $024D12
 	add.w -$18(a6),d2	; $024D14
-	movea.l ram_sys_ffa7fc.l,a1	; $024D18
+	movea.l ram_sys_field_a7fc.l,a1	; $024D18
 	ext.l d2	; $024D1E
 	divs.w (a1),d2	; $024D20
 	swap d2	; $024D22
@@ -28552,11 +28552,11 @@ L024CE8:
 	move.w -$34(a6),d1	; $024D36
 	muls.w #$34,d1	; $024D3A
 	lea.l ram_npc_field_02c2.l,a1	; $024D3E
-	movea.l ram_sys_ffa7fc.l,a2	; $024D44
+	movea.l ram_sys_field_a7fc.l,a2	; $024D44
 	move.w (a1,d1.l),d2	; $024D4A
 	add.w $2(a2),d2	; $024D4E
 	add.w -$16(a6),d2	; $024D52
-	movea.l ram_sys_ffa7fc.l,a1	; $024D56
+	movea.l ram_sys_field_a7fc.l,a1	; $024D56
 	ext.l d2	; $024D5C
 	divs.w $2(a1),d2	; $024D5E
 	swap d2	; $024D62
@@ -28564,24 +28564,24 @@ L024CE8:
 L024D68:
 	move.w -$34(a6),d0	; $024D68
 	muls.w #$34,d0	; $024D6C
-	lea.l ram_sys_ff02be.l,a0	; $024D70
+	lea.l ram_sys_field_02be.l,a0	; $024D70
 	move.w d6,(a0,d0.l)	; $024D76
 	move.w -$34(a6),d0	; $024D7A
 	muls.w #$34,d0	; $024D7E
-	lea.l ram_sys_ff02b8.l,a0	; $024D82
+	lea.l ram_world_field_02b8.l,a0	; $024D82
 	move.w (a0,d0.l),d5	; $024D88
 	cmp.w #$ff,d5	; $024D8C
 	beq.w L02511E	; $024D90
 	move.w d5,d0	; $024D94
 	muls.w #$c,d0	; $024D96
-	lea.l ram_sys_ffb0d6.l,a0	; $024D9A
+	lea.l ram_sys_field_b0d6.l,a0	; $024D9A
 	cmpi.w #$1,(a0,d0.l)	; $024DA0
 	bne.b L024DC2	; $024DA6
 	lea.l ram_combat_flags.l,a0	; $024DA8
 	move.w (a0),d0	; $024DAE
 	and.w #$1,d0	; $024DB0
 	bne.w L024E76	; $024DB4
-	tst.w ram_sys_ff0110.l	; $024DB8
+	tst.w ram_menu_field_0110.l	; $024DB8
 	bne.w L024E76	; $024DBE
 L024DC2:
 	move.w #$ffff,-$36(a6)	; $024DC2
@@ -28594,7 +28594,7 @@ L024DCE:
 	addq.w #$4,a7	; $024DD8
 	move.w d5,d0	; $024DDA
 	muls.w #$c,d0	; $024DDC
-	lea.l ram_sys_ffb0d6.l,a0	; $024DE0
+	lea.l ram_sys_field_b0d6.l,a0	; $024DE0
 	cmpi.w #$1,(a0,d0.l)	; $024DE6
 	bne.b L024DF4	; $024DEC
 	move.w #$1c,-$36(a6)	; $024DEE
@@ -28606,13 +28606,13 @@ L024DF8:
 	blt.b L024DCE	; $024DFE
 	move.w -$34(a6),d0	; $024E00
 	muls.w #$34,d0	; $024E04
-	lea.l ram_sys_ff02b8.l,a0	; $024E08
+	lea.l ram_world_field_02b8.l,a0	; $024E08
 	cmpi.w #$ff,(a0,d0.l)	; $024E0E
 	bne.b L024E36	; $024E14
 	move.w -$34(a6),d0	; $024E16
 	muls.w #$34,d0	; $024E1A
 	movea.l d0,a0	; $024E1E
-	lea.l ram_sys_ff02c4.l,a1	; $024E20
+	lea.l ram_sys_field_02c4.l,a1	; $024E20
 	adda.l a1,a0	; $024E26
 	lea.l -$2e(a6),a1	; $024E28
 	move.l (a1)+,(a0)+	; $024E2C
@@ -28623,7 +28623,7 @@ L024E36:
 	beq.b L024E52	; $024E3C
 	move.w -$34(a6),d0	; $024E3E
 	muls.w #$34,d0	; $024E42
-	lea.l ram_sys_ff02bc.l,a0	; $024E46
+	lea.l ram_sys_field_02bc.l,a0	; $024E46
 	move.w -$36(a6),(a0,d0.l)	; $024E4C
 L024E52:
 	move.w #$ffff,-(a7)	; $024E52
@@ -28696,52 +28696,52 @@ L024EFA:
 	lsr.w #$4,d1	; $024F0C
 	and.w #$3f,d1	; $024F0E
 	bne.w L02511E	; $024F12
-	move.w #$4,ram_sys_ff011c.l	; $024F16
-	tst.w ram_sys_ff013e.l	; $024F1E
+	move.w #$4,ram_sys_field_011c.l	; $024F16
+	tst.w ram_sys_field_013e.l	; $024F1E
 	beq.b L024F38	; $024F24
 	move.w -$34(a6),d0	; $024F26
 	cmp.w ram_party_index_array.l,d0	; $024F2A
 	bne.b L024F38	; $024F30
 	jsr world_step_event.l	; $024F32
 L024F38:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $024F38
+	cmpi.w #$1,ram_menu_field_00ae.l	; $024F38
 	bne.w L024FF2	; $024F40
-	move.w ram_sys_ffc364.l,d0	; $024F44
+	move.w ram_world_field_c364.l,d0	; $024F44
 	sub.w -$8(a6),d0	; $024F4A
 	cmp.w #$7530,d0	; $024F4E
 	ble.b L024F5A	; $024F52
 	move.w #$7530,d0	; $024F54
 	bra.b L024F78	; $024F58
 L024F5A:
-	move.w ram_sys_ffc364.l,d0	; $024F5A
+	move.w ram_world_field_c364.l,d0	; $024F5A
 	sub.w -$8(a6),d0	; $024F60
 	cmp.w #$1,d0	; $024F64
 	bge.b L024F6E	; $024F68
 	moveq #$1,d0	; $024F6A
 	bra.b L024F78	; $024F6C
 L024F6E:
-	move.w ram_sys_ffc364.l,d0	; $024F6E
+	move.w ram_world_field_c364.l,d0	; $024F6E
 	sub.w -$8(a6),d0	; $024F74
 L024F78:
-	move.w d0,ram_sys_ffc364.l	; $024F78
-	move.w ram_sys_ffc366.l,d0	; $024F7E
+	move.w d0,ram_world_field_c364.l	; $024F78
+	move.w ram_world_field_c366.l,d0	; $024F7E
 	sub.w -$6(a6),d0	; $024F84
 	cmp.w #$7530,d0	; $024F88
 	ble.b L024F94	; $024F8C
 	move.w #$7530,d0	; $024F8E
 	bra.b L024FB2	; $024F92
 L024F94:
-	move.w ram_sys_ffc366.l,d0	; $024F94
+	move.w ram_world_field_c366.l,d0	; $024F94
 	sub.w -$6(a6),d0	; $024F9A
 	cmp.w #$1,d0	; $024F9E
 	bge.b L024FA8	; $024FA2
 	moveq #$1,d0	; $024FA4
 	bra.b L024FB2	; $024FA6
 L024FA8:
-	move.w ram_sys_ffc366.l,d0	; $024FA8
+	move.w ram_world_field_c366.l,d0	; $024FA8
 	sub.w -$6(a6),d0	; $024FAE
 L024FB2:
-	move.w d0,ram_sys_ffc366.l	; $024FB2
+	move.w d0,ram_world_field_c366.l	; $024FB2
 	cmpi.w #$3,-$1a(a6)	; $024FB8
 	bne.b L024FF2	; $024FBE
 	move.w #$9,-(a7)	; $024FC0
@@ -28755,7 +28755,7 @@ L024FB2:
 	move.w ram_party_leader.l,-(a7)	; $024FDC
 	jsr inv_apply_resource.l	; $024FE2
 	addq.w #$8,a7	; $024FE8
-	move.w #$ffff,ram_sys_ff009a.l	; $024FEA
+	move.w #$ffff,ram_sys_field_009a.l	; $024FEA
 L024FF2:
 	move.w -$e(a6),d0	; $024FF2
 	ext.l d0	; $024FF6
@@ -28768,7 +28768,7 @@ L024FFC:
 	jsr world_step_apply.l	; $02500A
 	lea.l $a(a7),a7	; $025010
 	pea.l -$3c(a6)	; $025014
-	pea.l ram_sys_ffbb86.l	; $025018
+	pea.l ram_sys_field_bb86.l	; $025018
 	clr.w -(a7)	; $02501E
 	clr.w -(a7)	; $025020
 	move.w -$28(a6),-(a7)	; $025022
@@ -28777,22 +28777,22 @@ L024FFC:
 	move.w #$2,-(a7)	; $02502C
 	jsr text_event_resolve.l	; $025030
 	lea.l $14(a7),a7	; $025036
-	pea.l ram_sys_ffbb86.l	; $02503A
+	pea.l ram_sys_field_bb86.l	; $02503A
 	clr.w -(a7)	; $025040
 	move.w #$1,-(a7)	; $025042
 	move.w -$10(a6),-(a7)	; $025046
 	jsr text_enqueue_message.l	; $02504A
 	lea.l $a(a7),a7	; $025050
-	clr.w ram_sys_ff0142.l	; $025054
+	clr.w ram_sys_field_0142.l	; $025054
 	bra.w L025112	; $02505A
 L02505E:
 	move.w -$34(a6),d0	; $02505E
 	cmp.w ram_party_leader.l,d0	; $025062
 	bne.b L025070	; $025068
-	move.w d6,ram_sys_ff011c.l	; $02506A
+	move.w d6,ram_sys_field_011c.l	; $02506A
 L025070:
 	pea.l -$3c(a6)	; $025070
-	pea.l ram_sys_ffbb86.l	; $025074
+	pea.l ram_sys_field_bb86.l	; $025074
 	clr.w -(a7)	; $02507A
 	clr.w -(a7)	; $02507C
 	move.w -$10(a6),-(a7)	; $02507E
@@ -28801,13 +28801,13 @@ L025070:
 	move.w #$1,-(a7)	; $025088
 	jsr text_event_resolve.l	; $02508C
 	lea.l $14(a7),a7	; $025092
-	pea.l ram_sys_ffbb86.l	; $025096
+	pea.l ram_sys_field_bb86.l	; $025096
 	clr.w -(a7)	; $02509C
 	move.w #$1,-(a7)	; $02509E
 	move.w -$10(a6),-(a7)	; $0250A2
 	jsr text_enqueue_message.l	; $0250A6
 	lea.l $a(a7),a7	; $0250AC
-	clr.w ram_sys_ff0142.l	; $0250B0
+	clr.w ram_sys_field_0142.l	; $0250B0
 	bra.b L025112	; $0250B6
 L0250B8:
 	move.w -$34(a6),d0	; $0250B8
@@ -28815,18 +28815,18 @@ L0250B8:
 	bne.b L0250D0	; $0250C2
 	tst.w -$c(a6)	; $0250C4
 	bne.b L0250D0	; $0250C8
-	move.w d6,ram_sys_ff011c.l	; $0250CA
+	move.w d6,ram_sys_field_011c.l	; $0250CA
 L0250D0:
 	move.w -$c(a6),-(a7)	; $0250D0
 	move.w -$10(a6),-(a7)	; $0250D4
 	jsr text_show_message.l	; $0250D8
 	addq.w #$4,a7	; $0250DE
-	clr.w ram_sys_ff0142.l	; $0250E0
+	clr.w ram_sys_field_0142.l	; $0250E0
 	bra.b L025112	; $0250E6
 L0250E8:
 	bra.b L025112	; $0250E8
 L0250EA:
-	tst.w ram_sys_ff0110.l	; $0250EA
+	tst.w ram_menu_field_0110.l	; $0250EA
 	bne.b L0250F6	; $0250F0
 	jsr npc_location_greet(pc)	; $0250F2
 L0250F6:
@@ -28851,7 +28851,7 @@ L02511E:
 	move.w -$34(a6),d0	; $02511E
 	muls.w #$34,d0	; $025122
 	movea.l d0,a0	; $025126
-	lea.l ram_sys_ff02c4.l,a1	; $025128
+	lea.l ram_sys_field_02c4.l,a1	; $025128
 	adda.l a1,a0	; $02512E
 	lea.l -$2e(a6),a1	; $025130
 	move.l (a1)+,(a0)+	; $025134
@@ -28865,7 +28865,7 @@ world_reposition_leader:
 	pea.l -$6(a6)	; $02514A
 	move.w $8(a6),d0	; $02514E
 	muls.w #$34,d0	; $025152
-	lea.l ram_sys_ff02b8.l,a0	; $025156
+	lea.l ram_world_field_02b8.l,a0	; $025156
 	move.w (a0,d0.l),-(a7)	; $02515C
 	jsr map_grid_clear.l	; $025160
 	addq.w #$6,a7	; $025166
@@ -28876,7 +28876,7 @@ world_reposition_leader:
 	jsr error_show.l	; $025176
 	addq.w #$2,a7	; $02517C
 L02517E:
-	movea.l ram_sys_ffa7fc.l,a0	; $02517E
+	movea.l ram_sys_field_a7fc.l,a0	; $02517E
 	tst.w $c(a0)	; $025184
 	beq.b L0251EE	; $025188
 	cmpi.w #$4,-$6(a6)	; $02518A
@@ -28911,8 +28911,8 @@ L0251E0:
 	bra.w L0253FA	; $0251EA
 L0251EE:
 	clr.w -$8(a6)	; $0251EE
-	move.w ram_sys_ff0e8e.l,-$a(a6)	; $0251F2
-	move.w ram_sys_ff0e90.l,-$c(a6)	; $0251FA
+	move.w ram_sys_field_0e8e.l,-$a(a6)	; $0251F2
+	move.w ram_world_field_0e90.l,-$c(a6)	; $0251FA
 	move.w $a(a6),d0	; $025202
 	ext.l d0	; $025206
 	bra.w L0253A8	; $025208
@@ -28926,7 +28926,7 @@ L02520C:
 L025224:
 	bra.w L0253BA	; $025224
 L025228:
-	movea.l ram_sys_ffa7fc.l,a0	; $025228
+	movea.l ram_sys_field_a7fc.l,a0	; $025228
 	move.w $4(a0),d0	; $02522E
 	subq.w #$5,d0	; $025232
 	move.w -$c(a6),d1	; $025234
@@ -28948,7 +28948,7 @@ L025250:
 L025268:
 	bra.w L0253BA	; $025268
 L02526C:
-	movea.l ram_sys_ffa7fc.l,a0	; $02526C
+	movea.l ram_sys_field_a7fc.l,a0	; $02526C
 	move.w $4(a0),d0	; $025272
 	subq.w #$5,d0	; $025276
 	move.w -$a(a6),d1	; $025278
@@ -28963,35 +28963,35 @@ L025290:
 L025294:
 	clr.w -$8(a6)	; $025294
 	move.w -$6(a6),d0	; $025298
-	sub.w ram_sys_ff0e8e.l,d0	; $02529C
+	sub.w ram_sys_field_0e8e.l,d0	; $02529C
 	tst.w d0	; $0252A2
 	bge.b L0252B4	; $0252A4
 	move.w -$6(a6),d0	; $0252A6
-	sub.w ram_sys_ff0e8e.l,d0	; $0252AA
+	sub.w ram_sys_field_0e8e.l,d0	; $0252AA
 	neg.w d0	; $0252B0
 	bra.b L0252BE	; $0252B2
 L0252B4:
 	move.w -$6(a6),d0	; $0252B4
-	sub.w ram_sys_ff0e8e.l,d0	; $0252B8
+	sub.w ram_sys_field_0e8e.l,d0	; $0252B8
 L0252BE:
 	cmp.w #$3,d0	; $0252BE
 	bge.b L025300	; $0252C2
 	move.w -$4(a6),d0	; $0252C4
-	sub.w ram_sys_ff0e90.l,d0	; $0252C8
+	sub.w ram_world_field_0e90.l,d0	; $0252C8
 	tst.w d0	; $0252CE
 	bge.b L0252E0	; $0252D0
 	move.w -$4(a6),d0	; $0252D2
-	sub.w ram_sys_ff0e90.l,d0	; $0252D6
+	sub.w ram_world_field_0e90.l,d0	; $0252D6
 	neg.w d0	; $0252DC
 	bra.b L0252EA	; $0252DE
 L0252E0:
 	move.w -$4(a6),d0	; $0252E0
-	sub.w ram_sys_ff0e90.l,d0	; $0252E4
+	sub.w ram_world_field_0e90.l,d0	; $0252E4
 L0252EA:
 	cmp.w #$3,d0	; $0252EA
 	bge.b L025300	; $0252EE
-	move.w ram_sys_ff0e8e.l,-$6(a6)	; $0252F0
-	move.w ram_sys_ff0e90.l,-$4(a6)	; $0252F8
+	move.w ram_sys_field_0e8e.l,-$6(a6)	; $0252F0
+	move.w ram_world_field_0e90.l,-$4(a6)	; $0252F8
 L025300:
 	cmpi.w #$4,-$4(a6)	; $025300
 	bge.b L02530E	; $025306
@@ -29001,24 +29001,24 @@ L02530E:
 	bge.b L02531C	; $025314
 	move.w #$4,-$6(a6)	; $025316
 L02531C:
-	movea.l ram_sys_ffa7fc.l,a0	; $02531C
+	movea.l ram_sys_field_a7fc.l,a0	; $02531C
 	move.w $4(a0),d0	; $025322
 	subq.w #$4,d0	; $025326
 	move.w -$4(a6),d1	; $025328
 	cmp.w d0,d1	; $02532C
 	blt.b L025340	; $02532E
-	movea.l ram_sys_ffa7fc.l,a0	; $025330
+	movea.l ram_sys_field_a7fc.l,a0	; $025330
 	move.w $4(a0),d0	; $025336
 	subq.w #$5,d0	; $02533A
 	move.w d0,-$4(a6)	; $02533C
 L025340:
-	movea.l ram_sys_ffa7fc.l,a0	; $025340
+	movea.l ram_sys_field_a7fc.l,a0	; $025340
 	move.w $4(a0),d0	; $025346
 	subq.w #$4,d0	; $02534A
 	move.w -$6(a6),d1	; $02534C
 	cmp.w d0,d1	; $025350
 	blt.b L025364	; $025352
-	movea.l ram_sys_ffa7fc.l,a0	; $025354
+	movea.l ram_sys_field_a7fc.l,a0	; $025354
 	move.w $4(a0),d0	; $02535A
 	subq.w #$5,d0	; $02535E
 	move.w d0,-$6(a6)	; $025360
@@ -29155,7 +29155,7 @@ L025504:
 	beq.b L025576	; $02550A
 	move.w $8(a6),d0	; $02550C
 	muls.w #$34,d0	; $025510
-	lea.l ram_sys_ff02ba.l,a0	; $025514
+	lea.l ram_menu_field_02ba.l,a0	; $025514
 	move.w $12(a6),(a0,d0.l)	; $02551A
 	move.w $12(a6),d0	; $025520
 	ext.l d0	; $025524
@@ -29169,49 +29169,49 @@ L025504:
 	bne.b L025552	; $02553A
 	move.w $8(a6),d0	; $02553C
 	muls.w #$34,d0	; $025540
-	lea.l ram_sys_ff02bc.l,a0	; $025544
+	lea.l ram_sys_field_02bc.l,a0	; $025544
 	move.w #$4,(a0,d0.l)	; $02554A
 	bra.b L025564	; $025550
 L025552:
 	move.w $8(a6),d0	; $025552
 	muls.w #$34,d0	; $025556
-	lea.l ram_sys_ff02bc.l,a0	; $02555A
+	lea.l ram_sys_field_02bc.l,a0	; $02555A
 	clr.w (a0,d0.l)	; $025560
 L025564:
 	move.w $8(a6),d0	; $025564
 	muls.w #$34,d0	; $025568
-	lea.l ram_sys_ff02bc.l,a0	; $02556C
+	lea.l ram_sys_field_02bc.l,a0	; $02556C
 	move.w (a0,d0.l),d5	; $025572
 L025576:
 	cmpi.w #$ffff,$14(a6)	; $025576
 	beq.b L025592	; $02557C
 	move.w $8(a6),d0	; $02557E
 	muls.w #$34,d0	; $025582
-	lea.l ram_sys_ff02bc.l,a0	; $025586
+	lea.l ram_sys_field_02bc.l,a0	; $025586
 	move.w $14(a6),(a0,d0.l)	; $02558C
 L025592:
 	cmpi.w #$ffff,$16(a6)	; $025592
 	beq.b L0255AE	; $025598
 	move.w $8(a6),d0	; $02559A
 	muls.w #$34,d0	; $02559E
-	lea.l ram_sys_ff02be.l,a0	; $0255A2
+	lea.l ram_sys_field_02be.l,a0	; $0255A2
 	move.w $16(a6),(a0,d0.l)	; $0255A8
 L0255AE:
 	move.w $8(a6),d0	; $0255AE
 	muls.w #$34,d0	; $0255B2
-	lea.l ram_sys_ff02b8.l,a0	; $0255B6
+	lea.l ram_world_field_02b8.l,a0	; $0255B6
 	cmpi.w #$ff,(a0,d0.l)	; $0255BC
 	beq.w L025702	; $0255C2
 	move.w $8(a6),d0	; $0255C6
 	muls.w #$34,d0	; $0255CA
-	lea.l ram_sys_ff02ba.l,a0	; $0255CE
+	lea.l ram_menu_field_02ba.l,a0	; $0255CE
 	move.w (a0,d0.l),-(a7)	; $0255D4
 	jsr world_vessel_grid_value(pc)	; $0255D8
 	addq.w #$2,a7	; $0255DC
 	move.w d0,d4	; $0255DE
 	move.w $8(a6),d0	; $0255E0
 	muls.w #$34,d0	; $0255E4
-	lea.l ram_sys_ff02ba.l,a0	; $0255E8
+	lea.l ram_menu_field_02ba.l,a0	; $0255E8
 	move.w (a0,d0.l),-(a7)	; $0255EE
 	jsr world_vessel_class(pc)	; $0255F2
 	addq.w #$2,a7	; $0255F6
@@ -29220,13 +29220,13 @@ L0255AE:
 	move.w d5,-(a7)	; $0255FE
 	move.w $8(a6),d0	; $025600
 	muls.w #$34,d0	; $025604
-	lea.l ram_sys_ff02be.l,a0	; $025608
+	lea.l ram_sys_field_02be.l,a0	; $025608
 	move.w (a0,d0.l),-(a7)	; $02560E
 	move.w d4,-(a7)	; $025612
 	move.w $a(a6),-(a7)	; $025614
 	move.w $8(a6),d0	; $025618
 	muls.w #$34,d0	; $02561C
-	lea.l ram_sys_ff02b8.l,a0	; $025620
+	lea.l ram_world_field_02b8.l,a0	; $025620
 	move.w (a0,d0.l),-(a7)	; $025626
 	jsr combat_effect_apply.l	; $02562A
 	lea.l $e(a7),a7	; $025630
@@ -29241,7 +29241,7 @@ L0255AE:
 	bne.b L02567A	; $025658
 	move.w $8(a6),d0	; $02565A
 	muls.w #$34,d0	; $02565E
-	lea.l ram_sys_ff02db.l,a0	; $025662
+	lea.l ram_sys_field_02db.l,a0	; $025662
 	moveq #$0,d1	; $025668
 	move.b (a0,d0.l),d1	; $02566A
 	cmp.w ram_party_leader.l,d1	; $02566E
@@ -29257,7 +29257,7 @@ L02567A:
 	bne.b L0256AE	; $025694
 	move.w $8(a6),d0	; $025696
 	muls.w #$34,d0	; $02569A
-	lea.l ram_sys_ff02ba.l,a0	; $02569E
+	lea.l ram_menu_field_02ba.l,a0	; $02569E
 	cmpi.w #$4,(a0,d0.l)	; $0256A4
 	bne.b L0256AE	; $0256AA
 	moveq #$1e,d6	; $0256AC
@@ -29271,17 +29271,17 @@ L0256AE:
 	bne.b L0256E2	; $0256C8
 	move.w $8(a6),d0	; $0256CA
 	muls.w #$34,d0	; $0256CE
-	lea.l ram_sys_ff02ba.l,a0	; $0256D2
+	lea.l ram_menu_field_02ba.l,a0	; $0256D2
 	cmpi.w #$4,(a0,d0.l)	; $0256D8
 	bne.b L0256E2	; $0256DE
 	moveq #$a,d6	; $0256E0
 L0256E2:
 	move.w $8(a6),d0	; $0256E2
 	muls.w #$34,d0	; $0256E6
-	lea.l ram_sys_ff02b8.l,a0	; $0256EA
+	lea.l ram_world_field_02b8.l,a0	; $0256EA
 	move.w (a0,d0.l),d1	; $0256F0
 	mulu.w #$c,d1	; $0256F4
-	lea.l ram_sys_ffb0d4.l,a0	; $0256F8
+	lea.l ram_sys_field_b0d4.l,a0	; $0256F8
 	move.w d6,(a0,d1.l)	; $0256FE
 L025702:
 	movem.l (a7)+,d4-d6	; $025702
@@ -29312,7 +29312,7 @@ L025736:
 	move.w $8(a6),d0	; $02575E
 	muls.w #$34,d0	; $025762
 	movea.l d0,a0	; $025766
-	lea.l ram_sys_ff02c4.l,a1	; $025768
+	lea.l ram_sys_field_02c4.l,a1	; $025768
 	adda.l a1,a0	; $02576E
 	move.w $8(a6),d0	; $025770
 	muls.w #$34,d0	; $025774
@@ -29329,19 +29329,19 @@ L025736:
 	bne.b L025814	; $02579C
 	move.w $a(a6),d4	; $02579E
 	move.w $c(a6),d5	; $0257A2
-	cmpi.w #$2,ram_sys_ff00ae.l	; $0257A6
+	cmpi.w #$2,ram_menu_field_00ae.l	; $0257A6
 	bne.b L025804	; $0257AE
 	cmpi.w #$5,$a(a6)	; $0257B0
 	bgt.b L0257BA	; $0257B6
 	moveq #$5,d4	; $0257B8
 L0257BA:
-	movea.l ram_sys_ffa7fc.l,a0	; $0257BA
+	movea.l ram_sys_field_a7fc.l,a0	; $0257BA
 	move.w $4(a0),d0	; $0257C0
 	subq.w #$5,d0	; $0257C4
 	move.w $a(a6),d1	; $0257C6
 	cmp.w d0,d1	; $0257CA
 	blt.b L0257DA	; $0257CC
-	movea.l ram_sys_ffa7fc.l,a0	; $0257CE
+	movea.l ram_sys_field_a7fc.l,a0	; $0257CE
 	move.w $4(a0),d4	; $0257D4
 	subq.w #$5,d4	; $0257D8
 L0257DA:
@@ -29349,13 +29349,13 @@ L0257DA:
 	bge.b L0257E4	; $0257E0
 	moveq #$5,d5	; $0257E2
 L0257E4:
-	movea.l ram_sys_ffa7fc.l,a0	; $0257E4
+	movea.l ram_sys_field_a7fc.l,a0	; $0257E4
 	move.w $4(a0),d0	; $0257EA
 	subq.w #$5,d0	; $0257EE
 	move.w $c(a6),d1	; $0257F0
 	cmp.w d0,d1	; $0257F4
 	ble.b L025804	; $0257F6
-	movea.l ram_sys_ffa7fc.l,a0	; $0257F8
+	movea.l ram_sys_field_a7fc.l,a0	; $0257F8
 	move.w $4(a0),d5	; $0257FE
 	subq.w #$5,d5	; $025802
 L025804:
@@ -29367,7 +29367,7 @@ L025804:
 L025814:
 	move.w $8(a6),d0	; $025814
 	muls.w #$34,d0	; $025818
-	lea.l ram_sys_ff02b8.l,a0	; $02581C
+	lea.l ram_world_field_02b8.l,a0	; $02581C
 	cmpi.w #$ff,(a0,d0.l)	; $025822
 	beq.b L02587C	; $025828
 	move.w $8(a6),d0	; $02582A
@@ -29385,7 +29385,7 @@ L025814:
 	move.w -$6(a6),-(a7)	; $02585E
 	move.w $8(a6),d0	; $025862
 	muls.w #$34,d0	; $025866
-	lea.l ram_sys_ff02b8.l,a0	; $02586A
+	lea.l ram_world_field_02b8.l,a0	; $02586A
 	move.w (a0,d0.l),-(a7)	; $025870
 	jsr map_place_record.l	; $025874
 	addq.w #$6,a7	; $02587A
@@ -29399,7 +29399,7 @@ world_find_char_by_grid:
 	move.l d4,-(a7)	; $025888
 	move.w $8(a6),d0	; $02588A
 	muls.w #$c,d0	; $02588E
-	lea.l ram_sys_ffb0cc.l,a0	; $025892
+	lea.l ram_sys_field_b0cc.l,a0	; $025892
 	cmpi.w #$270f,(a0,d0.l)	; $025898
 	bne.b L0258AC	; $02589E
 	move.w #$e6,-(a7)	; $0258A0
@@ -29416,7 +29416,7 @@ L0258AE:
 	beq.b L0258E2	; $0258C2
 	move.w d4,d0	; $0258C4
 	muls.w #$34,d0	; $0258C6
-	lea.l ram_sys_ff02b8.l,a0	; $0258CA
+	lea.l ram_world_field_02b8.l,a0	; $0258CA
 	move.w (a0,d0.l),d1	; $0258D0
 	cmp.w $8(a6),d1	; $0258D4
 	bne.b L0258E2	; $0258D8
@@ -29490,7 +29490,7 @@ sys_struct52_scan:
 L02598E:
 	move.w $8(a6),d0	; $02598E
 	muls.w #$34,d0	; $025992
-	lea.l ram_sys_ff02db.l,a0	; $025996
+	lea.l ram_sys_field_02db.l,a0	; $025996
 	cmpi.b #$1,(a0,d0.l)	; $02599C
 	bne.b L0259AC	; $0259A2
 L0259A4:
@@ -29506,7 +29506,7 @@ L0259AC:
 	and.w #$3f,d1	; $0259C0
 	bne.b L0259EA	; $0259C4
 	moveq #$1,d5	; $0259C6
-	move.w #$ffff,ram_sys_ff009c.l	; $0259C8
+	move.w #$ffff,ram_sys_field_009c.l	; $0259C8
 	moveq #$0,d4	; $0259D0
 L0259D2:
 	move.w d4,d0	; $0259D2
@@ -29556,24 +29556,24 @@ L0259EC:
 	move.w d6,(a0,d0.l)	; $025A58
 	move.w d6,d0	; $025A5C
 	muls.w #$34,d0	; $025A5E
-	lea.l ram_sys_ff02d8.l,a0	; $025A62
+	lea.l ram_sys_field_02d8.l,a0	; $025A62
 	move.b d4,(a0,d0.l)	; $025A68
 	move.w $8(a6),d0	; $025A6C
 	muls.w #$34,d0	; $025A70
 	lea.l ram_npc_field_02c8.l,a0	; $025A74
 	move.w d6,d1	; $025A7A
 	muls.w #$34,d1	; $025A7C
-	lea.l ram_sys_ff02da.l,a1	; $025A80
+	lea.l ram_sys_field_02da.l,a1	; $025A80
 	move.b $1(a0,d0.l),(a1,d1.l)	; $025A86
 	move.w d6,d0	; $025A8C
 	muls.w #$34,d0	; $025A8E
-	lea.l ram_sys_ff02db.l,a0	; $025A92
+	lea.l ram_sys_field_02db.l,a0	; $025A92
 	move.b $9(a6),(a0,d0.l)	; $025A98
 	tst.w d5	; $025A9E
 	beq.b L025AEC	; $025AA0
 	move.w d6,d0	; $025AA2
 	muls.w #$34,d0	; $025AA4
-	lea.l ram_sys_ff02cc.l,a0	; $025AA8
+	lea.l ram_world_field_02cc.l,a0	; $025AA8
 	move.w (a0,d0.l),d1	; $025AAE
 	and.w #$f,d1	; $025AB2
 	subq.w #$1,d1	; $025AB6
@@ -29618,7 +29618,7 @@ L025B2C:
 	blt.w L0259EC	; $025B32
 	move.w $8(a6),d0	; $025B36
 	muls.w #$34,d0	; $025B3A
-	lea.l ram_sys_ff02db.l,a0	; $025B3E
+	lea.l ram_sys_field_02db.l,a0	; $025B3E
 	move.b #$1,(a0,d0.l)	; $025B44
 	bra.w L0259A4	; $025B4A
 	; code $025B4E-$025C43
@@ -29637,7 +29637,7 @@ sys_struct52_nibble_read:
 L025B7A:
 	move.w $8(a6),d0	; $025B7A
 	muls.w #$34,d0	; $025B7E
-	lea.l ram_sys_ff02db.l,a0	; $025B82
+	lea.l ram_sys_field_02db.l,a0	; $025B82
 	tst.b (a0,d0.l)	; $025B88
 	bne.b L025B92	; $025B8C
 L025B8E:
@@ -29646,7 +29646,7 @@ L025B8E:
 L025B92:
 	move.w $8(a6),d0	; $025B92
 	muls.w #$34,d0	; $025B96
-	lea.l ram_sys_ff02b6.l,a0	; $025B9A
+	lea.l ram_sys_field_02b6.l,a0	; $025B9A
 	move.w (a0,d0.l),-$4(a6)	; $025BA0
 	clr.w -$2(a6)	; $025BA6
 L025BAA:
@@ -29690,7 +29690,7 @@ L025C20:
 	blt.w L025BAA	; $025C2A
 	move.w $8(a6),d0	; $025C2E
 	muls.w #$34,d0	; $025C32
-	lea.l ram_sys_ff02db.l,a0	; $025C36
+	lea.l ram_sys_field_02db.l,a0	; $025C36
 	clr.b (a0,d0.l)	; $025C3C
 	bra.w L025B8E	; $025C40
 	; code $025C44-$025CB3
@@ -29880,7 +29880,7 @@ combat_target_check:
 	movea.l $8(a6),a0	; $025DEA
 	move.w $4(a0),d0	; $025DEE
 	mulu.w #$c,d0	; $025DF2
-	lea.l ram_sys_ffb0d0.l,a0	; $025DF6
+	lea.l ram_sys_field_b0d0.l,a0	; $025DF6
 	move.w (a0,d0.l),d4	; $025DFC
 	cmp.w #$24,d4	; $025E00
 	blt.b L025E0E	; $025E04
@@ -29897,32 +29897,32 @@ sys_struct52_read_pair:
 	link.w a6,#$fffa	; $025E12
 	move.w $8(a6),d0	; $025E16
 	muls.w #$34,d0	; $025E1A
-	lea.l ram_sys_ff02b6.l,a0	; $025E1E
+	lea.l ram_sys_field_02b6.l,a0	; $025E1E
 	move.w (a0,d0.l),-$2(a6)	; $025E24
 	move.w $8(a6),d0	; $025E2A
 	muls.w #$34,d0	; $025E2E
-	lea.l ram_sys_ff02cb.l,a0	; $025E32
+	lea.l ram_sys_field_02cb.l,a0	; $025E32
 	moveq #$0,d1	; $025E38
 	move.b (a0,d0.l),d1	; $025E3A
 	move.w d1,-$4(a6)	; $025E3E
 	move.w $8(a6),d0	; $025E42
 	muls.w #$34,d0	; $025E46
-	lea.l ram_sys_ff02ca.l,a0	; $025E4A
+	lea.l ram_sys_field_02ca.l,a0	; $025E4A
 	moveq #$0,d1	; $025E50
 	move.b (a0,d0.l),d1	; $025E52
 	move.w d1,-$6(a6)	; $025E56
 	move.w $8(a6),d0	; $025E5A
 	muls.w #$34,d0	; $025E5E
-	lea.l ram_sys_ff02ba.l,a0	; $025E62
+	lea.l ram_menu_field_02ba.l,a0	; $025E62
 	move.w #$100,(a0,d0.l)	; $025E68
 	cmpi.w #$ffff,-$2(a6)	; $025E6E
 	beq.b L025EBE	; $025E74
 	move.w $8(a6),d0	; $025E76
 	muls.w #$34,d0	; $025E7A
-	lea.l ram_sys_ff02ba.l,a0	; $025E7E
+	lea.l ram_menu_field_02ba.l,a0	; $025E7E
 	move.w $8(a6),d1	; $025E84
 	muls.w #$34,d1	; $025E88
-	lea.l ram_sys_ff02cc.l,a1	; $025E8C
+	lea.l ram_world_field_02cc.l,a1	; $025E8C
 	move.w (a1,d1.l),d2	; $025E92
 	and.w #$f,d2	; $025E96
 	add.w #$ff,d2	; $025E9A
@@ -29931,7 +29931,7 @@ sys_struct52_read_pair:
 	bne.b L025EBE	; $025EA8
 	move.w $8(a6),d0	; $025EAA
 	muls.w #$34,d0	; $025EAE
-	lea.l ram_sys_ff02ba.l,a0	; $025EB2
+	lea.l ram_menu_field_02ba.l,a0	; $025EB2
 	move.w #$106,(a0,d0.l)	; $025EB8
 L025EBE:
 	move.w -$6(a6),d0	; $025EBE
@@ -29940,10 +29940,10 @@ L025EBE:
 L025EC8:
 	move.w $8(a6),d0	; $025EC8
 	muls.w #$34,d0	; $025ECC
-	lea.l ram_sys_ff02ba.l,a0	; $025ED0
+	lea.l ram_menu_field_02ba.l,a0	; $025ED0
 	move.w $8(a6),d1	; $025ED6
 	muls.w #$34,d1	; $025EDA
-	lea.l ram_sys_ff02cc.l,a1	; $025EDE
+	lea.l ram_world_field_02cc.l,a1	; $025EDE
 	move.w (a1,d1.l),d2	; $025EE4
 	and.w #$f,d2	; $025EE8
 	add.w #$111,d2	; $025EEC
@@ -29952,49 +29952,49 @@ L025EC8:
 L025EF8:
 	move.w $8(a6),d0	; $025EF8
 	muls.w #$34,d0	; $025EFC
-	lea.l ram_sys_ff02ba.l,a0	; $025F00
+	lea.l ram_menu_field_02ba.l,a0	; $025F00
 	move.w #$11a,(a0,d0.l)	; $025F06
 	bra.w L026032	; $025F0C
 L025F10:
 	move.w $8(a6),d0	; $025F10
 	muls.w #$34,d0	; $025F14
-	lea.l ram_sys_ff02ba.l,a0	; $025F18
+	lea.l ram_menu_field_02ba.l,a0	; $025F18
 	move.w #$11b,(a0,d0.l)	; $025F1E
 	bra.w L026032	; $025F24
 L025F28:
 	move.w $8(a6),d0	; $025F28
 	muls.w #$34,d0	; $025F2C
-	lea.l ram_sys_ff02ba.l,a0	; $025F30
+	lea.l ram_menu_field_02ba.l,a0	; $025F30
 	move.w #$11c,(a0,d0.l)	; $025F36
 	bra.w L026032	; $025F3C
 L025F40:
 	move.w $8(a6),d0	; $025F40
 	muls.w #$34,d0	; $025F44
-	lea.l ram_sys_ff02ba.l,a0	; $025F48
+	lea.l ram_menu_field_02ba.l,a0	; $025F48
 	move.w #$11d,(a0,d0.l)	; $025F4E
 	bra.w L026032	; $025F54
 L025F58:
 	move.w $8(a6),d0	; $025F58
 	muls.w #$34,d0	; $025F5C
-	lea.l ram_sys_ff02ba.l,a0	; $025F60
+	lea.l ram_menu_field_02ba.l,a0	; $025F60
 	move.w #$11e,(a0,d0.l)	; $025F66
 	bra.w L026032	; $025F6C
 L025F70:
 	move.w $8(a6),d0	; $025F70
 	muls.w #$34,d0	; $025F74
-	lea.l ram_sys_ff02ba.l,a0	; $025F78
+	lea.l ram_menu_field_02ba.l,a0	; $025F78
 	move.w #$128,(a0,d0.l)	; $025F7E
 	bra.w L026032	; $025F84
 L025F88:
 	move.w $8(a6),d0	; $025F88
 	muls.w #$34,d0	; $025F8C
-	lea.l ram_sys_ff02ba.l,a0	; $025F90
+	lea.l ram_menu_field_02ba.l,a0	; $025F90
 	move.w #$11f,(a0,d0.l)	; $025F96
 	bra.w L026032	; $025F9C
 L025FA0:
 	move.w $8(a6),d0	; $025FA0
 	muls.w #$34,d0	; $025FA4
-	lea.l ram_sys_ff02ba.l,a0	; $025FA8
+	lea.l ram_menu_field_02ba.l,a0	; $025FA8
 	move.w #$120,(a0,d0.l)	; $025FAE
 	bra.b L026032	; $025FB4
 L025FB6:
@@ -30043,13 +30043,13 @@ L026032:
 L02603A:
 	move.w $8(a6),d0	; $02603A
 	muls.w #$34,d0	; $02603E
-	lea.l ram_sys_ff02ba.l,a0	; $026042
+	lea.l ram_menu_field_02ba.l,a0	; $026042
 	move.w #$118,(a0,d0.l)	; $026048
 	bra.b L026072	; $02604E
 L026050:
 	move.w $8(a6),d0	; $026050
 	muls.w #$34,d0	; $026054
-	lea.l ram_sys_ff02ba.l,a0	; $026058
+	lea.l ram_menu_field_02ba.l,a0	; $026058
 	move.w #$119,(a0,d0.l)	; $02605E
 	bra.b L026072	; $026064
 L026066:
@@ -30063,14 +30063,14 @@ L026072:
 	; code $026076-$02619B
 npc_location_greet:
 	link.w a6,#$0	; $026076
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02607A
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02607A
 	bne.b L0260B4	; $026082
 	clr.l -(a7)	; $026084
 	clr.w -(a7)	; $026086
 	move.w #$7,-(a7)	; $026088
 	move.w ram_party_leader.l,d0	; $02608C
 	muls.w #$34,d0	; $026092
-	lea.l ram_sys_ff02ba.l,a0	; $026096
+	lea.l ram_menu_field_02ba.l,a0	; $026096
 	move.w (a0,d0.l),-(a7)	; $02609C
 	jsr world_get_mode_portrait.l	; $0260A0
 	addq.w #$2,a7	; $0260A6
@@ -30078,9 +30078,9 @@ npc_location_greet:
 	jsr text_enqueue_message.l	; $0260AA
 	lea.l $a(a7),a7	; $0260B0
 L0260B4:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $0260B4
+	cmpi.w #$2,ram_menu_field_00ae.l	; $0260B4
 	bne.w L026198	; $0260BC
-	tst.w ram_sys_ff00ac.l	; $0260C0
+	tst.w ram_menu_field_00ac.l	; $0260C0
 	bne.w L026198	; $0260C6
 	lea.l ram_combat_flags.l,a0	; $0260CA
 	move.w (a0),d0	; $0260D0
@@ -30088,7 +30088,7 @@ L0260B4:
 	bne.w L026198	; $0260D6
 	move.w ram_party_leader.l,d0	; $0260DA
 	muls.w #$34,d0	; $0260E0
-	lea.l ram_sys_ff02dd.l,a0	; $0260E4
+	lea.l ram_menu_field_02dd.l,a0	; $0260E4
 	moveq #$0,d1	; $0260EA
 	move.b (a0,d0.l),d1	; $0260EC
 	cmp.w #$ff,d1	; $0260F0
@@ -30099,14 +30099,14 @@ L0260B4:
 	clr.w -(a7)	; $0260FE
 	move.w ram_party_leader.l,d0	; $026100
 	muls.w #$34,d0	; $026106
-	lea.l ram_sys_ff02dd.l,a0	; $02610A
+	lea.l ram_menu_field_02dd.l,a0	; $02610A
 	moveq #$0,d1	; $026110
 	move.b (a0,d0.l),d1	; $026112
 	move.w d1,-(a7)	; $026116
 	jsr npc_attitude_raise.l	; $026118
 	addq.w #$4,a7	; $02611E
 	muls.w #$34,d0	; $026120
-	lea.l ram_sys_ff02ca.l,a0	; $026124
+	lea.l ram_sys_field_02ca.l,a0	; $026124
 	moveq #$0,d1	; $02612A
 	move.b (a0,d0.l),d1	; $02612C
 	move.w d1,-(a7)	; $026130
@@ -30114,7 +30114,7 @@ L0260B4:
 	lea.l $a(a7),a7	; $026138
 	bra.b L026198	; $02613C
 L02613E:
-	lea.l ram_sys_ff0e92.l,a0	; $02613E
+	lea.l ram_menu_field_0e92.l,a0	; $02613E
 	move.w (a0),d0	; $026144
 	and.w #$3ff,d0	; $026146
 	cmp.w #$3ff,d0	; $02614A
@@ -30130,7 +30130,7 @@ L026168:
 	clr.l -(a7)	; $026168
 	clr.w -(a7)	; $02616A
 	move.w #$7,-(a7)	; $02616C
-	lea.l ram_sys_ff0e92.l,a0	; $026170
+	lea.l ram_menu_field_0e92.l,a0	; $026170
 	move.w (a0),d0	; $026176
 	and.w #$3ff,d0	; $026178
 	mulu.w #$a,d0	; $02617C
@@ -30149,7 +30149,7 @@ sys_struct52_read_field:
 	clr.w -$4(a6)	; $0261A0
 	move.w $8(a6),d0	; $0261A4
 	muls.w #$34,d0	; $0261A8
-	lea.l ram_sys_ff02ba.l,a0	; $0261AC
+	lea.l ram_menu_field_02ba.l,a0	; $0261AC
 	move.w (a0,d0.l),-$2(a6)	; $0261B2
 	move.w $8(a6),d0	; $0261B8
 	muls.w #$34,d0	; $0261BC
@@ -30164,45 +30164,45 @@ sys_struct52_read_field:
 	pea.l -$14(a6)	; $0261E8
 	jsr map_scroll_adjust.l	; $0261EC
 	addq.w #$8,a7	; $0261F2
-	movea.l ram_sys_ffa7fc.l,a0	; $0261F4
+	movea.l ram_sys_field_a7fc.l,a0	; $0261F4
 	move.w (a0),d0	; $0261FA
 	add.w -$14(a6),d0	; $0261FC
-	movea.l ram_sys_ffa7fc.l,a0	; $026200
+	movea.l ram_sys_field_a7fc.l,a0	; $026200
 	ext.l d0	; $026206
 	divs.w (a0),d0	; $026208
 	swap d0	; $02620A
 	ext.l d0	; $02620C
 	asl.l #$5,d0	; $02620E
-	movea.l ram_sys_ffa7fc.l,a0	; $026210
+	movea.l ram_sys_field_a7fc.l,a0	; $026210
 	move.w $2(a0),d1	; $026216
 	add.w -$12(a6),d1	; $02621A
-	movea.l ram_sys_ffa7fc.l,a0	; $02621E
+	movea.l ram_sys_field_a7fc.l,a0	; $02621E
 	ext.l d1	; $026224
 	divs.w $2(a0),d1	; $026226
 	swap d1	; $02622A
 	ext.l d1	; $02622C
 	add.l d1,d0	; $02622E
-	lea.l ram_sys_ffb36c.l,a0	; $026230
+	lea.l ram_sys_field_b36c.l,a0	; $026230
 	move.b (a0,d0.l),-$15(a6)	; $026236
-	movea.l ram_sys_ffa7fc.l,a0	; $02623C
+	movea.l ram_sys_field_a7fc.l,a0	; $02623C
 	move.w (a0),d0	; $026242
 	add.w -$14(a6),d0	; $026244
-	movea.l ram_sys_ffa7fc.l,a0	; $026248
+	movea.l ram_sys_field_a7fc.l,a0	; $026248
 	ext.l d0	; $02624E
 	divs.w (a0),d0	; $026250
 	swap d0	; $026252
 	ext.l d0	; $026254
 	asl.l #$5,d0	; $026256
-	movea.l ram_sys_ffa7fc.l,a0	; $026258
+	movea.l ram_sys_field_a7fc.l,a0	; $026258
 	move.w $2(a0),d1	; $02625E
 	add.w -$12(a6),d1	; $026262
-	movea.l ram_sys_ffa7fc.l,a0	; $026266
+	movea.l ram_sys_field_a7fc.l,a0	; $026266
 	ext.l d1	; $02626C
 	divs.w $2(a0),d1	; $02626E
 	swap d1	; $026272
 	ext.l d1	; $026274
 	add.l d1,d0	; $026276
-	lea.l ram_sys_ffb76c.l,a0	; $026278
+	lea.l ram_sys_field_b76c.l,a0	; $026278
 	move.b (a0,d0.l),-$16(a6)	; $02627E
 	tst.w -$2(a6)	; $026284
 	beq.b L0262AA	; $026288
@@ -30310,7 +30310,7 @@ L0263B4:
 	move.w -$6(a6),-(a7)	; $0263B8
 	move.w $8(a6),d0	; $0263BC
 	muls.w #$34,d0	; $0263C0
-	lea.l ram_sys_ff02be.l,a0	; $0263C4
+	lea.l ram_sys_field_02be.l,a0	; $0263C4
 	move.w (a0,d0.l),-(a7)	; $0263CA
 	move.w -$2(a6),-(a7)	; $0263CE
 	move.w #$ffff,-(a7)	; $0263D2
@@ -30452,19 +30452,19 @@ sys_struct52_flag_test:
 	movem.l d4-d7/a3-a4,-(a7)	; $0265C2
 	move.w $8(a6),d0	; $0265C6
 	muls.w #$34,d0	; $0265CA
-	lea.l ram_sys_ff02ba.l,a0	; $0265CE
+	lea.l ram_menu_field_02ba.l,a0	; $0265CE
 	move.w (a0,d0.l),d7	; $0265D4
 	tst.w d7	; $0265D8
 	beq.b L0265EA	; $0265DA
 	cmp.w #$2,d7	; $0265DC
 	beq.b L0265EA	; $0265E0
-	move.w #$4,ram_sys_ff011c.l	; $0265E2
+	move.w #$4,ram_sys_field_011c.l	; $0265E2
 L0265EA:
-	cmpi.w #$4,ram_sys_ff011c.l	; $0265EA
+	cmpi.w #$4,ram_sys_field_011c.l	; $0265EA
 	beq.b L026604	; $0265F2
 	cmpi.w #$4,$a(a6)	; $0265F4
 	bne.b L026604	; $0265FA
-	move.w ram_sys_ff011c.l,$a(a6)	; $0265FC
+	move.w ram_sys_field_011c.l,$a(a6)	; $0265FC
 L026604:
 	move.w $8(a6),d0	; $026604
 	muls.w #$34,d0	; $026608
@@ -30518,7 +30518,7 @@ L0266A4:
 L0266AC:
 	move.w d5,d0	; $0266AC
 	muls.w #$34,d0	; $0266AE
-	lea.l ram_sys_ff02ba.l,a0	; $0266B2
+	lea.l ram_menu_field_02ba.l,a0	; $0266B2
 	movea.w (a0,d0.l),a3	; $0266B8
 	cmp.w #$ffff,d5	; $0266BC
 	beq.b L0266DE	; $0266C0
@@ -30636,10 +30636,10 @@ L026800:
 L02680A:
 	move.w d6,d0	; $02680A
 	and.w #$3ff,d0	; $02680C
-	lea.l ram_sys_ff0e92.l,a0	; $026810
+	lea.l ram_menu_field_0e92.l,a0	; $026810
 	andi.w #$fc00,(a0)	; $026816
 	or.w d0,(a0)	; $02681A
-	lea.l ram_sys_ff0e92.l,a0	; $02681C
+	lea.l ram_menu_field_0e92.l,a0	; $02681C
 	andi.w #$fff,(a0)	; $026822
 	ori.w #$3000,(a0)	; $026826
 	move.w #$ffff,-(a7)	; $02682A
@@ -30723,7 +30723,7 @@ L02690C:
 	unlk a6	; $026910
 	rts	; $026912
 L026914:
-	lea.l ram_sys_ff0e92.l,a0	; $026914
+	lea.l ram_menu_field_0e92.l,a0	; $026914
 	andi.w #$fc00,(a0)	; $02691A
 	ori.w #$3ff,(a0)	; $02691E
 	move.w d5,-(a7)	; $026922
@@ -30799,21 +30799,21 @@ world_step_apply:
 	jsr world_get_step_delta.l	; $0269FE
 	addq.w #$6,a7	; $026A04
 	movea.l $e(a6),a0	; $026A06
-	movea.l ram_sys_ffa7fc.l,a1	; $026A0A
+	movea.l ram_sys_field_a7fc.l,a1	; $026A0A
 	move.w (a0),d0	; $026A10
 	add.w (a1),d0	; $026A12
 	add.w $8(a6),d0	; $026A14
-	movea.l ram_sys_ffa7fc.l,a0	; $026A18
+	movea.l ram_sys_field_a7fc.l,a0	; $026A18
 	ext.l d0	; $026A1E
 	divs.w (a0),d0	; $026A20
 	swap d0	; $026A22
 	move.w d0,-$2(a6)	; $026A24
 	movea.l $e(a6),a0	; $026A28
-	movea.l ram_sys_ffa7fc.l,a1	; $026A2C
+	movea.l ram_sys_field_a7fc.l,a1	; $026A2C
 	move.w $2(a0),d0	; $026A32
 	add.w $2(a1),d0	; $026A36
 	add.w $a(a6),d0	; $026A3A
-	movea.l ram_sys_ffa7fc.l,a0	; $026A3E
+	movea.l ram_sys_field_a7fc.l,a0	; $026A3E
 	ext.l d0	; $026A44
 	divs.w $2(a0),d0	; $026A46
 	swap d0	; $026A4A
@@ -30838,8 +30838,8 @@ world_step_apply:
 	; code $026A8C-$026B07
 npc_show_greeting:
 	link.w a6,#$fffe	; $026A8C
-	clr.w ram_sys_ff011e.l	; $026A90
-	cmpi.w #$1,ram_sys_ff00ae.l	; $026A96
+	clr.w ram_sys_field_011e.l	; $026A90
+	cmpi.w #$1,ram_menu_field_00ae.l	; $026A96
 	beq.b L026AAE	; $026A9E
 	lea.l ram_combat_flags.l,a0	; $026AA0
 	move.w (a0),d0	; $026AA6
@@ -30854,7 +30854,7 @@ L026AB2:
 	addq.w #$2,a7	; $026ABA
 	move.w ram_party_leader.l,d0	; $026ABC
 	muls.w #$34,d0	; $026AC2
-	lea.l ram_sys_ff02ba.l,a0	; $026AC6
+	lea.l ram_menu_field_02ba.l,a0	; $026AC6
 	move.w (a0,d0.l),-$2(a6)	; $026ACC
 	move.w #$ffff,-(a7)	; $026AD2
 	clr.w -(a7)	; $026AD6
@@ -30870,7 +30870,7 @@ L026AB2:
 	move.w d0,-(a7)	; $026AF6
 	bsr.b text_enqueue_message	; $026AF8
 	lea.l $a(a7),a7	; $026AFA
-	move.w #$4,ram_sys_ff011c.l	; $026AFE
+	move.w #$4,ram_sys_field_011c.l	; $026AFE
 	bra.b L026AAE	; $026B06
 	; code $026B08-$026B57
 world_location_lookup:
@@ -30918,26 +30918,26 @@ L026B7C:
 	unlk a6	; $026B7C
 	rts	; $026B7E
 L026B80:
-	move.w ram_sys_ffc324.l,d0	; $026B80
+	move.w ram_sys_field_c324.l,d0	; $026B80
 	muls.w #$d2,d0	; $026B86
 	lea.l ram_sys_ffbc94.l,a0	; $026B8A
 	move.w (a0,d0.l),d1	; $026B90
 	cmp.w $8(a6),d1	; $026B94
 	bne.b L026BFA	; $026B98
-	move.w ram_sys_ffc324.l,d0	; $026B9A
+	move.w ram_sys_field_c324.l,d0	; $026B9A
 	muls.w #$d2,d0	; $026BA0
 	lea.l ram_sys_ffbc9a.l,a0	; $026BA4
 	move.w (a0,d0.l),d1	; $026BAA
 	cmp.w $a(a6),d1	; $026BAE
 	bne.b L026BFA	; $026BB2
-	move.w ram_sys_ffc324.l,d0	; $026BB4
+	move.w ram_sys_field_c324.l,d0	; $026BB4
 	muls.w #$d2,d0	; $026BBA
 	lea.l ram_sys_ffbc9c.l,a0	; $026BBE
 	move.w (a0,d0.l),d1	; $026BC4
 	cmp.w $c(a6),d1	; $026BC8
 	bne.b L026BFA	; $026BCC
 	move.l $e(a6),-(a7)	; $026BCE
-	move.w ram_sys_ffc324.l,d0	; $026BD2
+	move.w ram_sys_field_c324.l,d0	; $026BD2
 	muls.w #$d2,d0	; $026BD8
 	lea.l ram_sys_ffbc96.l,a0	; $026BDC
 	move.l (a0,d0.l),-(a7)	; $026BE2
@@ -30945,16 +30945,16 @@ L026B80:
 	addq.w #$8,a7	; $026BEC
 	tst.w d0	; $026BEE
 	bne.b L026BFA	; $026BF0
-	clr.w ram_sys_ff010a.l	; $026BF2
+	clr.w ram_sys_field_010a.l	; $026BF2
 	bra.b L026B7C	; $026BF8
 L026BFA:
-	move.w ram_sys_ffc324.l,d0	; $026BFA
+	move.w ram_sys_field_c324.l,d0	; $026BFA
 	addq.w #$1,d0	; $026C00
 	ext.l d0	; $026C02
 	divs.w #$8,d0	; $026C04
 	swap d0	; $026C08
 	move.w d0,-$4(a6)	; $026C0A
-	pea.l ram_sys_ff0e18.l	; $026C0E
+	pea.l ram_menu_field_0e18.l	; $026C0E
 	move.w -$4(a6),-(a7)	; $026C14
 	jsr queue_push.l	; $026C18
 	addq.w #$6,a7	; $026C1E
@@ -30963,30 +30963,30 @@ L026BFA:
 	bge.b L026C2E	; $026C28
 	bra.w L026B7C	; $026C2A
 L026C2E:
-	move.w #$ffff,ram_sys_ff009a.l	; $026C2E
-	move.w -$4(a6),ram_sys_ffc324.l	; $026C36
-	move.w ram_sys_ffc324.l,d0	; $026C3E
+	move.w #$ffff,ram_sys_field_009a.l	; $026C2E
+	move.w -$4(a6),ram_sys_field_c324.l	; $026C36
+	move.w ram_sys_field_c324.l,d0	; $026C3E
 	muls.w #$d2,d0	; $026C44
 	lea.l ram_sys_ffbc94.l,a0	; $026C48
 	move.w $8(a6),(a0,d0.l)	; $026C4E
-	move.w ram_sys_ffc324.l,d0	; $026C54
+	move.w ram_sys_field_c324.l,d0	; $026C54
 	muls.w #$d2,d0	; $026C5A
 	lea.l ram_sys_ffbc9a.l,a0	; $026C5E
 	move.w $a(a6),(a0,d0.l)	; $026C64
-	move.w ram_sys_ffc324.l,d0	; $026C6A
+	move.w ram_sys_field_c324.l,d0	; $026C6A
 	muls.w #$d2,d0	; $026C70
 	lea.l ram_sys_ffbc9c.l,a0	; $026C74
 	move.w $c(a6),(a0,d0.l)	; $026C7A
-	move.w ram_sys_ffc324.l,d0	; $026C80
+	move.w ram_sys_field_c324.l,d0	; $026C80
 	muls.w #$d2,d0	; $026C86
 	lea.l ram_sys_ffbc96.l,a0	; $026C8A
-	move.w ram_sys_ffc324.l,d1	; $026C90
+	move.w ram_sys_field_c324.l,d1	; $026C90
 	muls.w #$d2,d1	; $026C96
 	lea.l ram_sys_ffbc9e.l,a1	; $026C9A
 	add.l a1,d1	; $026CA0
 	move.l d1,(a0,d0.l)	; $026CA2
 	move.l $e(a6),-(a7)	; $026CA6
-	move.w ram_sys_ffc324.l,d0	; $026CAA
+	move.w ram_sys_field_c324.l,d0	; $026CAA
 	muls.w #$d2,d0	; $026CB0
 	lea.l ram_sys_ffbc9e.l,a0	; $026CB4
 	add.l a0,d0	; $026CBA
@@ -30997,7 +30997,7 @@ L026C2E:
 	; code $026CCA-$026DD1
 msg_queue_consume:
 	link.w a6,#$fff6	; $026CCA
-	pea.l ram_sys_ff0e18.l	; $026CCE
+	pea.l ram_menu_field_0e18.l	; $026CCE
 	pea.l -$a(a6)	; $026CD4
 	jsr queue_pop.l	; $026CD8
 	addq.w #$8,a7	; $026CDE
@@ -31005,14 +31005,14 @@ msg_queue_consume:
 	tst.w -$2(a6)	; $026CE4
 	bge.b L026D02	; $026CE8
 	move.w $8(a6),d0	; $026CEA
-	cmp.w ram_sys_ff010a.l,d0	; $026CEE
+	cmp.w ram_sys_field_010a.l,d0	; $026CEE
 	ble.b L026CFE	; $026CF4
-	move.w $8(a6),ram_sys_ff010a.l	; $026CF6
+	move.w $8(a6),ram_sys_field_010a.l	; $026CF6
 L026CFE:
 	unlk a6	; $026CFE
 	rts	; $026D00
 L026D02:
-	clr.w ram_sys_ff010a.l	; $026D02
+	clr.w ram_sys_field_010a.l	; $026D02
 	move.w -$a(a6),d0	; $026D08
 	mulu.w #$d2,d0	; $026D0C
 	lea.l ram_sys_ffbc94.l,a0	; $026D10
@@ -31025,22 +31025,22 @@ L026D02:
 	mulu.w #$d2,d0	; $026D34
 	lea.l ram_sys_ffbc9c.l,a0	; $026D38
 	move.w (a0,d0.l),-$8(a6)	; $026D3E
-	move.w ram_sys_ff0e78.l,d0	; $026D44
+	move.w ram_world_field_0e78.l,d0	; $026D44
 	cmp.w -$4(a6),d0	; $026D4A
 	beq.b L026D7E	; $026D4E
 	cmpi.w #$ffff,-$4(a6)	; $026D50
 	beq.b L026D7E	; $026D56
-	move.w -$4(a6),ram_sys_ff0e78.l	; $026D58
+	move.w -$4(a6),ram_world_field_0e78.l	; $026D58
 	move.w #$3,-(a7)	; $026D60
-	move.w ram_sys_ff8648.l,-(a7)	; $026D64
+	move.w ram_world_field_8648.l,-(a7)	; $026D64
 	move.w -$4(a6),-(a7)	; $026D6A
 	jsr tile_record_load.l	; $026D6E
 	addq.w #$6,a7	; $026D74
-	move.w #$ffff,ram_sys_ff009a.l	; $026D76
+	move.w #$ffff,ram_sys_field_009a.l	; $026D76
 L026D7E:
 	cmpi.w #$ffff,-$6(a6)	; $026D7E
 	beq.b L026DBC	; $026D84
-	move.w -$6(a6),ram_sys_ff0e7e.l	; $026D86
+	move.w -$6(a6),ram_menu_field_0e7e.l	; $026D86
 	cmpi.w #$1,-$6(a6)	; $026D8E
 	bne.b L026DAC	; $026D94
 	move.w -$a(a6),d0	; $026D96
@@ -31048,20 +31048,20 @@ L026D7E:
 	lea.l ram_sys_ffbc96.l,a0	; $026D9E
 	move.l (a0,d0.l),ram_sys_ff0e7a.l	; $026DA4
 L026DAC:
-	move.w -$8(a6),ram_sys_ff0e80.l	; $026DAC
-	move.w #$ffff,ram_sys_ff009a.l	; $026DB4
+	move.w -$8(a6),ram_sys_field_0e80.l	; $026DAC
+	move.w #$ffff,ram_sys_field_009a.l	; $026DB4
 L026DBC:
-	tst.w ram_sys_ff009a.l	; $026DBC
+	tst.w ram_sys_field_009a.l	; $026DBC
 	beq.b L026DCE	; $026DC2
 	jsr text_event_message(pc)	; $026DC4
-	clr.w ram_sys_ff009a.l	; $026DC8
+	clr.w ram_sys_field_009a.l	; $026DC8
 L026DCE:
 	bra.w L026CFE	; $026DCE
 	; code $026DD2-$026E43
 gfx_fill_panel_plain:
 	link.w a6,#$0	; $026DD2
 	jsr wait_vblank.l	; $026DD6
-	move.w ram_sys_ff8640.l,-(a7)	; $026DDC
+	move.w ram_text_field_8640.l,-(a7)	; $026DDC
 	move.w #$a,-(a7)	; $026DE2
 	move.w #$9,-(a7)	; $026DE6
 	move.w #$2,-(a7)	; $026DEA
@@ -31070,7 +31070,7 @@ gfx_fill_panel_plain:
 	pea.l L001000.w	; $026DF6
 	jsr gfx_tilemap_fill.l	; $026DFA
 	lea.l $10(a7),a7	; $026E00
-	move.w ram_sys_ff8674.l,-(a7)	; $026E04
+	move.w ram_world_field_8674.l,-(a7)	; $026E04
 	clr.w -(a7)	; $026E0A
 	move.w #$2,-(a7)	; $026E0C
 	move.w #$24,-(a7)	; $026E10
@@ -31091,9 +31091,9 @@ gfx_fill_panel_plain:
 gfx_fill_panel_flagged:
 	link.w a6,#$ffde	; $026E44
 	jsr wait_vblank.l	; $026E48
-	tst.w ram_sys_ff00ac.l	; $026E4E
+	tst.w ram_menu_field_00ac.l	; $026E4E
 	bne.b L026EB4	; $026E54
-	move.w ram_sys_ff8640.l,-(a7)	; $026E56
+	move.w ram_text_field_8640.l,-(a7)	; $026E56
 	move.w #$6,-(a7)	; $026E5C
 	move.w #$6,-(a7)	; $026E60
 	move.w #$c,-(a7)	; $026E64
@@ -31102,7 +31102,7 @@ gfx_fill_panel_flagged:
 	pea.l L001000.w	; $026E70
 	jsr gfx_tilemap_fill.l	; $026E74
 	lea.l $10(a7),a7	; $026E7A
-	move.w ram_sys_ff8674.l,-(a7)	; $026E7E
+	move.w ram_world_field_8674.l,-(a7)	; $026E7E
 	clr.w -(a7)	; $026E84
 	move.w #$2,-(a7)	; $026E86
 	move.w #$24,-(a7)	; $026E8A
@@ -31118,7 +31118,7 @@ L026EB0:
 	unlk a6	; $026EB0
 	rts	; $026EB2
 L026EB4:
-	move.w ram_sys_ff8640.l,-(a7)	; $026EB4
+	move.w ram_text_field_8640.l,-(a7)	; $026EB4
 	move.w #$6,-(a7)	; $026EBA
 	move.w #$9,-(a7)	; $026EBE
 	move.w #$c,-(a7)	; $026EC2
@@ -31131,9 +31131,9 @@ L026EB4:
 	move.w (a0),d0	; $026EE2
 	and.w #$1,d0	; $026EE4
 	bne.w L0273E8	; $026EE8
-	cmpi.b #$8,ram_sys_ffa7f8.l	; $026EEC
+	cmpi.b #$8,ram_menu_field_a7f8.l	; $026EEC
 	bne.w L027078	; $026EF4
-	tst.w ram_sys_ff0132.l	; $026EF8
+	tst.w ram_menu_field_0132.l	; $026EF8
 	beq.b L026F24	; $026EFE
 	move.w #$a000,-(a7)	; $026F00
 	pea.l L027522(pc)	; $026F04
@@ -31162,7 +31162,7 @@ L026F46:
 	pea.l L001000.w	; $026F5A
 	jsr text_glyph_draw.l	; $026F5E
 	lea.l $10(a7),a7	; $026F64
-	tst.w ram_sys_ff0116.l	; $026F68
+	tst.w ram_menu_field_0116.l	; $026F68
 	beq.b L026F94	; $026F6E
 	move.w #$a000,-(a7)	; $026F70
 	pea.l L02753B(pc)	; $026F74
@@ -31183,7 +31183,7 @@ L026F94:
 	jsr text_glyph_draw.l	; $026FAC
 	lea.l $10(a7),a7	; $026FB2
 L026FB6:
-	tst.w ram_sys_ff0134.l	; $026FB6
+	tst.w ram_save_field_0134.l	; $026FB6
 	beq.b L026FE2	; $026FBC
 	move.w #$a000,-(a7)	; $026FBE
 	pea.l L027548(pc)	; $026FC2
@@ -31212,7 +31212,7 @@ L027004:
 	pea.l L001000.w	; $027018
 	jsr text_glyph_draw.l	; $02701C
 	lea.l $10(a7),a7	; $027022
-	tst.w ram_sys_ff013a.l	; $027026
+	tst.w ram_save_field_013a.l	; $027026
 	beq.b L027052	; $02702C
 	move.w #$a000,-(a7)	; $02702E
 	pea.l L027563(pc)	; $027032
@@ -31235,7 +31235,7 @@ L027052:
 L027074:
 	bra.w L0273E4	; $027074
 L027078:
-	cmpi.b #$10,ram_sys_ffa7f8.l	; $027078
+	cmpi.b #$10,ram_menu_field_a7f8.l	; $027078
 	bne.w L027114	; $027080
 	move.w #$a000,-(a7)	; $027084
 	pea.l L02756F(pc)	; $027088
@@ -31246,7 +31246,7 @@ L027078:
 	jsr text_glyph_draw.l	; $02709C
 	lea.l $10(a7),a7	; $0270A2
 	move.w #$a000,-(a7)	; $0270A6
-	move.w ram_sys_ffc364.l,-(a7)	; $0270AA
+	move.w ram_world_field_c364.l,-(a7)	; $0270AA
 	move.w #$d,-(a7)	; $0270B0
 	move.w #$5,-(a7)	; $0270B4
 	move.w #$40,-(a7)	; $0270B8
@@ -31262,7 +31262,7 @@ L027078:
 	jsr text_glyph_draw.l	; $0270E2
 	lea.l $10(a7),a7	; $0270E8
 	move.w #$a000,-(a7)	; $0270EC
-	move.w ram_sys_ffc366.l,-(a7)	; $0270F0
+	move.w ram_world_field_c366.l,-(a7)	; $0270F0
 	move.w #$10,-(a7)	; $0270F6
 	move.w #$5,-(a7)	; $0270FA
 	move.w #$40,-(a7)	; $0270FE
@@ -31287,7 +31287,7 @@ L02711C:
 	move.w #$a000,-(a7)	; $027140
 	move.w -$4(a6),d0	; $027144
 	muls.w #$34,d0	; $027148
-	lea.l ram_sys_ff02cc.l,a0	; $02714C
+	lea.l ram_world_field_02cc.l,a0	; $02714C
 	move.w (a0,d0.l),d1	; $027152
 	and.w #$f,d1	; $027156
 	moveq #$0,d0	; $02715A
@@ -31310,7 +31310,7 @@ L02711C:
 	lea.l $10(a7),a7	; $027190
 	move.w -$4(a6),d0	; $027194
 	muls.w #$34,d0	; $027198
-	lea.l ram_sys_ff02d4.l,a0	; $02719C
+	lea.l ram_world_field_02d4.l,a0	; $02719C
 	cmpi.w #$8c,(a0,d0.l)	; $0271A2
 	ble.b L0271B0	; $0271A8
 	move.w #$8c,d0	; $0271AA
@@ -31318,7 +31318,7 @@ L02711C:
 L0271B0:
 	move.w -$4(a6),d0	; $0271B0
 	muls.w #$34,d0	; $0271B4
-	lea.l ram_sys_ff02d4.l,a0	; $0271B8
+	lea.l ram_world_field_02d4.l,a0	; $0271B8
 	cmpi.w #$1,(a0,d0.l)	; $0271BE
 	bge.b L0271CA	; $0271C4
 	moveq #$1,d0	; $0271C6
@@ -31326,33 +31326,33 @@ L0271B0:
 L0271CA:
 	move.w -$4(a6),d0	; $0271CA
 	muls.w #$34,d0	; $0271CE
-	lea.l ram_sys_ff02d4.l,a0	; $0271D2
+	lea.l ram_world_field_02d4.l,a0	; $0271D2
 	move.l d0,d1	; $0271D8
 	move.w (a0,d1.l),d0	; $0271DA
 L0271DE:
 	move.w -$4(a6),d1	; $0271DE
 	muls.w #$34,d1	; $0271E2
-	lea.l ram_sys_ff02d4.l,a0	; $0271E6
+	lea.l ram_world_field_02d4.l,a0	; $0271E6
 	move.w d0,(a0,d1.l)	; $0271EC
 	move.w -$4(a6),d0	; $0271F0
 	muls.w #$34,d0	; $0271F4
-	lea.l ram_sys_ff02d0.l,a0	; $0271F8
+	lea.l ram_world_field_02d0.l,a0	; $0271F8
 	move.w -$4(a6),d1	; $0271FE
 	muls.w #$34,d1	; $027202
-	lea.l ram_sys_ff02d4.l,a1	; $027206
+	lea.l ram_world_field_02d4.l,a1	; $027206
 	move.w (a0,d0.l),d2	; $02720C
 	cmp.w (a1,d1.l),d2	; $027210
 	ble.b L02722C	; $027214
 	move.w -$4(a6),d0	; $027216
 	muls.w #$34,d0	; $02721A
-	lea.l ram_sys_ff02d4.l,a0	; $02721E
+	lea.l ram_world_field_02d4.l,a0	; $02721E
 	move.l d0,d1	; $027224
 	move.w (a0,d1.l),d0	; $027226
 	bra.b L027258	; $02722A
 L02722C:
 	move.w -$4(a6),d0	; $02722C
 	muls.w #$34,d0	; $027230
-	lea.l ram_sys_ff02d0.l,a0	; $027234
+	lea.l ram_world_field_02d0.l,a0	; $027234
 	tst.w (a0,d0.l)	; $02723A
 	bge.b L027244	; $02723E
 	moveq #$0,d0	; $027240
@@ -31360,33 +31360,33 @@ L02722C:
 L027244:
 	move.w -$4(a6),d0	; $027244
 	muls.w #$34,d0	; $027248
-	lea.l ram_sys_ff02d0.l,a0	; $02724C
+	lea.l ram_world_field_02d0.l,a0	; $02724C
 	move.l d0,d1	; $027252
 	move.w (a0,d1.l),d0	; $027254
 L027258:
 	move.w -$4(a6),d1	; $027258
 	muls.w #$34,d1	; $02725C
-	lea.l ram_sys_ff02d0.l,a0	; $027260
+	lea.l ram_world_field_02d0.l,a0	; $027260
 	move.w d0,(a0,d1.l)	; $027266
 	move.w -$4(a6),d0	; $02726A
 	muls.w #$34,d0	; $02726E
-	lea.l ram_sys_ff02d2.l,a0	; $027272
+	lea.l ram_world_field_02d2.l,a0	; $027272
 	move.w -$4(a6),d1	; $027278
 	muls.w #$34,d1	; $02727C
-	lea.l ram_sys_ff02d6.l,a1	; $027280
+	lea.l ram_world_field_02d6.l,a1	; $027280
 	move.w (a0,d0.l),d2	; $027286
 	cmp.w (a1,d1.l),d2	; $02728A
 	ble.b L0272A6	; $02728E
 	move.w -$4(a6),d0	; $027290
 	muls.w #$34,d0	; $027294
-	lea.l ram_sys_ff02d6.l,a0	; $027298
+	lea.l ram_world_field_02d6.l,a0	; $027298
 	move.l d0,d1	; $02729E
 	move.w (a0,d1.l),d0	; $0272A0
 	bra.b L0272D2	; $0272A4
 L0272A6:
 	move.w -$4(a6),d0	; $0272A6
 	muls.w #$34,d0	; $0272AA
-	lea.l ram_sys_ff02d2.l,a0	; $0272AE
+	lea.l ram_world_field_02d2.l,a0	; $0272AE
 	tst.w (a0,d0.l)	; $0272B4
 	bge.b L0272BE	; $0272B8
 	moveq #$0,d0	; $0272BA
@@ -31394,37 +31394,37 @@ L0272A6:
 L0272BE:
 	move.w -$4(a6),d0	; $0272BE
 	muls.w #$34,d0	; $0272C2
-	lea.l ram_sys_ff02d2.l,a0	; $0272C6
+	lea.l ram_world_field_02d2.l,a0	; $0272C6
 	move.l d0,d1	; $0272CC
 	move.w (a0,d1.l),d0	; $0272CE
 L0272D2:
 	move.w -$4(a6),d1	; $0272D2
 	muls.w #$34,d1	; $0272D6
-	lea.l ram_sys_ff02d2.l,a0	; $0272DA
+	lea.l ram_world_field_02d2.l,a0	; $0272DA
 	move.w d0,(a0,d1.l)	; $0272E0
 	move.w #$c000,-(a7)	; $0272E4
 	move.w -$4(a6),d0	; $0272E8
 	muls.w #$34,d0	; $0272EC
-	lea.l ram_sys_ff02e0.l,a0	; $0272F0
+	lea.l ram_world_field_02e0.l,a0	; $0272F0
 	move.w (a0,d0.l),d1	; $0272F6
 	rol.w #$3,d1	; $0272FA
 	and.w #$1,d1	; $0272FC
 	move.w d1,-(a7)	; $027300
 	move.w -$4(a6),d0	; $027302
 	muls.w #$34,d0	; $027306
-	lea.l ram_sys_ff02d6.l,a0	; $02730A
+	lea.l ram_world_field_02d6.l,a0	; $02730A
 	move.w (a0,d0.l),-(a7)	; $027310
 	move.w -$4(a6),d0	; $027314
 	muls.w #$34,d0	; $027318
-	lea.l ram_sys_ff02d4.l,a0	; $02731C
+	lea.l ram_world_field_02d4.l,a0	; $02731C
 	move.w (a0,d0.l),-(a7)	; $027322
 	move.w -$4(a6),d0	; $027326
 	muls.w #$34,d0	; $02732A
-	lea.l ram_sys_ff02d2.l,a0	; $02732E
+	lea.l ram_world_field_02d2.l,a0	; $02732E
 	move.w (a0,d0.l),-(a7)	; $027334
 	move.w -$4(a6),d0	; $027338
 	muls.w #$34,d0	; $02733C
-	lea.l ram_sys_ff02d0.l,a0	; $027340
+	lea.l ram_world_field_02d0.l,a0	; $027340
 	move.w (a0,d0.l),-(a7)	; $027346
 	move.w -$2(a6),d0	; $02734A
 	asl.w #$3,d0	; $02734E
@@ -31460,7 +31460,7 @@ L0273AA:
 	move.w -$2(a6),d1	; $0273B6
 	cmp.w d0,d1	; $0273BA
 	blt.w L02711C	; $0273BC
-	movea.l ram_sys_ffbb82.l,a0	; $0273C0
+	movea.l ram_sys_field_bb82.l,a0	; $0273C0
 	cmpi.b #$43,$a(a0)	; $0273C6
 	bne.b L0273E4	; $0273CC
 	moveq #$0,d0	; $0273CE
@@ -31482,7 +31482,7 @@ L0273E8:
 	lea.l $10(a7),a7	; $027406
 	move.w ram_party_index_array.l,d0	; $02740A
 	muls.w #$34,d0	; $027410
-	lea.l ram_sys_ff02e0.l,a0	; $027414
+	lea.l ram_world_field_02e0.l,a0	; $027414
 	move.w (a0,d0.l),d1	; $02741A
 	lsr.w #$8,d1	; $02741E
 	and.w #$3,d1	; $027420
@@ -31540,7 +31540,7 @@ L02748C:
 	pea.l L001000.w	; $0274C2
 	jsr text_glyph_draw.l	; $0274C6
 	lea.l $10(a7),a7	; $0274CC
-	tst.w ram_sys_ff013a.l	; $0274D0
+	tst.w ram_save_field_013a.l	; $0274D0
 	beq.b L0274FC	; $0274D6
 	move.w #$a000,-(a7)	; $0274D8
 	pea.l L0275A4(pc)	; $0274DC
@@ -31631,13 +31631,13 @@ text_event_message:
 	movem.l d4-d7/a3-a4,-(a7)	; $0275B4
 	suba.l a4,a4	; $0275B8
 	jsr wait_vblank.l	; $0275BA
-	tst.w ram_sys_ff0114.l	; $0275C0
+	tst.w ram_world_field_0114.l	; $0275C0
 	beq.b L027616	; $0275C6
-	cmpi.w #$7,ram_sys_ff0e7e.l	; $0275C8
+	cmpi.w #$7,ram_menu_field_0e7e.l	; $0275C8
 	beq.b L027616	; $0275D0
-	clr.w ram_sys_ff0114.l	; $0275D2
+	clr.w ram_world_field_0114.l	; $0275D2
 	jsr menu_format.l	; $0275D8
-	move.w ram_sys_ff8648.l,d0	; $0275DE
+	move.w ram_world_field_8648.l,d0	; $0275DE
 	add.w #$6000,d0	; $0275E4
 	moveq #$0,d1	; $0275E8
 	move.w d0,d1	; $0275EA
@@ -31652,9 +31652,9 @@ text_event_message:
 	jsr gfx_tilemap_draw.l	; $02760C
 	lea.l $10(a7),a7	; $027612
 L027616:
-	cmpi.w #$7,ram_sys_ff0e7e.l	; $027616
+	cmpi.w #$7,ram_menu_field_0e7e.l	; $027616
 	beq.b L02764C	; $02761E
-	move.w ram_sys_ff8640.l,-(a7)	; $027620
+	move.w ram_text_field_8640.l,-(a7)	; $027620
 	move.w #$6,-(a7)	; $027626
 	move.w #$1f,-(a7)	; $02762A
 	move.w #$14,-(a7)	; $02762E
@@ -31665,9 +31665,9 @@ L027616:
 	lea.l $10(a7),a7	; $027644
 	bra.w L0276D8	; $027648
 L02764C:
-	tst.w ram_sys_ff0114.l	; $02764C
+	tst.w ram_world_field_0114.l	; $02764C
 	bne.w L0276D8	; $027652
-	move.w ram_sys_ff8640.l,-(a7)	; $027656
+	move.w ram_text_field_8640.l,-(a7)	; $027656
 	move.w #$5,-(a7)	; $02765C
 	move.w #$25,-(a7)	; $027660
 	move.w #$16,-(a7)	; $027664
@@ -31676,7 +31676,7 @@ L02764C:
 	pea.l L001000.w	; $027670
 	jsr gfx_tilemap_fill.l	; $027674
 	lea.l $10(a7),a7	; $02767A
-	move.w ram_sys_ff8674.l,-(a7)	; $02767E
+	move.w ram_world_field_8674.l,-(a7)	; $02767E
 	clr.w -(a7)	; $027684
 	move.w #$2,-(a7)	; $027686
 	move.w #$24,-(a7)	; $02768A
@@ -31688,7 +31688,7 @@ L02764C:
 	pea.l L001000.w	; $0276A2
 	jsr gfx_tilemap_fill_seq.l	; $0276A6
 	lea.l $16(a7),a7	; $0276AC
-	move.w ram_sys_ff8640.l,-(a7)	; $0276B0
+	move.w ram_text_field_8640.l,-(a7)	; $0276B0
 	move.w #$2,-(a7)	; $0276B6
 	move.w #$1,-(a7)	; $0276BA
 	move.w #$14,-(a7)	; $0276BE
@@ -31698,12 +31698,12 @@ L02764C:
 	jsr gfx_tilemap_fill.l	; $0276CE
 	lea.l $10(a7),a7	; $0276D4
 L0276D8:
-	pea.l ram_sys_ff0e18.l	; $0276D8
+	pea.l ram_menu_field_0e18.l	; $0276D8
 	jsr queue_depth.l	; $0276DE
 	addq.w #$4,a7	; $0276E4
 	tst.w d0	; $0276E6
 	bne.b L0276F2	; $0276E8
-	tst.w ram_sys_ffa7fa.l	; $0276EA
+	tst.w ram_menu_field_a7fa.l	; $0276EA
 	beq.b L0276F6	; $0276F0
 L0276F2:
 	moveq #$1,d7	; $0276F2
@@ -31713,19 +31713,19 @@ L0276F6:
 L0276F8:
 	tst.w d7	; $0276F8
 	bne.b L027728	; $0276FA
-	cmpi.w #$ff,ram_sys_ff02a0.l	; $0276FC
+	cmpi.w #$ff,ram_sys_field_02a0.l	; $0276FC
 	beq.b L02777C	; $027704
-	lea.l ram_sys_ff02a2.l,a0	; $027706
+	lea.l ram_menu_field_02a2.l,a0	; $027706
 	move.w (a0),d0	; $02770C
 	lsr.w #$3,d0	; $02770E
 	and.w #$1,d0	; $027710
 	bne.b L02777C	; $027714
-	cmpi.w #$1,ram_sys_ff0e7e.l	; $027716
+	cmpi.w #$1,ram_menu_field_0e7e.l	; $027716
 	bne.b L02777C	; $02771E
-	tst.w ram_sys_ff0110.l	; $027720
+	tst.w ram_menu_field_0110.l	; $027720
 	bne.b L02777C	; $027726
 L027728:
-	cmpi.w #$7,ram_sys_ff0e7e.l	; $027728
+	cmpi.w #$7,ram_menu_field_0e7e.l	; $027728
 	beq.b L02777C	; $027730
 	tst.w d7	; $027732
 	beq.b L02775A	; $027734
@@ -31748,7 +31748,7 @@ L02775A:
 	jsr text_glyph_draw.l	; $027772
 	lea.l $10(a7),a7	; $027778
 L02777C:
-	move.w ram_sys_ff0e7e.l,d0	; $02777C
+	move.w ram_menu_field_0e7e.l,d0	; $02777C
 	ext.l d0	; $027782
 	bra.w L029356	; $027784
 L027788:
@@ -31761,7 +31761,7 @@ L027788:
 	lea.l $c(a7),a7	; $0277A4
 	bra.w L029368	; $0277A8
 L0277AC:
-	move.w ram_sys_ff0e80.l,d0	; $0277AC
+	move.w ram_sys_field_0e80.l,d0	; $0277AC
 	muls.w #$34,d0	; $0277B2
 	lea.l ram_merchant_base.l,a0	; $0277B6
 	movea.l d0,a3	; $0277BC
@@ -31899,7 +31899,7 @@ L0278D8:
 	move.b $27(a3),d0	; $027970
 	moveq #$34,d1	; $027974
 	jsr mul32.l	; $027976
-	lea.l ram_sys_ff02d6.l,a0	; $02797C
+	lea.l ram_world_field_02d6.l,a0	; $02797C
 	move.w (a0,d0.l),d1	; $027982
 	add.w #$a,d1	; $027986
 	cmp.w #$64,d1	; $02798A
@@ -31911,7 +31911,7 @@ L027994:
 	move.b $27(a3),d0	; $027996
 	moveq #$34,d1	; $02799A
 	jsr mul32.l	; $02799C
-	lea.l ram_sys_ff02d6.l,a0	; $0279A2
+	lea.l ram_world_field_02d6.l,a0	; $0279A2
 	move.w (a0,d0.l),d1	; $0279A8
 	add.w #$a,d1	; $0279AC
 	tst.w d1	; $0279B0
@@ -31923,7 +31923,7 @@ L0279B8:
 	move.b $27(a3),d0	; $0279BA
 	moveq #$34,d1	; $0279BE
 	jsr mul32.l	; $0279C0
-	lea.l ram_sys_ff02d6.l,a0	; $0279C6
+	lea.l ram_world_field_02d6.l,a0	; $0279C6
 	move.l d0,d1	; $0279CC
 	move.w (a0,d1.l),d0	; $0279CE
 	add.w #$a,d0	; $0279D2
@@ -32014,7 +32014,7 @@ L027AD6:
 	lea.l $c(a7),a7	; $027B00
 	bra.w L029368	; $027B04
 L027B08:
-	move.w ram_sys_ff0e80.l,d0	; $027B08
+	move.w ram_sys_field_0e80.l,d0	; $027B08
 	muls.w #$34,d0	; $027B0E
 	lea.l ram_merchant_base.l,a0	; $027B12
 	movea.l d0,a3	; $027B18
@@ -32122,7 +32122,7 @@ L027C66:
 	addq.w #$8,a7	; $027C9C
 	move.w #$a,-(a7)	; $027C9E
 	pea.l -$f0(a6)	; $027CA2
-	move.w ram_sys_ffc40e.l,-(a7)	; $027CA6
+	move.w ram_sys_field_c40e.l,-(a7)	; $027CA6
 	jsr num_to_str.l	; $027CAC
 	addq.w #$8,a7	; $027CB2
 	move.l d0,-(a7)	; $027CB4
@@ -32135,7 +32135,7 @@ L027C66:
 	addq.w #$8,a7	; $027CD0
 	move.w #$a,-(a7)	; $027CD2
 	pea.l -$f0(a6)	; $027CD6
-	move.w ram_sys_ffc40c.l,-(a7)	; $027CDA
+	move.w ram_sys_field_c40c.l,-(a7)	; $027CDA
 	jsr num_to_str.l	; $027CE0
 	addq.w #$8,a7	; $027CE6
 	move.l d0,-(a7)	; $027CE8
@@ -32146,16 +32146,16 @@ L027C66:
 	pea.l -$d2(a6)	; $027CFA
 	jsr strcat.l	; $027CFE
 	addq.w #$8,a7	; $027D04
-	cmpi.w #$7530,ram_sys_ffc410.l	; $027D06
+	cmpi.w #$7530,ram_sys_field_c410.l	; $027D06
 	beq.w L027DEA	; $027D0E
 	pea.l L0294BB(pc)	; $027D12
 	pea.l -$d2(a6)	; $027D16
 	jsr strcat.l	; $027D1A
 	addq.w #$8,a7	; $027D20
-	move.w ram_sys_ffc410.l,d0	; $027D22
+	move.w ram_sys_field_c410.l,d0	; $027D22
 	lsr.w #$6,d0	; $027D28
 	move.w d0,-$2(a6)	; $027D2A
-	move.w ram_sys_ffc410.l,d5	; $027D2E
+	move.w ram_sys_field_c410.l,d5	; $027D2E
 	and.w #$3f,d5	; $027D34
 	lea.l -$6(a6),a0	; $027D38
 	move.w -$2(a6),d0	; $027D3C
@@ -32220,7 +32220,7 @@ L027DFE:
 	pea.l L0294CA(pc)	; $027E0E
 	jsr text_box.l	; $027E12
 	lea.l $c(a7),a7	; $027E18
-	tst.w ram_sys_ffc40c.l	; $027E1C
+	tst.w ram_sys_field_c40c.l	; $027E1C
 	bne.b L027E36	; $027E22
 	pea.l L0294D5(pc)	; $027E24
 	pea.l -$d2(a6)	; $027E28
@@ -32230,7 +32230,7 @@ L027DFE:
 L027E36:
 	move.w #$a,-(a7)	; $027E36
 	pea.l -$f0(a6)	; $027E3A
-	move.w ram_sys_ffc40c.l,-(a7)	; $027E3E
+	move.w ram_sys_field_c40c.l,-(a7)	; $027E3E
 	jsr num_to_str.l	; $027E44
 	addq.w #$8,a7	; $027E4A
 	move.l d0,-(a7)	; $027E4C
@@ -32242,7 +32242,7 @@ L027E5A:
 	pea.l -$d2(a6)	; $027E5E
 	jsr strcat.l	; $027E62
 	addq.w #$8,a7	; $027E68
-	cmpi.w #$7530,ram_sys_ffc410.l	; $027E6A
+	cmpi.w #$7530,ram_sys_field_c410.l	; $027E6A
 	beq.w L027F26	; $027E72
 	pea.l L0294E5(pc)	; $027E76
 	pea.l -$d2(a6)	; $027E7A
@@ -32261,10 +32261,10 @@ L027E5A:
 	pea.l -$d2(a6)	; $027EAE
 	jsr strcat.l	; $027EB2
 	addq.w #$8,a7	; $027EB8
-	move.w ram_sys_ffc410.l,d0	; $027EBA
+	move.w ram_sys_field_c410.l,d0	; $027EBA
 	lsr.w #$6,d0	; $027EC0
 	move.w d0,-$2(a6)	; $027EC2
-	move.w ram_sys_ffc410.l,d5	; $027EC6
+	move.w ram_sys_field_c410.l,d5	; $027EC6
 	and.w #$3f,d5	; $027ECC
 	lea.l -$6(a6),a0	; $027ED0
 	move.w -$2(a6),d0	; $027ED4
@@ -32306,7 +32306,7 @@ L027F48:
 L027F52:
 	bra.w L029368	; $027F52
 L027F56:
-	move.w ram_sys_ff0e80.l,d0	; $027F56
+	move.w ram_sys_field_0e80.l,d0	; $027F56
 	muls.w #$34,d0	; $027F5C
 	lea.l ram_merchant_base.l,a0	; $027F60
 	movea.l d0,a3	; $027F66
@@ -32474,7 +32474,7 @@ L02819A:
 	beq.b L028210	; $0281A8
 	move.w ram_actor_index.l,d0	; $0281AA
 	muls.w #$34,d0	; $0281B0
-	lea.l ram_sys_ff02db.l,a0	; $0281B4
+	lea.l ram_sys_field_02db.l,a0	; $0281B4
 	moveq #$0,d1	; $0281BA
 	move.b (a0,d0.l),d1	; $0281BC
 	cmp.w ram_party_leader.l,d1	; $0281C0
@@ -32497,7 +32497,7 @@ L02819A:
 	lea.l $10(a7),a7	; $028208
 	bra.w L028612	; $02820C
 L028210:
-	tst.w ram_sys_ff0ea8.l	; $028210
+	tst.w ram_sys_field_0ea8.l	; $028210
 	beq.b L02823A	; $028216
 	move.w #$a000,-(a7)	; $028218
 	pea.l -$d2(a6)	; $02821C
@@ -32508,7 +32508,7 @@ L028210:
 	jsr text_glyph_draw.l	; $028230
 	lea.l $10(a7),a7	; $028236
 L02823A:
-	move.w ram_sys_ff0ea8.l,d0	; $02823A
+	move.w ram_sys_field_0ea8.l,d0	; $02823A
 	ext.l d0	; $028240
 	bra.w L0283AA	; $028242
 L028246:
@@ -32597,9 +32597,9 @@ L02833E:
 	lea.l $10(a7),a7	; $02835C
 	bra.b L0283BC	; $028360
 L028362:
-	cmpi.w #$64,ram_sys_ff0ea8.l	; $028362
+	cmpi.w #$64,ram_sys_field_0ea8.l	; $028362
 	blt.b L028398	; $02836A
-	cmpi.w #$6c,ram_sys_ff0ea8.l	; $02836C
+	cmpi.w #$6c,ram_sys_field_0ea8.l	; $02836C
 	bge.b L028398	; $028374
 	move.w #$a000,-(a7)	; $028376
 	pea.l L0295BA(pc)	; $02837A
@@ -32627,11 +32627,11 @@ L0283BC:
 	lsr.w #$1,d0	; $0283C4
 	and.w #$1,d0	; $0283C6
 	beq.w L028590	; $0283CA
-	tst.w ram_sys_ff0ea8.l	; $0283CE
+	tst.w ram_sys_field_0ea8.l	; $0283CE
 	beq.w L028590	; $0283D4
-	tst.w ram_sys_ffc380.l	; $0283D8
+	tst.w ram_sys_field_c380.l	; $0283D8
 	beq.w L028590	; $0283DE
-	cmpi.w #$ffff,ram_sys_ffc37c.l	; $0283E2
+	cmpi.w #$ffff,ram_sys_field_c37c.l	; $0283E2
 	beq.w L028590	; $0283EA
 	lea.l ram_combat_flags.l,a0	; $0283EE
 	move.w (a0),d0	; $0283F4
@@ -32644,7 +32644,7 @@ L0283BC:
 	addq.w #$8,a7	; $02840C
 	bra.b L028442	; $02840E
 L028410:
-	move.w ram_sys_ffc37c.l,d0	; $028410
+	move.w ram_sys_field_c37c.l,d0	; $028410
 	muls.w #$34,d0	; $028416
 	lea.l ram_merchant_base.l,a0	; $02841A
 	movea.l d0,a3	; $028420
@@ -32659,7 +32659,7 @@ L028410:
 	jsr strcpy.l	; $02843A
 	addq.w #$8,a7	; $028440
 L028442:
-	tst.w ram_sys_ffc380.l	; $028442
+	tst.w ram_sys_field_c380.l	; $028442
 	ble.w L028526	; $028448
 	cmpi.w #$7d,ram_event_code.l	; $02844C
 	beq.b L028460	; $028454
@@ -32681,7 +32681,7 @@ L02847C:
 L02848C:
 	move.w #$a,-(a7)	; $02848C
 	pea.l -$f0(a6)	; $028490
-	move.w ram_sys_ffc380.l,-(a7)	; $028494
+	move.w ram_sys_field_c380.l,-(a7)	; $028494
 	jsr num_to_str.l	; $02849A
 	addq.w #$8,a7	; $0284A0
 	move.l d0,-(a7)	; $0284A2
@@ -32700,7 +32700,7 @@ L0284C2:
 	addq.w #$8,a7	; $0284D0
 	move.w #$a,-(a7)	; $0284D2
 	pea.l -$f0(a6)	; $0284D6
-	move.w ram_sys_ffc380.l,-(a7)	; $0284DA
+	move.w ram_sys_field_c380.l,-(a7)	; $0284DA
 	jsr num_to_str.l	; $0284E0
 	addq.w #$8,a7	; $0284E6
 	move.l d0,-(a7)	; $0284E8
@@ -32727,7 +32727,7 @@ L028526:
 	addq.w #$8,a7	; $028534
 	move.w #$a,-(a7)	; $028536
 	pea.l -$f0(a6)	; $02853A
-	move.w ram_sys_ffc380.l,d0	; $02853E
+	move.w ram_sys_field_c380.l,d0	; $02853E
 	neg.w d0	; $028544
 	move.w d0,-(a7)	; $028546
 	jsr num_to_str.l	; $028548
@@ -32755,9 +32755,9 @@ L028590:
 	rol.w #$5,d0	; $028596
 	and.w #$1,d0	; $028598
 	bne.b L028612	; $02859C
-	cmpi.w #$4,ram_sys_ff0ea8.l	; $02859E
+	cmpi.w #$4,ram_sys_field_0ea8.l	; $02859E
 	ble.b L028612	; $0285A6
-	cmpi.w #$a,ram_sys_ff0ea8.l	; $0285A8
+	cmpi.w #$a,ram_sys_field_0ea8.l	; $0285A8
 	bge.b L028612	; $0285B0
 	move.w ram_actor_index.l,d0	; $0285B2
 	muls.w #$34,d0	; $0285B8
@@ -32796,7 +32796,7 @@ L028612:
 	move.w #$fc,-(a7)	; $028638
 	move.w ram_party_leader.l,d0	; $02863C
 	muls.w #$34,d0	; $028642
-	lea.l ram_sys_ff02dd.l,a0	; $028646
+	lea.l ram_menu_field_02dd.l,a0	; $028646
 	moveq #$0,d1	; $02864C
 	move.b (a0,d0.l),d1	; $02864E
 	move.w d1,-(a7)	; $028652
@@ -32814,7 +32814,7 @@ L028664:
 	pea.l -$f0(a6)	; $028678
 	move.w ram_party_leader.l,d0	; $02867C
 	muls.w #$34,d0	; $028682
-	lea.l ram_sys_ff02de.l,a0	; $028686
+	lea.l ram_world_field_02de.l,a0	; $028686
 	move.w (a0,d0.l),-(a7)	; $02868C
 	jsr num_to_str.l	; $028690
 	addq.w #$8,a7	; $028696
@@ -32826,7 +32826,7 @@ L028664:
 	pea.l -$d2(a6)	; $0286AC
 	jsr strcat.l	; $0286B0
 	addq.w #$8,a7	; $0286B6
-	move.w ram_sys_ff02a8.l,d0	; $0286B8
+	move.w ram_sys_field_02a8.l,d0	; $0286B8
 	mulu.w #$a,d0	; $0286BE
 	lea.l L0D66A6.l,a0	; $0286C2
 	move.w (a0,d0.l),d1	; $0286C8
@@ -32846,16 +32846,16 @@ L028664:
 	pea.l -$d2(a6)	; $0286FA
 	jsr strcat.l	; $0286FE
 	addq.w #$8,a7	; $028704
-	tst.w ram_sys_ff00ac.l	; $028706
+	tst.w ram_menu_field_00ac.l	; $028706
 	beq.w L0287D6	; $02870C
-	cmpi.b #$5,ram_sys_ffa7f8.l	; $028710
+	cmpi.b #$5,ram_menu_field_a7f8.l	; $028710
 	bne.w L0287D6	; $028718
 	moveq #$0,d0	; $02871C
 	move.b ram_shop_stock_byte.l,d0	; $02871E
 	move.w d0,d7	; $028724
-	add.w ram_sys_ff02aa.l,d7	; $028726
+	add.w ram_sys_field_02aa.l,d7	; $028726
 	lea.l -$6(a6),a0	; $02872C
-	move.w ram_sys_ff02a8.l,d0	; $028730
+	move.w ram_sys_field_02a8.l,d0	; $028730
 	mulu.w #$a,d0	; $028736
 	lea.l L0D66A8.l,a1	; $02873A
 	move.w (a1,d0.l),d1	; $028740
@@ -32886,7 +32886,7 @@ L028664:
 	move.w #$a,-(a7)	; $028794
 	pea.l -$f0(a6)	; $028798
 	move.w d7,-(a7)	; $02879C
-	move.w ram_sys_ff02a8.l,-(a7)	; $02879E
+	move.w ram_sys_field_02a8.l,-(a7)	; $02879E
 	jsr shop_price_calc.l	; $0287A4
 	addq.w #$4,a7	; $0287AA
 	move.w d0,-(a7)	; $0287AC
@@ -32908,7 +32908,7 @@ L0287D6:
 	pea.l -$d2(a6)	; $0287E6
 	jsr text_box.l	; $0287EA
 	lea.l $c(a7),a7	; $0287F0
-	move.w ram_sys_ff0e80.l,d0	; $0287F4
+	move.w ram_sys_field_0e80.l,d0	; $0287F4
 	ext.l d0	; $0287FA
 	bra.w L028904	; $0287FC
 L028800:
@@ -32945,11 +32945,11 @@ L028868:
 	jsr strcpy.l	; $028870
 	addq.w #$8,a7	; $028876
 	lea.l -$6(a6),a0	; $028878
-	move.w ram_sys_ff02a8.l,d0	; $02887C
+	move.w ram_sys_field_02a8.l,d0	; $02887C
 	mulu.w #$a,d0	; $028882
 	lea.l L0D66A8.l,a1	; $028886
 	move.w (a1,d0.l),d1	; $02888C
-	add.w ram_sys_ff0e80.l,d1	; $028890
+	add.w ram_sys_field_0e80.l,d1	; $028890
 	ext.l d1	; $028896
 	asl.l #$2,d1	; $028898
 	movea.l d1,a1	; $02889A
@@ -32993,7 +32993,7 @@ L028922:
 	bra.w L029368	; $028922
 L028926:
 	lea.l -$6(a6),a0	; $028926
-	move.w ram_sys_ff0e80.l,d0	; $02892A
+	move.w ram_sys_field_0e80.l,d0	; $02892A
 	ext.l d0	; $028930
 	divs.w #$40,d0	; $028932
 	swap d0	; $028936
@@ -33010,7 +33010,7 @@ L028926:
 	addq.w #$8,a7	; $02895C
 	move.w #$a,-(a7)	; $02895E
 	pea.l -$f0(a6)	; $028962
-	move.w ram_sys_ff0e80.l,d0	; $028966
+	move.w ram_sys_field_0e80.l,d0	; $028966
 	ext.l d0	; $02896C
 	divs.w #$40,d0	; $02896E
 	swap d0	; $028972
@@ -33052,7 +33052,7 @@ L028926:
 	pea.l -$f0(a6)	; $0289F4
 	move.w ram_party_leader.l,d0	; $0289F8
 	muls.w #$34,d0	; $0289FE
-	lea.l ram_sys_ff02de.l,a0	; $028A02
+	lea.l ram_world_field_02de.l,a0	; $028A02
 	move.w (a0,d0.l),-(a7)	; $028A08
 	jsr num_to_str.l	; $028A0C
 	addq.w #$8,a7	; $028A12
@@ -33071,7 +33071,7 @@ L028926:
 	pea.l -$d2(a6)	; $028A44
 	jsr text_box.l	; $028A48
 	lea.l $c(a7),a7	; $028A4E
-	move.w ram_sys_ff0e80.l,d0	; $028A52
+	move.w ram_sys_field_0e80.l,d0	; $028A52
 	ext.l d0	; $028A58
 	divs.w #$40,d0	; $028A5A
 	ext.l d0	; $028A5E
@@ -33084,7 +33084,7 @@ L028A68:
 	jsr strcpy.l	; $028A70
 	addq.w #$8,a7	; $028A76
 	lea.l -$6(a6),a0	; $028A78
-	move.w ram_sys_ff0e80.l,d0	; $028A7C
+	move.w ram_sys_field_0e80.l,d0	; $028A7C
 	ext.l d0	; $028A82
 	divs.w #$40,d0	; $028A84
 	swap d0	; $028A88
@@ -33143,11 +33143,11 @@ L028B2E:
 L028B3E:
 	bra.w L029368	; $028B3E
 L028B42:
-	move.w ram_sys_ff0e80.l,d0	; $028B42
+	move.w ram_sys_field_0e80.l,d0	; $028B42
 	ext.l d0	; $028B48
 	divs.w #$40,d0	; $028B4A
 	move.w d0,-$2(a6)	; $028B4E
-	move.w ram_sys_ff0e80.l,d5	; $028B52
+	move.w ram_sys_field_0e80.l,d5	; $028B52
 	ext.l d5	; $028B58
 	divs.w #$40,d5	; $028B5A
 	swap d5	; $028B5E
@@ -33205,11 +33205,11 @@ L028B42:
 	lea.l $c(a7),a7	; $028C1C
 	bra.w L029368	; $028C20
 L028C24:
-	move.w ram_sys_ff0e80.l,d0	; $028C24
+	move.w ram_sys_field_0e80.l,d0	; $028C24
 	ext.l d0	; $028C2A
 	divs.w #$40,d0	; $028C2C
 	move.w d0,-$2(a6)	; $028C30
-	move.w ram_sys_ff0e80.l,d5	; $028C34
+	move.w ram_sys_field_0e80.l,d5	; $028C34
 	ext.l d5	; $028C3A
 	divs.w #$40,d5	; $028C3C
 	swap d5	; $028C40
@@ -33267,11 +33267,11 @@ L028C24:
 	lea.l $c(a7),a7	; $028CFE
 	bra.w L029368	; $028D02
 L028D06:
-	move.w ram_sys_ff0e80.l,d0	; $028D06
+	move.w ram_sys_field_0e80.l,d0	; $028D06
 	ext.l d0	; $028D0C
 	divs.w #$40,d0	; $028D0E
 	move.w d0,-$2(a6)	; $028D12
-	move.w ram_sys_ff0e80.l,d5	; $028D16
+	move.w ram_sys_field_0e80.l,d5	; $028D16
 	ext.l d5	; $028D1C
 	divs.w #$40,d5	; $028D1E
 	swap d5	; $028D22
@@ -33329,11 +33329,11 @@ L028D06:
 	lea.l $c(a7),a7	; $028DE0
 	bra.w L029368	; $028DE4
 L028DE8:
-	move.w ram_sys_ff0e80.l,d0	; $028DE8
+	move.w ram_sys_field_0e80.l,d0	; $028DE8
 	ext.l d0	; $028DEE
 	divs.w #$40,d0	; $028DF0
 	move.w d0,-$2(a6)	; $028DF4
-	move.w ram_sys_ff0e80.l,d5	; $028DF8
+	move.w ram_sys_field_0e80.l,d5	; $028DF8
 	ext.l d5	; $028DFE
 	divs.w #$40,d5	; $028E00
 	swap d5	; $028E04
@@ -33391,7 +33391,7 @@ L028DE8:
 	lea.l $c(a7),a7	; $028EC2
 	bra.w L029368	; $028EC6
 L028ECA:
-	move.w ram_sys_ff0e80.l,d0	; $028ECA
+	move.w ram_sys_field_0e80.l,d0	; $028ECA
 	ext.l d0	; $028ED0
 	divs.w #$100,d0	; $028ED2
 	move.w d0,-$2(a6)	; $028ED6
@@ -33400,7 +33400,7 @@ L028ECA:
 	lea.l ram_merchant_base.l,a0	; $028EE2
 	movea.l d0,a3	; $028EE8
 	adda.l a0,a3	; $028EEA
-	move.w ram_sys_ff0e80.l,d5	; $028EEC
+	move.w ram_sys_field_0e80.l,d5	; $028EEC
 	ext.l d5	; $028EF2
 	divs.w #$100,d5	; $028EF4
 	swap d5	; $028EF8
@@ -33506,7 +33506,7 @@ L029000:
 	cmp.w #$a,d5	; $029024
 	bne.b L029062	; $029028
 	move.w #$90,-(a7)	; $02902A
-	pea.l ram_sys_ffc326.l	; $02902E
+	pea.l ram_sys_field_c326.l	; $02902E
 	jsr sys_bitmap_test.l	; $029034
 	addq.w #$6,a7	; $02903A
 	tst.w d0	; $02903C
@@ -33592,12 +33592,12 @@ L029110:
 	blt.w L029068	; $029120
 	bra.w L029368	; $029124
 L029128:
-	move.w ram_sys_ff0114.l,d6	; $029128
-	move.w #$ffff,ram_sys_ff0114.l	; $02912E
+	move.w ram_world_field_0114.l,d6	; $029128
+	move.w #$ffff,ram_world_field_0114.l	; $02912E
 	jsr menu_format.l	; $029136
 	tst.w d6	; $02913C
 	bne.b L029178	; $02913E
-	move.w ram_sys_ff8648.l,d0	; $029140
+	move.w ram_world_field_8648.l,d0	; $029140
 	add.w #$6000,d0	; $029146
 	moveq #$0,d1	; $02914A
 	move.w d0,d1	; $02914C
@@ -33633,7 +33633,7 @@ L029178:
 	pea.l -$f0(a6)	; $0291C4
 	move.w ram_party_leader.l,d0	; $0291C8
 	muls.w #$34,d0	; $0291CE
-	lea.l ram_sys_ff02de.l,a0	; $0291D2
+	lea.l ram_world_field_02de.l,a0	; $0291D2
 	move.w (a0,d0.l),-(a7)	; $0291D8
 	jsr num_to_str.l	; $0291DC
 	addq.w #$8,a7	; $0291E2
@@ -33652,7 +33652,7 @@ L029178:
 	pea.l L001000.w	; $029214
 	jsr text_glyph_draw.l	; $029218
 	lea.l $10(a7),a7	; $02921E
-	move.w ram_sys_ff0e16.l,d0	; $029222
+	move.w ram_world_field_0e16.l,d0	; $029222
 	ext.l d0	; $029228
 	divs.w #$64,d0	; $02922A
 	add.w #$a,d0	; $02922E
@@ -33718,8 +33718,8 @@ L029296:
 	clr.w -(a7)	; $029300
 	move.w #$fa0,-(a7)	; $029302
 	move.w #$fa0,-(a7)	; $029306
-	move.w ram_sys_ffc366.l,-(a7)	; $02930A
-	move.w ram_sys_ffc364.l,-(a7)	; $029310
+	move.w ram_world_field_c366.l,-(a7)	; $02930A
+	move.w ram_world_field_c364.l,-(a7)	; $029310
 	move.w #$19,-(a7)	; $029316
 	move.w #$f,-(a7)	; $02931A
 	move.w #$40,-(a7)	; $02931E
@@ -34198,11 +34198,11 @@ L0298EC:
 	tst.w $a(a6)	; $029904
 	bge.b L029936	; $029908
 	pea.l -$6(a6)	; $02990A
-	pea.l ram_sys_ffbb86.l	; $02990E
+	pea.l ram_sys_field_bb86.l	; $02990E
 	clr.w -(a7)	; $029914
 	clr.w -(a7)	; $029916
 	clr.w -(a7)	; $029918
-	move.w ram_sys_ff02a6.l,-(a7)	; $02991A
+	move.w ram_sys_field_02a6.l,-(a7)	; $02991A
 	move.w #$b,-(a7)	; $029920
 	move.w #$3,-(a7)	; $029924
 	jsr text_event_resolve.l	; $029928
@@ -34214,7 +34214,7 @@ L029936:
 	move.b $27(a0),d0	; $02993C
 	cmp.w ram_party_leader.l,d0	; $029940
 	bne.b L02995E	; $029946
-	lea.l ram_sys_ff02a2.l,a0	; $029948
+	lea.l ram_menu_field_02a2.l,a0	; $029948
 	andi.w #$fffd,(a0)	; $02994E
 	ori.w #$2,(a0)	; $029952
 	move.b $b(a6),ram_sys_ff02a5.l	; $029956
@@ -34225,7 +34225,7 @@ L02995E:
 	bgt.b L02997C	; $02996C
 	move.w $a(a6),d0	; $02996E
 	add.w #$10,d0	; $029972
-	move.b d0,ram_sys_ff02a4.l	; $029976
+	move.b d0,ram_sys_field_02a4.l	; $029976
 L02997C:
 	tst.w $8(a6)	; $02997C
 	bge.b L02998A	; $029980
@@ -34235,13 +34235,13 @@ L02998A:
 	move.b #$3,-$15(a6)	; $02998A
 L029990:
 	pea.l -$6(a6)	; $029990
-	pea.l ram_sys_ffbb86.l	; $029994
+	pea.l ram_sys_field_bb86.l	; $029994
 	movea.l -$a(a6),a0	; $02999A
 	moveq #$0,d0	; $02999E
 	move.b $27(a0),d0	; $0299A0
 	moveq #$34,d1	; $0299A4
 	jsr mul32.l	; $0299A6
-	lea.l ram_sys_ff02d6.l,a0	; $0299AC
+	lea.l ram_world_field_02d6.l,a0	; $0299AC
 	move.w (a0,d0.l),-(a7)	; $0299B2
 	movea.l -$a(a6),a0	; $0299B6
 	moveq #$0,d0	; $0299BA
@@ -34252,7 +34252,7 @@ L029990:
 	move.b $27(a0),d0	; $0299C8
 	moveq #$34,d1	; $0299CC
 	jsr mul32.l	; $0299CE
-	lea.l ram_sys_ff02d4.l,a0	; $0299D4
+	lea.l ram_world_field_02d4.l,a0	; $0299D4
 	move.w (a0,d0.l),-(a7)	; $0299DA
 	movea.l -$a(a6),a0	; $0299DE
 	move.w $2(a0),-(a7)	; $0299E2
@@ -34264,7 +34264,7 @@ L029990:
 	move.w d0,-(a7)	; $0299F4
 	jsr text_event_resolve.l	; $0299F6
 	lea.l $14(a7),a7	; $0299FC
-	pea.l ram_sys_ffbb86.l	; $029A00
+	pea.l ram_sys_field_bb86.l	; $029A00
 	clr.w -(a7)	; $029A06
 	move.w #$1,-(a7)	; $029A08
 	movea.l -$a(a6),a0	; $029A0C
@@ -34287,7 +34287,7 @@ L029990:
 	jsr combat_effect_apply.l	; $029A4C
 	lea.l $e(a7),a7	; $029A52
 L029A56:
-	tst.w ram_sys_ff0110.l	; $029A56
+	tst.w ram_menu_field_0110.l	; $029A56
 	bne.b L029AC0	; $029A5C
 	lea.l ram_combat_flags.l,a0	; $029A5E
 	move.w (a0),d0	; $029A64
@@ -34295,14 +34295,14 @@ L029A56:
 	bne.b L029AC0	; $029A6A
 	move.w ram_party_leader.l,d0	; $029A6C
 	muls.w #$34,d0	; $029A72
-	lea.l ram_sys_ff02dd.l,a0	; $029A76
+	lea.l ram_menu_field_02dd.l,a0	; $029A76
 	moveq #$0,d1	; $029A7C
 	move.b (a0,d0.l),d1	; $029A7E
 	cmp.w #$ff,d1	; $029A82
 	beq.b L029AC0	; $029A86
 	move.w ram_party_leader.l,d0	; $029A88
 	muls.w #$34,d0	; $029A8E
-	lea.l ram_sys_ff02dd.l,a0	; $029A92
+	lea.l ram_menu_field_02dd.l,a0	; $029A92
 	move.l d0,d1	; $029A98
 	moveq #$0,d0	; $029A9A
 	move.b (a0,d1.l),d0	; $029A9C
@@ -34425,7 +34425,7 @@ L029C14:
 	move.w (a0),d0	; $029C18
 	and.w #$fff,d0	; $029C1A
 	move.w d0,-(a7)	; $029C1E
-	pea.l ram_sys_ffc326.l	; $029C20
+	pea.l ram_sys_field_c326.l	; $029C20
 	jsr sys_bitmap_test(pc)	; $029C26
 	addq.w #$6,a7	; $029C2A
 	tst.w d0	; $029C2C
@@ -34493,16 +34493,16 @@ L029CB8:
 L029CD6:
 	move.w ram_party_leader.l,d0	; $029CD6
 	muls.w #$34,d0	; $029CDC
-	lea.l ram_sys_ff02dd.l,a0	; $029CE0
+	lea.l ram_menu_field_02dd.l,a0	; $029CE0
 	moveq #$0,d1	; $029CE6
 	move.b (a0,d0.l),d1	; $029CE8
 	move.w d1,-(a7)	; $029CEC
 	move.w ram_party_leader.l,-(a7)	; $029CEE
 	jsr combat_battle_end.l	; $029CF4
 	addq.w #$4,a7	; $029CFA
-	clr.w ram_sys_ff00ac.l	; $029CFC
-	move.b #$ff,ram_sys_ffb08a.l	; $029D02
-	move.w #$ffff,ram_sys_ff009c.l	; $029D0A
+	clr.w ram_menu_field_00ac.l	; $029CFC
+	move.b #$ff,ram_sys_field_b08a.l	; $029D02
+	move.w #$ffff,ram_sys_field_009c.l	; $029D0A
 	bra.w L029DC6	; $029D12
 L029D16:
 	lea.l -$4(a6),a0	; $029D16
@@ -34531,13 +34531,13 @@ L029D4E:
 	addq.w #$4,a7	; $029D62
 	bra.b L029D9E	; $029D64
 L029D66:
-	move.w -$2(a6),ram_sys_ff02a6.l	; $029D66
+	move.w -$2(a6),ram_sys_field_02a6.l	; $029D66
 	move.w #$1,-(a7)	; $029D6E
 	clr.w -(a7)	; $029D72
 	move.w #$11,-(a7)	; $029D74
 	jsr cmd24_handler.l	; $029D78
 	addq.w #$6,a7	; $029D7E
-	lea.l ram_sys_ff02a2.l,a0	; $029D80
+	lea.l ram_menu_field_02a2.l,a0	; $029D80
 	andi.w #$fffb,(a0)	; $029D86
 	ori.w #$4,(a0)	; $029D8A
 	lea.l -$6(a6),a0	; $029D8E
@@ -34592,7 +34592,7 @@ L029E2A:
 	cmpi.w #$ffff,$a(a6)	; $029E2A
 	bne.b L029E86	; $029E30
 	pea.l -$6(a6)	; $029E32
-	pea.l ram_sys_ffbb86.l	; $029E36
+	pea.l ram_sys_field_bb86.l	; $029E36
 	clr.w -(a7)	; $029E3C
 	clr.w -(a7)	; $029E3E
 	clr.w -(a7)	; $029E40
@@ -34604,7 +34604,7 @@ L029E2A:
 	move.w #$3,-(a7)	; $029E52
 	jsr text_event_resolve.l	; $029E56
 	lea.l $14(a7),a7	; $029E5C
-	pea.l ram_sys_ffbb86.l	; $029E60
+	pea.l ram_sys_field_bb86.l	; $029E60
 	clr.w -(a7)	; $029E66
 	move.w #$1,-(a7)	; $029E68
 	movea.l -$a(a6),a0	; $029E6C
@@ -34618,7 +34618,7 @@ L029E86:
 	cmpi.w #$fffe,$a(a6)	; $029E86
 	bne.b L029EE0	; $029E8C
 	pea.l -$6(a6)	; $029E8E
-	pea.l ram_sys_ffbb86.l	; $029E92
+	pea.l ram_sys_field_bb86.l	; $029E92
 	clr.w -(a7)	; $029E98
 	clr.w -(a7)	; $029E9A
 	clr.w -(a7)	; $029E9C
@@ -34630,7 +34630,7 @@ L029E86:
 	move.w #$3,-(a7)	; $029EAE
 	jsr text_event_resolve.l	; $029EB2
 	lea.l $14(a7),a7	; $029EB8
-	pea.l ram_sys_ffbb86.l	; $029EBC
+	pea.l ram_sys_field_bb86.l	; $029EBC
 	clr.w -(a7)	; $029EC2
 	move.w #$1,-(a7)	; $029EC4
 	movea.l -$a(a6),a0	; $029EC8
@@ -34641,13 +34641,13 @@ L029E86:
 	lea.l $a(a7),a7	; $029EDA
 	bra.b L029F08	; $029EDE
 L029EE0:
-	move.w -$2(a6),ram_sys_ff02a6.l	; $029EE0
+	move.w -$2(a6),ram_sys_field_02a6.l	; $029EE0
 	move.w #$1,-(a7)	; $029EE8
 	clr.w -(a7)	; $029EEC
 	move.w #$13,-(a7)	; $029EEE
 	jsr cmd24_handler.l	; $029EF2
 	addq.w #$6,a7	; $029EF8
-	lea.l ram_sys_ff02a2.l,a0	; $029EFA
+	lea.l ram_menu_field_02a2.l,a0	; $029EFA
 	andi.w #$fffb,(a0)	; $029F00
 	ori.w #$4,(a0)	; $029F04
 L029F08:
@@ -34666,7 +34666,7 @@ L029F0C:
 	bra.w L029FBA	; $029F2E
 L029F32:
 	pea.l -$6(a6)	; $029F32
-	pea.l ram_sys_ffbb86.l	; $029F36
+	pea.l ram_sys_field_bb86.l	; $029F36
 	clr.w -(a7)	; $029F3C
 	clr.w -(a7)	; $029F3E
 	clr.w -(a7)	; $029F40
@@ -34678,7 +34678,7 @@ L029F32:
 	move.w #$3,-(a7)	; $029F52
 	jsr text_event_resolve.l	; $029F56
 	lea.l $14(a7),a7	; $029F5C
-	pea.l ram_sys_ffbb86.l	; $029F60
+	pea.l ram_sys_field_bb86.l	; $029F60
 	clr.w -(a7)	; $029F66
 	move.w #$1,-(a7)	; $029F68
 	movea.l -$a(a6),a0	; $029F6C
@@ -34714,7 +34714,7 @@ L029FBA:
 	bra.w L02A20A	; $029FDC
 L029FE0:
 	pea.l -$6(a6)	; $029FE0
-	pea.l ram_sys_ffbb86.l	; $029FE4
+	pea.l ram_sys_field_bb86.l	; $029FE4
 	clr.w -(a7)	; $029FEA
 	clr.w -(a7)	; $029FEC
 	clr.w -(a7)	; $029FEE
@@ -34726,7 +34726,7 @@ L029FE0:
 	move.w #$3,-(a7)	; $02A000
 	jsr text_event_resolve.l	; $02A004
 	lea.l $14(a7),a7	; $02A00A
-	pea.l ram_sys_ffbb86.l	; $02A00E
+	pea.l ram_sys_field_bb86.l	; $02A00E
 	clr.w -(a7)	; $02A014
 	move.w #$1,-(a7)	; $02A016
 	movea.l -$a(a6),a0	; $02A01A
@@ -34903,7 +34903,7 @@ npc_attitude_raise:
 	lea.l ram_npc_field_02c8.l,a0	; $02A236
 	move.w (a0,d0.l),d1	; $02A23C
 	muls.w #$34,d1	; $02A240
-	lea.l ram_sys_ff02da.l,a0	; $02A244
+	lea.l ram_sys_field_02da.l,a0	; $02A244
 	moveq #$0,d0	; $02A24A
 	move.b (a0,d1.l),d0	; $02A24C
 	move.w d0,-$4(a6)	; $02A250
@@ -34954,7 +34954,7 @@ L02A2BC:
 combat_select_unit:
 	link.w a6,#$fffa	; $02A2CA
 	clr.w -$6(a6)	; $02A2CE
-	move.w #$ffff,ram_sys_ff0120.l	; $02A2D2
+	move.w #$ffff,ram_sys_field_0120.l	; $02A2D2
 	lea.l ram_combat_flags.l,a0	; $02A2DA
 	move.w (a0),d0	; $02A2E0
 	and.w #$1,d0	; $02A2E2
@@ -34963,12 +34963,12 @@ L02A2E8:
 	unlk a6	; $02A2E8
 	rts	; $02A2EA
 L02A2EC:
-	move.w #$ffff,ram_sys_ff009a.l	; $02A2EC
+	move.w #$ffff,ram_sys_field_009a.l	; $02A2EC
 	cmpi.w #$ff,$a(a6)	; $02A2F4
 	beq.b L02A318	; $02A2FA
 	move.w $a(a6),d0	; $02A2FC
 	muls.w #$34,d0	; $02A300
-	lea.l ram_sys_ff02db.l,a0	; $02A304
+	lea.l ram_sys_field_02db.l,a0	; $02A304
 	moveq #$0,d1	; $02A30A
 	move.b (a0,d0.l),d1	; $02A30C
 	cmp.w ram_party_leader.l,d1	; $02A310
@@ -34976,25 +34976,25 @@ L02A2EC:
 L02A318:
 	move.w $8(a6),d0	; $02A318
 	muls.w #$34,d0	; $02A31C
-	lea.l ram_sys_ff02db.l,a0	; $02A320
+	lea.l ram_sys_field_02db.l,a0	; $02A320
 	moveq #$0,d1	; $02A326
 	move.b (a0,d0.l),d1	; $02A328
 	move.w d1,-$4(a6)	; $02A32C
 	move.w -$4(a6),d0	; $02A330
 	muls.w #$34,d0	; $02A334
-	lea.l ram_sys_ff02dd.l,a0	; $02A338
+	lea.l ram_menu_field_02dd.l,a0	; $02A338
 	moveq #$0,d1	; $02A33E
 	move.b (a0,d0.l),d1	; $02A340
 	move.w d1,-$2(a6)	; $02A344
 	move.w -$4(a6),d0	; $02A348
 	muls.w #$34,d0	; $02A34C
-	lea.l ram_sys_ff02dd.l,a0	; $02A350
+	lea.l ram_menu_field_02dd.l,a0	; $02A350
 	move.b #$ff,(a0,d0.l)	; $02A356
 	cmpi.w #$ff,-$2(a6)	; $02A35C
 	beq.b L02A378	; $02A362
 	move.w -$2(a6),d0	; $02A364
 	muls.w #$34,d0	; $02A368
-	lea.l ram_sys_ff02dd.l,a0	; $02A36C
+	lea.l ram_menu_field_02dd.l,a0	; $02A36C
 	move.b #$ff,(a0,d0.l)	; $02A372
 L02A378:
 	move.w #$ff,-(a7)	; $02A378
@@ -35004,13 +35004,13 @@ L02A378:
 L02A386:
 	move.w $8(a6),d0	; $02A386
 	muls.w #$34,d0	; $02A38A
-	lea.l ram_sys_ff02db.l,a0	; $02A38E
+	lea.l ram_sys_field_02db.l,a0	; $02A38E
 	moveq #$0,d1	; $02A394
 	move.b (a0,d0.l),d1	; $02A396
 	move.w d1,-$4(a6)	; $02A39A
 	move.w $a(a6),d0	; $02A39E
 	muls.w #$34,d0	; $02A3A2
-	lea.l ram_sys_ff02db.l,a0	; $02A3A6
+	lea.l ram_sys_field_02db.l,a0	; $02A3A6
 	moveq #$0,d1	; $02A3AC
 	move.b (a0,d0.l),d1	; $02A3AE
 	move.w d1,-$2(a6)	; $02A3B2
@@ -35021,13 +35021,13 @@ L02A386:
 	move.w -$4(a6),d0	; $02A3C4
 	cmp.w ram_party_leader.l,d0	; $02A3C8
 	bne.b L02A410	; $02A3CE
-	move.w ram_sys_ff02a0.l,d0	; $02A3D0
+	move.w ram_sys_field_02a0.l,d0	; $02A3D0
 	cmp.w -$2(a6),d0	; $02A3D6
 	beq.b L02A410	; $02A3DA
 	move.w -$2(a6),-(a7)	; $02A3DC
 	bsr.b shop_merchant_setup	; $02A3E0
 	addq.w #$2,a7	; $02A3E2
-	lea.l ram_sys_ff02a2.l,a0	; $02A3E4
+	lea.l ram_menu_field_02a2.l,a0	; $02A3E4
 	andi.w #$fffd,(a0)	; $02A3EA
 	ori.w #$2,(a0)	; $02A3EE
 	move.b #$a,ram_sys_ff02a5.l	; $02A3F2
@@ -35039,11 +35039,11 @@ L02A386:
 L02A410:
 	move.w -$4(a6),d0	; $02A410
 	muls.w #$34,d0	; $02A414
-	lea.l ram_sys_ff02dd.l,a0	; $02A418
+	lea.l ram_menu_field_02dd.l,a0	; $02A418
 	move.b -$1(a6),(a0,d0.l)	; $02A41E
 	move.w -$2(a6),d0	; $02A424
 	muls.w #$34,d0	; $02A428
-	lea.l ram_sys_ff02dd.l,a0	; $02A42C
+	lea.l ram_menu_field_02dd.l,a0	; $02A42C
 	move.b -$3(a6),(a0,d0.l)	; $02A432
 L02A438:
 	tst.w -$6(a6)	; $02A438
@@ -35058,18 +35058,18 @@ L02A450:
 	; code $02A454-$02A561
 shop_merchant_setup:
 	link.w a6,#$fffc	; $02A454
-	move.w $8(a6),ram_sys_ff02a0.l	; $02A458
-	lea.l ram_sys_ff02a2.l,a0	; $02A460
+	move.w $8(a6),ram_sys_field_02a0.l	; $02A458
+	lea.l ram_menu_field_02a2.l,a0	; $02A460
 	andi.w #$fffe,(a0)	; $02A466
-	lea.l ram_sys_ff02a2.l,a0	; $02A46A
+	lea.l ram_menu_field_02a2.l,a0	; $02A46A
 	andi.w #$fffb,(a0)	; $02A470
-	lea.l ram_sys_ff02a2.l,a0	; $02A474
+	lea.l ram_menu_field_02a2.l,a0	; $02A474
 	andi.w #$fffd,(a0)	; $02A47A
-	clr.b ram_sys_ff02a4.l	; $02A47E
-	clr.w ram_sys_ff02a6.l	; $02A484
-	move.w #$7530,ram_sys_ff02a8.l	; $02A48A
-	clr.w ram_sys_ff02aa.l	; $02A492
-	clr.w ram_sys_ff02ac.l	; $02A498
+	clr.b ram_sys_field_02a4.l	; $02A47E
+	clr.w ram_sys_field_02a6.l	; $02A484
+	move.w #$7530,ram_sys_field_02a8.l	; $02A48A
+	clr.w ram_sys_field_02aa.l	; $02A492
+	clr.w ram_sys_field_02ac.l	; $02A498
 	cmpi.w #$ff,$8(a6)	; $02A49E
 	beq.w L02A540	; $02A4A4
 	clr.w -(a7)	; $02A4A8
@@ -35081,7 +35081,7 @@ shop_merchant_setup:
 L02A4BC:
 	move.w -$2(a6),d0	; $02A4BC
 	muls.w #$34,d0	; $02A4C0
-	lea.l ram_sys_ff02cb.l,a0	; $02A4C4
+	lea.l ram_sys_field_02cb.l,a0	; $02A4C4
 	move.w -$4(a6),d1	; $02A4CA
 	muls.w #$a,d1	; $02A4CE
 	lea.l L0D66A2.l,a1	; $02A4D2
@@ -35090,22 +35090,22 @@ L02A4BC:
 	bne.b L02A532	; $02A4E0
 	move.w $8(a6),d0	; $02A4E2
 	muls.w #$34,d0	; $02A4E6
-	lea.l ram_sys_ff02d9.l,a0	; $02A4EA
+	lea.l ram_sys_field_02d9.l,a0	; $02A4EA
 	tst.b (a0,d0.l)	; $02A4F0
 	bls.b L02A532	; $02A4F4
-	move.w -$4(a6),ram_sys_ff02a8.l	; $02A4F6
+	move.w -$4(a6),ram_sys_field_02a8.l	; $02A4F6
 	move.w $8(a6),d0	; $02A4FE
 	muls.w #$34,d0	; $02A502
-	lea.l ram_sys_ff02d8.l,a0	; $02A506
+	lea.l ram_sys_field_02d8.l,a0	; $02A506
 	moveq #$0,d1	; $02A50C
 	move.b (a0,d0.l),d1	; $02A50E
-	move.w d1,ram_sys_ff02aa.l	; $02A512
+	move.w d1,ram_sys_field_02aa.l	; $02A512
 	move.w $8(a6),d0	; $02A518
 	muls.w #$34,d0	; $02A51C
-	lea.l ram_sys_ff02d9.l,a0	; $02A520
+	lea.l ram_sys_field_02d9.l,a0	; $02A520
 	moveq #$0,d1	; $02A526
 	move.b (a0,d0.l),d1	; $02A528
-	move.w d1,ram_sys_ff02ac.l	; $02A52C
+	move.w d1,ram_sys_field_02ac.l	; $02A52C
 L02A532:
 	addq.w #$1,-$4(a6)	; $02A532
 	cmpi.w #$14,-$4(a6)	; $02A536
@@ -35128,7 +35128,7 @@ world_step_tile:
 	bne.b L02A582	; $02A56C
 	move.w $8(a6),d0	; $02A56E
 	muls.w #$34,d0	; $02A572
-	lea.l ram_sys_ff02be.l,a0	; $02A576
+	lea.l ram_sys_field_02be.l,a0	; $02A576
 	move.w (a0,d0.l),$a(a6)	; $02A57C
 L02A582:
 	move.w $8(a6),d0	; $02A582
@@ -35192,7 +35192,7 @@ L02A638:
 	move.w #$2,-(a7)	; $02A664
 	move.w -$e(a6),d0	; $02A668
 	muls.w #$34,d0	; $02A66C
-	lea.l ram_sys_ff02ca.l,a0	; $02A670
+	lea.l ram_sys_field_02ca.l,a0	; $02A670
 	moveq #$0,d1	; $02A676
 	move.b (a0,d0.l),d1	; $02A678
 	move.w d1,-(a7)	; $02A67C
@@ -35202,7 +35202,7 @@ L02A638:
 L02A68C:
 	move.w -$e(a6),d0	; $02A68C
 	muls.w #$34,d0	; $02A690
-	lea.l ram_sys_ff02b6.l,a0	; $02A694
+	lea.l ram_sys_field_02b6.l,a0	; $02A694
 	move.w (a0,d0.l),d1	; $02A69A
 	ext.l d1	; $02A69E
 	divs.w #$40,d1	; $02A6A0
@@ -35230,7 +35230,7 @@ L02A6DA:
 	move.w (a0,d0.l),-$10(a6)	; $02A6E8
 	move.w -$e(a6),d0	; $02A6EE
 	muls.w #$34,d0	; $02A6F2
-	lea.l ram_sys_ff02b6.l,a0	; $02A6F6
+	lea.l ram_sys_field_02b6.l,a0	; $02A6F6
 	move.w (a0,d0.l),-$c(a6)	; $02A6FC
 	move.w -$e(a6),-(a7)	; $02A702
 	move.w $8(a6),-(a7)	; $02A706
@@ -35240,7 +35240,7 @@ L02A6DA:
 	beq.b L02A72A	; $02A716
 	clr.w -(a7)	; $02A718
 	move.w -$10(a6),-(a7)	; $02A71A
-	pea.l ram_sys_ffc326.l	; $02A71E
+	pea.l ram_sys_field_c326.l	; $02A71E
 	jsr sys_bitmap_write(pc)	; $02A724
 	addq.w #$8,a7	; $02A728
 L02A72A:
@@ -35263,14 +35263,14 @@ L02A72A:
 L02A766:
 	bra.w L02AD60	; $02A766
 L02A76A:
-	lea.l ram_sys_ff0e92.l,a0	; $02A76A
+	lea.l ram_menu_field_0e92.l,a0	; $02A76A
 	move.w (a0),d0	; $02A770
 	and.w #$3ff,d0	; $02A772
 	and.w #$3ff,d0	; $02A776
 	lea.l -$18(a6),a0	; $02A77A
 	andi.w #$fc00,(a0)	; $02A77E
 	or.w d0,(a0)	; $02A782
-	lea.l ram_sys_ff0e92.l,a0	; $02A784
+	lea.l ram_menu_field_0e92.l,a0	; $02A784
 	move.w (a0),d0	; $02A78A
 	rol.w #$4,d0	; $02A78C
 	and.w #$f,d0	; $02A78E
@@ -35334,7 +35334,7 @@ L02A844:
 	beq.b L02A864	; $02A84E
 	move.w -$14(a6),-(a7)	; $02A850
 	move.w -$10(a6),-(a7)	; $02A854
-	pea.l ram_sys_ffc326.l	; $02A858
+	pea.l ram_sys_field_c326.l	; $02A858
 	jsr sys_bitmap_write(pc)	; $02A85E
 	addq.w #$8,a7	; $02A862
 L02A864:
@@ -35413,7 +35413,7 @@ L02A942:
 	beq.b L02A964	; $02A94C
 	move.w -$14(a6),-(a7)	; $02A94E
 	move.w -$10(a6),-(a7)	; $02A952
-	pea.l ram_sys_ffc326.l	; $02A956
+	pea.l ram_sys_field_c326.l	; $02A956
 	jsr sys_bitmap_write(pc)	; $02A95C
 	addq.w #$8,a7	; $02A960
 	bra.b L02A97A	; $02A962
@@ -35458,7 +35458,7 @@ L02A9BC:
 	tst.w -$14(a6)	; $02A9E6
 	beq.w L02AAD4	; $02A9EA
 	move.w -$10(a6),-(a7)	; $02A9EE
-	pea.l ram_sys_ffc326.l	; $02A9F2
+	pea.l ram_sys_field_c326.l	; $02A9F2
 	jsr sys_bitmap_test(pc)	; $02A9F8
 	addq.w #$6,a7	; $02A9FC
 	tst.w d0	; $02A9FE
@@ -35481,7 +35481,7 @@ L02A9BC:
 	addq.w #$8,a7	; $02AA3E
 	clr.w -(a7)	; $02AA40
 	move.w -$10(a6),-(a7)	; $02AA42
-	pea.l ram_sys_ffc326.l	; $02AA46
+	pea.l ram_sys_field_c326.l	; $02AA46
 	jsr sys_bitmap_write(pc)	; $02AA4C
 	addq.w #$8,a7	; $02AA50
 	clr.l -(a7)	; $02AA52
@@ -35560,7 +35560,7 @@ L02AB44:
 	move.w #$ffff,-$c(a6)	; $02AB44
 L02AB4A:
 	move.w -$c(a6),d0	; $02AB4A
-	add.w ram_sys_ff0e98.l,d0	; $02AB4E
+	add.w ram_sys_field_0e98.l,d0	; $02AB4E
 	move.w d0,-$12(a6)	; $02AB54
 	move.w ram_party_index_array.l,d0	; $02AB58
 	muls.w #$34,d0	; $02AB5E
@@ -35572,21 +35572,21 @@ L02AB4A:
 	move.w (a0,d0.l),-$a(a6)	; $02AB7E
 	move.w ram_party_index_array.l,d0	; $02AB84
 	muls.w #$34,d0	; $02AB8A
-	lea.l ram_sys_ff02be.l,a0	; $02AB8E
+	lea.l ram_sys_field_02be.l,a0	; $02AB8E
 	move.w (a0,d0.l),-$14(a6)	; $02AB94
 	move.w #$ffff,-(a7)	; $02AB9A
 	move.w #$1,-(a7)	; $02AB9E
 	clr.w -(a7)	; $02ABA2
 	jsr world_location_transition.l	; $02ABA4
 	addq.w #$6,a7	; $02ABAA
-	lea.l ram_sys_ff0e92.l,a0	; $02ABAC
+	lea.l ram_menu_field_0e92.l,a0	; $02ABAC
 	move.w (a0),d0	; $02ABB2
 	rol.w #$4,d0	; $02ABB4
 	and.w #$f,d0	; $02ABB6
 	add.w -$c(a6),d0	; $02ABBA
 	ror.w #$4,d0	; $02ABBE
 	and.w #$f000,d0	; $02ABC0
-	lea.l ram_sys_ff0e92.l,a0	; $02ABC4
+	lea.l ram_menu_field_0e92.l,a0	; $02ABC4
 	andi.w #$fff,(a0)	; $02ABCA
 	or.w d0,(a0)	; $02ABCE
 	move.w #$ffff,-(a7)	; $02ABD0
@@ -35621,7 +35621,7 @@ L02AC2E:
 	cmpi.w #$ffff,-$10(a6)	; $02AC46
 	beq.w L02AD02	; $02AC4C
 	move.w -$10(a6),-(a7)	; $02AC50
-	pea.l ram_sys_ffc326.l	; $02AC54
+	pea.l ram_sys_field_c326.l	; $02AC54
 	jsr sys_bitmap_test(pc)	; $02AC5A
 	addq.w #$6,a7	; $02AC5E
 	tst.w d0	; $02AC60
@@ -35663,7 +35663,7 @@ L02AC2E:
 	addq.w #$2,a7	; $02ACEC
 	clr.w -(a7)	; $02ACEE
 	move.w -$10(a6),-(a7)	; $02ACF0
-	pea.l ram_sys_ffc326.l	; $02ACF4
+	pea.l ram_sys_field_c326.l	; $02ACF4
 	jsr sys_bitmap_write(pc)	; $02ACFA
 	addq.w #$8,a7	; $02ACFE
 	bra.b L02AD60	; $02AD00
@@ -35708,7 +35708,7 @@ world_scan_ahead_for_char:
 	bne.b L02AD84	; $02AD6E
 	move.w $8(a6),d0	; $02AD70
 	muls.w #$34,d0	; $02AD74
-	lea.l ram_sys_ff02be.l,a0	; $02AD78
+	lea.l ram_sys_field_02be.l,a0	; $02AD78
 	move.w (a0,d0.l),$a(a6)	; $02AD7E
 L02AD84:
 	move.w $8(a6),d0	; $02AD84
@@ -35911,12 +35911,12 @@ npc_spawn_from_char:
 	bne.b L02B012	; $02AFFC
 	move.w $8(a6),d0	; $02AFFE
 	muls.w #$34,d0	; $02B002
-	lea.l ram_sys_ff02be.l,a0	; $02B006
+	lea.l ram_sys_field_02be.l,a0	; $02B006
 	move.w (a0,d0.l),$a(a6)	; $02B00C
 L02B012:
 	move.w $8(a6),d0	; $02B012
 	muls.w #$34,d0	; $02B016
-	lea.l ram_sys_ff02ba.l,a0	; $02B01A
+	lea.l ram_menu_field_02ba.l,a0	; $02B01A
 	move.l d0,d1	; $02B020
 	moveq #$0,d0	; $02B022
 	move.w (a0,d1.l),d0	; $02B024
@@ -35947,7 +35947,7 @@ L02B066:
 	move.w $8(a6),-(a7)	; $02B080
 	jsr npc_leader_init.l	; $02B084
 	lea.l $10(a7),a7	; $02B08A
-	move.w #$1,ram_sys_ff0142.l	; $02B08E
+	move.w #$1,ram_sys_field_0142.l	; $02B08E
 L02B096:
 	unlk a6	; $02B096
 	rts	; $02B098
@@ -35990,19 +35990,19 @@ L02B0A8:
 	move.w d0,-$6(a6)	; $02B11C
 	move.w -$6(a6),d0	; $02B120
 	muls.w #$34,d0	; $02B124
-	lea.l ram_sys_ff02d2.l,a0	; $02B128
+	lea.l ram_world_field_02d2.l,a0	; $02B128
 	move.w #$ffff,(a0,d0.l)	; $02B12E
 	move.w -$6(a6),d0	; $02B134
 	muls.w #$34,d0	; $02B138
-	lea.l ram_sys_ff02ce.l,a0	; $02B13C
+	lea.l ram_sys_field_02ce.l,a0	; $02B13C
 	move.w #$17,(a0,d0.l)	; $02B142
 	move.w -$6(a6),d0	; $02B148
 	muls.w #$34,d0	; $02B14C
-	lea.l ram_sys_ff02d4.l,a0	; $02B150
+	lea.l ram_world_field_02d4.l,a0	; $02B150
 	move.w -$e(a6),(a0,d0.l)	; $02B156
 	move.w -$6(a6),d0	; $02B15C
 	muls.w #$34,d0	; $02B160
-	lea.l ram_sys_ff02d6.l,a0	; $02B164
+	lea.l ram_world_field_02d6.l,a0	; $02B164
 	move.w $8(a6),(a0,d0.l)	; $02B16A
 	move.w -$6(a6),-(a7)	; $02B170
 	jsr npc_struct_setup.l	; $02B174
@@ -36022,7 +36022,7 @@ npc_spawn_at_step:
 	bne.b L02B1B6	; $02B1A0
 	move.w $8(a6),d0	; $02B1A2
 	muls.w #$34,d0	; $02B1A6
-	lea.l ram_sys_ff02be.l,a0	; $02B1AA
+	lea.l ram_sys_field_02be.l,a0	; $02B1AA
 	move.w (a0,d0.l),$10(a6)	; $02B1B0
 L02B1B6:
 	cmpi.w #$6,$12(a6)	; $02B1B6
@@ -36107,7 +36107,7 @@ L02B2CE:
 	bne.b L02B2EA	; $02B2D4
 	move.w $8(a6),d0	; $02B2D6
 	muls.w #$34,d0	; $02B2DA
-	lea.l ram_sys_ff02be.l,a0	; $02B2DE
+	lea.l ram_sys_field_02be.l,a0	; $02B2DE
 	move.w (a0,d0.l),$12(a6)	; $02B2E4
 L02B2EA:
 	tst.w $12(a6)	; $02B2EA
@@ -36325,7 +36325,7 @@ L02B5FC:
 	and.w #$1,d1	; $02B610
 	move.w d1,-(a7)	; $02B614
 	move.w -$2(a6),-(a7)	; $02B616
-	pea.l ram_sys_ffc326.l	; $02B61A
+	pea.l ram_sys_field_c326.l	; $02B61A
 	bsr.b sys_bitmap_write	; $02B620
 	addq.w #$8,a7	; $02B622
 	addq.w #$1,-$2(a6)	; $02B624
@@ -36335,7 +36335,7 @@ L02B5FC:
 L02B636:
 	clr.w -(a7)	; $02B636
 	move.w -$2(a6),-(a7)	; $02B638
-	pea.l ram_sys_ffc326.l	; $02B63C
+	pea.l ram_sys_field_c326.l	; $02B63C
 	bsr.b sys_bitmap_write	; $02B642
 	addq.w #$8,a7	; $02B644
 	addq.w #$1,-$2(a6)	; $02B646
@@ -36410,7 +36410,7 @@ npc_attitude_event_apply:
 	move.w $8(a6),d0	; $02B6F0
 	sub.w #$5f,d0	; $02B6F4
 	move.w d0,-(a7)	; $02B6F8
-	pea.l ram_sys_ffc326.l	; $02B6FA
+	pea.l ram_sys_field_c326.l	; $02B6FA
 	bsr.b sys_bitmap_write	; $02B700
 	addq.w #$8,a7	; $02B702
 L02B704:
@@ -36419,7 +36419,7 @@ L02B704:
 L02B708:
 	move.w $a(a6),-(a7)	; $02B708
 	move.w $8(a6),-(a7)	; $02B70C
-	pea.l ram_sys_ffc326.l	; $02B710
+	pea.l ram_sys_field_c326.l	; $02B710
 	jsr sys_bitmap_write(pc)	; $02B716
 	addq.w #$8,a7	; $02B71A
 	move.w $8(a6),d0	; $02B71C
@@ -36432,7 +36432,7 @@ L02B708:
 	move.w d1,d0	; $02B736
 	bra.w L02BBBC	; $02B738
 L02B73C:
-	lea.l ram_sys_ff0e92.l,a0	; $02B73C
+	lea.l ram_menu_field_0e92.l,a0	; $02B73C
 	move.w (a0),d0	; $02B742
 	and.w #$3ff,d0	; $02B744
 	move.w $8(a6),d1	; $02B748
@@ -36442,7 +36442,7 @@ L02B73C:
 	and.w #$3ff,d2	; $02B75A
 	cmp.w d2,d0	; $02B75E
 	bne.b L02B7CA	; $02B760
-	lea.l ram_sys_ff0e92.l,a0	; $02B762
+	lea.l ram_menu_field_0e92.l,a0	; $02B762
 	move.w (a0),d0	; $02B768
 	rol.w #$4,d0	; $02B76A
 	and.w #$f,d0	; $02B76C
@@ -36474,7 +36474,7 @@ L02B73C:
 L02B7CA:
 	bra.w L02BBCE	; $02B7CA
 L02B7CE:
-	lea.l ram_sys_ff0e92.l,a0	; $02B7CE
+	lea.l ram_menu_field_0e92.l,a0	; $02B7CE
 	move.w (a0),d0	; $02B7D4
 	and.w #$3ff,d0	; $02B7D6
 	move.w $8(a6),d1	; $02B7DA
@@ -36484,7 +36484,7 @@ L02B7CE:
 	and.w #$3ff,d2	; $02B7EC
 	cmp.w d2,d0	; $02B7F0
 	bne.b L02B85C	; $02B7F2
-	lea.l ram_sys_ff0e92.l,a0	; $02B7F4
+	lea.l ram_menu_field_0e92.l,a0	; $02B7F4
 	move.w (a0),d0	; $02B7FA
 	rol.w #$4,d0	; $02B7FC
 	and.w #$f,d0	; $02B7FE
@@ -36516,7 +36516,7 @@ L02B7CE:
 L02B85C:
 	bra.w L02BBCE	; $02B85C
 L02B860:
-	lea.l ram_sys_ff0e92.l,a0	; $02B860
+	lea.l ram_menu_field_0e92.l,a0	; $02B860
 	move.w (a0),d0	; $02B866
 	and.w #$3ff,d0	; $02B868
 	move.w $8(a6),d1	; $02B86C
@@ -36526,7 +36526,7 @@ L02B860:
 	and.w #$3ff,d2	; $02B87E
 	cmp.w d2,d0	; $02B882
 	bne.w L02B9B4	; $02B884
-	lea.l ram_sys_ff0e92.l,a0	; $02B888
+	lea.l ram_menu_field_0e92.l,a0	; $02B888
 	move.w (a0),d0	; $02B88E
 	rol.w #$4,d0	; $02B890
 	and.w #$f,d0	; $02B892
@@ -36621,11 +36621,11 @@ L02B9B8:
 	beq.w L02BB5A	; $02B9DA
 	cmpi.w #$ffff,-$4(a6)	; $02B9DE
 	bne.w L02BB5A	; $02B9E4
-	lea.l ram_sys_ff0e92.l,a0	; $02B9E8
+	lea.l ram_menu_field_0e92.l,a0	; $02B9E8
 	move.w (a0),d0	; $02B9EE
 	and.w #$3ff,d0	; $02B9F0
 	move.w d0,-$8(a6)	; $02B9F4
-	lea.l ram_sys_ff0e92.l,a0	; $02B9F8
+	lea.l ram_menu_field_0e92.l,a0	; $02B9F8
 	move.w (a0),d0	; $02B9FE
 	rol.w #$4,d0	; $02BA00
 	and.w #$f,d0	; $02BA02
@@ -36725,12 +36725,12 @@ L02BB5A:
 	beq.b L02BBB2	; $02BB66
 	move.w -$4(a6),d0	; $02BB68
 	muls.w #$34,d0	; $02BB6C
-	lea.l ram_sys_ff02db.l,a0	; $02BB70
+	lea.l ram_sys_field_02db.l,a0	; $02BB70
 	moveq #$0,d1	; $02BB76
 	move.b (a0,d0.l),d1	; $02BB78
 	move.w d1,-$2(a6)	; $02BB7C
 	move.w -$2(a6),d0	; $02BB80
-	cmp.w ram_sys_ff02a0.l,d0	; $02BB84
+	cmp.w ram_sys_field_02a0.l,d0	; $02BB84
 	bne.b L02BBA6	; $02BB8A
 	move.w #$ff,-(a7)	; $02BB8C
 	move.w ram_party_index_array.l,-(a7)	; $02BB90
@@ -36778,7 +36778,7 @@ inv_apply_resource:
 	bne.b L02BC2C	; $02BC0E
 	move.w $8(a6),d0	; $02BC10
 	muls.w #$34,d0	; $02BC14
-	lea.l ram_sys_ff02db.l,a0	; $02BC18
+	lea.l ram_sys_field_02db.l,a0	; $02BC18
 	moveq #$0,d1	; $02BC1E
 	move.b (a0,d0.l),d1	; $02BC20
 	move.w d1,-$6(a6)	; $02BC24
@@ -36814,7 +36814,7 @@ L02BC5E:
 	lea.l ram_npc_field_02c8.l,a0	; $02BC8E
 	move.w (a0,d0.l),d1	; $02BC94
 	muls.w #$34,d1	; $02BC98
-	lea.l ram_sys_ff02cc.l,a0	; $02BC9C
+	lea.l ram_world_field_02cc.l,a0	; $02BC9C
 	move.w (a0,d1.l),d0	; $02BCA2
 	and.w #$f,d0	; $02BCA6
 	cmp.w -$2(a6),d0	; $02BCAA
@@ -36850,7 +36850,7 @@ L02BCFE:
 	bge.b L02BD70	; $02BD04
 	move.w $8(a6),d0	; $02BD06
 	muls.w #$34,d0	; $02BD0A
-	lea.l ram_sys_ff02cc.l,a0	; $02BD0E
+	lea.l ram_world_field_02cc.l,a0	; $02BD0E
 	move.w (a0,d0.l),d1	; $02BD14
 	and.w #$f,d1	; $02BD18
 	cmp.w -$2(a6),d1	; $02BD1C
@@ -36860,7 +36860,7 @@ L02BCFE:
 	move.w $a(a6),-(a7)	; $02BD2A
 	move.w $8(a6),d0	; $02BD2E
 	muls.w #$34,d0	; $02BD32
-	lea.l ram_sys_ff02db.l,a0	; $02BD36
+	lea.l ram_sys_field_02db.l,a0	; $02BD36
 	moveq #$0,d1	; $02BD3C
 	move.b (a0,d0.l),d1	; $02BD3E
 	move.w d1,-(a7)	; $02BD42
@@ -36872,7 +36872,7 @@ L02BD4C:
 	move.w -$4(a6),-(a7)	; $02BD50
 	move.w $8(a6),d0	; $02BD54
 	muls.w #$34,d0	; $02BD58
-	lea.l ram_sys_ff02e2.l,a0	; $02BD5C
+	lea.l ram_sys_field_02e2.l,a0	; $02BD5C
 	add.l a0,d0	; $02BD62
 	move.l d0,-(a7)	; $02BD64
 	jsr sys_bitmap_write(pc)	; $02BD66
@@ -36885,7 +36885,7 @@ L02BD70:
 	move.w -$4(a6),-(a7)	; $02BD7E
 	move.w -$6(a6),d0	; $02BD82
 	muls.w #$34,d0	; $02BD86
-	lea.l ram_sys_ff02e2.l,a0	; $02BD8A
+	lea.l ram_sys_field_02e2.l,a0	; $02BD8A
 	add.l a0,d0	; $02BD90
 	move.l d0,-(a7)	; $02BD92
 	jsr sys_bitmap_write(pc)	; $02BD94
@@ -36918,7 +36918,7 @@ L02BDCE:
 L02BDD2:
 	tst.w -$a(a6)	; $02BDD2
 	beq.b L02BE20	; $02BDD6
-	cmpi.w #$2a,ram_sys_ff0112.l	; $02BDD8
+	cmpi.w #$2a,ram_menu_field_0112.l	; $02BDD8
 	beq.b L02BE20	; $02BDE0
 	tst.w $e(a6)	; $02BDE2
 	beq.b L02BE20	; $02BDE6
@@ -36976,7 +36976,7 @@ L02BE68:
 	lea.l ram_party_index_array.l,a0	; $02BE86
 	move.w (a0,d0.l),d1	; $02BE8C
 	muls.w #$34,d1	; $02BE90
-	lea.l ram_sys_ff02d0.l,a0	; $02BE94
+	lea.l ram_world_field_02d0.l,a0	; $02BE94
 	move.w (a0,d1.l),d0	; $02BE9A
 	add.w #$19,d0	; $02BE9E
 	move.w -$8(a6),d1	; $02BEA2
@@ -36985,7 +36985,7 @@ L02BE68:
 	lea.l ram_party_index_array.l,a0	; $02BEAA
 	move.w (a0,d1.l),d2	; $02BEB0
 	muls.w #$34,d2	; $02BEB4
-	lea.l ram_sys_ff02d4.l,a0	; $02BEB8
+	lea.l ram_world_field_02d4.l,a0	; $02BEB8
 	cmp.w (a0,d2.l),d0	; $02BEBE
 	ble.b L02BEE6	; $02BEC2
 	move.w -$8(a6),d0	; $02BEC4
@@ -36994,7 +36994,7 @@ L02BE68:
 	lea.l ram_party_index_array.l,a0	; $02BECC
 	move.w (a0,d0.l),d1	; $02BED2
 	muls.w #$34,d1	; $02BED6
-	lea.l ram_sys_ff02d4.l,a0	; $02BEDA
+	lea.l ram_world_field_02d4.l,a0	; $02BEDA
 	move.w (a0,d1.l),d0	; $02BEE0
 	bra.b L02BF36	; $02BEE4
 L02BEE6:
@@ -37004,7 +37004,7 @@ L02BEE6:
 	lea.l ram_party_index_array.l,a0	; $02BEEE
 	move.w (a0,d0.l),d1	; $02BEF4
 	muls.w #$34,d1	; $02BEF8
-	lea.l ram_sys_ff02d0.l,a0	; $02BEFC
+	lea.l ram_world_field_02d0.l,a0	; $02BEFC
 	move.w (a0,d1.l),d0	; $02BF02
 	add.w #$19,d0	; $02BF06
 	tst.w d0	; $02BF0A
@@ -37018,7 +37018,7 @@ L02BF12:
 	lea.l ram_party_index_array.l,a0	; $02BF1A
 	move.w (a0,d0.l),d1	; $02BF20
 	muls.w #$34,d1	; $02BF24
-	lea.l ram_sys_ff02d0.l,a0	; $02BF28
+	lea.l ram_world_field_02d0.l,a0	; $02BF28
 	move.w (a0,d1.l),d0	; $02BF2E
 	add.w #$19,d0	; $02BF32
 L02BF36:
@@ -37028,7 +37028,7 @@ L02BF36:
 	lea.l ram_party_index_array.l,a0	; $02BF3E
 	move.w (a0,d1.l),d2	; $02BF44
 	muls.w #$34,d2	; $02BF48
-	lea.l ram_sys_ff02d0.l,a0	; $02BF4C
+	lea.l ram_world_field_02d0.l,a0	; $02BF4C
 	move.w d0,(a0,d2.l)	; $02BF52
 L02BF56:
 	addq.w #$1,-$8(a6)	; $02BF56
@@ -37077,7 +37077,7 @@ L02BFA6:
 	lea.l ram_party_index_array.l,a0	; $02BFC4
 	move.w (a0,d0.l),d1	; $02BFCA
 	muls.w #$34,d1	; $02BFCE
-	lea.l ram_sys_ff02d2.l,a0	; $02BFD2
+	lea.l ram_world_field_02d2.l,a0	; $02BFD2
 	move.w (a0,d1.l),d0	; $02BFD8
 	add.w -$a(a6),d0	; $02BFDC
 	move.w -$8(a6),d1	; $02BFE0
@@ -37086,7 +37086,7 @@ L02BFA6:
 	lea.l ram_party_index_array.l,a0	; $02BFE8
 	move.w (a0,d1.l),d2	; $02BFEE
 	muls.w #$34,d2	; $02BFF2
-	lea.l ram_sys_ff02d6.l,a0	; $02BFF6
+	lea.l ram_world_field_02d6.l,a0	; $02BFF6
 	cmp.w (a0,d2.l),d0	; $02BFFC
 	ble.b L02C024	; $02C000
 	move.w -$8(a6),d0	; $02C002
@@ -37095,7 +37095,7 @@ L02BFA6:
 	lea.l ram_party_index_array.l,a0	; $02C00A
 	move.w (a0,d0.l),d1	; $02C010
 	muls.w #$34,d1	; $02C014
-	lea.l ram_sys_ff02d6.l,a0	; $02C018
+	lea.l ram_world_field_02d6.l,a0	; $02C018
 	move.w (a0,d1.l),d0	; $02C01E
 	bra.b L02C074	; $02C022
 L02C024:
@@ -37105,7 +37105,7 @@ L02C024:
 	lea.l ram_party_index_array.l,a0	; $02C02C
 	move.w (a0,d0.l),d1	; $02C032
 	muls.w #$34,d1	; $02C036
-	lea.l ram_sys_ff02d2.l,a0	; $02C03A
+	lea.l ram_world_field_02d2.l,a0	; $02C03A
 	move.w (a0,d1.l),d0	; $02C040
 	add.w -$a(a6),d0	; $02C044
 	tst.w d0	; $02C048
@@ -37119,7 +37119,7 @@ L02C050:
 	lea.l ram_party_index_array.l,a0	; $02C058
 	move.w (a0,d0.l),d1	; $02C05E
 	muls.w #$34,d1	; $02C062
-	lea.l ram_sys_ff02d2.l,a0	; $02C066
+	lea.l ram_world_field_02d2.l,a0	; $02C066
 	move.w (a0,d1.l),d0	; $02C06C
 	add.w -$a(a6),d0	; $02C070
 L02C074:
@@ -37129,7 +37129,7 @@ L02C074:
 	lea.l ram_party_index_array.l,a0	; $02C07C
 	move.w (a0,d1.l),d2	; $02C082
 	muls.w #$34,d2	; $02C086
-	lea.l ram_sys_ff02d2.l,a0	; $02C08A
+	lea.l ram_world_field_02d2.l,a0	; $02C08A
 	move.w d0,(a0,d2.l)	; $02C090
 L02C094:
 	addq.w #$1,-$8(a6)	; $02C094
@@ -37146,14 +37146,14 @@ L02C0A6:
 L02C0BE:
 	move.w $e(a6),-(a7)	; $02C0BE
 	move.w -$4(a6),-(a7)	; $02C0C2
-	pea.l ram_sys_ffc340.l	; $02C0C6
+	pea.l ram_sys_field_c340.l	; $02C0C6
 	jsr sys_bitmap_write(pc)	; $02C0CC
 	addq.w #$8,a7	; $02C0D0
 	bra.w L02C8EE	; $02C0D2
 L02C0D6:
 	move.w $e(a6),-(a7)	; $02C0D6
 	move.w -$4(a6),-(a7)	; $02C0DA
-	pea.l ram_sys_ffc345.l	; $02C0DE
+	pea.l ram_sys_field_c345.l	; $02C0DE
 	jsr sys_bitmap_write(pc)	; $02C0E4
 	addq.w #$8,a7	; $02C0E8
 	bra.w L02C8EE	; $02C0EA
@@ -37161,7 +37161,7 @@ L02C0EE:
 	cmpi.w #$1,-$4(a6)	; $02C0EE
 	ble.w L02C17A	; $02C0F4
 	move.w -$4(a6),d0	; $02C0F8
-	lea.l ram_sys_ffc34a.l,a0	; $02C0FC
+	lea.l ram_save_field_c34a.l,a0	; $02C0FC
 	moveq #$0,d1	; $02C102
 	move.b (a0,d0.w),d1	; $02C104
 	add.w $c(a6),d1	; $02C108
@@ -37178,7 +37178,7 @@ L02C0EE:
 	bra.b L02C168	; $02C134
 L02C136:
 	move.w -$4(a6),d0	; $02C136
-	lea.l ram_sys_ffc34a.l,a0	; $02C13A
+	lea.l ram_save_field_c34a.l,a0	; $02C13A
 	moveq #$0,d1	; $02C140
 	move.b (a0,d0.w),d1	; $02C142
 	add.w $c(a6),d1	; $02C146
@@ -37188,14 +37188,14 @@ L02C136:
 	bra.b L02C168	; $02C150
 L02C152:
 	move.w -$4(a6),d0	; $02C152
-	lea.l ram_sys_ffc34a.l,a0	; $02C156
+	lea.l ram_save_field_c34a.l,a0	; $02C156
 	move.w d0,d1	; $02C15C
 	moveq #$0,d0	; $02C15E
 	move.b (a0,d1.w),d0	; $02C160
 	add.w $c(a6),d0	; $02C164
 L02C168:
 	move.w -$4(a6),d1	; $02C168
-	lea.l ram_sys_ffc34a.l,a0	; $02C16C
+	lea.l ram_save_field_c34a.l,a0	; $02C16C
 	move.b d0,(a0,d1.w)	; $02C172
 	bra.w L02C20E	; $02C176
 L02C17A:
@@ -37203,7 +37203,7 @@ L02C17A:
 	bne.b L02C1C8	; $02C17E
 	move.w $c(a6),d0	; $02C180
 	muls.w #$64,d0	; $02C184
-	add.w ram_sys_ffc364.l,d0	; $02C188
+	add.w ram_world_field_c364.l,d0	; $02C188
 	cmp.w #$7530,d0	; $02C18E
 	ble.b L02C19A	; $02C192
 	move.w #$7530,d0	; $02C194
@@ -37211,7 +37211,7 @@ L02C17A:
 L02C19A:
 	move.w $c(a6),d0	; $02C19A
 	muls.w #$64,d0	; $02C19E
-	add.w ram_sys_ffc364.l,d0	; $02C1A2
+	add.w ram_world_field_c364.l,d0	; $02C1A2
 	cmp.w #$1,d0	; $02C1A8
 	bge.b L02C1B2	; $02C1AC
 	moveq #$1,d0	; $02C1AE
@@ -37219,14 +37219,14 @@ L02C19A:
 L02C1B2:
 	move.w $c(a6),d0	; $02C1B2
 	muls.w #$64,d0	; $02C1B6
-	add.w ram_sys_ffc364.l,d0	; $02C1BA
+	add.w ram_world_field_c364.l,d0	; $02C1BA
 L02C1C0:
-	move.w d0,ram_sys_ffc364.l	; $02C1C0
+	move.w d0,ram_world_field_c364.l	; $02C1C0
 	bra.b L02C20E	; $02C1C6
 L02C1C8:
 	move.w $c(a6),d0	; $02C1C8
 	muls.w #$64,d0	; $02C1CC
-	add.w ram_sys_ffc366.l,d0	; $02C1D0
+	add.w ram_world_field_c366.l,d0	; $02C1D0
 	cmp.w #$7530,d0	; $02C1D6
 	ble.b L02C1E2	; $02C1DA
 	move.w #$7530,d0	; $02C1DC
@@ -37234,7 +37234,7 @@ L02C1C8:
 L02C1E2:
 	move.w $c(a6),d0	; $02C1E2
 	muls.w #$64,d0	; $02C1E6
-	add.w ram_sys_ffc366.l,d0	; $02C1EA
+	add.w ram_world_field_c366.l,d0	; $02C1EA
 	cmp.w #$1,d0	; $02C1F0
 	bge.b L02C1FA	; $02C1F4
 	moveq #$1,d0	; $02C1F6
@@ -37242,13 +37242,13 @@ L02C1E2:
 L02C1FA:
 	move.w $c(a6),d0	; $02C1FA
 	muls.w #$64,d0	; $02C1FE
-	add.w ram_sys_ffc366.l,d0	; $02C202
+	add.w ram_world_field_c366.l,d0	; $02C202
 L02C208:
-	move.w d0,ram_sys_ffc366.l	; $02C208
+	move.w d0,ram_world_field_c366.l	; $02C208
 L02C20E:
 	bra.w L02C8EE	; $02C20E
 L02C212:
-	lea.l ram_sys_ff0e92.l,a0	; $02C212
+	lea.l ram_menu_field_0e92.l,a0	; $02C212
 	move.w (a0),d0	; $02C218
 	and.w #$3ff,d0	; $02C21A
 	move.w d0,-$8(a6)	; $02C21E
@@ -37417,7 +37417,7 @@ L02C46A:
 L02C474:
 	move.w -$6(a6),d0	; $02C474
 	muls.w #$34,d0	; $02C478
-	lea.l ram_sys_ff02de.l,a0	; $02C47C
+	lea.l ram_world_field_02de.l,a0	; $02C47C
 	move.w (a0,d0.l),d1	; $02C482
 	add.w $c(a6),d1	; $02C486
 	cmp.w #$3a98,d1	; $02C48A
@@ -37427,7 +37427,7 @@ L02C474:
 L02C496:
 	move.w -$6(a6),d0	; $02C496
 	muls.w #$34,d0	; $02C49A
-	lea.l ram_sys_ff02de.l,a0	; $02C49E
+	lea.l ram_world_field_02de.l,a0	; $02C49E
 	move.w (a0,d0.l),d1	; $02C4A4
 	add.w $c(a6),d1	; $02C4A8
 	tst.w d1	; $02C4AC
@@ -37437,14 +37437,14 @@ L02C496:
 L02C4B4:
 	move.w -$6(a6),d0	; $02C4B4
 	muls.w #$34,d0	; $02C4B8
-	lea.l ram_sys_ff02de.l,a0	; $02C4BC
+	lea.l ram_world_field_02de.l,a0	; $02C4BC
 	move.l d0,d1	; $02C4C2
 	move.w (a0,d1.l),d0	; $02C4C4
 	add.w $c(a6),d0	; $02C4C8
 L02C4CC:
 	move.w -$6(a6),d1	; $02C4CC
 	muls.w #$34,d1	; $02C4D0
-	lea.l ram_sys_ff02de.l,a0	; $02C4D4
+	lea.l ram_world_field_02de.l,a0	; $02C4D4
 	move.w d0,(a0,d1.l)	; $02C4DA
 	bra.w L02C8AA	; $02C4DE
 xp_grant:
@@ -37457,7 +37457,7 @@ xp_grant:
 	bne.w L02C63C	; $02C4FC
 	move.w $8(a6),d0	; $02C500
 	muls.w #$34,d0	; $02C504
-	lea.l ram_sys_ff02ce.l,a0	; $02C508
+	lea.l ram_sys_field_02ce.l,a0	; $02C508
 	move.w (a0,d0.l),d1	; $02C50E
 	add.w $c(a6),d1	; $02C512
 	cmp.w #$32c8,d1	; $02C516
@@ -37467,7 +37467,7 @@ xp_grant:
 L02C522:
 	move.w $8(a6),d0	; $02C522
 	muls.w #$34,d0	; $02C526
-	lea.l ram_sys_ff02ce.l,a0	; $02C52A
+	lea.l ram_sys_field_02ce.l,a0	; $02C52A
 	move.w (a0,d0.l),d1	; $02C530
 	add.w $c(a6),d1	; $02C534
 	tst.w d1	; $02C538
@@ -37477,25 +37477,25 @@ L02C522:
 L02C540:
 	move.w $8(a6),d0	; $02C540
 	muls.w #$34,d0	; $02C544
-	lea.l ram_sys_ff02ce.l,a0	; $02C548
+	lea.l ram_sys_field_02ce.l,a0	; $02C548
 	move.l d0,d1	; $02C54E
 	move.w (a0,d1.l),d0	; $02C550
 	add.w $c(a6),d0	; $02C554
 L02C558:
 	move.w $8(a6),d1	; $02C558
 	muls.w #$34,d1	; $02C55C
-	lea.l ram_sys_ff02ce.l,a0	; $02C560
+	lea.l ram_sys_field_02ce.l,a0	; $02C560
 	move.w d0,(a0,d1.l)	; $02C566
 	move.w $8(a6),d0	; $02C56A
 	muls.w #$34,d0	; $02C56E
-	lea.l ram_sys_ff02ce.l,a0	; $02C572
+	lea.l ram_sys_field_02ce.l,a0	; $02C572
 	move.w (a0,d0.l),-(a7)	; $02C578
 	jsr xp_to_level.l	; $02C57C
 	addq.w #$2,a7	; $02C582
 	move.w d0,-$a(a6)	; $02C584
 	move.w $8(a6),d0	; $02C588
 	muls.w #$34,d0	; $02C58C
-	lea.l ram_sys_ff02cc.l,a0	; $02C590
+	lea.l ram_world_field_02cc.l,a0	; $02C590
 	move.w (a0,d0.l),d1	; $02C596
 	lsr.w #$4,d1	; $02C59A
 	and.w #$f,d1	; $02C59C
@@ -37507,7 +37507,7 @@ L02C558:
 	move.w $8(a6),d1	; $02C5B2
 	muls.w #$34,d1	; $02C5B6
 	movea.l d1,a0	; $02C5BA
-	lea.l ram_sys_ff02cc.l,a1	; $02C5BC
+	lea.l ram_world_field_02cc.l,a1	; $02C5BC
 	adda.l a1,a0	; $02C5C2
 	andi.w #$ff0f,(a0)	; $02C5C4
 	or.w d0,(a0)	; $02C5C8
@@ -37516,21 +37516,21 @@ L02C558:
 	addq.w #$2,a7	; $02C5D4
 	move.w $8(a6),d1	; $02C5D6
 	muls.w #$34,d1	; $02C5DA
-	lea.l ram_sys_ff02d6.l,a0	; $02C5DE
+	lea.l ram_world_field_02d6.l,a0	; $02C5DE
 	move.w d0,(a0,d1.l)	; $02C5E4
 	move.w -$a(a6),-(a7)	; $02C5E8
 	jsr max_hp_for_level.l	; $02C5EC
 	addq.w #$2,a7	; $02C5F2
 	move.w $8(a6),d1	; $02C5F4
 	muls.w #$34,d1	; $02C5F8
-	lea.l ram_sys_ff02d4.l,a0	; $02C5FC
+	lea.l ram_world_field_02d4.l,a0	; $02C5FC
 	move.w d0,(a0,d1.l)	; $02C602
 	clr.l -(a7)	; $02C606
 	move.w $8(a6),-(a7)	; $02C608
 	move.w #$10,-(a7)	; $02C60C
 	move.w $8(a6),d0	; $02C610
 	muls.w #$34,d0	; $02C614
-	lea.l ram_sys_ff02ca.l,a0	; $02C618
+	lea.l ram_sys_field_02ca.l,a0	; $02C618
 	moveq #$0,d1	; $02C61E
 	move.b (a0,d0.l),d1	; $02C620
 	move.w d1,-(a7)	; $02C624
@@ -37556,7 +37556,7 @@ L02C644:
 	lea.l ram_party_index_array.l,a0	; $02C662
 	move.w (a0,d0.l),d1	; $02C668
 	muls.w #$34,d1	; $02C66C
-	lea.l ram_sys_ff02cc.l,a0	; $02C670
+	lea.l ram_world_field_02cc.l,a0	; $02C670
 	move.w (a0,d1.l),d0	; $02C676
 	lsr.w #$4,d0	; $02C67A
 	and.w #$f,d0	; $02C67C
@@ -37569,7 +37569,7 @@ L02C644:
 	lea.l ram_party_index_array.l,a0	; $02C692
 	move.w (a0,d1.l),d2	; $02C698
 	muls.w #$34,d2	; $02C69C
-	lea.l ram_sys_ff02d4.l,a0	; $02C6A0
+	lea.l ram_world_field_02d4.l,a0	; $02C6A0
 	move.w d0,(a0,d2.l)	; $02C6A6
 	move.w -$8(a6),d0	; $02C6AA
 	ext.l d0	; $02C6AE
@@ -37577,14 +37577,14 @@ L02C644:
 	lea.l ram_party_index_array.l,a0	; $02C6B2
 	move.w (a0,d0.l),d1	; $02C6B8
 	muls.w #$34,d1	; $02C6BC
-	lea.l ram_sys_ff02d4.l,a0	; $02C6C0
+	lea.l ram_world_field_02d4.l,a0	; $02C6C0
 	move.w -$8(a6),d0	; $02C6C6
 	ext.l d0	; $02C6CA
 	asl.l #$1,d0	; $02C6CC
 	lea.l ram_party_index_array.l,a1	; $02C6CE
 	move.w (a1,d0.l),d2	; $02C6D4
 	muls.w #$34,d2	; $02C6D8
-	lea.l ram_sys_ff02d0.l,a1	; $02C6DC
+	lea.l ram_world_field_02d0.l,a1	; $02C6DC
 	move.w (a0,d1.l),(a1,d2.l)	; $02C6E2
 L02C6E8:
 	addq.w #$1,-$8(a6)	; $02C6E8
@@ -37606,14 +37606,14 @@ L02C6FE:
 	lea.l ram_party_index_array.l,a0	; $02C71A
 	move.w (a0,d0.l),d1	; $02C720
 	muls.w #$34,d1	; $02C724
-	lea.l ram_sys_ff02d6.l,a0	; $02C728
+	lea.l ram_world_field_02d6.l,a0	; $02C728
 	move.w -$8(a6),d0	; $02C72E
 	ext.l d0	; $02C732
 	asl.l #$1,d0	; $02C734
 	lea.l ram_party_index_array.l,a1	; $02C736
 	move.w (a1,d0.l),d2	; $02C73C
 	muls.w #$34,d2	; $02C740
-	lea.l ram_sys_ff02d2.l,a1	; $02C744
+	lea.l ram_world_field_02d2.l,a1	; $02C744
 	move.w (a0,d1.l),(a1,d2.l)	; $02C74A
 L02C750:
 	addq.w #$1,-$8(a6)	; $02C750
@@ -37637,7 +37637,7 @@ L02C76C:
 	lea.l ram_party_index_array.l,a0	; $02C78A
 	move.w (a0,d0.l),d1	; $02C790
 	muls.w #$34,d1	; $02C794
-	lea.l ram_sys_ff02e0.l,a0	; $02C798
+	lea.l ram_world_field_02e0.l,a0	; $02C798
 	move.w (a0,d1.l),d0	; $02C79E
 	rol.w #$3,d0	; $02C7A2
 	and.w #$1,d0	; $02C7A4
@@ -37649,15 +37649,15 @@ L02C76C:
 	move.w (a0,d0.l),-$a(a6)	; $02C7BA
 	move.w -$a(a6),d0	; $02C7C0
 	muls.w #$34,d0	; $02C7C4
-	lea.l ram_sys_ff02d0.l,a0	; $02C7C8
+	lea.l ram_world_field_02d0.l,a0	; $02C7C8
 	move.w #$5,(a0,d0.l)	; $02C7CE
 	move.w -$a(a6),d0	; $02C7D4
 	muls.w #$34,d0	; $02C7D8
-	lea.l ram_sys_ff02d2.l,a0	; $02C7DC
+	lea.l ram_world_field_02d2.l,a0	; $02C7DC
 	move.w #$5,(a0,d0.l)	; $02C7E2
 	move.w -$a(a6),d0	; $02C7E8
 	muls.w #$34,d0	; $02C7EC
-	lea.l ram_sys_ff02cc.l,a0	; $02C7F0
+	lea.l ram_world_field_02cc.l,a0	; $02C7F0
 	move.w (a0,d0.l),d1	; $02C7F6
 	lsr.w #$4,d1	; $02C7FA
 	and.w #$f,d1	; $02C7FC
@@ -37666,11 +37666,11 @@ L02C76C:
 	addq.w #$2,a7	; $02C808
 	move.w -$a(a6),d1	; $02C80A
 	muls.w #$34,d1	; $02C80E
-	lea.l ram_sys_ff02d4.l,a0	; $02C812
+	lea.l ram_world_field_02d4.l,a0	; $02C812
 	move.w d0,(a0,d1.l)	; $02C818
 	move.w -$a(a6),d0	; $02C81C
 	muls.w #$34,d0	; $02C820
-	lea.l ram_sys_ff02cc.l,a0	; $02C824
+	lea.l ram_world_field_02cc.l,a0	; $02C824
 	move.w (a0,d0.l),d1	; $02C82A
 	lsr.w #$4,d1	; $02C82E
 	and.w #$f,d1	; $02C830
@@ -37679,12 +37679,12 @@ L02C76C:
 	addq.w #$2,a7	; $02C83C
 	move.w -$a(a6),d1	; $02C83E
 	muls.w #$34,d1	; $02C842
-	lea.l ram_sys_ff02d6.l,a0	; $02C846
+	lea.l ram_world_field_02d6.l,a0	; $02C846
 	move.w d0,(a0,d1.l)	; $02C84C
 	move.w -$a(a6),d0	; $02C850
 	muls.w #$34,d0	; $02C854
 	movea.l d0,a0	; $02C858
-	lea.l ram_sys_ff02e0.l,a1	; $02C85A
+	lea.l ram_world_field_02e0.l,a1	; $02C85A
 	adda.l a1,a0	; $02C860
 	andi.w #$dfff,(a0)	; $02C862
 	move.w #$ffff,-$a(a6)	; $02C866
@@ -37754,7 +37754,7 @@ item_category_of:
 	bne.b L02C94C	; $02C92E
 	move.w $8(a6),d0	; $02C930
 	muls.w #$34,d0	; $02C934
-	lea.l ram_sys_ff02db.l,a0	; $02C938
+	lea.l ram_sys_field_02db.l,a0	; $02C938
 	moveq #$0,d1	; $02C93E
 	move.b (a0,d0.l),d1	; $02C940
 	move.w d1,-$6(a6)	; $02C944
@@ -37792,7 +37792,7 @@ L02C986:
 	lea.l ram_npc_field_02c8.l,a0	; $02C9B6
 	move.w (a0,d0.l),d1	; $02C9BC
 	muls.w #$34,d1	; $02C9C0
-	lea.l ram_sys_ff02cc.l,a0	; $02C9C4
+	lea.l ram_world_field_02cc.l,a0	; $02C9C4
 	move.w (a0,d1.l),d0	; $02C9CA
 	and.w #$f,d0	; $02C9CE
 	cmp.w -$2(a6),d0	; $02C9D2
@@ -37829,7 +37829,7 @@ L02CA26:
 	bge.b L02CA74	; $02CA2C
 	move.w $8(a6),d0	; $02CA2E
 	muls.w #$34,d0	; $02CA32
-	lea.l ram_sys_ff02cc.l,a0	; $02CA36
+	lea.l ram_world_field_02cc.l,a0	; $02CA36
 	move.w (a0,d0.l),d1	; $02CA3C
 	and.w #$f,d1	; $02CA40
 	cmp.w -$2(a6),d1	; $02CA44
@@ -37841,7 +37841,7 @@ L02CA56:
 	move.w -$4(a6),-(a7)	; $02CA56
 	move.w $8(a6),d0	; $02CA5A
 	muls.w #$34,d0	; $02CA5E
-	lea.l ram_sys_ff02e2.l,a0	; $02CA62
+	lea.l ram_sys_field_02e2.l,a0	; $02CA62
 	add.l a0,d0	; $02CA68
 	move.l d0,-(a7)	; $02CA6A
 	jsr sys_bitmap_test(pc)	; $02CA6C
@@ -37853,7 +37853,7 @@ L02CA74:
 	move.w -$4(a6),-(a7)	; $02CA7C
 	move.w -$6(a6),d0	; $02CA80
 	muls.w #$34,d0	; $02CA84
-	lea.l ram_sys_ff02e2.l,a0	; $02CA88
+	lea.l ram_sys_field_02e2.l,a0	; $02CA88
 	add.l a0,d0	; $02CA8E
 	move.l d0,-(a7)	; $02CA90
 	jsr sys_bitmap_test(pc)	; $02CA92
@@ -37880,13 +37880,13 @@ L02CABE:
 	bra.w L02CA14	; $02CACE
 L02CAD2:
 	move.w -$4(a6),-(a7)	; $02CAD2
-	pea.l ram_sys_ffc340.l	; $02CAD6
+	pea.l ram_sys_field_c340.l	; $02CAD6
 	jsr sys_bitmap_test(pc)	; $02CADC
 	addq.w #$6,a7	; $02CAE0
 	bra.w L02CA14	; $02CAE2
 L02CAE6:
 	move.w -$4(a6),-(a7)	; $02CAE6
-	pea.l ram_sys_ffc345.l	; $02CAEA
+	pea.l ram_sys_field_c345.l	; $02CAEA
 	jsr sys_bitmap_test(pc)	; $02CAF0
 	addq.w #$6,a7	; $02CAF4
 	bra.w L02CA14	; $02CAF6
@@ -37894,7 +37894,7 @@ L02CAFA:
 	cmpi.w #$1,-$4(a6)	; $02CAFA
 	ble.b L02CB18	; $02CB00
 	move.w -$4(a6),d0	; $02CB02
-	lea.l ram_sys_ffc34a.l,a0	; $02CB06
+	lea.l ram_save_field_c34a.l,a0	; $02CB06
 	move.w d0,d1	; $02CB0C
 	moveq #$0,d0	; $02CB0E
 	move.b (a0,d1.w),d0	; $02CB10
@@ -37902,10 +37902,10 @@ L02CAFA:
 L02CB18:
 	tst.w -$4(a6)	; $02CB18
 	bne.b L02CB28	; $02CB1C
-	move.w ram_sys_ffc364.l,d0	; $02CB1E
+	move.w ram_world_field_c364.l,d0	; $02CB1E
 	bra.w L02CA14	; $02CB24
 L02CB28:
-	move.w ram_sys_ffc366.l,d0	; $02CB28
+	move.w ram_world_field_c366.l,d0	; $02CB28
 	bra.w L02CA14	; $02CB2E
 L02CB32:
 	move.w -$4(a6),d0	; $02CB32
@@ -37914,14 +37914,14 @@ L02CB32:
 L02CB3A:
 	move.w -$6(a6),d0	; $02CB3A
 	muls.w #$34,d0	; $02CB3E
-	lea.l ram_sys_ff02de.l,a0	; $02CB42
+	lea.l ram_world_field_02de.l,a0	; $02CB42
 	move.l d0,d1	; $02CB48
 	move.w (a0,d1.l),d0	; $02CB4A
 	bra.w L02CA14	; $02CB4E
 L02CB52:
 	move.w $8(a6),d0	; $02CB52
 	muls.w #$34,d0	; $02CB56
-	lea.l ram_sys_ff02ce.l,a0	; $02CB5A
+	lea.l ram_sys_field_02ce.l,a0	; $02CB5A
 	move.l d0,d1	; $02CB60
 	move.w (a0,d1.l),d0	; $02CB62
 	bra.w L02CA14	; $02CB66
@@ -37953,11 +37953,11 @@ sys_struct52_set_field:
 	move.w #$1,-(a7)	; $02CBA8
 	move.w $a(a6),d0	; $02CBAC
 	muls.w #$34,d0	; $02CBB0
-	lea.l ram_sys_ff02ca.l,a0	; $02CBB4
+	lea.l ram_sys_field_02ca.l,a0	; $02CBB4
 	move.w (a0,d0.l),-(a7)	; $02CBBA
 	move.w $a(a6),d0	; $02CBBE
 	muls.w #$34,d0	; $02CBC2
-	lea.l ram_sys_ff02b6.l,a0	; $02CBC6
+	lea.l ram_sys_field_02b6.l,a0	; $02CBC6
 	move.w (a0,d0.l),-(a7)	; $02CBCC
 	move.w $8(a6),-(a7)	; $02CBD0
 	jsr inv_apply_resource(pc)	; $02CBD4
@@ -38170,7 +38170,7 @@ L02CDDC:
 	clr.w -$2(a6)	; $02CDF6
 L02CDFA:
 	move.w -$2(a6),d0	; $02CDFA
-	lea.l ram_sys_ffc340.l,a0	; $02CDFE
+	lea.l ram_sys_field_c340.l,a0	; $02CDFE
 	clr.b (a0,d0.w)	; $02CE04
 	addq.w #$1,-$2(a6)	; $02CE08
 	cmpi.w #$5,-$2(a6)	; $02CE0C
@@ -38178,23 +38178,23 @@ L02CDFA:
 	clr.w -$2(a6)	; $02CE14
 L02CE18:
 	move.w -$2(a6),d0	; $02CE18
-	lea.l ram_sys_ffc345.l,a0	; $02CE1C
+	lea.l ram_sys_field_c345.l,a0	; $02CE1C
 	clr.b (a0,d0.w)	; $02CE22
 	addq.w #$1,-$2(a6)	; $02CE26
 	cmpi.w #$5,-$2(a6)	; $02CE2A
 	blt.b L02CE18	; $02CE30
-	move.b #$1,ram_sys_ffc345.l	; $02CE32
-	move.b #$1,ram_sys_ffc340.l	; $02CE3A
+	move.b #$1,ram_sys_field_c345.l	; $02CE32
+	move.b #$1,ram_sys_field_c340.l	; $02CE3A
 	clr.w -$2(a6)	; $02CE42
 L02CE46:
 	move.w -$2(a6),d0	; $02CE46
-	lea.l ram_sys_ffc34a.l,a0	; $02CE4A
+	lea.l ram_save_field_c34a.l,a0	; $02CE4A
 	clr.b (a0,d0.w)	; $02CE50
 	addq.w #$1,-$2(a6)	; $02CE54
 	cmpi.w #$19,-$2(a6)	; $02CE58
 	blt.b L02CE46	; $02CE5E
-	move.w #$7d0,ram_sys_ffc364.l	; $02CE60
-	move.w #$7d0,ram_sys_ffc366.l	; $02CE68
+	move.w #$7d0,ram_world_field_c364.l	; $02CE60
+	move.w #$7d0,ram_world_field_c366.l	; $02CE68
 	unlk a6	; $02CE70
 	rts	; $02CE72
 	; code $02CE74-$02D003
@@ -38202,15 +38202,15 @@ npc_attitude_apply:
 	link.w a6,#$fffe	; $02CE74
 	move.w $8(a6),d0	; $02CE78
 	muls.w #$34,d0	; $02CE7C
-	lea.l ram_sys_ff02d4.l,a0	; $02CE80
+	lea.l ram_world_field_02d4.l,a0	; $02CE80
 	move.w (a0,d0.l),d1	; $02CE86
 	ext.l d1	; $02CE8A
 	asl.l #$1,d1	; $02CE8C
-	lea.l ram_sys_ff00c0.l,a0	; $02CE8E
+	lea.l ram_save_field_00c0.l,a0	; $02CE8E
 	move.w (a0,d1.l),-$2(a6)	; $02CE94
 	move.w $8(a6),d0	; $02CE9A
 	muls.w #$34,d0	; $02CE9E
-	lea.l ram_sys_ff02d6.l,a0	; $02CEA2
+	lea.l ram_world_field_02d6.l,a0	; $02CEA2
 	move.w (a0,d0.l),d1	; $02CEA8
 	add.w $a(a6),d1	; $02CEAC
 	cmp.w #$64,d1	; $02CEB0
@@ -38220,7 +38220,7 @@ npc_attitude_apply:
 L02CEBA:
 	move.w $8(a6),d0	; $02CEBA
 	muls.w #$34,d0	; $02CEBE
-	lea.l ram_sys_ff02d6.l,a0	; $02CEC2
+	lea.l ram_world_field_02d6.l,a0	; $02CEC2
 	move.w (a0,d0.l),d1	; $02CEC8
 	add.w $a(a6),d1	; $02CECC
 	cmp.w #$ff9c,d1	; $02CED0
@@ -38230,18 +38230,18 @@ L02CEBA:
 L02CEDA:
 	move.w $8(a6),d0	; $02CEDA
 	muls.w #$34,d0	; $02CEDE
-	lea.l ram_sys_ff02d6.l,a0	; $02CEE2
+	lea.l ram_world_field_02d6.l,a0	; $02CEE2
 	move.l d0,d1	; $02CEE8
 	move.w (a0,d1.l),d0	; $02CEEA
 	add.w $a(a6),d0	; $02CEEE
 L02CEF2:
 	move.w $8(a6),d1	; $02CEF2
 	muls.w #$34,d1	; $02CEF6
-	lea.l ram_sys_ff02d6.l,a0	; $02CEFA
+	lea.l ram_world_field_02d6.l,a0	; $02CEFA
 	move.w d0,(a0,d1.l)	; $02CF00
 	move.w $8(a6),d0	; $02CF04
 	muls.w #$34,d0	; $02CF08
-	lea.l ram_sys_ff02da.l,a0	; $02CF0C
+	lea.l ram_sys_field_02da.l,a0	; $02CF0C
 	moveq #$0,d1	; $02CF12
 	move.b (a0,d0.l),d1	; $02CF14
 	muls.w $a(a6),d1	; $02CF18
@@ -38255,7 +38255,7 @@ L02CEF2:
 L02CF30:
 	move.w $8(a6),d0	; $02CF30
 	muls.w #$34,d0	; $02CF34
-	lea.l ram_sys_ff02da.l,a0	; $02CF38
+	lea.l ram_sys_field_02da.l,a0	; $02CF38
 	moveq #$0,d1	; $02CF3E
 	move.b (a0,d0.l),d1	; $02CF40
 	muls.w $a(a6),d1	; $02CF44
@@ -38269,7 +38269,7 @@ L02CF30:
 L02CF5C:
 	move.w $8(a6),d0	; $02CF5C
 	muls.w #$34,d0	; $02CF60
-	lea.l ram_sys_ff02da.l,a0	; $02CF64
+	lea.l ram_sys_field_02da.l,a0	; $02CF64
 	move.l d0,d1	; $02CF6A
 	moveq #$0,d0	; $02CF6C
 	move.b (a0,d1.l),d0	; $02CF6E
@@ -38280,15 +38280,15 @@ L02CF5C:
 L02CF80:
 	move.w $8(a6),d1	; $02CF80
 	muls.w #$34,d1	; $02CF84
-	lea.l ram_sys_ff02d4.l,a0	; $02CF88
+	lea.l ram_world_field_02d4.l,a0	; $02CF88
 	move.w (a0,d1.l),d2	; $02CF8E
 	ext.l d2	; $02CF92
 	asl.l #$1,d2	; $02CF94
-	lea.l ram_sys_ff00c0.l,a0	; $02CF96
+	lea.l ram_save_field_00c0.l,a0	; $02CF96
 	move.w d0,(a0,d2.l)	; $02CF9C
 	move.w $8(a6),d0	; $02CFA0
 	muls.w #$34,d0	; $02CFA4
-	lea.l ram_sys_ff02d6.l,a0	; $02CFA8
+	lea.l ram_world_field_02d6.l,a0	; $02CFA8
 	tst.w (a0,d0.l)	; $02CFAE
 	bge.b L02D000	; $02CFB2
 	move.w $8(a6),-(a7)	; $02CFB4
@@ -38298,16 +38298,16 @@ L02CF80:
 	bne.b L02D000	; $02CFC2
 	move.w ram_party_leader.l,d0	; $02CFC4
 	muls.w #$34,d0	; $02CFCA
-	lea.l ram_sys_ff02dd.l,a0	; $02CFCE
+	lea.l ram_menu_field_02dd.l,a0	; $02CFCE
 	moveq #$0,d1	; $02CFD4
 	move.b (a0,d0.l),d1	; $02CFD6
 	move.w d1,-(a7)	; $02CFDA
 	move.w ram_party_leader.l,-(a7)	; $02CFDC
 	jsr combat_battle_end.l	; $02CFE2
 	addq.w #$4,a7	; $02CFE8
-	clr.w ram_sys_ff00ac.l	; $02CFEA
-	move.b #$ff,ram_sys_ffb08a.l	; $02CFF0
-	move.w #$ffff,ram_sys_ff009c.l	; $02CFF8
+	clr.w ram_menu_field_00ac.l	; $02CFEA
+	move.b #$ff,ram_sys_field_b08a.l	; $02CFF0
+	move.w #$ffff,ram_sys_field_009c.l	; $02CFF8
 L02D000:
 	unlk a6	; $02D000
 	rts	; $02D002
@@ -38566,7 +38566,7 @@ L02D290:
 	cmpi.w #$5,$8(a6)	; $02D2C4
 	bne.b L02D2E2	; $02D2CA
 	move.w d4,-(a7)	; $02D2CC
-	pea.l ram_sys_ffc326.l	; $02D2CE
+	pea.l ram_sys_field_c326.l	; $02D2CE
 	jsr sys_bitmap_test.l	; $02D2D4
 	addq.w #$6,a7	; $02D2DA
 	tst.w d0	; $02D2DC
@@ -38665,43 +38665,43 @@ menu_select_screen:
 	bra.w L02D494	; $02D3E6
 L02D3EA:
 	lea.l L019F90.l,a0	; $02D3EA
-	move.l a0,ram_sys_ffc384.l	; $02D3F0
+	move.l a0,ram_sys_field_c384.l	; $02D3F0
 	bra.w L02D4A6	; $02D3F6
 L02D3FA:
 	lea.l L01A228.l,a0	; $02D3FA
-	move.l a0,ram_sys_ffc384.l	; $02D400
+	move.l a0,ram_sys_field_c384.l	; $02D400
 	bra.w L02D4A6	; $02D406
 L02D40A:
 	lea.l L01A398.l,a0	; $02D40A
-	move.l a0,ram_sys_ffc384.l	; $02D410
+	move.l a0,ram_sys_field_c384.l	; $02D410
 	bra.w L02D4A6	; $02D416
 L02D41A:
 	lea.l L01A3B0.l,a0	; $02D41A
-	move.l a0,ram_sys_ffc384.l	; $02D420
+	move.l a0,ram_sys_field_c384.l	; $02D420
 	bra.b L02D4A6	; $02D426
 L02D428:
 	lea.l L01A3B8.l,a0	; $02D428
-	move.l a0,ram_sys_ffc384.l	; $02D42E
+	move.l a0,ram_sys_field_c384.l	; $02D42E
 	bra.b L02D4A6	; $02D434
 L02D436:
 	lea.l L01A4C0.l,a0	; $02D436
-	move.l a0,ram_sys_ffc384.l	; $02D43C
+	move.l a0,ram_sys_field_c384.l	; $02D43C
 	bra.b L02D4A6	; $02D442
 L02D444:
 	lea.l L01A4E8.l,a0	; $02D444
-	move.l a0,ram_sys_ffc384.l	; $02D44A
+	move.l a0,ram_sys_field_c384.l	; $02D44A
 	bra.b L02D4A6	; $02D450
 L02D452:
 	lea.l L01A520.l,a0	; $02D452
-	move.l a0,ram_sys_ffc384.l	; $02D458
+	move.l a0,ram_sys_field_c384.l	; $02D458
 	bra.b L02D4A6	; $02D45E
 L02D460:
 	lea.l L01A590.l,a0	; $02D460
-	move.l a0,ram_sys_ffc384.l	; $02D466
+	move.l a0,ram_sys_field_c384.l	; $02D466
 	bra.b L02D4A6	; $02D46C
 L02D46E:
 	lea.l L01A5B8.l,a0	; $02D46E
-	move.l a0,ram_sys_ffc384.l	; $02D474
+	move.l a0,ram_sys_field_c384.l	; $02D474
 	bra.b L02D4A6	; $02D47A
 L02D47C:
 	unlk a6	; $02D47C
@@ -38717,27 +38717,27 @@ L02D494:
 	move.w L02D480(pc,d0.w),d0	; $02D49E
 	jmp *+2(pc,d0.w)	; $02D4A2
 L02D4A6:
-	clr.w ram_sys_ff00ac.l	; $02D4A6
-	clr.w ram_sys_ffa7fa.l	; $02D4AC
-	move.b #$ff,ram_sys_ffb08a.l	; $02D4B2
-	move.w #$ffff,ram_sys_ff009c.l	; $02D4BA
-	move.w #$ffff,ram_sys_ff0110.l	; $02D4C2
+	clr.w ram_menu_field_00ac.l	; $02D4A6
+	clr.w ram_menu_field_a7fa.l	; $02D4AC
+	move.b #$ff,ram_sys_field_b08a.l	; $02D4B2
+	move.w #$ffff,ram_sys_field_009c.l	; $02D4BA
+	move.w #$ffff,ram_menu_field_0110.l	; $02D4C2
 	jsr menu_format.l	; $02D4CA
-	tst.b ram_sys_ffb08a.l	; $02D4D0
+	tst.b ram_sys_field_b08a.l	; $02D4D0
 	beq.b L02D4EE	; $02D4D6
-	tst.w ram_sys_ff00ac.l	; $02D4D8
+	tst.w ram_menu_field_00ac.l	; $02D4D8
 	beq.b L02D4E8	; $02D4DE
 	jsr menu_record_reload.l	; $02D4E0
 	bra.b L02D4EE	; $02D4E6
 L02D4E8:
 	jsr gfx_fill_panel_plain.l	; $02D4E8
 L02D4EE:
-	tst.w ram_sys_ff009c.l	; $02D4EE
+	tst.w ram_sys_field_009c.l	; $02D4EE
 	beq.b L02D4FC	; $02D4F4
 	jsr gfx_fill_panel_flagged.l	; $02D4F6
 L02D4FC:
-	clr.b ram_sys_ffb08a.l	; $02D4FC
-	clr.w ram_sys_ff009c.l	; $02D502
+	clr.b ram_sys_field_b08a.l	; $02D4FC
+	clr.w ram_sys_field_009c.l	; $02D502
 	bra.w L02D47C	; $02D508
 	; code $02D50C-$02D569
 npc_attitude_raise_by_id:
@@ -38753,7 +38753,7 @@ L02D514:
 	bne.b L02D55A	; $02D52E
 	move.w -$2(a6),d0	; $02D530
 	muls.w #$34,d0	; $02D534
-	lea.l ram_sys_ff02b6.l,a0	; $02D538
+	lea.l ram_sys_field_02b6.l,a0	; $02D538
 	move.w (a0,d0.l),d1	; $02D53E
 	cmp.w $8(a6),d1	; $02D542
 	bne.b L02D55A	; $02D546
@@ -38773,32 +38773,32 @@ L02D55A:
 	; code $02D56A-$02DBB7
 sys_event_run:
 	link.w a6,#$fff4	; $02D56A
-	tst.w ram_sys_ff010a.l	; $02D56E
+	tst.w ram_sys_field_010a.l	; $02D56E
 	bne.b L02D592	; $02D574
-	tst.w ram_sys_ffa7fa.l	; $02D576
+	tst.w ram_menu_field_a7fa.l	; $02D576
 	bne.b L02D58E	; $02D57C
-	move.w #$ffff,ram_sys_ffa7fa.l	; $02D57E
-	move.w #$ffff,ram_sys_ff009a.l	; $02D586
+	move.w #$ffff,ram_menu_field_a7fa.l	; $02D57E
+	move.w #$ffff,ram_sys_field_009a.l	; $02D586
 L02D58E:
 	unlk a6	; $02D58E
 	rts	; $02D590
 L02D592:
-	tst.w ram_sys_ffa7fa.l	; $02D592
+	tst.w ram_menu_field_a7fa.l	; $02D592
 	beq.b L02D5A8	; $02D598
-	clr.w ram_sys_ffa7fa.l	; $02D59A
-	move.w #$ffff,ram_sys_ff009a.l	; $02D5A0
+	clr.w ram_menu_field_a7fa.l	; $02D59A
+	move.w #$ffff,ram_sys_field_009a.l	; $02D5A0
 L02D5A8:
 	clr.w -$4(a6)	; $02D5A8
-	movea.l ram_sys_ffc384.l,a0	; $02D5AC
+	movea.l ram_sys_field_c384.l,a0	; $02D5AC
 	tst.b (a0)	; $02D5B2
 	bge.b L02D5C4	; $02D5B4
-	movea.l ram_sys_ffc384.l,a0	; $02D5B6
+	movea.l ram_sys_field_c384.l,a0	; $02D5B6
 	move.b (a0),d0	; $02D5BC
 	ext.w d0	; $02D5BE
 	neg.w d0	; $02D5C0
 	bra.b L02D5CE	; $02D5C2
 L02D5C4:
-	movea.l ram_sys_ffc384.l,a0	; $02D5C4
+	movea.l ram_sys_field_c384.l,a0	; $02D5C4
 	move.b (a0),d0	; $02D5CA
 	ext.w d0	; $02D5CC
 L02D5CE:
@@ -38814,7 +38814,7 @@ L02D5D8:
 	tst.w (a0,d0.l)	; $02D5E6
 	beq.b L02D618	; $02D5EA
 	move.w #$1,-(a7)	; $02D5EC
-	movea.l ram_sys_ffc384.l,a0	; $02D5F0
+	movea.l ram_sys_field_c384.l,a0	; $02D5F0
 	move.w $6(a0),-(a7)	; $02D5F6
 	move.w #$401,-(a7)	; $02D5FA
 	move.w -$6(a6),d0	; $02D5FE
@@ -38828,20 +38828,20 @@ L02D618:
 	addq.w #$1,-$6(a6)	; $02D618
 	cmpi.w #$6,-$6(a6)	; $02D61C
 	blt.b L02D5D8	; $02D622
-	clr.w ram_sys_ff0110.l	; $02D624
-	movea.l ram_sys_ffc384.l,a0	; $02D62A
+	clr.w ram_menu_field_0110.l	; $02D624
+	movea.l ram_sys_field_c384.l,a0	; $02D62A
 	tst.w $4(a0)	; $02D630
 	beq.b L02D678	; $02D634
 	move.w ram_party_leader.l,d0	; $02D636
 	muls.w #$34,d0	; $02D63C
-	lea.l ram_sys_ff02dd.l,a0	; $02D640
+	lea.l ram_menu_field_02dd.l,a0	; $02D640
 	moveq #$0,d1	; $02D646
 	move.b (a0,d0.l),d1	; $02D648
 	cmp.w #$ff,d1	; $02D64C
 	beq.b L02D678	; $02D650
 	move.w ram_party_leader.l,d0	; $02D652
 	muls.w #$34,d0	; $02D658
-	lea.l ram_sys_ff02dd.l,a0	; $02D65C
+	lea.l ram_menu_field_02dd.l,a0	; $02D65C
 	moveq #$0,d1	; $02D662
 	move.b (a0,d0.l),d1	; $02D664
 	move.w d1,-(a7)	; $02D668
@@ -38873,12 +38873,12 @@ L02D6BC:
 	jsr npc_attitude_raise_by_id(pc)	; $02D6C0
 	addq.w #$2,a7	; $02D6C4
 	muls.w #$34,d0	; $02D6C6
-	lea.l ram_sys_ff02ca.l,a0	; $02D6CA
+	lea.l ram_sys_field_02ca.l,a0	; $02D6CA
 	moveq #$0,d1	; $02D6D0
 	move.b (a0,d0.l),d1	; $02D6D2
 	move.w d1,-$2(a6)	; $02D6D6
 	pea.l -$c(a6)	; $02D6DA
-	pea.l ram_sys_ffbb86.l	; $02D6DE
+	pea.l ram_sys_field_bb86.l	; $02D6DE
 	clr.w -(a7)	; $02D6E4
 	clr.w -(a7)	; $02D6E6
 	clr.w -(a7)	; $02D6E8
@@ -38887,13 +38887,13 @@ L02D6BC:
 	move.w #$3,-(a7)	; $02D6F2
 	jsr text_event_resolve.l	; $02D6F6
 	lea.l $14(a7),a7	; $02D6FC
-	pea.l ram_sys_ffbb86.l	; $02D700
+	pea.l ram_sys_field_bb86.l	; $02D700
 	clr.w -(a7)	; $02D706
 	move.w #$1,-(a7)	; $02D708
 	move.w -$2(a6),-(a7)	; $02D70C
 	jsr text_enqueue_message.l	; $02D710
 	lea.l $a(a7),a7	; $02D716
-	clr.w ram_sys_ff0110.l	; $02D71A
+	clr.w ram_menu_field_0110.l	; $02D71A
 	move.w #$ff,-(a7)	; $02D720
 	move.w ram_party_index_array.l,-(a7)	; $02D724
 	jsr combat_select_unit.l	; $02D72A
@@ -38904,7 +38904,7 @@ L02D6BC:
 L02D73C:
 	bra.w L02D7D2	; $02D73C
 L02D740:
-	lea.l ram_sys_ff0e92.l,a0	; $02D740
+	lea.l ram_menu_field_0e92.l,a0	; $02D740
 	move.w (a0),d0	; $02D746
 	and.w #$3ff,d0	; $02D748
 	cmp.w #$188,d0	; $02D74C
@@ -38918,17 +38918,17 @@ L02D740:
 	bra.b L02D7D2	; $02D76C
 L02D76E:
 	move.w #$ae,-(a7)	; $02D76E
-	pea.l ram_sys_ffc326.l	; $02D772
+	pea.l ram_sys_field_c326.l	; $02D772
 	jsr sys_bitmap_test.l	; $02D778
 	addq.w #$6,a7	; $02D77E
 	tst.w d0	; $02D780
 	bne.b L02D7D2	; $02D782
-	clr.w ram_sys_ff0110.l	; $02D784
+	clr.w ram_menu_field_0110.l	; $02D784
 	move.w #$25,-(a7)	; $02D78A
 	move.w #$4a,-(a7)	; $02D78E
 	jsr text_show_message.l	; $02D792
 	addq.w #$4,a7	; $02D798
-	move.w #$1,ram_sys_ff0112.l	; $02D79A
+	move.w #$1,ram_menu_field_0112.l	; $02D79A
 	move.w #$4,-(a7)	; $02D7A2
 	jsr song_request.l	; $02D7A6
 	addq.w #$2,a7	; $02D7AC
@@ -38944,11 +38944,11 @@ L02D76E:
 L02D7D2:
 	bra.w L02DBEA	; $02D7D2
 L02D7D6:
-	movea.l ram_sys_ffc384.l,a0	; $02D7D6
+	movea.l ram_sys_field_c384.l,a0	; $02D7D6
 	moveq #$0,d0	; $02D7DC
 	move.b $3(a0),d0	; $02D7DE
 	move.w d0,-(a7)	; $02D7E2
-	movea.l ram_sys_ffc384.l,a0	; $02D7E4
+	movea.l ram_sys_field_c384.l,a0	; $02D7E4
 	move.w $4(a0),-(a7)	; $02D7EA
 	jsr npc_attitude_raise_by_id(pc)	; $02D7EE
 	addq.w #$2,a7	; $02D7F2
@@ -38961,11 +38961,11 @@ L02D802:
 	jsr npc_attitude_raise_by_id(pc)	; $02D808
 	addq.w #$2,a7	; $02D80C
 	move.w d0,-$2(a6)	; $02D80E
-	movea.l ram_sys_ffc384.l,a0	; $02D812
+	movea.l ram_sys_field_c384.l,a0	; $02D812
 	moveq #$0,d0	; $02D818
 	move.b $2(a0),d0	; $02D81A
 	move.w d0,-(a7)	; $02D81E
-	movea.l ram_sys_ffc384.l,a0	; $02D820
+	movea.l ram_sys_field_c384.l,a0	; $02D820
 	moveq #$0,d0	; $02D826
 	move.b $1(a0),d0	; $02D828
 	move.w d0,-(a7)	; $02D82C
@@ -38979,16 +38979,16 @@ L02D802:
 	addq.w #$6,a7	; $02D84C
 	bra.w L02DBEA	; $02D84E
 L02D852:
-	movea.l ram_sys_ffc384.l,a0	; $02D852
+	movea.l ram_sys_field_c384.l,a0	; $02D852
 	move.w $4(a0),-(a7)	; $02D858
 	jsr npc_attitude_raise_by_id(pc)	; $02D85C
 	addq.w #$2,a7	; $02D860
 	move.w d0,-$2(a6)	; $02D862
-	movea.l ram_sys_ffc384.l,a0	; $02D866
+	movea.l ram_sys_field_c384.l,a0	; $02D866
 	moveq #$0,d0	; $02D86C
 	move.b $2(a0),d0	; $02D86E
 	move.w d0,-(a7)	; $02D872
-	movea.l ram_sys_ffc384.l,a0	; $02D874
+	movea.l ram_sys_field_c384.l,a0	; $02D874
 	moveq #$0,d0	; $02D87A
 	move.b $1(a0),d0	; $02D87C
 	move.w d0,-(a7)	; $02D880
@@ -39001,22 +39001,22 @@ L02D892:
 	clr.w -(a7)	; $02D894
 	clr.w -(a7)	; $02D896
 	move.w #$ffff,-(a7)	; $02D898
-	movea.l ram_sys_ffc384.l,a0	; $02D89C
+	movea.l ram_sys_field_c384.l,a0	; $02D89C
 	move.w $4(a0),-(a7)	; $02D8A2
 	move.w #$ffff,-(a7)	; $02D8A6
 	move.w #$1,-(a7)	; $02D8AA
 	jsr entity_spawn.l	; $02D8AE
 	lea.l $e(a7),a7	; $02D8B4
 	move.w d0,-$2(a6)	; $02D8B8
-	movea.l ram_sys_ffc384.l,a0	; $02D8BC
+	movea.l ram_sys_field_c384.l,a0	; $02D8BC
 	moveq #$0,d0	; $02D8C2
 	move.b $3(a0),d0	; $02D8C4
 	move.w d0,-(a7)	; $02D8C8
-	movea.l ram_sys_ffc384.l,a0	; $02D8CA
+	movea.l ram_sys_field_c384.l,a0	; $02D8CA
 	moveq #$0,d0	; $02D8D0
 	move.b $2(a0),d0	; $02D8D2
 	move.w d0,-(a7)	; $02D8D6
-	movea.l ram_sys_ffc384.l,a0	; $02D8D8
+	movea.l ram_sys_field_c384.l,a0	; $02D8D8
 	moveq #$0,d0	; $02D8DE
 	move.b $1(a0),d0	; $02D8E0
 	move.w d0,-(a7)	; $02D8E4
@@ -39025,7 +39025,7 @@ L02D892:
 	addq.w #$8,a7	; $02D8EE
 	bra.w L02DBEA	; $02D8F0
 L02D8F4:
-	movea.l ram_sys_ffc384.l,a0	; $02D8F4
+	movea.l ram_sys_field_c384.l,a0	; $02D8F4
 	move.w $4(a0),-(a7)	; $02D8FA
 	jsr npc_attitude_raise_by_id(pc)	; $02D8FE
 	addq.w #$2,a7	; $02D902
@@ -39037,15 +39037,15 @@ L02D8F4:
 	clr.w -(a7)	; $02D918
 	clr.w -(a7)	; $02D91A
 	move.w #$ffff,-(a7)	; $02D91C
-	movea.l ram_sys_ffc384.l,a0	; $02D920
+	movea.l ram_sys_field_c384.l,a0	; $02D920
 	moveq #$0,d0	; $02D926
 	move.b $1(a0),d0	; $02D928
 	move.w d0,-(a7)	; $02D92C
-	movea.l ram_sys_ffc384.l,a0	; $02D92E
+	movea.l ram_sys_field_c384.l,a0	; $02D92E
 	moveq #$0,d0	; $02D934
 	move.b $3(a0),d0	; $02D936
 	move.w d0,-(a7)	; $02D93A
-	movea.l ram_sys_ffc384.l,a0	; $02D93C
+	movea.l ram_sys_field_c384.l,a0	; $02D93C
 	moveq #$0,d0	; $02D942
 	move.b $2(a0),d0	; $02D944
 	move.w d0,-(a7)	; $02D948
@@ -39056,43 +39056,43 @@ L02D8F4:
 	lea.l $12(a7),a7	; $02D95C
 	bra.w L02DBEA	; $02D960
 L02D964:
-	movea.l ram_sys_ffc384.l,a0	; $02D964
+	movea.l ram_sys_field_c384.l,a0	; $02D964
 	cmpi.w #$ff,$6(a0)	; $02D96A
 	beq.b L02D998	; $02D970
-	movea.l ram_sys_ffc384.l,a0	; $02D972
+	movea.l ram_sys_field_c384.l,a0	; $02D972
 	move.w $6(a0),-(a7)	; $02D978
 	jsr npc_attitude_raise_by_id(pc)	; $02D97C
 	addq.w #$2,a7	; $02D980
 	muls.w #$34,d0	; $02D982
-	lea.l ram_sys_ff02ca.l,a0	; $02D986
+	lea.l ram_sys_field_02ca.l,a0	; $02D986
 	moveq #$0,d1	; $02D98C
 	move.b (a0,d0.l),d1	; $02D98E
 	move.w d1,-$2(a6)	; $02D992
 	bra.b L02D9A8	; $02D996
 L02D998:
-	movea.l ram_sys_ffc384.l,a0	; $02D998
+	movea.l ram_sys_field_c384.l,a0	; $02D998
 	moveq #$0,d0	; $02D99E
 	move.b $3(a0),d0	; $02D9A0
 	move.w d0,-$2(a6)	; $02D9A4
 L02D9A8:
 	pea.l -$c(a6)	; $02D9A8
-	pea.l ram_sys_ffbb86.l	; $02D9AC
+	pea.l ram_sys_field_bb86.l	; $02D9AC
 	clr.w -(a7)	; $02D9B2
 	clr.w -(a7)	; $02D9B4
 	clr.w -(a7)	; $02D9B6
-	movea.l ram_sys_ffc384.l,a0	; $02D9B8
+	movea.l ram_sys_field_c384.l,a0	; $02D9B8
 	move.w $4(a0),-(a7)	; $02D9BE
 	move.w #$b,-(a7)	; $02D9C2
 	move.w #$3,-(a7)	; $02D9C6
 	jsr text_event_resolve.l	; $02D9CA
 	lea.l $14(a7),a7	; $02D9D0
-	pea.l ram_sys_ffbb86.l	; $02D9D4
+	pea.l ram_sys_field_bb86.l	; $02D9D4
 	clr.w -(a7)	; $02D9DA
 	move.w #$1,-(a7)	; $02D9DC
 	move.w -$2(a6),-(a7)	; $02D9E0
 	jsr text_enqueue_message.l	; $02D9E4
 	lea.l $a(a7),a7	; $02D9EA
-	movea.l ram_sys_ffc384.l,a0	; $02D9EE
+	movea.l ram_sys_field_c384.l,a0	; $02D9EE
 	tst.b $1(a0)	; $02D9F4
 	beq.b L02DA06	; $02D9F8
 	move.w #$1,-(a7)	; $02D9FA
@@ -39101,12 +39101,12 @@ L02D9A8:
 L02DA06:
 	bra.w L02DBEA	; $02DA06
 L02DA0A:
-	movea.l ram_sys_ffc384.l,a0	; $02DA0A
+	movea.l ram_sys_field_c384.l,a0	; $02DA0A
 	move.w $4(a0),-(a7)	; $02DA10
 	jsr npc_attitude_raise_by_id(pc)	; $02DA14
 	addq.w #$2,a7	; $02DA18
 	muls.w #$34,d0	; $02DA1A
-	lea.l ram_sys_ff02db.l,a0	; $02DA1E
+	lea.l ram_sys_field_02db.l,a0	; $02DA1E
 	moveq #$0,d1	; $02DA24
 	move.b (a0,d0.l),d1	; $02DA26
 	move.w d1,-$2(a6)	; $02DA2A
@@ -39115,27 +39115,27 @@ L02DA0A:
 	addq.w #$2,a7	; $02DA38
 	bra.w L02DBEA	; $02DA3A
 L02DA3E:
-	movea.l ram_sys_ffc384.l,a0	; $02DA3E
+	movea.l ram_sys_field_c384.l,a0	; $02DA3E
 	move.w $4(a0),-(a7)	; $02DA44
 	jsr npc_attitude_raise_by_id(pc)	; $02DA48
 	addq.w #$2,a7	; $02DA4C
 	move.w d0,-$2(a6)	; $02DA4E
 	move.w -$2(a6),d0	; $02DA52
 	muls.w #$34,d0	; $02DA56
-	lea.l ram_sys_ff02d0.l,a0	; $02DA5A
+	lea.l ram_world_field_02d0.l,a0	; $02DA5A
 	clr.w (a0,d0.l)	; $02DA60
 	move.w -$2(a6),d0	; $02DA64
 	muls.w #$34,d0	; $02DA68
-	lea.l ram_sys_ff02b8.l,a0	; $02DA6C
+	lea.l ram_world_field_02b8.l,a0	; $02DA6C
 	move.w (a0,d0.l),d1	; $02DA72
 	mulu.w #$c,d1	; $02DA76
-	lea.l ram_sys_ffb0d4.l,a0	; $02DA7A
+	lea.l ram_sys_field_b0d4.l,a0	; $02DA7A
 	adda.l d1,a0	; $02DA80
 	bset #$7,(a0)	; $02DA82
 	move.w -$2(a6),d0	; $02DA86
 	muls.w #$34,d0	; $02DA8A
 	movea.l d0,a0	; $02DA8E
-	lea.l ram_sys_ff02e0.l,a1	; $02DA90
+	lea.l ram_world_field_02e0.l,a1	; $02DA90
 	adda.l a1,a0	; $02DA96
 	andi.w #$dfff,(a0)	; $02DA98
 	ori.w #$2000,(a0)	; $02DA9C
@@ -39145,10 +39145,10 @@ L02DA3E:
 	addq.w #$4,a7	; $02DAAE
 	bra.w L02DBEA	; $02DAB0
 L02DAB4:
-	movea.l ram_sys_ffc384.l,a0	; $02DAB4
-	move.w $4(a0),ram_sys_ff0e9a.l	; $02DABA
-	movea.l ram_sys_ffc384.l,a0	; $02DAC2
-	move.w $6(a0),ram_sys_ff0e9c.l	; $02DAC8
+	movea.l ram_sys_field_c384.l,a0	; $02DAB4
+	move.w $4(a0),ram_sys_field_0e9a.l	; $02DABA
+	movea.l ram_sys_field_c384.l,a0	; $02DAC2
+	move.w $6(a0),ram_sys_field_0e9c.l	; $02DAC8
 	bra.w L02DBEA	; $02DAD0
 L02DAD4:
 	jsr npc_show_greeting.l	; $02DAD4
@@ -39164,11 +39164,11 @@ L02DAD4:
 	addq.w #$4,a7	; $02DB00
 	bra.w L02DBEA	; $02DB02
 L02DB06:
-	movea.l ram_sys_ffc384.l,a0	; $02DB06
+	movea.l ram_sys_field_c384.l,a0	; $02DB06
 	moveq #$0,d0	; $02DB0C
 	move.b $3(a0),d0	; $02DB0E
 	move.w d0,-(a7)	; $02DB12
-	movea.l ram_sys_ffc384.l,a0	; $02DB14
+	movea.l ram_sys_field_c384.l,a0	; $02DB14
 	move.w $4(a0),-(a7)	; $02DB1A
 	jsr npc_attitude_event_apply.l	; $02DB1E
 	addq.w #$4,a7	; $02DB24
@@ -39176,16 +39176,16 @@ L02DB06:
 L02DB2A:
 	bra.w L02DBEA	; $02DB2A
 L02DB2E:
-	movea.l ram_sys_ffc384.l,a0	; $02DB2E
+	movea.l ram_sys_field_c384.l,a0	; $02DB2E
 	move.w $4(a0),-(a7)	; $02DB34
 	jsr npc_attitude_raise_by_id(pc)	; $02DB38
 	addq.w #$2,a7	; $02DB3C
 	move.w d0,-$2(a6)	; $02DB3E
 	move.w #$ffff,-(a7)	; $02DB42
 	move.w #$ffff,-(a7)	; $02DB46
-	movea.l ram_sys_ffc384.l,a0	; $02DB4A
+	movea.l ram_sys_field_c384.l,a0	; $02DB4A
 	move.w $6(a0),-(a7)	; $02DB50
-	movea.l ram_sys_ffc384.l,a0	; $02DB54
+	movea.l ram_sys_field_c384.l,a0	; $02DB54
 	moveq #$0,d0	; $02DB5A
 	move.b $3(a0),d0	; $02DB5C
 	move.w d0,-(a7)	; $02DB60
@@ -39193,18 +39193,18 @@ L02DB2E:
 	move.w #$ffff,-(a7)	; $02DB66
 	move.w -$2(a6),d0	; $02DB6A
 	muls.w #$34,d0	; $02DB6E
-	lea.l ram_sys_ff02b8.l,a0	; $02DB72
+	lea.l ram_world_field_02b8.l,a0	; $02DB72
 	move.w (a0,d0.l),-(a7)	; $02DB78
 	jsr combat_effect_apply.l	; $02DB7C
 	lea.l $e(a7),a7	; $02DB82
 	bra.b L02DBEA	; $02DB86
 L02DB88:
-	movea.l ram_sys_ffc384.l,a0	; $02DB88
+	movea.l ram_sys_field_c384.l,a0	; $02DB88
 	move.w $4(a0),-(a7)	; $02DB8E
 	jsr npc_attitude_raise_by_id(pc)	; $02DB92
 	addq.w #$2,a7	; $02DB96
 	move.w d0,-$2(a6)	; $02DB98
-	movea.l ram_sys_ffc384.l,a0	; $02DB9C
+	movea.l ram_sys_field_c384.l,a0	; $02DB9C
 	moveq #$0,d0	; $02DBA2
 	move.b $3(a0),d0	; $02DBA4
 	move.w d0,-(a7)	; $02DBA8
@@ -39223,12 +39223,12 @@ L02DBD8:
 	move.w L02DBB8(pc,d0.w),d0	; $02DBE2
 	jmp *+2(pc,d0.w)	; $02DBE6
 L02DBEA:
-	movea.l ram_sys_ffc384.l,a0	; $02DBEA
+	movea.l ram_sys_field_c384.l,a0	; $02DBEA
 	tst.b (a0)	; $02DBF0
 	bge.b L02DBFA	; $02DBF2
 	move.w #$ffff,-$4(a6)	; $02DBF4
 L02DBFA:
-	addq.l #$8,ram_sys_ffc384.l	; $02DBFA
+	addq.l #$8,ram_sys_field_c384.l	; $02DBFA
 	tst.w -$4(a6)	; $02DC00
 	bne.w L02D5A8	; $02DC04
 	bra.w L02D58E	; $02DC08
@@ -39322,7 +39322,7 @@ L02DCEA:
 	ext.l d0	; $02DCF8
 	bra.w L02E00A	; $02DCFA
 L02DCFE:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02DCFE
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02DCFE
 	bne.b L02DD3A	; $02DD06
 	move.w ram_party_leader.l,d0	; $02DD08
 	muls.w #$34,d0	; $02DD0E
@@ -39344,7 +39344,7 @@ L02DD4A:
 	clr.w $c(a6)	; $02DD4A
 	bra.w L02E026	; $02DD4E
 L02DD52:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02DD52
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02DD52
 	bne.b L02DD96	; $02DD5A
 	clr.l -(a7)	; $02DD5C
 	clr.w -(a7)	; $02DD5E
@@ -39354,7 +39354,7 @@ L02DD52:
 	jsr npc_attitude_raise.l	; $02DD6E
 	addq.w #$4,a7	; $02DD74
 	muls.w #$34,d0	; $02DD76
-	lea.l ram_sys_ff02ca.l,a0	; $02DD7A
+	lea.l ram_sys_field_02ca.l,a0	; $02DD7A
 	moveq #$0,d1	; $02DD80
 	move.b (a0,d0.l),d1	; $02DD82
 	move.w d1,-(a7)	; $02DD86
@@ -39364,7 +39364,7 @@ L02DD52:
 L02DD96:
 	bra.w L02E026	; $02DD96
 L02DD9A:
-	lea.l ram_sys_ff0e92.l,a0	; $02DD9A
+	lea.l ram_menu_field_0e92.l,a0	; $02DD9A
 	move.w (a0),d0	; $02DDA0
 	and.w #$3ff,d0	; $02DDA2
 	cmp.w #$188,d0	; $02DDA6
@@ -39396,7 +39396,7 @@ L02DDDC:
 	cmp.w d0,d1	; $02DE00
 	blt.b L02DE1A	; $02DE02
 	move.w #$8f,-(a7)	; $02DE04
-	pea.l ram_sys_ffc326.l	; $02DE08
+	pea.l ram_sys_field_c326.l	; $02DE08
 	jsr sys_bitmap_test.l	; $02DE0E
 	addq.w #$6,a7	; $02DE14
 	tst.w d0	; $02DE16
@@ -39428,23 +39428,23 @@ L02DE2E:
 	move.w #$1,-(a7)	; $02DE72
 	jsr sfx_request.l	; $02DE76
 	addq.w #$4,a7	; $02DE7C
-	move.w #$ffff,ram_sys_ff0124.l	; $02DE7E
+	move.w #$ffff,ram_world_field_0124.l	; $02DE7E
 L02DE86:
 	bra.w L02E026	; $02DE86
 L02DE8A:
-	lea.l ram_sys_ff0e92.l,a0	; $02DE8A
+	lea.l ram_menu_field_0e92.l,a0	; $02DE8A
 	move.w (a0),d0	; $02DE90
 	and.w #$3ff,d0	; $02DE92
 	cmp.w #$bc,d0	; $02DE96
 	bne.w L02E008	; $02DE9A
 	move.w #$3e,-(a7)	; $02DE9E
-	pea.l ram_sys_ffc326.l	; $02DEA2
+	pea.l ram_sys_field_c326.l	; $02DEA2
 	jsr sys_bitmap_test.l	; $02DEA8
 	addq.w #$6,a7	; $02DEAE
 	tst.w d0	; $02DEB0
 	beq.w L02E008	; $02DEB2
 	pea.l -$6(a6)	; $02DEB6
-	pea.l ram_sys_ffbb86.l	; $02DEBA
+	pea.l ram_sys_field_bb86.l	; $02DEBA
 	clr.w -(a7)	; $02DEC0
 	clr.w -(a7)	; $02DEC2
 	clr.w -(a7)	; $02DEC4
@@ -39453,7 +39453,7 @@ L02DE8A:
 	move.w #$3,-(a7)	; $02DECE
 	jsr text_event_resolve.l	; $02DED2
 	lea.l $14(a7),a7	; $02DED8
-	pea.l ram_sys_ffbb86.l	; $02DEDC
+	pea.l ram_sys_field_bb86.l	; $02DEDC
 	clr.w -(a7)	; $02DEE2
 	move.w #$1,-(a7)	; $02DEE4
 	move.w #$38,-(a7)	; $02DEE8
@@ -39496,20 +39496,20 @@ L02DE8A:
 	move.w d0,-$8(a6)	; $02DF7A
 	move.w -$8(a6),d0	; $02DF7E
 	muls.w #$34,d0	; $02DF82
-	lea.l ram_sys_ff02d0.l,a0	; $02DF86
+	lea.l ram_world_field_02d0.l,a0	; $02DF86
 	clr.w (a0,d0.l)	; $02DF8C
 	move.w -$8(a6),d0	; $02DF90
 	muls.w #$34,d0	; $02DF94
-	lea.l ram_sys_ff02b8.l,a0	; $02DF98
+	lea.l ram_world_field_02b8.l,a0	; $02DF98
 	move.w (a0,d0.l),d1	; $02DF9E
 	mulu.w #$c,d1	; $02DFA2
-	lea.l ram_sys_ffb0d4.l,a0	; $02DFA6
+	lea.l ram_sys_field_b0d4.l,a0	; $02DFA6
 	adda.l d1,a0	; $02DFAC
 	bset #$7,(a0)	; $02DFAE
 	move.w -$8(a6),d0	; $02DFB2
 	muls.w #$34,d0	; $02DFB6
 	movea.l d0,a0	; $02DFBA
-	lea.l ram_sys_ff02e0.l,a1	; $02DFBC
+	lea.l ram_world_field_02e0.l,a1	; $02DFBC
 	adda.l a1,a0	; $02DFC2
 	andi.w #$dfff,(a0)	; $02DFC4
 	ori.w #$2000,(a0)	; $02DFC8
@@ -39519,12 +39519,12 @@ L02DE8A:
 	addq.w #$4,a7	; $02DFDA
 	clr.w -(a7)	; $02DFDC
 	move.w #$3e,-(a7)	; $02DFDE
-	pea.l ram_sys_ffc326.l	; $02DFE2
+	pea.l ram_sys_field_c326.l	; $02DFE2
 	jsr sys_bitmap_write.l	; $02DFE8
 	addq.w #$8,a7	; $02DFEE
 	clr.w -(a7)	; $02DFF0
 	move.w #$3f,-(a7)	; $02DFF2
-	pea.l ram_sys_ffc326.l	; $02DFF6
+	pea.l ram_sys_field_c326.l	; $02DFF6
 	jsr sys_bitmap_write.l	; $02DFFC
 	addq.w #$8,a7	; $02E002
 	clr.w $c(a6)	; $02E004
@@ -39552,7 +39552,7 @@ L02E02A:
 	move.w (a0,d0.l),-$14(a6)	; $02E050
 	move.w ram_party_leader.l,d0	; $02E056
 	muls.w #$34,d0	; $02E05C
-	lea.l ram_sys_ff02be.l,a0	; $02E060
+	lea.l ram_sys_field_02be.l,a0	; $02E060
 	move.w (a0,d0.l),-$16(a6)	; $02E066
 	move.w $a(a6),d0	; $02E06C
 	ext.l d0	; $02E070
@@ -39570,14 +39570,14 @@ L02E076:
 	cmp.w #$5,d0	; $02E09A
 	blt.b L02E112	; $02E09E
 	move.w #$b4,-(a7)	; $02E0A0
-	pea.l ram_sys_ffc326.l	; $02E0A4
+	pea.l ram_sys_field_c326.l	; $02E0A4
 	jsr sys_bitmap_test.l	; $02E0AA
 	addq.w #$6,a7	; $02E0B0
 	tst.w d0	; $02E0B2
 	bne.b L02E112	; $02E0B4
 	move.w #$1,-(a7)	; $02E0B6
 	move.w #$b4,-(a7)	; $02E0BA
-	pea.l ram_sys_ffc326.l	; $02E0BE
+	pea.l ram_sys_field_c326.l	; $02E0BE
 	jsr sys_bitmap_write.l	; $02E0C4
 	addq.w #$8,a7	; $02E0CA
 	clr.w -(a7)	; $02E0CC
@@ -39600,10 +39600,10 @@ L02E076:
 L02E112:
 	bra.w L02E866	; $02E112
 L02E116:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02E116
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02E116
 	bne.b L02E186	; $02E11E
 	clr.w -(a7)	; $02E120
-	pea.l ram_sys_ffc326.l	; $02E122
+	pea.l ram_sys_field_c326.l	; $02E122
 	jsr sys_bitmap_test.l	; $02E128
 	addq.w #$6,a7	; $02E12E
 	tst.w d0	; $02E130
@@ -39644,7 +39644,7 @@ L02E186:
 L02E1AC:
 	bra.w L02E866	; $02E1AC
 L02E1B0:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02E1B0
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02E1B0
 	bne.w L02E2D8	; $02E1B8
 	move.w #$ffff,-$a(a6)	; $02E1BC
 	clr.w -$e(a6)	; $02E1C2
@@ -39725,7 +39725,7 @@ L02E2B0:
 L02E2D6:
 	bra.b L02E32C	; $02E2D6
 L02E2D8:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $02E2D8
+	cmpi.w #$2,ram_menu_field_00ae.l	; $02E2D8
 	bne.b L02E306	; $02E2E0
 	move.w #$10,-(a7)	; $02E2E2
 	move.w $8(a6),d0	; $02E2E6
@@ -39766,14 +39766,14 @@ L02E334:
 	lea.l ram_party_index_array.l,a0	; $02E350
 	move.w (a0,d0.l),d1	; $02E356
 	muls.w #$34,d1	; $02E35A
-	lea.l ram_sys_ff02d4.l,a0	; $02E35E
+	lea.l ram_world_field_02d4.l,a0	; $02E35E
 	move.w -$e(a6),d0	; $02E364
 	ext.l d0	; $02E368
 	asl.l #$1,d0	; $02E36A
 	lea.l ram_party_index_array.l,a1	; $02E36C
 	move.w (a1,d0.l),d2	; $02E372
 	muls.w #$34,d2	; $02E376
-	lea.l ram_sys_ff02d0.l,a1	; $02E37A
+	lea.l ram_world_field_02d0.l,a1	; $02E37A
 	move.w (a0,d1.l),(a1,d2.l)	; $02E380
 	move.w -$e(a6),d0	; $02E386
 	ext.l d0	; $02E38A
@@ -39781,14 +39781,14 @@ L02E334:
 	lea.l ram_party_index_array.l,a0	; $02E38E
 	move.w (a0,d0.l),d1	; $02E394
 	muls.w #$34,d1	; $02E398
-	lea.l ram_sys_ff02d6.l,a0	; $02E39C
+	lea.l ram_world_field_02d6.l,a0	; $02E39C
 	move.w -$e(a6),d0	; $02E3A2
 	ext.l d0	; $02E3A6
 	asl.l #$1,d0	; $02E3A8
 	lea.l ram_party_index_array.l,a1	; $02E3AA
 	move.w (a1,d0.l),d2	; $02E3B0
 	muls.w #$34,d2	; $02E3B4
-	lea.l ram_sys_ff02d2.l,a1	; $02E3B8
+	lea.l ram_world_field_02d2.l,a1	; $02E3B8
 	move.w (a0,d1.l),(a1,d2.l)	; $02E3BE
 L02E3C4:
 	addq.w #$1,-$e(a6)	; $02E3C4
@@ -39811,14 +39811,14 @@ L02E3E0:
 	lea.l ram_party_index_array.l,a0	; $02E3FC
 	move.w (a0,d0.l),d1	; $02E402
 	muls.w #$34,d1	; $02E406
-	lea.l ram_sys_ff02d6.l,a0	; $02E40A
+	lea.l ram_world_field_02d6.l,a0	; $02E40A
 	move.w -$e(a6),d0	; $02E410
 	ext.l d0	; $02E414
 	asl.l #$1,d0	; $02E416
 	lea.l ram_party_index_array.l,a1	; $02E418
 	move.w (a1,d0.l),d2	; $02E41E
 	muls.w #$34,d2	; $02E422
-	lea.l ram_sys_ff02d2.l,a1	; $02E426
+	lea.l ram_world_field_02d2.l,a1	; $02E426
 	move.w (a0,d1.l),(a1,d2.l)	; $02E42C
 L02E432:
 	addq.w #$1,-$e(a6)	; $02E432
@@ -39841,14 +39841,14 @@ L02E44C:
 	lea.l ram_party_index_array.l,a0	; $02E468
 	move.w (a0,d0.l),d1	; $02E46E
 	muls.w #$34,d1	; $02E472
-	lea.l ram_sys_ff02d4.l,a0	; $02E476
+	lea.l ram_world_field_02d4.l,a0	; $02E476
 	move.w -$e(a6),d0	; $02E47C
 	ext.l d0	; $02E480
 	asl.l #$1,d0	; $02E482
 	lea.l ram_party_index_array.l,a1	; $02E484
 	move.w (a1,d0.l),d2	; $02E48A
 	muls.w #$34,d2	; $02E48E
-	lea.l ram_sys_ff02d0.l,a1	; $02E492
+	lea.l ram_world_field_02d0.l,a1	; $02E492
 	move.w (a0,d1.l),(a1,d2.l)	; $02E498
 L02E49E:
 	addq.w #$1,-$e(a6)	; $02E49E
@@ -39857,10 +39857,10 @@ L02E49E:
 	move.w #$ffff,-$c(a6)	; $02E4AA
 	bra.w L02E866	; $02E4B0
 L02E4B4:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02E4B4
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02E4B4
 	bne.w L02E5F2	; $02E4BC
 	clr.w -(a7)	; $02E4C0
-	pea.l ram_sys_ffc326.l	; $02E4C2
+	pea.l ram_sys_field_c326.l	; $02E4C2
 	jsr sys_bitmap_test.l	; $02E4C8
 	addq.w #$6,a7	; $02E4CE
 	tst.w d0	; $02E4D0
@@ -39947,7 +39947,7 @@ L02E5EA:
 	move.w #$ffff,-$c(a6)	; $02E5EA
 	bra.b L02E646	; $02E5F0
 L02E5F2:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $02E5F2
+	cmpi.w #$2,ram_menu_field_00ae.l	; $02E5F2
 	bne.b L02E620	; $02E5FA
 	move.w #$10,-(a7)	; $02E5FC
 	move.w $8(a6),d0	; $02E600
@@ -39974,10 +39974,10 @@ L02E642:
 L02E646:
 	bra.w L02E866	; $02E646
 L02E64A:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02E64A
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02E64A
 	bne.w L02E71E	; $02E652
 	clr.w -(a7)	; $02E656
-	pea.l ram_sys_ffc326.l	; $02E658
+	pea.l ram_sys_field_c326.l	; $02E658
 	jsr sys_bitmap_test.l	; $02E65E
 	addq.w #$6,a7	; $02E664
 	tst.w d0	; $02E666
@@ -40035,7 +40035,7 @@ L02E716:
 	move.w #$ffff,-$c(a6)	; $02E716
 	bra.b L02E772	; $02E71C
 L02E71E:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $02E71E
+	cmpi.w #$2,ram_menu_field_00ae.l	; $02E71E
 	bne.b L02E74C	; $02E726
 	move.w #$10,-(a7)	; $02E728
 	move.w $8(a6),d0	; $02E72C
@@ -40162,7 +40162,7 @@ npc_find_state1_2e8c8:
 L02E8D0:
 	move.w $8(a6),d0	; $02E8D0
 	muls.w #$34,d0	; $02E8D4
-	lea.l ram_sys_ff02db.l,a0	; $02E8D8
+	lea.l ram_sys_field_02db.l,a0	; $02E8D8
 	cmpi.b #$1,(a0,d0.l)	; $02E8DE
 	bne.w L02E968	; $02E8E4
 	move.w $8(a6),d0	; $02E8E8
@@ -40183,7 +40183,7 @@ L02E8D0:
 	lea.l ram_npc_field_02c8.l,a0	; $02E918
 	move.w (a0,d0.l),d1	; $02E91E
 	muls.w #$34,d1	; $02E922
-	lea.l ram_sys_ff02cb.l,a0	; $02E926
+	lea.l ram_sys_field_02cb.l,a0	; $02E926
 	cmpi.b #$27,(a0,d1.l)	; $02E92C
 	beq.b L02E962	; $02E932
 	move.w $8(a6),d0	; $02E934
@@ -40195,7 +40195,7 @@ L02E8D0:
 	lea.l ram_npc_field_02c8.l,a0	; $02E946
 	move.w (a0,d0.l),d1	; $02E94C
 	muls.w #$34,d1	; $02E950
-	lea.l ram_sys_ff02cb.l,a0	; $02E954
+	lea.l ram_sys_field_02cb.l,a0	; $02E954
 	cmpi.b #$28,(a0,d1.l)	; $02E95A
 	bne.b L02E968	; $02E960
 L02E962:
@@ -40209,7 +40209,7 @@ L02E968:
 	blt.w L02E8D0	; $02E972
 	move.w $8(a6),d0	; $02E976
 	muls.w #$34,d0	; $02E97A
-	lea.l ram_sys_ff02b6.l,a0	; $02E97E
+	lea.l ram_sys_field_02b6.l,a0	; $02E97E
 	move.w (a0,d0.l),d1	; $02E984
 	muls.w #$18,d1	; $02E988
 	lea.l L0CF1BA.l,a0	; $02E98C
@@ -40225,7 +40225,7 @@ L02E9A2:
 	; code $02E9A6-$02E9EB
 world_seen_reset:
 	link.w a6,#$fffe	; $02E9A6
-	clr.w ram_sys_ff0122.l	; $02E9AA
+	clr.w ram_sys_field_0122.l	; $02E9AA
 	clr.w -$2(a6)	; $02E9B0
 L02E9B4:
 	move.w -$2(a6),d0	; $02E9B4
@@ -40246,25 +40246,25 @@ L02E9B4:
 	; code $02E9EC-$02EA3F
 world_seen_record:
 	link.w a6,#$0	; $02E9EC
-	move.w ram_sys_ff0122.l,d0	; $02E9F0
+	move.w ram_sys_field_0122.l,d0	; $02E9F0
 	ext.l d0	; $02E9F6
 	asl.l #$1,d0	; $02E9F8
 	lea.l ram_sys_ffc388.l,a0	; $02E9FA
 	move.w $8(a6),(a0,d0.l)	; $02EA00
-	lea.l ram_sys_ff0e92.l,a0	; $02EA06
+	lea.l ram_menu_field_0e92.l,a0	; $02EA06
 	move.w (a0),d0	; $02EA0C
 	and.w #$3ff,d0	; $02EA0E
-	move.w ram_sys_ff0122.l,d1	; $02EA12
+	move.w ram_sys_field_0122.l,d1	; $02EA12
 	ext.l d1	; $02EA18
 	asl.l #$1,d1	; $02EA1A
 	lea.l ram_sys_ffc3c8.l,a0	; $02EA1C
 	move.w d0,(a0,d1.l)	; $02EA22
-	move.w ram_sys_ff0122.l,d0	; $02EA26
+	move.w ram_sys_field_0122.l,d0	; $02EA26
 	addq.w #$1,d0	; $02EA2C
 	ext.l d0	; $02EA2E
 	divs.w #$20,d0	; $02EA30
 	swap d0	; $02EA34
-	move.w d0,ram_sys_ff0122.l	; $02EA36
+	move.w d0,ram_sys_field_0122.l	; $02EA36
 	unlk a6	; $02EA3C
 	rts	; $02EA3E
 	; code $02EA40-$02EA91
@@ -40284,7 +40284,7 @@ L02EA48:
 	ext.l d0	; $02EA60
 	asl.l #$1,d0	; $02EA62
 	lea.l ram_sys_ffc3c8.l,a0	; $02EA64
-	lea.l ram_sys_ff0e92.l,a1	; $02EA6A
+	lea.l ram_menu_field_0e92.l,a1	; $02EA6A
 	move.w (a1),d1	; $02EA70
 	and.w #$3ff,d1	; $02EA72
 	move.w (a0,d0.l),d2	; $02EA76
@@ -40332,23 +40332,23 @@ L02EAE8:
 	muls.w #$64,d0	; $02EAF8
 	move.w d0,-$6(a6)	; $02EAFC
 L02EB00:
-	move.w ram_sys_ff02a0.l,-$8(a6)	; $02EB00
+	move.w ram_sys_field_02a0.l,-$8(a6)	; $02EB00
 	cmpi.w #$ff,-$8(a6)	; $02EB08
 	beq.b L02EB3E	; $02EB0E
 	move.w -$8(a6),d0	; $02EB10
 	muls.w #$34,d0	; $02EB14
-	lea.l ram_sys_ff02d4.l,a0	; $02EB18
+	lea.l ram_world_field_02d4.l,a0	; $02EB18
 	move.w (a0,d0.l),-$2(a6)	; $02EB1E
 	move.w -$8(a6),d0	; $02EB24
 	muls.w #$34,d0	; $02EB28
-	lea.l ram_sys_ff02d6.l,a0	; $02EB2C
+	lea.l ram_world_field_02d6.l,a0	; $02EB2C
 	move.w (a0,d0.l),d1	; $02EB32
 	sub.w #$32,d1	; $02EB36
 	move.w d1,-$4(a6)	; $02EB3A
 L02EB3E:
 	cmpi.w #$20,-$2(a6)	; $02EB3E
 	beq.b L02EB58	; $02EB44
-	lea.l ram_sys_ff0e92.l,a0	; $02EB46
+	lea.l ram_menu_field_0e92.l,a0	; $02EB46
 	move.w (a0),d0	; $02EB4C
 	and.w #$3ff,d0	; $02EB4E
 	cmp.w #$16f,d0	; $02EB52
@@ -40461,7 +40461,7 @@ sys_struct24_read:
 	move.b (a0,d1.l),d0	; $02EC7A
 	bra.b L02ECBA	; $02EC7E
 L02EC80:
-	move.w ram_sys_ff0e16.l,d0	; $02EC80
+	move.w ram_world_field_0e16.l,d0	; $02EC80
 	ext.l d0	; $02EC86
 	divs.w #$12,d0	; $02EC88
 	cmp.w #$1e,d0	; $02EC8C
@@ -40474,7 +40474,7 @@ L02EC98:
 	moveq #$0,d0	; $02EC98
 	bra.b L02EC94	; $02EC9A
 L02EC9C:
-	move.w ram_sys_ff0e16.l,d0	; $02EC9C
+	move.w ram_world_field_0e16.l,d0	; $02EC9C
 	ext.l d0	; $02ECA2
 	divs.w #$12,d0	; $02ECA4
 	cmp.w #$1e,d0	; $02ECA8
@@ -40516,7 +40516,7 @@ L02ECD6:
 	move.w #$a000,-(a7)	; $02ECF6
 	move.w d6,d0	; $02ECFA
 	muls.w #$34,d0	; $02ECFC
-	lea.l ram_sys_ff02cc.l,a0	; $02ED00
+	lea.l ram_world_field_02cc.l,a0	; $02ED00
 	move.w (a0,d0.l),d1	; $02ED06
 	and.w #$f,d1	; $02ED0A
 	moveq #$0,d0	; $02ED0E
@@ -40546,7 +40546,7 @@ L02ECD6:
 	move.w #$c000,-(a7)	; $02ED54
 	move.w d6,d0	; $02ED58
 	muls.w #$34,d0	; $02ED5A
-	lea.l ram_sys_ff02e0.l,a0	; $02ED5E
+	lea.l ram_world_field_02e0.l,a0	; $02ED5E
 	move.w (a0,d0.l),d1	; $02ED64
 	rol.w #$3,d1	; $02ED68
 	and.w #$1,d1	; $02ED6A
@@ -40555,11 +40555,11 @@ L02ECD6:
 	move.w #$8c,-(a7)	; $02ED74
 	move.w d6,d0	; $02ED78
 	muls.w #$34,d0	; $02ED7A
-	lea.l ram_sys_ff02d2.l,a0	; $02ED7E
+	lea.l ram_world_field_02d2.l,a0	; $02ED7E
 	move.w (a0,d0.l),-(a7)	; $02ED84
 	move.w d6,d0	; $02ED88
 	muls.w #$34,d0	; $02ED8A
-	lea.l ram_sys_ff02d0.l,a0	; $02ED8E
+	lea.l ram_world_field_02d0.l,a0	; $02ED8E
 	move.w (a0,d0.l),-(a7)	; $02ED94
 	move.w d5,d0	; $02ED98
 	asl.w #$3,d0	; $02ED9A
@@ -40616,14 +40616,14 @@ L02EE28:
 	; code $02EE2A-$02EE6B
 sys_direct_apply:
 	link.w a6,#$0	; $02EE2A
-	tst.w ram_sys_ff0116.l	; $02EE2E
+	tst.w ram_menu_field_0116.l	; $02EE2E
 	beq.b L02EE48	; $02EE34
-	move.w #$3,ram_sys_ff0118.l	; $02EE36
-	move.w #$1,ram_sys_ff011a.l	; $02EE3E
+	move.w #$3,ram_sys_field_0118.l	; $02EE36
+	move.w #$1,ram_sys_field_011a.l	; $02EE3E
 	bra.b L02EE56	; $02EE46
 L02EE48:
-	clr.w ram_sys_ff0118.l	; $02EE48
-	move.w #$2,ram_sys_ff011a.l	; $02EE4E
+	clr.w ram_sys_field_0118.l	; $02EE48
+	move.w #$2,ram_sys_field_011a.l	; $02EE4E
 L02EE56:
 	jsr wait_vblank.l	; $02EE56
 	jsr world_sprites_setup.l	; $02EE5C
@@ -40658,18 +40658,18 @@ npc_spawn_party_member:
 	addq.w #$1,d0	; $02EEBE
 	move.w -$2(a6),d1	; $02EEC0
 	muls.w #$34,d1	; $02EEC4
-	lea.l ram_sys_ff02d8.l,a0	; $02EEC8
+	lea.l ram_sys_field_02d8.l,a0	; $02EEC8
 	move.b d0,(a0,d1.l)	; $02EECE
 	move.w ram_party_leader.l,d0	; $02EED2
 	muls.w #$34,d0	; $02EED8
 	lea.l ram_npc_field_02c8.l,a0	; $02EEDC
 	move.w -$2(a6),d1	; $02EEE2
 	muls.w #$34,d1	; $02EEE6
-	lea.l ram_sys_ff02da.l,a1	; $02EEEA
+	lea.l ram_sys_field_02da.l,a1	; $02EEEA
 	move.b $1(a0,d0.l),(a1,d1.l)	; $02EEF0
 	move.w -$2(a6),d0	; $02EEF6
 	muls.w #$34,d0	; $02EEFA
-	lea.l ram_sys_ff02db.l,a0	; $02EEFE
+	lea.l ram_sys_field_02db.l,a0	; $02EEFE
 	move.b ram_sys_ff02b3.l,(a0,d0.l)	; $02EF04
 	move.w $8(a6),d0	; $02EF0C
 	addq.w #$1,d0	; $02EF10
@@ -40847,7 +40847,7 @@ L02F106:
 save_serialise:
 	link.w a6,#$fff6	; $02F11A
 	clr.w -$2(a6)	; $02F11E
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02F122
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02F122
 	beq.b L02F132	; $02F12A
 	moveq #$4c,d0	; $02F12C
 L02F12E:
@@ -40858,7 +40858,7 @@ L02F132:
 L02F136:
 	moveq #$0,d0	; $02F136
 	move.w -$4(a6),d0	; $02F138
-	lea.l ram_sys_ffa800.l,a0	; $02F13C
+	lea.l ram_save_field_a800.l,a0	; $02F13C
 	clr.b (a0,d0.l)	; $02F142
 	addq.w #$1,-$4(a6)	; $02F146
 	cmpi.w #$80,-$4(a6)	; $02F14A
@@ -40870,7 +40870,7 @@ L02F136:
 	muls.w #$34,d0	; $02F162
 	lea.l ram_header_leader.l,a0	; $02F166
 	move.w (a0,d0.l),-(a7)	; $02F16C
-	pea.l ram_sys_ffa800.l	; $02F170
+	pea.l ram_save_field_a800.l	; $02F170
 	jsr save_record_fill(pc)	; $02F176
 	lea.l $c(a7),a7	; $02F17A
 	addi.w #$9,-$2(a6)	; $02F17E
@@ -40881,7 +40881,7 @@ L02F136:
 	muls.w #$34,d0	; $02F194
 	lea.l ram_npc_field_02c2.l,a0	; $02F198
 	move.w (a0,d0.l),-(a7)	; $02F19E
-	pea.l ram_sys_ffa800.l	; $02F1A2
+	pea.l ram_save_field_a800.l	; $02F1A2
 	jsr save_record_fill(pc)	; $02F1A8
 	lea.l $c(a7),a7	; $02F1AC
 	addq.w #$8,-$2(a6)	; $02F1B0
@@ -40890,49 +40890,49 @@ L02F136:
 	move.w -$2(a6),-(a7)	; $02F1BA
 	move.w ram_party_leader.l,d0	; $02F1BE
 	muls.w #$34,d0	; $02F1C4
-	lea.l ram_sys_ff02ba.l,a0	; $02F1C8
+	lea.l ram_menu_field_02ba.l,a0	; $02F1C8
 	move.w (a0,d0.l),-(a7)	; $02F1CE
-	pea.l ram_sys_ffa800.l	; $02F1D2
+	pea.l ram_save_field_a800.l	; $02F1D2
 	jsr save_record_fill(pc)	; $02F1D8
 	lea.l $c(a7),a7	; $02F1DC
 	addq.w #$3,-$2(a6)	; $02F1E0
 	move.w #$9,-(a7)	; $02F1E4
 	move.w #$3,-(a7)	; $02F1E8
 	move.w -$2(a6),-(a7)	; $02F1EC
-	move.w ram_sys_ff0e16.l,-(a7)	; $02F1F0
-	pea.l ram_sys_ffa800.l	; $02F1F6
+	move.w ram_world_field_0e16.l,-(a7)	; $02F1F0
+	pea.l ram_save_field_a800.l	; $02F1F6
 	jsr save_record_fill(pc)	; $02F1FC
 	lea.l $c(a7),a7	; $02F200
 	addq.w #$3,-$2(a6)	; $02F204
 	clr.w -(a7)	; $02F208
 	move.w #$1,-(a7)	; $02F20A
 	move.w -$2(a6),-(a7)	; $02F20E
-	move.w ram_sys_ff0116.l,-(a7)	; $02F212
-	pea.l ram_sys_ffa800.l	; $02F218
+	move.w ram_menu_field_0116.l,-(a7)	; $02F212
+	pea.l ram_save_field_a800.l	; $02F218
 	jsr save_record_fill(pc)	; $02F21E
 	lea.l $c(a7),a7	; $02F222
 	addq.w #$1,-$2(a6)	; $02F226
 	clr.w -(a7)	; $02F22A
 	move.w #$1,-(a7)	; $02F22C
 	move.w -$2(a6),-(a7)	; $02F230
-	move.w ram_sys_ff0132.l,-(a7)	; $02F234
-	pea.l ram_sys_ffa800.l	; $02F23A
+	move.w ram_menu_field_0132.l,-(a7)	; $02F234
+	pea.l ram_save_field_a800.l	; $02F23A
 	jsr save_record_fill(pc)	; $02F240
 	lea.l $c(a7),a7	; $02F244
 	addq.w #$1,-$2(a6)	; $02F248
 	clr.w -(a7)	; $02F24C
 	move.w #$1,-(a7)	; $02F24E
 	move.w -$2(a6),-(a7)	; $02F252
-	move.w ram_sys_ff0134.l,-(a7)	; $02F256
-	pea.l ram_sys_ffa800.l	; $02F25C
+	move.w ram_save_field_0134.l,-(a7)	; $02F256
+	pea.l ram_save_field_a800.l	; $02F25C
 	jsr save_record_fill(pc)	; $02F262
 	lea.l $c(a7),a7	; $02F266
 	addq.w #$1,-$2(a6)	; $02F26A
 	clr.w -(a7)	; $02F26E
 	move.w #$1,-(a7)	; $02F270
 	move.w -$2(a6),-(a7)	; $02F274
-	move.w ram_sys_ff013a.l,-(a7)	; $02F278
-	pea.l ram_sys_ffa800.l	; $02F27E
+	move.w ram_save_field_013a.l,-(a7)	; $02F278
+	pea.l ram_save_field_a800.l	; $02F27E
 	jsr save_record_fill(pc)	; $02F284
 	lea.l $c(a7),a7	; $02F288
 	addq.w #$1,-$2(a6)	; $02F28C
@@ -40941,25 +40941,25 @@ L02F136:
 	move.w -$2(a6),-(a7)	; $02F296
 	move.w ram_party_leader.l,d0	; $02F29A
 	muls.w #$34,d0	; $02F2A0
-	lea.l ram_sys_ff02de.l,a0	; $02F2A4
+	lea.l ram_world_field_02de.l,a0	; $02F2A4
 	move.w (a0,d0.l),-(a7)	; $02F2AA
-	pea.l ram_sys_ffa800.l	; $02F2AE
+	pea.l ram_save_field_a800.l	; $02F2AE
 	jsr save_record_fill(pc)	; $02F2B4
 	lea.l $c(a7),a7	; $02F2B8
 	addi.w #$e,-$2(a6)	; $02F2BC
 	move.w #$5,-(a7)	; $02F2C2
 	move.w #$a,-(a7)	; $02F2C6
 	move.w -$2(a6),-(a7)	; $02F2CA
-	move.w ram_sys_ffc364.l,-(a7)	; $02F2CE
-	pea.l ram_sys_ffa800.l	; $02F2D4
+	move.w ram_world_field_c364.l,-(a7)	; $02F2CE
+	pea.l ram_save_field_a800.l	; $02F2D4
 	jsr save_record_fill(pc)	; $02F2DA
 	lea.l $c(a7),a7	; $02F2DE
 	addi.w #$a,-$2(a6)	; $02F2E2
 	move.w #$5,-(a7)	; $02F2E8
 	move.w #$a,-(a7)	; $02F2EC
 	move.w -$2(a6),-(a7)	; $02F2F0
-	move.w ram_sys_ffc366.l,-(a7)	; $02F2F4
-	pea.l ram_sys_ffa800.l	; $02F2FA
+	move.w ram_world_field_c366.l,-(a7)	; $02F2F4
+	pea.l ram_save_field_a800.l	; $02F2FA
 	jsr save_record_fill(pc)	; $02F300
 	lea.l $c(a7),a7	; $02F304
 	addi.w #$a,-$2(a6)	; $02F308
@@ -40985,7 +40985,7 @@ L02F312:
 	move.w -$2(a6),-(a7)	; $02F350
 	movea.l -$a(a6),a0	; $02F354
 	move.w $1a(a0),-(a7)	; $02F358
-	pea.l ram_sys_ffa800.l	; $02F35C
+	pea.l ram_save_field_a800.l	; $02F35C
 	jsr save_record_fill(pc)	; $02F362
 	lea.l $c(a7),a7	; $02F366
 	addi.w #$e,-$2(a6)	; $02F36A
@@ -41051,7 +41051,7 @@ L02F426:
 	move.w #$2,-(a7)	; $02F428
 	move.w -$2(a6),-(a7)	; $02F42C
 	move.w -$6(a6),-(a7)	; $02F430
-	pea.l ram_sys_ffa800.l	; $02F434
+	pea.l ram_save_field_a800.l	; $02F434
 	jsr save_record_fill(pc)	; $02F43A
 	lea.l $c(a7),a7	; $02F43E
 	addq.w #$2,-$2(a6)	; $02F442
@@ -41061,7 +41061,7 @@ L02F448:
 	move.w #$e,-(a7)	; $02F44A
 	move.w -$2(a6),-(a7)	; $02F44E
 	move.w #$3fff,-(a7)	; $02F452
-	pea.l ram_sys_ffa800.l	; $02F456
+	pea.l ram_save_field_a800.l	; $02F456
 	jsr save_record_fill(pc)	; $02F45C
 	lea.l $c(a7),a7	; $02F460
 	addi.w #$e,-$2(a6)	; $02F464
@@ -41069,7 +41069,7 @@ L02F448:
 	move.w #$2,-(a7)	; $02F46C
 	move.w -$2(a6),-(a7)	; $02F470
 	clr.w -(a7)	; $02F474
-	pea.l ram_sys_ffa800.l	; $02F476
+	pea.l ram_save_field_a800.l	; $02F476
 	jsr save_record_fill(pc)	; $02F47C
 	lea.l $c(a7),a7	; $02F480
 	addq.w #$2,-$2(a6)	; $02F484
@@ -41095,7 +41095,7 @@ L02F4A2:
 	mulu.w #$34,d0	; $02F4CE
 	lea.l ram_header_leader.l,a0	; $02F4D2
 	move.w (a0,d0.l),-(a7)	; $02F4D8
-	pea.l ram_sys_ffa800.l	; $02F4DC
+	pea.l ram_save_field_a800.l	; $02F4DC
 	jsr save_record_fill(pc)	; $02F4E2
 	lea.l $c(a7),a7	; $02F4E6
 	addi.w #$9,-$2(a6)	; $02F4EA
@@ -41106,7 +41106,7 @@ L02F4A2:
 	mulu.w #$34,d0	; $02F4FE
 	lea.l ram_npc_field_02c2.l,a0	; $02F502
 	move.w (a0,d0.l),-(a7)	; $02F508
-	pea.l ram_sys_ffa800.l	; $02F50C
+	pea.l ram_save_field_a800.l	; $02F50C
 	jsr save_record_fill(pc)	; $02F512
 	lea.l $c(a7),a7	; $02F516
 	addq.w #$8,-$2(a6)	; $02F51A
@@ -41115,11 +41115,11 @@ L02F4A2:
 	move.w -$2(a6),-(a7)	; $02F524
 	move.w -$4(a6),d0	; $02F528
 	mulu.w #$34,d0	; $02F52C
-	lea.l ram_sys_ff02ba.l,a0	; $02F530
+	lea.l ram_menu_field_02ba.l,a0	; $02F530
 	move.w (a0,d0.l),d1	; $02F536
 	subq.w #$1,d1	; $02F53A
 	move.w d1,-(a7)	; $02F53C
-	pea.l ram_sys_ffa800.l	; $02F53E
+	pea.l ram_save_field_a800.l	; $02F53E
 	jsr save_record_fill(pc)	; $02F544
 	lea.l $c(a7),a7	; $02F548
 	addq.w #$2,-$2(a6)	; $02F54C
@@ -41152,7 +41152,7 @@ L02F584:
 	jsr item_category_of.l	; $02F5A0
 	addq.w #$4,a7	; $02F5A6
 	move.w d0,-(a7)	; $02F5A8
-	pea.l ram_sys_ffa800.l	; $02F5AA
+	pea.l ram_save_field_a800.l	; $02F5AA
 	jsr save_record_fill(pc)	; $02F5B0
 	lea.l $c(a7),a7	; $02F5B4
 	addq.w #$1,-$2(a6)	; $02F5B8
@@ -41190,7 +41190,7 @@ L02F60C:
 	jsr item_category_of.l	; $02F626
 	addq.w #$4,a7	; $02F62C
 	move.w d0,-(a7)	; $02F62E
-	pea.l ram_sys_ffa800.l	; $02F630
+	pea.l ram_save_field_a800.l	; $02F630
 	jsr save_record_fill(pc)	; $02F636
 	lea.l $c(a7),a7	; $02F63A
 	addq.w #$1,-$2(a6)	; $02F63E
@@ -41214,7 +41214,7 @@ L02F65C:
 	jsr item_category_of.l	; $02F676
 	addq.w #$4,a7	; $02F67C
 	move.w d0,-(a7)	; $02F67E
-	pea.l ram_sys_ffa800.l	; $02F680
+	pea.l ram_save_field_a800.l	; $02F680
 	jsr save_record_fill(pc)	; $02F686
 	lea.l $c(a7),a7	; $02F68A
 	addq.w #$1,-$2(a6)	; $02F68E
@@ -41243,7 +41243,7 @@ L02F6BC:
 	jsr item_category_of.l	; $02F6D6
 	addq.w #$4,a7	; $02F6DC
 	move.w d0,-(a7)	; $02F6DE
-	pea.l ram_sys_ffa800.l	; $02F6E0
+	pea.l ram_save_field_a800.l	; $02F6E0
 	jsr save_record_fill(pc)	; $02F6E6
 	lea.l $c(a7),a7	; $02F6EA
 	addq.w #$1,-$2(a6)	; $02F6EE
@@ -41272,7 +41272,7 @@ L02F71C:
 	jsr item_category_of.l	; $02F736
 	addq.w #$4,a7	; $02F73C
 	move.w d0,-(a7)	; $02F73E
-	pea.l ram_sys_ffa800.l	; $02F740
+	pea.l ram_save_field_a800.l	; $02F740
 	jsr save_record_fill(pc)	; $02F746
 	lea.l $c(a7),a7	; $02F74A
 	addq.w #$1,-$2(a6)	; $02F74E
@@ -41302,7 +41302,7 @@ L02F77E:
 	move.w #$7,-(a7)	; $02F79C
 	move.w -$2(a6),-(a7)	; $02F7A0
 	move.w -$4(a6),-(a7)	; $02F7A4
-	pea.l ram_sys_ffa800.l	; $02F7A8
+	pea.l ram_save_field_a800.l	; $02F7A8
 	jsr save_record_fill(pc)	; $02F7AE
 	lea.l $c(a7),a7	; $02F7B2
 	addq.w #$7,-$2(a6)	; $02F7B6
@@ -41326,11 +41326,11 @@ L02F7E8:
 	move.w #$1,-(a7)	; $02F7EA
 	move.w -$2(a6),-(a7)	; $02F7EE
 	move.w -$4(a6),-(a7)	; $02F7F2
-	pea.l ram_sys_ffc326.l	; $02F7F6
+	pea.l ram_sys_field_c326.l	; $02F7F6
 	jsr sys_bitmap_test.l	; $02F7FC
 	addq.w #$6,a7	; $02F802
 	move.w d0,-(a7)	; $02F804
-	pea.l ram_sys_ffa800.l	; $02F806
+	pea.l ram_save_field_a800.l	; $02F806
 	jsr save_record_fill(pc)	; $02F80C
 	lea.l $c(a7),a7	; $02F810
 	addq.w #$1,-$2(a6)	; $02F814
@@ -41346,11 +41346,11 @@ L02F82E:
 	moveq #$0,d0	; $02F83A
 	move.w -$6(a6),d0	; $02F83C
 	asl.l #$1,d0	; $02F840
-	lea.l ram_sys_ff00c0.l,a0	; $02F842
+	lea.l ram_save_field_00c0.l,a0	; $02F842
 	move.w (a0,d0.l),d1	; $02F848
 	add.w #$80,d1	; $02F84C
 	move.w d1,-(a7)	; $02F850
-	pea.l ram_sys_ffa800.l	; $02F852
+	pea.l ram_save_field_a800.l	; $02F852
 	jsr save_record_fill(pc)	; $02F858
 	lea.l $c(a7),a7	; $02F85C
 	addq.w #$4,-$2(a6)	; $02F860
@@ -41372,7 +41372,7 @@ L02F884:
 save_deserialise:
 	link.w a6,#$fff2	; $02F896
 	clr.w -$2(a6)	; $02F89A
-	cmpi.w #$1,ram_sys_ff00ae.l	; $02F89E
+	cmpi.w #$1,ram_menu_field_00ae.l	; $02F89E
 	beq.b L02F8AE	; $02F8A6
 	moveq #$4d,d0	; $02F8A8
 L02F8AA:
@@ -41406,12 +41406,12 @@ L02F8E6:
 	jsr shop_merchant_scan.l	; $02F904
 	jsr world_seen_reset(pc)	; $02F90A
 	jsr world_reset_supplies.l	; $02F90E
-	clr.b ram_sys_ffc34a.l	; $02F914
+	clr.b ram_save_field_c34a.l	; $02F914
 	clr.b ram_sys_ffc34b.l	; $02F91A
 	clr.w -(a7)	; $02F920
 	move.w #$9,-(a7)	; $02F922
 	move.w -$2(a6),-(a7)	; $02F926
-	pea.l ram_sys_ffa800.l	; $02F92A
+	pea.l ram_save_field_a800.l	; $02F92A
 	jsr save_bits_unpack(pc)	; $02F930
 	lea.l $a(a7),a7	; $02F934
 	move.w d0,-$8(a6)	; $02F938
@@ -41419,7 +41419,7 @@ L02F8E6:
 	clr.w -(a7)	; $02F942
 	move.w #$8,-(a7)	; $02F944
 	move.w -$2(a6),-(a7)	; $02F948
-	pea.l ram_sys_ffa800.l	; $02F94C
+	pea.l ram_save_field_a800.l	; $02F94C
 	jsr save_bits_unpack(pc)	; $02F952
 	lea.l $a(a7),a7	; $02F956
 	move.w d0,-$a(a6)	; $02F95A
@@ -41427,7 +41427,7 @@ L02F8E6:
 	clr.w -(a7)	; $02F962
 	move.w #$3,-(a7)	; $02F964
 	move.w -$2(a6),-(a7)	; $02F968
-	pea.l ram_sys_ffa800.l	; $02F96C
+	pea.l ram_save_field_a800.l	; $02F96C
 	jsr save_bits_unpack(pc)	; $02F972
 	lea.l $a(a7),a7	; $02F976
 	move.w d0,-$c(a6)	; $02F97A
@@ -41469,76 +41469,76 @@ L02F8E6:
 	move.w #$9,-(a7)	; $02FA10
 	move.w #$3,-(a7)	; $02FA14
 	move.w -$2(a6),-(a7)	; $02FA18
-	pea.l ram_sys_ffa800.l	; $02FA1C
+	pea.l ram_save_field_a800.l	; $02FA1C
 	jsr save_bits_unpack(pc)	; $02FA22
 	lea.l $a(a7),a7	; $02FA26
-	move.w d0,ram_sys_ff0e16.l	; $02FA2A
+	move.w d0,ram_world_field_0e16.l	; $02FA2A
 	addq.w #$3,-$2(a6)	; $02FA30
 	clr.w -(a7)	; $02FA34
 	move.w #$1,-(a7)	; $02FA36
 	move.w -$2(a6),-(a7)	; $02FA3A
-	pea.l ram_sys_ffa800.l	; $02FA3E
+	pea.l ram_save_field_a800.l	; $02FA3E
 	jsr save_bits_unpack(pc)	; $02FA44
 	lea.l $a(a7),a7	; $02FA48
-	move.w d0,ram_sys_ff0116.l	; $02FA4C
+	move.w d0,ram_menu_field_0116.l	; $02FA4C
 	addq.w #$1,-$2(a6)	; $02FA52
 	clr.w -(a7)	; $02FA56
 	move.w #$1,-(a7)	; $02FA58
 	move.w -$2(a6),-(a7)	; $02FA5C
-	pea.l ram_sys_ffa800.l	; $02FA60
+	pea.l ram_save_field_a800.l	; $02FA60
 	jsr save_bits_unpack(pc)	; $02FA66
 	lea.l $a(a7),a7	; $02FA6A
-	move.w d0,ram_sys_ff0132.l	; $02FA6E
+	move.w d0,ram_menu_field_0132.l	; $02FA6E
 	addq.w #$1,-$2(a6)	; $02FA74
 	clr.w -(a7)	; $02FA78
 	move.w #$1,-(a7)	; $02FA7A
 	move.w -$2(a6),-(a7)	; $02FA7E
-	pea.l ram_sys_ffa800.l	; $02FA82
+	pea.l ram_save_field_a800.l	; $02FA82
 	jsr save_bits_unpack(pc)	; $02FA88
 	lea.l $a(a7),a7	; $02FA8C
-	move.w d0,ram_sys_ff0134.l	; $02FA90
+	move.w d0,ram_save_field_0134.l	; $02FA90
 	addq.w #$1,-$2(a6)	; $02FA96
 	clr.w -(a7)	; $02FA9A
 	move.w #$1,-(a7)	; $02FA9C
 	move.w -$2(a6),-(a7)	; $02FAA0
-	pea.l ram_sys_ffa800.l	; $02FAA4
+	pea.l ram_save_field_a800.l	; $02FAA4
 	jsr save_bits_unpack(pc)	; $02FAAA
 	lea.l $a(a7),a7	; $02FAAE
-	move.w d0,ram_sys_ff013a.l	; $02FAB2
+	move.w d0,ram_save_field_013a.l	; $02FAB2
 	addq.w #$1,-$2(a6)	; $02FAB8
 	clr.w -(a7)	; $02FABC
 	move.w #$e,-(a7)	; $02FABE
 	move.w -$2(a6),-(a7)	; $02FAC2
-	pea.l ram_sys_ffa800.l	; $02FAC6
+	pea.l ram_save_field_a800.l	; $02FAC6
 	jsr save_bits_unpack(pc)	; $02FACC
 	lea.l $a(a7),a7	; $02FAD0
 	move.w ram_party_leader.l,d1	; $02FAD4
 	muls.w #$34,d1	; $02FADA
-	lea.l ram_sys_ff02de.l,a0	; $02FADE
+	lea.l ram_world_field_02de.l,a0	; $02FADE
 	move.w d0,(a0,d1.l)	; $02FAE4
 	addi.w #$e,-$2(a6)	; $02FAE8
 	move.w #$5,-(a7)	; $02FAEE
 	move.w #$a,-(a7)	; $02FAF2
 	move.w -$2(a6),-(a7)	; $02FAF6
-	pea.l ram_sys_ffa800.l	; $02FAFA
+	pea.l ram_save_field_a800.l	; $02FAFA
 	jsr save_bits_unpack(pc)	; $02FB00
 	lea.l $a(a7),a7	; $02FB04
-	move.w d0,ram_sys_ffc364.l	; $02FB08
+	move.w d0,ram_world_field_c364.l	; $02FB08
 	addi.w #$a,-$2(a6)	; $02FB0E
 	move.w #$5,-(a7)	; $02FB14
 	move.w #$a,-(a7)	; $02FB18
 	move.w -$2(a6),-(a7)	; $02FB1C
-	pea.l ram_sys_ffa800.l	; $02FB20
+	pea.l ram_save_field_a800.l	; $02FB20
 	jsr save_bits_unpack(pc)	; $02FB26
 	lea.l $a(a7),a7	; $02FB2A
-	move.w d0,ram_sys_ffc366.l	; $02FB2E
+	move.w d0,ram_world_field_c366.l	; $02FB2E
 	addi.w #$a,-$2(a6)	; $02FB34
 	clr.w -$4(a6)	; $02FB3A
 L02FB3E:
 	clr.w -(a7)	; $02FB3E
 	move.w #$e,-(a7)	; $02FB40
 	move.w -$2(a6),-(a7)	; $02FB44
-	pea.l ram_sys_ffa800.l	; $02FB48
+	pea.l ram_save_field_a800.l	; $02FB48
 	jsr save_bits_unpack(pc)	; $02FB4E
 	lea.l $a(a7),a7	; $02FB52
 	move.w d0,-$8(a6)	; $02FB56
@@ -41546,7 +41546,7 @@ L02FB3E:
 	clr.w -(a7)	; $02FB60
 	move.w #$2,-(a7)	; $02FB62
 	move.w -$2(a6),-(a7)	; $02FB66
-	pea.l ram_sys_ffa800.l	; $02FB6A
+	pea.l ram_save_field_a800.l	; $02FB6A
 	jsr save_bits_unpack(pc)	; $02FB70
 	lea.l $a(a7),a7	; $02FB74
 	move.w d0,-$6(a6)	; $02FB78
@@ -41569,7 +41569,7 @@ L02FB3E:
 	move.w (a0,d0.l),d1	; $02FBB2
 	muls.w #$34,d1	; $02FBB6
 	movea.l d1,a0	; $02FBBA
-	lea.l ram_sys_ff02e0.l,a1	; $02FBBC
+	lea.l ram_world_field_02e0.l,a1	; $02FBBC
 	adda.l a1,a0	; $02FBC2
 	andi.w #$dfff,(a0)	; $02FBC4
 	ori.w #$2000,(a0)	; $02FBC8
@@ -41581,7 +41581,7 @@ L02FBCC:
 	move.w (a0,d0.l),-$c(a6)	; $02FBDA
 	move.w -$c(a6),d0	; $02FBE0
 	mulu.w #$34,d0	; $02FBE4
-	lea.l ram_sys_ff02ce.l,a0	; $02FBE8
+	lea.l ram_sys_field_02ce.l,a0	; $02FBE8
 	move.w -$8(a6),(a0,d0.l)	; $02FBEE
 	move.w -$8(a6),-(a7)	; $02FBF4
 	jsr xp_to_level(pc)	; $02FBF8
@@ -41593,7 +41593,7 @@ L02FBCC:
 	move.w -$c(a6),d1	; $02FC0C
 	mulu.w #$34,d1	; $02FC10
 	movea.l d1,a0	; $02FC14
-	lea.l ram_sys_ff02cc.l,a1	; $02FC16
+	lea.l ram_world_field_02cc.l,a1	; $02FC16
 	adda.l a1,a0	; $02FC1C
 	andi.w #$ff0f,(a0)	; $02FC1E
 	or.w d0,(a0)	; $02FC22
@@ -41602,31 +41602,31 @@ L02FBCC:
 	addq.w #$2,a7	; $02FC2E
 	move.w -$c(a6),d1	; $02FC30
 	mulu.w #$34,d1	; $02FC34
-	lea.l ram_sys_ff02d4.l,a0	; $02FC38
+	lea.l ram_world_field_02d4.l,a0	; $02FC38
 	move.w d0,(a0,d1.l)	; $02FC3E
 	move.w -$a(a6),-(a7)	; $02FC42
 	jsr max_power_for_level.l	; $02FC46
 	addq.w #$2,a7	; $02FC4C
 	move.w -$c(a6),d1	; $02FC4E
 	mulu.w #$34,d1	; $02FC52
-	lea.l ram_sys_ff02d6.l,a0	; $02FC56
+	lea.l ram_world_field_02d6.l,a0	; $02FC56
 	move.w d0,(a0,d1.l)	; $02FC5C
 	move.w -$c(a6),d0	; $02FC60
 	mulu.w #$34,d0	; $02FC64
-	lea.l ram_sys_ff02d0.l,a0	; $02FC68
+	lea.l ram_world_field_02d0.l,a0	; $02FC68
 	move.w -$c(a6),d1	; $02FC6E
 	mulu.w #$34,d1	; $02FC72
-	lea.l ram_sys_ff02d4.l,a1	; $02FC76
+	lea.l ram_world_field_02d4.l,a1	; $02FC76
 	move.w (a1,d1.l),d2	; $02FC7C
 	mulu.w -$6(a6),d2	; $02FC80
 	lsr.w #$2,d2	; $02FC84
 	move.w d2,(a0,d0.l)	; $02FC86
 	move.w -$c(a6),d0	; $02FC8A
 	mulu.w #$34,d0	; $02FC8E
-	lea.l ram_sys_ff02d2.l,a0	; $02FC92
+	lea.l ram_world_field_02d2.l,a0	; $02FC92
 	move.w -$c(a6),d1	; $02FC98
 	mulu.w #$34,d1	; $02FC9C
-	lea.l ram_sys_ff02d6.l,a1	; $02FCA0
+	lea.l ram_world_field_02d6.l,a1	; $02FCA0
 	move.w (a1,d1.l),d2	; $02FCA6
 	mulu.w -$6(a6),d2	; $02FCAA
 	lsr.w #$2,d2	; $02FCAE
@@ -41640,7 +41640,7 @@ L02FCC6:
 	clr.w -(a7)	; $02FCC6
 	move.w #$9,-(a7)	; $02FCC8
 	move.w -$2(a6),-(a7)	; $02FCCC
-	pea.l ram_sys_ffa800.l	; $02FCD0
+	pea.l ram_save_field_a800.l	; $02FCD0
 	jsr save_bits_unpack(pc)	; $02FCD6
 	lea.l $a(a7),a7	; $02FCDA
 	move.w d0,-$8(a6)	; $02FCDE
@@ -41648,7 +41648,7 @@ L02FCC6:
 	clr.w -(a7)	; $02FCE8
 	move.w #$8,-(a7)	; $02FCEA
 	move.w -$2(a6),-(a7)	; $02FCEE
-	pea.l ram_sys_ffa800.l	; $02FCF2
+	pea.l ram_save_field_a800.l	; $02FCF2
 	jsr save_bits_unpack(pc)	; $02FCF8
 	lea.l $a(a7),a7	; $02FCFC
 	move.w d0,-$a(a6)	; $02FD00
@@ -41656,7 +41656,7 @@ L02FCC6:
 	clr.w -(a7)	; $02FD08
 	move.w #$2,-(a7)	; $02FD0A
 	move.w -$2(a6),-(a7)	; $02FD0E
-	pea.l ram_sys_ffa800.l	; $02FD12
+	pea.l ram_save_field_a800.l	; $02FD12
 	jsr save_bits_unpack(pc)	; $02FD18
 	lea.l $a(a7),a7	; $02FD1C
 	move.w d0,-$c(a6)	; $02FD20
@@ -41705,7 +41705,7 @@ L02FDB4:
 	clr.w -(a7)	; $02FDB4
 	move.w #$1,-(a7)	; $02FDB6
 	move.w -$2(a6),-(a7)	; $02FDBA
-	pea.l ram_sys_ffa800.l	; $02FDBE
+	pea.l ram_save_field_a800.l	; $02FDBE
 	jsr save_bits_unpack(pc)	; $02FDC4
 	lea.l $a(a7),a7	; $02FDC8
 	move.w d0,-$8(a6)	; $02FDCC
@@ -41740,14 +41740,14 @@ L02FDFA:
 	addq.w #$1,-$4(a6)	; $02FE32
 	cmpi.w #$6,-$4(a6)	; $02FE36
 	bls.w L02FDAE	; $02FE3C
-	move.w #$2a,ram_sys_ff0112.l	; $02FE40
+	move.w #$2a,ram_menu_field_0112.l	; $02FE40
 	clr.w -$6(a6)	; $02FE48
 	bra.b L02FE92	; $02FE4C
 L02FE4E:
 	clr.w -(a7)	; $02FE4E
 	move.w #$1,-(a7)	; $02FE50
 	move.w -$2(a6),-(a7)	; $02FE54
-	pea.l ram_sys_ffa800.l	; $02FE58
+	pea.l ram_save_field_a800.l	; $02FE58
 	jsr save_bits_unpack(pc)	; $02FE5E
 	lea.l $a(a7),a7	; $02FE62
 	move.w d0,-$8(a6)	; $02FE66
@@ -41773,7 +41773,7 @@ L02FEA8:
 	clr.w -(a7)	; $02FEA8
 	move.w #$1,-(a7)	; $02FEAA
 	move.w -$2(a6),-(a7)	; $02FEAE
-	pea.l ram_sys_ffa800.l	; $02FEB2
+	pea.l ram_save_field_a800.l	; $02FEB2
 	jsr save_bits_unpack(pc)	; $02FEB8
 	lea.l $a(a7),a7	; $02FEBC
 	move.w d0,-$8(a6)	; $02FEC0
@@ -41804,7 +41804,7 @@ L02FF12:
 	clr.w -(a7)	; $02FF12
 	move.w #$1,-(a7)	; $02FF14
 	move.w -$2(a6),-(a7)	; $02FF18
-	pea.l ram_sys_ffa800.l	; $02FF1C
+	pea.l ram_save_field_a800.l	; $02FF1C
 	jsr save_bits_unpack(pc)	; $02FF22
 	lea.l $a(a7),a7	; $02FF26
 	move.w d0,-$8(a6)	; $02FF2A
@@ -41835,7 +41835,7 @@ L02FF7C:
 	clr.w -(a7)	; $02FF7C
 	move.w #$1,-(a7)	; $02FF7E
 	move.w -$2(a6),-(a7)	; $02FF82
-	pea.l ram_sys_ffa800.l	; $02FF86
+	pea.l ram_save_field_a800.l	; $02FF86
 	jsr save_bits_unpack(pc)	; $02FF8C
 	lea.l $a(a7),a7	; $02FF90
 	move.w d0,-$8(a6)	; $02FF94
@@ -41866,7 +41866,7 @@ L02FFE8:
 	clr.w -(a7)	; $02FFE8
 	move.w #$7,-(a7)	; $02FFEA
 	move.w -$2(a6),-(a7)	; $02FFEE
-	pea.l ram_sys_ffa800.l	; $02FFF2
+	pea.l ram_save_field_a800.l	; $02FFF2
 	jsr save_bits_unpack(pc)	; $02FFF8
 	lea.l $a(a7),a7	; $02FFFC
 	move.w d0,-$8(a6)	; $030000
@@ -41905,12 +41905,12 @@ L030060:
 	clr.w -(a7)	; $030060
 	move.w #$1,-(a7)	; $030062
 	move.w -$2(a6),-(a7)	; $030066
-	pea.l ram_sys_ffa800.l	; $03006A
+	pea.l ram_save_field_a800.l	; $03006A
 	jsr save_bits_unpack(pc)	; $030070
 	lea.l $a(a7),a7	; $030074
 	move.w d0,-(a7)	; $030078
 	move.w -$4(a6),-(a7)	; $03007A
-	pea.l ram_sys_ffc326.l	; $03007E
+	pea.l ram_sys_field_c326.l	; $03007E
 	jsr sys_bitmap_write.l	; $030084
 	addq.w #$8,a7	; $03008A
 	addq.w #$1,-$2(a6)	; $03008C
@@ -41923,27 +41923,27 @@ L0300A6:
 	move.w #$4,-(a7)	; $0300A6
 	move.w #$4,-(a7)	; $0300AA
 	move.w -$2(a6),-(a7)	; $0300AE
-	pea.l ram_sys_ffa800.l	; $0300B2
+	pea.l ram_save_field_a800.l	; $0300B2
 	jsr save_bits_unpack(pc)	; $0300B8
 	lea.l $a(a7),a7	; $0300BC
 	moveq #$0,d1	; $0300C0
 	move.w -$6(a6),d1	; $0300C2
 	asl.l #$1,d1	; $0300C6
-	lea.l ram_sys_ff00c0.l,a0	; $0300C8
+	lea.l ram_save_field_00c0.l,a0	; $0300C8
 	move.w d0,(a0,d1.l)	; $0300CE
 	addq.w #$4,-$2(a6)	; $0300D2
 	moveq #$0,d0	; $0300D6
 	move.w -$6(a6),d0	; $0300D8
 	asl.l #$1,d0	; $0300DC
-	lea.l ram_sys_ff00c0.l,a0	; $0300DE
+	lea.l ram_save_field_00c0.l,a0	; $0300DE
 	adda.l d0,a0	; $0300E4
 	subi.w #$80,(a0)	; $0300E6
 	addq.w #$1,-$6(a6)	; $0300EA
 	cmpi.w #$24,-$6(a6)	; $0300EE
 	bcs.b L0300A6	; $0300F4
-	clr.w ram_sys_ff0112.l	; $0300F6
+	clr.w ram_menu_field_0112.l	; $0300F6
 	jsr sys_direct_apply(pc)	; $0300FC
-	move.w #$ffff,ram_sys_ff0124.l	; $030100
+	move.w #$ffff,ram_world_field_0124.l	; $030100
 	move.w -$e(a6),d0	; $030108
 	bra.w L02F8AA	; $03010C
 	; code $030110-$030199
@@ -41952,26 +41952,26 @@ combat_kill_announce:
 	move.w ram_party_index_array.l,-$2(a6)	; $030114
 	move.w -$2(a6),d0	; $03011C
 	muls.w #$34,d0	; $030120
-	lea.l ram_sys_ff02d0.l,a0	; $030124
+	lea.l ram_world_field_02d0.l,a0	; $030124
 	clr.w (a0,d0.l)	; $03012A
 	move.w -$2(a6),d0	; $03012E
 	muls.w #$34,d0	; $030132
-	lea.l ram_sys_ff02b8.l,a0	; $030136
+	lea.l ram_world_field_02b8.l,a0	; $030136
 	cmpi.w #$ff,(a0,d0.l)	; $03013C
 	beq.b L030166	; $030142
 	move.w -$2(a6),d0	; $030144
 	muls.w #$34,d0	; $030148
-	lea.l ram_sys_ff02b8.l,a0	; $03014C
+	lea.l ram_world_field_02b8.l,a0	; $03014C
 	move.w (a0,d0.l),d1	; $030152
 	mulu.w #$c,d1	; $030156
-	lea.l ram_sys_ffb0d4.l,a0	; $03015A
+	lea.l ram_sys_field_b0d4.l,a0	; $03015A
 	adda.l d1,a0	; $030160
 	bset #$7,(a0)	; $030162
 L030166:
 	move.w -$2(a6),d0	; $030166
 	muls.w #$34,d0	; $03016A
 	movea.l d0,a0	; $03016E
-	lea.l ram_sys_ff02e0.l,a1	; $030170
+	lea.l ram_world_field_02e0.l,a1	; $030170
 	adda.l a1,a0	; $030176
 	andi.w #$dfff,(a0)	; $030178
 	ori.w #$2000,(a0)	; $03017C
@@ -41985,7 +41985,7 @@ L030166:
 	; code $03019A-$030627
 world_camp:
 	link.w a6,#$fff4	; $03019A
-	cmpi.w #$2,ram_sys_ff00ae.l	; $03019E
+	cmpi.w #$2,ram_menu_field_00ae.l	; $03019E
 	bne.b L0301AE	; $0301A6
 	jsr npc_show_greeting.l	; $0301A8
 L0301AE:
@@ -42024,7 +42024,7 @@ L0301F4:
 	move.w #$4e,-$2(a6)	; $030204
 L03020A:
 	pea.l -$c(a6)	; $03020A
-	pea.l ram_sys_ffbb86.l	; $03020E
+	pea.l ram_sys_field_bb86.l	; $03020E
 	clr.w -(a7)	; $030214
 	clr.w -(a7)	; $030216
 	clr.w -(a7)	; $030218
@@ -42033,7 +42033,7 @@ L03020A:
 	move.w #$3,-(a7)	; $030222
 	jsr text_event_resolve.l	; $030226
 	lea.l $14(a7),a7	; $03022C
-	pea.l ram_sys_ffbb86.l	; $030230
+	pea.l ram_sys_field_bb86.l	; $030230
 	clr.w -(a7)	; $030236
 	move.w #$1,-(a7)	; $030238
 	move.w -$2(a6),d0	; $03023C
@@ -42050,7 +42050,7 @@ L030260:
 	move.w -$2(a6),d0	; $030260
 	ext.l d0	; $030264
 	asl.l #$1,d0	; $030266
-	lea.l ram_sys_ff00c0.l,a0	; $030268
+	lea.l ram_save_field_00c0.l,a0	; $030268
 	cmpi.w #$a,(a0,d0.l)	; $03026E
 	bge.b L0302E2	; $030274
 	cmpi.w #$22,-$2(a6)	; $030276
@@ -42058,7 +42058,7 @@ L030260:
 	move.w -$2(a6),d0	; $03027E
 	ext.l d0	; $030282
 	asl.l #$1,d0	; $030284
-	lea.l ram_sys_ff00c0.l,a0	; $030286
+	lea.l ram_save_field_00c0.l,a0	; $030286
 	move.w (a0,d0.l),d1	; $03028C
 	addq.w #$3,d1	; $030290
 	cmp.w #$64,d1	; $030292
@@ -42069,7 +42069,7 @@ L03029C:
 	move.w -$2(a6),d0	; $03029C
 	ext.l d0	; $0302A0
 	asl.l #$1,d0	; $0302A2
-	lea.l ram_sys_ff00c0.l,a0	; $0302A4
+	lea.l ram_save_field_00c0.l,a0	; $0302A4
 	move.w (a0,d0.l),d1	; $0302AA
 	addq.w #$3,d1	; $0302AE
 	cmp.w #$ff9c,d1	; $0302B0
@@ -42080,7 +42080,7 @@ L0302BA:
 	move.w -$2(a6),d0	; $0302BA
 	ext.l d0	; $0302BE
 	asl.l #$1,d0	; $0302C0
-	lea.l ram_sys_ff00c0.l,a0	; $0302C2
+	lea.l ram_save_field_00c0.l,a0	; $0302C2
 	move.l d0,d1	; $0302C8
 	move.w (a0,d1.l),d0	; $0302CA
 	addq.w #$3,d0	; $0302CE
@@ -42088,15 +42088,15 @@ L0302D0:
 	move.w -$2(a6),d1	; $0302D0
 	ext.l d1	; $0302D4
 	asl.l #$1,d1	; $0302D6
-	lea.l ram_sys_ff00c0.l,a0	; $0302D8
+	lea.l ram_save_field_00c0.l,a0	; $0302D8
 	move.w d0,(a0,d1.l)	; $0302DE
 L0302E2:
 	addq.w #$1,-$2(a6)	; $0302E2
 	cmpi.w #$24,-$2(a6)	; $0302E6
 	blt.w L030260	; $0302EC
-	cmpi.w #$21c,ram_sys_ff0e16.l	; $0302F0
+	cmpi.w #$21c,ram_world_field_0e16.l	; $0302F0
 	ble.b L030318	; $0302F8
-	clr.w ram_sys_ff0e16.l	; $0302FA
+	clr.w ram_world_field_0e16.l	; $0302FA
 	tst.w $8(a6)	; $030300
 	bne.b L030316	; $030304
 	move.w #$d,-(a7)	; $030306
@@ -42106,7 +42106,7 @@ L0302E2:
 L030316:
 	bra.b L030336	; $030316
 L030318:
-	move.w #$21c,ram_sys_ff0e16.l	; $030318
+	move.w #$21c,ram_world_field_0e16.l	; $030318
 	tst.w $8(a6)	; $030320
 	bne.b L030336	; $030324
 	move.w #$c,-(a7)	; $030326
@@ -42114,45 +42114,45 @@ L030318:
 	jsr text_show_message.l	; $03032E
 	addq.w #$4,a7	; $030334
 L030336:
-	move.w #$ffff,ram_sys_ff0124.l	; $030336
+	move.w #$ffff,ram_world_field_0124.l	; $030336
 	tst.w $8(a6)	; $03033E
 	bne.w L0304E2	; $030342
-	move.w ram_sys_ffc364.l,d0	; $030346
+	move.w ram_world_field_c364.l,d0	; $030346
 	sub.w #$64,d0	; $03034C
 	cmp.w #$7530,d0	; $030350
 	ble.b L03035C	; $030354
 	move.w #$7530,d0	; $030356
 	bra.b L03037A	; $03035A
 L03035C:
-	move.w ram_sys_ffc364.l,d0	; $03035C
+	move.w ram_world_field_c364.l,d0	; $03035C
 	sub.w #$64,d0	; $030362
 	cmp.w #$1,d0	; $030366
 	bge.b L030370	; $03036A
 	moveq #$1,d0	; $03036C
 	bra.b L03037A	; $03036E
 L030370:
-	move.w ram_sys_ffc364.l,d0	; $030370
+	move.w ram_world_field_c364.l,d0	; $030370
 	sub.w #$64,d0	; $030376
 L03037A:
-	move.w d0,ram_sys_ffc364.l	; $03037A
-	move.w ram_sys_ffc366.l,d0	; $030380
+	move.w d0,ram_world_field_c364.l	; $03037A
+	move.w ram_world_field_c366.l,d0	; $030380
 	sub.w #$64,d0	; $030386
 	cmp.w #$7530,d0	; $03038A
 	ble.b L030396	; $03038E
 	move.w #$7530,d0	; $030390
 	bra.b L0303B4	; $030394
 L030396:
-	move.w ram_sys_ffc366.l,d0	; $030396
+	move.w ram_world_field_c366.l,d0	; $030396
 	sub.w #$64,d0	; $03039C
 	cmp.w #$1,d0	; $0303A0
 	bge.b L0303AA	; $0303A4
 	moveq #$1,d0	; $0303A6
 	bra.b L0303B4	; $0303A8
 L0303AA:
-	move.w ram_sys_ffc366.l,d0	; $0303AA
+	move.w ram_world_field_c366.l,d0	; $0303AA
 	sub.w #$64,d0	; $0303B0
 L0303B4:
-	move.w d0,ram_sys_ffc366.l	; $0303B4
+	move.w d0,ram_world_field_c366.l	; $0303B4
 	clr.w -$2(a6)	; $0303BA
 L0303BE:
 	move.w -$2(a6),d0	; $0303BE
@@ -42167,7 +42167,7 @@ L0303BE:
 	lea.l ram_party_index_array.l,a0	; $0303DC
 	move.w (a0,d0.l),d1	; $0303E2
 	muls.w #$34,d1	; $0303E6
-	lea.l ram_sys_ff02d0.l,a0	; $0303EA
+	lea.l ram_world_field_02d0.l,a0	; $0303EA
 	move.w (a0,d1.l),-$4(a6)	; $0303F0
 	move.w -$2(a6),d0	; $0303F6
 	ext.l d0	; $0303FA
@@ -42175,7 +42175,7 @@ L0303BE:
 	lea.l ram_party_index_array.l,a0	; $0303FE
 	move.w (a0,d0.l),d1	; $030404
 	muls.w #$34,d1	; $030408
-	lea.l ram_sys_ff02d4.l,a0	; $03040C
+	lea.l ram_world_field_02d4.l,a0	; $03040C
 	move.w (a0,d1.l),-$6(a6)	; $030412
 	move.w -$4(a6),d0	; $030418
 	cmp.w -$6(a6),d0	; $03041C
@@ -42186,7 +42186,7 @@ L0303BE:
 	lea.l ram_party_index_array.l,a0	; $03042A
 	move.w (a0,d0.l),d1	; $030430
 	muls.w #$34,d1	; $030434
-	lea.l ram_sys_ff02d0.l,a0	; $030438
+	lea.l ram_world_field_02d0.l,a0	; $030438
 	move.w -$6(a6),d0	; $03043E
 	sub.w -$4(a6),d0	; $030442
 	ext.l d0	; $030446
@@ -42200,7 +42200,7 @@ L030454:
 	lea.l ram_party_index_array.l,a0	; $03045C
 	move.w (a0,d0.l),d1	; $030462
 	muls.w #$34,d1	; $030466
-	lea.l ram_sys_ff02d2.l,a0	; $03046A
+	lea.l ram_world_field_02d2.l,a0	; $03046A
 	move.w (a0,d1.l),-$4(a6)	; $030470
 	move.w -$2(a6),d0	; $030476
 	ext.l d0	; $03047A
@@ -42208,7 +42208,7 @@ L030454:
 	lea.l ram_party_index_array.l,a0	; $03047E
 	move.w (a0,d0.l),d1	; $030484
 	muls.w #$34,d1	; $030488
-	lea.l ram_sys_ff02d6.l,a0	; $03048C
+	lea.l ram_world_field_02d6.l,a0	; $03048C
 	move.w (a0,d1.l),-$6(a6)	; $030492
 	move.w -$4(a6),d0	; $030498
 	cmp.w -$6(a6),d0	; $03049C
@@ -42219,7 +42219,7 @@ L030454:
 	lea.l ram_party_index_array.l,a0	; $0304AA
 	move.w (a0,d0.l),d1	; $0304B0
 	muls.w #$34,d1	; $0304B4
-	lea.l ram_sys_ff02d2.l,a0	; $0304B8
+	lea.l ram_world_field_02d2.l,a0	; $0304B8
 	move.w -$6(a6),d0	; $0304BE
 	sub.w -$4(a6),d0	; $0304C2
 	ext.l d0	; $0304C6
@@ -42251,7 +42251,7 @@ L030500:
 	lea.l ram_party_index_array.l,a0	; $03051E
 	move.w (a0,d0.l),d1	; $030524
 	muls.w #$34,d1	; $030528
-	lea.l ram_sys_ff02d0.l,a0	; $03052C
+	lea.l ram_world_field_02d0.l,a0	; $03052C
 	move.w (a0,d1.l),-$4(a6)	; $030532
 	move.w -$2(a6),d0	; $030538
 	ext.l d0	; $03053C
@@ -42259,7 +42259,7 @@ L030500:
 	lea.l ram_party_index_array.l,a0	; $030540
 	move.w (a0,d0.l),d1	; $030546
 	muls.w #$34,d1	; $03054A
-	lea.l ram_sys_ff02d4.l,a0	; $03054E
+	lea.l ram_world_field_02d4.l,a0	; $03054E
 	move.w (a0,d1.l),-$6(a6)	; $030554
 	move.w -$4(a6),d0	; $03055A
 	cmp.w -$6(a6),d0	; $03055E
@@ -42270,7 +42270,7 @@ L030500:
 	lea.l ram_party_index_array.l,a0	; $03056C
 	move.w (a0,d0.l),d1	; $030572
 	muls.w #$34,d1	; $030576
-	lea.l ram_sys_ff02d0.l,a0	; $03057A
+	lea.l ram_world_field_02d0.l,a0	; $03057A
 	move.w -$6(a6),d0	; $030580
 	sub.w -$4(a6),d0	; $030584
 	ext.l d0	; $030588
@@ -42284,7 +42284,7 @@ L030596:
 	lea.l ram_party_index_array.l,a0	; $03059E
 	move.w (a0,d0.l),d1	; $0305A4
 	muls.w #$34,d1	; $0305A8
-	lea.l ram_sys_ff02d2.l,a0	; $0305AC
+	lea.l ram_world_field_02d2.l,a0	; $0305AC
 	move.w (a0,d1.l),-$4(a6)	; $0305B2
 	move.w -$2(a6),d0	; $0305B8
 	ext.l d0	; $0305BC
@@ -42292,7 +42292,7 @@ L030596:
 	lea.l ram_party_index_array.l,a0	; $0305C0
 	move.w (a0,d0.l),d1	; $0305C6
 	muls.w #$34,d1	; $0305CA
-	lea.l ram_sys_ff02d6.l,a0	; $0305CE
+	lea.l ram_world_field_02d6.l,a0	; $0305CE
 	move.w (a0,d1.l),-$6(a6)	; $0305D4
 	move.w -$4(a6),d0	; $0305DA
 	cmp.w -$6(a6),d0	; $0305DE
@@ -42303,7 +42303,7 @@ L030596:
 	lea.l ram_party_index_array.l,a0	; $0305EC
 	move.w (a0,d0.l),d1	; $0305F2
 	muls.w #$34,d1	; $0305F6
-	lea.l ram_sys_ff02d2.l,a0	; $0305FA
+	lea.l ram_world_field_02d2.l,a0	; $0305FA
 	move.w -$6(a6),d0	; $030600
 	sub.w -$4(a6),d0	; $030604
 	ext.l d0	; $030608
@@ -42335,7 +42335,7 @@ L030636:
 	bne.b L030674	; $03065C
 	move.w -$4(a6),d0	; $03065E
 	muls.w #$34,d0	; $030662
-	lea.l ram_sys_ff02d4.l,a0	; $030666
+	lea.l ram_world_field_02d4.l,a0	; $030666
 	move.w (a0,d0.l),-$2(a6)	; $03066C
 	bra.b L030680	; $030672
 L030674:
@@ -42352,13 +42352,13 @@ L030680:
 	jsr rand_next.l	; $03069A
 	addq.w #$2,a7	; $0306A0
 	addq.w #$1,d0	; $0306A2
-	move.w d0,ram_sys_ffc40c.l	; $0306A4
+	move.w d0,ram_sys_field_c40c.l	; $0306A4
 	bra.b L0306B2	; $0306AA
 L0306AC:
-	clr.w ram_sys_ffc40c.l	; $0306AC
+	clr.w ram_sys_field_c40c.l	; $0306AC
 L0306B2:
 	move.w #$1,-(a7)	; $0306B2
-	move.w ram_sys_ffc40c.l,-(a7)	; $0306B6
+	move.w ram_sys_field_c40c.l,-(a7)	; $0306B6
 	move.w #$400,-(a7)	; $0306BC
 	move.w ram_party_leader.l,-(a7)	; $0306C0
 	jsr inv_apply_resource.l	; $0306C6
@@ -42370,7 +42370,7 @@ L0306B2:
 	jsr rand_next.l	; $0306DC
 	addq.w #$2,a7	; $0306E2
 	add.w #$380,d0	; $0306E4
-	move.w d0,ram_sys_ffc410.l	; $0306E8
+	move.w d0,ram_sys_field_c410.l	; $0306E8
 	move.w #$5,-(a7)	; $0306EE
 	jsr rand_next.l	; $0306F2
 	addq.w #$2,a7	; $0306F8
@@ -42381,7 +42381,7 @@ L0306B2:
 	move.w -$2(a6),d0	; $03070C
 	ext.l d0	; $030710
 	asl.l #$1,d0	; $030712
-	lea.l ram_sys_ff00c0.l,a0	; $030714
+	lea.l ram_save_field_00c0.l,a0	; $030714
 	move.w (a0,d0.l),d1	; $03071A
 	subq.w #$5,d1	; $03071E
 	cmp.w #$64,d1	; $030720
@@ -42392,7 +42392,7 @@ L03072A:
 	move.w -$2(a6),d0	; $03072A
 	ext.l d0	; $03072E
 	asl.l #$1,d0	; $030730
-	lea.l ram_sys_ff00c0.l,a0	; $030732
+	lea.l ram_save_field_00c0.l,a0	; $030732
 	move.w (a0,d0.l),d1	; $030738
 	subq.w #$5,d1	; $03073C
 	cmp.w #$ff9c,d1	; $03073E
@@ -42403,7 +42403,7 @@ L030748:
 	move.w -$2(a6),d0	; $030748
 	ext.l d0	; $03074C
 	asl.l #$1,d0	; $03074E
-	lea.l ram_sys_ff00c0.l,a0	; $030750
+	lea.l ram_save_field_00c0.l,a0	; $030750
 	move.l d0,d1	; $030756
 	move.w (a0,d1.l),d0	; $030758
 	subq.w #$5,d0	; $03075C
@@ -42411,7 +42411,7 @@ L03075E:
 	move.w -$2(a6),d1	; $03075E
 	ext.l d1	; $030762
 	asl.l #$1,d1	; $030764
-	lea.l ram_sys_ff00c0.l,a0	; $030766
+	lea.l ram_save_field_00c0.l,a0	; $030766
 	move.w d0,(a0,d1.l)	; $03076C
 	move.w #$2,-(a7)	; $030770
 	jsr rand_next.l	; $030774
@@ -42436,7 +42436,7 @@ L030788:
 	moveq #$0,d1	; $0307B0
 	move.b (a0,d0.l),d1	; $0307B2
 	add.w #$380,d1	; $0307B6
-	move.w d1,ram_sys_ffc410.l	; $0307BA
+	move.w d1,ram_sys_field_c410.l	; $0307BA
 L0307C0:
 	move.w #$5,-(a7)	; $0307C0
 	jsr rand_next.l	; $0307C4
@@ -42448,13 +42448,13 @@ L0307C0:
 L0307D8:
 	move.w #$1,-(a7)	; $0307D8
 	move.w ram_sys_ffc412.l,-(a7)	; $0307DC
-	move.w ram_sys_ffc410.l,-(a7)	; $0307E2
+	move.w ram_sys_field_c410.l,-(a7)	; $0307E2
 	move.w ram_party_leader.l,-(a7)	; $0307E8
 	jsr inv_apply_resource.l	; $0307EE
 	addq.w #$8,a7	; $0307F4
 	bra.b L030800	; $0307F6
 L0307F8:
-	move.w #$7530,ram_sys_ffc410.l	; $0307F8
+	move.w #$7530,ram_sys_field_c410.l	; $0307F8
 L030800:
 	clr.l -(a7)	; $030800
 	clr.w -(a7)	; $030802
@@ -42467,7 +42467,7 @@ L030800:
 	; code $03081A-$0308C5
 world_refresh_chars:
 	link.w a6,#$fffe	; $03081A
-	cmpi.w #$1,ram_sys_ff00ae.l	; $03081E
+	cmpi.w #$1,ram_menu_field_00ae.l	; $03081E
 	beq.b L03082C	; $030826
 L030828:
 	unlk a6	; $030828
@@ -42506,7 +42506,7 @@ L030898:
 	addq.w #$1,-$2(a6)	; $030898
 	cmpi.w #$38,-$2(a6)	; $03089C
 	blt.b L030830	; $0308A2
-	move.w #$4,ram_sys_ff011c.l	; $0308A4
+	move.w #$4,ram_sys_field_011c.l	; $0308A4
 	move.w $a(a6),-(a7)	; $0308AC
 	move.w $8(a6),-(a7)	; $0308B0
 	move.w ram_party_leader.l,-(a7)	; $0308B4
@@ -42542,16 +42542,16 @@ L0308FA:
 world_enter_location:
 	link.w a6,#$fffc	; $03090A
 	movem.l d4-d7/a3,-(a7)	; $03090E
-	lea.l ram_sys_ff0e92.l,a0	; $030912
+	lea.l ram_menu_field_0e92.l,a0	; $030912
 	move.w (a0),d0	; $030918
 	and.w #$3ff,d0	; $03091A
 	move.w d0,d4	; $03091E
-	lea.l ram_sys_ff0e92.l,a0	; $030920
+	lea.l ram_menu_field_0e92.l,a0	; $030920
 	move.w (a0),d0	; $030926
 	rol.w #$4,d0	; $030928
 	and.w #$f,d0	; $03092A
 	move.w d0,d5	; $03092E
-	movea.w ram_sys_ff0e98.l,a3	; $030930
+	movea.w ram_sys_field_0e98.l,a3	; $030930
 	cmpa.w #$af,a3	; $030936
 	blt.b L030956	; $03093A
 	clr.w -(a7)	; $03093C
@@ -42698,7 +42698,7 @@ L030AE8:
 	cmp.w #$ffff,d7	; $030AE8
 	beq.w L030BC2	; $030AEC
 	move.w d7,-(a7)	; $030AF0
-	pea.l ram_sys_ffc326.l	; $030AF2
+	pea.l ram_sys_field_c326.l	; $030AF2
 	jsr sys_bitmap_test.l	; $030AF8
 	addq.w #$6,a7	; $030AFE
 	tst.w d0	; $030B00
@@ -42811,7 +42811,7 @@ L030C3C:
 	move.b (a0,d0.l),d1	; $030C5E
 	move.w d1,-(a7)	; $030C62
 	move.w d6,-(a7)	; $030C64
-	pea.l ram_sys_ffc326.l	; $030C66
+	pea.l ram_sys_field_c326.l	; $030C66
 	jsr sys_bitmap_test.l	; $030C6C
 	addq.w #$6,a7	; $030C72
 	add.w #$112,d0	; $030C74
@@ -42833,7 +42833,7 @@ L030C84:
 	move.b (a0,d0.l),d1	; $030CA6
 	move.w d1,-(a7)	; $030CAA
 	move.w d6,-(a7)	; $030CAC
-	pea.l ram_sys_ffc326.l	; $030CAE
+	pea.l ram_sys_field_c326.l	; $030CAE
 	jsr sys_bitmap_test.l	; $030CB4
 	addq.w #$6,a7	; $030CBA
 	add.w #$107,d0	; $030CBC
@@ -42843,7 +42843,7 @@ L030C84:
 	bra.w L030D92	; $030CC8
 L030CCC:
 	move.w d6,-(a7)	; $030CCC
-	pea.l ram_sys_ffc326.l	; $030CCE
+	pea.l ram_sys_field_c326.l	; $030CCE
 	jsr sys_bitmap_test.l	; $030CD4
 	addq.w #$6,a7	; $030CDA
 	tst.w d0	; $030CDC
@@ -42941,11 +42941,11 @@ text_char_summary:
 	addq.w #$8,-$4a(a6)	; $030E0A
 	clr.w -$64(a6)	; $030E0E
 L030E12:
-	cmpi.w #$2,ram_sys_ff00ae.l	; $030E12
+	cmpi.w #$2,ram_menu_field_00ae.l	; $030E12
 	beq.b L030E32	; $030E1A
 	move.w -$64(a6),d0	; $030E1C
 	muls.w #$34,d0	; $030E20
-	lea.l ram_sys_ff02b8.l,a0	; $030E24
+	lea.l ram_world_field_02b8.l,a0	; $030E24
 	cmpi.w #$ff,(a0,d0.l)	; $030E2A
 	beq.b L030EAC	; $030E30
 L030E32:
@@ -43065,7 +43065,7 @@ L030F9C:
 	lea.l $10(a7),a7	; $030FC4
 	addq.w #$8,-$4a(a6)	; $030FC8
 L030FCC:
-	cmpi.w #$1,ram_sys_ff00ae.l	; $030FCC
+	cmpi.w #$1,ram_menu_field_00ae.l	; $030FCC
 	bne.w L0311F8	; $030FD4
 	tst.w -$52(a6)	; $030FD8
 	beq.b L031002	; $030FDC
@@ -43261,14 +43261,14 @@ L031260:
 	jsr text_glyph_draw.l	; $031282
 	lea.l $10(a7),a7	; $031288
 	addq.w #$8,-$4a(a6)	; $03128C
-	lea.l ram_sys_ff0e92.l,a0	; $031290
+	lea.l ram_menu_field_0e92.l,a0	; $031290
 	move.w (a0),d0	; $031296
 	and.w #$3ff,d0	; $031298
 	and.w #$3ff,d0	; $03129C
 	lea.l -$6c(a6),a0	; $0312A0
 	andi.w #$fc00,(a0)	; $0312A4
 	or.w d0,(a0)	; $0312A8
-	lea.l ram_sys_ff0e92.l,a0	; $0312AA
+	lea.l ram_menu_field_0e92.l,a0	; $0312AA
 	move.w (a0),d0	; $0312B0
 	rol.w #$4,d0	; $0312B2
 	and.w #$f,d0	; $0312B4
@@ -43369,13 +43369,13 @@ L0313C0:
 L0313E4:
 	addq.w #$1,-$66(a6)	; $0313E4
 L0313E8:
-	movea.l ram_sys_ffa7fc.l,a0	; $0313E8
+	movea.l ram_sys_field_a7fc.l,a0	; $0313E8
 	move.w -$66(a6),d0	; $0313EE
 	cmp.w $4(a0),d0	; $0313F2
 	blt.w L0312D8	; $0313F6
 	addq.w #$1,-$64(a6)	; $0313FA
 L0313FE:
-	movea.l ram_sys_ffa7fc.l,a0	; $0313FE
+	movea.l ram_sys_field_a7fc.l,a0	; $0313FE
 	move.w -$64(a6),d0	; $031404
 	cmp.w $4(a0),d0	; $031408
 	blt.w L0312D0	; $03140C
@@ -43776,7 +43776,7 @@ L0318CE:
 	lea.l ram_party_index_array.l,a0	; $0318EA
 	move.w (a0,d0.l),d1	; $0318F0
 	muls.w #$34,d1	; $0318F4
-	lea.l ram_sys_ff02d0.l,a0	; $0318F8
+	lea.l ram_world_field_02d0.l,a0	; $0318F8
 	adda.l d1,a0	; $0318FE
 	move.w $8(a6),d0	; $031900
 	sub.w d0,(a0)	; $031904
@@ -43795,7 +43795,7 @@ L03192E:
 	addq.w #$1,-$2(a6)	; $03192E
 	cmpi.w #$6,-$2(a6)	; $031932
 	blt.b L0318CE	; $031938
-	move.w #$ffff,ram_sys_ff009c.l	; $03193A
+	move.w #$ffff,ram_sys_field_009c.l	; $03193A
 	unlk a6	; $031942
 	rts	; $031944
 	; code $031946-$031957
@@ -43845,7 +43845,7 @@ L0319A0:
 	bne.b L0319DC	; $0319BA
 	move.w -$2(a6),d0	; $0319BC
 	muls.w #$34,d0	; $0319C0
-	lea.l ram_sys_ff02b6.l,a0	; $0319C4
+	lea.l ram_sys_field_02b6.l,a0	; $0319C4
 	move.w (a0,d0.l),d1	; $0319CA
 	cmp.w $8(a6),d1	; $0319CE
 	bne.b L0319DC	; $0319D2
@@ -43862,18 +43862,18 @@ L0319DC:
 	; code $0319EC-$031A9B
 world_pos_add_x:
 	link.w a6,#$fffa	; $0319EC
-	movea.l ram_sys_ffa7fc.l,a0	; $0319F0
+	movea.l ram_sys_field_a7fc.l,a0	; $0319F0
 	move.w (a0),d0	; $0319F6
 	add.w $a(a6),d0	; $0319F8
-	movea.l ram_sys_ffa7fc.l,a0	; $0319FC
+	movea.l ram_sys_field_a7fc.l,a0	; $0319FC
 	ext.l d0	; $031A02
 	divs.w (a0),d0	; $031A04
 	swap d0	; $031A06
 	move.w d0,$a(a6)	; $031A08
-	movea.l ram_sys_ffa7fc.l,a0	; $031A0C
+	movea.l ram_sys_field_a7fc.l,a0	; $031A0C
 	move.w $2(a0),d0	; $031A12
 	add.w $c(a6),d0	; $031A16
-	movea.l ram_sys_ffa7fc.l,a0	; $031A1A
+	movea.l ram_sys_field_a7fc.l,a0	; $031A1A
 	ext.l d0	; $031A20
 	divs.w $2(a0),d0	; $031A22
 	swap d0	; $031A26
@@ -43890,13 +43890,13 @@ world_pos_add_x:
 	move.w $8(a6),d0	; $031A50
 	and.w #$1ff,d0	; $031A54
 	move.w $c(a6),d1	; $031A58
-	movea.l ram_sys_ffa7fc.l,a0	; $031A5C
+	movea.l ram_sys_field_a7fc.l,a0	; $031A5C
 	ext.l d1	; $031A62
 	divs.w $4(a0),d1	; $031A64
 	swap d1	; $031A68
-	movea.l ram_sys_ffa7fc.l,a0	; $031A6A
+	movea.l ram_sys_field_a7fc.l,a0	; $031A6A
 	muls.w $4(a0),d1	; $031A70
-	movea.l ram_sys_ffa7fc.l,a0	; $031A74
+	movea.l ram_sys_field_a7fc.l,a0	; $031A74
 	move.w $a(a6),d2	; $031A7A
 	ext.l d2	; $031A7E
 	divs.w $4(a0),d2	; $031A80
@@ -43913,18 +43913,18 @@ world_pos_add_x:
 	; code $031A9C-$031BA9
 world_pos_add_y:
 	link.w a6,#$fff8	; $031A9C
-	movea.l ram_sys_ffa7fc.l,a0	; $031AA0
+	movea.l ram_sys_field_a7fc.l,a0	; $031AA0
 	move.w (a0),d0	; $031AA6
 	add.w $c(a6),d0	; $031AA8
-	movea.l ram_sys_ffa7fc.l,a0	; $031AAC
+	movea.l ram_sys_field_a7fc.l,a0	; $031AAC
 	ext.l d0	; $031AB2
 	divs.w (a0),d0	; $031AB4
 	swap d0	; $031AB6
 	move.w d0,$c(a6)	; $031AB8
-	movea.l ram_sys_ffa7fc.l,a0	; $031ABC
+	movea.l ram_sys_field_a7fc.l,a0	; $031ABC
 	move.w $2(a0),d0	; $031AC2
 	add.w $e(a6),d0	; $031AC6
-	movea.l ram_sys_ffa7fc.l,a0	; $031ACA
+	movea.l ram_sys_field_a7fc.l,a0	; $031ACA
 	ext.l d0	; $031AD0
 	divs.w $2(a0),d0	; $031AD2
 	swap d0	; $031AD6
@@ -43938,14 +43938,14 @@ world_pos_add_y:
 	jsr map_chunk_load_buf.l	; $031AF4
 	addq.w #$2,a7	; $031AFA
 	move.l d0,-$4(a6)	; $031AFC
-	movea.l ram_sys_ffa7fc.l,a0	; $031B00
+	movea.l ram_sys_field_a7fc.l,a0	; $031B00
 	move.w $e(a6),d0	; $031B06
 	ext.l d0	; $031B0A
 	divs.w $4(a0),d0	; $031B0C
 	swap d0	; $031B10
-	movea.l ram_sys_ffa7fc.l,a0	; $031B12
+	movea.l ram_sys_field_a7fc.l,a0	; $031B12
 	muls.w $4(a0),d0	; $031B18
-	movea.l ram_sys_ffa7fc.l,a0	; $031B1C
+	movea.l ram_sys_field_a7fc.l,a0	; $031B1C
 	move.w $c(a6),d1	; $031B22
 	ext.l d1	; $031B26
 	divs.w $4(a0),d1	; $031B28
@@ -44358,18 +44358,18 @@ L031F62:
 	; code $031F66-$03211B
 map_cell_set_field:
 	link.w a6,#$fff8	; $031F66
-	movea.l ram_sys_ffa7fc.l,a0	; $031F6A
+	movea.l ram_sys_field_a7fc.l,a0	; $031F6A
 	move.w (a0),d0	; $031F70
 	add.w $c(a6),d0	; $031F72
-	movea.l ram_sys_ffa7fc.l,a0	; $031F76
+	movea.l ram_sys_field_a7fc.l,a0	; $031F76
 	ext.l d0	; $031F7C
 	divs.w (a0),d0	; $031F7E
 	swap d0	; $031F80
 	move.w d0,$c(a6)	; $031F82
-	movea.l ram_sys_ffa7fc.l,a0	; $031F86
+	movea.l ram_sys_field_a7fc.l,a0	; $031F86
 	move.w $2(a0),d0	; $031F8C
 	add.w $e(a6),d0	; $031F90
-	movea.l ram_sys_ffa7fc.l,a0	; $031F94
+	movea.l ram_sys_field_a7fc.l,a0	; $031F94
 	ext.l d0	; $031F9A
 	divs.w $2(a0),d0	; $031F9C
 	swap d0	; $031FA0
@@ -44383,14 +44383,14 @@ map_cell_set_field:
 	jsr map_chunk_load_buf.l	; $031FBE
 	addq.w #$2,a7	; $031FC4
 	move.l d0,-$4(a6)	; $031FC6
-	movea.l ram_sys_ffa7fc.l,a0	; $031FCA
+	movea.l ram_sys_field_a7fc.l,a0	; $031FCA
 	move.w $e(a6),d0	; $031FD0
 	ext.l d0	; $031FD4
 	divs.w $4(a0),d0	; $031FD6
 	swap d0	; $031FDA
-	movea.l ram_sys_ffa7fc.l,a0	; $031FDC
+	movea.l ram_sys_field_a7fc.l,a0	; $031FDC
 	muls.w $4(a0),d0	; $031FE2
-	movea.l ram_sys_ffa7fc.l,a0	; $031FE6
+	movea.l ram_sys_field_a7fc.l,a0	; $031FE6
 	move.w $c(a6),d1	; $031FEC
 	ext.l d1	; $031FF0
 	divs.w $4(a0),d1	; $031FF2
@@ -44531,18 +44531,18 @@ L032138:
 	; code $03213C-$032261
 map_cell_get_field:
 	link.w a6,#$fff8	; $03213C
-	movea.l ram_sys_ffa7fc.l,a0	; $032140
+	movea.l ram_sys_field_a7fc.l,a0	; $032140
 	move.w (a0),d0	; $032146
 	add.w $a(a6),d0	; $032148
-	movea.l ram_sys_ffa7fc.l,a0	; $03214C
+	movea.l ram_sys_field_a7fc.l,a0	; $03214C
 	ext.l d0	; $032152
 	divs.w (a0),d0	; $032154
 	swap d0	; $032156
 	move.w d0,$a(a6)	; $032158
-	movea.l ram_sys_ffa7fc.l,a0	; $03215C
+	movea.l ram_sys_field_a7fc.l,a0	; $03215C
 	move.w $2(a0),d0	; $032162
 	add.w $c(a6),d0	; $032166
-	movea.l ram_sys_ffa7fc.l,a0	; $03216A
+	movea.l ram_sys_field_a7fc.l,a0	; $03216A
 	ext.l d0	; $032170
 	divs.w $2(a0),d0	; $032172
 	swap d0	; $032176
@@ -44556,14 +44556,14 @@ map_cell_get_field:
 	jsr map_chunk_load_buf.l	; $032194
 	addq.w #$2,a7	; $03219A
 	move.l d0,-$4(a6)	; $03219C
-	movea.l ram_sys_ffa7fc.l,a0	; $0321A0
+	movea.l ram_sys_field_a7fc.l,a0	; $0321A0
 	move.w $c(a6),d0	; $0321A6
 	ext.l d0	; $0321AA
 	divs.w $4(a0),d0	; $0321AC
 	swap d0	; $0321B0
-	movea.l ram_sys_ffa7fc.l,a0	; $0321B2
+	movea.l ram_sys_field_a7fc.l,a0	; $0321B2
 	muls.w $4(a0),d0	; $0321B8
-	movea.l ram_sys_ffa7fc.l,a0	; $0321BC
+	movea.l ram_sys_field_a7fc.l,a0	; $0321BC
 	move.w $a(a6),d1	; $0321C2
 	ext.l d1	; $0321C6
 	divs.w $4(a0),d1	; $0321C8
@@ -44649,7 +44649,7 @@ world_ambient_event:
 	muls.w #$34,d0	; $0322A4
 	lea.l ram_npc_field_02c2.l,a0	; $0322A8
 	move.w (a0,d0.l),-$c(a6)	; $0322AE
-	move.w ram_sys_ff013e.l,d0	; $0322B4
+	move.w ram_sys_field_013e.l,d0	; $0322B4
 	ext.l d0	; $0322BA
 	bra.w L032678	; $0322BC
 L0322C0:
@@ -44705,7 +44705,7 @@ L032352:
 	bra.w L03268A	; $032352
 L032356:
 	move.w #$44,-(a7)	; $032356
-	pea.l ram_sys_ffc326.l	; $03235A
+	pea.l ram_sys_field_c326.l	; $03235A
 	jsr sys_bitmap_test.l	; $032360
 	addq.w #$6,a7	; $032366
 	tst.w d0	; $032368
@@ -44846,7 +44846,7 @@ L032524:
 	move.w (a0),d0	; $03253A
 	and.w #$1,d0	; $03253C
 	bne.b L032572	; $032540
-	tst.w ram_sys_ff0124.l	; $032542
+	tst.w ram_world_field_0124.l	; $032542
 	bne.b L032572	; $032548
 	pea.l L0CCC98.l	; $03254A
 	clr.w -(a7)	; $032550
@@ -44856,7 +44856,7 @@ L032524:
 	move.w #$19,-(a7)	; $03255E
 	jsr sfx_request.l	; $032562
 	addq.w #$4,a7	; $032568
-	move.w #$ffff,ram_sys_ff0124.l	; $03256A
+	move.w #$ffff,ram_world_field_0124.l	; $03256A
 L032572:
 	bra.w L03268A	; $032572
 L032576:
@@ -44924,7 +44924,7 @@ L03261A:
 	move.w (a0),d0	; $032630
 	and.w #$1,d0	; $032632
 	bne.b L032668	; $032636
-	tst.w ram_sys_ff0124.l	; $032638
+	tst.w ram_world_field_0124.l	; $032638
 	bne.b L032668	; $03263E
 	pea.l L0CCCD8.l	; $032640
 	clr.w -(a7)	; $032646
@@ -44934,7 +44934,7 @@ L03261A:
 	move.w #$13,-(a7)	; $032654
 	jsr sfx_request.l	; $032658
 	addq.w #$4,a7	; $03265E
-	move.w #$ffff,ram_sys_ff0124.l	; $032660
+	move.w #$ffff,ram_world_field_0124.l	; $032660
 L032668:
 	bra.b L03268A	; $032668
 L03266A:
@@ -45009,7 +45009,7 @@ world_step_event:
 	muls.w #$34,d0	; $032752
 	lea.l ram_npc_field_02c2.l,a0	; $032756
 	move.w (a0,d0.l),d5	; $03275C
-	move.w ram_sys_ff013e.l,d0	; $032760
+	move.w ram_sys_field_013e.l,d0	; $032760
 	ext.l d0	; $032766
 	bra.w L032906	; $032768
 L03276C:
@@ -45144,12 +45144,12 @@ L0328BC:
 	cmp.w #$14,d5	; $0328BC
 	bgt.b L0328FA	; $0328C0
 	move.w #$90,-(a7)	; $0328C2
-	pea.l ram_sys_ffc326.l	; $0328C6
+	pea.l ram_sys_field_c326.l	; $0328C6
 	jsr sys_bitmap_test.l	; $0328CC
 	addq.w #$6,a7	; $0328D2
 	tst.w d0	; $0328D4
 	bne.b L0328FA	; $0328D6
-	tst.w ram_sys_ff0110.l	; $0328D8
+	tst.w ram_menu_field_0110.l	; $0328D8
 	bne.b L0328FA	; $0328DE
 	move.w ram_party_index_array.l,-(a7)	; $0328E0
 	jsr npc_struct_release.l	; $0328E6
@@ -45190,7 +45190,7 @@ world_terrain_direction:
 	move.w (a0,d0.l),d5	; $03294E
 	move.w $8(a6),d0	; $032952
 	muls.w #$34,d0	; $032956
-	lea.l ram_sys_ff02be.l,a0	; $03295A
+	lea.l ram_sys_field_02be.l,a0	; $03295A
 	move.w (a0,d0.l),d6	; $032960
 	lea.l -$2(a6),a0	; $032964
 	move.l a0,-(a7)	; $032968
@@ -45253,13 +45253,13 @@ L0329EC:
 L0329F4:
 	move.w $8(a6),d0	; $0329F4
 	muls.w #$34,d0	; $0329F8
-	lea.l ram_sys_ff02ba.l,a0	; $0329FC
+	lea.l ram_menu_field_02ba.l,a0	; $0329FC
 	cmpi.w #$2,(a0,d0.l)	; $032A02
 	beq.b L032A38	; $032A08
-	cmpi.w #$1,ram_sys_ff0142.l	; $032A0A
+	cmpi.w #$1,ram_sys_field_0142.l	; $032A0A
 	beq.b L032A38	; $032A12
-	clr.w ram_sys_ff0142.l	; $032A14
-	cmpi.w #$1,ram_sys_ff0142.l	; $032A1A
+	clr.w ram_sys_field_0142.l	; $032A14
+	cmpi.w #$1,ram_sys_field_0142.l	; $032A1A
 	bne.w L032B0A	; $032A22
 	move.w #$ffff,-(a7)	; $032A26
 	move.w #$1f,-(a7)	; $032A2A
@@ -45444,7 +45444,7 @@ L032BD4:
 	beq.b L032BFA	; $032BD8
 	move.w ram_party_leader.l,d0	; $032BDA
 	muls.w #$48,d0	; $032BE0
-	lea.l ram_sys_ff0e30.l,a0	; $032BE4
+	lea.l ram_sys_field_0e30.l,a0	; $032BE4
 	add.l a0,d0	; $032BEA
 	move.l d0,-(a7)	; $032BEC
 	move.w d7,-(a7)	; $032BEE
@@ -45452,11 +45452,11 @@ L032BD4:
 	addq.w #$6,a7	; $032BF6
 	bra.b L032C00	; $032BF8
 L032BFA:
-	clr.w ram_sys_ff0142.l	; $032BFA
+	clr.w ram_sys_field_0142.l	; $032BFA
 L032C00:
-	tst.w ram_sys_ff0142.l	; $032C00
+	tst.w ram_sys_field_0142.l	; $032C00
 	beq.b L032C10	; $032C06
-	move.w #$2,ram_sys_ff0142.l	; $032C08
+	move.w #$2,ram_sys_field_0142.l	; $032C08
 L032C10:
 	movem.l (a7)+,d4-d7/a3	; $032C10
 	unlk a6	; $032C14
@@ -45547,12 +45547,12 @@ snd_location_song_pick:
 	link.w a6,#$0	; $032D0E
 	move.w ram_party_leader.l,d0	; $032D12
 	muls.w #$34,d0	; $032D18
-	lea.l ram_sys_ff02ba.l,a0	; $032D1C
+	lea.l ram_menu_field_02ba.l,a0	; $032D1C
 	cmpi.w #$2,(a0,d0.l)	; $032D22
 	beq.b L032D42	; $032D28
 	move.w ram_party_leader.l,d0	; $032D2A
 	muls.w #$34,d0	; $032D30
-	lea.l ram_sys_ff02ba.l,a0	; $032D34
+	lea.l ram_menu_field_02ba.l,a0	; $032D34
 	cmpi.w #$3,(a0,d0.l)	; $032D3A
 	bne.b L032D48	; $032D40
 L032D42:
@@ -45799,7 +45799,7 @@ npc_find_best_char:
 	moveq #$0,d1	; $03301A
 	move.b (a0,d0.l),d1	; $03301C
 	move.w d1,-$8(a6)	; $033020
-	lea.l ram_sys_ff0e92.l,a0	; $033024
+	lea.l ram_menu_field_0e92.l,a0	; $033024
 	move.w (a0),d0	; $03302A
 	and.w #$3ff,d0	; $03302C
 	move.w d0,-$a(a6)	; $033030
@@ -45940,7 +45940,7 @@ shop_record_score:
 	move.w #$ffff,-$4(a6)	; $0331A8
 	clr.l -$12(a6)	; $0331AE
 	clr.l -$16(a6)	; $0331B2
-	lea.l ram_sys_ff02a2.l,a0	; $0331B6
+	lea.l ram_menu_field_02a2.l,a0	; $0331B6
 	andi.w #$fff7,(a0)	; $0331BC
 	cmpi.b #$8,$9(a6)	; $0331C0
 	beq.b L0331E8	; $0331C6
@@ -45955,20 +45955,20 @@ shop_record_score:
 L0331E8:
 	cmpi.w #$1,$a(a6)	; $0331E8
 	beq.b L0331FE	; $0331EE
-	lea.l ram_sys_ff02a2.l,a0	; $0331F0
+	lea.l ram_menu_field_02a2.l,a0	; $0331F0
 	andi.w #$fff7,(a0)	; $0331F6
 	ori.w #$8,(a0)	; $0331FA
 L0331FE:
 	lea.l L0D3102.l,a0	; $0331FE
 	move.l a0,-$2a(a6)	; $033204
-	cmpi.w #$ff,ram_sys_ff02a0.l	; $033208
+	cmpi.w #$ff,ram_sys_field_02a0.l	; $033208
 	bne.b L03321A	; $033210
 	move.w #$ff,-$6(a6)	; $033212
 	bra.b L033230	; $033218
 L03321A:
-	move.w ram_sys_ff02a0.l,d0	; $03321A
+	move.w ram_sys_field_02a0.l,d0	; $03321A
 	mulu.w #$34,d0	; $033220
-	lea.l ram_sys_ff02b6.l,a0	; $033224
+	lea.l ram_sys_field_02b6.l,a0	; $033224
 	move.w (a0,d0.l),-$6(a6)	; $03322A
 L033230:
 	clr.w -$2(a6)	; $033230
@@ -46099,7 +46099,7 @@ sys_unk_033396:
 	moveq #$0,d0	; $0333A4
 	move.b $4(a0),d0	; $0333A6
 	move.w d0,-(a7)	; $0333AA
-	pea.l ram_sys_ffc326.l	; $0333AC
+	pea.l ram_sys_field_c326.l	; $0333AC
 	jsr sys_bitmap_test.l	; $0333B2
 	addq.w #$6,a7	; $0333B8
 	tst.w d0	; $0333BA
@@ -46115,7 +46115,7 @@ L0333C8:
 	moveq #$0,d0	; $0333D6
 	move.b $4(a0),d0	; $0333D8
 	move.w d0,-(a7)	; $0333DC
-	pea.l ram_sys_ffc326.l	; $0333DE
+	pea.l ram_sys_field_c326.l	; $0333DE
 	jsr sys_bitmap_test.l	; $0333E4
 	addq.w #$6,a7	; $0333EA
 	tst.w d0	; $0333EC
@@ -46132,7 +46132,7 @@ L0333FA:
 	move.b $4(a0),d0	; $03340A
 	add.w #$a1,d0	; $03340E
 	move.w d0,-(a7)	; $033412
-	pea.l ram_sys_ffc326.l	; $033414
+	pea.l ram_sys_field_c326.l	; $033414
 	jsr sys_bitmap_test.l	; $03341A
 	addq.w #$6,a7	; $033420
 	tst.w d0	; $033422
@@ -46149,7 +46149,7 @@ L033430:
 	move.b $4(a0),d0	; $033440
 	add.w #$a1,d0	; $033444
 	move.w d0,-(a7)	; $033448
-	pea.l ram_sys_ffc326.l	; $03344A
+	pea.l ram_sys_field_c326.l	; $03344A
 	jsr sys_bitmap_test.l	; $033450
 	addq.w #$6,a7	; $033456
 	tst.w d0	; $033458
@@ -46375,7 +46375,7 @@ L0336BE:
 	jsr shop_record_score(pc)	; $0336FA
 	lea.l $10(a7),a7	; $0336FE
 	move.w d0,-$8(a6)	; $033702
-	lea.l ram_sys_ff02a2.l,a0	; $033706
+	lea.l ram_menu_field_02a2.l,a0	; $033706
 	andi.w #$fff7,(a0)	; $03370C
 	ori.w #$8,(a0)	; $033710
 	move.w -$8(a6),d0	; $033714
@@ -46429,7 +46429,7 @@ L033738:
 	cmp.w #$9,d0	; $0337B4
 	bne.b L0337C8	; $0337B8
 L0337BA:
-	lea.l ram_sys_ff02a2.l,a0	; $0337BA
+	lea.l ram_menu_field_02a2.l,a0	; $0337BA
 	andi.w #$fff7,(a0)	; $0337C0
 	ori.w #$8,(a0)	; $0337C4
 L0337C8:
@@ -46438,7 +46438,7 @@ L0337C8:
 	; code $0337D0-$0337ED
 sys_set_flag_bit3_add44d:
 	link.w a6,#$0	; $0337D0
-	lea.l ram_sys_ff02a2.l,a0	; $0337D4
+	lea.l ram_menu_field_02a2.l,a0	; $0337D4
 	andi.w #$fff7,(a0)	; $0337DA
 	ori.w #$8,(a0)	; $0337DE
 	move.w $8(a6),d0	; $0337E2
@@ -46637,12 +46637,12 @@ L033A76:
 	bge.b L033AA0	; $033A7A
 	move.w ram_party_leader.l,d0	; $033A7C
 	muls.w #$34,d0	; $033A82
-	lea.l ram_sys_ff02dd.l,a0	; $033A86
+	lea.l ram_menu_field_02dd.l,a0	; $033A86
 	moveq #$0,d1	; $033A8C
 	move.b (a0,d0.l),d1	; $033A8E
 	cmp.w -$1c(a6),d1	; $033A92
 	beq.b L033AA0	; $033A96
-	move.w $8(a6),ram_sys_ff0120.l	; $033A98
+	move.w $8(a6),ram_sys_field_0120.l	; $033A98
 L033AA0:
 	pea.l -$a(a6)	; $033AA0
 	pea.l -$8(a6)	; $033AA4
@@ -46761,12 +46761,12 @@ L033C5E:
 	bge.b L033C88	; $033C62
 	move.w ram_party_leader.l,d0	; $033C64
 	muls.w #$34,d0	; $033C6A
-	lea.l ram_sys_ff02dd.l,a0	; $033C6E
+	lea.l ram_menu_field_02dd.l,a0	; $033C6E
 	moveq #$0,d1	; $033C74
 	move.b (a0,d0.l),d1	; $033C76
 	cmp.w -$1c(a6),d1	; $033C7A
 	beq.b L033C88	; $033C7E
-	move.w $8(a6),ram_sys_ff0120.l	; $033C80
+	move.w $8(a6),ram_sys_field_0120.l	; $033C80
 L033C88:
 	bra.w L03472A	; $033C88
 L033C8C:
@@ -46889,7 +46889,7 @@ L033E30:
 L033E52:
 	move.w $8(a6),d0	; $033E52
 	muls.w #$34,d0	; $033E56
-	lea.l ram_sys_ff02be.l,a0	; $033E5A
+	lea.l ram_sys_field_02be.l,a0	; $033E5A
 	move.w (a0,d0.l),-$6(a6)	; $033E60
 L033E66:
 	cmpi.w #$4,-$6(a6)	; $033E66
@@ -46967,7 +46967,7 @@ L033EFA:
 	addq.w #$2,a7	; $033F7E
 	move.w d0,-$4(a6)	; $033F80
 L033F84:
-	move.w ram_sys_ffbc86.l,-(a7)	; $033F84
+	move.w ram_sys_field_bc86.l,-(a7)	; $033F84
 	move.w $8(a6),-(a7)	; $033F8A
 	jsr combat_move_unit.l	; $033F8E
 	addq.w #$4,a7	; $033F94
@@ -47161,9 +47161,9 @@ L03415C:
 	move.w d0,-$4(a6)	; $03422E
 	tst.w -$4(a6)	; $034232
 	ble.b L034240	; $034236
-	move.w #$4,ram_sys_ffbc86.l	; $034238
+	move.w #$4,ram_sys_field_bc86.l	; $034238
 L034240:
-	move.w ram_sys_ffbc86.l,-(a7)	; $034240
+	move.w ram_sys_field_bc86.l,-(a7)	; $034240
 	move.w $8(a6),-(a7)	; $034246
 	jsr combat_move_unit.l	; $03424A
 	addq.w #$4,a7	; $034250
@@ -47307,9 +47307,9 @@ L034382:
 	move.w d0,-$4(a6)	; $034444
 	tst.w -$4(a6)	; $034448
 	ble.b L034456	; $03444C
-	move.w #$4,ram_sys_ffbc86.l	; $03444E
+	move.w #$4,ram_sys_field_bc86.l	; $03444E
 L034456:
-	move.w ram_sys_ffbc86.l,-(a7)	; $034456
+	move.w ram_sys_field_bc86.l,-(a7)	; $034456
 	move.w $8(a6),-(a7)	; $03445C
 	jsr combat_move_unit.l	; $034460
 	addq.w #$4,a7	; $034466
@@ -47453,9 +47453,9 @@ L034598:
 	move.w d0,-$4(a6)	; $03465A
 	tst.w -$4(a6)	; $03465E
 	ble.b L03466C	; $034662
-	move.w #$4,ram_sys_ffbc86.l	; $034664
+	move.w #$4,ram_sys_field_bc86.l	; $034664
 L03466C:
-	move.w ram_sys_ffbc86.l,-(a7)	; $03466C
+	move.w ram_sys_field_bc86.l,-(a7)	; $03466C
 	move.w $8(a6),-(a7)	; $034672
 	jsr combat_move_unit.l	; $034676
 	addq.w #$4,a7	; $03467C
@@ -47520,7 +47520,7 @@ L034730:
 L03475E:
 	move.w -$1a(a6),d0	; $03475E
 	muls.w #$34,d0	; $034762
-	lea.l ram_sys_ff02be.l,a0	; $034766
+	lea.l ram_sys_field_02be.l,a0	; $034766
 	move.w (a0,d0.l),-$10(a6)	; $03476C
 	movea.l -$22(a6),a0	; $034772
 	move.b $24(a0),-$1e(a6)	; $034776
@@ -47915,13 +47915,13 @@ npc_get_state_34ca2:
 	link.w a6,#$fff8	; $034CA2
 	move.w $8(a6),d0	; $034CA6
 	muls.w #$34,d0	; $034CAA
-	lea.l ram_sys_ff02db.l,a0	; $034CAE
+	lea.l ram_sys_field_02db.l,a0	; $034CAE
 	moveq #$0,d1	; $034CB4
 	move.b (a0,d0.l),d1	; $034CB6
 	move.w d1,-$2(a6)	; $034CBA
 	move.w $8(a6),d0	; $034CBE
 	muls.w #$34,d0	; $034CC2
-	lea.l ram_sys_ff02d8.l,a0	; $034CC6
+	lea.l ram_sys_field_02d8.l,a0	; $034CC6
 	move.b (a0,d0.l),-$5(a6)	; $034CCC
 	tst.b -$5(a6)	; $034CD2
 	bne.b L034CDE	; $034CD6
@@ -47943,7 +47943,7 @@ L034CE6:
 	move.w (a0,d0.l),-$4(a6)	; $034CFE
 	move.w -$4(a6),d0	; $034D04
 	muls.w #$34,d0	; $034D08
-	lea.l ram_sys_ff02d8.l,a0	; $034D0C
+	lea.l ram_sys_field_02d8.l,a0	; $034D0C
 	move.b (a0,d0.l),d1	; $034D12
 	cmp.b -$5(a6),d1	; $034D16
 	bne.b L034D22	; $034D1A
@@ -48153,13 +48153,13 @@ npc_get_attr_34fc4:
 	move.w (a0,d0.l),-$4(a6)	; $034FF4
 	move.w -$4(a6),d0	; $034FFA
 	muls.w #$34,d0	; $034FFE
-	lea.l ram_sys_ff02da.l,a0	; $035002
+	lea.l ram_sys_field_02da.l,a0	; $035002
 	moveq #$0,d1	; $035008
 	move.b (a0,d0.l),d1	; $03500A
 	move.w d1,-$8(a6)	; $03500E
 	move.w -$8(a6),d0	; $035012
 	muls.w #$34,d0	; $035016
-	lea.l ram_sys_ff02be.l,a0	; $03501A
+	lea.l ram_sys_field_02be.l,a0	; $03501A
 	move.w (a0,d0.l),-$6(a6)	; $035020
 	clr.w -$2(a6)	; $035026
 L03502A:
@@ -48173,7 +48173,7 @@ L03502A:
 	move.w (a0,d0.l),-$4(a6)	; $035042
 	move.w -$8(a6),d0	; $035048
 	muls.w #$34,d0	; $03504C
-	lea.l ram_sys_ff02be.l,a0	; $035050
+	lea.l ram_sys_field_02be.l,a0	; $035050
 	move.w (a0,d0.l),-$6(a6)	; $035056
 	move.w -$6(a6),d0	; $03505C
 	ext.l d0	; $035060
@@ -48185,7 +48185,7 @@ L035066:
 	jsr mul32.l	; $03506E
 	move.w -$4(a6),d1	; $035074
 	muls.w #$34,d1	; $035078
-	lea.l ram_sys_ff02d8.l,a0	; $03507C
+	lea.l ram_sys_field_02d8.l,a0	; $03507C
 	moveq #$0,d2	; $035082
 	move.b (a0,d1.l),d2	; $035084
 	asl.l #$1,d2	; $035088
@@ -48200,7 +48200,7 @@ L035066:
 	jsr mul32.l	; $0350A4
 	move.w -$4(a6),d1	; $0350AA
 	muls.w #$34,d1	; $0350AE
-	lea.l ram_sys_ff02d8.l,a0	; $0350B2
+	lea.l ram_sys_field_02d8.l,a0	; $0350B2
 	moveq #$0,d2	; $0350B8
 	move.b (a0,d1.l),d2	; $0350BA
 	asl.l #$1,d2	; $0350BE
@@ -48217,7 +48217,7 @@ L0350D6:
 	jsr mul32.l	; $0350DE
 	move.w -$4(a6),d1	; $0350E4
 	muls.w #$34,d1	; $0350E8
-	lea.l ram_sys_ff02d8.l,a0	; $0350EC
+	lea.l ram_sys_field_02d8.l,a0	; $0350EC
 	moveq #$0,d2	; $0350F2
 	move.b (a0,d1.l),d2	; $0350F4
 	asl.l #$1,d2	; $0350F8
@@ -48232,7 +48232,7 @@ L0350D6:
 	jsr mul32.l	; $035114
 	move.w -$4(a6),d1	; $03511A
 	muls.w #$34,d1	; $03511E
-	lea.l ram_sys_ff02d8.l,a0	; $035122
+	lea.l ram_sys_field_02d8.l,a0	; $035122
 	moveq #$0,d2	; $035128
 	move.b (a0,d1.l),d2	; $03512A
 	asl.l #$1,d2	; $03512E
@@ -48250,7 +48250,7 @@ L035148:
 	jsr mul32.l	; $035150
 	move.w -$4(a6),d1	; $035156
 	muls.w #$34,d1	; $03515A
-	lea.l ram_sys_ff02d8.l,a0	; $03515E
+	lea.l ram_sys_field_02d8.l,a0	; $03515E
 	moveq #$0,d2	; $035164
 	move.b (a0,d1.l),d2	; $035166
 	asl.l #$1,d2	; $03516A
@@ -48266,7 +48266,7 @@ L035148:
 	jsr mul32.l	; $035188
 	move.w -$4(a6),d1	; $03518E
 	muls.w #$34,d1	; $035192
-	lea.l ram_sys_ff02d8.l,a0	; $035196
+	lea.l ram_sys_field_02d8.l,a0	; $035196
 	moveq #$0,d2	; $03519C
 	move.b (a0,d1.l),d2	; $03519E
 	asl.l #$1,d2	; $0351A2
@@ -48283,7 +48283,7 @@ L0351BA:
 	jsr mul32.l	; $0351C2
 	move.w -$4(a6),d1	; $0351C8
 	muls.w #$34,d1	; $0351CC
-	lea.l ram_sys_ff02d8.l,a0	; $0351D0
+	lea.l ram_sys_field_02d8.l,a0	; $0351D0
 	moveq #$0,d2	; $0351D6
 	move.b (a0,d1.l),d2	; $0351D8
 	asl.l #$1,d2	; $0351DC
@@ -48298,7 +48298,7 @@ L0351BA:
 	jsr mul32.l	; $0351F8
 	move.w -$4(a6),d1	; $0351FE
 	muls.w #$34,d1	; $035202
-	lea.l ram_sys_ff02d8.l,a0	; $035206
+	lea.l ram_sys_field_02d8.l,a0	; $035206
 	moveq #$0,d2	; $03520C
 	move.b (a0,d1.l),d2	; $03520E
 	asl.l #$1,d2	; $035212
@@ -48364,7 +48364,7 @@ map_area_walkable:
 	move.w (a0,d0.l),-$2(a6)	; $0352DA
 	move.w -$2(a6),d0	; $0352E0
 	muls.w #$34,d0	; $0352E4
-	lea.l ram_sys_ff02da.l,a0	; $0352E8
+	lea.l ram_sys_field_02da.l,a0	; $0352E8
 	moveq #$0,d1	; $0352EE
 	move.b (a0,d0.l),d1	; $0352F0
 	move.w d1,-$4(a6)	; $0352F4
@@ -48446,7 +48446,7 @@ world_steps_to_char:
 	clr.w -$8(a6)	; $03539E
 	move.w $a(a6),d0	; $0353A2
 	muls.w #$34,d0	; $0353A6
-	lea.l ram_sys_ff02d0.l,a0	; $0353AA
+	lea.l ram_world_field_02d0.l,a0	; $0353AA
 	tst.w (a0,d0.l)	; $0353B0
 	bne.b L0353BC	; $0353B4
 	moveq #$7,d0	; $0353B6
@@ -48553,14 +48553,14 @@ L0354EC:
 	bge.b L035558	; $035518
 	move.w -$e(a6),d0	; $03551A
 	muls.w #$34,d0	; $03551E
-	lea.l ram_sys_ff02db.l,a0	; $035522
+	lea.l ram_sys_field_02db.l,a0	; $035522
 	moveq #$0,d1	; $035528
 	move.b (a0,d0.l),d1	; $03552A
 	cmp.w $a(a6),d1	; $03552E
 	bne.b L035558	; $035532
 	move.w -$e(a6),d0	; $035534
 	muls.w #$34,d0	; $035538
-	lea.l ram_sys_ff02d0.l,a0	; $03553C
+	lea.l ram_world_field_02d0.l,a0	; $03553C
 	tst.w (a0,d0.l)	; $035542
 	ble.b L035558	; $035546
 	movea.l $e(a6),a0	; $035548
@@ -48596,14 +48596,14 @@ L03557C:
 	bge.b L0355E8	; $0355A8
 	move.w -$e(a6),d0	; $0355AA
 	muls.w #$34,d0	; $0355AE
-	lea.l ram_sys_ff02db.l,a0	; $0355B2
+	lea.l ram_sys_field_02db.l,a0	; $0355B2
 	moveq #$0,d1	; $0355B8
 	move.b (a0,d0.l),d1	; $0355BA
 	cmp.w $a(a6),d1	; $0355BE
 	bne.b L0355E8	; $0355C2
 	move.w -$e(a6),d0	; $0355C4
 	muls.w #$34,d0	; $0355C8
-	lea.l ram_sys_ff02d0.l,a0	; $0355CC
+	lea.l ram_world_field_02d0.l,a0	; $0355CC
 	tst.w (a0,d0.l)	; $0355D2
 	ble.b L0355E8	; $0355D6
 	movea.l $e(a6),a0	; $0355D8
@@ -48628,7 +48628,7 @@ L03560A:
 text_show_message:
 	link.w a6,#$fffa	; $035612
 	pea.l -$6(a6)	; $035616
-	pea.l ram_sys_ffbb86.l	; $03561A
+	pea.l ram_sys_field_bb86.l	; $03561A
 	clr.w -(a7)	; $035620
 	clr.w -(a7)	; $035622
 	clr.w -(a7)	; $035624
@@ -48637,7 +48637,7 @@ text_show_message:
 	move.w #$4,-(a7)	; $03562C
 	jsr text_event_resolve(pc)	; $035630
 	lea.l $14(a7),a7	; $035634
-	pea.l ram_sys_ffbb86.l	; $035638
+	pea.l ram_sys_field_bb86.l	; $035638
 	clr.w -(a7)	; $03563E
 	move.w #$1,-(a7)	; $035640
 	move.w $8(a6),-(a7)	; $035644
@@ -48653,12 +48653,12 @@ npc_attitude_adjust:
 	addq.w #$2,a7	; $035664
 	move.w $8(a6),d0	; $035666
 	muls.w #$34,d0	; $03566A
-	lea.l ram_sys_ff02d4.l,a0	; $03566E
+	lea.l ram_world_field_02d4.l,a0	; $03566E
 	move.w (a0,d0.l),-$2(a6)	; $035674
 	move.w -$2(a6),d0	; $03567A
 	ext.l d0	; $03567E
 	asl.l #$1,d0	; $035680
-	lea.l ram_sys_ff00c0.l,a0	; $035682
+	lea.l ram_save_field_00c0.l,a0	; $035682
 	move.w (a0,d0.l),d1	; $035688
 	sub.w #$28,d1	; $03568C
 	cmp.w #$64,d1	; $035690
@@ -48669,7 +48669,7 @@ L03569A:
 	move.w -$2(a6),d0	; $03569A
 	ext.l d0	; $03569E
 	asl.l #$1,d0	; $0356A0
-	lea.l ram_sys_ff00c0.l,a0	; $0356A2
+	lea.l ram_save_field_00c0.l,a0	; $0356A2
 	move.w (a0,d0.l),d1	; $0356A8
 	sub.w #$28,d1	; $0356AC
 	cmp.w #$ff9c,d1	; $0356B0
@@ -48680,7 +48680,7 @@ L0356BA:
 	move.w -$2(a6),d0	; $0356BA
 	ext.l d0	; $0356BE
 	asl.l #$1,d0	; $0356C0
-	lea.l ram_sys_ff00c0.l,a0	; $0356C2
+	lea.l ram_save_field_00c0.l,a0	; $0356C2
 	move.l d0,d1	; $0356C8
 	move.w (a0,d1.l),d0	; $0356CA
 	sub.w #$28,d0	; $0356CE
@@ -48688,13 +48688,13 @@ L0356D2:
 	move.w -$2(a6),d1	; $0356D2
 	ext.l d1	; $0356D6
 	asl.l #$1,d1	; $0356D8
-	lea.l ram_sys_ff00c0.l,a0	; $0356DA
+	lea.l ram_save_field_00c0.l,a0	; $0356DA
 	move.w d0,(a0,d1.l)	; $0356E0
 	clr.w ram_sys_ffc40a.l	; $0356E4
 	clr.l -(a7)	; $0356EA
 	move.w $8(a6),d0	; $0356EC
 	muls.w #$34,d0	; $0356F0
-	lea.l ram_sys_ff02b6.l,a0	; $0356F4
+	lea.l ram_sys_field_02b6.l,a0	; $0356F4
 	move.w (a0,d0.l),-(a7)	; $0356FA
 	move.w #$5,-(a7)	; $0356FE
 	jsr sys_copy_stride6_2d284.l	; $035702
@@ -48703,7 +48703,7 @@ L0356D2:
 	cmpi.w #$ffff,-$6(a6)	; $03570E
 	beq.w L0357A0	; $035714
 	move.w -$6(a6),-(a7)	; $035718
-	pea.l ram_sys_ffc326.l	; $03571C
+	pea.l ram_sys_field_c326.l	; $03571C
 	jsr sys_bitmap_test.l	; $035722
 	addq.w #$6,a7	; $035728
 	tst.w d0	; $03572A
@@ -48726,7 +48726,7 @@ L0356D2:
 	addq.w #$8,a7	; $03576C
 	clr.w -(a7)	; $03576E
 	move.w -$6(a6),-(a7)	; $035770
-	pea.l ram_sys_ffc326.l	; $035774
+	pea.l ram_sys_field_c326.l	; $035774
 	jsr sys_bitmap_write.l	; $03577A
 	addq.w #$8,a7	; $035780
 	move.w -$6(a6),d0	; $035782
@@ -48734,15 +48734,15 @@ L0356D2:
 	lea.l L0D601E.l,a0	; $03578A
 	move.w (a0,d0.l),d1	; $035790
 	and.w #$7ff,d1	; $035794
-	move.w d1,ram_sys_ffc410.l	; $035798
+	move.w d1,ram_sys_field_c410.l	; $035798
 	bra.b L0357A8	; $03579E
 L0357A0:
-	move.w #$7530,ram_sys_ffc410.l	; $0357A0
+	move.w #$7530,ram_sys_field_c410.l	; $0357A0
 L0357A8:
 	clr.l -(a7)	; $0357A8
 	move.w $8(a6),d0	; $0357AA
 	muls.w #$34,d0	; $0357AE
-	lea.l ram_sys_ff02b6.l,a0	; $0357B2
+	lea.l ram_sys_field_02b6.l,a0	; $0357B2
 	move.w (a0,d0.l),-(a7)	; $0357B8
 	clr.w -(a7)	; $0357BC
 	jsr sys_copy_stride6_2d284.l	; $0357BE
@@ -48752,20 +48752,20 @@ L0357A8:
 	beq.b L0357E8	; $0357D0
 	clr.w -(a7)	; $0357D2
 	move.w -$6(a6),-(a7)	; $0357D4
-	pea.l ram_sys_ffc326.l	; $0357D8
+	pea.l ram_sys_field_c326.l	; $0357D8
 	jsr sys_bitmap_write.l	; $0357DE
 	addq.w #$8,a7	; $0357E4
 	bra.b L035802	; $0357E6
 L0357E8:
 	move.w $8(a6),d0	; $0357E8
 	muls.w #$34,d0	; $0357EC
-	lea.l ram_sys_ff02b6.l,a0	; $0357F0
+	lea.l ram_sys_field_02b6.l,a0	; $0357F0
 	move.w (a0,d0.l),-(a7)	; $0357F6
 	jsr world_seen_record.l	; $0357FA
 	addq.w #$2,a7	; $035800
 L035802:
-	move.w #$14,ram_sys_ffc40c.l	; $035802
-	move.w #$6,ram_sys_ffc40e.l	; $03580A
+	move.w #$14,ram_sys_field_c40c.l	; $035802
+	move.w #$6,ram_sys_field_c40e.l	; $03580A
 	clr.w -$2(a6)	; $035812
 L035816:
 	move.w $8(a6),d0	; $035816
@@ -48784,24 +48784,24 @@ L035816:
 	add.w #$b,d0	; $035846
 	move.w -$4(a6),d1	; $03584A
 	muls.w #$34,d1	; $03584E
-	lea.l ram_sys_ff02cc.l,a0	; $035852
+	lea.l ram_world_field_02cc.l,a0	; $035852
 	move.w (a0,d1.l),d2	; $035858
 	lsr.w #$4,d2	; $03585C
 	and.w #$f,d2	; $03585E
 	mulu.w d2,d0	; $035862
-	add.w d0,ram_sys_ffc40c.l	; $035864
+	add.w d0,ram_sys_field_c40c.l	; $035864
 	move.w #$7,-(a7)	; $03586A
 	jsr rand_next.l	; $03586E
 	addq.w #$2,a7	; $035874
 	addq.w #$5,d0	; $035876
 	move.w -$4(a6),d1	; $035878
 	muls.w #$34,d1	; $03587C
-	lea.l ram_sys_ff02cc.l,a0	; $035880
+	lea.l ram_world_field_02cc.l,a0	; $035880
 	move.w (a0,d1.l),d2	; $035886
 	lsr.w #$4,d2	; $03588A
 	and.w #$f,d2	; $03588C
 	mulu.w d2,d0	; $035890
-	add.w d0,ram_sys_ffc40e.l	; $035892
+	add.w d0,ram_sys_field_c40e.l	; $035892
 L035898:
 	addq.w #$1,-$2(a6)	; $035898
 	cmpi.w #$6,-$2(a6)	; $03589C
@@ -48822,7 +48822,7 @@ L0358C8:
 L0358CC:
 	cmpi.w #$6,-$2(a6)	; $0358CC
 	blt.b L0358B0	; $0358D2
-	move.w ram_sys_ffc40e.l,d0	; $0358D4
+	move.w ram_sys_field_c40e.l,d0	; $0358D4
 	ext.l d0	; $0358DA
 	divs.w -$4(a6),d0	; $0358DC
 	cmp.w #$32,d0	; $0358E0
@@ -48830,7 +48830,7 @@ L0358CC:
 	moveq #$32,d0	; $0358E6
 	bra.b L03590C	; $0358E8
 L0358EA:
-	move.w ram_sys_ffc40e.l,d0	; $0358EA
+	move.w ram_sys_field_c40e.l,d0	; $0358EA
 	ext.l d0	; $0358F0
 	divs.w -$4(a6),d0	; $0358F2
 	cmp.w #$1,d0	; $0358F6
@@ -48838,13 +48838,13 @@ L0358EA:
 	moveq #$1,d0	; $0358FC
 	bra.b L03590C	; $0358FE
 L035900:
-	move.w ram_sys_ffc40e.l,d0	; $035900
+	move.w ram_sys_field_c40e.l,d0	; $035900
 	ext.l d0	; $035906
 	divs.w -$4(a6),d0	; $035908
 L03590C:
-	move.w d0,ram_sys_ffc40e.l	; $03590C
+	move.w d0,ram_sys_field_c40e.l	; $03590C
 	move.w #$1,-(a7)	; $035912
-	move.w ram_sys_ffc40c.l,-(a7)	; $035916
+	move.w ram_sys_field_c40c.l,-(a7)	; $035916
 	move.w #$400,-(a7)	; $03591C
 	move.w ram_party_leader.l,-(a7)	; $035920
 	jsr inv_apply_resource.l	; $035926
@@ -48864,7 +48864,7 @@ L035948:
 	tst.w (a0,d0.l)	; $035956
 	beq.b L035984	; $03595A
 	move.w #$1,-(a7)	; $03595C
-	move.w ram_sys_ffc40e.l,-(a7)	; $035960
+	move.w ram_sys_field_c40e.l,-(a7)	; $035960
 	move.w #$401,-(a7)	; $035966
 	move.w -$2(a6),d0	; $03596A
 	ext.l d0	; $03596E
@@ -48877,7 +48877,7 @@ L035984:
 	addq.w #$1,-$2(a6)	; $035984
 	cmpi.w #$6,-$2(a6)	; $035988
 	blt.b L035948	; $03598E
-	move.w #$ffff,ram_sys_ff009c.l	; $035990
+	move.w #$ffff,ram_sys_field_009c.l	; $035990
 	unlk a6	; $035998
 	rts	; $03599A
 	; code $03599C-$036209
@@ -48905,7 +48905,7 @@ combat_battle_end:
 	tst.w d0	; $0359E4
 	beq.b L035A34	; $0359E6
 L0359E8:
-	lea.l ram_sys_ff02a2.l,a0	; $0359E8
+	lea.l ram_menu_field_02a2.l,a0	; $0359E8
 	move.w (a0),d0	; $0359EE
 	lsr.w #$1,d0	; $0359F0
 	and.w #$1,d0	; $0359F2
@@ -48921,7 +48921,7 @@ L0359E8:
 	move.w -$30(a6),d0	; $035A1A
 	lsl.w #$1,d0	; $035A1E
 	and.w #$2,d0	; $035A20
-	lea.l ram_sys_ff02a2.l,a0	; $035A24
+	lea.l ram_menu_field_02a2.l,a0	; $035A24
 	andi.w #$fffd,(a0)	; $035A2A
 	or.w d0,(a0)	; $035A2E
 L035A30:
@@ -48935,7 +48935,7 @@ L035A34:
 	beq.b L035A64	; $035A42
 	move.w #$35,-(a7)	; $035A44
 	clr.w -(a7)	; $035A48
-	move.w ram_sys_ff02a0.l,-(a7)	; $035A4A
+	move.w ram_sys_field_02a0.l,-(a7)	; $035A4A
 	jsr npc_attitude_raise.l	; $035A50
 	addq.w #$4,a7	; $035A56
 	move.w d0,-(a7)	; $035A58
@@ -48943,7 +48943,7 @@ L035A34:
 	addq.w #$4,a7	; $035A60
 	bra.b L035A30	; $035A62
 L035A64:
-	tst.w ram_sys_ff0140.l	; $035A64
+	tst.w ram_sys_field_0140.l	; $035A64
 	beq.b L035A7E	; $035A6A
 	move.w #$15,-(a7)	; $035A6C
 	move.w #$d,-(a7)	; $035A70
@@ -48970,11 +48970,11 @@ L035A7E:
 	move.b #$42,(a0,d0.l)	; $035AC8
 	move.w $8(a6),d0	; $035ACE
 	muls.w #$34,d0	; $035AD2
-	lea.l ram_sys_ff02dd.l,a0	; $035AD6
+	lea.l ram_menu_field_02dd.l,a0	; $035AD6
 	move.b $b(a6),(a0,d0.l)	; $035ADC
 	move.w $a(a6),d0	; $035AE2
 	muls.w #$34,d0	; $035AE6
-	lea.l ram_sys_ff02dd.l,a0	; $035AEA
+	lea.l ram_menu_field_02dd.l,a0	; $035AEA
 	move.b $9(a6),(a0,d0.l)	; $035AF0
 	move.w $8(a6),d0	; $035AF6
 	muls.w #$34,d0	; $035AFA
@@ -49171,7 +49171,7 @@ L035DF2:
 	move.w d1,-$2e(a6)	; $035E0C
 	move.w ram_party_index_array.l,d0	; $035E10
 	muls.w #$34,d0	; $035E16
-	lea.l ram_sys_ff02be.l,a0	; $035E1A
+	lea.l ram_sys_field_02be.l,a0	; $035E1A
 	move.w (a0,d0.l),-$32(a6)	; $035E20
 	move.w -$32(a6),d0	; $035E26
 	ext.l d0	; $035E2A
@@ -49342,7 +49342,7 @@ L036010:
 	beq.w L03615C	; $036034
 	move.w -$30(a6),d0	; $036038
 	muls.w #$34,d0	; $03603C
-	lea.l ram_sys_ff02e0.l,a0	; $036040
+	lea.l ram_world_field_02e0.l,a0	; $036040
 	move.w (a0,d0.l),d1	; $036046
 	rol.w #$3,d1	; $03604A
 	and.w #$1,d1	; $03604C
@@ -49420,7 +49420,7 @@ L03615C:
 	cmpi.w #$6,-$2(a6)	; $036160
 	blt.w L036010	; $036166
 L03616A:
-	clr.w ram_sys_ff010c.l	; $03616A
+	clr.w ram_sys_field_010c.l	; $03616A
 	move.w $a(a6),-(a7)	; $036170
 	move.w $8(a6),-(a7)	; $036174
 	jsr combat_find_best_member(pc)	; $036178
@@ -49439,7 +49439,7 @@ L036188:
 	move.w #$4,-(a7)	; $0361A8
 	move.w ram_actor_index.l,d0	; $0361AC
 	muls.w #$34,d0	; $0361B2
-	lea.l ram_sys_ff02ca.l,a0	; $0361B6
+	lea.l ram_sys_field_02ca.l,a0	; $0361B6
 	moveq #$0,d1	; $0361BC
 	move.b (a0,d0.l),d1	; $0361BE
 	move.w d1,-(a7)	; $0361C2
@@ -49450,9 +49450,9 @@ L036188:
 	move.w ram_party_index_array.l,-(a7)	; $0361D6
 	jsr world_reposition_leader.l	; $0361DC
 	addq.w #$6,a7	; $0361E2
-	move.w #$ffff,ram_sys_ff009c.l	; $0361E4
-	move.w #$ffff,ram_sys_ff0ea8.l	; $0361EC
-	clr.w ram_sys_ff0130.l	; $0361F4
+	move.w #$ffff,ram_sys_field_009c.l	; $0361E4
+	move.w #$ffff,ram_sys_field_0ea8.l	; $0361EC
+	clr.w ram_sys_field_0130.l	; $0361F4
 	clr.w ram_sys_field_012a.l	; $0361FA
 	clr.w ram_event_code.l	; $036200
 	bra.w L035A30	; $036206
@@ -49590,13 +49590,13 @@ L0363CA:
 	move.b #$2,(a0,d0.l)	; $0363EC
 	move.w $8(a6),d0	; $0363F2
 	muls.w #$34,d0	; $0363F6
-	lea.l ram_sys_ff02dd.l,a0	; $0363FA
+	lea.l ram_menu_field_02dd.l,a0	; $0363FA
 	move.b #$ff,(a0,d0.l)	; $036400
 	move.w $a(a6),d0	; $036406
 	muls.w #$34,d0	; $03640A
-	lea.l ram_sys_ff02dd.l,a0	; $03640E
+	lea.l ram_menu_field_02dd.l,a0	; $03640E
 	move.b #$ff,(a0,d0.l)	; $036414
-	clr.w ram_sys_ff013c.l	; $03641A
+	clr.w ram_sys_field_013c.l	; $03641A
 	clr.w -$2(a6)	; $036420
 L036424:
 	move.w -$2(a6),d0	; $036424
@@ -49611,14 +49611,14 @@ L036424:
 	lea.l ram_party_index_array.l,a0	; $036442
 	move.w (a0,d0.l),d1	; $036448
 	muls.w #$34,d1	; $03644C
-	lea.l ram_sys_ff02d0.l,a0	; $036450
+	lea.l ram_world_field_02d0.l,a0	; $036450
 	move.w -$2(a6),d0	; $036456
 	ext.l d0	; $03645A
 	asl.l #$1,d0	; $03645C
 	lea.l ram_party_index_array.l,a1	; $03645E
 	move.w (a1,d0.l),d2	; $036464
 	muls.w #$34,d2	; $036468
-	lea.l ram_sys_ff02d4.l,a1	; $03646C
+	lea.l ram_world_field_02d4.l,a1	; $03646C
 	move.w (a0,d1.l),d0	; $036472
 	cmp.w (a1,d2.l),d0	; $036476
 	ble.b L03649E	; $03647A
@@ -49628,7 +49628,7 @@ L036424:
 	lea.l ram_party_index_array.l,a0	; $036484
 	move.w (a0,d0.l),d1	; $03648A
 	muls.w #$34,d1	; $03648E
-	lea.l ram_sys_ff02d4.l,a0	; $036492
+	lea.l ram_world_field_02d4.l,a0	; $036492
 	move.w (a0,d1.l),d0	; $036498
 	bra.b L0364E4	; $03649C
 L03649E:
@@ -49638,7 +49638,7 @@ L03649E:
 	lea.l ram_party_index_array.l,a0	; $0364A6
 	move.w (a0,d0.l),d1	; $0364AC
 	muls.w #$34,d1	; $0364B0
-	lea.l ram_sys_ff02d0.l,a0	; $0364B4
+	lea.l ram_world_field_02d0.l,a0	; $0364B4
 	tst.w (a0,d1.l)	; $0364BA
 	bge.b L0364C4	; $0364BE
 	moveq #$0,d0	; $0364C0
@@ -49650,7 +49650,7 @@ L0364C4:
 	lea.l ram_party_index_array.l,a0	; $0364CC
 	move.w (a0,d0.l),d1	; $0364D2
 	muls.w #$34,d1	; $0364D6
-	lea.l ram_sys_ff02d0.l,a0	; $0364DA
+	lea.l ram_world_field_02d0.l,a0	; $0364DA
 	move.w (a0,d1.l),d0	; $0364E0
 L0364E4:
 	move.w -$2(a6),d1	; $0364E4
@@ -49659,7 +49659,7 @@ L0364E4:
 	lea.l ram_party_index_array.l,a0	; $0364EC
 	move.w (a0,d1.l),d2	; $0364F2
 	muls.w #$34,d2	; $0364F6
-	lea.l ram_sys_ff02d0.l,a0	; $0364FA
+	lea.l ram_world_field_02d0.l,a0	; $0364FA
 	move.w d0,(a0,d2.l)	; $036500
 	move.w -$2(a6),d0	; $036504
 	ext.l d0	; $036508
@@ -49667,14 +49667,14 @@ L0364E4:
 	lea.l ram_party_index_array.l,a0	; $03650C
 	move.w (a0,d0.l),d1	; $036512
 	muls.w #$34,d1	; $036516
-	lea.l ram_sys_ff02d2.l,a0	; $03651A
+	lea.l ram_world_field_02d2.l,a0	; $03651A
 	move.w -$2(a6),d0	; $036520
 	ext.l d0	; $036524
 	asl.l #$1,d0	; $036526
 	lea.l ram_party_index_array.l,a1	; $036528
 	move.w (a1,d0.l),d2	; $03652E
 	muls.w #$34,d2	; $036532
-	lea.l ram_sys_ff02d6.l,a1	; $036536
+	lea.l ram_world_field_02d6.l,a1	; $036536
 	move.w (a0,d1.l),d0	; $03653C
 	cmp.w (a1,d2.l),d0	; $036540
 	ble.b L036568	; $036544
@@ -49684,7 +49684,7 @@ L0364E4:
 	lea.l ram_party_index_array.l,a0	; $03654E
 	move.w (a0,d0.l),d1	; $036554
 	muls.w #$34,d1	; $036558
-	lea.l ram_sys_ff02d6.l,a0	; $03655C
+	lea.l ram_world_field_02d6.l,a0	; $03655C
 	move.w (a0,d1.l),d0	; $036562
 	bra.b L0365AE	; $036566
 L036568:
@@ -49694,7 +49694,7 @@ L036568:
 	lea.l ram_party_index_array.l,a0	; $036570
 	move.w (a0,d0.l),d1	; $036576
 	muls.w #$34,d1	; $03657A
-	lea.l ram_sys_ff02d2.l,a0	; $03657E
+	lea.l ram_world_field_02d2.l,a0	; $03657E
 	tst.w (a0,d1.l)	; $036584
 	bge.b L03658E	; $036588
 	moveq #$0,d0	; $03658A
@@ -49706,7 +49706,7 @@ L03658E:
 	lea.l ram_party_index_array.l,a0	; $036596
 	move.w (a0,d0.l),d1	; $03659C
 	muls.w #$34,d1	; $0365A0
-	lea.l ram_sys_ff02d2.l,a0	; $0365A4
+	lea.l ram_world_field_02d2.l,a0	; $0365A4
 	move.w (a0,d1.l),d0	; $0365AA
 L0365AE:
 	move.w -$2(a6),d1	; $0365AE
@@ -49715,7 +49715,7 @@ L0365AE:
 	lea.l ram_party_index_array.l,a0	; $0365B6
 	move.w (a0,d1.l),d2	; $0365BC
 	muls.w #$34,d2	; $0365C0
-	lea.l ram_sys_ff02d2.l,a0	; $0365C4
+	lea.l ram_world_field_02d2.l,a0	; $0365C4
 	move.w d0,(a0,d2.l)	; $0365CA
 L0365CE:
 	addq.w #$1,-$2(a6)	; $0365CE
@@ -49725,11 +49725,11 @@ L0365CE:
 	bne.b L036642	; $0365E0
 	move.w $a(a6),d0	; $0365E2
 	muls.w #$34,d0	; $0365E6
-	lea.l ram_sys_ff02d4.l,a0	; $0365EA
+	lea.l ram_world_field_02d4.l,a0	; $0365EA
 	move.w (a0,d0.l),-$2(a6)	; $0365F0
 	move.w $a(a6),d0	; $0365F6
 	muls.w #$34,d0	; $0365FA
-	lea.l ram_sys_ff02b6.l,a0	; $0365FE
+	lea.l ram_sys_field_02b6.l,a0	; $0365FE
 	move.w (a0,d0.l),d1	; $036604
 	muls.w #$18,d1	; $036608
 	lea.l L0CF1BA.l,a0	; $03660C
@@ -49738,7 +49738,7 @@ L0365CE:
 	move.w d0,-$4(a6)	; $036618
 	move.w $a(a6),d0	; $03661C
 	muls.w #$34,d0	; $036620
-	lea.l ram_sys_ff02b6.l,a0	; $036624
+	lea.l ram_sys_field_02b6.l,a0	; $036624
 	cmpi.w #$1a8,(a0,d0.l)	; $03662A
 	bne.b L036638	; $036630
 	move.w #$ffff,-$8(a6)	; $036632
@@ -49770,7 +49770,7 @@ L036642:
 L036698:
 	move.w ram_party_index_array.l,d0	; $036698
 	muls.w #$34,d0	; $03669E
-	lea.l ram_sys_ff02e0.l,a0	; $0366A2
+	lea.l ram_world_field_02e0.l,a0	; $0366A2
 	move.w (a0,d0.l),d1	; $0366A8
 	rol.w #$3,d1	; $0366AC
 	and.w #$1,d1	; $0366AE
@@ -49808,31 +49808,31 @@ L036698:
 	addq.w #$2,a7	; $036738
 	move.w ram_party_leader.l,d0	; $03673A
 	muls.w #$34,d0	; $036740
-	lea.l ram_sys_ff02de.l,a0	; $036744
+	lea.l ram_world_field_02de.l,a0	; $036744
 	cmpi.w #$64,(a0,d0.l)	; $03674A
 	bls.b L036768	; $036750
 	move.w ram_party_leader.l,d0	; $036752
 	muls.w #$34,d0	; $036758
-	lea.l ram_sys_ff02de.l,a0	; $03675C
+	lea.l ram_world_field_02de.l,a0	; $03675C
 	move.w #$64,(a0,d0.l)	; $036762
 L036768:
 	move.w ram_party_index_array.l,d0	; $036768
 	muls.w #$34,d0	; $03676E
 	movea.l d0,a0	; $036772
-	lea.l ram_sys_ff02e0.l,a1	; $036774
+	lea.l ram_world_field_02e0.l,a1	; $036774
 	adda.l a1,a0	; $03677A
 	andi.w #$dfff,(a0)	; $03677C
 	move.w ram_party_index_array.l,d0	; $036780
 	muls.w #$34,d0	; $036786
-	lea.l ram_sys_ff02d0.l,a0	; $03678A
+	lea.l ram_world_field_02d0.l,a0	; $03678A
 	move.w #$5,(a0,d0.l)	; $036790
 	move.w ram_party_index_array.l,d0	; $036796
 	muls.w #$34,d0	; $03679C
-	lea.l ram_sys_ff02d2.l,a0	; $0367A0
+	lea.l ram_world_field_02d2.l,a0	; $0367A0
 	clr.w (a0,d0.l)	; $0367A6
 	move.w ram_party_leader.l,d0	; $0367AA
 	muls.w #$34,d0	; $0367B0
-	lea.l ram_sys_ff02ba.l,a0	; $0367B4
+	lea.l ram_menu_field_02ba.l,a0	; $0367B4
 	clr.w (a0,d0.l)	; $0367BA
 L0367BE:
 	move.w #$1,-(a7)	; $0367BE
@@ -49859,13 +49859,13 @@ L0367EC:
 	beq.b L036894	; $036814
 	move.w -$4(a6),d0	; $036816
 	muls.w #$34,d0	; $03681A
-	lea.l ram_sys_ff02d4.l,a0	; $03681E
+	lea.l ram_world_field_02d4.l,a0	; $03681E
 	move.w (a0,d0.l),d1	; $036824
 	cmp.w -$2(a6),d1	; $036828
 	bne.b L036894	; $03682C
 	move.w -$4(a6),d0	; $03682E
 	muls.w #$34,d0	; $036832
-	lea.l ram_sys_ff02b6.l,a0	; $036836
+	lea.l ram_sys_field_02b6.l,a0	; $036836
 	move.w (a0,d0.l),d1	; $03683C
 	muls.w #$18,d1	; $036840
 	lea.l L0CF1BA.l,a0	; $036844
@@ -49875,7 +49875,7 @@ L0367EC:
 	beq.b L036894	; $036854
 	move.w -$4(a6),d0	; $036856
 	muls.w #$34,d0	; $03685A
-	lea.l ram_sys_ff02d6.l,a0	; $03685E
+	lea.l ram_world_field_02d6.l,a0	; $03685E
 	move.w #$ffa6,(a0,d0.l)	; $036864
 	move.w #$2,-(a7)	; $03686A
 	jsr rand_next.l	; $03686E
@@ -49917,13 +49917,13 @@ combat_set_mode:
 	link.w a6,#$0	; $0368E4
 	move.w ram_party_leader.l,d0	; $0368E8
 	muls.w #$34,d0	; $0368EE
-	lea.l ram_sys_ff02dd.l,a0	; $0368F2
+	lea.l ram_menu_field_02dd.l,a0	; $0368F2
 	move.l d0,d1	; $0368F8
 	moveq #$0,d0	; $0368FA
 	move.b (a0,d1.l),d0	; $0368FC
 	moveq #$34,d1	; $036900
 	jsr mul32.l	; $036902
-	lea.l ram_sys_ff02b6.l,a0	; $036908
+	lea.l ram_sys_field_02b6.l,a0	; $036908
 	move.w (a0,d0.l),d1	; $03690E
 	muls.w #$18,d1	; $036912
 	lea.l L0CF1BA.l,a0	; $036916
@@ -49950,13 +49950,13 @@ combat_set_member_score:
 	link.w a6,#$fffe	; $036954
 	move.w $8(a6),d0	; $036958
 	muls.w #$34,d0	; $03695C
-	lea.l ram_sys_ff02d0.l,a0	; $036960
+	lea.l ram_world_field_02d0.l,a0	; $036960
 	move.w (a0,d0.l),d1	; $036966
 	ext.l d1	; $03696A
 	divs.w #$4,d1	; $03696C
 	move.w $8(a6),d0	; $036970
 	muls.w #$34,d0	; $036974
-	lea.l ram_sys_ff02cc.l,a0	; $036978
+	lea.l ram_world_field_02cc.l,a0	; $036978
 	move.w (a0,d0.l),d2	; $03697E
 	lsr.w #$4,d2	; $036982
 	and.w #$f,d2	; $036984
@@ -49972,7 +49972,7 @@ combat_set_member_score:
 	move.w d1,-$2(a6)	; $0369A0
 	move.w $8(a6),d0	; $0369A4
 	muls.w #$34,d0	; $0369A8
-	lea.l ram_sys_ff02e0.l,a0	; $0369AC
+	lea.l ram_world_field_02e0.l,a0	; $0369AC
 	move.w (a0,d0.l),d1	; $0369B2
 	rol.w #$3,d1	; $0369B6
 	and.w #$1,d1	; $0369B8
@@ -49984,14 +49984,14 @@ L0369C2:
 	move.w $8(a6),d1	; $0369CA
 	muls.w #$34,d1	; $0369CE
 	movea.l d1,a0	; $0369D2
-	lea.l ram_sys_ff02de.l,a1	; $0369D4
+	lea.l ram_world_field_02de.l,a1	; $0369D4
 	adda.l a1,a0	; $0369DA
 	andi.w #$ff00,(a0)	; $0369DC
 	or.w d0,(a0)	; $0369E0
 	move.w $8(a6),d0	; $0369E2
 	muls.w #$34,d0	; $0369E6
 	movea.l d0,a0	; $0369EA
-	lea.l ram_sys_ff02cc.l,a1	; $0369EC
+	lea.l ram_world_field_02cc.l,a1	; $0369EC
 	adda.l a1,a0	; $0369F2
 	andi.w #$fdff,(a0)	; $0369F4
 	ori.w #$200,(a0)	; $0369F8
@@ -50034,7 +50034,7 @@ L036A4C:
 	beq.b L036A84	; $036A64
 	move.w -$4(a6),d0	; $036A66
 	muls.w #$34,d0	; $036A6A
-	lea.l ram_sys_ff02e0.l,a0	; $036A6E
+	lea.l ram_world_field_02e0.l,a0	; $036A6E
 	move.w (a0,d0.l),d1	; $036A74
 	rol.w #$3,d1	; $036A78
 	and.w #$1,d1	; $036A7A
@@ -50082,14 +50082,14 @@ L036AEC:
 	beq.b L036B80	; $036B04
 	move.w -$8(a6),d0	; $036B06
 	muls.w #$34,d0	; $036B0A
-	lea.l ram_sys_ff02e0.l,a0	; $036B0E
+	lea.l ram_world_field_02e0.l,a0	; $036B0E
 	move.w (a0,d0.l),d1	; $036B14
 	rol.w #$3,d1	; $036B18
 	and.w #$1,d1	; $036B1A
 	bne.b L036B80	; $036B1E
 	move.w -$8(a6),d0	; $036B20
 	muls.w #$34,d0	; $036B24
-	lea.l ram_sys_ff02de.l,a0	; $036B28
+	lea.l ram_world_field_02de.l,a0	; $036B28
 	move.w (a0,d0.l),d1	; $036B2E
 	and.w #$ff,d1	; $036B32
 	move.w d1,-$a(a6)	; $036B36
@@ -50097,14 +50097,14 @@ L036AEC:
 	ble.b L036B80	; $036B3E
 	move.w -$8(a6),d0	; $036B40
 	muls.w #$34,d0	; $036B44
-	lea.l ram_sys_ff02e0.l,a0	; $036B48
+	lea.l ram_world_field_02e0.l,a0	; $036B48
 	move.w (a0,d0.l),d1	; $036B4E
 	rol.w #$3,d1	; $036B52
 	and.w #$1,d1	; $036B54
 	bne.b L036B80	; $036B58
 	move.w -$8(a6),d0	; $036B5A
 	muls.w #$34,d0	; $036B5E
-	lea.l ram_sys_ff02cc.l,a0	; $036B62
+	lea.l ram_world_field_02cc.l,a0	; $036B62
 	move.w (a0,d0.l),d1	; $036B68
 	rol.w #$7,d1	; $036B6C
 	and.w #$1,d1	; $036B6E
@@ -50127,14 +50127,14 @@ L036B92:
 	beq.b L036C26	; $036BAA
 	move.w -$8(a6),d0	; $036BAC
 	muls.w #$34,d0	; $036BB0
-	lea.l ram_sys_ff02e0.l,a0	; $036BB4
+	lea.l ram_world_field_02e0.l,a0	; $036BB4
 	move.w (a0,d0.l),d1	; $036BBA
 	rol.w #$3,d1	; $036BBE
 	and.w #$1,d1	; $036BC0
 	bne.b L036C26	; $036BC4
 	move.w -$8(a6),d0	; $036BC6
 	muls.w #$34,d0	; $036BCA
-	lea.l ram_sys_ff02de.l,a0	; $036BCE
+	lea.l ram_world_field_02de.l,a0	; $036BCE
 	move.w (a0,d0.l),d1	; $036BD4
 	and.w #$ff,d1	; $036BD8
 	move.w d1,-$a(a6)	; $036BDC
@@ -50142,14 +50142,14 @@ L036B92:
 	ble.b L036C26	; $036BE4
 	move.w -$8(a6),d0	; $036BE6
 	muls.w #$34,d0	; $036BEA
-	lea.l ram_sys_ff02e0.l,a0	; $036BEE
+	lea.l ram_world_field_02e0.l,a0	; $036BEE
 	move.w (a0,d0.l),d1	; $036BF4
 	rol.w #$3,d1	; $036BF8
 	and.w #$1,d1	; $036BFA
 	bne.b L036C26	; $036BFE
 	move.w -$8(a6),d0	; $036C00
 	muls.w #$34,d0	; $036C04
-	lea.l ram_sys_ff02cc.l,a0	; $036C08
+	lea.l ram_world_field_02cc.l,a0	; $036C08
 	move.w (a0,d0.l),d1	; $036C0E
 	rol.w #$7,d1	; $036C12
 	and.w #$1,d1	; $036C14
@@ -50174,7 +50174,7 @@ L036C40:
 	beq.b L036C8A	; $036C58
 	move.w -$8(a6),d0	; $036C5A
 	muls.w #$34,d0	; $036C5E
-	lea.l ram_sys_ff02e0.l,a0	; $036C62
+	lea.l ram_world_field_02e0.l,a0	; $036C62
 	move.w (a0,d0.l),d1	; $036C68
 	rol.w #$3,d1	; $036C6C
 	and.w #$1,d1	; $036C6E
@@ -50182,7 +50182,7 @@ L036C40:
 	move.w -$8(a6),d0	; $036C74
 	muls.w #$34,d0	; $036C78
 	movea.l d0,a0	; $036C7C
-	lea.l ram_sys_ff02cc.l,a1	; $036C7E
+	lea.l ram_world_field_02cc.l,a1	; $036C7E
 	adda.l a1,a0	; $036C84
 	andi.w #$fdff,(a0)	; $036C86
 L036C8A:
@@ -50196,7 +50196,7 @@ L036C8A:
 	beq.b L036CD4	; $036CA2
 	move.w -$8(a6),d0	; $036CA4
 	muls.w #$34,d0	; $036CA8
-	lea.l ram_sys_ff02e0.l,a0	; $036CAC
+	lea.l ram_world_field_02e0.l,a0	; $036CAC
 	move.w (a0,d0.l),d1	; $036CB2
 	rol.w #$3,d1	; $036CB6
 	and.w #$1,d1	; $036CB8
@@ -50204,7 +50204,7 @@ L036C8A:
 	move.w -$8(a6),d0	; $036CBE
 	muls.w #$34,d0	; $036CC2
 	movea.l d0,a0	; $036CC6
-	lea.l ram_sys_ff02cc.l,a1	; $036CC8
+	lea.l ram_world_field_02cc.l,a1	; $036CC8
 	adda.l a1,a0	; $036CCE
 	andi.w #$fdff,(a0)	; $036CD0
 L036CD4:
@@ -50339,11 +50339,11 @@ spell_damage_calc:
 	move.w d0,d5	; $036E4E
 	move.w d5,d0	; $036E50
 	muls.w #$34,d0	; $036E52
-	lea.l ram_sys_ff02dd.l,a0	; $036E56
+	lea.l ram_menu_field_02dd.l,a0	; $036E56
 	moveq #$0,d1	; $036E5C
 	move.b (a0,d0.l),d1	; $036E5E
 	move.w d1,d4	; $036E62
-	tst.w ram_sys_ff0ea8.l	; $036E64
+	tst.w ram_sys_field_0ea8.l	; $036E64
 	bne.w L036F30	; $036E6A
 	lea.l ram_combat_flags.l,a0	; $036E6E
 	andi.w #$fdff,(a0)	; $036E74
@@ -50353,8 +50353,8 @@ spell_damage_calc:
 	andi.w #$efff,(a0)	; $036E88
 	lea.l ram_combat_flags.l,a0	; $036E8C
 	andi.w #$fffd,(a0)	; $036E92
-	clr.w ram_sys_ffc380.l	; $036E96
-	clr.w ram_sys_ffc378.l	; $036E9C
+	clr.w ram_sys_field_c380.l	; $036E96
+	clr.w ram_sys_field_c378.l	; $036E9C
 	move.w $8(a6),-(a7)	; $036EA2
 	jsr combat_ai_turn.l	; $036EA6
 	addq.w #$2,a7	; $036EAC
@@ -50377,7 +50377,7 @@ spell_damage_calc:
 	move.w $2c(a4),d0	; $036EEA
 	and.w #$ff,d0	; $036EEE
 	mulu.w #$34,d0	; $036EF2
-	lea.l ram_sys_ff02e0.l,a0	; $036EF6
+	lea.l ram_world_field_02e0.l,a0	; $036EF6
 	move.w (a0,d0.l),d1	; $036EFC
 	rol.w #$3,d1	; $036F00
 	and.w #$1,d1	; $036F02
@@ -50430,7 +50430,7 @@ L036F30:
 	bne.b L036F8E	; $036F8A
 	moveq #$f,d7	; $036F8C
 L036F8E:
-	move.w #$ffff,ram_sys_ff009a.l	; $036F8E
+	move.w #$ffff,ram_sys_field_009a.l	; $036F8E
 	move.w $2a(a4),d0	; $036F96
 	rol.w #$5,d0	; $036F9A
 	and.w #$1,d0	; $036F9C
@@ -50445,7 +50445,7 @@ L036F8E:
 	jsr combat_target_select(pc)	; $036FB8
 	addq.w #$4,a7	; $036FBC
 L036FBE:
-	tst.w ram_sys_ff0ea8.l	; $036FBE
+	tst.w ram_sys_field_0ea8.l	; $036FBE
 	bne.w L0370EC	; $036FC4
 	lea.l ram_combat_flags.l,a0	; $036FC8
 	move.w (a0),d0	; $036FCE
@@ -50480,7 +50480,7 @@ L036FBE:
 	ori.w #$1c0,(a0)	; $037034
 	move.w ram_party_leader.l,d0	; $037038
 	muls.w #$34,d0	; $03703E
-	lea.l ram_sys_ff02dd.l,a0	; $037042
+	lea.l ram_menu_field_02dd.l,a0	; $037042
 	moveq #$0,d1	; $037048
 	move.b (a0,d0.l),d1	; $03704A
 	move.w d1,-(a7)	; $03704E
@@ -50488,14 +50488,14 @@ L036FBE:
 	jsr combat_battle_start(pc)	; $037056
 	addq.w #$4,a7	; $03705A
 L03705C:
-	move.w #$7,ram_sys_ff0ea8.l	; $03705C
+	move.w #$7,ram_sys_field_0ea8.l	; $03705C
 	moveq #$4,d0	; $037064
 	bra.w L036F18	; $037066
 L03706A:
 	move.w $28(a4),d0	; $03706A
 	and.w #$3,d0	; $03706E
 	beq.b L037082	; $037072
-	move.w #$64,ram_sys_ff0ea8.l	; $037074
+	move.w #$64,ram_sys_field_0ea8.l	; $037074
 	moveq #$4,d0	; $03707C
 	bra.w L036F18	; $03707E
 L037082:
@@ -50504,11 +50504,11 @@ L037082:
 	lsr.w #$4,d0	; $03708A
 	cmp.w #$20,d0	; $03708C
 	bne.b L03709C	; $037090
-	move.w #$2,ram_sys_ff0ea8.l	; $037092
+	move.w #$2,ram_sys_field_0ea8.l	; $037092
 	bra.b L0370EC	; $03709A
 L03709C:
-	pea.l ram_sys_ff0252.l	; $03709C
-	pea.l ram_sys_ff0250.l	; $0370A2
+	pea.l ram_sys_field_0252.l	; $03709C
+	pea.l ram_sys_field_0250.l	; $0370A2
 	movea.l -$4(a6),a0	; $0370A8
 	move.w $e(a0),d0	; $0370AC
 	sub.w $e(a4),d0	; $0370B0
@@ -50520,12 +50520,12 @@ L03709C:
 	jsr world_decompose_direction.l	; $0370C4
 	lea.l $c(a7),a7	; $0370CA
 	movea.l -$4(a6),a0	; $0370CE
-	move.w $c(a0),ram_sys_ff024c.l	; $0370D2
+	move.w $c(a0),ram_sys_field_024c.l	; $0370D2
 	movea.l -$4(a6),a0	; $0370DA
-	move.w $e(a0),ram_sys_ff024e.l	; $0370DE
-	addq.w #$1,ram_sys_ff0ea8.l	; $0370E6
+	move.w $e(a0),ram_sys_field_024e.l	; $0370DE
+	addq.w #$1,ram_sys_field_0ea8.l	; $0370E6
 L0370EC:
-	cmpi.w #$1,ram_sys_ff0ea8.l	; $0370EC
+	cmpi.w #$1,ram_sys_field_0ea8.l	; $0370EC
 	bne.w L0371B4	; $0370F4
 	move.l a4,-(a7)	; $0370F8
 	jsr combat_target_check.l	; $0370FA
@@ -50533,24 +50533,24 @@ L0370EC:
 	tst.w d0	; $037102
 	beq.w L0371B4	; $037104
 	move.w d7,-(a7)	; $037108
-	move.w ram_sys_ff0252.l,-(a7)	; $03710A
-	move.w ram_sys_ff0250.l,-(a7)	; $037110
-	move.w ram_sys_ff024e.l,-(a7)	; $037116
-	move.w ram_sys_ff024c.l,-(a7)	; $03711C
+	move.w ram_sys_field_0252.l,-(a7)	; $03710A
+	move.w ram_sys_field_0250.l,-(a7)	; $037110
+	move.w ram_sys_field_024e.l,-(a7)	; $037116
+	move.w ram_sys_field_024c.l,-(a7)	; $03711C
 	move.l a4,-(a7)	; $037122
 	jsr combat_calc_range_effect(pc)	; $037124
 	lea.l $e(a7),a7	; $037128
 	move.w d0,d6	; $03712C
-	tst.w ram_sys_ff024c.l	; $03712E
+	tst.w ram_sys_field_024c.l	; $03712E
 	blt.b L037152	; $037134
-	cmpi.w #$a,ram_sys_ff024c.l	; $037136
+	cmpi.w #$a,ram_sys_field_024c.l	; $037136
 	bgt.b L037152	; $03713E
-	tst.w ram_sys_ff024e.l	; $037140
+	tst.w ram_sys_field_024e.l	; $037140
 	blt.b L037152	; $037146
-	cmpi.w #$a,ram_sys_ff024e.l	; $037148
+	cmpi.w #$a,ram_sys_field_024e.l	; $037148
 	ble.b L03715A	; $037150
 L037152:
-	move.w #$7,ram_sys_ff0ea8.l	; $037152
+	move.w #$7,ram_sys_field_0ea8.l	; $037152
 L03715A:
 	move.w $2a(a4),d0	; $03715A
 	rol.w #$4,d0	; $03715E
@@ -50578,16 +50578,16 @@ L03715A:
 	cmp.w d1,d0	; $0371A2
 	bge.b L0371AE	; $0371A4
 L0371A6:
-	addq.w #$1,ram_sys_ff0ea8.l	; $0371A6
+	addq.w #$1,ram_sys_field_0ea8.l	; $0371A6
 	bra.b L0371B4	; $0371AC
 L0371AE:
 	move.w d6,d0	; $0371AE
 	bra.w L036F18	; $0371B0
 L0371B4:
-	cmpi.w #$2,ram_sys_ff0ea8.l	; $0371B4
+	cmpi.w #$2,ram_sys_field_0ea8.l	; $0371B4
 	bne.w L03725E	; $0371BC
-	pea.l ram_sys_ff0252.l	; $0371C0
-	pea.l ram_sys_ff0250.l	; $0371C6
+	pea.l ram_sys_field_0252.l	; $0371C0
+	pea.l ram_sys_field_0250.l	; $0371C6
 	movea.l -$4(a6),a0	; $0371CC
 	move.w $e(a0),d0	; $0371D0
 	sub.w $e(a4),d0	; $0371D4
@@ -50598,7 +50598,7 @@ L0371B4:
 	move.w d0,-(a7)	; $0371E6
 	jsr world_decompose_direction.l	; $0371E8
 	lea.l $c(a7),a7	; $0371EE
-	addq.w #$1,ram_sys_ff0ea8.l	; $0371F2
+	addq.w #$1,ram_sys_field_0ea8.l	; $0371F2
 	move.w $2a(a4),d0	; $0371F8
 	rol.w #$4,d0	; $0371FC
 	and.w #$f,d0	; $0371FE
@@ -50626,11 +50626,11 @@ L0371B4:
 	andi.w #$ff00,(a0)	; $03724A
 	or.w d0,(a0)	; $03724E
 L037250:
-	move.w ram_sys_ff0250.l,d0	; $037250
+	move.w ram_sys_field_0250.l,d0	; $037250
 	add.w #$40,d0	; $037256
 	bra.w L036F18	; $03725A
 L03725E:
-	cmpi.w #$3,ram_sys_ff0ea8.l	; $03725E
+	cmpi.w #$3,ram_sys_field_0ea8.l	; $03725E
 	bne.w L037326	; $037266
 	lea.l ram_combat_flags.l,a0	; $03726A
 	move.w (a0),d0	; $037270
@@ -50648,7 +50648,7 @@ L03725E:
 	cmp.w d2,d0	; $037292
 	bhi.b L0372A2	; $037294
 L037296:
-	move.w #$5,ram_sys_ff0ea8.l	; $037296
+	move.w #$5,ram_sys_field_0ea8.l	; $037296
 	bra.w L037326	; $03729E
 L0372A2:
 	move.w $2a(a4),d0	; $0372A2
@@ -50664,8 +50664,8 @@ L0372A2:
 	move.w $2a(a4),d0	; $0372C2
 	rol.w #$4,d0	; $0372C6
 	and.w #$f,d0	; $0372C8
-	pea.l ram_sys_ff0252.l	; $0372CC
-	pea.l ram_sys_ff0250.l	; $0372D2
+	pea.l ram_sys_field_0252.l	; $0372CC
+	pea.l ram_sys_field_0250.l	; $0372D2
 	movea.l -$4(a6),a0	; $0372D8
 	move.w $e(a0),d0	; $0372DC
 	sub.w $e(a4),d0	; $0372E0
@@ -50676,7 +50676,7 @@ L0372A2:
 	move.w d0,-(a7)	; $0372F2
 	jsr world_decompose_direction.l	; $0372F4
 	lea.l $c(a7),a7	; $0372FA
-	addq.w #$1,ram_sys_ff0ea8.l	; $0372FE
+	addq.w #$1,ram_sys_field_0ea8.l	; $0372FE
 	move.w $2c(a4),d0	; $037304
 	and.w #$ff,d0	; $037308
 	move.w d0,-(a7)	; $03730C
@@ -50685,10 +50685,10 @@ L0372A2:
 	addq.w #$4,a7	; $037316
 	cmp.w d7,d0	; $037318
 	ble.b L037326	; $03731A
-	move.w ram_sys_ff0250.l,d0	; $03731C
+	move.w ram_sys_field_0250.l,d0	; $03731C
 	bra.w L036F18	; $037322
 L037326:
-	cmpi.w #$4,ram_sys_ff0ea8.l	; $037326
+	cmpi.w #$4,ram_sys_field_0ea8.l	; $037326
 	bne.w L0373EA	; $03732E
 	move.w $2a(a4),d0	; $037332
 	rol.w #$4,d0	; $037336
@@ -50703,8 +50703,8 @@ L037326:
 	move.w $2a(a4),d0	; $037352
 	rol.w #$4,d0	; $037356
 	and.w #$f,d0	; $037358
-	pea.l ram_sys_ff0252.l	; $03735C
-	pea.l ram_sys_ff0250.l	; $037362
+	pea.l ram_sys_field_0252.l	; $03735C
+	pea.l ram_sys_field_0250.l	; $037362
 	movea.l -$4(a6),a0	; $037368
 	move.w $e(a0),d0	; $03736C
 	sub.w $e(a4),d0	; $037370
@@ -50720,10 +50720,10 @@ L037326:
 	addq.w #$2,a7	; $037398
 	tst.w d0	; $03739A
 	bne.b L0373A8	; $03739C
-	move.w #$3,ram_sys_ff0ea8.l	; $03739E
+	move.w #$3,ram_sys_field_0ea8.l	; $03739E
 	bra.b L0373AE	; $0373A6
 L0373A8:
-	addq.w #$1,ram_sys_ff0ea8.l	; $0373A8
+	addq.w #$1,ram_sys_field_0ea8.l	; $0373A8
 L0373AE:
 	movea.l -$8(a6),a0	; $0373AE
 	move.w $2(a0),d0	; $0373B2
@@ -50739,11 +50739,11 @@ L0373AE:
 	andi.w #$ff00,(a0)	; $0373D6
 	or.w d0,(a0)	; $0373DA
 L0373DC:
-	move.w ram_sys_ff0250.l,d0	; $0373DC
+	move.w ram_sys_field_0250.l,d0	; $0373DC
 	add.w #$40,d0	; $0373E2
 	bra.w L036F18	; $0373E6
 L0373EA:
-	cmpi.w #$5,ram_sys_ff0ea8.l	; $0373EA
+	cmpi.w #$5,ram_sys_field_0ea8.l	; $0373EA
 	bne.w L037516	; $0373F2
 	move.w $2a(a4),d0	; $0373F6
 	rol.w #$4,d0	; $0373FA
@@ -50760,7 +50760,7 @@ L0373EA:
 	and.w #$f,d0	; $03741C
 	cmp.w #$f,d7	; $037420
 	bne.b L037434	; $037424
-	move.w #$7,ram_sys_ff0ea8.l	; $037426
+	move.w #$7,ram_sys_field_0ea8.l	; $037426
 	moveq #$4,d0	; $03742E
 	bra.w L036F18	; $037430
 L037434:
@@ -50789,21 +50789,21 @@ L037460:
 	lsr.w #$8,d0	; $037466
 	and.w #$3,d0	; $037468
 	move.w d0,-(a7)	; $03746C
-	pea.l ram_sys_ff024e.l	; $03746E
-	pea.l ram_sys_ff024c.l	; $037474
+	pea.l ram_sys_field_024e.l	; $03746E
+	pea.l ram_sys_field_024c.l	; $037474
 	move.w $8(a6),-(a7)	; $03747A
 	jsr spell_find_target_cell.l	; $03747E
 	lea.l $e(a7),a7	; $037484
 	movea.l -$4(a6),a0	; $037488
 	move.w $c(a0),d0	; $03748C
-	sub.w ram_sys_ff024c.l,d0	; $037490
+	sub.w ram_sys_field_024c.l,d0	; $037490
 	move.w d0,-(a7)	; $037496
 	jsr math_calc_square(pc)	; $037498
 	addq.w #$2,a7	; $03749C
 	move.w d0,-(a7)	; $03749E
 	movea.l -$4(a6),a0	; $0374A0
 	move.w $e(a0),d0	; $0374A4
-	sub.w ram_sys_ff024e.l,d0	; $0374A8
+	sub.w ram_sys_field_024e.l,d0	; $0374A8
 	move.w d0,-(a7)	; $0374AE
 	jsr math_calc_square(pc)	; $0374B0
 	addq.w #$2,a7	; $0374B4
@@ -50834,17 +50834,17 @@ L037460:
 	move.w (a7)+,d1	; $0374FA
 	cmp.w d0,d1	; $0374FC
 	bcc.b L037508	; $0374FE
-	clr.w ram_sys_ff0250.l	; $037500
+	clr.w ram_sys_field_0250.l	; $037500
 	bra.b L037510	; $037506
 L037508:
-	move.w #$10,ram_sys_ff0250.l	; $037508
+	move.w #$10,ram_sys_field_0250.l	; $037508
 L037510:
-	addq.w #$1,ram_sys_ff0ea8.l	; $037510
+	addq.w #$1,ram_sys_field_0ea8.l	; $037510
 L037516:
-	cmpi.w #$6,ram_sys_ff0ea8.l	; $037516
+	cmpi.w #$6,ram_sys_field_0ea8.l	; $037516
 	bne.b L03755A	; $03751E
-	move.w ram_sys_ff024e.l,-(a7)	; $037520
-	move.w ram_sys_ff024c.l,-(a7)	; $037526
+	move.w ram_sys_field_024e.l,-(a7)	; $037520
+	move.w ram_sys_field_024c.l,-(a7)	; $037526
 	move.l a4,-(a7)	; $03752C
 	jsr world_get_direction(pc)	; $03752E
 	addq.w #$8,a7	; $037532
@@ -50854,27 +50854,27 @@ L037516:
 	addq.w #$2,a7	; $03753E
 	cmp.w #$4,d6	; $037540
 	bne.b L03754E	; $037544
-	addq.w #$1,ram_sys_ff0ea8.l	; $037546
+	addq.w #$1,ram_sys_field_0ea8.l	; $037546
 	bra.b L03755A	; $03754C
 L03754E:
 	move.w d6,d0	; $03754E
-	add.w ram_sys_ff0250.l,d0	; $037550
+	add.w ram_sys_field_0250.l,d0	; $037550
 	bra.w L036F18	; $037556
 L03755A:
-	cmpi.w #$7,ram_sys_ff0ea8.l	; $03755A
+	cmpi.w #$7,ram_sys_field_0ea8.l	; $03755A
 	bne.w L037720	; $037562
 	movea.l a4,a0	; $037566
 	adda.l #$18,a0	; $037568
 	andi.w #$fdff,(a0)	; $03756E
 	ori.w #$200,(a0)	; $037572
-	tst.w ram_sys_ff013a.l	; $037576
+	tst.w ram_save_field_013a.l	; $037576
 	beq.b L03758A	; $03757C
 	movea.l a4,a0	; $03757E
 	adda.l #$18,a0	; $037580
 	andi.w #$feff,(a0)	; $037586
 L03758A:
-	pea.l ram_sys_ff0252.l	; $03758A
-	pea.l ram_sys_ff0250.l	; $037590
+	pea.l ram_sys_field_0252.l	; $03758A
+	pea.l ram_sys_field_0250.l	; $037590
 	movea.l -$4(a6),a0	; $037596
 	move.w $e(a0),d0	; $03759A
 	sub.w $e(a4),d0	; $03759E
@@ -50885,7 +50885,7 @@ L03758A:
 	move.w d0,-(a7)	; $0375B0
 	jsr world_decompose_direction.l	; $0375B2
 	lea.l $c(a7),a7	; $0375B8
-	move.w ram_sys_ff0250.l,-(a7)	; $0375BC
+	move.w ram_sys_field_0250.l,-(a7)	; $0375BC
 	move.w #$ffff,-(a7)	; $0375C2
 	move.w #$ffff,-(a7)	; $0375C6
 	move.w #$ffff,-(a7)	; $0375CA
@@ -50965,7 +50965,7 @@ L0376B2:
 	move.w ram_actor_index.l,-(a7)	; $0376B2
 	jsr combat_flag_clear.l	; $0376B8
 	addq.w #$2,a7	; $0376BE
-	clr.w ram_sys_ff0ea8.l	; $0376C0
+	clr.w ram_sys_field_0ea8.l	; $0376C0
 	lea.l ram_combat_flags.l,a0	; $0376C6
 	andi.w #$fffb,(a0)	; $0376CC
 	move.w d4,-(a7)	; $0376D0
@@ -50978,7 +50978,7 @@ L0376B2:
 	move.w #$4,-(a7)	; $0376E8
 	move.w ram_actor_index.l,d0	; $0376EC
 	muls.w #$34,d0	; $0376F2
-	lea.l ram_sys_ff02ca.l,a0	; $0376F6
+	lea.l ram_sys_field_02ca.l,a0	; $0376F6
 	moveq #$0,d1	; $0376FC
 	move.b (a0,d0.l),d1	; $0376FE
 	move.w d1,-(a7)	; $037702
@@ -50990,13 +50990,13 @@ L0376B2:
 	moveq #$4,d0	; $03771A
 	bra.w L036F18	; $03771C
 L037720:
-	cmpi.w #$64,ram_sys_ff0ea8.l	; $037720
+	cmpi.w #$64,ram_sys_field_0ea8.l	; $037720
 	blt.b L037782	; $037728
-	cmpi.w #$69,ram_sys_ff0ea8.l	; $03772A
+	cmpi.w #$69,ram_sys_field_0ea8.l	; $03772A
 	bge.b L037782	; $037732
-	cmpi.w #$68,ram_sys_ff0ea8.l	; $037734
+	cmpi.w #$68,ram_sys_field_0ea8.l	; $037734
 	bne.b L03776C	; $03773C
-	move.w #$7,ram_sys_ff0ea8.l	; $03773E
+	move.w #$7,ram_sys_field_0ea8.l	; $03773E
 	move.w $28(a4),d0	; $037746
 	and.w #$3,d0	; $03774A
 	subq.w #$1,d0	; $03774E
@@ -51009,14 +51009,14 @@ L037720:
 	and.w #$3,d0	; $037766
 	bra.b L037772	; $03776A
 L03776C:
-	addq.w #$1,ram_sys_ff0ea8.l	; $03776C
+	addq.w #$1,ram_sys_field_0ea8.l	; $03776C
 L037772:
 	move.w #$4,-(a7)	; $037772
 	jsr rand_next.l	; $037776
 	addq.w #$2,a7	; $03777C
 	bra.w L036F18	; $03777E
 L037782:
-	addq.w #$1,ram_sys_ff0ea8.l	; $037782
+	addq.w #$1,ram_sys_field_0ea8.l	; $037782
 	moveq #$4,d0	; $037788
 	bra.w L036F18	; $03778A
 	; code $03778E-$0377FD
@@ -51139,7 +51139,7 @@ L0378C2:
 	move.w -$4(a6),d1	; $0378F0
 	muls.w #$34,d1	; $0378F4
 	movea.l d1,a0	; $0378F8
-	lea.l ram_sys_ff02e0.l,a1	; $0378FA
+	lea.l ram_world_field_02e0.l,a1	; $0378FA
 	adda.l a1,a0	; $037900
 	andi.w #$fcff,(a0)	; $037902
 	or.w d0,(a0)	; $037906
@@ -51170,7 +51170,7 @@ L037920:
 	move.w -$4(a6),d1	; $03794E
 	muls.w #$34,d1	; $037952
 	movea.l d1,a0	; $037956
-	lea.l ram_sys_ff02e0.l,a1	; $037958
+	lea.l ram_world_field_02e0.l,a1	; $037958
 	adda.l a1,a0	; $03795E
 	andi.w #$e3ff,(a0)	; $037960
 	or.w d0,(a0)	; $037964
@@ -51290,14 +51290,14 @@ L037ABE:
 	beq.b L037B12	; $037AD4
 	move.w -$8(a6),d0	; $037AD6
 	muls.w #$34,d0	; $037ADA
-	lea.l ram_sys_ff02cc.l,a0	; $037ADE
+	lea.l ram_world_field_02cc.l,a0	; $037ADE
 	move.w (a0,d0.l),d1	; $037AE4
 	and.w #$f,d1	; $037AE8
 	cmp.w $8(a6),d1	; $037AEC
 	bne.b L037B12	; $037AF0
 	move.w -$8(a6),d0	; $037AF2
 	muls.w #$34,d0	; $037AF6
-	lea.l ram_sys_ff02e0.l,a0	; $037AFA
+	lea.l ram_world_field_02e0.l,a0	; $037AFA
 	move.w (a0,d0.l),d1	; $037B00
 	rol.w #$3,d1	; $037B04
 	and.w #$1,d1	; $037B06
@@ -51333,7 +51333,7 @@ L037B2C:
 	andi.w #$fbff,(a0)	; $037B70
 	ori.w #$400,(a0)	; $037B74
 L037B78:
-	move.w #$ffff,ram_sys_ff009a.l	; $037B78
+	move.w #$ffff,ram_sys_field_009a.l	; $037B78
 	bra.b L037B24	; $037B80
 	; code $037B82-$037D0D
 combat_target_select:
@@ -51370,7 +51370,7 @@ L037BD0:
 	lea.l ram_party_index_array.l,a0	; $037BEC
 	move.w (a0,d0.l),d1	; $037BF2
 	muls.w #$34,d1	; $037BF6
-	lea.l ram_sys_ff02e0.l,a0	; $037BFA
+	lea.l ram_world_field_02e0.l,a0	; $037BFA
 	move.w (a0,d1.l),d0	; $037C00
 	rol.w #$3,d0	; $037C04
 	and.w #$1,d0	; $037C06
@@ -51393,7 +51393,7 @@ L037C26:
 	movea.l $8(a6),a0	; $037C3A
 	move.w $4(a0),d0	; $037C3E
 	mulu.w #$c,d0	; $037C42
-	lea.l ram_sys_ffb0d4.l,a0	; $037C46
+	lea.l ram_sys_field_b0d4.l,a0	; $037C46
 	adda.l d0,a0	; $037C4C
 	bset #$7,(a0)	; $037C4E
 L037C52:
@@ -51421,7 +51421,7 @@ L037C52:
 	move.w (a0),d0	; $037CA2
 	and.w #$1,d0	; $037CA4
 	bne.b L037CBC	; $037CA8
-	cmpi.w #$2,ram_sys_ff00ae.l	; $037CAA
+	cmpi.w #$2,ram_menu_field_00ae.l	; $037CAA
 	bne.b L037CBC	; $037CB2
 	jsr combat_kill_announce.l	; $037CB4
 	bra.b L037CC2	; $037CBA
@@ -51445,7 +51445,7 @@ L037CE6:
 	move.w (a0),d0	; $037CEC
 	and.w #$1,d0	; $037CEE
 	beq.b L037D0A	; $037CF2
-	tst.w ram_sys_ff0112.l	; $037CF4
+	tst.w ram_menu_field_0112.l	; $037CF4
 	bne.b L037D0A	; $037CFA
 	move.w ram_actor_index.l,-(a7)	; $037CFC
 	jsr combat_ai_turn.l	; $037D02
@@ -51460,7 +51460,7 @@ spell_effect_apply:
 	bne.b L037D36	; $037D20
 	move.w -$6(a6),d0	; $037D22
 	muls.w #$34,d0	; $037D26
-	lea.l ram_sys_ff02be.l,a0	; $037D2A
+	lea.l ram_sys_field_02be.l,a0	; $037D2A
 	move.w (a0,d0.l),$8(a6)	; $037D30
 L037D36:
 	move.w -$6(a6),d0	; $037D36
@@ -51535,7 +51535,7 @@ L037E02:
 	move.w -$6(a6),-(a7)	; $037E1C
 	jsr npc_leader_init.l	; $037E20
 	lea.l $10(a7),a7	; $037E26
-	move.w #$ffff,ram_sys_ffc37c.l	; $037E2A
+	move.w #$ffff,ram_sys_field_c37c.l	; $037E2A
 	move.w #$ffff,ram_sys_ffc37e.l	; $037E32
 	movea.l -$18(a6),a0	; $037E3A
 	move.w $2(a0),d0	; $037E3E
@@ -51857,7 +51857,7 @@ L0381BC:
 	clr.w -(a7)	; $0381D6
 	move.w $8(a6),d0	; $0381D8
 	muls.w #$34,d0	; $0381DC
-	lea.l ram_sys_ff02b8.l,a0	; $0381E0
+	lea.l ram_world_field_02b8.l,a0	; $0381E0
 	move.w (a0,d0.l),-(a7)	; $0381E6
 	jsr combat_effect_apply.l	; $0381EA
 	lea.l $e(a7),a7	; $0381F0
@@ -51872,7 +51872,7 @@ L0381F6:
 	clr.w -(a7)	; $038210
 	move.w $8(a6),d0	; $038212
 	muls.w #$34,d0	; $038216
-	lea.l ram_sys_ff02b8.l,a0	; $03821A
+	lea.l ram_world_field_02b8.l,a0	; $03821A
 	move.w (a0,d0.l),-(a7)	; $038220
 	jsr combat_effect_apply.l	; $038224
 	lea.l $e(a7),a7	; $03822A
@@ -51887,7 +51887,7 @@ L038230:
 	clr.w -(a7)	; $038246
 	move.w $8(a6),d0	; $038248
 	muls.w #$34,d0	; $03824C
-	lea.l ram_sys_ff02b8.l,a0	; $038250
+	lea.l ram_world_field_02b8.l,a0	; $038250
 	move.w (a0,d0.l),-(a7)	; $038256
 	jsr combat_effect_apply.l	; $03825A
 	lea.l $e(a7),a7	; $038260
@@ -52358,13 +52358,13 @@ combat_set_target:
 	move.l a3,-(a7)	; $0387B2
 	move.w $8(a6),d0	; $0387B4
 	muls.w #$34,d0	; $0387B8
-	lea.l ram_sys_ff02db.l,a0	; $0387BC
+	lea.l ram_sys_field_02db.l,a0	; $0387BC
 	move.l d0,d1	; $0387C2
 	moveq #$0,d0	; $0387C4
 	move.b (a0,d1.l),d0	; $0387C6
 	moveq #$34,d1	; $0387CA
 	jsr mul32.l	; $0387CC
-	lea.l ram_sys_ff02dd.l,a0	; $0387D2
+	lea.l ram_menu_field_02dd.l,a0	; $0387D2
 	move.l d0,d1	; $0387D8
 	moveq #$0,d0	; $0387DA
 	move.b (a0,d1.l),d0	; $0387DC
@@ -52385,7 +52385,7 @@ L0387F6:
 	beq.b L038848	; $03880C
 	move.w -$4(a6),d0	; $03880E
 	muls.w #$34,d0	; $038812
-	lea.l ram_sys_ff02e0.l,a0	; $038816
+	lea.l ram_world_field_02e0.l,a0	; $038816
 	move.w (a0,d0.l),d1	; $03881C
 	rol.w #$3,d1	; $038820
 	and.w #$1,d1	; $038822
@@ -52395,7 +52395,7 @@ L0387F6:
 	move.w $8(a6),d1	; $038830
 	muls.w #$34,d1	; $038834
 	movea.l d1,a0	; $038838
-	lea.l ram_sys_ff02e0.l,a1	; $03883A
+	lea.l ram_world_field_02e0.l,a1	; $03883A
 	adda.l a1,a0	; $038840
 	andi.w #$ff00,(a0)	; $038842
 	or.w d0,(a0)	; $038846
@@ -52412,7 +52412,7 @@ FUN_038850:
 	blt.b L0387F6	; $03885A
 	move.w $8(a6),d0	; $03885C
 	muls.w #$34,d0	; $038860
-	lea.l ram_sys_ff02db.l,a0	; $038864
+	lea.l ram_sys_field_02db.l,a0	; $038864
 	moveq #$0,d1	; $03886A
 	move.b (a0,d0.l),d1	; $03886C
 	cmp.w ram_party_leader.l,d1	; $038870
@@ -52495,13 +52495,13 @@ L038960:
 	moveq #$1,d5	; $038960
 L038962:
 	move.w d5,d0	; $038962
-	movea.l ram_sys_ffa7fc.l,a0	; $038964
+	movea.l ram_sys_field_a7fc.l,a0	; $038964
 	ext.l d0	; $03896A
 	divs.w $4(a0),d0	; $03896C
 	swap d0	; $038970
-	movea.l ram_sys_ffa7fc.l,a0	; $038972
+	movea.l ram_sys_field_a7fc.l,a0	; $038972
 	muls.w $4(a0),d0	; $038978
-	movea.l ram_sys_ffa7fc.l,a0	; $03897C
+	movea.l ram_sys_field_a7fc.l,a0	; $03897C
 	move.w d4,d1	; $038982
 	ext.l d1	; $038984
 	divs.w $4(a0),d1	; $038986
@@ -52528,13 +52528,13 @@ L038962:
 	add.w d1,d0	; $0389C4
 	and.w #$1ff,d0	; $0389C6
 	move.w d5,d1	; $0389CA
-	movea.l ram_sys_ffa7fc.l,a0	; $0389CC
+	movea.l ram_sys_field_a7fc.l,a0	; $0389CC
 	ext.l d1	; $0389D2
 	divs.w $4(a0),d1	; $0389D4
 	swap d1	; $0389D8
-	movea.l ram_sys_ffa7fc.l,a0	; $0389DA
+	movea.l ram_sys_field_a7fc.l,a0	; $0389DA
 	muls.w $4(a0),d1	; $0389E0
-	movea.l ram_sys_ffa7fc.l,a0	; $0389E4
+	movea.l ram_sys_field_a7fc.l,a0	; $0389E4
 	move.w d4,d2	; $0389EA
 	ext.l d2	; $0389EC
 	divs.w $4(a0),d2	; $0389EE
@@ -52716,7 +52716,7 @@ npc_wander_move:
 	bne.b L038BD6	; $038BC2
 L038BC4:
 	clr.w -(a7)	; $038BC4
-	move.w ram_sys_ffc418.l,-(a7)	; $038BC6
+	move.w ram_sys_field_c418.l,-(a7)	; $038BC6
 	jsr spell_apply_target.l	; $038BCC
 	addq.w #$4,a7	; $038BD2
 	bra.b L038C4A	; $038BD4
@@ -52724,11 +52724,11 @@ L038BD6:
 	clr.w -(a7)	; $038BD6
 	move.w -$2(a6),-(a7)	; $038BD8
 	move.w #$6,-(a7)	; $038BDC
-	move.w ram_sys_ffc418.l,d0	; $038BE0
+	move.w ram_sys_field_c418.l,d0	; $038BE0
 	muls.w #$34,d0	; $038BE6
 	lea.l ram_npc_field_02c2.l,a0	; $038BEA
 	move.w (a0,d0.l),-(a7)	; $038BF0
-	move.w ram_sys_ffc418.l,d0	; $038BF4
+	move.w ram_sys_field_c418.l,d0	; $038BF4
 	muls.w #$34,d0	; $038BFA
 	lea.l ram_header_leader.l,a0	; $038BFE
 	move.w (a0,d0.l),-(a7)	; $038C04
@@ -52738,7 +52738,7 @@ L038BD6:
 	tst.w -$4(a6)	; $038C16
 	beq.b L038C2E	; $038C1A
 	clr.w -(a7)	; $038C1C
-	move.w ram_sys_ffc418.l,-(a7)	; $038C1E
+	move.w ram_sys_field_c418.l,-(a7)	; $038C1E
 	jsr spell_apply_target.l	; $038C24
 	addq.w #$4,a7	; $038C2A
 	bra.b L038C4A	; $038C2C
@@ -52746,12 +52746,12 @@ L038C2E:
 	move.w -$2(a6),d0	; $038C2E
 	add.w $8(a6),d0	; $038C32
 	move.w d0,-(a7)	; $038C36
-	move.w ram_sys_ffc418.l,-(a7)	; $038C38
+	move.w ram_sys_field_c418.l,-(a7)	; $038C38
 	jsr combat_move_unit.l	; $038C3E
 	addq.w #$4,a7	; $038C44
 	move.w d0,-$4(a6)	; $038C46
 L038C4A:
-	clr.w ram_sys_ff0130.l	; $038C4A
+	clr.w ram_sys_field_0130.l	; $038C4A
 	addq.w #$1,ram_sys_field_012a.l	; $038C50
 	unlk a6	; $038C56
 	rts	; $038C58
@@ -53205,7 +53205,7 @@ L03922C:
 	move.b $27(a0),d0	; $039232
 	moveq #$34,d1	; $039236
 	jsr mul32.l	; $039238
-	lea.l ram_sys_ff02dd.l,a0	; $03923E
+	lea.l ram_menu_field_02dd.l,a0	; $03923E
 	move.l d0,d1	; $039244
 	moveq #$0,d0	; $039246
 	move.b (a0,d1.l),d0	; $039248
@@ -53438,7 +53438,7 @@ L03951C:
 	move.b $27(a0),d0	; $039522
 	moveq #$34,d1	; $039526
 	jsr mul32.l	; $039528
-	lea.l ram_sys_ff02dd.l,a0	; $03952E
+	lea.l ram_menu_field_02dd.l,a0	; $03952E
 	move.l d0,d1	; $039534
 	moveq #$0,d0	; $039536
 	move.b (a0,d1.l),d0	; $039538
@@ -53807,7 +53807,7 @@ npc_clear_bit15_399ac:
 	move.w $8(a6),d0	; $0399B0
 	muls.w #$34,d0	; $0399B4
 	movea.l d0,a0	; $0399B8
-	lea.l ram_sys_ff02e0.l,a1	; $0399BA
+	lea.l ram_world_field_02e0.l,a1	; $0399BA
 	adda.l a1,a0	; $0399C0
 	andi.w #$7fff,(a0)	; $0399C2
 	ori.w #$8000,(a0)	; $0399C6
@@ -53829,7 +53829,7 @@ npc_clear_bit15_399f4:
 	move.w $8(a6),d0	; $0399F8
 	muls.w #$34,d0	; $0399FC
 	movea.l d0,a0	; $039A00
-	lea.l ram_sys_ff02e0.l,a1	; $039A02
+	lea.l ram_world_field_02e0.l,a1	; $039A02
 	adda.l a1,a0	; $039A08
 	andi.w #$7fff,(a0)	; $039A0A
 	move.w $8(a6),d0	; $039A0E
@@ -53892,7 +53892,7 @@ L039AD2:
 	move.b $27(a3),d0	; $039AD4
 	moveq #$34,d1	; $039AD8
 	jsr mul32.l	; $039ADA
-	lea.l ram_sys_ff02dd.l,a0	; $039AE0
+	lea.l ram_menu_field_02dd.l,a0	; $039AE0
 	moveq #$0,d1	; $039AE6
 	move.b (a0,d0.l),d1	; $039AE8
 	move.w d1,-(a7)	; $039AEC
@@ -53947,7 +53947,7 @@ L039B9C:
 	move.b $27(a3),d0	; $039BA2
 	moveq #$34,d1	; $039BA6
 	jsr mul32.l	; $039BA8
-	lea.l ram_sys_ff02dd.l,a0	; $039BAE
+	lea.l ram_menu_field_02dd.l,a0	; $039BAE
 	moveq #$0,d1	; $039BB4
 	move.b (a0,d0.l),d1	; $039BB6
 	move.w d1,-(a7)	; $039BBA
@@ -53980,7 +53980,7 @@ L039C10:
 	move.b $27(a3),d0	; $039C1C
 	moveq #$34,d1	; $039C20
 	jsr mul32.l	; $039C22
-	lea.l ram_sys_ff02dd.l,a0	; $039C28
+	lea.l ram_menu_field_02dd.l,a0	; $039C28
 	moveq #$0,d1	; $039C2E
 	move.b (a0,d0.l),d1	; $039C30
 	move.w d1,-(a7)	; $039C34
@@ -53994,7 +53994,7 @@ L039C44:
 	move.b $27(a3),d0	; $039C4A
 	moveq #$34,d1	; $039C4E
 	jsr mul32.l	; $039C50
-	lea.l ram_sys_ff02dd.l,a0	; $039C56
+	lea.l ram_menu_field_02dd.l,a0	; $039C56
 	moveq #$0,d1	; $039C5C
 	move.b (a0,d0.l),d1	; $039C5E
 	move.w d1,-(a7)	; $039C62
@@ -54030,7 +54030,7 @@ L039CBA:
 	move.b $27(a3),d0	; $039CC6
 	moveq #$34,d1	; $039CCA
 	jsr mul32.l	; $039CCC
-	lea.l ram_sys_ff02dd.l,a0	; $039CD2
+	lea.l ram_menu_field_02dd.l,a0	; $039CD2
 	moveq #$0,d1	; $039CD8
 	move.b (a0,d0.l),d1	; $039CDA
 	move.w d1,-(a7)	; $039CDE
@@ -54044,7 +54044,7 @@ L039CEE:
 	move.b $27(a3),d0	; $039CF4
 	moveq #$34,d1	; $039CF8
 	jsr mul32.l	; $039CFA
-	lea.l ram_sys_ff02dd.l,a0	; $039D00
+	lea.l ram_menu_field_02dd.l,a0	; $039D00
 	moveq #$0,d1	; $039D06
 	move.b (a0,d0.l),d1	; $039D08
 	move.w d1,-(a7)	; $039D0C
@@ -54087,7 +54087,7 @@ L039D7A:
 	move.b $27(a3),d0	; $039D86
 	moveq #$34,d1	; $039D8A
 	jsr mul32.l	; $039D8C
-	lea.l ram_sys_ff02dd.l,a0	; $039D92
+	lea.l ram_menu_field_02dd.l,a0	; $039D92
 	moveq #$0,d1	; $039D98
 	move.b (a0,d0.l),d1	; $039D9A
 	move.w d1,-(a7)	; $039D9E
@@ -54101,7 +54101,7 @@ L039DAE:
 	move.b $27(a3),d0	; $039DB4
 	moveq #$34,d1	; $039DB8
 	jsr mul32.l	; $039DBA
-	lea.l ram_sys_ff02dd.l,a0	; $039DC0
+	lea.l ram_menu_field_02dd.l,a0	; $039DC0
 	moveq #$0,d1	; $039DC6
 	move.b (a0,d0.l),d1	; $039DC8
 	move.w d1,-(a7)	; $039DCC
@@ -54137,7 +54137,7 @@ L039E24:
 	move.b $27(a3),d0	; $039E30
 	moveq #$34,d1	; $039E34
 	jsr mul32.l	; $039E36
-	lea.l ram_sys_ff02dd.l,a0	; $039E3C
+	lea.l ram_menu_field_02dd.l,a0	; $039E3C
 	moveq #$0,d1	; $039E42
 	move.b (a0,d0.l),d1	; $039E44
 	move.w d1,-(a7)	; $039E48
@@ -54151,7 +54151,7 @@ L039E58:
 	move.b $27(a3),d0	; $039E5E
 	moveq #$34,d1	; $039E62
 	jsr mul32.l	; $039E64
-	lea.l ram_sys_ff02dd.l,a0	; $039E6A
+	lea.l ram_menu_field_02dd.l,a0	; $039E6A
 	moveq #$0,d1	; $039E70
 	move.b (a0,d0.l),d1	; $039E72
 	move.w d1,-(a7)	; $039E76
@@ -54187,7 +54187,7 @@ L039ECE:
 	move.b $27(a3),d0	; $039EDA
 	moveq #$34,d1	; $039EDE
 	jsr mul32.l	; $039EE0
-	lea.l ram_sys_ff02dd.l,a0	; $039EE6
+	lea.l ram_menu_field_02dd.l,a0	; $039EE6
 	moveq #$0,d1	; $039EEC
 	move.b (a0,d0.l),d1	; $039EEE
 	move.w d1,-(a7)	; $039EF2
@@ -54201,7 +54201,7 @@ L039F02:
 	move.b $27(a3),d0	; $039F08
 	moveq #$34,d1	; $039F0C
 	jsr mul32.l	; $039F0E
-	lea.l ram_sys_ff02dd.l,a0	; $039F14
+	lea.l ram_menu_field_02dd.l,a0	; $039F14
 	moveq #$0,d1	; $039F1A
 	move.b (a0,d0.l),d1	; $039F1C
 	move.w d1,-(a7)	; $039F20
@@ -54890,9 +54890,9 @@ L03A65A:
 	move.w #$50,-(a7)	; $03A68C
 	jsr spell_record_value(pc)	; $03A690
 	addq.w #$2,a7	; $03A694
-	move.w -$a(a6),ram_sys_ffc418.l	; $03A696
+	move.w -$a(a6),ram_sys_field_c418.l	; $03A696
 	movea.l -$4(a6),a0	; $03A69E
-	move.w $22(a0),ram_sys_ffc41a.l	; $03A6A2
+	move.w $22(a0),ram_sys_field_c41a.l	; $03A6A2
 	move.w #$1,ram_sys_field_012a.l	; $03A6AA
 	bra.w L03A9CA	; $03A6B2
 L03A6B6:
@@ -54904,7 +54904,7 @@ L03A6B6:
 	movea.l -$8(a6),a0	; $03A6CA
 	move.w $4(a0),d0	; $03A6CE
 	mulu.w #$c,d0	; $03A6D2
-	lea.l ram_sys_ffb0d0.l,a0	; $03A6D6
+	lea.l ram_sys_field_b0d0.l,a0	; $03A6D6
 	move.w (a0,d0.l),-$10(a6)	; $03A6DC
 	cmpi.w #$24,-$10(a6)	; $03A6E2
 	bge.w L03A9CA	; $03A6E8
@@ -54929,9 +54929,9 @@ L03A6B6:
 	move.w -$16(a6),-(a7)	; $03A734
 	jsr spell_record_value(pc)	; $03A738
 	addq.w #$2,a7	; $03A73C
-	move.w -$a(a6),ram_sys_ffc418.l	; $03A73E
+	move.w -$a(a6),ram_sys_field_c418.l	; $03A73E
 	movea.l -$4(a6),a0	; $03A746
-	move.w $22(a0),ram_sys_ffc41a.l	; $03A74A
+	move.w $22(a0),ram_sys_field_c41a.l	; $03A74A
 	move.w #$1,ram_sys_field_012a.l	; $03A752
 L03A75A:
 	movea.l -$8(a6),a0	; $03A75A
@@ -54993,7 +54993,7 @@ L03A814:
 	rol.w #$5,d0	; $03A822
 	and.w #$1,d0	; $03A824
 	bne.b L03A832	; $03A828
-	move.w -$a(a6),ram_sys_ff0130.l	; $03A82A
+	move.w -$a(a6),ram_sys_field_0130.l	; $03A82A
 L03A832:
 	move.w -$14(a6),-(a7)	; $03A832
 	move.w -$a(a6),-(a7)	; $03A836
@@ -55003,7 +55003,7 @@ L03A832:
 	addq.w #$6,a7	; $03A846
 	bra.w L03A90E	; $03A848
 L03A84C:
-	move.w -$a(a6),ram_sys_ffc37c.l	; $03A84C
+	move.w -$a(a6),ram_sys_field_c37c.l	; $03A84C
 	movea.l -$8(a6),a0	; $03A854
 	move.w $1c(a0),d0	; $03A858
 	sub.w -$14(a6),d0	; $03A85C
@@ -55059,7 +55059,7 @@ L03A8EE:
 	movea.l -$8(a6),a0	; $03A8EE
 	move.w d0,$1e(a0)	; $03A8F2
 	move.w -$14(a6),d0	; $03A8F6
-	add.w d0,ram_sys_ffc380.l	; $03A8FA
+	add.w d0,ram_sys_field_c380.l	; $03A8FA
 	lea.l ram_combat_flags.l,a0	; $03A900
 	andi.w #$fffd,(a0)	; $03A906
 	ori.w #$2,(a0)	; $03A90A
@@ -55205,9 +55205,9 @@ sys_stub_03aac4:
 	; code $03AACC-$03AB8B
 combat_victory_announce:
 	link.w a6,#$0	; $03AACC
-	cmpi.w #$1,ram_sys_ff00ae.l	; $03AAD0
+	cmpi.w #$1,ram_menu_field_00ae.l	; $03AAD0
 	bne.b L03AB08	; $03AAD8
-	cmpi.w #$1,ram_sys_ffc364.l	; $03AADA
+	cmpi.w #$1,ram_world_field_c364.l	; $03AADA
 	bgt.b L03AAF6	; $03AAE2
 	move.w #$23,-(a7)	; $03AAE4
 	move.w #$4a,-(a7)	; $03AAE8
@@ -55240,12 +55240,12 @@ L03AB38:
 	move.w #$14,-(a7)	; $03AB38
 	jsr song_play_direct.l	; $03AB3C
 	addq.w #$2,a7	; $03AB42
-	move.w #$4,ram_sys_ff012e.l	; $03AB44
+	move.w #$4,ram_world_field_012e.l	; $03AB44
 	move.w #$ffff,-(a7)	; $03AB4C
 	move.w #$5b,-(a7)	; $03AB50
 	jsr sfx_request.l	; $03AB54
 	addq.w #$4,a7	; $03AB5A
-	move.w #$1,ram_sys_ff0112.l	; $03AB5C
+	move.w #$1,ram_menu_field_0112.l	; $03AB5C
 	move.w #$1,-(a7)	; $03AB64
 	jsr msg_queue_consume.l	; $03AB68
 	addq.w #$2,a7	; $03AB6E
@@ -55276,7 +55276,7 @@ world_check_char_ahead:
 	move.l d0,-$6(a6)	; $03ABBA
 	move.w $8(a6),d0	; $03ABBE
 	muls.w #$34,d0	; $03ABC2
-	lea.l ram_sys_ff02be.l,a0	; $03ABC6
+	lea.l ram_sys_field_02be.l,a0	; $03ABC6
 	move.w (a0,d0.l),-$2(a6)	; $03ABCC
 	pea.l -$a(a6)	; $03ABD2
 	move.w -$2(a6),-(a7)	; $03ABD6
@@ -55712,7 +55712,7 @@ L03B100:
 	beq.b L03B142	; $03B118
 	move.w -$4(a6),d0	; $03B11A
 	muls.w #$34,d0	; $03B11E
-	lea.l ram_sys_ff02e0.l,a0	; $03B122
+	lea.l ram_world_field_02e0.l,a0	; $03B122
 	move.w (a0,d0.l),d1	; $03B128
 	rol.w #$3,d1	; $03B12C
 	and.w #$1,d1	; $03B12E
@@ -55736,7 +55736,7 @@ spell_resist_roll:
 	addq.w #$2,a7	; $03B160
 	move.w $8(a6),d1	; $03B162
 	muls.w #$34,d1	; $03B166
-	lea.l ram_sys_ff02cc.l,a0	; $03B16A
+	lea.l ram_world_field_02cc.l,a0	; $03B16A
 	move.w (a0,d1.l),d2	; $03B170
 	lsr.w #$4,d2	; $03B174
 	and.w #$f,d2	; $03B176
@@ -55748,7 +55748,7 @@ spell_resist_roll:
 	addq.w #$2,a7	; $03B18C
 	move.w $a(a6),d1	; $03B18E
 	muls.w #$34,d1	; $03B192
-	lea.l ram_sys_ff02cc.l,a0	; $03B196
+	lea.l ram_world_field_02cc.l,a0	; $03B196
 	move.w (a0,d1.l),d2	; $03B19C
 	lsr.w #$4,d2	; $03B1A0
 	and.w #$f,d2	; $03B1A2
@@ -55757,7 +55757,7 @@ spell_resist_roll:
 	move.w d0,-(a7)	; $03B1AA
 	move.w $a(a6),d0	; $03B1AC
 	muls.w #$34,d0	; $03B1B0
-	lea.l ram_sys_ff02cc.l,a0	; $03B1B4
+	lea.l ram_world_field_02cc.l,a0	; $03B1B4
 	move.w (a0,d0.l),d1	; $03B1BA
 	and.w #$f,d1	; $03B1BE
 	cmp.w #$8,d1	; $03B1C2
@@ -55857,7 +55857,7 @@ L03B270:
 	move.w d0,-$a(a6)	; $03B2EC
 	move.w $8(a6),d0	; $03B2F0
 	muls.w #$34,d0	; $03B2F4
-	lea.l ram_sys_ff02cc.l,a0	; $03B2F8
+	lea.l ram_world_field_02cc.l,a0	; $03B2F8
 	move.w (a0,d0.l),d1	; $03B2FE
 	and.w #$f,d1	; $03B302
 	moveq #$0,d0	; $03B306
@@ -55866,7 +55866,7 @@ L03B270:
 L03B30C:
 	move.w $8(a6),d0	; $03B30C
 	muls.w #$34,d0	; $03B310
-	lea.l ram_sys_ff02cc.l,a0	; $03B314
+	lea.l ram_world_field_02cc.l,a0	; $03B314
 	move.w (a0,d0.l),d1	; $03B31A
 	lsr.w #$4,d1	; $03B31E
 	and.w #$f,d1	; $03B320
@@ -55877,7 +55877,7 @@ L03B30C:
 L03B32E:
 	move.w $8(a6),d0	; $03B32E
 	muls.w #$34,d0	; $03B332
-	lea.l ram_sys_ff02cc.l,a0	; $03B336
+	lea.l ram_world_field_02cc.l,a0	; $03B336
 	move.w (a0,d0.l),d1	; $03B33C
 	lsr.w #$4,d1	; $03B340
 	and.w #$f,d1	; $03B342
@@ -55905,7 +55905,7 @@ L03B36E:
 	move.b $27(a0),d0	; $03B374
 	moveq #$34,d1	; $03B378
 	jsr mul32.l	; $03B37A
-	lea.l ram_sys_ff02b6.l,a0	; $03B380
+	lea.l ram_sys_field_02b6.l,a0	; $03B380
 	cmpi.w #$4d,(a0,d0.l)	; $03B386
 	beq.b L03B3BA	; $03B38C
 	movea.l -$8(a6),a0	; $03B38E
@@ -55913,7 +55913,7 @@ L03B36E:
 	move.b $27(a0),d0	; $03B394
 	moveq #$34,d1	; $03B398
 	jsr mul32.l	; $03B39A
-	lea.l ram_sys_ff02b6.l,a0	; $03B3A0
+	lea.l ram_sys_field_02b6.l,a0	; $03B3A0
 	cmpi.w #$4d,(a0,d0.l)	; $03B3A6
 	beq.b L03B3BA	; $03B3AC
 	movea.l -$8(a6),a0	; $03B3AE
@@ -55923,18 +55923,18 @@ L03B3BA:
 	move.l -$8(a6),-(a7)	; $03B3BA
 	jsr combat_target_select.l	; $03B3BE
 	addq.w #$4,a7	; $03B3C4
-	move.w ram_sys_ffc37c.l,d0	; $03B3C6
+	move.w ram_sys_field_c37c.l,d0	; $03B3C6
 	cmp.w $a(a6),d0	; $03B3CC
 	beq.b L03B3E0	; $03B3D0
-	move.w $a(a6),ram_sys_ffc37c.l	; $03B3D2
-	clr.w ram_sys_ffc380.l	; $03B3DA
+	move.w $a(a6),ram_sys_field_c37c.l	; $03B3D2
+	clr.w ram_sys_field_c380.l	; $03B3DA
 L03B3E0:
 	move.w -$a(a6),d0	; $03B3E0
-	add.w d0,ram_sys_ffc380.l	; $03B3E4
+	add.w d0,ram_sys_field_c380.l	; $03B3E4
 	lea.l ram_combat_flags.l,a0	; $03B3EA
 	andi.w #$fffd,(a0)	; $03B3F0
 	ori.w #$2,(a0)	; $03B3F4
-	move.w #$ffff,ram_sys_ff009a.l	; $03B3F8
+	move.w #$ffff,ram_sys_field_009a.l	; $03B3F8
 	move.w -$a(a6),d0	; $03B400
 	unlk a6	; $03B404
 	rts	; $03B406
@@ -56013,9 +56013,9 @@ spell_effect_queue:
 	move.w $10(a6),ram_sys_ffc370.l	; $03B4EA
 	move.w $12(a6),ram_sys_ffc372.l	; $03B4F2
 	move.w $14(a6),ram_sys_ffc368.l	; $03B4FA
-	move.w $16(a6),ram_sys_ffc376.l	; $03B502
-	move.w $18(a6),ram_sys_ffc378.l	; $03B50A
-	move.w #$1,ram_sys_ff010c.l	; $03B512
+	move.w $16(a6),ram_sys_field_c376.l	; $03B502
+	move.w $18(a6),ram_sys_field_c378.l	; $03B50A
+	move.w #$1,ram_sys_field_010c.l	; $03B512
 	unlk a6	; $03B51A
 	rts	; $03B51C
 	; code $03B51E-$03B69F
@@ -56031,7 +56031,7 @@ combat_ai_turn:
 L03B53A:
 	move.w ram_party_leader.l,d0	; $03B53A
 	muls.w #$34,d0	; $03B540
-	lea.l ram_sys_ff02dd.l,a0	; $03B544
+	lea.l ram_menu_field_02dd.l,a0	; $03B544
 	moveq #$0,d1	; $03B54A
 	move.b (a0,d0.l),d1	; $03B54C
 	move.w d1,-(a7)	; $03B550
@@ -56070,13 +56070,13 @@ L03B562:
 	move.l a1,-$e(a6)	; $03B5B8
 	move.w $8(a6),d0	; $03B5BC
 	muls.w #$34,d0	; $03B5C0
-	lea.l ram_sys_ff02db.l,a0	; $03B5C4
+	lea.l ram_sys_field_02db.l,a0	; $03B5C4
 	moveq #$0,d1	; $03B5CA
 	move.b (a0,d0.l),d1	; $03B5CC
 	move.w d1,-$6(a6)	; $03B5D0
 	move.w -$6(a6),d0	; $03B5D4
 	muls.w #$34,d0	; $03B5D8
-	lea.l ram_sys_ff02dd.l,a0	; $03B5DC
+	lea.l ram_menu_field_02dd.l,a0	; $03B5DC
 	moveq #$0,d1	; $03B5E2
 	move.b (a0,d0.l),d1	; $03B5E4
 	move.w d1,-$8(a6)	; $03B5E8
@@ -56158,13 +56158,13 @@ combat_resolve_target:
 	link.w a6,#$fffe	; $03B6C0
 	move.w $8(a6),d0	; $03B6C4
 	muls.w #$34,d0	; $03B6C8
-	lea.l ram_sys_ff02db.l,a0	; $03B6CC
+	lea.l ram_sys_field_02db.l,a0	; $03B6CC
 	move.l d0,d1	; $03B6D2
 	moveq #$0,d0	; $03B6D4
 	move.b (a0,d1.l),d0	; $03B6D6
 	moveq #$34,d1	; $03B6DA
 	jsr mul32.l	; $03B6DC
-	lea.l ram_sys_ff02dd.l,a0	; $03B6E2
+	lea.l ram_menu_field_02dd.l,a0	; $03B6E2
 	move.l d0,d1	; $03B6E8
 	moveq #$0,d0	; $03B6EA
 	move.b (a0,d1.l),d0	; $03B6EC
@@ -56173,7 +56173,7 @@ combat_resolve_target:
 	lea.l ram_npc_field_02c8.l,a0	; $03B6F8
 	move.w (a0,d0.l),d1	; $03B6FE
 	muls.w #$34,d1	; $03B702
-	lea.l ram_sys_ff02da.l,a0	; $03B706
+	lea.l ram_sys_field_02da.l,a0	; $03B706
 	moveq #$0,d0	; $03B70C
 	move.b (a0,d1.l),d0	; $03B70E
 	move.w d0,-$2(a6)	; $03B712
@@ -56181,7 +56181,7 @@ combat_resolve_target:
 	beq.b L03B736	; $03B71A
 	move.w -$2(a6),d0	; $03B71C
 	muls.w #$34,d0	; $03B720
-	lea.l ram_sys_ff02e0.l,a0	; $03B724
+	lea.l ram_world_field_02e0.l,a0	; $03B724
 	move.w (a0,d0.l),d1	; $03B72A
 	rol.w #$3,d1	; $03B72E
 	and.w #$1,d1	; $03B730
@@ -56235,13 +56235,13 @@ combat_pick_target:
 	move.l a1,-$2a(a6)	; $03B7C2
 	move.w $8(a6),d0	; $03B7C6
 	muls.w #$34,d0	; $03B7CA
-	lea.l ram_sys_ff02db.l,a0	; $03B7CE
+	lea.l ram_sys_field_02db.l,a0	; $03B7CE
 	moveq #$0,d1	; $03B7D4
 	move.b (a0,d0.l),d1	; $03B7D6
 	move.w d1,-$1e(a6)	; $03B7DA
 	move.w -$1e(a6),d0	; $03B7DE
 	muls.w #$34,d0	; $03B7E2
-	lea.l ram_sys_ff02dd.l,a0	; $03B7E6
+	lea.l ram_menu_field_02dd.l,a0	; $03B7E6
 	moveq #$0,d1	; $03B7EC
 	move.b (a0,d0.l),d1	; $03B7EE
 	move.w d1,-$20(a6)	; $03B7F2
@@ -56374,13 +56374,13 @@ combat_pick_max_level:
 	move.w #$fff6,-$12(a6)	; $03B994
 	move.w $8(a6),d0	; $03B99A
 	muls.w #$34,d0	; $03B99E
-	lea.l ram_sys_ff02db.l,a0	; $03B9A2
+	lea.l ram_sys_field_02db.l,a0	; $03B9A2
 	moveq #$0,d1	; $03B9A8
 	move.b (a0,d0.l),d1	; $03B9AA
 	move.w d1,-$14(a6)	; $03B9AE
 	move.w -$14(a6),d0	; $03B9B2
 	muls.w #$34,d0	; $03B9B6
-	lea.l ram_sys_ff02dd.l,a0	; $03B9BA
+	lea.l ram_menu_field_02dd.l,a0	; $03B9BA
 	moveq #$0,d1	; $03B9C0
 	move.b (a0,d0.l),d1	; $03B9C2
 	move.w d1,-$16(a6)	; $03B9C6
@@ -56435,13 +56435,13 @@ combat_pick_same_target:
 	adda.l a0,a3	; $03BA6E
 	move.w $8(a6),d0	; $03BA70
 	muls.w #$34,d0	; $03BA74
-	lea.l ram_sys_ff02db.l,a0	; $03BA78
+	lea.l ram_sys_field_02db.l,a0	; $03BA78
 	moveq #$0,d1	; $03BA7E
 	move.b (a0,d0.l),d1	; $03BA80
 	move.w d1,-$14(a6)	; $03BA84
 	move.w -$14(a6),d0	; $03BA88
 	muls.w #$34,d0	; $03BA8C
-	lea.l ram_sys_ff02dd.l,a0	; $03BA90
+	lea.l ram_menu_field_02dd.l,a0	; $03BA90
 	moveq #$0,d1	; $03BA96
 	move.b (a0,d0.l),d1	; $03BA98
 	move.w d1,-$16(a6)	; $03BA9C
@@ -56560,7 +56560,7 @@ L03BBFA:
 L03BC08:
 	bra.w L03BCBA	; $03BC08
 L03BC0C:
-	tst.w ram_sys_ff013a.l	; $03BC0C
+	tst.w ram_save_field_013a.l	; $03BC0C
 	bne.b L03BC20	; $03BC12
 	movea.l a3,a0	; $03BC14
 	adda.l #$18,a0	; $03BC16
@@ -56618,7 +56618,7 @@ L03BC94:
 	addq.w #$2,a7	; $03BCB4
 	move.b d0,$25(a3)	; $03BCB6
 L03BCBA:
-	tst.w ram_sys_ff013a.l	; $03BCBA
+	tst.w ram_save_field_013a.l	; $03BCBA
 	bne.b L03BD30	; $03BCC0
 	move.w $18(a3),d0	; $03BCC2
 	and.w #$f,d0	; $03BCC6
@@ -56675,7 +56675,7 @@ spell_ai_pick:
 	clr.w -$c(a6)	; $03BD5A
 	move.w $8(a6),d0	; $03BD5E
 	muls.w #$34,d0	; $03BD62
-	lea.l ram_sys_ff02cc.l,a0	; $03BD66
+	lea.l ram_world_field_02cc.l,a0	; $03BD66
 	move.w (a0,d0.l),d1	; $03BD6C
 	and.w #$f,d1	; $03BD70
 	subq.w #$1,d1	; $03BD74
@@ -56832,7 +56832,7 @@ L03BF34:
 	beq.b L03BF68	; $03BF3E
 	move.w -$c(a6),d0	; $03BF40
 	muls.w #$34,d0	; $03BF44
-	lea.l ram_sys_ff02dd.l,a0	; $03BF48
+	lea.l ram_menu_field_02dd.l,a0	; $03BF48
 	move.l d0,d1	; $03BF4E
 	moveq #$0,d0	; $03BF50
 	move.b (a0,d1.l),d0	; $03BF52
@@ -57149,7 +57149,7 @@ spell_cost_calc:
 	link.w a6,#$0	; $03C2C0
 	move.w ram_actor_index.l,d0	; $03C2C4
 	muls.w #$34,d0	; $03C2CA
-	lea.l ram_sys_ff02e0.l,a0	; $03C2CE
+	lea.l ram_world_field_02e0.l,a0	; $03C2CE
 	move.w (a0,d0.l),d1	; $03C2D4
 	lsr.w #$8,d1	; $03C2D8
 	and.w #$3,d1	; $03C2DA
@@ -57206,7 +57206,7 @@ spell_ai_pick_best:
 	clr.w -$14(a6)	; $03C368
 	move.w $8(a6),d0	; $03C36C
 	muls.w #$34,d0	; $03C370
-	lea.l ram_sys_ff02cc.l,a0	; $03C374
+	lea.l ram_world_field_02cc.l,a0	; $03C374
 	move.w (a0,d0.l),d1	; $03C37A
 	and.w #$f,d1	; $03C37E
 	cmp.w #$6,d1	; $03C382
@@ -57219,14 +57219,14 @@ L03C38A:
 L03C390:
 	move.w $8(a6),d0	; $03C390
 	muls.w #$34,d0	; $03C394
-	lea.l ram_sys_ff02cc.l,a0	; $03C398
+	lea.l ram_world_field_02cc.l,a0	; $03C398
 	move.w (a0,d0.l),d1	; $03C39E
 	lsr.w #$4,d1	; $03C3A2
 	and.w #$f,d1	; $03C3A4
 	move.w d1,-(a7)	; $03C3A8
 	move.w $8(a6),d0	; $03C3AA
 	muls.w #$34,d0	; $03C3AE
-	lea.l ram_sys_ff02e0.l,a0	; $03C3B2
+	lea.l ram_world_field_02e0.l,a0	; $03C3B2
 	move.w (a0,d0.l),d1	; $03C3B8
 	lsr.w #$8,d1	; $03C3BC
 	and.w #$3,d1	; $03C3BE
@@ -57254,7 +57254,7 @@ L03C3F0:
 	clr.w -$a(a6)	; $03C3F4
 	move.w $8(a6),d0	; $03C3F8
 	muls.w #$34,d0	; $03C3FC
-	lea.l ram_sys_ff02cc.l,a0	; $03C400
+	lea.l ram_world_field_02cc.l,a0	; $03C400
 	move.w (a0,d0.l),d1	; $03C406
 	and.w #$f,d1	; $03C40A
 	subq.w #$1,d1	; $03C40E
@@ -57343,7 +57343,7 @@ spell_ai_pick_first:
 	link.w a6,#$fff4	; $03C520
 	move.w $8(a6),d0	; $03C524
 	muls.w #$34,d0	; $03C528
-	lea.l ram_sys_ff02cc.l,a0	; $03C52C
+	lea.l ram_world_field_02cc.l,a0	; $03C52C
 	move.w (a0,d0.l),d1	; $03C532
 	and.w #$f,d1	; $03C536
 	cmp.w #$6,d1	; $03C53A
@@ -57356,7 +57356,7 @@ L03C546:
 	clr.w -$a(a6)	; $03C546
 	move.w $8(a6),d0	; $03C54A
 	muls.w #$34,d0	; $03C54E
-	lea.l ram_sys_ff02cc.l,a0	; $03C552
+	lea.l ram_world_field_02cc.l,a0	; $03C552
 	move.w (a0,d0.l),d1	; $03C558
 	and.w #$f,d1	; $03C55C
 	subq.w #$1,d1	; $03C560
@@ -57433,7 +57433,7 @@ spell_grant_for_level:
 	link.w a6,#$fff8	; $03C636
 	move.w $8(a6),d0	; $03C63A
 	muls.w #$34,d0	; $03C63E
-	lea.l ram_sys_ff02cc.l,a0	; $03C642
+	lea.l ram_world_field_02cc.l,a0	; $03C642
 	move.w (a0,d0.l),d1	; $03C648
 	lsr.w #$4,d1	; $03C64C
 	and.w #$f,d1	; $03C64E
@@ -57448,14 +57448,14 @@ spell_grant_for_level:
 	move.w $8(a6),d1	; $03C670
 	muls.w #$34,d1	; $03C674
 	movea.l d1,a0	; $03C678
-	lea.l ram_sys_ff02cc.l,a1	; $03C67A
+	lea.l ram_world_field_02cc.l,a1	; $03C67A
 	adda.l a1,a0	; $03C680
 	andi.w #$ff0f,(a0)	; $03C682
 	or.w d0,(a0)	; $03C686
 L03C688:
 	move.w $8(a6),d0	; $03C688
 	muls.w #$34,d0	; $03C68C
-	lea.l ram_sys_ff02cc.l,a0	; $03C690
+	lea.l ram_world_field_02cc.l,a0	; $03C690
 	move.w (a0,d0.l),d1	; $03C696
 	and.w #$f,d1	; $03C69A
 	subq.w #$1,d1	; $03C69E
@@ -57465,7 +57465,7 @@ L03C688:
 	move.w d0,-$8(a6)	; $03C6AA
 	move.w $8(a6),d0	; $03C6AE
 	muls.w #$34,d0	; $03C6B2
-	lea.l ram_sys_ff02cc.l,a0	; $03C6B6
+	lea.l ram_world_field_02cc.l,a0	; $03C6B6
 	move.w (a0,d0.l),d1	; $03C6BC
 	and.w #$f,d1	; $03C6C0
 	moveq #$0,d0	; $03C6C4
@@ -57833,14 +57833,14 @@ L03CAFA:
 	beq.b L03CB56	; $03CB1C
 	move.w -$4(a6),d0	; $03CB1E
 	muls.w #$34,d0	; $03CB22
-	lea.l ram_sys_ff02e0.l,a0	; $03CB26
+	lea.l ram_world_field_02e0.l,a0	; $03CB26
 	move.w (a0,d0.l),d1	; $03CB2C
 	rol.w #$3,d1	; $03CB30
 	and.w #$1,d1	; $03CB32
 	bne.b L03CB56	; $03CB36
 	move.w -$4(a6),d0	; $03CB38
 	muls.w #$34,d0	; $03CB3C
-	lea.l ram_sys_ff02d0.l,a0	; $03CB40
+	lea.l ram_world_field_02d0.l,a0	; $03CB40
 	move.w (a0,d0.l),d1	; $03CB46
 	cmp.w $a(a6),d1	; $03CB4A
 	bge.b L03CB56	; $03CB4E
@@ -57869,13 +57869,13 @@ combat_flag_clear:
 	bne.b L03CBA2	; $03CB8A
 	move.w $4(a3),d0	; $03CB8C
 	mulu.w #$c,d0	; $03CB90
-	lea.l ram_sys_ffb0d4.l,a0	; $03CB94
+	lea.l ram_sys_field_b0d4.l,a0	; $03CB94
 	move.w #$4000,(a0,d0.l)	; $03CB9A
 	bra.b L03CBB4	; $03CBA0
 L03CBA2:
 	move.w $4(a3),d0	; $03CBA2
 	mulu.w #$c,d0	; $03CBA6
-	lea.l ram_sys_ffb0d4.l,a0	; $03CBAA
+	lea.l ram_sys_field_b0d4.l,a0	; $03CBAA
 	clr.w (a0,d0.l)	; $03CBB0
 L03CBB4:
 	move.w $28(a3),d0	; $03CBB4
@@ -57889,7 +57889,7 @@ L03CBB4:
 L03CBCC:
 	move.w $4(a3),d0	; $03CBCC
 	mulu.w #$c,d0	; $03CBD0
-	lea.l ram_sys_ffb0d4.l,a0	; $03CBD4
+	lea.l ram_sys_field_b0d4.l,a0	; $03CBD4
 	adda.l d0,a0	; $03CBDA
 	bset #$2,$1(a0)	; $03CBDC
 L03CBE2:
@@ -57899,7 +57899,7 @@ L03CBE2:
 	beq.b L03CC04	; $03CBEC
 	move.w $4(a3),d0	; $03CBEE
 	mulu.w #$c,d0	; $03CBF2
-	lea.l ram_sys_ffb0d4.l,a0	; $03CBF6
+	lea.l ram_sys_field_b0d4.l,a0	; $03CBF6
 	adda.l d0,a0	; $03CBFC
 	bset #$1,$1(a0)	; $03CBFE
 L03CC04:
@@ -57908,7 +57908,7 @@ L03CC04:
 	beq.b L03CC24	; $03CC0C
 	move.w $4(a3),d0	; $03CC0E
 	mulu.w #$c,d0	; $03CC12
-	lea.l ram_sys_ffb0d4.l,a0	; $03CC16
+	lea.l ram_sys_field_b0d4.l,a0	; $03CC16
 	adda.l d0,a0	; $03CC1C
 	bset #$0,$1(a0)	; $03CC1E
 L03CC24:
@@ -57918,7 +57918,7 @@ L03CC24:
 	beq.b L03CC46	; $03CC2E
 	move.w $4(a3),d0	; $03CC30
 	mulu.w #$c,d0	; $03CC34
-	lea.l ram_sys_ffb0d4.l,a0	; $03CC38
+	lea.l ram_sys_field_b0d4.l,a0	; $03CC38
 	adda.l d0,a0	; $03CC3E
 	bset #$0,$1(a0)	; $03CC40
 L03CC46:
@@ -57928,8 +57928,8 @@ L03CC46:
 	; code $03CC4C-$03CC61
 spell_effect_start:
 	link.w a6,#$0	; $03CC4C
-	move.w $8(a6),ram_sys_ff013c.l	; $03CC50
-	clr.w ram_sys_ffc41c.l	; $03CC58
+	move.w $8(a6),ram_sys_field_013c.l	; $03CC50
+	clr.w ram_sys_field_c41c.l	; $03CC58
 	unlk a6	; $03CC5E
 	rts	; $03CC60
 	; code $03CC62-$03CE2F
@@ -58401,7 +58401,7 @@ gfx_paint_stream_burst:
 	move.w #$359,-(a7)	; $03D26C
 	jsr map_terrain_tile_lookup.l	; $03D270
 	addq.w #$8,a7	; $03D276
-	move.w ram_sys_ff0092.l,-(a7)	; $03D278
+	move.w ram_world_field_0092.l,-(a7)	; $03D278
 	move.w $a(a6),d0	; $03D27E
 	add.w #$5a,d0	; $03D282
 	move.w d0,-(a7)	; $03D286
@@ -58450,7 +58450,7 @@ L03D312:
 	clr.w -(a7)	; $03D318
 	jsr pal_load_set.l	; $03D31A
 	addq.w #$6,a7	; $03D320
-	move.w #$ffff,ram_sys_ff0124.l	; $03D322
+	move.w #$ffff,ram_world_field_0124.l	; $03D322
 L03D32A:
 	unlk a6	; $03D32A
 	rts	; $03D32C
@@ -58723,7 +58723,7 @@ gfx_paint_stream_grid:
 	addq.w #$8,a7	; $03D698
 	tst.w $c(a6)	; $03D69A
 	beq.b L03D6A8	; $03D69E
-	tst.w ram_sys_ff0092.l	; $03D6A0
+	tst.w ram_world_field_0092.l	; $03D6A0
 	beq.b L03D6FE	; $03D6A6
 L03D6A8:
 	clr.w -(a7)	; $03D6A8
@@ -58787,7 +58787,7 @@ L03D756:
 spell_effect_scatter:
 	link.w a6,#$0	; $03D75A
 	movem.l d4-d5,-(a7)	; $03D75E
-	tst.w ram_sys_ff0092.l	; $03D762
+	tst.w ram_world_field_0092.l	; $03D762
 	beq.b L03D774	; $03D768
 	moveq #$ff,d4	; $03D76A
 	subi.w #$1c,$8(a6)	; $03D76C
@@ -58795,7 +58795,7 @@ spell_effect_scatter:
 L03D774:
 	moveq #$1,d4	; $03D774
 L03D776:
-	move.w ram_sys_ff0092.l,-(a7)	; $03D776
+	move.w ram_world_field_0092.l,-(a7)	; $03D776
 	move.w $a(a6),d0	; $03D77C
 	add.w #$17,d0	; $03D780
 	move.w d0,-(a7)	; $03D784
@@ -58806,7 +58806,7 @@ L03D776:
 	move.w #$389,-(a7)	; $03D792
 	jsr map_terrain_tile_lookup.l	; $03D796
 	addq.w #$8,a7	; $03D79C
-	move.w ram_sys_ff0092.l,-(a7)	; $03D79E
+	move.w ram_world_field_0092.l,-(a7)	; $03D79E
 	move.w $a(a6),d0	; $03D7A4
 	add.w #$25,d0	; $03D7A8
 	move.w d0,-(a7)	; $03D7AC
@@ -58817,7 +58817,7 @@ L03D776:
 	move.w #$38a,-(a7)	; $03D7BA
 	jsr map_terrain_tile_lookup.l	; $03D7BE
 	addq.w #$8,a7	; $03D7C4
-	tst.w ram_sys_ff0092.l	; $03D7C6
+	tst.w ram_world_field_0092.l	; $03D7C6
 	bne.b L03D7D2	; $03D7CC
 	moveq #$1,d0	; $03D7CE
 	bra.b L03D7D4	; $03D7D0
@@ -58836,7 +58836,7 @@ L03D7D4:
 	move.w #$389,-(a7)	; $03D7EE
 	jsr map_terrain_tile_lookup.l	; $03D7F2
 	addq.w #$8,a7	; $03D7F8
-	tst.w ram_sys_ff0092.l	; $03D7FA
+	tst.w ram_world_field_0092.l	; $03D7FA
 	bne.b L03D806	; $03D800
 	moveq #$1,d0	; $03D802
 	bra.b L03D808	; $03D804
@@ -58855,7 +58855,7 @@ L03D808:
 	move.w #$38a,-(a7)	; $03D822
 	jsr map_terrain_tile_lookup.l	; $03D826
 	addq.w #$8,a7	; $03D82C
-	move.w ram_sys_ff0092.l,-(a7)	; $03D82E
+	move.w ram_world_field_0092.l,-(a7)	; $03D82E
 	move.w $a(a6),-(a7)	; $03D834
 	move.w d4,d0	; $03D838
 	muls.w #$2a,d0	; $03D83A
@@ -58865,7 +58865,7 @@ L03D808:
 	move.w #$380,-(a7)	; $03D846
 	jsr map_terrain_tile_lookup.l	; $03D84A
 	addq.w #$8,a7	; $03D850
-	move.w ram_sys_ff0092.l,-(a7)	; $03D852
+	move.w ram_world_field_0092.l,-(a7)	; $03D852
 	move.w $a(a6),-(a7)	; $03D858
 	move.w d4,d0	; $03D85C
 	muls.w #$e,d0	; $03D85E
@@ -58875,7 +58875,7 @@ L03D808:
 	move.w #$381,-(a7)	; $03D86A
 	jsr map_terrain_tile_lookup.l	; $03D86E
 	addq.w #$8,a7	; $03D874
-	move.w ram_sys_ff0092.l,-(a7)	; $03D876
+	move.w ram_world_field_0092.l,-(a7)	; $03D876
 	move.w $a(a6),-(a7)	; $03D87C
 	move.w d4,d0	; $03D880
 	muls.w #$e,d0	; $03D882
@@ -58884,7 +58884,7 @@ L03D808:
 	move.w #$382,-(a7)	; $03D88C
 	jsr map_terrain_tile_lookup.l	; $03D890
 	addq.w #$8,a7	; $03D896
-	move.w ram_sys_ff0092.l,-(a7)	; $03D898
+	move.w ram_world_field_0092.l,-(a7)	; $03D898
 	move.w $a(a6),d0	; $03D89E
 	add.w #$1e,d0	; $03D8A2
 	move.w d0,-(a7)	; $03D8A6
@@ -58896,7 +58896,7 @@ L03D808:
 	move.w #$383,-(a7)	; $03D8B6
 	jsr map_terrain_tile_lookup.l	; $03D8BA
 	addq.w #$8,a7	; $03D8C0
-	move.w ram_sys_ff0092.l,-(a7)	; $03D8C2
+	move.w ram_world_field_0092.l,-(a7)	; $03D8C2
 	move.w $a(a6),d0	; $03D8C8
 	add.w #$1e,d0	; $03D8CC
 	move.w d0,-(a7)	; $03D8D0
@@ -58908,7 +58908,7 @@ L03D808:
 	move.w #$384,-(a7)	; $03D8E0
 	jsr map_terrain_tile_lookup.l	; $03D8E4
 	addq.w #$8,a7	; $03D8EA
-	move.w ram_sys_ff0092.l,-(a7)	; $03D8EC
+	move.w ram_world_field_0092.l,-(a7)	; $03D8EC
 	move.w $a(a6),d0	; $03D8F2
 	add.w #$1e,d0	; $03D8F6
 	move.w d0,-(a7)	; $03D8FA
@@ -58919,7 +58919,7 @@ L03D808:
 	move.w #$385,-(a7)	; $03D908
 	jsr map_terrain_tile_lookup.l	; $03D90C
 	addq.w #$8,a7	; $03D912
-	move.w ram_sys_ff0092.l,-(a7)	; $03D914
+	move.w ram_world_field_0092.l,-(a7)	; $03D914
 	move.w $a(a6),d0	; $03D91A
 	add.w #$3c,d0	; $03D91E
 	move.w d0,-(a7)	; $03D922
@@ -58931,7 +58931,7 @@ L03D808:
 	move.w #$386,-(a7)	; $03D932
 	jsr map_terrain_tile_lookup.l	; $03D936
 	addq.w #$8,a7	; $03D93C
-	move.w ram_sys_ff0092.l,-(a7)	; $03D93E
+	move.w ram_world_field_0092.l,-(a7)	; $03D93E
 	move.w $a(a6),d0	; $03D944
 	add.w #$3c,d0	; $03D948
 	move.w d0,-(a7)	; $03D94C
@@ -58939,7 +58939,7 @@ L03D808:
 	move.w #$387,-(a7)	; $03D952
 	jsr map_terrain_tile_lookup.l	; $03D956
 	addq.w #$8,a7	; $03D95C
-	move.w ram_sys_ff0092.l,-(a7)	; $03D95E
+	move.w ram_world_field_0092.l,-(a7)	; $03D95E
 	move.w $a(a6),d0	; $03D964
 	add.w #$5a,d0	; $03D968
 	move.w d0,-(a7)	; $03D96C
@@ -59000,13 +59000,13 @@ L03D9AE:
 spell_effect_step:
 	link.w a6,#$0	; $03D9F8
 	movem.l d4-d6,-(a7)	; $03D9FC
-	move.w ram_sys_ff013c.l,d0	; $03DA00
+	move.w ram_sys_field_013c.l,d0	; $03DA00
 	ext.l d0	; $03DA06
 	bra.w L03E150	; $03DA08
 L03DA0C:
-	cmpi.w #$6,ram_sys_ffc41c.l	; $03DA0C
+	cmpi.w #$6,ram_sys_field_c41c.l	; $03DA0C
 	bge.b L03DA28	; $03DA14
-	move.w ram_sys_ffc41c.l,d0	; $03DA16
+	move.w ram_sys_field_c41c.l,d0	; $03DA16
 	muls.w #$28,d0	; $03DA1C
 	move.w d0,d4	; $03DA20
 	sub.w #$eb,d4	; $03DA22
@@ -59014,14 +59014,14 @@ L03DA0C:
 L03DA28:
 	moveq #$5,d4	; $03DA28
 L03DA2A:
-	cmpi.w #$6,ram_sys_ffc41c.l	; $03DA2A
+	cmpi.w #$6,ram_sys_field_c41c.l	; $03DA2A
 	bne.b L03DA44	; $03DA32
 	move.w #$ffff,-(a7)	; $03DA34
 	move.w #$15,-(a7)	; $03DA38
 	jsr sfx_request.l	; $03DA3C
 	addq.w #$4,a7	; $03DA42
 L03DA44:
-	move.w ram_sys_ffc41c.l,d0	; $03DA44
+	move.w ram_sys_field_c41c.l,d0	; $03DA44
 	ext.l d0	; $03DA4A
 	divs.w #$4,d0	; $03DA4C
 	swap d0	; $03DA50
@@ -59032,7 +59032,7 @@ L03DA44:
 	jsr sfx_request.l	; $03DA5E
 	addq.w #$4,a7	; $03DA64
 L03DA66:
-	move.w ram_sys_ffc41c.l,d0	; $03DA66
+	move.w ram_sys_field_c41c.l,d0	; $03DA66
 	ext.l d0	; $03DA6C
 	divs.w #$2,d0	; $03DA6E
 	swap d0	; $03DA72
@@ -59048,7 +59048,7 @@ L03DA7E:
 	move.w #$64,-(a7)	; $03DA82
 	jsr gfx_paint_stream_column(pc)	; $03DA86
 	addq.w #$6,a7	; $03DA8A
-	move.w ram_sys_ffc41c.l,d0	; $03DA8C
+	move.w ram_sys_field_c41c.l,d0	; $03DA8C
 	ext.l d0	; $03DA92
 	divs.w #$2,d0	; $03DA94
 	swap d0	; $03DA98
@@ -59064,16 +59064,16 @@ L03DAA4:
 	move.w #$122,-(a7)	; $03DAA8
 	jsr gfx_paint_stream_column(pc)	; $03DAAC
 	addq.w #$6,a7	; $03DAB0
-	addq.w #$1,ram_sys_ffc41c.l	; $03DAB2
-	cmpi.w #$2710,ram_sys_ffc41c.l	; $03DAB8
+	addq.w #$1,ram_sys_field_c41c.l	; $03DAB2
+	cmpi.w #$2710,ram_sys_field_c41c.l	; $03DAB8
 	ble.b L03DACA	; $03DAC0
-	move.w #$3e8,ram_sys_ffc41c.l	; $03DAC2
+	move.w #$3e8,ram_sys_field_c41c.l	; $03DAC2
 L03DACA:
 	bra.w L03E190	; $03DACA
 L03DACE:
-	cmpi.w #$6,ram_sys_ffc41c.l	; $03DACE
+	cmpi.w #$6,ram_sys_field_c41c.l	; $03DACE
 	bge.b L03DAE8	; $03DAD6
-	move.w ram_sys_ffc41c.l,d0	; $03DAD8
+	move.w ram_sys_field_c41c.l,d0	; $03DAD8
 	muls.w #$28,d0	; $03DADE
 	moveq #$5,d4	; $03DAE2
 	sub.w d0,d4	; $03DAE4
@@ -59081,7 +59081,7 @@ L03DACE:
 L03DAE8:
 	moveq #$5,d4	; $03DAE8
 L03DAEA:
-	move.w ram_sys_ffc41c.l,d0	; $03DAEA
+	move.w ram_sys_field_c41c.l,d0	; $03DAEA
 	ext.l d0	; $03DAF0
 	divs.w #$2,d0	; $03DAF2
 	swap d0	; $03DAF6
@@ -59097,7 +59097,7 @@ L03DB02:
 	move.w #$64,-(a7)	; $03DB06
 	jsr gfx_paint_stream_column(pc)	; $03DB0A
 	addq.w #$6,a7	; $03DB0E
-	move.w ram_sys_ffc41c.l,d0	; $03DB10
+	move.w ram_sys_field_c41c.l,d0	; $03DB10
 	ext.l d0	; $03DB16
 	divs.w #$2,d0	; $03DB18
 	swap d0	; $03DB1C
@@ -59113,28 +59113,28 @@ L03DB28:
 	move.w #$122,-(a7)	; $03DB2C
 	jsr gfx_paint_stream_column(pc)	; $03DB30
 	addq.w #$6,a7	; $03DB34
-	addq.w #$1,ram_sys_ffc41c.l	; $03DB36
-	cmpi.w #$6,ram_sys_ffc41c.l	; $03DB3C
+	addq.w #$1,ram_sys_field_c41c.l	; $03DB36
+	cmpi.w #$6,ram_sys_field_c41c.l	; $03DB3C
 	blt.b L03DB4C	; $03DB44
-	clr.w ram_sys_ff013c.l	; $03DB46
+	clr.w ram_sys_field_013c.l	; $03DB46
 L03DB4C:
 	bra.w L03E190	; $03DB4C
 L03DB50:
 	moveq #$0,d4	; $03DB50
-	tst.w ram_sys_ffc41c.l	; $03DB52
+	tst.w ram_sys_field_c41c.l	; $03DB52
 	bne.b L03DB6A	; $03DB58
-	move.w #$c4,ram_sys_ff0290.l	; $03DB5A
-	move.w #$ffa6,ram_sys_ff0292.l	; $03DB62
+	move.w #$c4,ram_sys_field_0290.l	; $03DB5A
+	move.w #$ffa6,ram_sys_field_0292.l	; $03DB62
 L03DB6A:
-	cmpi.w #$9,ram_sys_ffc41c.l	; $03DB6A
+	cmpi.w #$9,ram_sys_field_c41c.l	; $03DB6A
 	bge.b L03DB80	; $03DB72
-	addi.w #$a,ram_sys_ff0292.l	; $03DB74
+	addi.w #$a,ram_sys_field_0292.l	; $03DB74
 	bra.w L03DC12	; $03DB7C
 L03DB80:
-	cmpi.w #$12,ram_sys_ffc41c.l	; $03DB80
+	cmpi.w #$12,ram_sys_field_c41c.l	; $03DB80
 	bge.b L03DBAC	; $03DB88
-	subi.w #$c,ram_sys_ff0290.l	; $03DB8A
-	move.w ram_sys_ffc41c.l,d0	; $03DB92
+	subi.w #$c,ram_sys_field_0290.l	; $03DB8A
+	move.w ram_sys_field_c41c.l,d0	; $03DB92
 	sub.w #$9,d0	; $03DB98
 	lea.l L01B464.l,a0	; $03DB9C
 	move.b (a0,d0.w),d1	; $03DBA2
@@ -59142,20 +59142,20 @@ L03DB80:
 	move.w d1,d4	; $03DBA8
 	bra.b L03DC12	; $03DBAA
 L03DBAC:
-	cmpi.w #$1b,ram_sys_ffc41c.l	; $03DBAC
+	cmpi.w #$1b,ram_sys_field_c41c.l	; $03DBAC
 	bge.b L03DBC0	; $03DBB4
-	subi.w #$a,ram_sys_ff0292.l	; $03DBB6
+	subi.w #$a,ram_sys_field_0292.l	; $03DBB6
 	bra.b L03DC12	; $03DBBE
 L03DBC0:
-	cmpi.w #$24,ram_sys_ffc41c.l	; $03DBC0
+	cmpi.w #$24,ram_sys_field_c41c.l	; $03DBC0
 	bge.b L03DBD4	; $03DBC8
-	addi.w #$a,ram_sys_ff0292.l	; $03DBCA
+	addi.w #$a,ram_sys_field_0292.l	; $03DBCA
 	bra.b L03DC12	; $03DBD2
 L03DBD4:
-	cmpi.w #$2d,ram_sys_ffc41c.l	; $03DBD4
+	cmpi.w #$2d,ram_sys_field_c41c.l	; $03DBD4
 	bge.b L03DC00	; $03DBDC
-	addi.w #$c,ram_sys_ff0290.l	; $03DBDE
-	move.w ram_sys_ffc41c.l,d0	; $03DBE6
+	addi.w #$c,ram_sys_field_0290.l	; $03DBDE
+	move.w ram_sys_field_c41c.l,d0	; $03DBE6
 	sub.w #$24,d0	; $03DBEC
 	lea.l L01B464.l,a0	; $03DBF0
 	move.b (a0,d0.w),d1	; $03DBF6
@@ -59163,12 +59163,12 @@ L03DBD4:
 	move.w d1,d4	; $03DBFC
 	bra.b L03DC12	; $03DBFE
 L03DC00:
-	cmpi.w #$36,ram_sys_ffc41c.l	; $03DC00
+	cmpi.w #$36,ram_sys_field_c41c.l	; $03DC00
 	bge.b L03DC12	; $03DC08
-	subi.w #$a,ram_sys_ff0292.l	; $03DC0A
+	subi.w #$a,ram_sys_field_0292.l	; $03DC0A
 L03DC12:
 	move.w d4,-(a7)	; $03DC12
-	cmpi.w #$1b,ram_sys_ffc41c.l	; $03DC14
+	cmpi.w #$1b,ram_sys_field_c41c.l	; $03DC14
 	bge.b L03DC22	; $03DC1C
 	moveq #$0,d0	; $03DC1E
 	bra.b L03DC24	; $03DC20
@@ -59176,13 +59176,13 @@ L03DC22:
 	moveq #$1,d0	; $03DC22
 L03DC24:
 	move.w d0,-(a7)	; $03DC24
-	move.w ram_sys_ff0292.l,-(a7)	; $03DC26
-	move.w ram_sys_ff0290.l,-(a7)	; $03DC2C
+	move.w ram_sys_field_0292.l,-(a7)	; $03DC26
+	move.w ram_sys_field_0290.l,-(a7)	; $03DC2C
 	jsr gfx_paint_stream_spread(pc)	; $03DC32
 	addq.w #$8,a7	; $03DC36
 	tst.w d4	; $03DC38
 	beq.b L03DC76	; $03DC3A
-	move.w ram_sys_ffc41c.l,d0	; $03DC3C
+	move.w ram_sys_field_c41c.l,d0	; $03DC3C
 	ext.l d0	; $03DC42
 	divs.w #$2,d0	; $03DC44
 	swap d0	; $03DC48
@@ -59196,21 +59196,21 @@ L03DC24:
 	clr.w -(a7)	; $03DC64
 	jsr pal_load_set.l	; $03DC66
 	addq.w #$6,a7	; $03DC6C
-	move.w #$ffff,ram_sys_ff0124.l	; $03DC6E
+	move.w #$ffff,ram_world_field_0124.l	; $03DC6E
 L03DC76:
-	addq.w #$1,ram_sys_ffc41c.l	; $03DC76
-	cmpi.w #$1b,ram_sys_ffc41c.l	; $03DC7C
+	addq.w #$1,ram_sys_field_c41c.l	; $03DC76
+	cmpi.w #$1b,ram_sys_field_c41c.l	; $03DC7C
 	bne.b L03DC96	; $03DC84
-	move.w #$c4,ram_sys_ff0290.l	; $03DC86
-	move.w #$ffa6,ram_sys_ff0292.l	; $03DC8E
+	move.w #$c4,ram_sys_field_0290.l	; $03DC86
+	move.w #$ffa6,ram_sys_field_0292.l	; $03DC8E
 L03DC96:
-	cmpi.w #$3f,ram_sys_ffc41c.l	; $03DC96
+	cmpi.w #$3f,ram_sys_field_c41c.l	; $03DC96
 	blt.b L03DCA6	; $03DC9E
-	clr.w ram_sys_ff013c.l	; $03DCA0
+	clr.w ram_sys_field_013c.l	; $03DCA0
 L03DCA6:
 	bra.w L03E190	; $03DCA6
 L03DCAA:
-	move.w ram_sys_ffc41c.l,d0	; $03DCAA
+	move.w ram_sys_field_c41c.l,d0	; $03DCAA
 	ext.l d0	; $03DCB0
 	divs.w #$3,d0	; $03DCB2
 	swap d0	; $03DCB6
@@ -59227,14 +59227,14 @@ L03DCAA:
 	move.w d0,-(a7)	; $03DCDA
 	jsr gfx_paint_stream_burst(pc)	; $03DCDC
 	addq.w #$6,a7	; $03DCE0
-	addq.w #$1,ram_sys_ffc41c.l	; $03DCE2
-	cmpi.w #$3c,ram_sys_ffc41c.l	; $03DCE8
+	addq.w #$1,ram_sys_field_c41c.l	; $03DCE2
+	cmpi.w #$3c,ram_sys_field_c41c.l	; $03DCE8
 	blt.b L03DCF8	; $03DCF0
-	clr.w ram_sys_ff013c.l	; $03DCF2
+	clr.w ram_sys_field_013c.l	; $03DCF2
 L03DCF8:
 	bra.w L03E190	; $03DCF8
 L03DCFC:
-	move.w ram_sys_ffc41c.l,d4	; $03DCFC
+	move.w ram_sys_field_c41c.l,d4	; $03DCFC
 	ext.l d4	; $03DD02
 	divs.w #$14,d4	; $03DD04
 	swap d4	; $03DD08
@@ -59266,7 +59266,7 @@ L03DD26:
 	move.w d0,-(a7)	; $03DD44
 	jsr gfx_paint_stream_fan(pc)	; $03DD46
 	addq.w #$8,a7	; $03DD4A
-	move.w ram_sys_ffc41c.l,d0	; $03DD4C
+	move.w ram_sys_field_c41c.l,d0	; $03DD4C
 	ext.l d0	; $03DD52
 	divs.w #$2,d0	; $03DD54
 	swap d0	; $03DD58
@@ -59287,7 +59287,7 @@ L03DD26:
 	move.w d0,-(a7)	; $03DD86
 	jsr gfx_paint_stream_block(pc)	; $03DD88
 	addq.w #$8,a7	; $03DD8C
-	move.w ram_sys_ffc41c.l,d0	; $03DD8E
+	move.w ram_sys_field_c41c.l,d0	; $03DD8E
 	ext.l d0	; $03DD94
 	divs.w #$2,d0	; $03DD96
 	swap d0	; $03DD9A
@@ -59321,14 +59321,14 @@ L03DD26:
 	jsr sfx_request.l	; $03DDF4
 	addq.w #$4,a7	; $03DDFA
 L03DDFC:
-	addq.w #$1,ram_sys_ffc41c.l	; $03DDFC
-	cmpi.w #$3c,ram_sys_ffc41c.l	; $03DE02
+	addq.w #$1,ram_sys_field_c41c.l	; $03DDFC
+	cmpi.w #$3c,ram_sys_field_c41c.l	; $03DE02
 	blt.b L03DE12	; $03DE0A
-	clr.w ram_sys_ff013c.l	; $03DE0C
+	clr.w ram_sys_field_013c.l	; $03DE0C
 L03DE12:
 	bra.w L03E190	; $03DE12
 L03DE16:
-	move.w ram_sys_ffc41c.l,d4	; $03DE16
+	move.w ram_sys_field_c41c.l,d4	; $03DE16
 	ext.l d4	; $03DE1C
 	divs.w #$14,d4	; $03DE1E
 	swap d4	; $03DE22
@@ -59395,14 +59395,14 @@ L03DE8E:
 	jsr sfx_request.l	; $03DEB8
 	addq.w #$4,a7	; $03DEBE
 L03DEC0:
-	addq.w #$1,ram_sys_ffc41c.l	; $03DEC0
-	cmpi.w #$3c,ram_sys_ffc41c.l	; $03DEC6
+	addq.w #$1,ram_sys_field_c41c.l	; $03DEC0
+	cmpi.w #$3c,ram_sys_field_c41c.l	; $03DEC6
 	blt.b L03DED6	; $03DECE
-	clr.w ram_sys_ff013c.l	; $03DED0
+	clr.w ram_sys_field_013c.l	; $03DED0
 L03DED6:
 	bra.w L03E190	; $03DED6
 L03DEDA:
-	move.w ram_sys_ffc41c.l,d4	; $03DEDA
+	move.w ram_sys_field_c41c.l,d4	; $03DEDA
 	ext.l d4	; $03DEE0
 	divs.w #$1e,d4	; $03DEE2
 	swap d4	; $03DEE6
@@ -59425,7 +59425,7 @@ L03DEF6:
 	move.w d0,-(a7)	; $03DF12
 	jsr spell_effect_scatter(pc)	; $03DF14
 	addq.w #$4,a7	; $03DF18
-	move.w ram_sys_ffc41c.l,d0	; $03DF1A
+	move.w ram_sys_field_c41c.l,d0	; $03DF1A
 	ext.l d0	; $03DF20
 	divs.w #$8,d0	; $03DF22
 	swap d0	; $03DF26
@@ -59439,14 +59439,14 @@ L03DEF6:
 	jsr sfx_request.l	; $03DF3E
 	addq.w #$4,a7	; $03DF44
 L03DF46:
-	addq.w #$1,ram_sys_ffc41c.l	; $03DF46
-	cmpi.w #$3c,ram_sys_ffc41c.l	; $03DF4C
+	addq.w #$1,ram_sys_field_c41c.l	; $03DF46
+	cmpi.w #$3c,ram_sys_field_c41c.l	; $03DF4C
 	blt.b L03DF5C	; $03DF54
-	clr.w ram_sys_ff013c.l	; $03DF56
+	clr.w ram_sys_field_013c.l	; $03DF56
 L03DF5C:
 	bra.w L03E190	; $03DF5C
 L03DF60:
-	move.w ram_sys_ffc41c.l,d4	; $03DF60
+	move.w ram_sys_field_c41c.l,d4	; $03DF60
 	ext.l d4	; $03DF66
 	divs.w #$14,d4	; $03DF68
 	swap d4	; $03DF6C
@@ -59490,22 +59490,22 @@ L03DF88:
 	clr.w -(a7)	; $03DFD4
 	jsr pal_load_set.l	; $03DFD6
 	addq.w #$6,a7	; $03DFDC
-	move.w #$ffff,ram_sys_ff0124.l	; $03DFDE
+	move.w #$ffff,ram_world_field_0124.l	; $03DFDE
 L03DFE6:
-	addq.w #$1,ram_sys_ffc41c.l	; $03DFE6
-	cmpi.w #$3c,ram_sys_ffc41c.l	; $03DFEC
+	addq.w #$1,ram_sys_field_c41c.l	; $03DFE6
+	cmpi.w #$3c,ram_sys_field_c41c.l	; $03DFEC
 	blt.b L03DFFC	; $03DFF4
-	clr.w ram_sys_ff013c.l	; $03DFF6
+	clr.w ram_sys_field_013c.l	; $03DFF6
 L03DFFC:
 	bra.w L03E190	; $03DFFC
 L03E000:
-	move.w ram_sys_ffc41c.l,d0	; $03E000
+	move.w ram_sys_field_c41c.l,d0	; $03E000
 	muls.w #$28,d0	; $03E006
 	ext.l d0	; $03E00A
 	divs.w #$8,d0	; $03E00C
 	move.w d0,d4	; $03E010
 	add.w #$c8,d4	; $03E012
-	move.w ram_sys_ffc41c.l,d0	; $03E016
+	move.w ram_sys_field_c41c.l,d0	; $03E016
 	muls.w #$ff9c,d0	; $03E01C
 	ext.l d0	; $03E020
 	divs.w #$8,d0	; $03E022
@@ -59521,12 +59521,12 @@ L03E000:
 	move.w d0,-(a7)	; $03E042
 	jsr map_terrain_tile_lookup.l	; $03E044
 	addq.w #$8,a7	; $03E04A
-	addq.w #$1,ram_sys_ffc41c.l	; $03E04C
-	cmpi.w #$a,ram_sys_ffc41c.l	; $03E052
+	addq.w #$1,ram_sys_field_c41c.l	; $03E04C
+	cmpi.w #$a,ram_sys_field_c41c.l	; $03E052
 	blt.b L03E0B8	; $03E05A
-	clr.w ram_sys_ff013c.l	; $03E05C
+	clr.w ram_sys_field_013c.l	; $03E05C
 	jsr scene_draw.l	; $03E062
-	clr.w ram_sys_ff0110.l	; $03E068
+	clr.w ram_menu_field_0110.l	; $03E068
 	jsr npc_show_greeting.l	; $03E06E
 	move.w #$14,-(a7)	; $03E074
 	move.w #$d,-(a7)	; $03E078
@@ -59548,14 +59548,14 @@ L03E000:
 L03E0B8:
 	bra.w L03E190	; $03E0B8
 L03E0BC:
-	tst.w ram_sys_ffc41c.l	; $03E0BC
+	tst.w ram_sys_field_c41c.l	; $03E0BC
 	bne.b L03E0D4	; $03E0C2
-	move.w #$8c,ram_sys_ff0290.l	; $03E0C4
-	move.w #$5a,ram_sys_ff0292.l	; $03E0CC
+	move.w #$8c,ram_sys_field_0290.l	; $03E0C4
+	move.w #$5a,ram_sys_field_0292.l	; $03E0CC
 L03E0D4:
-	cmpi.w #$28,ram_sys_ffc41c.l	; $03E0D4
+	cmpi.w #$28,ram_sys_field_c41c.l	; $03E0D4
 	bge.b L03E118	; $03E0DC
-	move.w ram_sys_ffc41c.l,d0	; $03E0DE
+	move.w ram_sys_field_c41c.l,d0	; $03E0DE
 	ext.l d0	; $03E0E4
 	divs.w #$a,d0	; $03E0E6
 	ext.l d0	; $03E0EA
@@ -59563,27 +59563,27 @@ L03E0D4:
 	swap d0	; $03E0F0
 	tst.w d0	; $03E0F2
 	beq.b L03E108	; $03E0F4
-	subi.w #$a,ram_sys_ff0290.l	; $03E0F6
-	addi.w #$a,ram_sys_ff0292.l	; $03E0FE
+	subi.w #$a,ram_sys_field_0290.l	; $03E0F6
+	addi.w #$a,ram_sys_field_0292.l	; $03E0FE
 	bra.b L03E118	; $03E106
 L03E108:
-	addi.w #$a,ram_sys_ff0290.l	; $03E108
-	subi.w #$a,ram_sys_ff0292.l	; $03E110
+	addi.w #$a,ram_sys_field_0290.l	; $03E108
+	subi.w #$a,ram_sys_field_0292.l	; $03E110
 L03E118:
-	cmpi.w #$28,ram_sys_ffc41c.l	; $03E118
+	cmpi.w #$28,ram_sys_field_c41c.l	; $03E118
 	bne.b L03E128	; $03E120
-	clr.w ram_sys_ff013c.l	; $03E122
+	clr.w ram_sys_field_013c.l	; $03E122
 L03E128:
-	move.w ram_sys_ffc41c.l,d0	; $03E128
+	move.w ram_sys_field_c41c.l,d0	; $03E128
 	ext.l d0	; $03E12E
 	divs.w #$2,d0	; $03E130
 	swap d0	; $03E134
 	move.w d0,-(a7)	; $03E136
-	move.w ram_sys_ff0292.l,-(a7)	; $03E138
-	move.w ram_sys_ff0290.l,-(a7)	; $03E13E
+	move.w ram_sys_field_0292.l,-(a7)	; $03E138
+	move.w ram_sys_field_0290.l,-(a7)	; $03E13E
 	bsr.b spell_effect_line	; $03E144
 	addq.w #$6,a7	; $03E146
-	addq.w #$1,ram_sys_ffc41c.l	; $03E148
+	addq.w #$1,ram_sys_field_c41c.l	; $03E148
 	bra.b L03E190	; $03E14E
 L03E150:
 	subq.l #$1,d0	; $03E150
@@ -59796,7 +59796,7 @@ L03E398:
 	move.w ram_actor_index.l,-(a7)	; $03E3FC
 	jsr npc_spawn_at_step.l	; $03E402
 	lea.l $12(a7),a7	; $03E408
-	move.w d0,ram_sys_ff0294.l	; $03E40C
+	move.w d0,ram_sys_field_0294.l	; $03E40C
 	addq.w #$1,ram_sys_field_012a.l	; $03E412
 L03E418:
 	unlk a6	; $03E418
@@ -59804,7 +59804,7 @@ L03E418:
 L03E41C:
 	cmpi.w #$2,ram_sys_field_012a.l	; $03E41C
 	blt.w L03E786	; $03E424
-	move.w ram_sys_ff0294.l,d0	; $03E428
+	move.w ram_sys_field_0294.l,d0	; $03E428
 	muls.w #$34,d0	; $03E42E
 	lea.l ram_merchant_base.l,a0	; $03E432
 	add.l a0,d0	; $03E438
@@ -59815,11 +59815,11 @@ L03E41C:
 	move.w -$a(a6),-(a7)	; $03E44E
 	jsr world_turn_dir_left.l	; $03E452
 	addq.w #$2,a7	; $03E458
-	move.w d0,ram_sys_ff0298.l	; $03E45A
+	move.w d0,ram_sys_field_0298.l	; $03E45A
 	move.w -$a(a6),-(a7)	; $03E460
 	jsr world_turn_dir_right.l	; $03E464
 	addq.w #$2,a7	; $03E46A
-	move.w d0,ram_sys_ff029a.l	; $03E46C
+	move.w d0,ram_sys_field_029a.l	; $03E46C
 	pea.l -$26(a6)	; $03E472
 	move.w -$a(a6),-(a7)	; $03E476
 	jsr world_reverse_dir.l	; $03E47A
@@ -59871,7 +59871,7 @@ L03E500:
 	move.w d0,-$8(a6)	; $03E500
 	move.w ram_actor_index.l,d0	; $03E504
 	muls.w #$34,d0	; $03E50A
-	lea.l ram_sys_ff02cc.l,a0	; $03E50E
+	lea.l ram_world_field_02cc.l,a0	; $03E50E
 	move.w (a0,d0.l),d1	; $03E514
 	and.w #$f,d1	; $03E518
 	subq.w #$1,d1	; $03E51C
@@ -59882,7 +59882,7 @@ L03E500:
 	movea.l (a0,d0.l),a1	; $03E52A
 	move.w ram_actor_index.l,d0	; $03E52E
 	muls.w #$34,d0	; $03E534
-	lea.l ram_sys_ff02d9.l,a0	; $03E538
+	lea.l ram_sys_field_02d9.l,a0	; $03E538
 	move.l d0,d1	; $03E53E
 	moveq #$0,d0	; $03E540
 	move.b (a0,d1.l),d0	; $03E542
@@ -59925,7 +59925,7 @@ L03E592:
 	bra.w L03E77A	; $03E5AE
 L03E5B2:
 	pea.l -$26(a6)	; $03E5B2
-	move.w ram_sys_ff0298.l,-(a7)	; $03E5B6
+	move.w ram_sys_field_0298.l,-(a7)	; $03E5B6
 	jsr world_get_step_delta.l	; $03E5BC
 	addq.w #$6,a7	; $03E5C2
 	move.w -$26(a6),d0	; $03E5C4
@@ -59948,7 +59948,7 @@ L03E5F0:
 	muls.w -$2(a6),d0	; $03E5F4
 	add.w -$6(a6),d0	; $03E5F8
 L03E5FC:
-	move.w d0,ram_sys_ff029c.l	; $03E5FC
+	move.w d0,ram_sys_field_029c.l	; $03E5FC
 	move.w -$24(a6),d0	; $03E602
 	muls.w -$2(a6),d0	; $03E606
 	add.w -$8(a6),d0	; $03E60A
@@ -59969,20 +59969,20 @@ L03E62E:
 	muls.w -$2(a6),d0	; $03E632
 	add.w -$8(a6),d0	; $03E636
 L03E63A:
-	move.w d0,ram_sys_ff029e.l	; $03E63A
-	move.w ram_sys_ff029e.l,-(a7)	; $03E640
-	move.w ram_sys_ff029c.l,-(a7)	; $03E646
+	move.w d0,ram_sys_field_029e.l	; $03E63A
+	move.w ram_sys_field_029e.l,-(a7)	; $03E640
+	move.w ram_sys_field_029c.l,-(a7)	; $03E646
 	move.w -$e(a6),-(a7)	; $03E64C
 	jsr world_pos_add_x.l	; $03E650
 	addq.w #$6,a7	; $03E656
-	move.w ram_sys_ff029e.l,-(a7)	; $03E658
-	move.w ram_sys_ff029c.l,-(a7)	; $03E65E
+	move.w ram_sys_field_029e.l,-(a7)	; $03E658
+	move.w ram_sys_field_029c.l,-(a7)	; $03E65E
 	move.w #$4,-(a7)	; $03E664
 	move.w #$5,-(a7)	; $03E668
 	jsr world_pos_add_y.l	; $03E66C
 	addq.w #$8,a7	; $03E672
-	move.w ram_sys_ff029e.l,-(a7)	; $03E674
-	move.w ram_sys_ff029c.l,-(a7)	; $03E67A
+	move.w ram_sys_field_029e.l,-(a7)	; $03E674
+	move.w ram_sys_field_029c.l,-(a7)	; $03E67A
 	move.w #$ff38,-(a7)	; $03E680
 	move.w #$1,-(a7)	; $03E684
 	jsr world_pos_add_y.l	; $03E688
@@ -59990,7 +59990,7 @@ L03E63A:
 	tst.w -$2(a6)	; $03E690
 	beq.w L03E776	; $03E694
 	pea.l -$26(a6)	; $03E698
-	move.w ram_sys_ff029a.l,-(a7)	; $03E69C
+	move.w ram_sys_field_029a.l,-(a7)	; $03E69C
 	jsr world_get_step_delta.l	; $03E6A2
 	addq.w #$6,a7	; $03E6A8
 	move.w -$26(a6),d0	; $03E6AA
@@ -60013,7 +60013,7 @@ L03E6D6:
 	muls.w -$2(a6),d0	; $03E6DA
 	add.w -$6(a6),d0	; $03E6DE
 L03E6E2:
-	move.w d0,ram_sys_ff029c.l	; $03E6E2
+	move.w d0,ram_sys_field_029c.l	; $03E6E2
 	move.w -$24(a6),d0	; $03E6E8
 	muls.w -$2(a6),d0	; $03E6EC
 	add.w -$8(a6),d0	; $03E6F0
@@ -60034,20 +60034,20 @@ L03E714:
 	muls.w -$2(a6),d0	; $03E718
 	add.w -$8(a6),d0	; $03E71C
 L03E720:
-	move.w d0,ram_sys_ff029e.l	; $03E720
-	move.w ram_sys_ff029e.l,-(a7)	; $03E726
-	move.w ram_sys_ff029c.l,-(a7)	; $03E72C
+	move.w d0,ram_sys_field_029e.l	; $03E720
+	move.w ram_sys_field_029e.l,-(a7)	; $03E726
+	move.w ram_sys_field_029c.l,-(a7)	; $03E72C
 	move.w -$e(a6),-(a7)	; $03E732
 	jsr world_pos_add_x.l	; $03E736
 	addq.w #$6,a7	; $03E73C
-	move.w ram_sys_ff029e.l,-(a7)	; $03E73E
-	move.w ram_sys_ff029c.l,-(a7)	; $03E744
+	move.w ram_sys_field_029e.l,-(a7)	; $03E73E
+	move.w ram_sys_field_029c.l,-(a7)	; $03E744
 	move.w #$4,-(a7)	; $03E74A
 	move.w #$5,-(a7)	; $03E74E
 	jsr world_pos_add_y.l	; $03E752
 	addq.w #$8,a7	; $03E758
-	move.w ram_sys_ff029e.l,-(a7)	; $03E75A
-	move.w ram_sys_ff029c.l,-(a7)	; $03E760
+	move.w ram_sys_field_029e.l,-(a7)	; $03E75A
+	move.w ram_sys_field_029c.l,-(a7)	; $03E760
 	move.w #$ff38,-(a7)	; $03E766
 	move.w #$1,-(a7)	; $03E76A
 	jsr world_pos_add_y.l	; $03E76E
@@ -60068,7 +60068,7 @@ L03E78A:
 	clr.w -(a7)	; $03E79E
 	move.w ram_actor_index.l,d0	; $03E7A0
 	muls.w #$34,d0	; $03E7A6
-	lea.l ram_sys_ff02e0.l,a0	; $03E7AA
+	lea.l ram_world_field_02e0.l,a0	; $03E7AA
 	move.w (a0,d0.l),d1	; $03E7B0
 	and.w #$ff,d1	; $03E7B4
 	move.w d1,-(a7)	; $03E7B8
@@ -60091,9 +60091,9 @@ L03E7CC:
 	add.l a0,d0	; $03E7FE
 	move.l d0,-$20(a6)	; $03E800
 	movea.l -$20(a6),a0	; $03E804
-	move.w $c(a0),ram_sys_ffc414.l	; $03E808
+	move.w $c(a0),ram_sys_field_c414.l	; $03E808
 	movea.l -$20(a6),a0	; $03E810
-	move.w $e(a0),ram_sys_ffc416.l	; $03E814
+	move.w $e(a0),ram_sys_field_c416.l	; $03E814
 	movea.l -$1c(a6),a0	; $03E81C
 	move.w $18(a0),d0	; $03E820
 	and.w #$f,d0	; $03E824
@@ -60111,25 +60111,25 @@ L03E7CC:
 	adda.l d0,a1	; $03E84C
 	move.w $2(a1),d0	; $03E84E
 	and.w #$f,d0	; $03E852
-	move.w d0,ram_sys_ff0296.l	; $03E856
-	move.w ram_sys_ff0296.l,d0	; $03E85C
+	move.w d0,ram_sys_field_0296.l	; $03E856
+	move.w ram_sys_field_0296.l,d0	; $03E85C
 	addq.w #$1,d0	; $03E862
 	cmp.w #$6,d0	; $03E864
 	ble.b L03E86E	; $03E868
 	moveq #$6,d0	; $03E86A
 	bra.b L03E886	; $03E86C
 L03E86E:
-	move.w ram_sys_ff0296.l,d0	; $03E86E
+	move.w ram_sys_field_0296.l,d0	; $03E86E
 	addq.w #$1,d0	; $03E874
 	tst.w d0	; $03E876
 	bge.b L03E87E	; $03E878
 	moveq #$0,d0	; $03E87A
 	bra.b L03E886	; $03E87C
 L03E87E:
-	move.w ram_sys_ff0296.l,d0	; $03E87E
+	move.w ram_sys_field_0296.l,d0	; $03E87E
 	addq.w #$1,d0	; $03E884
 L03E886:
-	move.w d0,ram_sys_ff0294.l	; $03E886
+	move.w d0,ram_sys_field_0294.l	; $03E886
 	addq.w #$1,ram_sys_field_012a.l	; $03E88C
 	bra.w L03E418	; $03E892
 L03E896:
@@ -60138,7 +60138,7 @@ L03E896:
 	cmpi.w #$8,ram_sys_field_012a.l	; $03E8A0
 	bgt.b L03E8F0	; $03E8A8
 	jsr combat_fill_grid.l	; $03E8AA
-	move.w ram_sys_ff0296.l,d0	; $03E8B0
+	move.w ram_sys_field_0296.l,d0	; $03E8B0
 	ext.l d0	; $03E8B6
 	asl.l #$1,d0	; $03E8B8
 	lea.l L01B560.l,a0	; $03E8BA
@@ -60146,32 +60146,32 @@ L03E896:
 	moveq #$8,d0	; $03E8C4
 	sub.w ram_sys_field_012a.l,d0	; $03E8C6
 	move.w d0,-(a7)	; $03E8CC
-	move.w ram_sys_ff0294.l,-(a7)	; $03E8CE
-	move.w ram_sys_ffc416.l,-(a7)	; $03E8D4
-	move.w ram_sys_ffc414.l,-(a7)	; $03E8DA
+	move.w ram_sys_field_0294.l,-(a7)	; $03E8CE
+	move.w ram_sys_field_c416.l,-(a7)	; $03E8D4
+	move.w ram_sys_field_c414.l,-(a7)	; $03E8DA
 	jsr combat_paint_ring.l	; $03E8E0
 	lea.l $a(a7),a7	; $03E8E6
 	addq.w #$1,ram_sys_field_012a.l	; $03E8EA
 L03E8F0:
 	cmpi.w #$9,ram_sys_field_012a.l	; $03E8F0
 	bne.b L03E964	; $03E8F8
-	move.w ram_sys_ffc416.l,-(a7)	; $03E8FA
-	move.w ram_sys_ffc414.l,-(a7)	; $03E900
-	move.w ram_sys_ff0296.l,d0	; $03E906
+	move.w ram_sys_field_c416.l,-(a7)	; $03E8FA
+	move.w ram_sys_field_c414.l,-(a7)	; $03E900
+	move.w ram_sys_field_0296.l,d0	; $03E906
 	ext.l d0	; $03E90C
 	asl.l #$1,d0	; $03E90E
 	lea.l L01B560.l,a0	; $03E910
 	move.w (a0,d0.l),-(a7)	; $03E916
 	jsr world_pos_add_x.l	; $03E91A
 	addq.w #$6,a7	; $03E920
-	move.w ram_sys_ffc416.l,-(a7)	; $03E922
-	move.w ram_sys_ffc414.l,-(a7)	; $03E928
+	move.w ram_sys_field_c416.l,-(a7)	; $03E922
+	move.w ram_sys_field_c414.l,-(a7)	; $03E928
 	move.w #$ff38,-(a7)	; $03E92E
 	move.w #$1,-(a7)	; $03E932
 	jsr world_pos_add_y.l	; $03E936
 	addq.w #$8,a7	; $03E93C
-	move.w ram_sys_ffc416.l,-(a7)	; $03E93E
-	move.w ram_sys_ffc414.l,-(a7)	; $03E944
+	move.w ram_sys_field_c416.l,-(a7)	; $03E93E
+	move.w ram_sys_field_c414.l,-(a7)	; $03E944
 	move.w #$6,-(a7)	; $03E94A
 	move.w #$5,-(a7)	; $03E94E
 	jsr world_pos_add_y.l	; $03E952
@@ -60181,8 +60181,8 @@ L03E8F0:
 L03E964:
 	cmpi.w #$a,ram_sys_field_012a.l	; $03E964
 	bne.b L03E990	; $03E96C
-	move.w ram_sys_ffc416.l,-(a7)	; $03E96E
-	move.w ram_sys_ffc414.l,-(a7)	; $03E974
+	move.w ram_sys_field_c416.l,-(a7)	; $03E96E
+	move.w ram_sys_field_c414.l,-(a7)	; $03E974
 	move.w #$1ef,-(a7)	; $03E97A
 	jsr world_pos_add_x.l	; $03E97E
 	addq.w #$6,a7	; $03E984
@@ -60207,7 +60207,7 @@ L03E9C8:
 	clr.w -(a7)	; $03E9D2
 	move.w ram_actor_index.l,d0	; $03E9D4
 	muls.w #$34,d0	; $03E9DA
-	lea.l ram_sys_ff02e0.l,a0	; $03E9DE
+	lea.l ram_world_field_02e0.l,a0	; $03E9DE
 	move.w (a0,d0.l),d1	; $03E9E4
 	and.w #$ff,d1	; $03E9E8
 	move.w d1,-(a7)	; $03E9EC
@@ -60235,9 +60235,9 @@ L03EA12:
 	add.l a0,d0	; $03EA42
 	move.l d0,-$20(a6)	; $03EA44
 	movea.l -$20(a6),a0	; $03EA48
-	move.w $c(a0),ram_sys_ffc414.l	; $03EA4C
+	move.w $c(a0),ram_sys_field_c414.l	; $03EA4C
 	movea.l -$20(a6),a0	; $03EA54
-	move.w $e(a0),ram_sys_ffc416.l	; $03EA58
+	move.w $e(a0),ram_sys_field_c416.l	; $03EA58
 	movea.l -$1c(a6),a0	; $03EA60
 	move.w $18(a0),d0	; $03EA64
 	and.w #$f,d0	; $03EA68
@@ -60255,14 +60255,14 @@ L03EA12:
 	adda.l d0,a1	; $03EA90
 	move.w $2(a1),d0	; $03EA92
 	and.w #$f,d0	; $03EA96
-	move.w d0,ram_sys_ff0294.l	; $03EA9A
+	move.w d0,ram_sys_field_0294.l	; $03EA9A
 	addq.w #$1,ram_sys_field_012a.l	; $03EAA0
 L03EAA6:
 	cmpi.w #$1,ram_sys_field_012a.l	; $03EAA6
 	ble.b L03EB16	; $03EAAE
 	cmpi.w #$8,ram_sys_field_012a.l	; $03EAB0
 	bgt.b L03EB16	; $03EAB8
-	move.w ram_sys_ff0294.l,d0	; $03EABA
+	move.w ram_sys_field_0294.l,d0	; $03EABA
 	ext.l d0	; $03EAC0
 	asl.l #$1,d0	; $03EAC2
 	lea.l L01B560.l,a0	; $03EAC4
@@ -60283,8 +60283,8 @@ L03EAF2:
 	move.w ram_sys_field_012a.l,d0	; $03EAF2
 L03EAF8:
 	move.w d0,-(a7)	; $03EAF8
-	move.w ram_sys_ffc416.l,-(a7)	; $03EAFA
-	move.w ram_sys_ffc414.l,-(a7)	; $03EB00
+	move.w ram_sys_field_c416.l,-(a7)	; $03EAFA
+	move.w ram_sys_field_c414.l,-(a7)	; $03EB00
 	jsr combat_paint_ring.l	; $03EB06
 	lea.l $a(a7),a7	; $03EB0C
 	addq.w #$1,ram_sys_field_012a.l	; $03EB10
@@ -60292,24 +60292,24 @@ L03EB16:
 	cmpi.w #$9,ram_sys_field_012a.l	; $03EB16
 	bne.b L03EB8E	; $03EB1E
 	jsr combat_fill_grid.l	; $03EB20
-	move.w ram_sys_ffc416.l,-(a7)	; $03EB26
-	move.w ram_sys_ffc414.l,-(a7)	; $03EB2C
-	move.w ram_sys_ff0294.l,d0	; $03EB32
+	move.w ram_sys_field_c416.l,-(a7)	; $03EB26
+	move.w ram_sys_field_c414.l,-(a7)	; $03EB2C
+	move.w ram_sys_field_0294.l,d0	; $03EB32
 	ext.l d0	; $03EB38
 	asl.l #$1,d0	; $03EB3A
 	lea.l L01B560.l,a0	; $03EB3C
 	move.w (a0,d0.l),-(a7)	; $03EB42
 	jsr world_pos_add_x.l	; $03EB46
 	addq.w #$6,a7	; $03EB4C
-	move.w ram_sys_ffc416.l,-(a7)	; $03EB4E
-	move.w ram_sys_ffc414.l,-(a7)	; $03EB54
+	move.w ram_sys_field_c416.l,-(a7)	; $03EB4E
+	move.w ram_sys_field_c414.l,-(a7)	; $03EB54
 	move.w #$ff38,-(a7)	; $03EB5A
 	move.w #$1,-(a7)	; $03EB5E
 	jsr world_pos_add_y.l	; $03EB62
 	addq.w #$8,a7	; $03EB68
-	move.w ram_sys_ffc416.l,-(a7)	; $03EB6A
-	move.w ram_sys_ffc414.l,-(a7)	; $03EB70
-	move.w ram_sys_ff0294.l,-(a7)	; $03EB76
+	move.w ram_sys_field_c416.l,-(a7)	; $03EB6A
+	move.w ram_sys_field_c414.l,-(a7)	; $03EB70
+	move.w ram_sys_field_0294.l,-(a7)	; $03EB76
 	move.w #$5,-(a7)	; $03EB7C
 	jsr world_pos_add_y.l	; $03EB80
 	addq.w #$8,a7	; $03EB86
@@ -60321,7 +60321,7 @@ L03EB8E:
 	clr.w -(a7)	; $03EB9E
 	move.w ram_actor_index.l,d0	; $03EBA0
 	muls.w #$34,d0	; $03EBA6
-	lea.l ram_sys_ff02e0.l,a0	; $03EBAA
+	lea.l ram_world_field_02e0.l,a0	; $03EBAA
 	move.w (a0,d0.l),d1	; $03EBB0
 	and.w #$ff,d1	; $03EBB4
 	move.w d1,-(a7)	; $03EBB8
@@ -60515,14 +60515,14 @@ L03EE60:
 	move.w $2(a1),d0	; $03EEA0
 	and.w #$f,d0	; $03EEA4
 	move.w d0,-$c(a6)	; $03EEA8
-	move.w ram_sys_ffc418.l,-(a7)	; $03EEAC
+	move.w ram_sys_field_c418.l,-(a7)	; $03EEAC
 	jsr npc_clear_bit15_399ac.l	; $03EEB2
 	addq.w #$2,a7	; $03EEB8
 	cmpi.w #$7,-$c(a6)	; $03EEBA
 	ble.w L03EF5C	; $03EEC0
 	move.w ram_actor_index.l,d0	; $03EEC4
 	muls.w #$34,d0	; $03EECA
-	lea.l ram_sys_ff02db.l,a0	; $03EECE
+	lea.l ram_sys_field_02db.l,a0	; $03EECE
 	move.l d0,d1	; $03EED4
 	moveq #$0,d0	; $03EED6
 	move.b (a0,d1.l),d0	; $03EED8
@@ -60542,7 +60542,7 @@ L03EEF4:
 	tst.w -$e(a6)	; $03EF08
 	beq.b L03EF50	; $03EF0C
 	move.w -$e(a6),d0	; $03EF0E
-	cmp.w ram_sys_ffc418.l,d0	; $03EF12
+	cmp.w ram_sys_field_c418.l,d0	; $03EF12
 	beq.b L03EF50	; $03EF18
 	move.w #$3,-(a7)	; $03EF1A
 	jsr rand_next.l	; $03EF1E
@@ -60551,7 +60551,7 @@ L03EEF4:
 	bne.b L03EF50	; $03EF28
 	move.w -$e(a6),d0	; $03EF2A
 	muls.w #$34,d0	; $03EF2E
-	lea.l ram_sys_ff02e0.l,a0	; $03EF32
+	lea.l ram_world_field_02e0.l,a0	; $03EF32
 	move.w (a0,d0.l),d1	; $03EF38
 	rol.w #$3,d1	; $03EF3C
 	and.w #$1,d1	; $03EF3E
@@ -60570,7 +60570,7 @@ L03EF5C:
 	lea.l ram_combat_flags.l,a0	; $03EF6A
 	andi.w #$fffd,(a0)	; $03EF70
 	ori.w #$2,(a0)	; $03EF74
-	move.w #$ffff,ram_sys_ff009a.l	; $03EF78
+	move.w #$ffff,ram_sys_field_009a.l	; $03EF78
 	clr.w ram_sys_field_012a.l	; $03EF80
 	bra.w L042E30	; $03EF86
 L03EF8A:
@@ -60595,14 +60595,14 @@ L03EF8A:
 	move.w $2(a1),d0	; $03EFCA
 	and.w #$f,d0	; $03EFCE
 	move.w d0,-$c(a6)	; $03EFD2
-	move.w ram_sys_ffc418.l,-(a7)	; $03EFD6
+	move.w ram_sys_field_c418.l,-(a7)	; $03EFD6
 	jsr npc_clear_bit15_399f4.l	; $03EFDC
 	addq.w #$2,a7	; $03EFE2
 	cmpi.w #$5,-$c(a6)	; $03EFE4
 	blt.w L03F086	; $03EFEA
-	move.w ram_sys_ffc418.l,d0	; $03EFEE
+	move.w ram_sys_field_c418.l,d0	; $03EFEE
 	muls.w #$34,d0	; $03EFF4
-	lea.l ram_sys_ff02db.l,a0	; $03EFF8
+	lea.l ram_sys_field_02db.l,a0	; $03EFF8
 	move.l d0,d1	; $03EFFE
 	moveq #$0,d0	; $03F000
 	move.b (a0,d1.l),d0	; $03F002
@@ -60622,7 +60622,7 @@ L03F01E:
 	tst.w -$e(a6)	; $03F032
 	beq.b L03F07A	; $03F036
 	move.w -$e(a6),d0	; $03F038
-	cmp.w ram_sys_ffc418.l,d0	; $03F03C
+	cmp.w ram_sys_field_c418.l,d0	; $03F03C
 	beq.b L03F07A	; $03F042
 	move.w #$3,-(a7)	; $03F044
 	jsr rand_next.l	; $03F048
@@ -60631,7 +60631,7 @@ L03F01E:
 	bne.b L03F07A	; $03F052
 	move.w -$e(a6),d0	; $03F054
 	muls.w #$34,d0	; $03F058
-	lea.l ram_sys_ff02e0.l,a0	; $03F05C
+	lea.l ram_world_field_02e0.l,a0	; $03F05C
 	move.w (a0,d0.l),d1	; $03F062
 	rol.w #$3,d1	; $03F066
 	and.w #$1,d1	; $03F068
@@ -60650,7 +60650,7 @@ L03F086:
 	lea.l ram_combat_flags.l,a0	; $03F094
 	andi.w #$fffd,(a0)	; $03F09A
 	ori.w #$2,(a0)	; $03F09E
-	move.w #$ffff,ram_sys_ff009a.l	; $03F0A2
+	move.w #$ffff,ram_sys_field_009a.l	; $03F0A2
 	clr.w ram_sys_field_012a.l	; $03F0AA
 	bra.w L042E30	; $03F0B0
 L03F0B4:
@@ -60675,21 +60675,21 @@ L03F0B4:
 	move.w $2(a1),d0	; $03F0F4
 	and.w #$f,d0	; $03F0F8
 	move.w d0,-$c(a6)	; $03F0FC
-	move.w ram_sys_ffc418.l,d0	; $03F100
+	move.w ram_sys_field_c418.l,d0	; $03F100
 	muls.w #$34,d0	; $03F106
 	movea.l d0,a0	; $03F10A
-	lea.l ram_sys_ff02de.l,a1	; $03F10C
+	lea.l ram_world_field_02de.l,a1	; $03F10C
 	adda.l a1,a0	; $03F112
 	andi.w #$f7ff,(a0)	; $03F114
 	ori.w #$800,(a0)	; $03F118
-	move.w ram_sys_ffc418.l,-(a7)	; $03F11C
+	move.w ram_sys_field_c418.l,-(a7)	; $03F11C
 	jsr combat_flag_clear.l	; $03F122
 	addq.w #$2,a7	; $03F128
 	cmpi.w #$5,-$c(a6)	; $03F12A
 	blt.w L03F1E8	; $03F130
-	move.w ram_sys_ffc418.l,d0	; $03F134
+	move.w ram_sys_field_c418.l,d0	; $03F134
 	muls.w #$34,d0	; $03F13A
-	lea.l ram_sys_ff02db.l,a0	; $03F13E
+	lea.l ram_sys_field_02db.l,a0	; $03F13E
 	move.l d0,d1	; $03F144
 	moveq #$0,d0	; $03F146
 	move.b (a0,d1.l),d0	; $03F148
@@ -60709,7 +60709,7 @@ L03F164:
 	tst.w -$e(a6)	; $03F178
 	beq.b L03F1DA	; $03F17C
 	move.w -$e(a6),d0	; $03F17E
-	cmp.w ram_sys_ffc418.l,d0	; $03F182
+	cmp.w ram_sys_field_c418.l,d0	; $03F182
 	beq.b L03F1DA	; $03F188
 	move.w #$3,-(a7)	; $03F18A
 	jsr rand_next.l	; $03F18E
@@ -60718,7 +60718,7 @@ L03F164:
 	bne.b L03F1DA	; $03F198
 	move.w -$e(a6),d0	; $03F19A
 	muls.w #$34,d0	; $03F19E
-	lea.l ram_sys_ff02e0.l,a0	; $03F1A2
+	lea.l ram_world_field_02e0.l,a0	; $03F1A2
 	move.w (a0,d0.l),d1	; $03F1A8
 	rol.w #$3,d1	; $03F1AC
 	and.w #$1,d1	; $03F1AE
@@ -60726,7 +60726,7 @@ L03F164:
 	move.w -$e(a6),d0	; $03F1B4
 	muls.w #$34,d0	; $03F1B8
 	movea.l d0,a0	; $03F1BC
-	lea.l ram_sys_ff02de.l,a1	; $03F1BE
+	lea.l ram_world_field_02de.l,a1	; $03F1BE
 	adda.l a1,a0	; $03F1C4
 	andi.w #$f7ff,(a0)	; $03F1C6
 	ori.w #$800,(a0)	; $03F1CA
@@ -60741,7 +60741,7 @@ L03F1E8:
 	lea.l ram_combat_flags.l,a0	; $03F1E8
 	andi.w #$dfff,(a0)	; $03F1EE
 	ori.w #$2000,(a0)	; $03F1F2
-	move.w #$ffff,ram_sys_ff009a.l	; $03F1F6
+	move.w #$ffff,ram_sys_field_009a.l	; $03F1F6
 	clr.w ram_sys_field_012a.l	; $03F1FE
 	bra.w L042E30	; $03F204
 L03F208:
@@ -60766,20 +60766,20 @@ L03F208:
 	move.w $2(a1),d0	; $03F248
 	and.w #$f,d0	; $03F24C
 	move.w d0,-$c(a6)	; $03F250
-	move.w ram_sys_ffc418.l,d0	; $03F254
+	move.w ram_sys_field_c418.l,d0	; $03F254
 	muls.w #$34,d0	; $03F25A
 	movea.l d0,a0	; $03F25E
-	lea.l ram_sys_ff02de.l,a1	; $03F260
+	lea.l ram_world_field_02de.l,a1	; $03F260
 	adda.l a1,a0	; $03F266
 	andi.w #$f7ff,(a0)	; $03F268
-	move.w ram_sys_ffc418.l,-(a7)	; $03F26C
+	move.w ram_sys_field_c418.l,-(a7)	; $03F26C
 	jsr combat_flag_clear.l	; $03F272
 	addq.w #$2,a7	; $03F278
 	cmpi.w #$5,-$c(a6)	; $03F27A
 	blt.w L03F332	; $03F280
-	move.w ram_sys_ffc418.l,d0	; $03F284
+	move.w ram_sys_field_c418.l,d0	; $03F284
 	muls.w #$34,d0	; $03F28A
-	lea.l ram_sys_ff02db.l,a0	; $03F28E
+	lea.l ram_sys_field_02db.l,a0	; $03F28E
 	move.l d0,d1	; $03F294
 	moveq #$0,d0	; $03F296
 	move.b (a0,d1.l),d0	; $03F298
@@ -60799,7 +60799,7 @@ L03F2B4:
 	tst.w -$e(a6)	; $03F2C8
 	beq.b L03F326	; $03F2CC
 	move.w -$e(a6),d0	; $03F2CE
-	cmp.w ram_sys_ffc418.l,d0	; $03F2D2
+	cmp.w ram_sys_field_c418.l,d0	; $03F2D2
 	beq.b L03F326	; $03F2D8
 	move.w #$2,-(a7)	; $03F2DA
 	jsr rand_next.l	; $03F2DE
@@ -60808,7 +60808,7 @@ L03F2B4:
 	bne.b L03F326	; $03F2E8
 	move.w -$e(a6),d0	; $03F2EA
 	muls.w #$34,d0	; $03F2EE
-	lea.l ram_sys_ff02e0.l,a0	; $03F2F2
+	lea.l ram_world_field_02e0.l,a0	; $03F2F2
 	move.w (a0,d0.l),d1	; $03F2F8
 	rol.w #$3,d1	; $03F2FC
 	and.w #$1,d1	; $03F2FE
@@ -60816,7 +60816,7 @@ L03F2B4:
 	move.w -$e(a6),d0	; $03F304
 	muls.w #$34,d0	; $03F308
 	movea.l d0,a0	; $03F30C
-	lea.l ram_sys_ff02de.l,a1	; $03F30E
+	lea.l ram_world_field_02de.l,a1	; $03F30E
 	adda.l a1,a0	; $03F314
 	andi.w #$f7ff,(a0)	; $03F316
 	move.w -$e(a6),-(a7)	; $03F31A
@@ -60830,7 +60830,7 @@ L03F332:
 	lea.l ram_combat_flags.l,a0	; $03F332
 	andi.w #$dfff,(a0)	; $03F338
 	ori.w #$2000,(a0)	; $03F33C
-	move.w #$ffff,ram_sys_ff009a.l	; $03F340
+	move.w #$ffff,ram_sys_field_009a.l	; $03F340
 	clr.w ram_sys_field_012a.l	; $03F348
 	bra.w L042E30	; $03F34E
 L03F352:
@@ -60860,14 +60860,14 @@ L03F352:
 	and.w #$f,d0	; $03F3A4
 	move.w d0,-$c(a6)	; $03F3A8
 	move.w -$c(a6),-(a7)	; $03F3AC
-	move.w ram_sys_ffc418.l,-(a7)	; $03F3B0
+	move.w ram_sys_field_c418.l,-(a7)	; $03F3B0
 	jsr spell_modify_stat.l	; $03F3B6
 	addq.w #$4,a7	; $03F3BC
 	cmpi.w #$3,-$c(a6)	; $03F3BE
 	blt.w L03F464	; $03F3C4
-	move.w ram_sys_ffc418.l,d0	; $03F3C8
+	move.w ram_sys_field_c418.l,d0	; $03F3C8
 	muls.w #$34,d0	; $03F3CE
-	lea.l ram_sys_ff02db.l,a0	; $03F3D2
+	lea.l ram_sys_field_02db.l,a0	; $03F3D2
 	move.l d0,d1	; $03F3D8
 	moveq #$0,d0	; $03F3DA
 	move.b (a0,d1.l),d0	; $03F3DC
@@ -60887,7 +60887,7 @@ L03F3F8:
 	tst.w -$e(a6)	; $03F40C
 	beq.b L03F458	; $03F410
 	move.w -$e(a6),d0	; $03F412
-	cmp.w ram_sys_ffc418.l,d0	; $03F416
+	cmp.w ram_sys_field_c418.l,d0	; $03F416
 	beq.b L03F458	; $03F41C
 	move.w #$3,-(a7)	; $03F41E
 	jsr rand_next.l	; $03F422
@@ -60896,7 +60896,7 @@ L03F3F8:
 	bne.b L03F458	; $03F42C
 	move.w -$e(a6),d0	; $03F42E
 	muls.w #$34,d0	; $03F432
-	lea.l ram_sys_ff02e0.l,a0	; $03F436
+	lea.l ram_world_field_02e0.l,a0	; $03F436
 	move.w (a0,d0.l),d1	; $03F43C
 	rol.w #$3,d1	; $03F440
 	and.w #$1,d1	; $03F442
@@ -60917,14 +60917,14 @@ L03F464:
 	lea.l ram_combat_flags.l,a0	; $03F478
 	andi.w #$fffd,(a0)	; $03F47E
 	ori.w #$2,(a0)	; $03F482
-	move.w #$ffff,ram_sys_ff009a.l	; $03F486
+	move.w #$ffff,ram_sys_field_009a.l	; $03F486
 	bra.w L042E30	; $03F48E
 L03F492:
 	move.w #$ffff,-(a7)	; $03F492
 	clr.w -(a7)	; $03F496
 	jsr sfx_request.l	; $03F498
 	addq.w #$4,a7	; $03F49E
-	move.w ram_sys_ffc418.l,d0	; $03F4A0
+	move.w ram_sys_field_c418.l,d0	; $03F4A0
 	muls.w #$34,d0	; $03F4A6
 	lea.l ram_merchant_base.l,a0	; $03F4AA
 	add.l a0,d0	; $03F4B0
@@ -61008,7 +61008,7 @@ L03F58C:
 	adda.l #$28,a0	; $03F59E
 	andi.w #$f83f,(a0)	; $03F5A4
 	or.w d0,(a0)	; $03F5A8
-	move.w ram_sys_ffc418.l,-(a7)	; $03F5AA
+	move.w ram_sys_field_c418.l,-(a7)	; $03F5AA
 	jsr combat_flag_clear.l	; $03F5B0
 	addq.w #$2,a7	; $03F5B6
 	clr.w ram_sys_field_012a.l	; $03F5B8
@@ -61021,7 +61021,7 @@ L03F58C:
 	lea.l ram_combat_flags.l,a0	; $03F5DA
 	andi.w #$fffd,(a0)	; $03F5E0
 	ori.w #$2,(a0)	; $03F5E4
-	move.w #$ffff,ram_sys_ff009a.l	; $03F5E8
+	move.w #$ffff,ram_sys_field_009a.l	; $03F5E8
 	bra.w L042E30	; $03F5F0
 L03F5F4:
 	cmpi.w #$9,ram_sys_field_012a.l	; $03F5F4
@@ -61165,13 +61165,13 @@ L03F77C:
 	add.w #$120,d0	; $03F7A0
 	and.w #$1ff,d0	; $03F7A4
 	move.w -$4(a6),d1	; $03F7A8
-	movea.l ram_sys_ffa7fc.l,a0	; $03F7AC
+	movea.l ram_sys_field_a7fc.l,a0	; $03F7AC
 	ext.l d1	; $03F7B2
 	divs.w $4(a0),d1	; $03F7B4
 	swap d1	; $03F7B8
-	movea.l ram_sys_ffa7fc.l,a0	; $03F7BA
+	movea.l ram_sys_field_a7fc.l,a0	; $03F7BA
 	muls.w $4(a0),d1	; $03F7C0
-	movea.l ram_sys_ffa7fc.l,a0	; $03F7C4
+	movea.l ram_sys_field_a7fc.l,a0	; $03F7C4
 	move.w -$2(a6),d2	; $03F7CA
 	ext.l d2	; $03F7CE
 	divs.w $4(a0),d2	; $03F7D0
@@ -61242,14 +61242,14 @@ L03F86C:
 	adda.l d0,a1	; $03F8C6
 	move.w $2(a1),d0	; $03F8C8
 	and.w #$f,d0	; $03F8CC
-	move.w d0,ram_sys_ff0294.l	; $03F8D0
+	move.w d0,ram_sys_field_0294.l	; $03F8D0
 L03F8D6:
 	cmpi.w #$4,ram_sys_field_012a.l	; $03F8D6
 	bge.b L03F910	; $03F8DE
 	move.w ram_sys_field_012a.l,-(a7)	; $03F8E0
 	move.w ram_actor_index.l,d0	; $03F8E6
 	muls.w #$34,d0	; $03F8EC
-	lea.l ram_sys_ff02db.l,a0	; $03F8F0
+	lea.l ram_sys_field_02db.l,a0	; $03F8F0
 	moveq #$0,d1	; $03F8F6
 	move.b (a0,d0.l),d1	; $03F8F8
 	move.w d1,-(a7)	; $03F8FC
@@ -61262,7 +61262,7 @@ L03F910:
 	bge.w L03FA9E	; $03F918
 	move.w ram_actor_index.l,d0	; $03F91C
 	muls.w #$34,d0	; $03F922
-	lea.l ram_sys_ff02e0.l,a0	; $03F926
+	lea.l ram_world_field_02e0.l,a0	; $03F926
 	move.w (a0,d0.l),d1	; $03F92C
 	and.w #$ff,d1	; $03F930
 	mulu.w #$34,d1	; $03F934
@@ -61307,8 +61307,8 @@ L03F964:
 	move.w d0,-$c(a6)	; $03F9BC
 	cmpi.w #$ffff,-$c(a6)	; $03F9C0
 	bne.w L03FA72	; $03F9C6
-	pea.l ram_sys_ff029a.l	; $03F9CA
-	pea.l ram_sys_ff0298.l	; $03F9D0
+	pea.l ram_sys_field_029a.l	; $03F9CA
+	pea.l ram_sys_field_0298.l	; $03F9D0
 	move.w -$8(a6),d0	; $03F9D6
 	sub.w -$4(a6),d0	; $03F9DA
 	move.w d0,-(a7)	; $03F9DE
@@ -61317,14 +61317,14 @@ L03F964:
 	move.w d0,-(a7)	; $03F9E8
 	jsr world_decompose_direction.l	; $03F9EA
 	lea.l $c(a7),a7	; $03F9F0
-	move.w ram_sys_ff0294.l,d0	; $03F9F4
+	move.w ram_sys_field_0294.l,d0	; $03F9F4
 	ext.l d0	; $03F9FA
 	asl.l #$1,d0	; $03F9FC
 	lea.l L01B5BA.l,a0	; $03F9FE
 	move.w (a0,d0.l),-$e(a6)	; $03FA04
 	pea.l -$c(a6)	; $03FA0A
 	pea.l -$e(a6)	; $03FA0E
-	move.w ram_sys_ff0298.l,-(a7)	; $03FA12
+	move.w ram_sys_field_0298.l,-(a7)	; $03FA12
 	jsr spell_step_duration.l	; $03FA18
 	lea.l $a(a7),a7	; $03FA1E
 	move.w -$4(a6),-(a7)	; $03FA22
@@ -61369,7 +61369,7 @@ L03FA9E:
 	move.w d0,-(a7)	; $03FAB0
 	move.w ram_actor_index.l,d0	; $03FAB2
 	muls.w #$34,d0	; $03FAB8
-	lea.l ram_sys_ff02db.l,a0	; $03FABC
+	lea.l ram_sys_field_02db.l,a0	; $03FABC
 	moveq #$0,d1	; $03FAC2
 	move.b (a0,d0.l),d1	; $03FAC4
 	move.w d1,-(a7)	; $03FAC8
@@ -61380,7 +61380,7 @@ L03FAD2:
 	bge.w L03FBEE	; $03FADA
 	move.w ram_actor_index.l,d0	; $03FADE
 	muls.w #$34,d0	; $03FAE4
-	lea.l ram_sys_ff02e0.l,a0	; $03FAE8
+	lea.l ram_world_field_02e0.l,a0	; $03FAE8
 	move.w (a0,d0.l),d1	; $03FAEE
 	and.w #$ff,d1	; $03FAF2
 	mulu.w #$34,d1	; $03FAF6
@@ -61457,7 +61457,7 @@ L03FBEE:
 	clr.w -(a7)	; $03FBEE
 	move.w ram_actor_index.l,d0	; $03FBF0
 	muls.w #$34,d0	; $03FBF6
-	lea.l ram_sys_ff02e0.l,a0	; $03FBFA
+	lea.l ram_world_field_02e0.l,a0	; $03FBFA
 	move.w (a0,d0.l),d1	; $03FC00
 	and.w #$ff,d1	; $03FC04
 	move.w d1,-(a7)	; $03FC08
@@ -61503,10 +61503,10 @@ L03FC30:
 	and.w #$f,d0	; $03FCA4
 	lsr.w #$1,d0	; $03FCA8
 	addq.w #$3,d0	; $03FCAA
-	move.w d0,ram_sys_ff0294.l	; $03FCAC
+	move.w d0,ram_sys_field_0294.l	; $03FCAC
 L03FCB2:
 	move.w ram_sys_field_012a.l,d0	; $03FCB2
-	cmp.w ram_sys_ff0294.l,d0	; $03FCB8
+	cmp.w ram_sys_field_0294.l,d0	; $03FCB8
 	bge.w L03FDBC	; $03FCBE
 	move.w #$1,-$2(a6)	; $03FCC2
 L03FCC8:
@@ -61580,7 +61580,7 @@ L03FD90:
 	bra.w L03E418	; $03FDB8
 L03FDBC:
 	move.w ram_sys_field_012a.l,d0	; $03FDBC
-	cmp.w ram_sys_ff0294.l,d0	; $03FDC2
+	cmp.w ram_sys_field_0294.l,d0	; $03FDC2
 	bne.w L03FEB2	; $03FDC8
 	move.w #$1,-$2(a6)	; $03FDCC
 L03FDD2:
@@ -61649,7 +61649,7 @@ L03FE86:
 	addq.w #$1,ram_sys_field_012a.l	; $03FEA8
 	bra.w L03E418	; $03FEAE
 L03FEB2:
-	move.w ram_sys_ff0294.l,d0	; $03FEB2
+	move.w ram_sys_field_0294.l,d0	; $03FEB2
 	addq.w #$1,d0	; $03FEB8
 	cmp.w ram_sys_field_012a.l,d0	; $03FEBA
 	bne.w L04003C	; $03FEC0
@@ -61769,7 +61769,7 @@ L040008:
 	addq.w #$1,ram_sys_field_012a.l	; $040032
 	bra.w L03E418	; $040038
 L04003C:
-	move.w ram_sys_ff0294.l,d0	; $04003C
+	move.w ram_sys_field_0294.l,d0	; $04003C
 	addq.w #$7,d0	; $040042
 	move.w ram_sys_field_012a.l,d1	; $040044
 	cmp.w d0,d1	; $04004A
@@ -61781,7 +61781,7 @@ L04005E:
 	clr.w -(a7)	; $04005E
 	move.w ram_actor_index.l,d0	; $040060
 	muls.w #$34,d0	; $040066
-	lea.l ram_sys_ff02e0.l,a0	; $04006A
+	lea.l ram_world_field_02e0.l,a0	; $04006A
 	move.w (a0,d0.l),d1	; $040070
 	and.w #$ff,d1	; $040074
 	move.w d1,-(a7)	; $040078
@@ -61805,7 +61805,7 @@ L0400A0:
 	move.b $27(a0),d0	; $0400C2
 	moveq #$34,d1	; $0400C6
 	jsr mul32.l	; $0400C8
-	lea.l ram_sys_ff02dd.l,a0	; $0400CE
+	lea.l ram_menu_field_02dd.l,a0	; $0400CE
 	moveq #$0,d1	; $0400D4
 	move.b (a0,d0.l),d1	; $0400D6
 	move.w d1,-(a7)	; $0400DA
@@ -61825,16 +61825,16 @@ L0400F0:
 	beq.w L04019A	; $04010C
 	move.w -$2(a6),d0	; $040110
 	muls.w #$34,d0	; $040114
-	lea.l ram_sys_ff02db.l,a0	; $040118
+	lea.l ram_sys_field_02db.l,a0	; $040118
 	move.w ram_actor_index.l,d1	; $04011E
 	muls.w #$34,d1	; $040124
-	lea.l ram_sys_ff02db.l,a1	; $040128
+	lea.l ram_sys_field_02db.l,a1	; $040128
 	move.b (a0,d0.l),d2	; $04012E
 	cmp.b (a1,d1.l),d2	; $040132
 	bne.b L04019A	; $040136
 	move.w -$2(a6),d0	; $040138
 	muls.w #$34,d0	; $04013C
-	lea.l ram_sys_ff02e0.l,a0	; $040140
+	lea.l ram_world_field_02e0.l,a0	; $040140
 	move.w (a0,d0.l),d1	; $040146
 	rol.w #$3,d1	; $04014A
 	and.w #$1,d1	; $04014C
@@ -61979,13 +61979,13 @@ L040346:
 	clr.w -(a7)	; $040346
 	move.w ram_actor_index.l,d0	; $040348
 	muls.w #$34,d0	; $04034E
-	lea.l ram_sys_ff02db.l,a0	; $040352
+	lea.l ram_sys_field_02db.l,a0	; $040352
 	move.l d0,d1	; $040358
 	moveq #$0,d0	; $04035A
 	move.b (a0,d1.l),d0	; $04035C
 	moveq #$34,d1	; $040360
 	jsr mul32.l	; $040362
-	lea.l ram_sys_ff02dd.l,a0	; $040368
+	lea.l ram_menu_field_02dd.l,a0	; $040368
 	moveq #$0,d1	; $04036E
 	move.b (a0,d0.l),d1	; $040370
 	move.w d1,-(a7)	; $040374
@@ -62180,7 +62180,7 @@ L0405F0:
 	move.b $27(a0),d0	; $04060E
 	moveq #$34,d1	; $040612
 	jsr mul32.l	; $040614
-	lea.l ram_sys_ff02dd.l,a0	; $04061A
+	lea.l ram_menu_field_02dd.l,a0	; $04061A
 	moveq #$0,d1	; $040620
 	move.b (a0,d0.l),d1	; $040622
 	move.w d1,-(a7)	; $040626
@@ -62215,15 +62215,15 @@ L04063C:
 	move.w -$6(a6),-(a7)	; $040686
 	jsr sys_struct52_find.l	; $04068A
 	addq.w #$6,a7	; $040690
-	move.w d0,ram_sys_ff0294.l	; $040692
-	cmpi.w #$ffff,ram_sys_ff0294.l	; $040698
+	move.w d0,ram_sys_field_0294.l	; $040692
+	cmpi.w #$ffff,ram_sys_field_0294.l	; $040698
 	beq.b L0406CC	; $0406A0
-	move.w ram_sys_ff0294.l,d0	; $0406A2
+	move.w ram_sys_field_0294.l,d0	; $0406A2
 	muls.w #$34,d0	; $0406A8
-	lea.l ram_sys_ff02db.l,a0	; $0406AC
+	lea.l ram_sys_field_02db.l,a0	; $0406AC
 	move.w ram_actor_index.l,d1	; $0406B2
 	muls.w #$34,d1	; $0406B8
-	lea.l ram_sys_ff02db.l,a1	; $0406BC
+	lea.l ram_sys_field_02db.l,a1	; $0406BC
 	move.b (a0,d0.l),d2	; $0406C2
 	cmp.b (a1,d1.l),d2	; $0406C6
 	beq.b L04071A	; $0406CA
@@ -62283,7 +62283,7 @@ L040760:
 	move.b $27(a0),d0	; $04078E
 	moveq #$34,d1	; $040792
 	jsr mul32.l	; $040794
-	lea.l ram_sys_ff02dd.l,a0	; $04079A
+	lea.l ram_menu_field_02dd.l,a0	; $04079A
 	moveq #$0,d1	; $0407A0
 	move.b (a0,d0.l),d1	; $0407A2
 	move.w d1,-(a7)	; $0407A6
@@ -62348,12 +62348,12 @@ L04087E:
 	move.w #$20,-(a7)	; $040882
 	jsr sfx_request.l	; $040886
 	addq.w #$4,a7	; $04088C
-	move.w ram_sys_ffc41a.l,d0	; $04088E
+	move.w ram_sys_field_c41a.l,d0	; $04088E
 	muls.w #$34,d0	; $040894
 	lea.l ram_merchant_base.l,a0	; $040898
 	add.l a0,d0	; $04089E
 	move.l d0,-$1c(a6)	; $0408A0
-	move.w ram_sys_ffc418.l,d0	; $0408A4
+	move.w ram_sys_field_c418.l,d0	; $0408A4
 	muls.w #$34,d0	; $0408AA
 	lea.l ram_merchant_base.l,a0	; $0408AE
 	add.l a0,d0	; $0408B4
@@ -62400,7 +62400,7 @@ L040926:
 L040930:
 	move.w -$c(a6),d0	; $040930
 L040934:
-	move.w d0,ram_sys_ffc380.l	; $040934
+	move.w d0,ram_sys_field_c380.l	; $040934
 	move.w -$e(a6),d0	; $04093A
 	sub.w -$c(a6),d0	; $04093E
 	move.w d0,-(a7)	; $040942
@@ -62458,11 +62458,11 @@ L0409D0:
 	move.l -$20(a6),-(a7)	; $0409D8
 	jsr combat_target_select.l	; $0409DC
 	addq.w #$4,a7	; $0409E2
-	move.w ram_sys_ffc418.l,ram_sys_ffc37c.l	; $0409E4
+	move.w ram_sys_field_c418.l,ram_sys_field_c37c.l	; $0409E4
 	lea.l ram_combat_flags.l,a0	; $0409EE
 	andi.w #$fffd,(a0)	; $0409F4
 	ori.w #$2,(a0)	; $0409F8
-	move.w #$ffff,ram_sys_ff009a.l	; $0409FC
+	move.w #$ffff,ram_sys_field_009a.l	; $0409FC
 	clr.w ram_sys_field_012a.l	; $040A04
 	bra.w L042E30	; $040A0A
 L040A0E:
@@ -62470,7 +62470,7 @@ L040A0E:
 	move.w #$20,-(a7)	; $040A12
 	jsr sfx_request.l	; $040A16
 	addq.w #$4,a7	; $040A1C
-	move.w ram_sys_ffc418.l,d0	; $040A1E
+	move.w ram_sys_field_c418.l,d0	; $040A1E
 	muls.w #$34,d0	; $040A24
 	lea.l ram_merchant_base.l,a0	; $040A28
 	add.l a0,d0	; $040A2E
@@ -62480,7 +62480,7 @@ L040A0E:
 	movea.l -$20(a6),a0	; $040A3E
 	adda.l #$2c,a0	; $040A42
 	andi.w #$dfff,(a0)	; $040A48
-	move.w ram_sys_ffc418.l,-(a7)	; $040A4C
+	move.w ram_sys_field_c418.l,-(a7)	; $040A4C
 	jsr combat_flag_clear.l	; $040A52
 	addq.w #$2,a7	; $040A58
 	clr.w ram_sys_field_012a.l	; $040A5A
@@ -62493,12 +62493,12 @@ L040A72:
 	move.w #$20,-(a7)	; $040A76
 	jsr sfx_request.l	; $040A7A
 	addq.w #$4,a7	; $040A80
-	move.w ram_sys_ffc41a.l,d0	; $040A82
+	move.w ram_sys_field_c41a.l,d0	; $040A82
 	muls.w #$34,d0	; $040A88
 	lea.l ram_merchant_base.l,a0	; $040A8C
 	add.l a0,d0	; $040A92
 	move.l d0,-$1c(a6)	; $040A94
-	move.w ram_sys_ffc418.l,d0	; $040A98
+	move.w ram_sys_field_c418.l,d0	; $040A98
 	muls.w #$34,d0	; $040A9E
 	lea.l ram_merchant_base.l,a0	; $040AA2
 	add.l a0,d0	; $040AA8
@@ -62567,12 +62567,12 @@ L040B56:
 	jsr max_hp_for_level.l	; $040B6E
 	addq.w #$2,a7	; $040B74
 	sub.w -$e(a6),d0	; $040B76
-	move.w d0,ram_sys_ffc380.l	; $040B7A
-	move.w ram_sys_ffc418.l,ram_sys_ffc37c.l	; $040B80
+	move.w d0,ram_sys_field_c380.l	; $040B7A
+	move.w ram_sys_field_c418.l,ram_sys_field_c37c.l	; $040B80
 	lea.l ram_combat_flags.l,a0	; $040B8A
 	andi.w #$fffd,(a0)	; $040B90
 	ori.w #$2,(a0)	; $040B94
-	move.w #$ffff,ram_sys_ff009a.l	; $040B98
+	move.w #$ffff,ram_sys_field_009a.l	; $040B98
 	clr.w ram_sys_field_012a.l	; $040BA0
 	bra.w L042E30	; $040BA6
 L040BAA:
@@ -62601,18 +62601,18 @@ L040BAA:
 	cmpi.w #$7,-$c(a6)	; $040BF8
 	bge.b L040C16	; $040BFE
 	move.w #$1a0,-(a7)	; $040C00
-	move.w ram_sys_ffc418.l,-(a7)	; $040C04
+	move.w ram_sys_field_c418.l,-(a7)	; $040C04
 	jsr spell_status_apply.l	; $040C0A
 	addq.w #$4,a7	; $040C10
 	bra.w L040CC4	; $040C12
 L040C16:
 	move.w #$2f0,-(a7)	; $040C16
-	move.w ram_sys_ffc418.l,-(a7)	; $040C1A
+	move.w ram_sys_field_c418.l,-(a7)	; $040C1A
 	jsr spell_status_apply.l	; $040C20
 	addq.w #$4,a7	; $040C26
-	move.w ram_sys_ffc418.l,d0	; $040C28
+	move.w ram_sys_field_c418.l,d0	; $040C28
 	muls.w #$34,d0	; $040C2E
-	lea.l ram_sys_ff02db.l,a0	; $040C32
+	lea.l ram_sys_field_02db.l,a0	; $040C32
 	move.l d0,d1	; $040C38
 	moveq #$0,d0	; $040C3A
 	move.b (a0,d1.l),d0	; $040C3C
@@ -62632,7 +62632,7 @@ L040C58:
 	tst.w -$e(a6)	; $040C6C
 	beq.b L040CB8	; $040C70
 	move.w -$e(a6),d0	; $040C72
-	cmp.w ram_sys_ffc418.l,d0	; $040C76
+	cmp.w ram_sys_field_c418.l,d0	; $040C76
 	beq.b L040CB8	; $040C7C
 	move.w #$3,-(a7)	; $040C7E
 	jsr rand_next.l	; $040C82
@@ -62641,7 +62641,7 @@ L040C58:
 	bne.b L040CB8	; $040C8C
 	move.w -$e(a6),d0	; $040C8E
 	muls.w #$34,d0	; $040C92
-	lea.l ram_sys_ff02e0.l,a0	; $040C96
+	lea.l ram_world_field_02e0.l,a0	; $040C96
 	move.w (a0,d0.l),d1	; $040C9C
 	rol.w #$3,d1	; $040CA0
 	and.w #$1,d1	; $040CA2
@@ -62686,7 +62686,7 @@ L040CDC:
 	move.w ram_sys_field_012a.l,d1	; $040D28
 	cmp.w d0,d1	; $040D2E
 	bcc.b L040D98	; $040D30
-	move.w ram_sys_ffc418.l,d0	; $040D32
+	move.w ram_sys_field_c418.l,d0	; $040D32
 	muls.w #$34,d0	; $040D38
 	lea.l ram_merchant_base.l,a0	; $040D3C
 	add.l a0,d0	; $040D42
@@ -62718,7 +62718,7 @@ L040D98:
 	clr.w -(a7)	; $040D98
 	move.w ram_actor_index.l,d0	; $040D9A
 	muls.w #$34,d0	; $040DA0
-	lea.l ram_sys_ff02e0.l,a0	; $040DA4
+	lea.l ram_world_field_02e0.l,a0	; $040DA4
 	move.w (a0,d0.l),d1	; $040DAA
 	and.w #$ff,d1	; $040DAE
 	move.w d1,-(a7)	; $040DB2
@@ -62731,13 +62731,13 @@ L040D98:
 L040DD0:
 	bra.w L042E30	; $040DD0
 L040DD4:
-	move.w ram_actor_index.l,ram_sys_ffc41a.l	; $040DD4
+	move.w ram_actor_index.l,ram_sys_field_c41a.l	; $040DD4
 	move.w ram_actor_index.l,d0	; $040DDE
 	muls.w #$34,d0	; $040DE4
-	lea.l ram_sys_ff02e0.l,a0	; $040DE8
+	lea.l ram_world_field_02e0.l,a0	; $040DE8
 	move.w (a0,d0.l),d1	; $040DEE
 	and.w #$ff,d1	; $040DF2
-	move.w d1,ram_sys_ffc418.l	; $040DF6
+	move.w d1,ram_sys_field_c418.l	; $040DF6
 	move.w #$7,-(a7)	; $040DFC
 	jsr rand_next.l	; $040E00
 	addq.w #$2,a7	; $040E06
@@ -62816,7 +62816,7 @@ L040EDC:
 	move.b $27(a0),d0	; $040EFE
 	moveq #$34,d1	; $040F02
 	jsr mul32.l	; $040F04
-	lea.l ram_sys_ff02dd.l,a0	; $040F0A
+	lea.l ram_menu_field_02dd.l,a0	; $040F0A
 	move.l d0,d1	; $040F10
 	moveq #$0,d0	; $040F12
 	move.b (a0,d1.l),d0	; $040F14
@@ -62989,7 +62989,7 @@ L041102:
 	clr.w -(a7)	; $04114E
 	move.w -$e(a6),d0	; $041150
 	muls.w #$34,d0	; $041154
-	lea.l ram_sys_ff02b8.l,a0	; $041158
+	lea.l ram_world_field_02b8.l,a0	; $041158
 	move.w (a0,d0.l),-(a7)	; $04115E
 	jsr combat_effect_apply.l	; $041162
 	lea.l $e(a7),a7	; $041168
@@ -63035,7 +63035,7 @@ L0411F6:
 	blt.b L04122C	; $0411FE
 	move.w ram_party_leader.l,d0	; $041200
 	muls.w #$34,d0	; $041206
-	lea.l ram_sys_ff02dd.l,a0	; $04120A
+	lea.l ram_menu_field_02dd.l,a0	; $04120A
 	moveq #$0,d1	; $041210
 	move.b (a0,d0.l),d1	; $041212
 	move.w d1,-(a7)	; $041216
@@ -63052,18 +63052,18 @@ L041230:
 	addq.w #$4,a7	; $04123E
 	move.w ram_actor_index.l,d0	; $041240
 	muls.w #$34,d0	; $041246
-	lea.l ram_sys_ff02e0.l,a0	; $04124A
+	lea.l ram_world_field_02e0.l,a0	; $04124A
 	move.w (a0,d0.l),d1	; $041250
 	and.w #$ff,d1	; $041254
 	move.w d1,-$c(a6)	; $041258
 	move.w -$c(a6),d0	; $04125C
 	muls.w #$34,d0	; $041260
 	lea.l ram_header_leader.l,a0	; $041264
-	move.w (a0,d0.l),ram_sys_ff0298.l	; $04126A
+	move.w (a0,d0.l),ram_sys_field_0298.l	; $04126A
 	move.w -$c(a6),d0	; $041272
 	muls.w #$34,d0	; $041276
 	lea.l ram_npc_field_02c2.l,a0	; $04127A
-	move.w (a0,d0.l),ram_sys_ff029a.l	; $041280
+	move.w (a0,d0.l),ram_sys_field_029a.l	; $041280
 	movea.l -$1c(a6),a0	; $041288
 	move.w $18(a0),d0	; $04128C
 	and.w #$f,d0	; $041290
@@ -63105,29 +63105,29 @@ L04130E:
 	move.w #$1,-$8(a6)	; $04130E
 L041314:
 	move.w -$6(a6),d0	; $041314
-	sub.w ram_sys_ff0298.l,d0	; $041318
+	sub.w ram_sys_field_0298.l,d0	; $041318
 	tst.w d0	; $04131E
 	bge.b L041330	; $041320
 	move.w -$6(a6),d0	; $041322
-	sub.w ram_sys_ff0298.l,d0	; $041326
+	sub.w ram_sys_field_0298.l,d0	; $041326
 	neg.w d0	; $04132C
 	bra.b L04133A	; $04132E
 L041330:
 	move.w -$6(a6),d0	; $041330
-	sub.w ram_sys_ff0298.l,d0	; $041334
+	sub.w ram_sys_field_0298.l,d0	; $041334
 L04133A:
 	move.w d0,-$10(a6)	; $04133A
 	move.w -$8(a6),d0	; $04133E
-	sub.w ram_sys_ff029a.l,d0	; $041342
+	sub.w ram_sys_field_029a.l,d0	; $041342
 	tst.w d0	; $041348
 	bge.b L04135A	; $04134A
 	move.w -$8(a6),d0	; $04134C
-	sub.w ram_sys_ff029a.l,d0	; $041350
+	sub.w ram_sys_field_029a.l,d0	; $041350
 	neg.w d0	; $041356
 	bra.b L041364	; $041358
 L04135A:
 	move.w -$8(a6),d0	; $04135A
-	sub.w ram_sys_ff029a.l,d0	; $04135E
+	sub.w ram_sys_field_029a.l,d0	; $04135E
 L041364:
 	move.w d0,-$12(a6)	; $041364
 	move.w -$10(a6),d0	; $041368
@@ -63301,7 +63301,7 @@ L041590:
 	clr.w -(a7)	; $0415B4
 	move.w ram_actor_index.l,d0	; $0415B6
 	muls.w #$34,d0	; $0415BC
-	lea.l ram_sys_ff02e0.l,a0	; $0415C0
+	lea.l ram_world_field_02e0.l,a0	; $0415C0
 	move.w (a0,d0.l),d1	; $0415C6
 	and.w #$ff,d1	; $0415CA
 	move.w d1,-(a7)	; $0415CE
@@ -63321,18 +63321,18 @@ L0415E2:
 	addq.w #$4,a7	; $041600
 	move.w ram_actor_index.l,d0	; $041602
 	muls.w #$34,d0	; $041608
-	lea.l ram_sys_ff02e0.l,a0	; $04160C
+	lea.l ram_world_field_02e0.l,a0	; $04160C
 	move.w (a0,d0.l),d1	; $041612
 	and.w #$ff,d1	; $041616
 	move.w d1,-$c(a6)	; $04161A
 	move.w -$c(a6),d0	; $04161E
 	muls.w #$34,d0	; $041622
 	lea.l ram_header_leader.l,a0	; $041626
-	move.w (a0,d0.l),ram_sys_ff0298.l	; $04162C
+	move.w (a0,d0.l),ram_sys_field_0298.l	; $04162C
 	move.w -$c(a6),d0	; $041634
 	muls.w #$34,d0	; $041638
 	lea.l ram_npc_field_02c2.l,a0	; $04163C
-	move.w (a0,d0.l),ram_sys_ff029a.l	; $041642
+	move.w (a0,d0.l),ram_sys_field_029a.l	; $041642
 	movea.l -$1c(a6),a0	; $04164A
 	move.w $18(a0),d0	; $04164E
 	and.w #$f,d0	; $041652
@@ -63422,21 +63422,21 @@ L041768:
 	move.w -$2(a6),-(a7)	; $04176E
 	jsr sys_struct52_find.l	; $041772
 	addq.w #$6,a7	; $041778
-	move.w d0,ram_sys_ff0294.l	; $04177A
-	cmpi.w #$ffff,ram_sys_ff0294.l	; $041780
+	move.w d0,ram_sys_field_0294.l	; $04177A
+	cmpi.w #$ffff,ram_sys_field_0294.l	; $041780
 	beq.w L041844	; $041788
-	move.w ram_sys_ff0294.l,d0	; $04178C
+	move.w ram_sys_field_0294.l,d0	; $04178C
 	muls.w #$34,d0	; $041792
-	lea.l ram_sys_ff02db.l,a0	; $041796
+	lea.l ram_sys_field_02db.l,a0	; $041796
 	move.w ram_actor_index.l,d1	; $04179C
 	muls.w #$34,d1	; $0417A2
-	lea.l ram_sys_ff02db.l,a1	; $0417A6
+	lea.l ram_sys_field_02db.l,a1	; $0417A6
 	move.b (a0,d0.l),d2	; $0417AC
 	cmp.b (a1,d1.l),d2	; $0417B0
 	bne.w L041844	; $0417B4
-	move.w ram_sys_ff0294.l,d0	; $0417B8
+	move.w ram_sys_field_0294.l,d0	; $0417B8
 	muls.w #$34,d0	; $0417BE
-	lea.l ram_sys_ff02e0.l,a0	; $0417C2
+	lea.l ram_world_field_02e0.l,a0	; $0417C2
 	move.w (a0,d0.l),d1	; $0417C8
 	rol.w #$3,d1	; $0417CC
 	and.w #$1,d1	; $0417CE
@@ -63584,7 +63584,7 @@ L041970:
 	move.b $27(a0),d0	; $04198E
 	moveq #$34,d1	; $041992
 	jsr mul32.l	; $041994
-	lea.l ram_sys_ff02dd.l,a0	; $04199A
+	lea.l ram_menu_field_02dd.l,a0	; $04199A
 	moveq #$0,d1	; $0419A0
 	move.b (a0,d0.l),d1	; $0419A2
 	move.w d1,-(a7)	; $0419A6
@@ -63606,16 +63606,16 @@ L0419BC:
 	beq.w L041A70	; $0419E2
 	move.w -$2(a6),d0	; $0419E6
 	muls.w #$34,d0	; $0419EA
-	lea.l ram_sys_ff02db.l,a0	; $0419EE
+	lea.l ram_sys_field_02db.l,a0	; $0419EE
 	move.w ram_actor_index.l,d1	; $0419F4
 	muls.w #$34,d1	; $0419FA
-	lea.l ram_sys_ff02db.l,a1	; $0419FE
+	lea.l ram_sys_field_02db.l,a1	; $0419FE
 	move.b (a0,d0.l),d2	; $041A04
 	cmp.b (a1,d1.l),d2	; $041A08
 	bne.b L041A70	; $041A0C
 	move.w -$2(a6),d0	; $041A0E
 	muls.w #$34,d0	; $041A12
-	lea.l ram_sys_ff02e0.l,a0	; $041A16
+	lea.l ram_world_field_02e0.l,a0	; $041A16
 	move.w (a0,d0.l),d1	; $041A1C
 	rol.w #$3,d1	; $041A20
 	and.w #$1,d1	; $041A22
@@ -63658,16 +63658,16 @@ L041A70:
 	beq.b L041AF8	; $041AB4
 	move.w -$2(a6),d0	; $041AB6
 	muls.w #$34,d0	; $041ABA
-	lea.l ram_sys_ff02db.l,a0	; $041ABE
+	lea.l ram_sys_field_02db.l,a0	; $041ABE
 	move.w ram_actor_index.l,d1	; $041AC4
 	muls.w #$34,d1	; $041ACA
-	lea.l ram_sys_ff02db.l,a1	; $041ACE
+	lea.l ram_sys_field_02db.l,a1	; $041ACE
 	move.b (a0,d0.l),d2	; $041AD4
 	cmp.b (a1,d1.l),d2	; $041AD8
 	bne.b L041B10	; $041ADC
 	move.w -$2(a6),d0	; $041ADE
 	muls.w #$34,d0	; $041AE2
-	lea.l ram_sys_ff02e0.l,a0	; $041AE6
+	lea.l ram_world_field_02e0.l,a0	; $041AE6
 	move.w (a0,d0.l),d1	; $041AEC
 	rol.w #$3,d1	; $041AF0
 	and.w #$1,d1	; $041AF2
@@ -63745,13 +63745,13 @@ L041BA6:
 	clr.w -(a7)	; $041BD0
 	move.w ram_actor_index.l,d0	; $041BD2
 	muls.w #$34,d0	; $041BD8
-	lea.l ram_sys_ff02db.l,a0	; $041BDC
+	lea.l ram_sys_field_02db.l,a0	; $041BDC
 	move.l d0,d1	; $041BE2
 	moveq #$0,d0	; $041BE4
 	move.b (a0,d1.l),d0	; $041BE6
 	moveq #$34,d1	; $041BEA
 	jsr mul32.l	; $041BEC
-	lea.l ram_sys_ff02dd.l,a0	; $041BF2
+	lea.l ram_menu_field_02dd.l,a0	; $041BF2
 	moveq #$0,d1	; $041BF8
 	move.b (a0,d0.l),d1	; $041BFA
 	move.w d1,-(a7)	; $041BFE
@@ -63773,21 +63773,21 @@ L041C30:
 	move.w -$2(a6),-(a7)	; $041C36
 	jsr sys_struct52_find.l	; $041C3A
 	addq.w #$6,a7	; $041C40
-	move.w d0,ram_sys_ff0294.l	; $041C42
-	cmpi.w #$ffff,ram_sys_ff0294.l	; $041C48
+	move.w d0,ram_sys_field_0294.l	; $041C42
+	cmpi.w #$ffff,ram_sys_field_0294.l	; $041C48
 	beq.b L041CB8	; $041C50
-	move.w ram_sys_ff0294.l,d0	; $041C52
+	move.w ram_sys_field_0294.l,d0	; $041C52
 	muls.w #$34,d0	; $041C58
-	lea.l ram_sys_ff02db.l,a0	; $041C5C
+	lea.l ram_sys_field_02db.l,a0	; $041C5C
 	move.w ram_actor_index.l,d1	; $041C62
 	muls.w #$34,d1	; $041C68
-	lea.l ram_sys_ff02db.l,a1	; $041C6C
+	lea.l ram_sys_field_02db.l,a1	; $041C6C
 	move.b (a0,d0.l),d2	; $041C72
 	cmp.b (a1,d1.l),d2	; $041C76
 	bne.b L041CB8	; $041C7A
-	move.w ram_sys_ff0294.l,d0	; $041C7C
+	move.w ram_sys_field_0294.l,d0	; $041C7C
 	muls.w #$34,d0	; $041C82
-	lea.l ram_sys_ff02e0.l,a0	; $041C86
+	lea.l ram_world_field_02e0.l,a0	; $041C86
 	move.w (a0,d0.l),d1	; $041C8C
 	rol.w #$3,d1	; $041C90
 	and.w #$1,d1	; $041C92
@@ -63941,7 +63941,7 @@ L041E84:
 	ble.b L041EB0	; $041E8C
 	clr.w ram_sys_field_012a.l	; $041E8E
 	jsr combat_fill_grid.l	; $041E94
-	move.w #$ffff,ram_sys_ff0124.l	; $041E9A
+	move.w #$ffff,ram_world_field_0124.l	; $041E9A
 	lea.l ram_combat_flags.l,a0	; $041EA2
 	andi.w #$dfff,(a0)	; $041EA8
 	ori.w #$2000,(a0)	; $041EAC
@@ -63979,34 +63979,34 @@ L041EB4:
 	addq.w #$2,a7	; $041F30
 	move.w d0,ram_sys_ffc372.l	; $041F32
 	move.w #$1,ram_sys_ffc374.l	; $041F38
-	move.w #$1,ram_sys_ff010c.l	; $041F40
+	move.w #$1,ram_sys_field_010c.l	; $041F40
 	move.w ram_actor_index.l,d0	; $041F48
 	muls.w #$34,d0	; $041F4E
-	lea.l ram_sys_ff02e0.l,a0	; $041F52
+	lea.l ram_world_field_02e0.l,a0	; $041F52
 	move.w (a0,d0.l),d1	; $041F58
 	and.w #$ff,d1	; $041F5C
 	move.w d1,ram_sys_ffc368.l	; $041F60
 	cmpi.w #$800,ram_event_code.l	; $041F66
 	bne.b L041FA4	; $041F6E
 	clr.w ram_sys_field_012a.l	; $041F70
-	clr.w ram_sys_ffc378.l	; $041F76
+	clr.w ram_sys_field_c378.l	; $041F76
 	movea.l -$2a(a6),a0	; $041F7C
 	move.w (a0),d0	; $041F80
 	and.w #$7f,d0	; $041F82
-	move.w d0,ram_sys_ffc376.l	; $041F86
+	move.w d0,ram_sys_field_c376.l	; $041F86
 	movea.l -$2a(a6),a0	; $041F8C
 	move.w (a0),d0	; $041F90
 	rol.w #$5,d0	; $041F92
 	and.w #$1,d0	; $041F94
 	beq.b L041FA0	; $041F98
-	neg.w ram_sys_ffc376.l	; $041F9A
+	neg.w ram_sys_field_c376.l	; $041F9A
 L041FA0:
 	bra.w L03E418	; $041FA0
 L041FA4:
-	clr.w ram_sys_ffc376.l	; $041FA4
+	clr.w ram_sys_field_c376.l	; $041FA4
 	move.w ram_event_code.l,d0	; $041FAA
 	sub.w #$800,d0	; $041FB0
-	move.w d0,ram_sys_ffc378.l	; $041FB4
+	move.w d0,ram_sys_field_c378.l	; $041FB4
 	addq.w #$1,ram_sys_field_012a.l	; $041FBA
 	bra.b L041FDA	; $041FC0
 L041FC2:
@@ -64027,43 +64027,43 @@ L041FDA:
 	addq.w #$4,a7	; $042000
 	cmpi.w #$1,ram_sys_field_012a.l	; $042002
 	bne.b L042068	; $04200A
-	move.w #$1,ram_sys_ff0294.l	; $04200C
+	move.w #$1,ram_sys_field_0294.l	; $04200C
 	move.w ram_actor_index.l,d0	; $042014
 	muls.w #$34,d0	; $04201A
-	lea.l ram_sys_ff02e0.l,a0	; $04201E
+	lea.l ram_world_field_02e0.l,a0	; $04201E
 	move.w (a0,d0.l),d1	; $042024
 	and.w #$ff,d1	; $042028
 	mulu.w #$34,d1	; $04202C
 	lea.l ram_header_leader.l,a0	; $042030
-	move.w (a0,d1.l),ram_sys_ffc414.l	; $042036
+	move.w (a0,d1.l),ram_sys_field_c414.l	; $042036
 	move.w ram_actor_index.l,d0	; $04203E
 	muls.w #$34,d0	; $042044
-	lea.l ram_sys_ff02e0.l,a0	; $042048
+	lea.l ram_world_field_02e0.l,a0	; $042048
 	move.w (a0,d0.l),d1	; $04204E
 	and.w #$ff,d1	; $042052
 	mulu.w #$34,d1	; $042056
 	lea.l ram_npc_field_02c2.l,a0	; $04205A
-	move.w (a0,d1.l),ram_sys_ffc416.l	; $042060
+	move.w (a0,d1.l),ram_sys_field_c416.l	; $042060
 L042068:
 	move.w ram_event_code.l,d0	; $042068
 	subq.w #$7,d0	; $04206E
-	move.w ram_sys_ff0294.l,d1	; $042070
+	move.w ram_sys_field_0294.l,d1	; $042070
 	cmp.w d0,d1	; $042076
 	bgt.b L0420C0	; $042078
-	move.w ram_sys_ff0294.l,-(a7)	; $04207A
-	move.w ram_sys_ffc416.l,-(a7)	; $042080
-	move.w ram_sys_ffc414.l,-(a7)	; $042086
+	move.w ram_sys_field_0294.l,-(a7)	; $04207A
+	move.w ram_sys_field_c416.l,-(a7)	; $042080
+	move.w ram_sys_field_c414.l,-(a7)	; $042086
 	jsr spell_blast_area.l	; $04208C
 	addq.w #$6,a7	; $042092
 	addq.w #$1,ram_sys_field_012a.l	; $042094
 	move.w ram_sys_field_012a.l,d0	; $04209A
 	and.w #$1,d0	; $0420A0
 	asl.w #$1,d0	; $0420A4
-	add.w d0,ram_sys_ff0294.l	; $0420A6
+	add.w d0,ram_sys_field_0294.l	; $0420A6
 	move.w ram_sys_field_012a.l,d0	; $0420AC
 	addq.w #$1,d0	; $0420B2
 	and.w #$1,d0	; $0420B4
-	sub.w d0,ram_sys_ff0294.l	; $0420B8
+	sub.w d0,ram_sys_field_0294.l	; $0420B8
 	bra.b L0420FE	; $0420BE
 L0420C0:
 	lea.l ram_combat_flags.l,a0	; $0420C0
@@ -64074,7 +64074,7 @@ L0420C0:
 	clr.w -(a7)	; $0420DA
 	move.w ram_actor_index.l,d0	; $0420DC
 	muls.w #$34,d0	; $0420E2
-	lea.l ram_sys_ff02e0.l,a0	; $0420E6
+	lea.l ram_world_field_02e0.l,a0	; $0420E6
 	move.w (a0,d0.l),d1	; $0420EC
 	and.w #$ff,d1	; $0420F0
 	move.w d1,-(a7)	; $0420F4
@@ -64095,14 +64095,14 @@ L042102:
 	ext.l d0	; $042130
 	bra.b L0421AE	; $042132
 L042134:
-	move.w ram_sys_ffc416.l,-(a7)	; $042134
-	move.w ram_sys_ffc414.l,-(a7)	; $04213A
+	move.w ram_sys_field_c416.l,-(a7)	; $042134
+	move.w ram_sys_field_c414.l,-(a7)	; $04213A
 	move.w #$ff38,-(a7)	; $042140
 	move.w #$1,-(a7)	; $042144
 	jsr world_pos_add_y.l	; $042148
 	addq.w #$8,a7	; $04214E
-	move.w ram_sys_ffc416.l,-(a7)	; $042150
-	move.w ram_sys_ffc414.l,-(a7)	; $042156
+	move.w ram_sys_field_c416.l,-(a7)	; $042150
+	move.w ram_sys_field_c414.l,-(a7)	; $042156
 	move.w ram_event_code.l,d0	; $04215C
 	sub.w #$f,d0	; $042162
 	move.w d0,-(a7)	; $042166
@@ -64117,7 +64117,7 @@ L04217C:
 	clr.w -(a7)	; $042188
 	move.w ram_actor_index.l,d0	; $04218A
 	muls.w #$34,d0	; $042190
-	lea.l ram_sys_ff02e0.l,a0	; $042194
+	lea.l ram_world_field_02e0.l,a0	; $042194
 	move.w (a0,d0.l),d1	; $04219A
 	and.w #$ff,d1	; $04219E
 	move.w d1,-(a7)	; $0421A2
@@ -64136,7 +64136,7 @@ L0421BA:
 	bne.b L0421EA	; $0421C2
 	cmpi.w #$1,ram_sys_field_012a.l	; $0421C4
 	bne.b L0421EA	; $0421CC
-	move.w ram_actor_index.l,ram_sys_ff0294.l	; $0421CE
+	move.w ram_actor_index.l,ram_sys_field_0294.l	; $0421CE
 	addq.w #$1,ram_sys_field_012a.l	; $0421D8
 	move.w #$22,-(a7)	; $0421DE
 	jsr spell_record_value.l	; $0421E2
@@ -64148,14 +64148,14 @@ L0421EA:
 	bne.b L04223E	; $0421FC
 	move.w ram_actor_index.l,d0	; $0421FE
 	muls.w #$34,d0	; $042204
-	lea.l ram_sys_ff02db.l,a0	; $042208
+	lea.l ram_sys_field_02db.l,a0	; $042208
 	move.l d0,d1	; $04220E
 	moveq #$0,d0	; $042210
 	move.b (a0,d1.l),d0	; $042212
 	moveq #$34,d1	; $042216
 	jsr mul32.l	; $042218
 	lea.l ram_npc_field_02c8.l,a0	; $04221E
-	move.w (a0,d0.l),ram_sys_ff0294.l	; $042224
+	move.w (a0,d0.l),ram_sys_field_0294.l	; $042224
 	addq.w #$1,ram_sys_field_012a.l	; $04222C
 	move.w #$22,-(a7)	; $042232
 	jsr spell_record_value.l	; $042236
@@ -64163,12 +64163,12 @@ L0421EA:
 L04223E:
 	cmpi.w #$22,ram_event_code.l	; $04223E
 	bne.w L04276E	; $042246
-	move.w ram_sys_ff0296.l,d0	; $04224A
+	move.w ram_sys_field_0296.l,d0	; $04224A
 	muls.w #$34,d0	; $042250
 	lea.l ram_merchant_base.l,a0	; $042254
 	add.l a0,d0	; $04225A
 	move.l d0,-$20(a6)	; $04225C
-	move.w ram_sys_ff0294.l,d0	; $042260
+	move.w ram_sys_field_0294.l,d0	; $042260
 	muls.w #$34,d0	; $042266
 	lea.l ram_merchant_base.l,a0	; $04226A
 	add.l a0,d0	; $042270
@@ -64177,21 +64177,21 @@ L04223E:
 	bne.b L0422E0	; $04227E
 	move.w ram_actor_index.l,d0	; $042280
 	muls.w #$34,d0	; $042286
-	lea.l ram_sys_ff02db.l,a0	; $04228A
+	lea.l ram_sys_field_02db.l,a0	; $04228A
 	move.l d0,d1	; $042290
 	moveq #$0,d0	; $042292
 	move.b (a0,d1.l),d0	; $042294
 	moveq #$34,d1	; $042298
 	jsr mul32.l	; $04229A
-	lea.l ram_sys_ff02dd.l,a0	; $0422A0
+	lea.l ram_menu_field_02dd.l,a0	; $0422A0
 	move.l d0,d1	; $0422A6
 	moveq #$0,d0	; $0422A8
 	move.b (a0,d1.l),d0	; $0422AA
 	moveq #$34,d1	; $0422AE
 	jsr mul32.l	; $0422B0
 	lea.l ram_npc_field_02c8.l,a0	; $0422B6
-	move.w (a0,d0.l),ram_sys_ff0294.l	; $0422BC
-	move.w ram_sys_ff0294.l,d0	; $0422C4
+	move.w (a0,d0.l),ram_sys_field_0294.l	; $0422BC
+	move.w ram_sys_field_0294.l,d0	; $0422C4
 	muls.w #$34,d0	; $0422CA
 	lea.l ram_merchant_base.l,a0	; $0422CE
 	add.l a0,d0	; $0422D4
@@ -64248,7 +64248,7 @@ L04236E:
 	move.w ram_sys_field_012a.l,d0	; $042372
 	subq.w #$1,d0	; $042378
 	move.w d0,-(a7)	; $04237A
-	move.w ram_sys_ff0294.l,-(a7)	; $04237C
+	move.w ram_sys_field_0294.l,-(a7)	; $04237C
 	jsr spell_set_effect.l	; $042382
 	addq.w #$6,a7	; $042388
 	addq.w #$1,ram_sys_field_012a.l	; $04238A
@@ -64257,28 +64257,28 @@ L042390:
 	bne.w L042424	; $042398
 	move.w ram_actor_index.l,d0	; $04239C
 	muls.w #$34,d0	; $0423A2
-	lea.l ram_sys_ff02e0.l,a0	; $0423A6
+	lea.l ram_world_field_02e0.l,a0	; $0423A6
 	move.w (a0,d0.l),d1	; $0423AC
 	and.w #$ff,d1	; $0423B0
-	move.w d1,ram_sys_ff0296.l	; $0423B4
-	move.w ram_sys_ff0296.l,d0	; $0423BA
+	move.w d1,ram_sys_field_0296.l	; $0423B4
+	move.w ram_sys_field_0296.l,d0	; $0423BA
 	muls.w #$34,d0	; $0423C0
 	lea.l ram_merchant_base.l,a0	; $0423C4
 	add.l a0,d0	; $0423CA
 	move.l d0,-$20(a6)	; $0423CC
 	movea.l -$1c(a6),a0	; $0423D0
-	move.w $c(a0),ram_sys_ff029c.l	; $0423D4
+	move.w $c(a0),ram_sys_field_029c.l	; $0423D4
 	movea.l -$1c(a6),a0	; $0423DC
-	move.w $e(a0),ram_sys_ff029e.l	; $0423E0
-	pea.l ram_sys_ff029a.l	; $0423E8
-	pea.l ram_sys_ff0298.l	; $0423EE
+	move.w $e(a0),ram_sys_field_029e.l	; $0423E0
+	pea.l ram_sys_field_029a.l	; $0423E8
+	pea.l ram_sys_field_0298.l	; $0423EE
 	movea.l -$20(a6),a0	; $0423F4
 	move.w $e(a0),d0	; $0423F8
-	sub.w ram_sys_ff029e.l,d0	; $0423FC
+	sub.w ram_sys_field_029e.l,d0	; $0423FC
 	move.w d0,-(a7)	; $042402
 	movea.l -$20(a6),a0	; $042404
 	move.w $c(a0),d0	; $042408
-	sub.w ram_sys_ff029c.l,d0	; $04240C
+	sub.w ram_sys_field_029c.l,d0	; $04240C
 	move.w d0,-(a7)	; $042412
 	jsr world_decompose_direction.l	; $042414
 	lea.l $c(a7),a7	; $04241A
@@ -64315,13 +64315,13 @@ L042460:
 	beq.b L0424DC	; $042498
 	move.w -$c(a6),d0	; $04249A
 	muls.w #$34,d0	; $04249E
-	lea.l ram_sys_ff02db.l,a0	; $0424A2
+	lea.l ram_sys_field_02db.l,a0	; $0424A2
 	move.l d0,d1	; $0424A8
 	moveq #$0,d0	; $0424AA
 	move.b (a0,d1.l),d0	; $0424AC
 	moveq #$34,d1	; $0424B0
 	jsr mul32.l	; $0424B2
-	lea.l ram_sys_ff02dd.l,a0	; $0424B8
+	lea.l ram_menu_field_02dd.l,a0	; $0424B8
 	moveq #$0,d1	; $0424BE
 	move.b (a0,d0.l),d1	; $0424C0
 	cmp.w ram_party_leader.l,d1	; $0424C4
@@ -64341,8 +64341,8 @@ L0424F2:
 	addq.w #$1,ram_sys_field_012a.l	; $0424F2
 	bra.b L04250E	; $0424F8
 L0424FA:
-	move.w ram_sys_ff029a.l,-(a7)	; $0424FA
-	move.w ram_sys_ff0294.l,-(a7)	; $042500
+	move.w ram_sys_field_029a.l,-(a7)	; $0424FA
+	move.w ram_sys_field_0294.l,-(a7)	; $042500
 	jsr combat_move_unit.l	; $042506
 	addq.w #$4,a7	; $04250C
 L04250E:
@@ -64353,25 +64353,25 @@ L04250E:
 	tst.w -$12(a6)	; $04251E
 	bne.b L042554	; $042522
 	addq.w #$1,ram_sys_field_012a.l	; $042524
-	move.w ram_sys_ff0298.l,-(a7)	; $04252A
+	move.w ram_sys_field_0298.l,-(a7)	; $04252A
 	jsr world_reverse_dir.l	; $042530
 	addq.w #$2,a7	; $042536
-	move.w d0,ram_sys_ff0298.l	; $042538
-	move.w ram_sys_ff029a.l,-(a7)	; $04253E
+	move.w d0,ram_sys_field_0298.l	; $042538
+	move.w ram_sys_field_029a.l,-(a7)	; $04253E
 	jsr world_reverse_dir.l	; $042544
 	addq.w #$2,a7	; $04254A
-	move.w d0,ram_sys_ff029a.l	; $04254C
+	move.w d0,ram_sys_field_029a.l	; $04254C
 	bra.b L042568	; $042552
 L042554:
-	move.w ram_sys_ff0298.l,-(a7)	; $042554
-	move.w ram_sys_ff0294.l,-(a7)	; $04255A
+	move.w ram_sys_field_0298.l,-(a7)	; $042554
+	move.w ram_sys_field_0294.l,-(a7)	; $04255A
 	jsr combat_move_unit.l	; $042560
 	addq.w #$4,a7	; $042566
 L042568:
 	cmpi.w #$8,ram_sys_field_012a.l	; $042568
 	bne.b L04258C	; $042570
-	move.w ram_sys_ff029a.l,-(a7)	; $042572
-	move.w ram_sys_ff0294.l,-(a7)	; $042578
+	move.w ram_sys_field_029a.l,-(a7)	; $042572
+	move.w ram_sys_field_0294.l,-(a7)	; $042578
 	jsr combat_move_unit.l	; $04257E
 	addq.w #$4,a7	; $042584
 	addq.w #$1,ram_sys_field_012a.l	; $042586
@@ -64384,37 +64384,37 @@ L04258C:
 	addq.w #$4,a7	; $0425A6
 	clr.w -(a7)	; $0425A8
 	move.w #$a,-(a7)	; $0425AA
-	move.w ram_sys_ff0294.l,d0	; $0425AE
+	move.w ram_sys_field_0294.l,d0	; $0425AE
 	muls.w #$34,d0	; $0425B4
-	lea.l ram_sys_ff02e0.l,a0	; $0425B8
+	lea.l ram_world_field_02e0.l,a0	; $0425B8
 	move.w (a0,d0.l),d1	; $0425BE
 	and.w #$ff,d1	; $0425C2
 	move.w d1,-(a7)	; $0425C6
-	move.w ram_sys_ff0294.l,d0	; $0425C8
+	move.w ram_sys_field_0294.l,d0	; $0425C8
 	muls.w #$34,d0	; $0425CE
-	lea.l ram_sys_ff02cc.l,a0	; $0425D2
+	lea.l ram_world_field_02cc.l,a0	; $0425D2
 	move.w (a0,d0.l),d1	; $0425D8
 	and.w #$f,d1	; $0425DC
 	move.w d1,-(a7)	; $0425E0
-	move.w ram_sys_ff0298.l,-(a7)	; $0425E2
+	move.w ram_sys_field_0298.l,-(a7)	; $0425E2
 	jsr world_reverse_dir.l	; $0425E8
 	addq.w #$2,a7	; $0425EE
 	move.w d0,-(a7)	; $0425F0
 	move.w #$1,-(a7)	; $0425F2
 	move.w #$6,-(a7)	; $0425F6
-	move.w ram_sys_ff0294.l,d0	; $0425FA
+	move.w ram_sys_field_0294.l,d0	; $0425FA
 	muls.w #$34,d0	; $042600
-	lea.l ram_sys_ff02db.l,a0	; $042604
+	lea.l ram_sys_field_02db.l,a0	; $042604
 	moveq #$0,d1	; $04260A
 	move.b (a0,d0.l),d1	; $04260C
 	move.w d1,-(a7)	; $042610
-	move.w ram_sys_ff0294.l,-(a7)	; $042612
+	move.w ram_sys_field_0294.l,-(a7)	; $042612
 	jsr npc_spawn_at_step.l	; $042618
 	lea.l $12(a7),a7	; $04261E
 	clr.w -(a7)	; $042622
-	move.w ram_sys_ff0294.l,d0	; $042624
+	move.w ram_sys_field_0294.l,d0	; $042624
 	muls.w #$34,d0	; $04262A
-	lea.l ram_sys_ff02e0.l,a0	; $04262E
+	lea.l ram_world_field_02e0.l,a0	; $04262E
 	move.w (a0,d0.l),d1	; $042634
 	and.w #$ff,d1	; $042638
 	move.w d1,-(a7)	; $04263C
@@ -64425,37 +64425,37 @@ L04264C:
 	cmpi.w #$a,ram_sys_field_012a.l	; $04264C
 	bne.b L042692	; $042654
 	movea.l -$1c(a6),a0	; $042656
-	move.w ram_sys_ff029c.l,d0	; $04265A
+	move.w ram_sys_field_029c.l,d0	; $04265A
 	sub.w $c(a0),d0	; $042660
 	beq.b L042676	; $042664
 	movea.l -$1c(a6),a0	; $042666
-	move.w ram_sys_ff029e.l,d0	; $04266A
+	move.w ram_sys_field_029e.l,d0	; $04266A
 	sub.w $e(a0),d0	; $042670
 	bne.b L04267E	; $042674
 L042676:
 	addq.w #$1,ram_sys_field_012a.l	; $042676
 	bra.b L042692	; $04267C
 L04267E:
-	move.w ram_sys_ff029a.l,-(a7)	; $04267E
-	move.w ram_sys_ff0294.l,-(a7)	; $042684
+	move.w ram_sys_field_029a.l,-(a7)	; $04267E
+	move.w ram_sys_field_0294.l,-(a7)	; $042684
 	jsr combat_move_unit.l	; $04268A
 	addq.w #$4,a7	; $042690
 L042692:
 	cmpi.w #$b,ram_sys_field_012a.l	; $042692
 	bne.b L0426D8	; $04269A
 	movea.l -$1c(a6),a0	; $04269C
-	move.w ram_sys_ff029c.l,d0	; $0426A0
+	move.w ram_sys_field_029c.l,d0	; $0426A0
 	sub.w $c(a0),d0	; $0426A6
 	bne.b L0426C4	; $0426AA
 	movea.l -$1c(a6),a0	; $0426AC
-	move.w ram_sys_ff029e.l,d0	; $0426B0
+	move.w ram_sys_field_029e.l,d0	; $0426B0
 	sub.w $e(a0),d0	; $0426B6
 	bne.b L0426C4	; $0426BA
 	addq.w #$1,ram_sys_field_012a.l	; $0426BC
 	bra.b L0426D8	; $0426C2
 L0426C4:
-	move.w ram_sys_ff0298.l,-(a7)	; $0426C4
-	move.w ram_sys_ff0294.l,-(a7)	; $0426CA
+	move.w ram_sys_field_0298.l,-(a7)	; $0426C4
+	move.w ram_sys_field_0294.l,-(a7)	; $0426CA
 	jsr combat_move_unit.l	; $0426D0
 	addq.w #$4,a7	; $0426D6
 L0426D8:
@@ -64465,7 +64465,7 @@ L0426D8:
 	move.w #$1c,-(a7)	; $0426E8
 	jsr sfx_request.l	; $0426EC
 	addq.w #$4,a7	; $0426F2
-	move.w ram_sys_ff0294.l,d0	; $0426F4
+	move.w ram_sys_field_0294.l,d0	; $0426F4
 	muls.w #$34,d0	; $0426FA
 	lea.l ram_merchant_base.l,a0	; $0426FE
 	add.l a0,d0	; $042704
@@ -64480,14 +64480,14 @@ L0426D8:
 	move.w #$ffff,-(a7)	; $042720
 	move.w #$ffff,-(a7)	; $042724
 	clr.w -(a7)	; $042728
-	move.w ram_sys_ff0294.l,d0	; $04272A
+	move.w ram_sys_field_0294.l,d0	; $04272A
 	muls.w #$34,d0	; $042730
-	lea.l ram_sys_ff02b8.l,a0	; $042734
+	lea.l ram_world_field_02b8.l,a0	; $042734
 	move.w (a0,d0.l),-(a7)	; $04273A
 	jsr combat_effect_apply.l	; $04273E
 	lea.l $e(a7),a7	; $042744
 L042748:
-	move.w ram_sys_ff0294.l,-(a7)	; $042748
+	move.w ram_sys_field_0294.l,-(a7)	; $042748
 	jsr combat_flag_clear.l	; $04274E
 	addq.w #$2,a7	; $042754
 	clr.w ram_sys_field_012a.l	; $042756
@@ -64503,8 +64503,8 @@ L04276E:
 	bgt.w L0428A0	; $042782
 	cmpi.w #$1,ram_sys_field_012a.l	; $042786
 	bne.w L04284C	; $04278E
-	pea.l ram_sys_ff029e.l	; $042792
-	pea.l ram_sys_ff029c.l	; $042798
+	pea.l ram_sys_field_029e.l	; $042792
+	pea.l ram_sys_field_029c.l	; $042798
 	jsr combat_random_empty_cell.l	; $04279E
 	addq.w #$8,a7	; $0427A4
 	cmp.w #$ffff,d0	; $0427A6
@@ -64518,22 +64518,22 @@ L04276E:
 	move.w #$1,-(a7)	; $0427C4
 	jsr entity_spawn.l	; $0427C8
 	lea.l $e(a7),a7	; $0427CE
-	move.w d0,ram_sys_ff0294.l	; $0427D2
-	move.w ram_sys_ff0294.l,-(a7)	; $0427D8
+	move.w d0,ram_sys_field_0294.l	; $0427D2
+	move.w ram_sys_field_0294.l,-(a7)	; $0427D8
 	jsr sys_struct52_scan.l	; $0427DE
 	addq.w #$2,a7	; $0427E4
-	move.w ram_sys_ff0294.l,d0	; $0427E6
+	move.w ram_sys_field_0294.l,d0	; $0427E6
 	muls.w #$34,d0	; $0427EC
 	lea.l ram_npc_field_02c8.l,a0	; $0427F0
-	move.w (a0,d0.l),ram_sys_ff0296.l	; $0427F6
-	move.w ram_sys_ff029e.l,-(a7)	; $0427FE
-	move.w ram_sys_ff029c.l,-(a7)	; $042804
-	move.w ram_sys_ff0296.l,-(a7)	; $04280A
+	move.w (a0,d0.l),ram_sys_field_0296.l	; $0427F6
+	move.w ram_sys_field_029e.l,-(a7)	; $0427FE
+	move.w ram_sys_field_029c.l,-(a7)	; $042804
+	move.w ram_sys_field_0296.l,-(a7)	; $04280A
 	jsr sys_struct52_assign.l	; $042810
 	addq.w #$6,a7	; $042816
-	move.w ram_sys_ff0296.l,d0	; $042818
+	move.w ram_sys_field_0296.l,d0	; $042818
 	muls.w #$34,d0	; $04281E
-	lea.l ram_sys_ff02b8.l,a0	; $042822
+	lea.l ram_world_field_02b8.l,a0	; $042822
 	move.w (a0,d0.l),-(a7)	; $042828
 	jsr npc_struct_setup.l	; $04282C
 	addq.w #$2,a7	; $042832
@@ -64551,10 +64551,10 @@ L04284C:
 L042866:
 	cmpi.w #$f,ram_sys_field_012a.l	; $042866
 	blt.b L0428A0	; $04286E
-	move.w ram_sys_ff0294.l,-(a7)	; $042870
+	move.w ram_sys_field_0294.l,-(a7)	; $042870
 	jsr sys_struct52_nibble_read.l	; $042876
 	addq.w #$2,a7	; $04287C
-	move.w ram_sys_ff0294.l,-(a7)	; $04287E
+	move.w ram_sys_field_0294.l,-(a7)	; $04287E
 	jsr combat_attacker_check.l	; $042884
 	addq.w #$2,a7	; $04288A
 	lea.l ram_combat_flags.l,a0	; $04288C
@@ -64808,25 +64808,25 @@ L042BC0:
 	and.w #$f,d0	; $042BF6
 	addq.w #$2,d0	; $042BFA
 L042BFC:
-	move.w d0,ram_sys_ff0294.l	; $042BFC
+	move.w d0,ram_sys_field_0294.l	; $042BFC
 	movea.l -$1c(a6),a0	; $042C02
 	move.w $2c(a0),d0	; $042C06
 	and.w #$ff,d0	; $042C0A
-	move.w d0,ram_sys_ff0296.l	; $042C0E
-	move.w ram_sys_ff0296.l,d0	; $042C14
+	move.w d0,ram_sys_field_0296.l	; $042C0E
+	move.w ram_sys_field_0296.l,d0	; $042C14
 	muls.w #$34,d0	; $042C1A
 	lea.l ram_header_leader.l,a0	; $042C1E
-	move.w (a0,d0.l),ram_sys_ffc414.l	; $042C24
-	move.w ram_sys_ff0296.l,d0	; $042C2C
+	move.w (a0,d0.l),ram_sys_field_c414.l	; $042C24
+	move.w ram_sys_field_0296.l,d0	; $042C2C
 	muls.w #$34,d0	; $042C32
 	lea.l ram_npc_field_02c2.l,a0	; $042C36
-	move.w (a0,d0.l),ram_sys_ffc416.l	; $042C3C
+	move.w (a0,d0.l),ram_sys_field_c416.l	; $042C3C
 	addq.w #$1,ram_sys_field_012a.l	; $042C44
 L042C4A:
 	cmpi.w #$1,ram_sys_field_012a.l	; $042C4A
 	ble.b L042CBE	; $042C52
 	move.w ram_sys_field_012a.l,d0	; $042C54
-	cmp.w ram_sys_ff0294.l,d0	; $042C5A
+	cmp.w ram_sys_field_0294.l,d0	; $042C5A
 	bge.b L042CBE	; $042C60
 	move.w ram_event_code.l,d0	; $042C62
 	ext.l d0	; $042C68
@@ -64835,16 +64835,16 @@ L042C6C:
 	move.w ram_sys_field_012a.l,d0	; $042C6C
 	subq.w #$1,d0	; $042C72
 	move.w d0,-(a7)	; $042C74
-	move.w ram_sys_ffc416.l,-(a7)	; $042C76
-	move.w ram_sys_ffc414.l,-(a7)	; $042C7C
+	move.w ram_sys_field_c416.l,-(a7)	; $042C76
+	move.w ram_sys_field_c414.l,-(a7)	; $042C7C
 	jsr spell_blast_area.l	; $042C82
 	addq.w #$6,a7	; $042C88
 	bra.b L042CB8	; $042C8A
 L042C8C:
 	move.w ram_event_code.l,-(a7)	; $042C8C
 	move.w ram_sys_field_012a.l,-(a7)	; $042C92
-	move.w ram_sys_ffc416.l,-(a7)	; $042C98
-	move.w ram_sys_ffc414.l,-(a7)	; $042C9E
+	move.w ram_sys_field_c416.l,-(a7)	; $042C98
+	move.w ram_sys_field_c414.l,-(a7)	; $042C9E
 	jsr combat_paint_circle.l	; $042CA4
 	addq.w #$8,a7	; $042CAA
 	bra.b L042CB8	; $042CAC
@@ -64856,11 +64856,11 @@ L042CB8:
 	addq.w #$1,ram_sys_field_012a.l	; $042CB8
 L042CBE:
 	move.w ram_sys_field_012a.l,d0	; $042CBE
-	cmp.w ram_sys_ff0294.l,d0	; $042CC4
+	cmp.w ram_sys_field_0294.l,d0	; $042CC4
 	blt.b L042CF6	; $042CCA
 	jsr combat_fill_grid.l	; $042CCC
 	clr.w -(a7)	; $042CD2
-	move.w ram_sys_ff0296.l,-(a7)	; $042CD4
+	move.w ram_sys_field_0296.l,-(a7)	; $042CD4
 	jsr spell_apply_target.l	; $042CDA
 	addq.w #$4,a7	; $042CE0
 	clr.w ram_sys_field_012a.l	; $042CE2
@@ -65117,8 +65117,8 @@ eeprom_ack_read:
 	rts	; $042FC6
 	; code $042FC8-$042FD7
 eeprom_init:
-	move.w #$a,ram_sys_ff014c.l	; $042FC8
-	move.w #$0,ram_sys_ff014e.l	; $042FD0
+	move.w #$a,ram_sys_field_014c.l	; $042FC8
+	move.w #$0,ram_sys_field_014e.l	; $042FD0
 	; code $042FD8-$043005
 eeprom_delay:
 	move.w #$1964,d0	; $042FD8
@@ -65145,7 +65145,7 @@ eeprom_read:
 	movea.l $c(a7),a0	; $04300E
 	; code $043012-$0430EB
 eeprom_read_block:
-	move.w #$0,ram_sys_ff014e.l	; $043012
+	move.w #$0,ram_sys_field_014e.l	; $043012
 	move.w d1,ram_sys_ff015c.l	; $04301A
 	move.l a0,ram_sys_ff0150.l	; $043020
 	move.l d0,ram_sys_ff0154.l	; $043026
@@ -65172,10 +65172,10 @@ L043036:
 	jsr eeprom_ack_read(pc)	; $043072
 	tst.b d1	; $043076
 	bpl.b L043096	; $043078
-	addq.w #$1,ram_sys_ff014e.l	; $04307A
+	addq.w #$1,ram_sys_field_014e.l	; $04307A
 	bmi.b L0430E2	; $043080
-	move.w ram_sys_ff014e.l,d1	; $043082
-	cmp.w ram_sys_ff014c.l,d1	; $043088
+	move.w ram_sys_field_014e.l,d1	; $043082
+	cmp.w ram_sys_field_014c.l,d1	; $043088
 	bpl.b L0430E2	; $04308E
 	jsr eeprom_delay(pc)	; $043090
 	bra.b L043034	; $043094
@@ -65202,7 +65202,7 @@ L0430CE:
 	move.l ram_sys_ff0158.l,d1	; $0430DA
 	rts	; $0430E0
 L0430E2:
-	move.w #$ffff,ram_sys_ff014e.l	; $0430E2
+	move.w #$ffff,ram_sys_field_014e.l	; $0430E2
 	bra.b L0430CE	; $0430EA
 	; code $0430EC-$0430F3
 sys_wrap_stack_arg:
@@ -65210,16 +65210,16 @@ sys_wrap_stack_arg:
 	movea.l $8(a7),a0	; $0430F0
 	; code $0430F4-$04323B
 eeprom_write_byte:
-	move.w #$0,ram_sys_ff014e.l	; $0430F4
-	move.l a0,ram_sys_ff0160.l	; $0430FC
-	move.l d0,ram_sys_ff0164.l	; $043102
+	move.w #$0,ram_sys_field_014e.l	; $0430F4
+	move.l a0,ram_sys_field_0160.l	; $0430FC
+	move.l d0,ram_sys_field_0164.l	; $043102
 	move.l d1,-(a7)	; $043108
 	bra.b L043110	; $04310A
 L04310C:
 	jsr eeprom_delay(pc)	; $04310C
 L043110:
-	movea.l ram_sys_ff0160.l,a0	; $043110
-	move.l ram_sys_ff0164.l,d0	; $043116
+	movea.l ram_sys_field_0160.l,a0	; $043110
+	move.l ram_sys_field_0164.l,d0	; $043116
 	jsr eeprom_start(pc)	; $04311C
 	and.w #$7f,d0	; $043120
 	lsl.w #$1,d0	; $043124
@@ -65236,10 +65236,10 @@ L043110:
 	jsr eeprom_ack_read(pc)	; $04314E
 	tst.b d1	; $043152
 	bpl.b L043176	; $043154
-	addq.w #$1,ram_sys_ff014e.l	; $043156
+	addq.w #$1,ram_sys_field_014e.l	; $043156
 	bmi.w L043232	; $04315C
-	move.w ram_sys_ff014e.l,d1	; $043160
-	cmp.w ram_sys_ff014c.l,d1	; $043166
+	move.w ram_sys_field_014e.l,d1	; $043160
+	cmp.w ram_sys_field_014c.l,d1	; $043166
 	bpl.w L043232	; $04316C
 	jsr eeprom_delay(pc)	; $043170
 	bra.b L04310C	; $043174
@@ -65257,10 +65257,10 @@ L043176:
 	jsr eeprom_ack_read(pc)	; $04319A
 	tst.b d1	; $04319E
 	bpl.b L0431C2	; $0431A0
-	addq.w #$1,ram_sys_ff014e.l	; $0431A2
+	addq.w #$1,ram_sys_field_014e.l	; $0431A2
 	bmi.w L043232	; $0431A8
-	move.w ram_sys_ff014e.l,d1	; $0431AC
-	cmp.w ram_sys_ff014c.l,d1	; $0431B2
+	move.w ram_sys_field_014e.l,d1	; $0431AC
+	cmp.w ram_sys_field_014c.l,d1	; $0431B2
 	bpl.b L043232	; $0431B8
 	jsr eeprom_delay(pc)	; $0431BA
 	bra.w L04310C	; $0431BE
@@ -65274,29 +65274,29 @@ L0431CA:
 	move.b ram_sys_ff015e.l,d0	; $0431D2
 	lsr.l #$1,d0	; $0431D8
 	moveq #$1,d1	; $0431DA
-	move.l ram_sys_ff0164.l,d0	; $0431DC
+	move.l ram_sys_field_0164.l,d0	; $0431DC
 	lea.l ram_sys_ff015f.l,a0	; $0431E2
 	jsr eeprom_read_block(pc)	; $0431E8
-	tst.w ram_sys_ff014e.l	; $0431EC
+	tst.w ram_sys_field_014e.l	; $0431EC
 	bmi.b L043232	; $0431F2
-	movea.l ram_sys_ff0160.l,a0	; $0431F4
+	movea.l ram_sys_field_0160.l,a0	; $0431F4
 	move.b ram_sys_ff015f.l,d0	; $0431FA
 	cmp.b (a0),d0	; $043200
 	bpl.b L043222	; $043202
-	addq.w #$1,ram_sys_ff014e.l	; $043204
+	addq.w #$1,ram_sys_field_014e.l	; $043204
 	bmi.b L043232	; $04320A
-	move.w ram_sys_ff014e.l,d1	; $04320C
-	cmp.w ram_sys_ff014c.l,d1	; $043212
+	move.w ram_sys_field_014e.l,d1	; $04320C
+	cmp.w ram_sys_field_014c.l,d1	; $043212
 	bpl.b L043232	; $043218
 	jsr eeprom_delay(pc)	; $04321A
 	bra.w L04310C	; $04321E
 L043222:
-	movea.l ram_sys_ff0160.l,a0	; $043222
-	move.l ram_sys_ff0164.l,d0	; $043228
+	movea.l ram_sys_field_0160.l,a0	; $043222
+	move.l ram_sys_field_0164.l,d0	; $043228
 	move.l (a7)+,d1	; $04322E
 	rts	; $043230
 L043232:
-	move.w #$ffff,ram_sys_ff014e.l	; $043232
+	move.w #$ffff,ram_sys_field_014e.l	; $043232
 	bra.b L043222	; $04323A
 	; code $04323C-$043313
 save_validate:
@@ -65308,13 +65308,13 @@ save_validate:
 	beq.b L0432B6	; $043254
 	moveq #$0,d0	; $043256
 	move.l #$80,d1	; $043258
-	lea.l ram_sys_ff016a.l,a0	; $04325E
+	lea.l ram_save_field_016a.l,a0	; $04325E
 	jsr eeprom_read_block(pc)	; $043264
-	tst.w ram_sys_ff014e.l	; $043268
+	tst.w ram_sys_field_014e.l	; $043268
 	bmi.w L0432F6	; $04326E
 	moveq #$7d,d1	; $043272
 	clr.w d0	; $043274
-	lea.l ram_sys_ff016a.l,a0	; $043276
+	lea.l ram_save_field_016a.l,a0	; $043276
 L04327C:
 	add.b (a0)+,d0	; $04327C
 	dbra d1,L04327C	; $04327E
@@ -65344,18 +65344,18 @@ L0432A2:
 	bra.b L043316	; $0432B4
 L0432B6:
 	move.w #$1,ram_sys_ff0168.l	; $0432B6
-	lea.l ram_sys_ff016a.l,a0	; $0432BE
+	lea.l ram_save_field_016a.l,a0	; $0432BE
 	moveq #$7f,d0	; $0432C4
 	clr.l d1	; $0432C6
 L0432C8:
 	move.b d1,(a0)+	; $0432C8
 	dbra d0,L0432C8	; $0432CA
 	move.b #$ff,ram_sys_ff01e8.l	; $0432CE
-	lea.l ram_sys_ff016a.l,a0	; $0432D6
+	lea.l ram_save_field_016a.l,a0	; $0432D6
 	moveq #$0,d0	; $0432DC
 L0432DE:
 	jsr eeprom_write_byte(pc)	; $0432DE
-	tst.w ram_sys_ff014e.l	; $0432E2
+	tst.w ram_sys_field_014e.l	; $0432E2
 	bmi.b L0432F6	; $0432E8
 	addq.l #$1,a0	; $0432EA
 	addq.w #$1,d0	; $0432EC
@@ -65386,7 +65386,7 @@ L043328:
 	move.w #$f0,d0	; $043328
 	bra.b L04333A	; $04332C
 L04332E:
-	lea.l ram_sys_ff016a.l,a0	; $04332E
+	lea.l ram_save_field_016a.l,a0	; $04332E
 	movem.l (a7)+,d0-d1	; $043334
 	rts	; $043338
 L04333A:
@@ -75772,7 +75772,7 @@ L0EB7C2:
 	rts	; $0EB7C6
 	; code $0EB7C8-$0EB805
 sound_stop:
-	sf.b ram_sys_ff021e.l	; $0EB7C8
+	sf.b ram_sys_field_021e.l	; $0EB7C8
 	movem.l d0/a0,-(a7)	; $0EB7CE
 	move.w sr,-(a7)	; $0EB7D2
 	bsr.w z80_bus_request	; $0EB7D4
@@ -75791,7 +75791,7 @@ L0EB7F2:
 	; code $0EB806-$0EB889
 sound_upload:
 	move.w sr,-(a7)	; $0EB806
-	sf.b ram_sys_ff021e.l	; $0EB808
+	sf.b ram_sys_field_021e.l	; $0EB808
 	movem.l d0-d2/a0-a2,-(a7)	; $0EB80E
 	move.b sys_version.l,d0	; $0EB812
 	btst #$6,d0	; $0EB818
@@ -75840,7 +75840,7 @@ sound_start_song:
 	move.w #$0,z80_busreq.l	; $0EB8CA
 	move.w (a7)+,sr	; $0EB8D2
 	movem.l (a7)+,d0-d1/a0-a1	; $0EB8D4
-	st.b ram_sys_ff021e.l	; $0EB8D8
+	st.b ram_sys_field_021e.l	; $0EB8D8
 	rts	; $0EB8DE
 	; code $0EB8E0-$0EB8F1
 z80_write_val24_nobus:
@@ -75936,7 +75936,7 @@ snd_post_cmd_12_arg1:
 	; code $0EB9C4-$0EB9ED
 snd_is_song_playing:
 	moveq #$0,d0	; $0EB9C4
-	move.b ram_sys_ff021e.l,d0	; $0EB9C6
+	move.b ram_sys_field_021e.l,d0	; $0EB9C6
 	beq.b L0EB9EC	; $0EB9CC
 	move.l a0,-(a7)	; $0EB9CE
 	move.w sr,-(a7)	; $0EB9D0
@@ -75958,11 +75958,11 @@ snd_sfx_busy:
 	bra.w L0EB978	; $0EB9FC
 	; code $0EBA00-$0EBA7D
 snd_music_streamer:
-	tst.b ram_sys_ff021e.l	; $0EBA00
+	tst.b ram_sys_field_021e.l	; $0EBA00
 	beq.b L0EBA7C	; $0EBA06
 	movem.l d0-d1/a0-a2,-(a7)	; $0EBA08
-	movea.l ram_sys_ff0224.l,a1	; $0EBA0C
-	movea.l ram_sys_ff0228.l,a2	; $0EBA12
+	movea.l ram_sys_field_0224.l,a1	; $0EBA0C
+	movea.l ram_sys_field_0228.l,a2	; $0EBA12
 	move.w sr,-(a7)	; $0EBA18
 	bsr.w z80_bus_request	; $0EBA1A
 	move.b $b(a0),d1	; $0EBA1E
@@ -75973,15 +75973,15 @@ snd_music_streamer:
 	move.b d1,ram_sys_ff021f.l	; $0EBA30
 	move.w #$ff,d0	; $0EBA36
 	bsr.w snd_copy_bytes_plus1	; $0EBA3A
-	move.l a1,ram_sys_ff0224.l	; $0EBA3E
-	move.l a2,ram_sys_ff0228.l	; $0EBA44
+	move.l a1,ram_sys_field_0224.l	; $0EBA3E
+	move.l a2,ram_sys_field_0228.l	; $0EBA44
 	cmpa.l ram_sys_ff0230.l,a1	; $0EBA4A
 	bne.b L0EBA5C	; $0EBA50
-	move.l ram_sys_ff022c.l,ram_sys_ff0224.l	; $0EBA52
+	move.l ram_sys_ff022c.l,ram_sys_field_0224.l	; $0EBA52
 L0EBA5C:
 	cmpa.l #$a01a00,a2	; $0EBA5C
 	blt.b L0EBA6E	; $0EBA62
-	move.l #$a01600,ram_sys_ff0228.l	; $0EBA64
+	move.l #$a01600,ram_sys_field_0228.l	; $0EBA64
 L0EBA6E:
 	move.w #$0,z80_busreq.l	; $0EBA6E
 	move.w (a7)+,sr	; $0EBA76
@@ -75992,7 +75992,7 @@ L0EBA7C:
 z80_song_chunk_set:
 	movem.l d0/a1-a2,-(a7)	; $0EBA7E
 	movea.l #$a01600,a2	; $0EBA82
-	move.l a2,ram_sys_ff0228.l	; $0EBA88
+	move.l a2,ram_sys_field_0228.l	; $0EBA88
 	move.b #$16,ram_sys_ff021f.l	; $0EBA8E
 	movea.l d0,a1	; $0EBA96
 	move.w #$100,z80_busreq.l	; $0EBA98
@@ -76000,7 +76000,7 @@ z80_song_chunk_set:
 	move.b #$16,z80_mailbox_da.l	; $0EBAA4
 	bsr.w snd_copy_bytes_plus1	; $0EBAAC
 	move.w #$0,z80_busreq.l	; $0EBAB0
-	move.l a1,ram_sys_ff0224.l	; $0EBAB8
+	move.l a1,ram_sys_field_0224.l	; $0EBAB8
 	movem.l (a7)+,d0/a1-a2	; $0EBABE
 	move.l a1,d0	; $0EBAC2
 	rts	; $0EBAC4
@@ -76039,7 +76039,7 @@ snd_sfx_muted:
 	move.w d1,-(a7)	; $0EBB04
 	moveq #$6,d1	; $0EBB06
 L0EBB08:
-	tst.b ram_sys_ff021e.l	; $0EBB08
+	tst.b ram_sys_field_021e.l	; $0EBB08
 	bne.b L0EBB14	; $0EBB0E
 	bsr.w sound_upload	; $0EBB10
 L0EBB14:
@@ -76066,7 +76066,7 @@ L0EBB56:
 	move.w (a7)+,sr	; $0EBB5E
 	movem.l (a7)+,d0/d3/a1-a2	; $0EBB60
 	move.w (a7)+,d1	; $0EBB64
-	st.b ram_sys_ff021e.l	; $0EBB66
+	st.b ram_sys_field_021e.l	; $0EBB66
 	rts	; $0EBB6C
 L0EBB6E:
 	; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)
