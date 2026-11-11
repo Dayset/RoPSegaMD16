@@ -23,13 +23,13 @@ addr,name,tier,note
 0x00dc16,vdp_set_scroll,2,Writes VSRAM words 0-1 = a b for Plane A/B vertical scroll and VRAM $2000 words 0-1 = c d for Plane A/B horizontal scroll; graphics.md:454
 0x00DCCA,wait_delay,2,save.md: bsr $DCCA delay routine (move.w #0;$A11100 timing loop)
 0x00dd5c,sys_lzss_decompress,2,LZSS decompressor for type-1 records with 4KB window at $FF0EAC and length from stream header; maps.md:47 and maps.md:103; re-implemented and verified in tools/extract_text.py
-0x00DE02,sys_unk_00de02,0,auto: touches none
+0x00DE02,mem_copy_longs_de02,1,static: copies (arg/4) longwords from src to dst; dbra loop
 0x00de1a,sys_copy_bytes,2,Plain byte copy of d0 bytes from src to dst; type-0 record handler per maps.md:103; called from the $013654 record loader alongside $DD5C and $136FC
 0x00DEDA,math_rem32_signed,1,"static: takes absolute values, calls math_udiv32, returns remainder in d0"
 0x00DEF4,math_mod32,2,logic.md: $DEF4(arg) = modulo by arg
 0x00DF0A,math_udiv32,2,logic.md: unsigned divide; remainder in d0; core divide
 0x00e358,map_terrain_tile_lookup,1,code: reads 32-bit offset table L05F524 indexed by id*4; cmp #ffeb bound
-0x01107A,sys_unk_01107a,0,auto: touches none
+0x01107A,sys_stub_01107a,1,static: empty routine (link/unlk/rts only)
 0x011082,pal_load_set,2,architecture.md: loads palettes $CCC38/$CCB18/$CCCB8 via $11082
 0x0110d0,pal_set_entry,2,writes one CRAM entry (slot index value); graphics.md:486; doc-pinned but no callers in ROM
 0x01110a,pal_get_entry,2,reads one CRAM entry (slot index) to d0; graphics.md:487; doc-pinned but no callers in ROM
@@ -272,7 +272,7 @@ addr,name,tier,note
 0x037a9a,spell_assign_by_rank,1,finds living group member whose rank equals arg1; sets its spell-table index +0x25 to arg2; menu caller $020292
 0x037B82,combat_target_select,1,logic.md:1202 sets FFC37C target index from target struct
 0x037D0E,spell_effect_apply,1,spells.md:125 tail installs w1>>4 action code; role from doc
-0x037ED6,sys_unk_037ed6,0,auto: touches none
+0x037ED6,sys_stub_037ed6,1,static: returns 0 after clearing a local
 0x037ee6,spell_blast_area,1,paints spell effect over 10x10 grid around x y; Chebyshev distance; writes map cells via $0319EC $031A9C
 0x0381ae,spell_set_effect,1,Configures $FFB0CC effect record 3 for a char; effect code 517/519 or passed value; called from spell state machine $03E2D4
 0x038278,combat_paint_circle,1,Paints a circle radius arg2 on the 10x10 combat grid; random 1 in 4 per cell; tile by arg3 (82 to 66 83 to 47 84 to 182)
@@ -308,7 +308,7 @@ addr,name,tier,note
 0x03A062,sys_unk_03a062,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
 0x03A2E4,sys_unk_03a2e4,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
 0x03A4A2,sys_unk_03a4a2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
-0x03AAC4,sys_unk_03aac4,0,auto: touches none
+0x03AAC4,sys_stub_03aac4,1,static: empty routine (link/unlk/rts only)
 0x03aacc,combat_victory_announce,1,shows message 0x20-0x23 by $FF00AE and food; plays Victory song 20 and SFX 91; sets $FF0112 to 1; flushes msg queue 3x; called when group alive
 0x03ab8c,combat_lock_action,2,sets $FF012C to 7 locked busy and $FF012A to 1; spells.md:262 0x07 locked busy set by $3AB8C; called from spell_effect_apply and $03B51E
 0x03aba6,world_check_char_ahead,1,checks 3x2 fan ahead of a char via +0x0A facing and $0258EE; returns 1 if any char found else 0; called from movement $0224DE

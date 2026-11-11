@@ -1979,7 +1979,7 @@ L00DDFC:
 	movem.l (a7)+,d4-d7/a3-a5	; $00DDFC
 	rts	; $00DE00
 	; code $00DE02-$00DE19
-sys_unk_00de02:
+mem_copy_longs_de02:
 	movea.l $8(a7),a1	; $00DE02
 	movea.l $4(a7),a2	; $00DE06
 	move.l $c(a7),d0	; $00DE0A
@@ -6832,7 +6832,7 @@ L011074:
 	movem.l (a7)+,d4-d6/a3-a6	; $011074
 	rts	; $011078
 	; code $01107A-$011081
-sys_unk_01107a:
+sys_stub_01107a:
 	link.w a6,#$0	; $01107A
 	unlk a6	; $01107E
 	rts	; $011080
@@ -27198,7 +27198,7 @@ L0238C0:
 	lea.l ram_sys_ffb0cc.l,a0	; $023910
 	move.w (a0,d0.l),-(a7)	; $023916
 	pea.l L023938(pc)	; $02391A
-	jsr sys_unk_01107a.l	; $02391E
+	jsr sys_stub_01107a.l	; $02391E
 	lea.l $e(a7),a7	; $023924
 	addq.w #$1,-$2(a6)	; $023928
 	cmpi.w #$38,-$2(a6)	; $02392C
@@ -50054,11 +50054,11 @@ combat_find_best_member:
 	clr.w -$4(a6)	; $036A9C
 	move.w $a(a6),-(a7)	; $036AA0
 	move.w $8(a6),-(a7)	; $036AA4
-	jsr sys_unk_03aac4.l	; $036AA8
+	jsr sys_stub_03aac4.l	; $036AA8
 	addq.w #$4,a7	; $036AAE
 	move.w $8(a6),-(a7)	; $036AB0
 	move.w $a(a6),-(a7)	; $036AB4
-	jsr sys_unk_03aac4.l	; $036AB8
+	jsr sys_stub_03aac4.l	; $036AB8
 	addq.w #$4,a7	; $036ABE
 	move.w $8(a6),d0	; $036AC0
 	muls.w #$34,d0	; $036AC4
@@ -51580,7 +51580,7 @@ L037EBE:
 	unlk a6	; $037ED2
 	rts	; $037ED4
 	; code $037ED6-$037EE5
-sys_unk_037ed6:
+sys_stub_037ed6:
 	link.w a6,#$fffe	; $037ED6
 	clr.w -$2(a6)	; $037EDA
 	move.w -$2(a6),d0	; $037EDE
@@ -55198,7 +55198,7 @@ L03AAC0:
 	unlk a6	; $03AAC0
 	rts	; $03AAC2
 	; code $03AAC4-$03AACB
-sys_unk_03aac4:
+sys_stub_03aac4:
 	link.w a6,#$0	; $03AAC4
 	unlk a6	; $03AAC8
 	rts	; $03AACA
