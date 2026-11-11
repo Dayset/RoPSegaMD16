@@ -8,7 +8,7 @@ rom_start:
 	incbin "rop-original.gen",$000000,$1
 L000001:
 	; data $000001-$000001
-	incbin "rop-original.gen",$000001,$1
+	dcb.b $1,$FF	; $000001
 L000002:
 	; data $000002-$00007D
 	incbin "rop-original.gen",$000002,$7C
@@ -12431,7 +12431,7 @@ L01AE98:
 	incbin "rop-original.gen",$01AE98,$400
 L01B298:
 	; data $01B298-$01B298
-	incbin "rop-original.gen",$01B298,$1
+	dcb.b $1,$FF	; $01B298
 L01B299:
 	; data $01B299-$01B2DF
 	incbin "rop-original.gen",$01B299,$47
@@ -61583,4 +61583,4 @@ L0FD0BE:
 L0FD0CA:
 	bra.b L0FD0CA	; $0FD0CA
 	; data $0FD0CC-$0FFFFF
-	incbin "rop-original.gen",$0FD0CC,$2F34
+	dcb.b $2F34,$FF	; $0FD0CC

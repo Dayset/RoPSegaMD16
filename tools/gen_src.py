@@ -382,14 +382,21 @@ def main():
         for t in sorted(t for t in label_addrs if a <= t < b):
             if t > cur:
                 out.append(f"\t; data ${cur:06X}-${t - 1:06X}")
-                out.append(f'\tincbin "rop-original.gen",${cur:06X},${t - cur:X}')
+                emit_bytes(cur, t)
                 cur = t
             if t not in labelled:
                 out.append(f"{lab(t)}:")
                 labelled.add(t)
         if b > cur:
             out.append(f"\t; data ${cur:06X}-${b - 1:06X}")
-            out.append(f'\tincbin "rop-original.gen",${cur:06X},${b - cur:X}')
+            emit_bytes(cur, b)
+
+    def emit_bytes(a, b):
+        """All-$FF slices become `dcb.b` padding source; everything else stays an incbin slice."""
+        if rom[a:b] == b"\xff" * (b - a):
+            out.append(f"\tdcb.b ${b - a:X},$FF\t; ${a:06X}")
+        else:
+            out.append(f'\tincbin "rop-original.gen",${a:06X},${b - a:X}')
 
     for start, kind, payload in pieces:
         if start > pos:
