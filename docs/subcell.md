@@ -23,3 +23,11 @@ Status: partial. Static findings only. The Buc cutscene offset path is not yet t
 - Redraw request: `ram_sys_ff0098 = $FFFF` at `$1BA1A`/`$1BA2A`. The checker `redraw_check` (`$1B918`) consumes it and calls `map_chunk_pos` with the committed cell (`$1B96A`).
 - So the scroll is derived from the committed cell. Sub-cell motion needs an offset between the commit and the redraw, which the original does not have.
 - Not yet implemented: the interpolation patch, input queueing, and frame-accurate checks. Those need the live capture (#31) and are not done here.
+
+## Measured walk timing (#27, #28)
+Source: BlastEm recording at 60.4 fps (640x480), walk started from `slot_0.state` after dialog #1 (D) and dialog #2 (A, A).
+- Cell steps: large frame-to-frame changes (mean abs diff 6.6–9.2 on 0–255) at 9987, 12542, 13836, 15164, 16458, 17785, 19079, 20406 ms (video time).
+- Step interval: 1294–1328 ms, about 79 frames at 60.4 fps.
+- Between steps: a small change (mean abs diff ~0.6) on nearly every frame. Consistent with sub-cell motion or per-frame animation. Not yet separated from character animation.
+- Debugger, same run type: X cell `0x0006` fixed; Y cell `0x0012`→`0x0017`, one cell per step, each Y commit preceded by an X write (`0x1C2D8` then `0x1C300`).
+- Open: map video time to keypress time (video start not aligned to the AHK F9 start); confirm the 60.4 fps rate (container reports ~30.1 fps).
