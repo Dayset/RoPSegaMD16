@@ -865,7 +865,18 @@ path (a bounds check, not a terrain check) — see above.
 ## Terrain stream byte format (checked 2026-11-11)
 
 Read from the reader loop in `map_terrain_tile_lookup` (`$E358`, loops at
-`$E39C`, `$E3E2`, `$E43C`). Each stream is a run of bytes ended by `0x00`:
+`$E39C`, `$E3E2`, `$E43C`). The 944 streams (176 family 1 + 768 family 2)
+are one table of 944 u32 BE offsets at `$5F524`; the streams run
+`$603E4–$9611F` and **tile that region exactly**: a stream's length is
+(next offset − this offset) and its terminator is its last byte (`0x00`).
+**`0x00` bytes inside a stream are pattern data, not terminators** — the
+loop only exits on a `0x00` read as a dispatch byte; `0x00` bytes consumed
+inside a handler are pattern. Total 220,476 bytes; stream lengths min 1,
+max 451, mean 233.56. (An earlier first-`0x00` reading gave 126,249 bytes
+and 15 spurious "zero-length" streams; it was wrong for 493/944 streams.)
+All 3,776 decode combos (944 streams × d0 {0,2} × path {0,1}) stop exactly
+at the last byte. Family 2 is accessed through the same `$5F524` table
+with index 176–943 (no `$5F7E4` reference anywhere in `rop.s`).
 - **hi nibble**: skip count. The skip-walk advances `1 + hi` bytes per entry.
 - **lo nibble**: type selector. It indexes a word table at `$435C0` (times 2),
   combined with `$436E0` and `$433C0`, and `$DF58` for the dispatch.
@@ -873,20 +884,64 @@ Read from the reader loop in `map_terrain_tile_lookup` (`$E358`, loops at
 `tools/terrain_stream_check.py` (read only) confirms all 176 family-1 and all
 768 family-2 streams terminate at `0x00` inside their regions. That check is
 weak on its own: any byte run eventually hits `0x00`. The stronger evidence is
-the tiling and monotonic-offset result already in this doc. The check does not
+the tiling and monotonic-offset result above. The check does not
 say what each lo-nibble value means in game terms; that still needs a trace.
 
 ## Terrain lo-nibble dispatch, static reading (2026-11-11, not a trace)
 
-Path A of `map_terrain_tile_lookup` (`$E3B0`, the `d3 == 0` branch), read
-from the code and the `$DF58` longword table, with caller `d0` = 0 and 2:
-- The lo nibble `L` enters the table offset at `$435C0` as `2L + d0 - $40`,
-  so all 16 values pick different words.
-- The dispatch index into `$DF58` is `(hi << 4) | ((2L + d0) & 6)`. Only bits
-  0-1 of `L` reach the dispatch, so `L`, `L+4`, `L+8`, `L+12` share a
-  dispatch target for a given caller `d0`.
-- Dispatch targets are code inside the same routine (`$E3E2`, `$E43C`,
-  and the `$F6xx` blocks). Two of them carry 32 `(hi, lo)` pairs each.
+`map_terrain_tile_lookup` (`$E358`) takes (stream index, d0, d1, d3) at
+`$4/$6/$8/$A(a7)`; d0 is ANDed with `$FFFE`; d1 < 0 triggers the pre-walk
+loop at `$E39C` (skip hi nibbles); the stream pointer is
+`$603E4 + table[d2]` from the single `$5F524` table. `d3 == 0` takes path A
+(`$E3B0`); `d3 != 0` takes path B (`$E412`).
 
-Not done: path B (`d3 != 0`, `$E412`), and the game-terrain meaning of each
-value. Both need a trace. Static tier is 1 for this reading.
+- **Caller d0 (correction to PR #189).** PR #189's "caller d0 = 0 and 2"
+  are the LOG_D0 values — d0 **after** the `sub` in the loop
+  (`sub.w #$40,d0` path A at `$E3DE`, `sub.w #$26,d0` path B at `$E438`).
+  The caller d0 that keeps the output pointer a5 (`$FF1EC0 +
+  $436E0[d1] + d4`) in RAM is ≥ 0x40 (path A) / ≥ 0x44 (path B); i.e.
+  caller d0 = 0x40/0x42 for the LOG_D0 = 0/2 cases. Caller d0 = 0/2 with
+  d1 = 0 drives a5 below RAM (into `$FE0000`) on 6 of 22 dispatches
+  (stream 0, path A), 12 of 22 (stream 0, path B), 12 of 30
+  (stream 288, path A). The real (d0, d1, d3) must be learned from natural
+  calls; the game computes them from map state (e.g. callers at `$01BC1A`:
+  d1 = −$c(a6) − 7·d6, which can be negative and triggers the pre-walk;
+  d3 there is 0 or 1).
+- **Path A (d3 == 0).** Loop `$E3E2`: `d3 = 2L + LOG_D0`;
+  `d4 = $435C0[d3]`; `a5 = $FF1EC0 + $436E0[d1] + d4`;
+  index = `(hi<<4) | ((2L + LOG_D0) & 6)` (all even);
+  `target = $DF58[index]`; `a6 = $DF58`. Only bits 0–1 of `L` reach the
+  dispatch, so `L`, `L+4`, `L+8`, `L+12` share a target for a given d0.
+- **Path B (d3 != 0) — formula predicted from the code, NOT live-confirmed.**
+  Loop `$E43C`: `d3 = −2L + LOG_D0`; `d4 = $435C0[d3]`;
+  `a5 = $FF1EC0 + $436E0[d1] + d4`;
+  index = `(hi<<4) | (((−2L + LOG_D0) & 6) | 1)` (all odd);
+  `target = $DF58[index]`; **`a6 = $434C0`** (not `$DF58` — set at `$E474`
+  after the dispatch push). The same handler reads a different table by
+  path: handlers at `$F732–$F7F8` do `move.b (a6,d5.w),d5`.
+- **`$DF58` (256 longword entries, `$DF58–$E357`): 114 distinct targets**
+  (112 handlers + the loops `$E3E2`, `$E43C`). Handler size = hi nibble:
+  sizes 1–14, exactly 8 handlers per size; hi 0 and hi 15 are pure skips
+  (all 8 live indices point to the loops). Low nibble 8–15 are dead table
+  entries (all 128 point to the loops) — never selected by either dispatch
+  formula.
+- **`$435C0` (d3 ≥ 0):** value = `((d3>>3)<<5) | ((d3>>1)&3)`, 0–0x01E3
+  for d3 ≤ 126. **`$436E0`:** entry[i] = (i//8)·0x480 + (i%8)·4.
+
+Simulator lo counts per path (48,054 dispatches each, over 944 streams ×
+d0 {0,2} = 1,888 decodes; `tools/sim_terrain.py`): lo 0: 10402, 1: 10986,
+2: 6682, 3: 6444, 4: 5652, 5: 3910, 6: 2494, 7: 580, 8: 328, 9: 204,
+10: 190, 11: 96, 12: 54, 13: 32, 14: 0, 15: 0. lo 14/15 never dispatch;
+lo 13 is rare as a dispatch byte (32) though it was the most common byte
+in the first-0 count (mostly pattern data). **Simulator counts, not
+live-measured** — the live sweep that would confirm them is blocked (below).
+
+**Live trace: BLOCKED.** A direct `$E358` call freezes BlastEm
+("machine freeze due to write to address DFFFFE") regardless of d0
+(0 or 0x40) and timing (frame 100 or 2000); the `$DD5C` sweep freezes
+the same way. A single `$DD5C` call works live (record 0, `$96120`:
+first 256 output bytes match the static decode 256/256, checksum
+`0x3CA`). The freeze mechanism is unresolved; the per-lo game meaning
+(which tile/type each lo value writes) is still open. Static tier is 1
+for this reading; the path-B formula and lo counts are simulator/code
+predictions, not live measurements.
