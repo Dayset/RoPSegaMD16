@@ -887,7 +887,7 @@ weak on its own: any byte run eventually hits `0x00`. The stronger evidence is
 the tiling and monotonic-offset result above. The check does not
 say what each lo-nibble value means in game terms; that still needs a trace.
 
-## Terrain lo-nibble dispatch, static reading (2026-11-11, not a trace)
+## Terrain lo-nibble dispatch (2026-11-11; live-verified)
 
 `map_terrain_tile_lookup` (`$E358`) takes (stream index, d0, d1, d3) at
 `$4/$6/$8/$A(a7)`; d0 is ANDed with `$FFFE`; d1 < 0 triggers the pre-walk
@@ -933,15 +933,37 @@ d0 {0,2} = 1,888 decodes; `tools/sim_terrain.py`): lo 0: 10402, 1: 10986,
 2: 6682, 3: 6444, 4: 5652, 5: 3910, 6: 2494, 7: 580, 8: 328, 9: 204,
 10: 190, 11: 96, 12: 54, 13: 32, 14: 0, 15: 0. lo 14/15 never dispatch;
 lo 13 is rare as a dispatch byte (32) though it was the most common byte
-in the first-0 count (mostly pattern data). **Simulator counts, not
-live-measured** — the live sweep that would confirm them is blocked (below).
+in the first-0 count (mostly pattern data). **Live-confirmed** by a
+3,776-call sweep (below) — the simulator counts match the live counters
+exactly on all 16 lo values in both paths.
 
-**Live trace: BLOCKED.** A direct `$E358` call freezes BlastEm
-("machine freeze due to write to address DFFFFE") regardless of d0
-(0 or 0x40) and timing (frame 100 or 2000); the `$DD5C` sweep freezes
-the same way. A single `$DD5C` call works live (record 0, `$96120`:
-first 256 output bytes match the static decode 256/256, checksum
-`0x3CA`). The freeze mechanism is unresolved; the per-lo game meaning
-(which tile/type each lo value writes) is still open. Static tier is 1
-for this reading; the path-B formula and lo counts are simulator/code
-predictions, not live measurements.
+**Live verification (2026-11-11).** A 3,776-call sweep (944 streams ×
+LOG_D0 {0,2} × path {0,1}, d1=0) reproduces `tools/sim_terrain.py`
+exactly: per-path lo counts as above, total 48,054 per path, identical
+between paths, reproduced on a second run. 105/105 recorded (hi,lo)→target
+mappings per path match the static `$DF58` formula (path A
+`(hi<<4)|((2L+LOG_D0)&6)`, path B `(hi<<4)|(((-2L+LOG_D0)&6)|1)`),
+0 mismatches; L/L+4/L+8/L+12 sharing confirmed live; path A and path B
+dispatch to disjoint handler sets (even vs odd `$DF58` indices). Raw
+tables: `docs/terrain-sweep-tables.json`. Recording is first-seen across
+LOG_D0 0/2, so the LOG_D0 dependence is confirmed in aggregate, not
+per-LOG_D0.
+
+**Natural args (live, 10-call breakpoint sample, Buc room).** Caller d0
+84–224 (LOG_D0 20–160, always ≥ 0x40), d1 27–98 (always positive, no
+pre-walk), d3 0 (9/10) or 1 (1/10). The sweep used d1=0; d1 does not
+affect the dispatch or the counts, but a d1=50 rerun would close it.
+
+**Freeze note.** The 0xDFFFFE freeze reported by the earlier terrain-trace
+run does NOT reproduce with a correct harness: the `$35C` hook must start
+with `move.w #0x2000,%sr` (in cold boot the frame counter `$FF0012` stays
+0 with interrupts masked, so a frame gate never passes), record sources
+must come from the tables (a wrong `$DD5C` src reads a garbage length
+and writes wild), and the sweep loop must keep a balanced stack. Single
+and multi-call `$E358`/`$DD5C` runs return cleanly with no exception
+trap. Most likely a harness artifact; the exact mechanism of the earlier
+freeze was not directly observed (its harness sources are gone).
+
+The per-lo game meaning (which tile/type each lo value writes) is still
+open — the sweep gives dispatch counts and targets, not meanings. The
+dispatch mapping itself is live-verified (tier 2).
