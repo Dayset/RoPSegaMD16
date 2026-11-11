@@ -1082,3 +1082,12 @@ This is grammar-level evidence only. It doesn't check the note values, the
 - The 0x001394-0x00692D block is referenced by one `lea` in the pointer-SFX switch at 0x17602 (the switch that feeds `snd_sfx_pointer`, `docs/sound.md` section 2, SFX 90-96). Inner pointers 0x4500, 0x4502 and 0x4504 land inside the same block.
 - Weak tile signal (4bpp smoothness 3.20 vs 4.68 shuffled) so the block is not graphics.
 - Classed snd-sfx-payload, tier 1, static evidence only. Live check of the sample bytes is still open.
+
+## Pointer-SFX switch inside sfx_request (static, 2026-11-11)
+
+`sfx_request` (`0x17586`–`0x1769F`, `FUN_00017586` in `functions.txt`) holds the switch that feeds the pointer-SFX path. Its case labels load a 68k ROM address that is then passed to `snd_sfx_pointer` / `snd_sfx_pointer_ff`:
+
+- `0x17602` loads `0x001394`, the block now classed `snd-sfx-payload` in `disasm/regions.csv`.
+- `0x175F6` loads `0x004502`, `0x17626` loads `0x004504`, `0x17614`-area cases load `0x003ADA`, `0x004500`, `0x009A60`, and `0x01763E` loads `0x00AE56`.
+
+The cases are dispatched by a jump table at `0x1764E`, indexed by `(SFX index - 0x5A)` for indices `0x5A`-`0x61` (90-97). That matches docs/sound.md section 2 (SFX 90-96 carry a ROM pointer). Mapping each case to its exact SFX index is still open: the jump-table entries are not yet decoded.
