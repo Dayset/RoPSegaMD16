@@ -355,15 +355,81 @@ tool `tools/decode_chunks.py`).
     a 10×13 block in overworld chunk 23. In-fiction meaning open
     (grant/trigger flag vs structure marker — the two uses do not
     collapse to one fiction yet).
-  - **bit 11: hazard floor (damaging ground).** `world_ambient_event`
-    (loc 1: 26 damage standing on it; loc 5: 8 sensor cells
-    displayed remotely as tile 0xCD/0) and `world_step_event`
-    (loc 2: stepping toggles it and swaps the display tile
-    0xDB/0xDF; loc 3: 1 damage per step; loc 5: stepping on a
-    sensor cell toggles it, sfx 0x26). Set on 1,350/119,889 cells,
-    tile/terrain-independent; 14 interior rooms hold exactly 71
-    each in a solid block. Whether the fiction is lava, traps, or
-    hot floor is open.
+  - **bit 11: hazard floor — lava, traps, and sensors are three
+    distinct hazards, not one.** The ambient/step dispatch keys
+    on the location NUMBER (the `$D1D00` record's +4 byte, which
+    is also the `$0D63E4` song-table index), via the subtract
+    chain in `world_location_transition` (`$01DD1A`): +4 = 158 →
+    `$FF013E` = 1, 160 → 2, 170 → 6, 172 → 3, 174 → 5 (else 0;
+    `$FF0126` == 3 overrides to 4). The earlier "loc 1/2/3/5/6"
+    labels are `$FF013E` values, not `$0D63E4` location indices.
+    - **Lava — Temple of Variation.** `$D1D00` loc 393, key
+      (330,62), +4 = 158, `$FF013E` = 1, chunk 235 (32×32): 41
+      bit-11 cells, ALL tile 279 (`0x117`), in the 10×10 zone
+      X 3–12 / Y 11–20. `world_ambient_event` re-randomizes that
+      zone's display tiles (`0xDB`/`0x117`) each tick and deals
+      26 damage standing on a bit-11 cell (`combat_damage_party`
+      0x1A). The shipped pool and the fill zone coincide exactly.
+      Temple identified by the fan sextant 33°6′-6°2′ (≈ (331,60))
+      against loc 393's key (330,62); the sextant ×10 mapping is
+      confirmed by Speed, Perfection, and the Asylum anchors.
+    - **Traps — loc 357, key (308,123), +4 = 172, `$FF013E` = 3,
+      chunk 249 (32×32): 217 bit-11 cells scattered as single
+      cells across the whole map (tiles 96/199/477/478 and others),
+      1 damage per step (`world_step_event`).** The toggle
+      mechanic (+4 = 160, `$FF013E` = 2: stepping toggles bit 11
+      and swaps the display tile 0xDB/0xDF) has NO `$D1D00`
+      record — no overworld cell leads to it — and its chunk 237
+      holds 0 bit-11 cells, so the toggle room is unreachable via
+      the location table as shipped.
+    - **Sensors — Citadel of Nexus.** `$D1D00` loc 401, key
+      (7,192), +4 = 174, `$FF013E` = 5, chunk 251 (32×32):
+      exactly 8 bit-11 cells, ALL tile 1, matching the 8 sensor
+      coords (`$01B4F0`/`$01B4F1`); displayed remotely as tile
+      0xCD/0, stepping one toggles it + sfx 0x26. Loc 401's +5
+      text is "This Citadel is the home of the Holy Order of
+      Paladins of Nexus."
+    - **The trap hint and the order (pinned, dialogue).** The
+      "precise order on the map" is the Order of Variation:
+      rec_1152: `Order of Variation: "MUTATION leads one to
+      ALTERATION which ends in RANDOMNESS. In this way is
+      Variation vanquished."` The walking instruction is rec_0501:
+      `The "Key to Variation" is merely this: "Start on the third
+      square from the south wall and proceed according to the Order
+      of Variation."` (Companions: rec_0500, the Book of Variation;
+      rec_1149, the Ring hidden in the Chamber of Variation
+      "northwest of the City of Speed"; rec_1151, the Key held by a
+      hermit "in the desert to the southeast of Cathedral";
+      rec_1150, the secret "known to sober warriors of Nexus and
+      to lunatics".) The death message rec_1134 ("You have been
+      killed by a magic trap. … Maybe you need to quest for
+      clues.") puns on the CLUE spell. The Lunatic Asylum is
+      `$D1D00` loc 390, key (312,82) — fan 31°-8′ — +4 = 171,
+      chunk 248; the NPC who speaks recs 499–501 is NOT yet pinned
+      by code (see below).
+    - **The fifteen 71-cell rooms are NOT hazard rooms.** Chunks
+      77, 78, 79, 85, 86, 87, 90, 92, 93, 94, 95, 96, 97, 99, 106
+      (11×11, location numbers 0, 1, 2, 8, 9, 10, 13, 15, 16, 17,
+      18, 19, 20, 22, 29 — fifteen, not fourteen) each hold
+      exactly 71 bit-11 cells in a solid block, but no hazard
+      `$FF013E` ever fires for those location numbers (all have
+      `$FF0126` = 2, none is 158/160/170/172/174), and 13 of the 15
+      have no `$D1D00` entry at all — their bit-11 cells are never
+      read by any hazard code and are inert as shipped. The two
+      reachable ones: chunk 106 is the Belmont Residence interior
+      (7 `$D1D00` locs, all +5 = 71, "Keep out, Belmont Residence:
+      Private!"), chunk 87 is loc 397 (262,6). Set on 1,350/119,889
+      cells overall (1,065 in the 15 rooms + 285 elsewhere).
+    - **Open:** which NPC speaks recs 499–501/1148–1152. The
+      reply-text rule is pinned (`shop_record_score` returns
+      best event-record index + 96; recs 499–501 = event records
+      403–405, which match a char with struct +0x02 == 189/200
+      under event ids 10/25), but no `text_event_resolve` caller
+      found so far passes event id 10 or 25, so the triggering
+      verb/situation and the speaker (asylum lunatic vs hermit)
+      are unproven from the code. Name indices 189/200 are
+      'Sunder'/'Arrow' (category 0x11) — suggestive only, NOT a
+      pin: the +0x02 field's provenance is unverified.
   - **bit 12: variant flag.** Selects the display descriptor's
     high variant in `column_write`/`row_write`; also a height
     factor in `map_chunk_pos`.

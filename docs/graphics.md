@@ -480,7 +480,11 @@ returns immediately.
   semantics resolved 2026-11-11 [static] — full layout in
   `docs/maps.md` (chunk cell word: bits 0–8 tile-type index
   0–511, bit 9 height-stack flag, bit 10 step-tile flag,
-  bit 11 hazard floor, bit 12 variant, bits 13–15 height).
+  bit 11 hazard floor — lava (Temple of Variation, tile 279,
+  26 damage), traps (217 scattered cells, 1 damage/step), and
+  sensors (8 cells, tile 1) are distinct hazards keyed on the
+  location number; the fifteen 71-cell rooms' bit-11 cells are
+  inert — bit 12 variant, bits 13–15 height).
 
 ### 6.5 Palette — `$170DA` and the loaders
 
