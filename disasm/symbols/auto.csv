@@ -197,7 +197,7 @@ addr,name,tier,note
 0x02d56a,sys_event_run,1,runs 8-byte event records from $FFC384; first byte is opcode 0-15 via jump table; advances pointer by 8 per record; called from combat_turn_run
 0x02DC0C,map_walkable_test,2,logic.md:721 walkability gate 02DC0C tests struct fields
 0x02DCCE,sys_unk_02dcce,0,auto: touches $FF00AE $FF0124 $FF02B2 $FF02B8 $FF02BE $FF02C0
-0x02E8C8,sys_unk_02e8c8,0,auto: touches $FF02B6 $FF02C8 $FF02CB $FF02DB
+0x02E8C8,npc_find_state1_2e8c8,1,static: loops records until byte at ram_sys_ff02db equals one
 0x02e9a6,world_seen_reset,1,clears seen-at-location ring buffer; sets 32 entries of $FFC388 and $FFC3C8 to $FFFF and clears cursor $FF0122
 0x02e9ec,world_seen_record,1,appends value and current location $FF0E92 and $3FF to 32-entry ring buffer $FFC388 $FFC3C8; advances cursor $FF0122 mod 32
 0x02ea40,world_seen_check,1,searches ring buffer for value at current location $FF0E92 and $3FF; returns -1 if found else 0
@@ -240,7 +240,7 @@ addr,name,tier,note
 0x0337ee,npc_place_char,1,places char with HP and type guards; move via $024984 plus npc_leader_init; sets bit 14; called from $022958
 0x034b50,npc_move_leader,1,moves char via $024984 then npc_leader_init; sets bit 14; called from $034754
 0x034bd0,npc_random_walk_check,1,picks random direction from $01AE38; checks walk via map_walk_check; retries up to 4 times; called from $033F7A
-0x034CA2,sys_unk_034ca2,0,auto: touches $FF02C8 $FF02D8 $FF02DB
+0x034CA2,npc_get_state_34ca2,1,static: returns byte at ram_sys_ff02db for record arg with stride 0x34
 0x034d32,world_move_toward,1,computes direction to target x y via $01E29C; moves char via $024984; called from $0349D4 $034AA0
 0x034dd8,world_check_toward,1,computes direction to target x y via $01E29C; checks walk via map_walk_check; returns walk result; called from $034940
 0x034ED0,sys_unk_034ed0,0,auto: touches $FF02C0 $FF02C2
@@ -296,8 +296,8 @@ addr,name,tier,note
 0x0393fa,spell_group_flash,1,action code 151 SFX 15; cycles group members; palette flash via pal_load_set
 0x039780,spell_modify_stat,1,modifies +0x28 attack defence or duration counter by $FF012C code; calls $03CB66
 0x0398E0,spell_status_apply,2,spells.md:369 status-effect applier 398E0 verified static
-0x0399AC,sys_unk_0399ac,0,auto: touches $FF02DC $FF02E0
-0x0399F4,sys_unk_0399f4,0,auto: touches $FF02DC $FF02E0
+0x0399AC,npc_clear_bit15_399ac,1,static: clears bit 15 of a word in the 0x34-byte record table at ram_sys_ff02e0 with index arg
+0x0399F4,npc_clear_bit15_399f4,1,static: same as npc_clear_bit15_399ac at a second site
 0x039a34,spell_phased_blast,1,action code 142 flat-70 family; phased cinematic build-up flash travel impact fade
 0x039be0,spell_travel_effect,1,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase
 0x039c8a,spell_step_effect_144,1,flat-70 phased spell effect action 144; visual 5 via $03CC4C; applies spell_apply_group while $FF012A below 65; called from combat_action_main dispatch

@@ -38292,7 +38292,7 @@ L02CF80:
 	tst.w (a0,d0.l)	; $02CFAE
 	bge.b L02D000	; $02CFB2
 	move.w $8(a6),-(a7)	; $02CFB4
-	jsr sys_unk_02e8c8.l	; $02CFB8
+	jsr npc_find_state1_2e8c8.l	; $02CFB8
 	addq.w #$2,a7	; $02CFBE
 	tst.w d0	; $02CFC0
 	bne.b L02D000	; $02CFC2
@@ -40156,7 +40156,7 @@ L02E88C:
 L02E8C4:
 	bra.w L02DCE6	; $02E8C4
 	; code $02E8C8-$02E9A5
-sys_unk_02e8c8:
+npc_find_state1_2e8c8:
 	link.w a6,#$fffe	; $02E8C8
 	clr.w -$2(a6)	; $02E8CC
 L02E8D0:
@@ -47911,7 +47911,7 @@ L034C9A:
 	unlk a6	; $034C9E
 	rts	; $034CA0
 	; code $034CA2-$034D31
-sys_unk_034ca2:
+npc_get_state_34ca2:
 	link.w a6,#$fff8	; $034CA2
 	move.w $8(a6),d0	; $034CA6
 	muls.w #$34,d0	; $034CAA
@@ -48929,7 +48929,7 @@ L035A30:
 	rts	; $035A32
 L035A34:
 	move.w $a(a6),-(a7)	; $035A34
-	jsr sys_unk_02e8c8.l	; $035A38
+	jsr npc_find_state1_2e8c8.l	; $035A38
 	addq.w #$2,a7	; $035A3E
 	tst.w d0	; $035A40
 	beq.b L035A64	; $035A42
@@ -53802,7 +53802,7 @@ spell_status_apply:
 	unlk a6	; $0399A8
 	rts	; $0399AA
 	; code $0399AC-$0399F3
-sys_unk_0399ac:
+npc_clear_bit15_399ac:
 	link.w a6,#$0	; $0399AC
 	move.w $8(a6),d0	; $0399B0
 	muls.w #$34,d0	; $0399B4
@@ -53824,7 +53824,7 @@ sys_unk_0399ac:
 	unlk a6	; $0399F0
 	rts	; $0399F2
 	; code $0399F4-$039A33
-sys_unk_0399f4:
+npc_clear_bit15_399f4:
 	link.w a6,#$0	; $0399F4
 	move.w $8(a6),d0	; $0399F8
 	muls.w #$34,d0	; $0399FC
@@ -60516,7 +60516,7 @@ L03EE60:
 	and.w #$f,d0	; $03EEA4
 	move.w d0,-$c(a6)	; $03EEA8
 	move.w ram_sys_ffc418.l,-(a7)	; $03EEAC
-	jsr sys_unk_0399ac.l	; $03EEB2
+	jsr npc_clear_bit15_399ac.l	; $03EEB2
 	addq.w #$2,a7	; $03EEB8
 	cmpi.w #$7,-$c(a6)	; $03EEBA
 	ble.w L03EF5C	; $03EEC0
@@ -60557,7 +60557,7 @@ L03EEF4:
 	and.w #$1,d1	; $03EF3E
 	bne.b L03EF50	; $03EF42
 	move.w -$e(a6),-(a7)	; $03EF44
-	jsr sys_unk_0399ac.l	; $03EF48
+	jsr npc_clear_bit15_399ac.l	; $03EF48
 	addq.w #$2,a7	; $03EF4E
 L03EF50:
 	addq.w #$1,-$2(a6)	; $03EF50
@@ -60596,7 +60596,7 @@ L03EF8A:
 	and.w #$f,d0	; $03EFCE
 	move.w d0,-$c(a6)	; $03EFD2
 	move.w ram_sys_ffc418.l,-(a7)	; $03EFD6
-	jsr sys_unk_0399f4.l	; $03EFDC
+	jsr npc_clear_bit15_399f4.l	; $03EFDC
 	addq.w #$2,a7	; $03EFE2
 	cmpi.w #$5,-$c(a6)	; $03EFE4
 	blt.w L03F086	; $03EFEA
@@ -60637,7 +60637,7 @@ L03F01E:
 	and.w #$1,d1	; $03F068
 	bne.b L03F07A	; $03F06C
 	move.w -$e(a6),-(a7)	; $03F06E
-	jsr sys_unk_0399f4.l	; $03F072
+	jsr npc_clear_bit15_399f4.l	; $03F072
 	addq.w #$2,a7	; $03F078
 L03F07A:
 	addq.w #$1,-$2(a6)	; $03F07A
