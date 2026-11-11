@@ -1020,3 +1020,23 @@ settle delay before the first read, or the read returns stale bus data.
   Per-SFX ROMs: `.scratch018/sfx/rom_sfxNN.gen` (NOT committed).
   Burst test ROM: `.scratch018/sfx/rom_testA_zeronote.gen` (song 0's
   248 B note-data region zeroed; the 37–42 s event survives — Test A).
+
+## 13. 68000↔Z80 mailbox (#13) — static, from disasm/z80/snd_driver.s
+
+Z80 addresses (the driver blob is uploaded to Z80 RAM `$0000`). Source lines are the
+carved file's `; $addr` comments. Tier: static (read from the carved source).
+
+| Z80 addr | Written by | Read by (Z80) | Meaning |
+|---|---|---|---|
+| `$000A` | 68000 (SFX command) | `$0188` | `0` idle; `$FF` → handler `$01E1`; other → `$01C0` (SFX pointer command, handled even when idle) |
+| `$000B` | 68000 (song command); Z80 clears it at `$01AE` | `$019D` | `0` idle; `$0D` → play song (blocks in `$08F8`); other → cleared, loop. Stop writes `0` (`$EB7C8`) |
+| `$000C` | 68000 at load (`$EBA7E`) | — | `0x00` after song load (docs §3) |
+| `$00DA` | 68000 at load (`$16`); Z80 at `$0481` (chunk index) | 68000 `$EBA00` | chunk byte. Changes when the Z80 advances; the streamer refills 256 bytes when it changes. Also holds the `SHayes1991` string bytes in the ROM image (§2.4) |
+| `$00DB` | Z80 at `$079E`, `$07A8` | Z80 at `$0593` | **[open]** written and read on the Z80 side only; purpose not identified |
+| `$1600–$19FF` | 68000 (`$EBA00` / `$EBA7E`, 256-byte refills) | Z80 song player | 1 KB song ring, 4 × 256-byte chunks |
+| `$4000` / `$4001` | Z80 at `$01B6` / `$01BC` (YM write helper) | — | YM2612 address / data ports (Z80-side writes) |
+
+**Conflict (recorded, not resolved):** §1 above says the 68000 writes YM registers
+through Z80 `$4000/$4001`. The carved source shows the YM writes made by the Z80
+itself (`$01B6`, `$01BC`); the 68000 only writes RAM bytes in this table. Both readings
+need a live trace to settle (#78 follow-up).
