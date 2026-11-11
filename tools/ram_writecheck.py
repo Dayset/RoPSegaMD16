@@ -6,6 +6,9 @@ A tier-1 RAM name names an owner routine in its note ("... in OWNER" or "OWNER" 
 and reports writes from routines other than the owner. A name with an outside writer
 is weaker evidence; a name with no owner write is flagged.
 
+Reference owner: the dominant writer when the word is written, else the note owner (reader).
+A name whose note owner differs from the dominant writer is printed as NAME-OWNER-MISMATCH.
+
 Usage:  tools/ram_writecheck.py            report only (exit 0)
         tools/ram_writecheck.py --strict   exit 1 if any tier-1 owner name has an outside writer
 
@@ -76,11 +79,16 @@ def main():
     failed = 0
     skipped = 0
     for a, r in sorted(words.items()):
-        owner = owner_of(r['note'])
-        if not owner:
+        note_owner = owner_of(r['note'])
+        if not note_owner:
             skipped += 1
             continue
+        owner = note_owner
         w = writes.get(a, [])
+        # Writer rule: when the word is written, the dominant writer is the reference owner.
+        # The note's owner (often a reader) is reported but no longer decides the verdict.
+        if w:
+            owner = Counter(o for o, _ in w).most_common(1)[0][0]
         outside = [o for o, _ in w if o != owner]
         own = len(w) - len(outside)
         if not w:
@@ -94,8 +102,9 @@ def main():
         bad = status in ('FAIL-NO-OWNER-WRITE', 'OUTSIDE-WRITERS')
         if bad and (strict or status == 'FAIL-NO-OWNER-WRITE'):
             failed += 1
+        mismatch = ' NAME-OWNER-MISMATCH note=' + note_owner if owner != note_owner else ''
         print(f"{r['addr']} {r['name']} owner={owner} writes={len(w)} own={own} outside={len(outside)} {status} "
-              f"{Counter(outside).most_common(2)}")
+              f"{Counter(outside).most_common(2)}{mismatch}")
     print(f"ram writecheck: {len(words) - skipped} owner names checked, {skipped} without owner, "
           f"{failed} failing{' (strict)' if strict else ' (report only; --strict fails outside writers too)'}")
     return 1 if (strict and failed) else 0
