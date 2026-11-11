@@ -877,11 +877,24 @@ type errors — see the harness note below).
 - **Grass = type 1 [live, moderate confidence].** Type 1 is the most
   common non-polar land type (8,231 cells) and is uniformly spread
   across all latitudes (bands 1830 / 2228 / 2071 / 2102) — the
-  default ground cover. Live: type 1 at (25,100). **Runner-up:
-  type 4** (6,933 cells, also widespread and uniform) — it may be a
-  second grass variant, or a distinct terrain (forest/hills) the
-  manual does not list separately; the two cannot be told apart by
-  cost (both give base (3,1) on flat ground).
+  default ground cover. Live: type 1 at (25,100).
+- **Forest = type 4 [live, high confidence].** Type 4 (6,933 cells on the
+  overworld, 18,094 across all 252 chunks) is a distinct terrain, NOT a grass
+  variant: it is non-walkable (`$02DC0C` → 0, live 13/13; the `$01C892`
+  type-4 handler `$01D052` never sets the proceed flag, and a live step onto
+  type 4 at (107,106) was blocked, d0=0, blocked=255), while Grass (type 1)
+  is walkable, and the two tile sets are fully disjoint (83 type-4 indices vs
+  18 Grass indices, zero overlap). The manual lists Forest as a terrain the
+  Dino cannot handle ("Most land except forest/water",
+  `docs/research/official-manual-transcript.md:31`), and the dialogue names
+  forests in the world ("the great forest on the eastern coast of the east
+  continent", rec_0583; Doggania's forests, rec_0859; "can't handle forests
+  or mountains", rec_0160). Cost: no food/water addition — base (3,1) on flat
+  ground, same as Grass — but the step is blocked on foot, so no cost is
+  computed; the two are told apart by walkability, not cost. Largest type-4
+  region is 252 cells at x 297–320, y 174–194 (south-east, near the eastern
+  coast). Mountains are type 19, not type 4 (walkable, +3/+4, the big brown
+  massif).
 - **Swamp = type 8 [live, moderate confidence].** The Fire Swamp is
   where the witch Hideous lives (*"Stay away from the Fire Swamp
   to the south of here!"*; *"the swamp in front of, and very close
