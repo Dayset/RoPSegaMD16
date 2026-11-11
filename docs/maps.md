@@ -327,13 +327,35 @@ tool `tools/decode_chunks.py`).
 
 - **99 × 2048 B chunks (32×32 tiles)**: recs 0–76 and 230–251.
 - **153 × 242 B chunks (11×11 tiles)**: recs 77–229.
-- Chunk words are full VDP tilemap words (tile index + flip/palette/
-  priority bits — all flag bits `0x0800`–`0x8000` seen in the data).
-- Tile indices span 0–2027 (560 distinct), in fragmented ranges
-  (dense 0–287, then 464–560ish, scattered to 2027); 1,468 indices
-  in 0–2027 are unused. **No `$96120` tileset holds that many tiles**
-  (largest rec 37 = 586), so no tileset/palette pairing is pinned
-  for chunks yet — a full tile render is blocked on it.
+- Chunk words are **packed tile-type + flags words, NOT VDP tilemap
+  words** (corrected 2026-11-11 — the earlier "full VDP tilemap
+  words" claim is wrong). Layout, pinned by every code consumer
+  (`column_write` `$16512`, `row_write` `$163EE`, `map_chunk_pos`
+  `$1BA4E`, the `$02DC0C` walkability gate, and the `$1C9BC`/`$1CAA4`/
+  `$1CB08` queries — all mask with `$1FF`):
+  - **bits 0–8: tile-type index (0–511).** Indexes two 512-entry
+    tables: `$5EDC4` (per-tile properties; bits 10–15 of the
+    property word are the 6-bit terrain type) and `$1AE98` (the
+    display descriptor — see the column-writer section below).
+  - **bit 9: flag.** `map_chunk_pos` gates its height block on it
+    (clear → skip); exact meaning undecided.
+  - **bits 10–11: flags, undecided.** No consumer found; rare in
+    the data (bit 10 set in 302/119,889 cells, bit 11 in 1,350).
+  - **bit 12: variant flag.** Selects the display descriptor's
+    high variant in `column_write`/`row_write`; also a height
+    factor in `map_chunk_pos`.
+  - **bits 13–15: height / row count (0–7)** for the `$E358`
+    terrain loop (see the `$1BA4E` correction above).
+  The "tile indices span 0–2027 (560 distinct)" reading was counting
+  `(cell & $7FF)` — bits 9–10 are flags, not part of the index. The
+  distinct tile-type values are 307 (32×32 chunks) + 211 (11×11),
+  all within 0–511. There is no 2027-tile tileset to find: chunks
+  never index a tileset directly. Display goes through the `$1AE98`
+  descriptor (tile-type → 0–63 tile + flips, within the tileset
+  loaded at the `$FF8678` base), and properties through `$5EDC4`.
+  The "tileset/palette pairing is blocked" framing is therefore
+  retired — the pairing is the descriptor table + the `$FF8678`
+  base, both now traced.
 - **Renders** (`disasm/maps/chunks/`, tool `tools/render_chunks.py`):
   all 252 chunks as INDEX images (one pixel per tile, colour = MD5
   hash of the tile index — the same method as the index grids here),
@@ -460,6 +482,72 @@ geometry struct and the scroll offsets `-$16`/`-$14` set by
 `$20D58`) and reads two bytes: `$FFB36C[index]` and
 `$FFB76C[index]`.
 
+**`$16512` column writer / `$163EE` row writer — cell semantics
+[resolved 2026-11-11, static].** The two routines are exact mirrors
+(the row writer steps X, the column writer steps Y) and share one
+cell→VDP-word conversion. Both are called only from `map_view`
+(`$1664E`, the interactive map screen): `column_write` from
+`$016C1A` (scroll-right edge) and `$016C6A` (scroll-left edge),
+`row_write` from the corresponding row sites. `column_write` is
+named tier 2 (`disasm/symbols/code_02.csv`, doc-pinned
+graphics.md:465); `row_write` tier 1.
+
+`column_write(row, col, mapX, mapY)` — args are (start row 0–31,
+column 0–63, map X, map Y base):
+- Sets VDP R15=`$80` (auto-increment 128 = one 64-word row per
+  write), sets the VRAM write address to `row×128 + col×2` (the
+  Plane A name table at VRAM `$0000`, 64 wide × 32 high), then
+  writes 32 cells down the column, one VDP word per cell, and
+  restores R15=`$02`. When `row + i == 32` it re-sets the VRAM
+  address to `col×2` (vertical wraparound to row 0). `row_write`
+  is the mirror: 64 cells along a row, no R15 change (the default
+  auto-increment of 2 is correct along a row), horizontal wrap
+  when `col + i == 64`.
+- Per cell `i` (0–31): reads the chunk cell word at map position
+  `(mapX, mapY + i)` via `map_chunk_cache_read` (`$1C176`) — the
+  same getter `map_chunk_pos` uses, returning a pointer to the
+  word at `$FF0248`. (The third argument passed, a pointer to a
+  stack local, is ignored by the callee; the word is copied from
+  the returned pointer into the local.)
+- **Cell → VDP word.** The cell word's low 9 bits index the
+  `$1AE98` descriptor table (512 words × 2 B, `$01AE98–$01B297`):
+  `desc = $1AE98[(cell & $1FF) × 2]`. The descriptor packs **two
+  tile variants**, selected by cell bit 12:
+  - bit 12 == 0 (low variant): H-flip = desc bit 0 → VDP bit 11
+    (`$800`); V-flip = desc bit 1 → VDP bit 12 (`$1000`); tile =
+    desc bits 2–7 (0–63).
+  - bit 12 == 1 (high variant): H-flip = desc bit 8 → `$800`;
+    V-flip = desc bit 9 → `$1000`; tile = desc bits 10–15
+    (0–63).
+  The final VDP word is `flip bits | tile (0–63) | $FF8678`.
+  `$FF8678` is a VRAM **tile-index base** (0–2047): it is copied
+  from `$FF867C` at `$012DC0`, which is the return value of
+  `gfx_dma_tile_upload` (`$11A7C`) — the base tile index where the
+  map tileset was uploaded (the upload advances the VRAM cursor
+  `$FF0076` by the tile count and returns the old cursor). So the
+  final tile index is `$FF8678 + (0–63)`, i.e. a 64-tile window
+  in the currently loaded tileset. Palette is always 0 and
+  priority always 0 (neither the descriptor nor `$FF8678`, a tile
+  index ≤ 2047, can set bits 13–15).
+- **The descriptor table is not "duplicated-byte words".** 434/512
+  entries have hi byte == lo byte (the two variants identical, so
+  the bit-12 select is a no-op for them); 78/512 differ — 64 in
+  tile index (usually adjacent, e.g. 10 vs 11), 20 in flip bits.
+  The differing entries come in pairs (same word at two
+  consecutive indices). The `regions.csv` / `doc_regions.csv`
+  doc_ref "(512 entries; duplicated-byte words)" is wrong for
+  those 78 and should be corrected to note the two variants.
+- Cell bits 9, 10, 11, 13–15 are **ignored** by both writers
+  (only bits 0–8 and bit 12 are read). Bits 13–15 are the height
+  field used by `map_chunk_pos`; bit 9 gates its height block;
+  bits 10–11 have no found consumer. This resolves the
+  graphics.md §8 open item ("`$16512` column writer: the cell
+  semantics … are only outlined in §6.4") and the
+  "`$FF8674`/`$FF8678` tile bases … not traced" item, for
+  `$FF8678` (`$FF8674` is the same mechanism — a
+  `gfx_dma_tile_upload` return stored at `$012D7E` — but the
+  `$1B918` DMA path that consumes it was not re-traced here).
+
 **`$FFB36C` / `$FFB76C` — byte meanings [live].** Both are 32×32
 byte grids (1024 bytes each, contiguous: `$FFB76C` =
 `$FFB36C`+1024), initialised to `$FF` (empty) by `$20C6A`.
@@ -585,8 +673,12 @@ handlers are `$2343A` (dispatch 1; also the promotion path),
 the record's +`0` against `$210`/`$218`/`$228`/`$21C`/`$216`/`$22A`).
 
 Still open on the terrain grid: how the player's arrow-key step gates on
-terrain (it does not use `$02dc0c`); the chunk tileset/palette
-pairing (blocks full tile renders of the 252 chunks). Resolved
+terrain (it does not use `$02dc0c`). The chunk tileset/palette pairing
+mechanism is now traced (2026-11-11 — see the `$16512` column-writer
+section: the pairing is the `$1AE98` descriptor table + the runtime
+`$FF8678` tile base, not a fixed ROM pairing); what a full tile render
+of the 252 chunks still needs is the per-scene `$FF8678` value (which
+tileset is loaded in a given scene). Resolved
 2026-11-10: the `$197B0` group 1–3 selection (per-frame animation
 counter `geom+$A`, 0–3) and the `$253FE` mode-`$17` walkability
 path (a bounds check, not a terrain check) — see above.
@@ -604,9 +696,10 @@ path (a bounds check, not a terrain check) — see above.
    1–3 selection resolved (per-frame `geom+$A` counter, live
    2026-11-10), and the `$253FE` mode-`$17` path pinned live
    the same day (a bounds check, not a terrain check). Still open:
-   the player's arrow-key step gate, and the chunk
-   tileset/palette pairing (blocks full tile renders of the
-   252 chunks).
+   the player's arrow-key step gate, and the per-scene `$FF8678`
+   value for a full tile render of the 252 chunks (the pairing
+   mechanism itself — `$1AE98` descriptor + `$FF8678` base — is
+   traced, 2026-11-11; see the `$16512` column-writer section).
 2. **Which screen is rec 35?** Starfield + grey diamond, selected by
    routine 0x17860's arg. Candidates: a second world, the Void, a
    space view. Needs a live check (drive the game to the map screen

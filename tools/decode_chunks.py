@@ -40,14 +40,17 @@ Enigma 6.45, Nemesis 7.62 on the same data). Reference decoders used:
 Clownacy clownlzss (Kosinski + Enigma) and clownnemesis (Nemesis),
 both round-trip validated on the decompressed rec-0 tilemap before use.
 
-Chunk format (both sizes): big-endian u16 words, VDP tilemap format —
-bits 0-10 tile index, 0x0800 flip-H, 0x1000 flip-V, bits 13-14 palette,
-bit 15 priority. The 2048-byte records use 521 distinct tile indices
-(max 2027); the 242-byte records use 294 (max 1799) with the same flag
-bits — one tileset space, two chunk sizes (32x32 and 11x11). Loaded by
-$19692 (4-slot round-robin cache, buffers $FF868C + slot*2048) via the
-lazy getter $1C802; chunk index comes from $1C7DA/$1C83E (position /
-location-record words).
+Chunk format (both sizes): big-endian u16 words, packed tile-type +
+flags — NOT VDP tilemap format (corrected 2026-11-11; the earlier
+VDP reading is wrong). Bits 0-8 tile-type index (0-511), bit 9 flag,
+bits 10-11 undecided flags, bit 12 variant flag, bits 13-15 height /
+row count (0-7). The 2048-byte records use 307 distinct tile-type
+indices; the 242-byte records use 211, all within 0-511. Display goes
+through the $1AE98 descriptor table (tile-type -> 0-63 tile + flips,
+within the tileset loaded at the $FF8678 base), properties through
+$5EDC4. Loaded by $19692 (4-slot round-robin cache, buffers $FF868C +
+slot*2048) via the lazy getter $1C802; chunk index comes from
+$1C7DA/$1C83E (position / location-record words).
 
 Usage:
   tools/.venv/bin/python tools/decode_chunks.py [--rom PATH]
