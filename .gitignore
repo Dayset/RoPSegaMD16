@@ -31,3 +31,6 @@ docs/research/rings-of-power-ru/map-thumb.jpg
 # vasm built by tools/install_vasm.sh
 tools/vasm/
 tools/vasm-src/
+
+# generated dialogue export (derived from ROM; not distributed, see docs/questions.md Q12)
+assets/text/dialogue.txt
