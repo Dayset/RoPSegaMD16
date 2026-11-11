@@ -239,3 +239,9 @@ so most of the top list stayed at tier 0 with no role evidence. At one half,
 the dominant owner still shows the word's role; the note keeps the share, so
 a weak name can be reverted by anyone reading it. Mixed-owner words stay at
 tier 0 and keep their subsystem prefix from the majority of users.
+
+Write check: `tools/ram_writecheck.py` runs in `make check` in report mode. It
+flags a tier-1 name whose owner never writes the word (FAIL-NO-OWNER-WRITE)
+and lists outside writers (OUTSIDE-WRITERS). `--strict` fails on both. The
+gate runs report-only until someone decides which outside writers should block
+a name.

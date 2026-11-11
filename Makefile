@@ -44,6 +44,7 @@ lint:
 	python3 tools/lint_symbols.py
 
 check: lint gate rom-free
+	@python3 tools/ram_writecheck.py
 	@python3 tools/status.py
 
 status:
