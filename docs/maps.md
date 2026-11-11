@@ -389,6 +389,26 @@ tool `tools/decode_chunks.py`).
       0xCD/0, stepping one toggles it + sfx 0x26. Loc 401's +5
       text is "This Citadel is the home of the Holy Order of
       Paladins of Nexus."
+    - **Location 170 (+4 = 170, `$FF013E` = 6) — a scripted
+      encounter, not a hazard.** `$D1D00` loc 392, key (12,184),
+      +4 = 170, chunk 247 (32×32), song 7, placement (15,30,0),
+      +5 = 83 (a sextant-directions message). Ambient
+      (`world_ambient_event` case 6, `$03261A`): with probability
+      1/8 per tick, out of combat and while `$FF0124` == 0, load
+      palette set `$0CCCD8` and play SFX 19, then latch
+      `$FF0124` = $FFFF (`palette_fade` clears it, `$0170F6`, and
+      `world_tick` calls `palette_fade` whenever `$FF0124` != 0,
+      `$0215DA` — so the latch lasts about a tick). Step
+      (`world_step_event` case 6, `$0328BC`): stepping with
+      Y ≤ 20 while event-bit 144 of `$FFC326` is clear and
+      `$FF0110` == 0 releases an NPC struct and starts spell
+      effect 9 (`$03E000`): a 10-frame tile-fly-in, then a
+      greeting, message (0x14, 0x0D), and SFX 12. Which NPC
+      appears is unpinned from code. **Case 4 (`$FF0126` == 3)
+      is the same shape:** locations 90, 92, 116, 173 load
+      palette `$0CCC98` and play SFX 25 (`$032524`), also 1/8
+      per tick, latched by `$FF0124`. Its fiction name is
+      unpinned.
     - **The trap hint and the order (pinned, dialogue).** The
       "precise order on the map" is the Order of Variation:
       rec_1152: `Order of Variation: "MUTATION leads one to

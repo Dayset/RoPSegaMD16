@@ -361,6 +361,39 @@ food/water = 2000).
   exactly 2 cells, and why the axis follows the mode (3/2 → X,
   1/4 → Y), is unpinned — arg4 is stored to struct +0x06
   (`$0241EC`), whose meaning is open.
+  **The +4 byte is the destination location number (pinned
+  2026-11-11, static).** Values 10–174 (88 distinct), never 0–9 or
+  175+. `sys_struct52_flag_test` reads it (`lea L0D1D04`,
+  `$026834`) and passes it as `world_location_transition` arg2,
+  which stores it to `$FF0E98` (`$01DC14`). It then drives: the
+  chunk — chunk = 77 + +4, 11×11 grid iff +4 < 153 else 32×32
+  (`$01DBEC`); the song-table record — `world_enter_location`
+  reads the placement bytes + song from `$D63E4 + 4×+4`
+  (`$030956`, guard +4 < 175, else the party is placed at (5,5));
+  and the hazard `$FF013E` dispatch (`$01DD1A`: 158→1 lava,
+  160→2 toggle, 170→6, 172→3 traps, 174→5 sensors, else 0;
+  `$FF0126` == 3 overrides to 4). It is also the live location
+  number: `location_divide` adds (+4 + 77) to a cell index when
+  `$FF0E98` != −1 (`$01C83E`), and stepping on tiles 0x11a/0x11b
+  transitions to location ($FF0E98 ± 1) (`$02AB4E`, `$02ABDC`) —
+  adjacent rooms. The record index itself is the anchor's location
+  number (stored to `$FF0E92` low 10 bits); +4 is the room it leads
+  to. Locations 0–9 are never a +4 destination.
+  **+6..+9 are unread by any code.** The only table references in
+  the ROM are `lea` to +0/+2/+4/+5 — no `lea` to +6..+9 exists, and
+  every read is `(a0,d0.l)` with no displacement. Distributions:
+  +8/+9 are the constant word 0x1066 in records 0–453 (record
+  454's (1,0) is the text-table overlap, inert); +6/+7 are (5,0)
+  in 154 records — the default, carried by all 30 (999,999)
+  placeholders — and otherwise 191 distinct pairs, mostly constant
+  per destination (59/88) and geographically clustered by anchor
+  (23/28 groups with n≥3 fit in a 40×40 box). No tested reading
+  fits: not chunk coords (+6 runs to 189), not the anchor's tile
+  type (0/425) / height / bits, not a linear transform of the
+  anchor (R² 0.15/0.09), not a cell/chunk index, not a copy of the
+  song-table placement (1/455 match). Observed structure only: +6
+  splits as (A<<5)|B with A in {0,3,4,5}, B in 0–31. Most plausibly
+  authoring-tool metadata; meaning unpinned.
 - **`$2C0D6` (`sys_set_paper_flag`, Q17):** same 16-byte shape,
   bitmap `$FFC345` (5 bytes). No immediate-code caller found.
 
