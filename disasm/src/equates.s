@@ -61,7 +61,7 @@ ram_sys_ff0122	equ	$FF0122
 ram_sys_ff0124	equ	$FF0124
 ram_sys_ff0126	equ	$FF0126
 ram_sys_ff0128	equ	$FF0128
-ram_sys_ff012a	equ	$FF012A
+ram_sys_field_012a	equ	$FF012A
 ram_event_code	equ	$FF012C
 ram_sys_ff012e	equ	$FF012E
 ram_sys_ff0130	equ	$FF0130
@@ -140,9 +140,9 @@ ram_sys_ff02ba	equ	$FF02BA
 ram_sys_ff02bc	equ	$FF02BC
 ram_sys_ff02be	equ	$FF02BE
 ram_header_leader	equ	$FF02C0
-ram_sys_ff02c2	equ	$FF02C2
+ram_npc_field_02c2	equ	$FF02C2
 ram_sys_ff02c4	equ	$FF02C4
-ram_sys_ff02c8	equ	$FF02C8
+ram_npc_field_02c8	equ	$FF02C8
 ram_sys_ff02ca	equ	$FF02CA
 ram_sys_ff02cb	equ	$FF02CB
 ram_sys_ff02cc	equ	$FF02CC
@@ -155,7 +155,7 @@ ram_sys_ff02d8	equ	$FF02D8
 ram_sys_ff02d9	equ	$FF02D9
 ram_sys_ff02da	equ	$FF02DA
 ram_sys_ff02db	equ	$FF02DB
-ram_sys_ff02dc	equ	$FF02DC
+ram_npc_flag_02dc	equ	$FF02DC
 ram_sys_ff02dd	equ	$FF02DD
 ram_sys_ff02de	equ	$FF02DE
 ram_sys_ff02e0	equ	$FF02E0
