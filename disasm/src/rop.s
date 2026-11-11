@@ -63400,9 +63400,6942 @@ spell_bounds_05:
 L0D6EBA:
 	; data $0D6EBA-$0DC0C1
 	incbin "rop-original.gen",$0D6EBA,$5208
+	; table $0DC0C2-$0DDBD7: 3467 records x 1 words
+dict_off_00:
 L0DC0C2:
-	; data $0DC0C2-$0DDBD7
-	incbin "rop-original.gen",$0DC0C2,$1B16
+	dc.w $0000	; table $0DC0C2
+dict_off_01:
+	dc.w $0002	; table $0DC0C4
+dict_off_02:
+	dc.w $0009	; table $0DC0C6
+dict_off_03:
+	dc.w $0011	; table $0DC0C8
+dict_off_04:
+	dc.w $0012	; table $0DC0CA
+dict_off_05:
+	dc.w $0013	; table $0DC0CC
+dict_off_06:
+	dc.w $001D	; table $0DC0CE
+dict_off_07:
+	dc.w $0022	; table $0DC0D0
+dict_off_08:
+	dc.w $0025	; table $0DC0D2
+dict_off_09:
+	dc.w $0029	; table $0DC0D4
+dict_off_10:
+	dc.w $002D	; table $0DC0D6
+dict_off_11:
+	dc.w $0035	; table $0DC0D8
+dict_off_12:
+	dc.w $0038	; table $0DC0DA
+dict_off_13:
+	dc.w $003A	; table $0DC0DC
+dict_off_14:
+	dc.w $003D	; table $0DC0DE
+dict_off_15:
+	dc.w $0044	; table $0DC0E0
+dict_off_16:
+	dc.w $0048	; table $0DC0E2
+dict_off_17:
+	dc.w $004D	; table $0DC0E4
+dict_off_18:
+	dc.w $0057	; table $0DC0E6
+dict_off_19:
+	dc.w $005D	; table $0DC0E8
+dict_off_20:
+	dc.w $0060	; table $0DC0EA
+dict_off_21:
+	dc.w $0065	; table $0DC0EC
+dict_off_22:
+	dc.w $006B	; table $0DC0EE
+dict_off_23:
+	dc.w $006F	; table $0DC0F0
+dict_off_24:
+	dc.w $0075	; table $0DC0F2
+dict_off_25:
+	dc.w $007D	; table $0DC0F4
+dict_off_26:
+	dc.w $0083	; table $0DC0F6
+dict_off_27:
+	dc.w $0090	; table $0DC0F8
+dict_off_28:
+	dc.w $009B	; table $0DC0FA
+dict_off_29:
+	dc.w $00A5	; table $0DC0FC
+dict_off_30:
+	dc.w $00A9	; table $0DC0FE
+dict_off_31:
+	dc.w $00AF	; table $0DC100
+dict_off_32:
+	dc.w $00B2	; table $0DC102
+dict_off_33:
+	dc.w $00B7	; table $0DC104
+dict_off_34:
+	dc.w $00BE	; table $0DC106
+dict_off_35:
+	dc.w $00C3	; table $0DC108
+dict_off_36:
+	dc.w $00C9	; table $0DC10A
+dict_off_37:
+	dc.w $00CD	; table $0DC10C
+dict_off_38:
+	dc.w $00D3	; table $0DC10E
+dict_off_39:
+	dc.w $00DD	; table $0DC110
+dict_off_40:
+	dc.w $00E3	; table $0DC112
+dict_off_41:
+	dc.w $00E7	; table $0DC114
+dict_off_42:
+	dc.w $00E8	; table $0DC116
+dict_off_43:
+	dc.w $00F0	; table $0DC118
+dict_off_44:
+	dc.w $00F9	; table $0DC11A
+dict_off_45:
+	dc.w $00FC	; table $0DC11C
+dict_off_46:
+	dc.w $0101	; table $0DC11E
+dict_off_47:
+	dc.w $0107	; table $0DC120
+dict_off_48:
+	dc.w $010C	; table $0DC122
+dict_off_49:
+	dc.w $0115	; table $0DC124
+dict_off_50:
+	dc.w $0119	; table $0DC126
+dict_off_51:
+	dc.w $0120	; table $0DC128
+dict_off_52:
+	dc.w $0126	; table $0DC12A
+dict_off_53:
+	dc.w $012A	; table $0DC12C
+dict_off_54:
+	dc.w $012E	; table $0DC12E
+dict_off_55:
+	dc.w $0134	; table $0DC130
+dict_off_56:
+	dc.w $013D	; table $0DC132
+dict_off_57:
+	dc.w $013F	; table $0DC134
+dict_off_58:
+	dc.w $0145	; table $0DC136
+dict_off_59:
+	dc.w $014A	; table $0DC138
+dict_off_60:
+	dc.w $014E	; table $0DC13A
+dict_off_61:
+	dc.w $0158	; table $0DC13C
+dict_off_62:
+	dc.w $015E	; table $0DC13E
+dict_off_63:
+	dc.w $0164	; table $0DC140
+dict_off_64:
+	dc.w $016C	; table $0DC142
+dict_off_65:
+	dc.w $0173	; table $0DC144
+dict_off_66:
+	dc.w $0179	; table $0DC146
+dict_off_67:
+	dc.w $017F	; table $0DC148
+dict_off_68:
+	dc.w $0183	; table $0DC14A
+dict_off_69:
+	dc.w $0185	; table $0DC14C
+dict_off_70:
+	dc.w $018A	; table $0DC14E
+dict_off_71:
+	dc.w $0190	; table $0DC150
+dict_off_72:
+	dc.w $0195	; table $0DC152
+dict_off_73:
+	dc.w $019F	; table $0DC154
+dict_off_74:
+	dc.w $01A5	; table $0DC156
+dict_off_75:
+	dc.w $01AB	; table $0DC158
+dict_off_76:
+	dc.w $01AD	; table $0DC15A
+dict_off_77:
+	dc.w $01B3	; table $0DC15C
+dict_off_78:
+	dc.w $01B9	; table $0DC15E
+dict_off_79:
+	dc.w $01C0	; table $0DC160
+dict_off_80:
+	dc.w $01C5	; table $0DC162
+dict_off_81:
+	dc.w $01CA	; table $0DC164
+dict_off_82:
+	dc.w $01CC	; table $0DC166
+dict_off_83:
+	dc.w $01D0	; table $0DC168
+dict_off_84:
+	dc.w $01D4	; table $0DC16A
+dict_off_85:
+	dc.w $01D8	; table $0DC16C
+dict_off_86:
+	dc.w $01DF	; table $0DC16E
+dict_off_87:
+	dc.w $01E3	; table $0DC170
+dict_off_88:
+	dc.w $01EB	; table $0DC172
+dict_off_89:
+	dc.w $01F3	; table $0DC174
+dict_off_90:
+	dc.w $01F8	; table $0DC176
+dict_off_91:
+	dc.w $01FE	; table $0DC178
+dict_off_92:
+	dc.w $0203	; table $0DC17A
+dict_off_93:
+	dc.w $0208	; table $0DC17C
+dict_off_94:
+	dc.w $0213	; table $0DC17E
+dict_off_95:
+	dc.w $021B	; table $0DC180
+dict_off_96:
+	dc.w $0226	; table $0DC182
+dict_off_97:
+	dc.w $0228	; table $0DC184
+dict_off_98:
+	dc.w $022D	; table $0DC186
+dict_off_99:
+	dc.w $0233	; table $0DC188
+dict_off_100:
+	dc.w $0235	; table $0DC18A
+dict_off_101:
+	dc.w $0239	; table $0DC18C
+dict_off_102:
+	dc.w $023E	; table $0DC18E
+dict_off_103:
+	dc.w $0240	; table $0DC190
+dict_off_104:
+	dc.w $0244	; table $0DC192
+dict_off_105:
+	dc.w $0249	; table $0DC194
+dict_off_106:
+	dc.w $0253	; table $0DC196
+dict_off_107:
+	dc.w $0257	; table $0DC198
+dict_off_108:
+	dc.w $025E	; table $0DC19A
+dict_off_109:
+	dc.w $0268	; table $0DC19C
+dict_off_110:
+	dc.w $0271	; table $0DC19E
+dict_off_111:
+	dc.w $0276	; table $0DC1A0
+dict_off_112:
+	dc.w $027A	; table $0DC1A2
+dict_off_113:
+	dc.w $0281	; table $0DC1A4
+dict_off_114:
+	dc.w $0283	; table $0DC1A6
+dict_off_115:
+	dc.w $028B	; table $0DC1A8
+dict_off_116:
+	dc.w $028F	; table $0DC1AA
+dict_off_117:
+	dc.w $0292	; table $0DC1AC
+dict_off_118:
+	dc.w $0299	; table $0DC1AE
+dict_off_119:
+	dc.w $029E	; table $0DC1B0
+dict_off_120:
+	dc.w $02A4	; table $0DC1B2
+dict_off_121:
+	dc.w $02AB	; table $0DC1B4
+dict_off_122:
+	dc.w $02B1	; table $0DC1B6
+dict_off_123:
+	dc.w $02B9	; table $0DC1B8
+dict_off_124:
+	dc.w $02BD	; table $0DC1BA
+dict_off_125:
+	dc.w $02C1	; table $0DC1BC
+dict_off_126:
+	dc.w $02C5	; table $0DC1BE
+dict_off_127:
+	dc.w $02CB	; table $0DC1C0
+dict_off_128:
+	dc.w $02D0	; table $0DC1C2
+dict_off_129:
+	dc.w $02D4	; table $0DC1C4
+dict_off_130:
+	dc.w $02DA	; table $0DC1C6
+dict_off_131:
+	dc.w $02DF	; table $0DC1C8
+dict_off_132:
+	dc.w $02E3	; table $0DC1CA
+dict_off_133:
+	dc.w $02E7	; table $0DC1CC
+dict_off_134:
+	dc.w $02E8	; table $0DC1CE
+dict_off_135:
+	dc.w $02EF	; table $0DC1D0
+dict_off_136:
+	dc.w $02F4	; table $0DC1D2
+dict_off_137:
+	dc.w $02FA	; table $0DC1D4
+dict_off_138:
+	dc.w $02FE	; table $0DC1D6
+dict_off_139:
+	dc.w $0308	; table $0DC1D8
+dict_off_140:
+	dc.w $030D	; table $0DC1DA
+dict_off_141:
+	dc.w $0316	; table $0DC1DC
+dict_off_142:
+	dc.w $0318	; table $0DC1DE
+dict_off_143:
+	dc.w $031B	; table $0DC1E0
+dict_off_144:
+	dc.w $0320	; table $0DC1E2
+dict_off_145:
+	dc.w $0324	; table $0DC1E4
+dict_off_146:
+	dc.w $0329	; table $0DC1E6
+dict_off_147:
+	dc.w $032E	; table $0DC1E8
+dict_off_148:
+	dc.w $0336	; table $0DC1EA
+dict_off_149:
+	dc.w $033D	; table $0DC1EC
+dict_off_150:
+	dc.w $0345	; table $0DC1EE
+dict_off_151:
+	dc.w $034B	; table $0DC1F0
+dict_off_152:
+	dc.w $034F	; table $0DC1F2
+dict_off_153:
+	dc.w $0355	; table $0DC1F4
+dict_off_154:
+	dc.w $035A	; table $0DC1F6
+dict_off_155:
+	dc.w $035D	; table $0DC1F8
+dict_off_156:
+	dc.w $0361	; table $0DC1FA
+dict_off_157:
+	dc.w $0365	; table $0DC1FC
+dict_off_158:
+	dc.w $0368	; table $0DC1FE
+dict_off_159:
+	dc.w $036D	; table $0DC200
+dict_off_160:
+	dc.w $0372	; table $0DC202
+dict_off_161:
+	dc.w $0376	; table $0DC204
+dict_off_162:
+	dc.w $037B	; table $0DC206
+dict_off_163:
+	dc.w $037F	; table $0DC208
+dict_off_164:
+	dc.w $0387	; table $0DC20A
+dict_off_165:
+	dc.w $038B	; table $0DC20C
+dict_off_166:
+	dc.w $038F	; table $0DC20E
+dict_off_167:
+	dc.w $0396	; table $0DC210
+dict_off_168:
+	dc.w $039C	; table $0DC212
+dict_off_169:
+	dc.w $03A3	; table $0DC214
+dict_off_170:
+	dc.w $03A8	; table $0DC216
+dict_off_171:
+	dc.w $03AF	; table $0DC218
+dict_off_172:
+	dc.w $03B5	; table $0DC21A
+dict_off_173:
+	dc.w $03BA	; table $0DC21C
+dict_off_174:
+	dc.w $03C0	; table $0DC21E
+dict_off_175:
+	dc.w $03C3	; table $0DC220
+dict_off_176:
+	dc.w $03CD	; table $0DC222
+dict_off_177:
+	dc.w $03D1	; table $0DC224
+dict_off_178:
+	dc.w $03D6	; table $0DC226
+dict_off_179:
+	dc.w $03DA	; table $0DC228
+dict_off_180:
+	dc.w $03DF	; table $0DC22A
+dict_off_181:
+	dc.w $03E8	; table $0DC22C
+dict_off_182:
+	dc.w $03F3	; table $0DC22E
+dict_off_183:
+	dc.w $03F8	; table $0DC230
+dict_off_184:
+	dc.w $0403	; table $0DC232
+dict_off_185:
+	dc.w $0406	; table $0DC234
+dict_off_186:
+	dc.w $040B	; table $0DC236
+dict_off_187:
+	dc.w $0412	; table $0DC238
+dict_off_188:
+	dc.w $0418	; table $0DC23A
+dict_off_189:
+	dc.w $0421	; table $0DC23C
+dict_off_190:
+	dc.w $0428	; table $0DC23E
+dict_off_191:
+	dc.w $042C	; table $0DC240
+dict_off_192:
+	dc.w $0436	; table $0DC242
+dict_off_193:
+	dc.w $043A	; table $0DC244
+dict_off_194:
+	dc.w $0441	; table $0DC246
+dict_off_195:
+	dc.w $044A	; table $0DC248
+dict_off_196:
+	dc.w $0454	; table $0DC24A
+dict_off_197:
+	dc.w $045C	; table $0DC24C
+dict_off_198:
+	dc.w $0464	; table $0DC24E
+dict_off_199:
+	dc.w $0467	; table $0DC250
+dict_off_200:
+	dc.w $0470	; table $0DC252
+dict_off_201:
+	dc.w $0477	; table $0DC254
+dict_off_202:
+	dc.w $047F	; table $0DC256
+dict_off_203:
+	dc.w $048A	; table $0DC258
+dict_off_204:
+	dc.w $0490	; table $0DC25A
+dict_off_205:
+	dc.w $049A	; table $0DC25C
+dict_off_206:
+	dc.w $04A6	; table $0DC25E
+dict_off_207:
+	dc.w $04A9	; table $0DC260
+dict_off_208:
+	dc.w $04AD	; table $0DC262
+dict_off_209:
+	dc.w $04B4	; table $0DC264
+dict_off_210:
+	dc.w $04BD	; table $0DC266
+dict_off_211:
+	dc.w $04BF	; table $0DC268
+dict_off_212:
+	dc.w $04C6	; table $0DC26A
+dict_off_213:
+	dc.w $04CC	; table $0DC26C
+dict_off_214:
+	dc.w $04D1	; table $0DC26E
+dict_off_215:
+	dc.w $04D6	; table $0DC270
+dict_off_216:
+	dc.w $04DF	; table $0DC272
+dict_off_217:
+	dc.w $04E5	; table $0DC274
+dict_off_218:
+	dc.w $04E7	; table $0DC276
+dict_off_219:
+	dc.w $04EB	; table $0DC278
+dict_off_220:
+	dc.w $04EF	; table $0DC27A
+dict_off_221:
+	dc.w $04F7	; table $0DC27C
+dict_off_222:
+	dc.w $04FA	; table $0DC27E
+dict_off_223:
+	dc.w $0504	; table $0DC280
+dict_off_224:
+	dc.w $0508	; table $0DC282
+dict_off_225:
+	dc.w $050D	; table $0DC284
+dict_off_226:
+	dc.w $0511	; table $0DC286
+dict_off_227:
+	dc.w $0515	; table $0DC288
+dict_off_228:
+	dc.w $051C	; table $0DC28A
+dict_off_229:
+	dc.w $0523	; table $0DC28C
+dict_off_230:
+	dc.w $0527	; table $0DC28E
+dict_off_231:
+	dc.w $052B	; table $0DC290
+dict_off_232:
+	dc.w $0533	; table $0DC292
+dict_off_233:
+	dc.w $0537	; table $0DC294
+dict_off_234:
+	dc.w $0539	; table $0DC296
+dict_off_235:
+	dc.w $053D	; table $0DC298
+dict_off_236:
+	dc.w $0542	; table $0DC29A
+dict_off_237:
+	dc.w $0547	; table $0DC29C
+dict_off_238:
+	dc.w $054B	; table $0DC29E
+dict_off_239:
+	dc.w $054E	; table $0DC2A0
+dict_off_240:
+	dc.w $0556	; table $0DC2A2
+dict_off_241:
+	dc.w $055C	; table $0DC2A4
+dict_off_242:
+	dc.w $0560	; table $0DC2A6
+dict_off_243:
+	dc.w $0565	; table $0DC2A8
+dict_off_244:
+	dc.w $056B	; table $0DC2AA
+dict_off_245:
+	dc.w $0572	; table $0DC2AC
+dict_off_246:
+	dc.w $0579	; table $0DC2AE
+dict_off_247:
+	dc.w $057E	; table $0DC2B0
+dict_off_248:
+	dc.w $0583	; table $0DC2B2
+dict_off_249:
+	dc.w $0588	; table $0DC2B4
+dict_off_250:
+	dc.w $058C	; table $0DC2B6
+dict_off_251:
+	dc.w $058F	; table $0DC2B8
+dict_off_252:
+	dc.w $0596	; table $0DC2BA
+dict_off_253:
+	dc.w $059C	; table $0DC2BC
+dict_off_254:
+	dc.w $05A1	; table $0DC2BE
+dict_off_255:
+	dc.w $05A7	; table $0DC2C0
+dict_off_256:
+	dc.w $05AC	; table $0DC2C2
+dict_off_257:
+	dc.w $05B3	; table $0DC2C4
+dict_off_258:
+	dc.w $05B6	; table $0DC2C6
+dict_off_259:
+	dc.w $05BC	; table $0DC2C8
+dict_off_260:
+	dc.w $05C0	; table $0DC2CA
+dict_off_261:
+	dc.w $05C7	; table $0DC2CC
+dict_off_262:
+	dc.w $05CC	; table $0DC2CE
+dict_off_263:
+	dc.w $05D3	; table $0DC2D0
+dict_off_264:
+	dc.w $05D8	; table $0DC2D2
+dict_off_265:
+	dc.w $05DD	; table $0DC2D4
+dict_off_266:
+	dc.w $05E2	; table $0DC2D6
+dict_off_267:
+	dc.w $05E7	; table $0DC2D8
+dict_off_268:
+	dc.w $05EF	; table $0DC2DA
+dict_off_269:
+	dc.w $05F3	; table $0DC2DC
+dict_off_270:
+	dc.w $05FB	; table $0DC2DE
+dict_off_271:
+	dc.w $05FF	; table $0DC2E0
+dict_off_272:
+	dc.w $0603	; table $0DC2E2
+dict_off_273:
+	dc.w $0607	; table $0DC2E4
+dict_off_274:
+	dc.w $0610	; table $0DC2E6
+dict_off_275:
+	dc.w $0618	; table $0DC2E8
+dict_off_276:
+	dc.w $0622	; table $0DC2EA
+dict_off_277:
+	dc.w $0626	; table $0DC2EC
+dict_off_278:
+	dc.w $062A	; table $0DC2EE
+dict_off_279:
+	dc.w $0634	; table $0DC2F0
+dict_off_280:
+	dc.w $0639	; table $0DC2F2
+dict_off_281:
+	dc.w $063A	; table $0DC2F4
+dict_off_282:
+	dc.w $063C	; table $0DC2F6
+dict_off_283:
+	dc.w $0641	; table $0DC2F8
+dict_off_284:
+	dc.w $064C	; table $0DC2FA
+dict_off_285:
+	dc.w $0658	; table $0DC2FC
+dict_off_286:
+	dc.w $065D	; table $0DC2FE
+dict_off_287:
+	dc.w $0662	; table $0DC300
+dict_off_288:
+	dc.w $0667	; table $0DC302
+dict_off_289:
+	dc.w $0672	; table $0DC304
+dict_off_290:
+	dc.w $0677	; table $0DC306
+dict_off_291:
+	dc.w $067B	; table $0DC308
+dict_off_292:
+	dc.w $0683	; table $0DC30A
+dict_off_293:
+	dc.w $0686	; table $0DC30C
+dict_off_294:
+	dc.w $068A	; table $0DC30E
+dict_off_295:
+	dc.w $068F	; table $0DC310
+dict_off_296:
+	dc.w $0695	; table $0DC312
+dict_off_297:
+	dc.w $069B	; table $0DC314
+dict_off_298:
+	dc.w $06A3	; table $0DC316
+dict_off_299:
+	dc.w $06A7	; table $0DC318
+dict_off_300:
+	dc.w $06AB	; table $0DC31A
+dict_off_301:
+	dc.w $06B0	; table $0DC31C
+dict_off_302:
+	dc.w $06B5	; table $0DC31E
+dict_off_303:
+	dc.w $06BC	; table $0DC320
+dict_off_304:
+	dc.w $06C0	; table $0DC322
+dict_off_305:
+	dc.w $06CB	; table $0DC324
+dict_off_306:
+	dc.w $06D0	; table $0DC326
+dict_off_307:
+	dc.w $06D7	; table $0DC328
+dict_off_308:
+	dc.w $06E2	; table $0DC32A
+dict_off_309:
+	dc.w $06E7	; table $0DC32C
+dict_off_310:
+	dc.w $06F0	; table $0DC32E
+dict_off_311:
+	dc.w $06F6	; table $0DC330
+dict_off_312:
+	dc.w $06FB	; table $0DC332
+dict_off_313:
+	dc.w $0701	; table $0DC334
+dict_off_314:
+	dc.w $0707	; table $0DC336
+dict_off_315:
+	dc.w $070D	; table $0DC338
+dict_off_316:
+	dc.w $0713	; table $0DC33A
+dict_off_317:
+	dc.w $071A	; table $0DC33C
+dict_off_318:
+	dc.w $0720	; table $0DC33E
+dict_off_319:
+	dc.w $0724	; table $0DC340
+dict_off_320:
+	dc.w $072B	; table $0DC342
+dict_off_321:
+	dc.w $072F	; table $0DC344
+dict_off_322:
+	dc.w $0736	; table $0DC346
+dict_off_323:
+	dc.w $073A	; table $0DC348
+dict_off_324:
+	dc.w $0741	; table $0DC34A
+dict_off_325:
+	dc.w $0745	; table $0DC34C
+dict_off_326:
+	dc.w $0749	; table $0DC34E
+dict_off_327:
+	dc.w $0750	; table $0DC350
+dict_off_328:
+	dc.w $0756	; table $0DC352
+dict_off_329:
+	dc.w $075E	; table $0DC354
+dict_off_330:
+	dc.w $0765	; table $0DC356
+dict_off_331:
+	dc.w $0769	; table $0DC358
+dict_off_332:
+	dc.w $076E	; table $0DC35A
+dict_off_333:
+	dc.w $0773	; table $0DC35C
+dict_off_334:
+	dc.w $0778	; table $0DC35E
+dict_off_335:
+	dc.w $077B	; table $0DC360
+dict_off_336:
+	dc.w $0785	; table $0DC362
+dict_off_337:
+	dc.w $0787	; table $0DC364
+dict_off_338:
+	dc.w $078F	; table $0DC366
+dict_off_339:
+	dc.w $0795	; table $0DC368
+dict_off_340:
+	dc.w $079C	; table $0DC36A
+dict_off_341:
+	dc.w $07A3	; table $0DC36C
+dict_off_342:
+	dc.w $07A5	; table $0DC36E
+dict_off_343:
+	dc.w $07AE	; table $0DC370
+dict_off_344:
+	dc.w $07B2	; table $0DC372
+dict_off_345:
+	dc.w $07B7	; table $0DC374
+dict_off_346:
+	dc.w $07BC	; table $0DC376
+dict_off_347:
+	dc.w $07C1	; table $0DC378
+dict_off_348:
+	dc.w $07C5	; table $0DC37A
+dict_off_349:
+	dc.w $07CE	; table $0DC37C
+dict_off_350:
+	dc.w $07D1	; table $0DC37E
+dict_off_351:
+	dc.w $07D9	; table $0DC380
+dict_off_352:
+	dc.w $07DF	; table $0DC382
+dict_off_353:
+	dc.w $07E6	; table $0DC384
+dict_off_354:
+	dc.w $07EE	; table $0DC386
+dict_off_355:
+	dc.w $07F1	; table $0DC388
+dict_off_356:
+	dc.w $07F8	; table $0DC38A
+dict_off_357:
+	dc.w $07FE	; table $0DC38C
+dict_off_358:
+	dc.w $0803	; table $0DC38E
+dict_off_359:
+	dc.w $0808	; table $0DC390
+dict_off_360:
+	dc.w $080F	; table $0DC392
+dict_off_361:
+	dc.w $0810	; table $0DC394
+dict_off_362:
+	dc.w $0816	; table $0DC396
+dict_off_363:
+	dc.w $0817	; table $0DC398
+dict_off_364:
+	dc.w $0820	; table $0DC39A
+dict_off_365:
+	dc.w $082A	; table $0DC39C
+dict_off_366:
+	dc.w $0830	; table $0DC39E
+dict_off_367:
+	dc.w $0833	; table $0DC3A0
+dict_off_368:
+	dc.w $0837	; table $0DC3A2
+dict_off_369:
+	dc.w $083C	; table $0DC3A4
+dict_off_370:
+	dc.w $0844	; table $0DC3A6
+dict_off_371:
+	dc.w $0847	; table $0DC3A8
+dict_off_372:
+	dc.w $084F	; table $0DC3AA
+dict_off_373:
+	dc.w $0852	; table $0DC3AC
+dict_off_374:
+	dc.w $085C	; table $0DC3AE
+dict_off_375:
+	dc.w $0864	; table $0DC3B0
+dict_off_376:
+	dc.w $086C	; table $0DC3B2
+dict_off_377:
+	dc.w $0875	; table $0DC3B4
+dict_off_378:
+	dc.w $0878	; table $0DC3B6
+dict_off_379:
+	dc.w $087A	; table $0DC3B8
+dict_off_380:
+	dc.w $087D	; table $0DC3BA
+dict_off_381:
+	dc.w $0884	; table $0DC3BC
+dict_off_382:
+	dc.w $0889	; table $0DC3BE
+dict_off_383:
+	dc.w $0893	; table $0DC3C0
+dict_off_384:
+	dc.w $0899	; table $0DC3C2
+dict_off_385:
+	dc.w $08A1	; table $0DC3C4
+dict_off_386:
+	dc.w $08A9	; table $0DC3C6
+dict_off_387:
+	dc.w $08B0	; table $0DC3C8
+dict_off_388:
+	dc.w $08B5	; table $0DC3CA
+dict_off_389:
+	dc.w $08BB	; table $0DC3CC
+dict_off_390:
+	dc.w $08C1	; table $0DC3CE
+dict_off_391:
+	dc.w $08C5	; table $0DC3D0
+dict_off_392:
+	dc.w $08CC	; table $0DC3D2
+dict_off_393:
+	dc.w $08D3	; table $0DC3D4
+dict_off_394:
+	dc.w $08D7	; table $0DC3D6
+dict_off_395:
+	dc.w $08D9	; table $0DC3D8
+dict_off_396:
+	dc.w $08DE	; table $0DC3DA
+dict_off_397:
+	dc.w $08E3	; table $0DC3DC
+dict_off_398:
+	dc.w $08E7	; table $0DC3DE
+dict_off_399:
+	dc.w $08EA	; table $0DC3E0
+dict_off_400:
+	dc.w $08F0	; table $0DC3E2
+dict_off_401:
+	dc.w $08F6	; table $0DC3E4
+dict_off_402:
+	dc.w $08FD	; table $0DC3E6
+dict_off_403:
+	dc.w $0904	; table $0DC3E8
+dict_off_404:
+	dc.w $0909	; table $0DC3EA
+dict_off_405:
+	dc.w $0910	; table $0DC3EC
+dict_off_406:
+	dc.w $0919	; table $0DC3EE
+dict_off_407:
+	dc.w $091E	; table $0DC3F0
+dict_off_408:
+	dc.w $0922	; table $0DC3F2
+dict_off_409:
+	dc.w $0929	; table $0DC3F4
+dict_off_410:
+	dc.w $092C	; table $0DC3F6
+dict_off_411:
+	dc.w $0932	; table $0DC3F8
+dict_off_412:
+	dc.w $0936	; table $0DC3FA
+dict_off_413:
+	dc.w $0938	; table $0DC3FC
+dict_off_414:
+	dc.w $093D	; table $0DC3FE
+dict_off_415:
+	dc.w $0947	; table $0DC400
+dict_off_416:
+	dc.w $0949	; table $0DC402
+dict_off_417:
+	dc.w $094E	; table $0DC404
+dict_off_418:
+	dc.w $0954	; table $0DC406
+dict_off_419:
+	dc.w $0959	; table $0DC408
+dict_off_420:
+	dc.w $095B	; table $0DC40A
+dict_off_421:
+	dc.w $095D	; table $0DC40C
+dict_off_422:
+	dc.w $0961	; table $0DC40E
+dict_off_423:
+	dc.w $096C	; table $0DC410
+dict_off_424:
+	dc.w $096F	; table $0DC412
+dict_off_425:
+	dc.w $0972	; table $0DC414
+dict_off_426:
+	dc.w $0981	; table $0DC416
+dict_off_427:
+	dc.w $0983	; table $0DC418
+dict_off_428:
+	dc.w $0991	; table $0DC41A
+dict_off_429:
+	dc.w $0993	; table $0DC41C
+dict_off_430:
+	dc.w $0996	; table $0DC41E
+dict_off_431:
+	dc.w $0998	; table $0DC420
+dict_off_432:
+	dc.w $09A1	; table $0DC422
+dict_off_433:
+	dc.w $09AA	; table $0DC424
+dict_off_434:
+	dc.w $09AE	; table $0DC426
+dict_off_435:
+	dc.w $09B4	; table $0DC428
+dict_off_436:
+	dc.w $09B9	; table $0DC42A
+dict_off_437:
+	dc.w $09C2	; table $0DC42C
+dict_off_438:
+	dc.w $09C5	; table $0DC42E
+dict_off_439:
+	dc.w $09C8	; table $0DC430
+dict_off_440:
+	dc.w $09D5	; table $0DC432
+dict_off_441:
+	dc.w $09D8	; table $0DC434
+dict_off_442:
+	dc.w $09DA	; table $0DC436
+dict_off_443:
+	dc.w $09E8	; table $0DC438
+dict_off_444:
+	dc.w $09E9	; table $0DC43A
+dict_off_445:
+	dc.w $09EF	; table $0DC43C
+dict_off_446:
+	dc.w $09F2	; table $0DC43E
+dict_off_447:
+	dc.w $09F6	; table $0DC440
+dict_off_448:
+	dc.w $09FB	; table $0DC442
+dict_off_449:
+	dc.w $0A00	; table $0DC444
+dict_off_450:
+	dc.w $0A06	; table $0DC446
+dict_off_451:
+	dc.w $0A0A	; table $0DC448
+dict_off_452:
+	dc.w $0A0D	; table $0DC44A
+dict_off_453:
+	dc.w $0A12	; table $0DC44C
+dict_off_454:
+	dc.w $0A16	; table $0DC44E
+dict_off_455:
+	dc.w $0A1F	; table $0DC450
+dict_off_456:
+	dc.w $0A24	; table $0DC452
+dict_off_457:
+	dc.w $0A26	; table $0DC454
+dict_off_458:
+	dc.w $0A2F	; table $0DC456
+dict_off_459:
+	dc.w $0A30	; table $0DC458
+dict_off_460:
+	dc.w $0A33	; table $0DC45A
+dict_off_461:
+	dc.w $0A35	; table $0DC45C
+dict_off_462:
+	dc.w $0A3C	; table $0DC45E
+dict_off_463:
+	dc.w $0A40	; table $0DC460
+dict_off_464:
+	dc.w $0A44	; table $0DC462
+dict_off_465:
+	dc.w $0A48	; table $0DC464
+dict_off_466:
+	dc.w $0A4F	; table $0DC466
+dict_off_467:
+	dc.w $0A58	; table $0DC468
+dict_off_468:
+	dc.w $0A5C	; table $0DC46A
+dict_off_469:
+	dc.w $0A5F	; table $0DC46C
+dict_off_470:
+	dc.w $0A64	; table $0DC46E
+dict_off_471:
+	dc.w $0A69	; table $0DC470
+dict_off_472:
+	dc.w $0A71	; table $0DC472
+dict_off_473:
+	dc.w $0A75	; table $0DC474
+dict_off_474:
+	dc.w $0A79	; table $0DC476
+dict_off_475:
+	dc.w $0A7C	; table $0DC478
+dict_off_476:
+	dc.w $0A81	; table $0DC47A
+dict_off_477:
+	dc.w $0A86	; table $0DC47C
+dict_off_478:
+	dc.w $0A8C	; table $0DC47E
+dict_off_479:
+	dc.w $0A90	; table $0DC480
+dict_off_480:
+	dc.w $0A94	; table $0DC482
+dict_off_481:
+	dc.w $0A96	; table $0DC484
+dict_off_482:
+	dc.w $0A9A	; table $0DC486
+dict_off_483:
+	dc.w $0AA1	; table $0DC488
+dict_off_484:
+	dc.w $0AA3	; table $0DC48A
+dict_off_485:
+	dc.w $0AA7	; table $0DC48C
+dict_off_486:
+	dc.w $0AAB	; table $0DC48E
+dict_off_487:
+	dc.w $0AAE	; table $0DC490
+dict_off_488:
+	dc.w $0AB3	; table $0DC492
+dict_off_489:
+	dc.w $0AB7	; table $0DC494
+dict_off_490:
+	dc.w $0ABA	; table $0DC496
+dict_off_491:
+	dc.w $0ABE	; table $0DC498
+dict_off_492:
+	dc.w $0AC2	; table $0DC49A
+dict_off_493:
+	dc.w $0AC8	; table $0DC49C
+dict_off_494:
+	dc.w $0ACA	; table $0DC49E
+dict_off_495:
+	dc.w $0ACC	; table $0DC4A0
+dict_off_496:
+	dc.w $0AD5	; table $0DC4A2
+dict_off_497:
+	dc.w $0ADE	; table $0DC4A4
+dict_off_498:
+	dc.w $0AE2	; table $0DC4A6
+dict_off_499:
+	dc.w $0AE5	; table $0DC4A8
+dict_off_500:
+	dc.w $0AE8	; table $0DC4AA
+dict_off_501:
+	dc.w $0AEE	; table $0DC4AC
+dict_off_502:
+	dc.w $0AF1	; table $0DC4AE
+dict_off_503:
+	dc.w $0AF3	; table $0DC4B0
+dict_off_504:
+	dc.w $0AF8	; table $0DC4B2
+dict_off_505:
+	dc.w $0AFD	; table $0DC4B4
+dict_off_506:
+	dc.w $0B03	; table $0DC4B6
+dict_off_507:
+	dc.w $0B07	; table $0DC4B8
+dict_off_508:
+	dc.w $0B09	; table $0DC4BA
+dict_off_509:
+	dc.w $0B10	; table $0DC4BC
+dict_off_510:
+	dc.w $0B19	; table $0DC4BE
+dict_off_511:
+	dc.w $0B1F	; table $0DC4C0
+dict_off_512:
+	dc.w $0B27	; table $0DC4C2
+dict_off_513:
+	dc.w $0B2A	; table $0DC4C4
+dict_off_514:
+	dc.w $0B2F	; table $0DC4C6
+dict_off_515:
+	dc.w $0B32	; table $0DC4C8
+dict_off_516:
+	dc.w $0B38	; table $0DC4CA
+dict_off_517:
+	dc.w $0B3F	; table $0DC4CC
+dict_off_518:
+	dc.w $0B44	; table $0DC4CE
+dict_off_519:
+	dc.w $0B48	; table $0DC4D0
+dict_off_520:
+	dc.w $0B4C	; table $0DC4D2
+dict_off_521:
+	dc.w $0B52	; table $0DC4D4
+dict_off_522:
+	dc.w $0B59	; table $0DC4D6
+dict_off_523:
+	dc.w $0B64	; table $0DC4D8
+dict_off_524:
+	dc.w $0B6B	; table $0DC4DA
+dict_off_525:
+	dc.w $0B71	; table $0DC4DC
+dict_off_526:
+	dc.w $0B75	; table $0DC4DE
+dict_off_527:
+	dc.w $0B7B	; table $0DC4E0
+dict_off_528:
+	dc.w $0B7E	; table $0DC4E2
+dict_off_529:
+	dc.w $0B84	; table $0DC4E4
+dict_off_530:
+	dc.w $0B8B	; table $0DC4E6
+dict_off_531:
+	dc.w $0B92	; table $0DC4E8
+dict_off_532:
+	dc.w $0B95	; table $0DC4EA
+dict_off_533:
+	dc.w $0B9D	; table $0DC4EC
+dict_off_534:
+	dc.w $0B9F	; table $0DC4EE
+dict_off_535:
+	dc.w $0BA3	; table $0DC4F0
+dict_off_536:
+	dc.w $0BA9	; table $0DC4F2
+dict_off_537:
+	dc.w $0BAE	; table $0DC4F4
+dict_off_538:
+	dc.w $0BB0	; table $0DC4F6
+dict_off_539:
+	dc.w $0BB5	; table $0DC4F8
+dict_off_540:
+	dc.w $0BB8	; table $0DC4FA
+dict_off_541:
+	dc.w $0BBE	; table $0DC4FC
+dict_off_542:
+	dc.w $0BC4	; table $0DC4FE
+dict_off_543:
+	dc.w $0BCA	; table $0DC500
+dict_off_544:
+	dc.w $0BCD	; table $0DC502
+dict_off_545:
+	dc.w $0BD0	; table $0DC504
+dict_off_546:
+	dc.w $0BD3	; table $0DC506
+dict_off_547:
+	dc.w $0BD9	; table $0DC508
+dict_off_548:
+	dc.w $0BDD	; table $0DC50A
+dict_off_549:
+	dc.w $0BE5	; table $0DC50C
+dict_off_550:
+	dc.w $0BEA	; table $0DC50E
+dict_off_551:
+	dc.w $0BEF	; table $0DC510
+dict_off_552:
+	dc.w $0BF8	; table $0DC512
+dict_off_553:
+	dc.w $0C01	; table $0DC514
+dict_off_554:
+	dc.w $0C08	; table $0DC516
+dict_off_555:
+	dc.w $0C0E	; table $0DC518
+dict_off_556:
+	dc.w $0C15	; table $0DC51A
+dict_off_557:
+	dc.w $0C19	; table $0DC51C
+dict_off_558:
+	dc.w $0C1C	; table $0DC51E
+dict_off_559:
+	dc.w $0C21	; table $0DC520
+dict_off_560:
+	dc.w $0C26	; table $0DC522
+dict_off_561:
+	dc.w $0C29	; table $0DC524
+dict_off_562:
+	dc.w $0C2E	; table $0DC526
+dict_off_563:
+	dc.w $0C32	; table $0DC528
+dict_off_564:
+	dc.w $0C36	; table $0DC52A
+dict_off_565:
+	dc.w $0C3A	; table $0DC52C
+dict_off_566:
+	dc.w $0C3E	; table $0DC52E
+dict_off_567:
+	dc.w $0C43	; table $0DC530
+dict_off_568:
+	dc.w $0C4A	; table $0DC532
+dict_off_569:
+	dc.w $0C4F	; table $0DC534
+dict_off_570:
+	dc.w $0C53	; table $0DC536
+dict_off_571:
+	dc.w $0C57	; table $0DC538
+dict_off_572:
+	dc.w $0C5C	; table $0DC53A
+dict_off_573:
+	dc.w $0C5F	; table $0DC53C
+dict_off_574:
+	dc.w $0C63	; table $0DC53E
+dict_off_575:
+	dc.w $0C69	; table $0DC540
+dict_off_576:
+	dc.w $0C70	; table $0DC542
+dict_off_577:
+	dc.w $0C72	; table $0DC544
+dict_off_578:
+	dc.w $0C7B	; table $0DC546
+dict_off_579:
+	dc.w $0C7E	; table $0DC548
+dict_off_580:
+	dc.w $0C80	; table $0DC54A
+dict_off_581:
+	dc.w $0C86	; table $0DC54C
+dict_off_582:
+	dc.w $0C8B	; table $0DC54E
+dict_off_583:
+	dc.w $0C92	; table $0DC550
+dict_off_584:
+	dc.w $0C9A	; table $0DC552
+dict_off_585:
+	dc.w $0C9E	; table $0DC554
+dict_off_586:
+	dc.w $0CA5	; table $0DC556
+dict_off_587:
+	dc.w $0CA8	; table $0DC558
+dict_off_588:
+	dc.w $0CAD	; table $0DC55A
+dict_off_589:
+	dc.w $0CB1	; table $0DC55C
+dict_off_590:
+	dc.w $0CB7	; table $0DC55E
+dict_off_591:
+	dc.w $0CBD	; table $0DC560
+dict_off_592:
+	dc.w $0CC2	; table $0DC562
+dict_off_593:
+	dc.w $0CCA	; table $0DC564
+dict_off_594:
+	dc.w $0CCE	; table $0DC566
+dict_off_595:
+	dc.w $0CD2	; table $0DC568
+dict_off_596:
+	dc.w $0CD8	; table $0DC56A
+dict_off_597:
+	dc.w $0CDE	; table $0DC56C
+dict_off_598:
+	dc.w $0CE2	; table $0DC56E
+dict_off_599:
+	dc.w $0CE8	; table $0DC570
+dict_off_600:
+	dc.w $0CEC	; table $0DC572
+dict_off_601:
+	dc.w $0CF2	; table $0DC574
+dict_off_602:
+	dc.w $0CF7	; table $0DC576
+dict_off_603:
+	dc.w $0CFD	; table $0DC578
+dict_off_604:
+	dc.w $0D02	; table $0DC57A
+dict_off_605:
+	dc.w $0D06	; table $0DC57C
+dict_off_606:
+	dc.w $0D0C	; table $0DC57E
+dict_off_607:
+	dc.w $0D11	; table $0DC580
+dict_off_608:
+	dc.w $0D14	; table $0DC582
+dict_off_609:
+	dc.w $0D18	; table $0DC584
+dict_off_610:
+	dc.w $0D20	; table $0DC586
+dict_off_611:
+	dc.w $0D26	; table $0DC588
+dict_off_612:
+	dc.w $0D2A	; table $0DC58A
+dict_off_613:
+	dc.w $0D31	; table $0DC58C
+dict_off_614:
+	dc.w $0D35	; table $0DC58E
+dict_off_615:
+	dc.w $0D3C	; table $0DC590
+dict_off_616:
+	dc.w $0D41	; table $0DC592
+dict_off_617:
+	dc.w $0D48	; table $0DC594
+dict_off_618:
+	dc.w $0D53	; table $0DC596
+dict_off_619:
+	dc.w $0D56	; table $0DC598
+dict_off_620:
+	dc.w $0D5E	; table $0DC59A
+dict_off_621:
+	dc.w $0D62	; table $0DC59C
+dict_off_622:
+	dc.w $0D66	; table $0DC59E
+dict_off_623:
+	dc.w $0D68	; table $0DC5A0
+dict_off_624:
+	dc.w $0D6D	; table $0DC5A2
+dict_off_625:
+	dc.w $0D71	; table $0DC5A4
+dict_off_626:
+	dc.w $0D77	; table $0DC5A6
+dict_off_627:
+	dc.w $0D7C	; table $0DC5A8
+dict_off_628:
+	dc.w $0D80	; table $0DC5AA
+dict_off_629:
+	dc.w $0D86	; table $0DC5AC
+dict_off_630:
+	dc.w $0D8A	; table $0DC5AE
+dict_off_631:
+	dc.w $0D8B	; table $0DC5B0
+dict_off_632:
+	dc.w $0D91	; table $0DC5B2
+dict_off_633:
+	dc.w $0D96	; table $0DC5B4
+dict_off_634:
+	dc.w $0D9C	; table $0DC5B6
+dict_off_635:
+	dc.w $0DA0	; table $0DC5B8
+dict_off_636:
+	dc.w $0DA7	; table $0DC5BA
+dict_off_637:
+	dc.w $0DAB	; table $0DC5BC
+dict_off_638:
+	dc.w $0DB0	; table $0DC5BE
+dict_off_639:
+	dc.w $0DB5	; table $0DC5C0
+dict_off_640:
+	dc.w $0DB8	; table $0DC5C2
+dict_off_641:
+	dc.w $0DBD	; table $0DC5C4
+dict_off_642:
+	dc.w $0DC1	; table $0DC5C6
+dict_off_643:
+	dc.w $0DC6	; table $0DC5C8
+dict_off_644:
+	dc.w $0DCB	; table $0DC5CA
+dict_off_645:
+	dc.w $0DCD	; table $0DC5CC
+dict_off_646:
+	dc.w $0DD1	; table $0DC5CE
+dict_off_647:
+	dc.w $0DD7	; table $0DC5D0
+dict_off_648:
+	dc.w $0DDB	; table $0DC5D2
+dict_off_649:
+	dc.w $0DE0	; table $0DC5D4
+dict_off_650:
+	dc.w $0DE8	; table $0DC5D6
+dict_off_651:
+	dc.w $0DED	; table $0DC5D8
+dict_off_652:
+	dc.w $0DF5	; table $0DC5DA
+dict_off_653:
+	dc.w $0DF9	; table $0DC5DC
+dict_off_654:
+	dc.w $0DFD	; table $0DC5DE
+dict_off_655:
+	dc.w $0E01	; table $0DC5E0
+dict_off_656:
+	dc.w $0E06	; table $0DC5E2
+dict_off_657:
+	dc.w $0E0B	; table $0DC5E4
+dict_off_658:
+	dc.w $0E10	; table $0DC5E6
+dict_off_659:
+	dc.w $0E12	; table $0DC5E8
+dict_off_660:
+	dc.w $0E17	; table $0DC5EA
+dict_off_661:
+	dc.w $0E1A	; table $0DC5EC
+dict_off_662:
+	dc.w $0E1E	; table $0DC5EE
+dict_off_663:
+	dc.w $0E25	; table $0DC5F0
+dict_off_664:
+	dc.w $0E2C	; table $0DC5F2
+dict_off_665:
+	dc.w $0E32	; table $0DC5F4
+dict_off_666:
+	dc.w $0E3B	; table $0DC5F6
+dict_off_667:
+	dc.w $0E44	; table $0DC5F8
+dict_off_668:
+	dc.w $0E49	; table $0DC5FA
+dict_off_669:
+	dc.w $0E4E	; table $0DC5FC
+dict_off_670:
+	dc.w $0E52	; table $0DC5FE
+dict_off_671:
+	dc.w $0E59	; table $0DC600
+dict_off_672:
+	dc.w $0E5D	; table $0DC602
+dict_off_673:
+	dc.w $0E61	; table $0DC604
+dict_off_674:
+	dc.w $0E6A	; table $0DC606
+dict_off_675:
+	dc.w $0E6D	; table $0DC608
+dict_off_676:
+	dc.w $0E71	; table $0DC60A
+dict_off_677:
+	dc.w $0E73	; table $0DC60C
+dict_off_678:
+	dc.w $0E76	; table $0DC60E
+dict_off_679:
+	dc.w $0E7A	; table $0DC610
+dict_off_680:
+	dc.w $0E81	; table $0DC612
+dict_off_681:
+	dc.w $0E87	; table $0DC614
+dict_off_682:
+	dc.w $0E8D	; table $0DC616
+dict_off_683:
+	dc.w $0E95	; table $0DC618
+dict_off_684:
+	dc.w $0E9A	; table $0DC61A
+dict_off_685:
+	dc.w $0EA0	; table $0DC61C
+dict_off_686:
+	dc.w $0EA5	; table $0DC61E
+dict_off_687:
+	dc.w $0EA8	; table $0DC620
+dict_off_688:
+	dc.w $0EAA	; table $0DC622
+dict_off_689:
+	dc.w $0EAF	; table $0DC624
+dict_off_690:
+	dc.w $0EB2	; table $0DC626
+dict_off_691:
+	dc.w $0EB5	; table $0DC628
+dict_off_692:
+	dc.w $0EB9	; table $0DC62A
+dict_off_693:
+	dc.w $0EBD	; table $0DC62C
+dict_off_694:
+	dc.w $0EC4	; table $0DC62E
+dict_off_695:
+	dc.w $0EC9	; table $0DC630
+dict_off_696:
+	dc.w $0ECF	; table $0DC632
+dict_off_697:
+	dc.w $0ED4	; table $0DC634
+dict_off_698:
+	dc.w $0ED8	; table $0DC636
+dict_off_699:
+	dc.w $0EDD	; table $0DC638
+dict_off_700:
+	dc.w $0EE2	; table $0DC63A
+dict_off_701:
+	dc.w $0EE8	; table $0DC63C
+dict_off_702:
+	dc.w $0EF0	; table $0DC63E
+dict_off_703:
+	dc.w $0EF5	; table $0DC640
+dict_off_704:
+	dc.w $0F03	; table $0DC642
+dict_off_705:
+	dc.w $0F0A	; table $0DC644
+dict_off_706:
+	dc.w $0F0E	; table $0DC646
+dict_off_707:
+	dc.w $0F12	; table $0DC648
+dict_off_708:
+	dc.w $0F17	; table $0DC64A
+dict_off_709:
+	dc.w $0F20	; table $0DC64C
+dict_off_710:
+	dc.w $0F26	; table $0DC64E
+dict_off_711:
+	dc.w $0F29	; table $0DC650
+dict_off_712:
+	dc.w $0F2E	; table $0DC652
+dict_off_713:
+	dc.w $0F35	; table $0DC654
+dict_off_714:
+	dc.w $0F39	; table $0DC656
+dict_off_715:
+	dc.w $0F3F	; table $0DC658
+dict_off_716:
+	dc.w $0F44	; table $0DC65A
+dict_off_717:
+	dc.w $0F4A	; table $0DC65C
+dict_off_718:
+	dc.w $0F51	; table $0DC65E
+dict_off_719:
+	dc.w $0F55	; table $0DC660
+dict_off_720:
+	dc.w $0F5C	; table $0DC662
+dict_off_721:
+	dc.w $0F62	; table $0DC664
+dict_off_722:
+	dc.w $0F69	; table $0DC666
+dict_off_723:
+	dc.w $0F72	; table $0DC668
+dict_off_724:
+	dc.w $0F75	; table $0DC66A
+dict_off_725:
+	dc.w $0F7D	; table $0DC66C
+dict_off_726:
+	dc.w $0F84	; table $0DC66E
+dict_off_727:
+	dc.w $0F8A	; table $0DC670
+dict_off_728:
+	dc.w $0F90	; table $0DC672
+dict_off_729:
+	dc.w $0F98	; table $0DC674
+dict_off_730:
+	dc.w $0F9C	; table $0DC676
+dict_off_731:
+	dc.w $0FA4	; table $0DC678
+dict_off_732:
+	dc.w $0FA8	; table $0DC67A
+dict_off_733:
+	dc.w $0FAC	; table $0DC67C
+dict_off_734:
+	dc.w $0FB1	; table $0DC67E
+dict_off_735:
+	dc.w $0FB6	; table $0DC680
+dict_off_736:
+	dc.w $0FBA	; table $0DC682
+dict_off_737:
+	dc.w $0FC3	; table $0DC684
+dict_off_738:
+	dc.w $0FCA	; table $0DC686
+dict_off_739:
+	dc.w $0FCF	; table $0DC688
+dict_off_740:
+	dc.w $0FD4	; table $0DC68A
+dict_off_741:
+	dc.w $0FD8	; table $0DC68C
+dict_off_742:
+	dc.w $0FDD	; table $0DC68E
+dict_off_743:
+	dc.w $0FE5	; table $0DC690
+dict_off_744:
+	dc.w $0FED	; table $0DC692
+dict_off_745:
+	dc.w $0FF0	; table $0DC694
+dict_off_746:
+	dc.w $0FF4	; table $0DC696
+dict_off_747:
+	dc.w $0FF9	; table $0DC698
+dict_off_748:
+	dc.w $0FFE	; table $0DC69A
+dict_off_749:
+	dc.w $1003	; table $0DC69C
+dict_off_750:
+	dc.w $1007	; table $0DC69E
+dict_off_751:
+	dc.w $100E	; table $0DC6A0
+dict_off_752:
+	dc.w $1014	; table $0DC6A2
+dict_off_753:
+	dc.w $1017	; table $0DC6A4
+dict_off_754:
+	dc.w $101C	; table $0DC6A6
+dict_off_755:
+	dc.w $1021	; table $0DC6A8
+dict_off_756:
+	dc.w $1028	; table $0DC6AA
+dict_off_757:
+	dc.w $102E	; table $0DC6AC
+dict_off_758:
+	dc.w $1036	; table $0DC6AE
+dict_off_759:
+	dc.w $103C	; table $0DC6B0
+dict_off_760:
+	dc.w $1040	; table $0DC6B2
+dict_off_761:
+	dc.w $1045	; table $0DC6B4
+dict_off_762:
+	dc.w $104E	; table $0DC6B6
+dict_off_763:
+	dc.w $1052	; table $0DC6B8
+dict_off_764:
+	dc.w $1059	; table $0DC6BA
+dict_off_765:
+	dc.w $1061	; table $0DC6BC
+dict_off_766:
+	dc.w $1065	; table $0DC6BE
+dict_off_767:
+	dc.w $1069	; table $0DC6C0
+dict_off_768:
+	dc.w $106E	; table $0DC6C2
+dict_off_769:
+	dc.w $1073	; table $0DC6C4
+dict_off_770:
+	dc.w $107A	; table $0DC6C6
+dict_off_771:
+	dc.w $1086	; table $0DC6C8
+dict_off_772:
+	dc.w $108D	; table $0DC6CA
+dict_off_773:
+	dc.w $1093	; table $0DC6CC
+dict_off_774:
+	dc.w $1097	; table $0DC6CE
+dict_off_775:
+	dc.w $109E	; table $0DC6D0
+dict_off_776:
+	dc.w $10A6	; table $0DC6D2
+dict_off_777:
+	dc.w $10AA	; table $0DC6D4
+dict_off_778:
+	dc.w $10AF	; table $0DC6D6
+dict_off_779:
+	dc.w $10B2	; table $0DC6D8
+dict_off_780:
+	dc.w $10B8	; table $0DC6DA
+dict_off_781:
+	dc.w $10BD	; table $0DC6DC
+dict_off_782:
+	dc.w $10C8	; table $0DC6DE
+dict_off_783:
+	dc.w $10CF	; table $0DC6E0
+dict_off_784:
+	dc.w $10D2	; table $0DC6E2
+dict_off_785:
+	dc.w $10D7	; table $0DC6E4
+dict_off_786:
+	dc.w $10E2	; table $0DC6E6
+dict_off_787:
+	dc.w $10E6	; table $0DC6E8
+dict_off_788:
+	dc.w $10EE	; table $0DC6EA
+dict_off_789:
+	dc.w $10F7	; table $0DC6EC
+dict_off_790:
+	dc.w $10FD	; table $0DC6EE
+dict_off_791:
+	dc.w $1104	; table $0DC6F0
+dict_off_792:
+	dc.w $110E	; table $0DC6F2
+dict_off_793:
+	dc.w $1112	; table $0DC6F4
+dict_off_794:
+	dc.w $1118	; table $0DC6F6
+dict_off_795:
+	dc.w $111A	; table $0DC6F8
+dict_off_796:
+	dc.w $1121	; table $0DC6FA
+dict_off_797:
+	dc.w $1125	; table $0DC6FC
+dict_off_798:
+	dc.w $1130	; table $0DC6FE
+dict_off_799:
+	dc.w $1136	; table $0DC700
+dict_off_800:
+	dc.w $113A	; table $0DC702
+dict_off_801:
+	dc.w $113F	; table $0DC704
+dict_off_802:
+	dc.w $1144	; table $0DC706
+dict_off_803:
+	dc.w $1148	; table $0DC708
+dict_off_804:
+	dc.w $114F	; table $0DC70A
+dict_off_805:
+	dc.w $1153	; table $0DC70C
+dict_off_806:
+	dc.w $115B	; table $0DC70E
+dict_off_807:
+	dc.w $1163	; table $0DC710
+dict_off_808:
+	dc.w $1167	; table $0DC712
+dict_off_809:
+	dc.w $116E	; table $0DC714
+dict_off_810:
+	dc.w $1176	; table $0DC716
+dict_off_811:
+	dc.w $117E	; table $0DC718
+dict_off_812:
+	dc.w $1182	; table $0DC71A
+dict_off_813:
+	dc.w $118B	; table $0DC71C
+dict_off_814:
+	dc.w $1194	; table $0DC71E
+dict_off_815:
+	dc.w $119B	; table $0DC720
+dict_off_816:
+	dc.w $11A4	; table $0DC722
+dict_off_817:
+	dc.w $11A9	; table $0DC724
+dict_off_818:
+	dc.w $11AF	; table $0DC726
+dict_off_819:
+	dc.w $11B6	; table $0DC728
+dict_off_820:
+	dc.w $11BA	; table $0DC72A
+dict_off_821:
+	dc.w $11C2	; table $0DC72C
+dict_off_822:
+	dc.w $11C8	; table $0DC72E
+dict_off_823:
+	dc.w $11CE	; table $0DC730
+dict_off_824:
+	dc.w $11D4	; table $0DC732
+dict_off_825:
+	dc.w $11DA	; table $0DC734
+dict_off_826:
+	dc.w $11DD	; table $0DC736
+dict_off_827:
+	dc.w $11E0	; table $0DC738
+dict_off_828:
+	dc.w $11E5	; table $0DC73A
+dict_off_829:
+	dc.w $11EE	; table $0DC73C
+dict_off_830:
+	dc.w $11F3	; table $0DC73E
+dict_off_831:
+	dc.w $11F5	; table $0DC740
+dict_off_832:
+	dc.w $11FA	; table $0DC742
+dict_off_833:
+	dc.w $1200	; table $0DC744
+dict_off_834:
+	dc.w $1205	; table $0DC746
+dict_off_835:
+	dc.w $120A	; table $0DC748
+dict_off_836:
+	dc.w $1210	; table $0DC74A
+dict_off_837:
+	dc.w $1217	; table $0DC74C
+dict_off_838:
+	dc.w $121F	; table $0DC74E
+dict_off_839:
+	dc.w $1224	; table $0DC750
+dict_off_840:
+	dc.w $122A	; table $0DC752
+dict_off_841:
+	dc.w $122D	; table $0DC754
+dict_off_842:
+	dc.w $1235	; table $0DC756
+dict_off_843:
+	dc.w $1238	; table $0DC758
+dict_off_844:
+	dc.w $123B	; table $0DC75A
+dict_off_845:
+	dc.w $1240	; table $0DC75C
+dict_off_846:
+	dc.w $1242	; table $0DC75E
+dict_off_847:
+	dc.w $1246	; table $0DC760
+dict_off_848:
+	dc.w $1249	; table $0DC762
+dict_off_849:
+	dc.w $1253	; table $0DC764
+dict_off_850:
+	dc.w $125E	; table $0DC766
+dict_off_851:
+	dc.w $1262	; table $0DC768
+dict_off_852:
+	dc.w $1266	; table $0DC76A
+dict_off_853:
+	dc.w $126A	; table $0DC76C
+dict_off_854:
+	dc.w $126D	; table $0DC76E
+dict_off_855:
+	dc.w $1273	; table $0DC770
+dict_off_856:
+	dc.w $127A	; table $0DC772
+dict_off_857:
+	dc.w $127E	; table $0DC774
+dict_off_858:
+	dc.w $1284	; table $0DC776
+dict_off_859:
+	dc.w $128A	; table $0DC778
+dict_off_860:
+	dc.w $128E	; table $0DC77A
+dict_off_861:
+	dc.w $1298	; table $0DC77C
+dict_off_862:
+	dc.w $129B	; table $0DC77E
+dict_off_863:
+	dc.w $12A4	; table $0DC780
+dict_off_864:
+	dc.w $12A8	; table $0DC782
+dict_off_865:
+	dc.w $12AE	; table $0DC784
+dict_off_866:
+	dc.w $12B2	; table $0DC786
+dict_off_867:
+	dc.w $12B6	; table $0DC788
+dict_off_868:
+	dc.w $12B9	; table $0DC78A
+dict_off_869:
+	dc.w $12C1	; table $0DC78C
+dict_off_870:
+	dc.w $12C9	; table $0DC78E
+dict_off_871:
+	dc.w $12CE	; table $0DC790
+dict_off_872:
+	dc.w $12D2	; table $0DC792
+dict_off_873:
+	dc.w $12D6	; table $0DC794
+dict_off_874:
+	dc.w $12DA	; table $0DC796
+dict_off_875:
+	dc.w $12DE	; table $0DC798
+dict_off_876:
+	dc.w $12E1	; table $0DC79A
+dict_off_877:
+	dc.w $12E6	; table $0DC79C
+dict_off_878:
+	dc.w $12EA	; table $0DC79E
+dict_off_879:
+	dc.w $12F1	; table $0DC7A0
+dict_off_880:
+	dc.w $12F7	; table $0DC7A2
+dict_off_881:
+	dc.w $1301	; table $0DC7A4
+dict_off_882:
+	dc.w $1308	; table $0DC7A6
+dict_off_883:
+	dc.w $130E	; table $0DC7A8
+dict_off_884:
+	dc.w $1313	; table $0DC7AA
+dict_off_885:
+	dc.w $1318	; table $0DC7AC
+dict_off_886:
+	dc.w $1320	; table $0DC7AE
+dict_off_887:
+	dc.w $1328	; table $0DC7B0
+dict_off_888:
+	dc.w $1330	; table $0DC7B2
+dict_off_889:
+	dc.w $1333	; table $0DC7B4
+dict_off_890:
+	dc.w $133D	; table $0DC7B6
+dict_off_891:
+	dc.w $1340	; table $0DC7B8
+dict_off_892:
+	dc.w $1347	; table $0DC7BA
+dict_off_893:
+	dc.w $134A	; table $0DC7BC
+dict_off_894:
+	dc.w $134E	; table $0DC7BE
+dict_off_895:
+	dc.w $1352	; table $0DC7C0
+dict_off_896:
+	dc.w $1357	; table $0DC7C2
+dict_off_897:
+	dc.w $135F	; table $0DC7C4
+dict_off_898:
+	dc.w $1364	; table $0DC7C6
+dict_off_899:
+	dc.w $136C	; table $0DC7C8
+dict_off_900:
+	dc.w $1370	; table $0DC7CA
+dict_off_901:
+	dc.w $1373	; table $0DC7CC
+dict_off_902:
+	dc.w $137E	; table $0DC7CE
+dict_off_903:
+	dc.w $1384	; table $0DC7D0
+dict_off_904:
+	dc.w $1388	; table $0DC7D2
+dict_off_905:
+	dc.w $138C	; table $0DC7D4
+dict_off_906:
+	dc.w $138F	; table $0DC7D6
+dict_off_907:
+	dc.w $1395	; table $0DC7D8
+dict_off_908:
+	dc.w $1397	; table $0DC7DA
+dict_off_909:
+	dc.w $139B	; table $0DC7DC
+dict_off_910:
+	dc.w $139F	; table $0DC7DE
+dict_off_911:
+	dc.w $13A4	; table $0DC7E0
+dict_off_912:
+	dc.w $13AA	; table $0DC7E2
+dict_off_913:
+	dc.w $13AF	; table $0DC7E4
+dict_off_914:
+	dc.w $13B5	; table $0DC7E6
+dict_off_915:
+	dc.w $13B8	; table $0DC7E8
+dict_off_916:
+	dc.w $13BD	; table $0DC7EA
+dict_off_917:
+	dc.w $13C0	; table $0DC7EC
+dict_off_918:
+	dc.w $13C5	; table $0DC7EE
+dict_off_919:
+	dc.w $13CB	; table $0DC7F0
+dict_off_920:
+	dc.w $13CE	; table $0DC7F2
+dict_off_921:
+	dc.w $13D3	; table $0DC7F4
+dict_off_922:
+	dc.w $13D6	; table $0DC7F6
+dict_off_923:
+	dc.w $13DC	; table $0DC7F8
+dict_off_924:
+	dc.w $13E1	; table $0DC7FA
+dict_off_925:
+	dc.w $13E6	; table $0DC7FC
+dict_off_926:
+	dc.w $13EA	; table $0DC7FE
+dict_off_927:
+	dc.w $13EE	; table $0DC800
+dict_off_928:
+	dc.w $13F6	; table $0DC802
+dict_off_929:
+	dc.w $13F9	; table $0DC804
+dict_off_930:
+	dc.w $13FF	; table $0DC806
+dict_off_931:
+	dc.w $1403	; table $0DC808
+dict_off_932:
+	dc.w $140A	; table $0DC80A
+dict_off_933:
+	dc.w $140D	; table $0DC80C
+dict_off_934:
+	dc.w $1413	; table $0DC80E
+dict_off_935:
+	dc.w $1417	; table $0DC810
+dict_off_936:
+	dc.w $1421	; table $0DC812
+dict_off_937:
+	dc.w $1423	; table $0DC814
+dict_off_938:
+	dc.w $1427	; table $0DC816
+dict_off_939:
+	dc.w $142C	; table $0DC818
+dict_off_940:
+	dc.w $1430	; table $0DC81A
+dict_off_941:
+	dc.w $1435	; table $0DC81C
+dict_off_942:
+	dc.w $1442	; table $0DC81E
+dict_off_943:
+	dc.w $1446	; table $0DC820
+dict_off_944:
+	dc.w $144C	; table $0DC822
+dict_off_945:
+	dc.w $1450	; table $0DC824
+dict_off_946:
+	dc.w $1454	; table $0DC826
+dict_off_947:
+	dc.w $1459	; table $0DC828
+dict_off_948:
+	dc.w $1465	; table $0DC82A
+dict_off_949:
+	dc.w $146F	; table $0DC82C
+dict_off_950:
+	dc.w $1475	; table $0DC82E
+dict_off_951:
+	dc.w $147B	; table $0DC830
+dict_off_952:
+	dc.w $1487	; table $0DC832
+dict_off_953:
+	dc.w $1490	; table $0DC834
+dict_off_954:
+	dc.w $1497	; table $0DC836
+dict_off_955:
+	dc.w $149B	; table $0DC838
+dict_off_956:
+	dc.w $149F	; table $0DC83A
+dict_off_957:
+	dc.w $14A1	; table $0DC83C
+dict_off_958:
+	dc.w $14A6	; table $0DC83E
+dict_off_959:
+	dc.w $14AC	; table $0DC840
+dict_off_960:
+	dc.w $14B1	; table $0DC842
+dict_off_961:
+	dc.w $14B6	; table $0DC844
+dict_off_962:
+	dc.w $14BC	; table $0DC846
+dict_off_963:
+	dc.w $14C1	; table $0DC848
+dict_off_964:
+	dc.w $14C4	; table $0DC84A
+dict_off_965:
+	dc.w $14CA	; table $0DC84C
+dict_off_966:
+	dc.w $14D0	; table $0DC84E
+dict_off_967:
+	dc.w $14D4	; table $0DC850
+dict_off_968:
+	dc.w $14DB	; table $0DC852
+dict_off_969:
+	dc.w $14DF	; table $0DC854
+dict_off_970:
+	dc.w $14E4	; table $0DC856
+dict_off_971:
+	dc.w $14EA	; table $0DC858
+dict_off_972:
+	dc.w $14F1	; table $0DC85A
+dict_off_973:
+	dc.w $14F3	; table $0DC85C
+dict_off_974:
+	dc.w $14FB	; table $0DC85E
+dict_off_975:
+	dc.w $1506	; table $0DC860
+dict_off_976:
+	dc.w $150D	; table $0DC862
+dict_off_977:
+	dc.w $1510	; table $0DC864
+dict_off_978:
+	dc.w $1514	; table $0DC866
+dict_off_979:
+	dc.w $151C	; table $0DC868
+dict_off_980:
+	dc.w $1523	; table $0DC86A
+dict_off_981:
+	dc.w $1526	; table $0DC86C
+dict_off_982:
+	dc.w $152E	; table $0DC86E
+dict_off_983:
+	dc.w $1533	; table $0DC870
+dict_off_984:
+	dc.w $1538	; table $0DC872
+dict_off_985:
+	dc.w $1541	; table $0DC874
+dict_off_986:
+	dc.w $1548	; table $0DC876
+dict_off_987:
+	dc.w $1551	; table $0DC878
+dict_off_988:
+	dc.w $1559	; table $0DC87A
+dict_off_989:
+	dc.w $155F	; table $0DC87C
+dict_off_990:
+	dc.w $1564	; table $0DC87E
+dict_off_991:
+	dc.w $156A	; table $0DC880
+dict_off_992:
+	dc.w $1570	; table $0DC882
+dict_off_993:
+	dc.w $157A	; table $0DC884
+dict_off_994:
+	dc.w $1585	; table $0DC886
+dict_off_995:
+	dc.w $1591	; table $0DC888
+dict_off_996:
+	dc.w $1599	; table $0DC88A
+dict_off_997:
+	dc.w $159F	; table $0DC88C
+dict_off_998:
+	dc.w $15A6	; table $0DC88E
+dict_off_999:
+	dc.w $15AA	; table $0DC890
+dict_off_1000:
+	dc.w $15AF	; table $0DC892
+dict_off_1001:
+	dc.w $15B3	; table $0DC894
+dict_off_1002:
+	dc.w $15BA	; table $0DC896
+dict_off_1003:
+	dc.w $15C4	; table $0DC898
+dict_off_1004:
+	dc.w $15CD	; table $0DC89A
+dict_off_1005:
+	dc.w $15D3	; table $0DC89C
+dict_off_1006:
+	dc.w $15D6	; table $0DC89E
+dict_off_1007:
+	dc.w $15DC	; table $0DC8A0
+dict_off_1008:
+	dc.w $15DF	; table $0DC8A2
+dict_off_1009:
+	dc.w $15E5	; table $0DC8A4
+dict_off_1010:
+	dc.w $15EB	; table $0DC8A6
+dict_off_1011:
+	dc.w $15F4	; table $0DC8A8
+dict_off_1012:
+	dc.w $15FB	; table $0DC8AA
+dict_off_1013:
+	dc.w $15FE	; table $0DC8AC
+dict_off_1014:
+	dc.w $1606	; table $0DC8AE
+dict_off_1015:
+	dc.w $160F	; table $0DC8B0
+dict_off_1016:
+	dc.w $1613	; table $0DC8B2
+dict_off_1017:
+	dc.w $161B	; table $0DC8B4
+dict_off_1018:
+	dc.w $161F	; table $0DC8B6
+dict_off_1019:
+	dc.w $1625	; table $0DC8B8
+dict_off_1020:
+	dc.w $162B	; table $0DC8BA
+dict_off_1021:
+	dc.w $1632	; table $0DC8BC
+dict_off_1022:
+	dc.w $163C	; table $0DC8BE
+dict_off_1023:
+	dc.w $1642	; table $0DC8C0
+dict_off_1024:
+	dc.w $1647	; table $0DC8C2
+dict_off_1025:
+	dc.w $164E	; table $0DC8C4
+dict_off_1026:
+	dc.w $1655	; table $0DC8C6
+dict_off_1027:
+	dc.w $165A	; table $0DC8C8
+dict_off_1028:
+	dc.w $1662	; table $0DC8CA
+dict_off_1029:
+	dc.w $1669	; table $0DC8CC
+dict_off_1030:
+	dc.w $166E	; table $0DC8CE
+dict_off_1031:
+	dc.w $1671	; table $0DC8D0
+dict_off_1032:
+	dc.w $1679	; table $0DC8D2
+dict_off_1033:
+	dc.w $167E	; table $0DC8D4
+dict_off_1034:
+	dc.w $1685	; table $0DC8D6
+dict_off_1035:
+	dc.w $168E	; table $0DC8D8
+dict_off_1036:
+	dc.w $1695	; table $0DC8DA
+dict_off_1037:
+	dc.w $169A	; table $0DC8DC
+dict_off_1038:
+	dc.w $16A0	; table $0DC8DE
+dict_off_1039:
+	dc.w $16A4	; table $0DC8E0
+dict_off_1040:
+	dc.w $16A8	; table $0DC8E2
+dict_off_1041:
+	dc.w $16AE	; table $0DC8E4
+dict_off_1042:
+	dc.w $16B2	; table $0DC8E6
+dict_off_1043:
+	dc.w $16BC	; table $0DC8E8
+dict_off_1044:
+	dc.w $16C2	; table $0DC8EA
+dict_off_1045:
+	dc.w $16C7	; table $0DC8EC
+dict_off_1046:
+	dc.w $16CA	; table $0DC8EE
+dict_off_1047:
+	dc.w $16CE	; table $0DC8F0
+dict_off_1048:
+	dc.w $16D3	; table $0DC8F2
+dict_off_1049:
+	dc.w $16D8	; table $0DC8F4
+dict_off_1050:
+	dc.w $16DF	; table $0DC8F6
+dict_off_1051:
+	dc.w $16E3	; table $0DC8F8
+dict_off_1052:
+	dc.w $16E8	; table $0DC8FA
+dict_off_1053:
+	dc.w $16EC	; table $0DC8FC
+dict_off_1054:
+	dc.w $16F2	; table $0DC8FE
+dict_off_1055:
+	dc.w $16FA	; table $0DC900
+dict_off_1056:
+	dc.w $1704	; table $0DC902
+dict_off_1057:
+	dc.w $170A	; table $0DC904
+dict_off_1058:
+	dc.w $1711	; table $0DC906
+dict_off_1059:
+	dc.w $1717	; table $0DC908
+dict_off_1060:
+	dc.w $171E	; table $0DC90A
+dict_off_1061:
+	dc.w $1723	; table $0DC90C
+dict_off_1062:
+	dc.w $1729	; table $0DC90E
+dict_off_1063:
+	dc.w $172E	; table $0DC910
+dict_off_1064:
+	dc.w $1732	; table $0DC912
+dict_off_1065:
+	dc.w $1739	; table $0DC914
+dict_off_1066:
+	dc.w $1740	; table $0DC916
+dict_off_1067:
+	dc.w $1745	; table $0DC918
+dict_off_1068:
+	dc.w $174C	; table $0DC91A
+dict_off_1069:
+	dc.w $1751	; table $0DC91C
+dict_off_1070:
+	dc.w $1754	; table $0DC91E
+dict_off_1071:
+	dc.w $1757	; table $0DC920
+dict_off_1072:
+	dc.w $175D	; table $0DC922
+dict_off_1073:
+	dc.w $1768	; table $0DC924
+dict_off_1074:
+	dc.w $1770	; table $0DC926
+dict_off_1075:
+	dc.w $1774	; table $0DC928
+dict_off_1076:
+	dc.w $1778	; table $0DC92A
+dict_off_1077:
+	dc.w $177E	; table $0DC92C
+dict_off_1078:
+	dc.w $1785	; table $0DC92E
+dict_off_1079:
+	dc.w $178A	; table $0DC930
+dict_off_1080:
+	dc.w $1793	; table $0DC932
+dict_off_1081:
+	dc.w $179A	; table $0DC934
+dict_off_1082:
+	dc.w $17A0	; table $0DC936
+dict_off_1083:
+	dc.w $17A5	; table $0DC938
+dict_off_1084:
+	dc.w $17AC	; table $0DC93A
+dict_off_1085:
+	dc.w $17B3	; table $0DC93C
+dict_off_1086:
+	dc.w $17BB	; table $0DC93E
+dict_off_1087:
+	dc.w $17BE	; table $0DC940
+dict_off_1088:
+	dc.w $17C2	; table $0DC942
+dict_off_1089:
+	dc.w $17C9	; table $0DC944
+dict_off_1090:
+	dc.w $17CD	; table $0DC946
+dict_off_1091:
+	dc.w $17D3	; table $0DC948
+dict_off_1092:
+	dc.w $17DD	; table $0DC94A
+dict_off_1093:
+	dc.w $17E3	; table $0DC94C
+dict_off_1094:
+	dc.w $17E8	; table $0DC94E
+dict_off_1095:
+	dc.w $17EC	; table $0DC950
+dict_off_1096:
+	dc.w $17F4	; table $0DC952
+dict_off_1097:
+	dc.w $17F9	; table $0DC954
+dict_off_1098:
+	dc.w $17FC	; table $0DC956
+dict_off_1099:
+	dc.w $1801	; table $0DC958
+dict_off_1100:
+	dc.w $1809	; table $0DC95A
+dict_off_1101:
+	dc.w $1811	; table $0DC95C
+dict_off_1102:
+	dc.w $1818	; table $0DC95E
+dict_off_1103:
+	dc.w $181F	; table $0DC960
+dict_off_1104:
+	dc.w $1824	; table $0DC962
+dict_off_1105:
+	dc.w $182A	; table $0DC964
+dict_off_1106:
+	dc.w $1834	; table $0DC966
+dict_off_1107:
+	dc.w $183B	; table $0DC968
+dict_off_1108:
+	dc.w $1842	; table $0DC96A
+dict_off_1109:
+	dc.w $1848	; table $0DC96C
+dict_off_1110:
+	dc.w $1855	; table $0DC96E
+dict_off_1111:
+	dc.w $185A	; table $0DC970
+dict_off_1112:
+	dc.w $1862	; table $0DC972
+dict_off_1113:
+	dc.w $1866	; table $0DC974
+dict_off_1114:
+	dc.w $186B	; table $0DC976
+dict_off_1115:
+	dc.w $1870	; table $0DC978
+dict_off_1116:
+	dc.w $1878	; table $0DC97A
+dict_off_1117:
+	dc.w $187C	; table $0DC97C
+dict_off_1118:
+	dc.w $187F	; table $0DC97E
+dict_off_1119:
+	dc.w $1886	; table $0DC980
+dict_off_1120:
+	dc.w $188B	; table $0DC982
+dict_off_1121:
+	dc.w $188D	; table $0DC984
+dict_off_1122:
+	dc.w $1890	; table $0DC986
+dict_off_1123:
+	dc.w $1895	; table $0DC988
+dict_off_1124:
+	dc.w $1898	; table $0DC98A
+dict_off_1125:
+	dc.w $189B	; table $0DC98C
+dict_off_1126:
+	dc.w $189E	; table $0DC98E
+dict_off_1127:
+	dc.w $18A4	; table $0DC990
+dict_off_1128:
+	dc.w $18AA	; table $0DC992
+dict_off_1129:
+	dc.w $18AF	; table $0DC994
+dict_off_1130:
+	dc.w $18B6	; table $0DC996
+dict_off_1131:
+	dc.w $18BC	; table $0DC998
+dict_off_1132:
+	dc.w $18C1	; table $0DC99A
+dict_off_1133:
+	dc.w $18C5	; table $0DC99C
+dict_off_1134:
+	dc.w $18CA	; table $0DC99E
+dict_off_1135:
+	dc.w $18D1	; table $0DC9A0
+dict_off_1136:
+	dc.w $18D9	; table $0DC9A2
+dict_off_1137:
+	dc.w $18E0	; table $0DC9A4
+dict_off_1138:
+	dc.w $18E4	; table $0DC9A6
+dict_off_1139:
+	dc.w $18EC	; table $0DC9A8
+dict_off_1140:
+	dc.w $18F1	; table $0DC9AA
+dict_off_1141:
+	dc.w $18F5	; table $0DC9AC
+dict_off_1142:
+	dc.w $18FC	; table $0DC9AE
+dict_off_1143:
+	dc.w $1903	; table $0DC9B0
+dict_off_1144:
+	dc.w $1908	; table $0DC9B2
+dict_off_1145:
+	dc.w $190D	; table $0DC9B4
+dict_off_1146:
+	dc.w $1913	; table $0DC9B6
+dict_off_1147:
+	dc.w $1919	; table $0DC9B8
+dict_off_1148:
+	dc.w $191E	; table $0DC9BA
+dict_off_1149:
+	dc.w $1928	; table $0DC9BC
+dict_off_1150:
+	dc.w $192E	; table $0DC9BE
+dict_off_1151:
+	dc.w $1933	; table $0DC9C0
+dict_off_1152:
+	dc.w $193E	; table $0DC9C2
+dict_off_1153:
+	dc.w $1947	; table $0DC9C4
+dict_off_1154:
+	dc.w $1950	; table $0DC9C6
+dict_off_1155:
+	dc.w $1957	; table $0DC9C8
+dict_off_1156:
+	dc.w $195C	; table $0DC9CA
+dict_off_1157:
+	dc.w $1961	; table $0DC9CC
+dict_off_1158:
+	dc.w $1964	; table $0DC9CE
+dict_off_1159:
+	dc.w $1968	; table $0DC9D0
+dict_off_1160:
+	dc.w $1970	; table $0DC9D2
+dict_off_1161:
+	dc.w $1976	; table $0DC9D4
+dict_off_1162:
+	dc.w $197B	; table $0DC9D6
+dict_off_1163:
+	dc.w $197F	; table $0DC9D8
+dict_off_1164:
+	dc.w $1983	; table $0DC9DA
+dict_off_1165:
+	dc.w $198A	; table $0DC9DC
+dict_off_1166:
+	dc.w $1990	; table $0DC9DE
+dict_off_1167:
+	dc.w $1997	; table $0DC9E0
+dict_off_1168:
+	dc.w $199D	; table $0DC9E2
+dict_off_1169:
+	dc.w $19A4	; table $0DC9E4
+dict_off_1170:
+	dc.w $19AB	; table $0DC9E6
+dict_off_1171:
+	dc.w $19AE	; table $0DC9E8
+dict_off_1172:
+	dc.w $19B5	; table $0DC9EA
+dict_off_1173:
+	dc.w $19BB	; table $0DC9EC
+dict_off_1174:
+	dc.w $19C1	; table $0DC9EE
+dict_off_1175:
+	dc.w $19C7	; table $0DC9F0
+dict_off_1176:
+	dc.w $19CD	; table $0DC9F2
+dict_off_1177:
+	dc.w $19D3	; table $0DC9F4
+dict_off_1178:
+	dc.w $19D6	; table $0DC9F6
+dict_off_1179:
+	dc.w $19DD	; table $0DC9F8
+dict_off_1180:
+	dc.w $19E2	; table $0DC9FA
+dict_off_1181:
+	dc.w $19E7	; table $0DC9FC
+dict_off_1182:
+	dc.w $19EB	; table $0DC9FE
+dict_off_1183:
+	dc.w $19F0	; table $0DCA00
+dict_off_1184:
+	dc.w $19F4	; table $0DCA02
+dict_off_1185:
+	dc.w $19FA	; table $0DCA04
+dict_off_1186:
+	dc.w $1A02	; table $0DCA06
+dict_off_1187:
+	dc.w $1A0A	; table $0DCA08
+dict_off_1188:
+	dc.w $1A0D	; table $0DCA0A
+dict_off_1189:
+	dc.w $1A12	; table $0DCA0C
+dict_off_1190:
+	dc.w $1A19	; table $0DCA0E
+dict_off_1191:
+	dc.w $1A1E	; table $0DCA10
+dict_off_1192:
+	dc.w $1A22	; table $0DCA12
+dict_off_1193:
+	dc.w $1A28	; table $0DCA14
+dict_off_1194:
+	dc.w $1A2F	; table $0DCA16
+dict_off_1195:
+	dc.w $1A36	; table $0DCA18
+dict_off_1196:
+	dc.w $1A3D	; table $0DCA1A
+dict_off_1197:
+	dc.w $1A42	; table $0DCA1C
+dict_off_1198:
+	dc.w $1A4A	; table $0DCA1E
+dict_off_1199:
+	dc.w $1A4F	; table $0DCA20
+dict_off_1200:
+	dc.w $1A55	; table $0DCA22
+dict_off_1201:
+	dc.w $1A5B	; table $0DCA24
+dict_off_1202:
+	dc.w $1A5D	; table $0DCA26
+dict_off_1203:
+	dc.w $1A60	; table $0DCA28
+dict_off_1204:
+	dc.w $1A65	; table $0DCA2A
+dict_off_1205:
+	dc.w $1A6B	; table $0DCA2C
+dict_off_1206:
+	dc.w $1A76	; table $0DCA2E
+dict_off_1207:
+	dc.w $1A79	; table $0DCA30
+dict_off_1208:
+	dc.w $1A80	; table $0DCA32
+dict_off_1209:
+	dc.w $1A85	; table $0DCA34
+dict_off_1210:
+	dc.w $1A8A	; table $0DCA36
+dict_off_1211:
+	dc.w $1A8F	; table $0DCA38
+dict_off_1212:
+	dc.w $1A94	; table $0DCA3A
+dict_off_1213:
+	dc.w $1A9A	; table $0DCA3C
+dict_off_1214:
+	dc.w $1A9F	; table $0DCA3E
+dict_off_1215:
+	dc.w $1AA8	; table $0DCA40
+dict_off_1216:
+	dc.w $1AB3	; table $0DCA42
+dict_off_1217:
+	dc.w $1AB7	; table $0DCA44
+dict_off_1218:
+	dc.w $1ABF	; table $0DCA46
+dict_off_1219:
+	dc.w $1AC4	; table $0DCA48
+dict_off_1220:
+	dc.w $1AC9	; table $0DCA4A
+dict_off_1221:
+	dc.w $1AD1	; table $0DCA4C
+dict_off_1222:
+	dc.w $1AD7	; table $0DCA4E
+dict_off_1223:
+	dc.w $1ADA	; table $0DCA50
+dict_off_1224:
+	dc.w $1ADE	; table $0DCA52
+dict_off_1225:
+	dc.w $1AE6	; table $0DCA54
+dict_off_1226:
+	dc.w $1AED	; table $0DCA56
+dict_off_1227:
+	dc.w $1AF1	; table $0DCA58
+dict_off_1228:
+	dc.w $1AF7	; table $0DCA5A
+dict_off_1229:
+	dc.w $1AFB	; table $0DCA5C
+dict_off_1230:
+	dc.w $1AFE	; table $0DCA5E
+dict_off_1231:
+	dc.w $1B05	; table $0DCA60
+dict_off_1232:
+	dc.w $1B0C	; table $0DCA62
+dict_off_1233:
+	dc.w $1B14	; table $0DCA64
+dict_off_1234:
+	dc.w $1B18	; table $0DCA66
+dict_off_1235:
+	dc.w $1B1A	; table $0DCA68
+dict_off_1236:
+	dc.w $1B23	; table $0DCA6A
+dict_off_1237:
+	dc.w $1B29	; table $0DCA6C
+dict_off_1238:
+	dc.w $1B2E	; table $0DCA6E
+dict_off_1239:
+	dc.w $1B36	; table $0DCA70
+dict_off_1240:
+	dc.w $1B3A	; table $0DCA72
+dict_off_1241:
+	dc.w $1B3E	; table $0DCA74
+dict_off_1242:
+	dc.w $1B43	; table $0DCA76
+dict_off_1243:
+	dc.w $1B47	; table $0DCA78
+dict_off_1244:
+	dc.w $1B4D	; table $0DCA7A
+dict_off_1245:
+	dc.w $1B54	; table $0DCA7C
+dict_off_1246:
+	dc.w $1B5A	; table $0DCA7E
+dict_off_1247:
+	dc.w $1B5E	; table $0DCA80
+dict_off_1248:
+	dc.w $1B65	; table $0DCA82
+dict_off_1249:
+	dc.w $1B6C	; table $0DCA84
+dict_off_1250:
+	dc.w $1B72	; table $0DCA86
+dict_off_1251:
+	dc.w $1B77	; table $0DCA88
+dict_off_1252:
+	dc.w $1B79	; table $0DCA8A
+dict_off_1253:
+	dc.w $1B80	; table $0DCA8C
+dict_off_1254:
+	dc.w $1B89	; table $0DCA8E
+dict_off_1255:
+	dc.w $1B8E	; table $0DCA90
+dict_off_1256:
+	dc.w $1B92	; table $0DCA92
+dict_off_1257:
+	dc.w $1B99	; table $0DCA94
+dict_off_1258:
+	dc.w $1BA1	; table $0DCA96
+dict_off_1259:
+	dc.w $1BAC	; table $0DCA98
+dict_off_1260:
+	dc.w $1BB1	; table $0DCA9A
+dict_off_1261:
+	dc.w $1BB7	; table $0DCA9C
+dict_off_1262:
+	dc.w $1BB9	; table $0DCA9E
+dict_off_1263:
+	dc.w $1BBD	; table $0DCAA0
+dict_off_1264:
+	dc.w $1BBE	; table $0DCAA2
+dict_off_1265:
+	dc.w $1BC1	; table $0DCAA4
+dict_off_1266:
+	dc.w $1BC8	; table $0DCAA6
+dict_off_1267:
+	dc.w $1BCD	; table $0DCAA8
+dict_off_1268:
+	dc.w $1BD7	; table $0DCAAA
+dict_off_1269:
+	dc.w $1BE0	; table $0DCAAC
+dict_off_1270:
+	dc.w $1BE3	; table $0DCAAE
+dict_off_1271:
+	dc.w $1BEA	; table $0DCAB0
+dict_off_1272:
+	dc.w $1BF2	; table $0DCAB2
+dict_off_1273:
+	dc.w $1BF6	; table $0DCAB4
+dict_off_1274:
+	dc.w $1BFD	; table $0DCAB6
+dict_off_1275:
+	dc.w $1C01	; table $0DCAB8
+dict_off_1276:
+	dc.w $1C09	; table $0DCABA
+dict_off_1277:
+	dc.w $1C12	; table $0DCABC
+dict_off_1278:
+	dc.w $1C19	; table $0DCABE
+dict_off_1279:
+	dc.w $1C1E	; table $0DCAC0
+dict_off_1280:
+	dc.w $1C23	; table $0DCAC2
+dict_off_1281:
+	dc.w $1C28	; table $0DCAC4
+dict_off_1282:
+	dc.w $1C2E	; table $0DCAC6
+dict_off_1283:
+	dc.w $1C30	; table $0DCAC8
+dict_off_1284:
+	dc.w $1C33	; table $0DCACA
+dict_off_1285:
+	dc.w $1C39	; table $0DCACC
+dict_off_1286:
+	dc.w $1C40	; table $0DCACE
+dict_off_1287:
+	dc.w $1C49	; table $0DCAD0
+dict_off_1288:
+	dc.w $1C51	; table $0DCAD2
+dict_off_1289:
+	dc.w $1C55	; table $0DCAD4
+dict_off_1290:
+	dc.w $1C5E	; table $0DCAD6
+dict_off_1291:
+	dc.w $1C61	; table $0DCAD8
+dict_off_1292:
+	dc.w $1C6B	; table $0DCADA
+dict_off_1293:
+	dc.w $1C71	; table $0DCADC
+dict_off_1294:
+	dc.w $1C78	; table $0DCADE
+dict_off_1295:
+	dc.w $1C7C	; table $0DCAE0
+dict_off_1296:
+	dc.w $1C84	; table $0DCAE2
+dict_off_1297:
+	dc.w $1C8E	; table $0DCAE4
+dict_off_1298:
+	dc.w $1C93	; table $0DCAE6
+dict_off_1299:
+	dc.w $1C99	; table $0DCAE8
+dict_off_1300:
+	dc.w $1CA0	; table $0DCAEA
+dict_off_1301:
+	dc.w $1CA6	; table $0DCAEC
+dict_off_1302:
+	dc.w $1CAA	; table $0DCAEE
+dict_off_1303:
+	dc.w $1CB0	; table $0DCAF0
+dict_off_1304:
+	dc.w $1CB3	; table $0DCAF2
+dict_off_1305:
+	dc.w $1CB7	; table $0DCAF4
+dict_off_1306:
+	dc.w $1CBE	; table $0DCAF6
+dict_off_1307:
+	dc.w $1CC2	; table $0DCAF8
+dict_off_1308:
+	dc.w $1CC9	; table $0DCAFA
+dict_off_1309:
+	dc.w $1CCC	; table $0DCAFC
+dict_off_1310:
+	dc.w $1CD3	; table $0DCAFE
+dict_off_1311:
+	dc.w $1CD7	; table $0DCB00
+dict_off_1312:
+	dc.w $1CE0	; table $0DCB02
+dict_off_1313:
+	dc.w $1CE5	; table $0DCB04
+dict_off_1314:
+	dc.w $1CE7	; table $0DCB06
+dict_off_1315:
+	dc.w $1CED	; table $0DCB08
+dict_off_1316:
+	dc.w $1CF2	; table $0DCB0A
+dict_off_1317:
+	dc.w $1CF7	; table $0DCB0C
+dict_off_1318:
+	dc.w $1CFD	; table $0DCB0E
+dict_off_1319:
+	dc.w $1D04	; table $0DCB10
+dict_off_1320:
+	dc.w $1D08	; table $0DCB12
+dict_off_1321:
+	dc.w $1D0C	; table $0DCB14
+dict_off_1322:
+	dc.w $1D12	; table $0DCB16
+dict_off_1323:
+	dc.w $1D19	; table $0DCB18
+dict_off_1324:
+	dc.w $1D1D	; table $0DCB1A
+dict_off_1325:
+	dc.w $1D24	; table $0DCB1C
+dict_off_1326:
+	dc.w $1D2C	; table $0DCB1E
+dict_off_1327:
+	dc.w $1D30	; table $0DCB20
+dict_off_1328:
+	dc.w $1D33	; table $0DCB22
+dict_off_1329:
+	dc.w $1D36	; table $0DCB24
+dict_off_1330:
+	dc.w $1D3D	; table $0DCB26
+dict_off_1331:
+	dc.w $1D47	; table $0DCB28
+dict_off_1332:
+	dc.w $1D4C	; table $0DCB2A
+dict_off_1333:
+	dc.w $1D51	; table $0DCB2C
+dict_off_1334:
+	dc.w $1D59	; table $0DCB2E
+dict_off_1335:
+	dc.w $1D62	; table $0DCB30
+dict_off_1336:
+	dc.w $1D6E	; table $0DCB32
+dict_off_1337:
+	dc.w $1D73	; table $0DCB34
+dict_off_1338:
+	dc.w $1D7E	; table $0DCB36
+dict_off_1339:
+	dc.w $1D82	; table $0DCB38
+dict_off_1340:
+	dc.w $1D8C	; table $0DCB3A
+dict_off_1341:
+	dc.w $1D91	; table $0DCB3C
+dict_off_1342:
+	dc.w $1D98	; table $0DCB3E
+dict_off_1343:
+	dc.w $1D9E	; table $0DCB40
+dict_off_1344:
+	dc.w $1DA5	; table $0DCB42
+dict_off_1345:
+	dc.w $1DAD	; table $0DCB44
+dict_off_1346:
+	dc.w $1DB1	; table $0DCB46
+dict_off_1347:
+	dc.w $1DBB	; table $0DCB48
+dict_off_1348:
+	dc.w $1DBF	; table $0DCB4A
+dict_off_1349:
+	dc.w $1DC9	; table $0DCB4C
+dict_off_1350:
+	dc.w $1DD2	; table $0DCB4E
+dict_off_1351:
+	dc.w $1DDA	; table $0DCB50
+dict_off_1352:
+	dc.w $1DDF	; table $0DCB52
+dict_off_1353:
+	dc.w $1DE9	; table $0DCB54
+dict_off_1354:
+	dc.w $1DF3	; table $0DCB56
+dict_off_1355:
+	dc.w $1DFA	; table $0DCB58
+dict_off_1356:
+	dc.w $1E00	; table $0DCB5A
+dict_off_1357:
+	dc.w $1E04	; table $0DCB5C
+dict_off_1358:
+	dc.w $1E0B	; table $0DCB5E
+dict_off_1359:
+	dc.w $1E12	; table $0DCB60
+dict_off_1360:
+	dc.w $1E16	; table $0DCB62
+dict_off_1361:
+	dc.w $1E1A	; table $0DCB64
+dict_off_1362:
+	dc.w $1E23	; table $0DCB66
+dict_off_1363:
+	dc.w $1E29	; table $0DCB68
+dict_off_1364:
+	dc.w $1E2F	; table $0DCB6A
+dict_off_1365:
+	dc.w $1E32	; table $0DCB6C
+dict_off_1366:
+	dc.w $1E3B	; table $0DCB6E
+dict_off_1367:
+	dc.w $1E40	; table $0DCB70
+dict_off_1368:
+	dc.w $1E4A	; table $0DCB72
+dict_off_1369:
+	dc.w $1E50	; table $0DCB74
+dict_off_1370:
+	dc.w $1E5A	; table $0DCB76
+dict_off_1371:
+	dc.w $1E5E	; table $0DCB78
+dict_off_1372:
+	dc.w $1E66	; table $0DCB7A
+dict_off_1373:
+	dc.w $1E6A	; table $0DCB7C
+dict_off_1374:
+	dc.w $1E70	; table $0DCB7E
+dict_off_1375:
+	dc.w $1E75	; table $0DCB80
+dict_off_1376:
+	dc.w $1E7C	; table $0DCB82
+dict_off_1377:
+	dc.w $1E84	; table $0DCB84
+dict_off_1378:
+	dc.w $1E89	; table $0DCB86
+dict_off_1379:
+	dc.w $1E92	; table $0DCB88
+dict_off_1380:
+	dc.w $1E95	; table $0DCB8A
+dict_off_1381:
+	dc.w $1E9A	; table $0DCB8C
+dict_off_1382:
+	dc.w $1E9D	; table $0DCB8E
+dict_off_1383:
+	dc.w $1EA9	; table $0DCB90
+dict_off_1384:
+	dc.w $1EB2	; table $0DCB92
+dict_off_1385:
+	dc.w $1EB9	; table $0DCB94
+dict_off_1386:
+	dc.w $1EC2	; table $0DCB96
+dict_off_1387:
+	dc.w $1ECA	; table $0DCB98
+dict_off_1388:
+	dc.w $1ED1	; table $0DCB9A
+dict_off_1389:
+	dc.w $1ED5	; table $0DCB9C
+dict_off_1390:
+	dc.w $1EDB	; table $0DCB9E
+dict_off_1391:
+	dc.w $1EE4	; table $0DCBA0
+dict_off_1392:
+	dc.w $1EEA	; table $0DCBA2
+dict_off_1393:
+	dc.w $1EEE	; table $0DCBA4
+dict_off_1394:
+	dc.w $1EF4	; table $0DCBA6
+dict_off_1395:
+	dc.w $1EF8	; table $0DCBA8
+dict_off_1396:
+	dc.w $1F00	; table $0DCBAA
+dict_off_1397:
+	dc.w $1F05	; table $0DCBAC
+dict_off_1398:
+	dc.w $1F09	; table $0DCBAE
+dict_off_1399:
+	dc.w $1F0F	; table $0DCBB0
+dict_off_1400:
+	dc.w $1F18	; table $0DCBB2
+dict_off_1401:
+	dc.w $1F1C	; table $0DCBB4
+dict_off_1402:
+	dc.w $1F20	; table $0DCBB6
+dict_off_1403:
+	dc.w $1F24	; table $0DCBB8
+dict_off_1404:
+	dc.w $1F32	; table $0DCBBA
+dict_off_1405:
+	dc.w $1F3D	; table $0DCBBC
+dict_off_1406:
+	dc.w $1F40	; table $0DCBBE
+dict_off_1407:
+	dc.w $1F47	; table $0DCBC0
+dict_off_1408:
+	dc.w $1F4C	; table $0DCBC2
+dict_off_1409:
+	dc.w $1F51	; table $0DCBC4
+dict_off_1410:
+	dc.w $1F55	; table $0DCBC6
+dict_off_1411:
+	dc.w $1F5A	; table $0DCBC8
+dict_off_1412:
+	dc.w $1F63	; table $0DCBCA
+dict_off_1413:
+	dc.w $1F67	; table $0DCBCC
+dict_off_1414:
+	dc.w $1F70	; table $0DCBCE
+dict_off_1415:
+	dc.w $1F78	; table $0DCBD0
+dict_off_1416:
+	dc.w $1F7D	; table $0DCBD2
+dict_off_1417:
+	dc.w $1F84	; table $0DCBD4
+dict_off_1418:
+	dc.w $1F90	; table $0DCBD6
+dict_off_1419:
+	dc.w $1F96	; table $0DCBD8
+dict_off_1420:
+	dc.w $1FA1	; table $0DCBDA
+dict_off_1421:
+	dc.w $1FA7	; table $0DCBDC
+dict_off_1422:
+	dc.w $1FAB	; table $0DCBDE
+dict_off_1423:
+	dc.w $1FB0	; table $0DCBE0
+dict_off_1424:
+	dc.w $1FB7	; table $0DCBE2
+dict_off_1425:
+	dc.w $1FBD	; table $0DCBE4
+dict_off_1426:
+	dc.w $1FC0	; table $0DCBE6
+dict_off_1427:
+	dc.w $1FC3	; table $0DCBE8
+dict_off_1428:
+	dc.w $1FCA	; table $0DCBEA
+dict_off_1429:
+	dc.w $1FD3	; table $0DCBEC
+dict_off_1430:
+	dc.w $1FDA	; table $0DCBEE
+dict_off_1431:
+	dc.w $1FE2	; table $0DCBF0
+dict_off_1432:
+	dc.w $1FE9	; table $0DCBF2
+dict_off_1433:
+	dc.w $1FED	; table $0DCBF4
+dict_off_1434:
+	dc.w $1FF4	; table $0DCBF6
+dict_off_1435:
+	dc.w $1FFD	; table $0DCBF8
+dict_off_1436:
+	dc.w $2001	; table $0DCBFA
+dict_off_1437:
+	dc.w $2005	; table $0DCBFC
+dict_off_1438:
+	dc.w $2009	; table $0DCBFE
+dict_off_1439:
+	dc.w $200E	; table $0DCC00
+dict_off_1440:
+	dc.w $2014	; table $0DCC02
+dict_off_1441:
+	dc.w $2019	; table $0DCC04
+dict_off_1442:
+	dc.w $201E	; table $0DCC06
+dict_off_1443:
+	dc.w $2023	; table $0DCC08
+dict_off_1444:
+	dc.w $2028	; table $0DCC0A
+dict_off_1445:
+	dc.w $202C	; table $0DCC0C
+dict_off_1446:
+	dc.w $2035	; table $0DCC0E
+dict_off_1447:
+	dc.w $203A	; table $0DCC10
+dict_off_1448:
+	dc.w $203F	; table $0DCC12
+dict_off_1449:
+	dc.w $2045	; table $0DCC14
+dict_off_1450:
+	dc.w $204A	; table $0DCC16
+dict_off_1451:
+	dc.w $2050	; table $0DCC18
+dict_off_1452:
+	dc.w $2055	; table $0DCC1A
+dict_off_1453:
+	dc.w $2059	; table $0DCC1C
+dict_off_1454:
+	dc.w $2061	; table $0DCC1E
+dict_off_1455:
+	dc.w $2065	; table $0DCC20
+dict_off_1456:
+	dc.w $206B	; table $0DCC22
+dict_off_1457:
+	dc.w $206F	; table $0DCC24
+dict_off_1458:
+	dc.w $2078	; table $0DCC26
+dict_off_1459:
+	dc.w $207C	; table $0DCC28
+dict_off_1460:
+	dc.w $207F	; table $0DCC2A
+dict_off_1461:
+	dc.w $2083	; table $0DCC2C
+dict_off_1462:
+	dc.w $2088	; table $0DCC2E
+dict_off_1463:
+	dc.w $2090	; table $0DCC30
+dict_off_1464:
+	dc.w $2097	; table $0DCC32
+dict_off_1465:
+	dc.w $209B	; table $0DCC34
+dict_off_1466:
+	dc.w $209F	; table $0DCC36
+dict_off_1467:
+	dc.w $20A8	; table $0DCC38
+dict_off_1468:
+	dc.w $20B3	; table $0DCC3A
+dict_off_1469:
+	dc.w $20B7	; table $0DCC3C
+dict_off_1470:
+	dc.w $20BE	; table $0DCC3E
+dict_off_1471:
+	dc.w $20C6	; table $0DCC40
+dict_off_1472:
+	dc.w $20CB	; table $0DCC42
+dict_off_1473:
+	dc.w $20D2	; table $0DCC44
+dict_off_1474:
+	dc.w $20DC	; table $0DCC46
+dict_off_1475:
+	dc.w $20E1	; table $0DCC48
+dict_off_1476:
+	dc.w $20E7	; table $0DCC4A
+dict_off_1477:
+	dc.w $20EE	; table $0DCC4C
+dict_off_1478:
+	dc.w $20F4	; table $0DCC4E
+dict_off_1479:
+	dc.w $20FD	; table $0DCC50
+dict_off_1480:
+	dc.w $2101	; table $0DCC52
+dict_off_1481:
+	dc.w $2104	; table $0DCC54
+dict_off_1482:
+	dc.w $2108	; table $0DCC56
+dict_off_1483:
+	dc.w $210E	; table $0DCC58
+dict_off_1484:
+	dc.w $2110	; table $0DCC5A
+dict_off_1485:
+	dc.w $2114	; table $0DCC5C
+dict_off_1486:
+	dc.w $2116	; table $0DCC5E
+dict_off_1487:
+	dc.w $2118	; table $0DCC60
+dict_off_1488:
+	dc.w $2121	; table $0DCC62
+dict_off_1489:
+	dc.w $2125	; table $0DCC64
+dict_off_1490:
+	dc.w $212E	; table $0DCC66
+dict_off_1491:
+	dc.w $2132	; table $0DCC68
+dict_off_1492:
+	dc.w $2137	; table $0DCC6A
+dict_off_1493:
+	dc.w $213B	; table $0DCC6C
+dict_off_1494:
+	dc.w $2141	; table $0DCC6E
+dict_off_1495:
+	dc.w $2146	; table $0DCC70
+dict_off_1496:
+	dc.w $2152	; table $0DCC72
+dict_off_1497:
+	dc.w $2155	; table $0DCC74
+dict_off_1498:
+	dc.w $215A	; table $0DCC76
+dict_off_1499:
+	dc.w $215D	; table $0DCC78
+dict_off_1500:
+	dc.w $2163	; table $0DCC7A
+dict_off_1501:
+	dc.w $216A	; table $0DCC7C
+dict_off_1502:
+	dc.w $2173	; table $0DCC7E
+dict_off_1503:
+	dc.w $2178	; table $0DCC80
+dict_off_1504:
+	dc.w $217F	; table $0DCC82
+dict_off_1505:
+	dc.w $2185	; table $0DCC84
+dict_off_1506:
+	dc.w $218A	; table $0DCC86
+dict_off_1507:
+	dc.w $2191	; table $0DCC88
+dict_off_1508:
+	dc.w $219E	; table $0DCC8A
+dict_off_1509:
+	dc.w $21A7	; table $0DCC8C
+dict_off_1510:
+	dc.w $21AC	; table $0DCC8E
+dict_off_1511:
+	dc.w $21B2	; table $0DCC90
+dict_off_1512:
+	dc.w $21B6	; table $0DCC92
+dict_off_1513:
+	dc.w $21BF	; table $0DCC94
+dict_off_1514:
+	dc.w $21C4	; table $0DCC96
+dict_off_1515:
+	dc.w $21C7	; table $0DCC98
+dict_off_1516:
+	dc.w $21CD	; table $0DCC9A
+dict_off_1517:
+	dc.w $21D4	; table $0DCC9C
+dict_off_1518:
+	dc.w $21D8	; table $0DCC9E
+dict_off_1519:
+	dc.w $21DB	; table $0DCCA0
+dict_off_1520:
+	dc.w $21DF	; table $0DCCA2
+dict_off_1521:
+	dc.w $21E3	; table $0DCCA4
+dict_off_1522:
+	dc.w $21E8	; table $0DCCA6
+dict_off_1523:
+	dc.w $21F0	; table $0DCCA8
+dict_off_1524:
+	dc.w $21F6	; table $0DCCAA
+dict_off_1525:
+	dc.w $21FB	; table $0DCCAC
+dict_off_1526:
+	dc.w $2202	; table $0DCCAE
+dict_off_1527:
+	dc.w $2208	; table $0DCCB0
+dict_off_1528:
+	dc.w $220E	; table $0DCCB2
+dict_off_1529:
+	dc.w $2216	; table $0DCCB4
+dict_off_1530:
+	dc.w $221A	; table $0DCCB6
+dict_off_1531:
+	dc.w $2222	; table $0DCCB8
+dict_off_1532:
+	dc.w $2228	; table $0DCCBA
+dict_off_1533:
+	dc.w $222F	; table $0DCCBC
+dict_off_1534:
+	dc.w $2234	; table $0DCCBE
+dict_off_1535:
+	dc.w $223C	; table $0DCCC0
+dict_off_1536:
+	dc.w $2246	; table $0DCCC2
+dict_off_1537:
+	dc.w $224A	; table $0DCCC4
+dict_off_1538:
+	dc.w $224E	; table $0DCCC6
+dict_off_1539:
+	dc.w $2256	; table $0DCCC8
+dict_off_1540:
+	dc.w $2260	; table $0DCCCA
+dict_off_1541:
+	dc.w $2263	; table $0DCCCC
+dict_off_1542:
+	dc.w $226A	; table $0DCCCE
+dict_off_1543:
+	dc.w $2273	; table $0DCCD0
+dict_off_1544:
+	dc.w $227D	; table $0DCCD2
+dict_off_1545:
+	dc.w $2282	; table $0DCCD4
+dict_off_1546:
+	dc.w $228C	; table $0DCCD6
+dict_off_1547:
+	dc.w $2291	; table $0DCCD8
+dict_off_1548:
+	dc.w $2295	; table $0DCCDA
+dict_off_1549:
+	dc.w $229A	; table $0DCCDC
+dict_off_1550:
+	dc.w $229F	; table $0DCCDE
+dict_off_1551:
+	dc.w $22A4	; table $0DCCE0
+dict_off_1552:
+	dc.w $22A9	; table $0DCCE2
+dict_off_1553:
+	dc.w $22B5	; table $0DCCE4
+dict_off_1554:
+	dc.w $22BB	; table $0DCCE6
+dict_off_1555:
+	dc.w $22C1	; table $0DCCE8
+dict_off_1556:
+	dc.w $22C5	; table $0DCCEA
+dict_off_1557:
+	dc.w $22CB	; table $0DCCEC
+dict_off_1558:
+	dc.w $22D0	; table $0DCCEE
+dict_off_1559:
+	dc.w $22D4	; table $0DCCF0
+dict_off_1560:
+	dc.w $22D9	; table $0DCCF2
+dict_off_1561:
+	dc.w $22DD	; table $0DCCF4
+dict_off_1562:
+	dc.w $22E1	; table $0DCCF6
+dict_off_1563:
+	dc.w $22EC	; table $0DCCF8
+dict_off_1564:
+	dc.w $22EF	; table $0DCCFA
+dict_off_1565:
+	dc.w $22F4	; table $0DCCFC
+dict_off_1566:
+	dc.w $22FF	; table $0DCCFE
+dict_off_1567:
+	dc.w $2307	; table $0DCD00
+dict_off_1568:
+	dc.w $230B	; table $0DCD02
+dict_off_1569:
+	dc.w $2310	; table $0DCD04
+dict_off_1570:
+	dc.w $2314	; table $0DCD06
+dict_off_1571:
+	dc.w $2318	; table $0DCD08
+dict_off_1572:
+	dc.w $231C	; table $0DCD0A
+dict_off_1573:
+	dc.w $2326	; table $0DCD0C
+dict_off_1574:
+	dc.w $232D	; table $0DCD0E
+dict_off_1575:
+	dc.w $2331	; table $0DCD10
+dict_off_1576:
+	dc.w $2336	; table $0DCD12
+dict_off_1577:
+	dc.w $233B	; table $0DCD14
+dict_off_1578:
+	dc.w $2344	; table $0DCD16
+dict_off_1579:
+	dc.w $2346	; table $0DCD18
+dict_off_1580:
+	dc.w $234A	; table $0DCD1A
+dict_off_1581:
+	dc.w $2350	; table $0DCD1C
+dict_off_1582:
+	dc.w $2355	; table $0DCD1E
+dict_off_1583:
+	dc.w $2357	; table $0DCD20
+dict_off_1584:
+	dc.w $2359	; table $0DCD22
+dict_off_1585:
+	dc.w $2361	; table $0DCD24
+dict_off_1586:
+	dc.w $2365	; table $0DCD26
+dict_off_1587:
+	dc.w $236A	; table $0DCD28
+dict_off_1588:
+	dc.w $236F	; table $0DCD2A
+dict_off_1589:
+	dc.w $2372	; table $0DCD2C
+dict_off_1590:
+	dc.w $2379	; table $0DCD2E
+dict_off_1591:
+	dc.w $2380	; table $0DCD30
+dict_off_1592:
+	dc.w $2385	; table $0DCD32
+dict_off_1593:
+	dc.w $2389	; table $0DCD34
+dict_off_1594:
+	dc.w $238D	; table $0DCD36
+dict_off_1595:
+	dc.w $2392	; table $0DCD38
+dict_off_1596:
+	dc.w $2396	; table $0DCD3A
+dict_off_1597:
+	dc.w $239B	; table $0DCD3C
+dict_off_1598:
+	dc.w $239F	; table $0DCD3E
+dict_off_1599:
+	dc.w $23A3	; table $0DCD40
+dict_off_1600:
+	dc.w $23A7	; table $0DCD42
+dict_off_1601:
+	dc.w $23AA	; table $0DCD44
+dict_off_1602:
+	dc.w $23AD	; table $0DCD46
+dict_off_1603:
+	dc.w $23B3	; table $0DCD48
+dict_off_1604:
+	dc.w $23B6	; table $0DCD4A
+dict_off_1605:
+	dc.w $23BB	; table $0DCD4C
+dict_off_1606:
+	dc.w $23C1	; table $0DCD4E
+dict_off_1607:
+	dc.w $23C9	; table $0DCD50
+dict_off_1608:
+	dc.w $23CE	; table $0DCD52
+dict_off_1609:
+	dc.w $23D2	; table $0DCD54
+dict_off_1610:
+	dc.w $23DD	; table $0DCD56
+dict_off_1611:
+	dc.w $23E0	; table $0DCD58
+dict_off_1612:
+	dc.w $23E3	; table $0DCD5A
+dict_off_1613:
+	dc.w $23E8	; table $0DCD5C
+dict_off_1614:
+	dc.w $23EF	; table $0DCD5E
+dict_off_1615:
+	dc.w $23F7	; table $0DCD60
+dict_off_1616:
+	dc.w $23FD	; table $0DCD62
+dict_off_1617:
+	dc.w $2400	; table $0DCD64
+dict_off_1618:
+	dc.w $2405	; table $0DCD66
+dict_off_1619:
+	dc.w $2408	; table $0DCD68
+dict_off_1620:
+	dc.w $240B	; table $0DCD6A
+dict_off_1621:
+	dc.w $2410	; table $0DCD6C
+dict_off_1622:
+	dc.w $2416	; table $0DCD6E
+dict_off_1623:
+	dc.w $241B	; table $0DCD70
+dict_off_1624:
+	dc.w $2420	; table $0DCD72
+dict_off_1625:
+	dc.w $2422	; table $0DCD74
+dict_off_1626:
+	dc.w $2425	; table $0DCD76
+dict_off_1627:
+	dc.w $2428	; table $0DCD78
+dict_off_1628:
+	dc.w $242D	; table $0DCD7A
+dict_off_1629:
+	dc.w $2432	; table $0DCD7C
+dict_off_1630:
+	dc.w $2438	; table $0DCD7E
+dict_off_1631:
+	dc.w $243B	; table $0DCD80
+dict_off_1632:
+	dc.w $2447	; table $0DCD82
+dict_off_1633:
+	dc.w $244E	; table $0DCD84
+dict_off_1634:
+	dc.w $2456	; table $0DCD86
+dict_off_1635:
+	dc.w $245C	; table $0DCD88
+dict_off_1636:
+	dc.w $2462	; table $0DCD8A
+dict_off_1637:
+	dc.w $2468	; table $0DCD8C
+dict_off_1638:
+	dc.w $246F	; table $0DCD8E
+dict_off_1639:
+	dc.w $2471	; table $0DCD90
+dict_off_1640:
+	dc.w $2473	; table $0DCD92
+dict_off_1641:
+	dc.w $247B	; table $0DCD94
+dict_off_1642:
+	dc.w $2482	; table $0DCD96
+dict_off_1643:
+	dc.w $248D	; table $0DCD98
+dict_off_1644:
+	dc.w $2492	; table $0DCD9A
+dict_off_1645:
+	dc.w $249B	; table $0DCD9C
+dict_off_1646:
+	dc.w $24A2	; table $0DCD9E
+dict_off_1647:
+	dc.w $24A6	; table $0DCDA0
+dict_off_1648:
+	dc.w $24AF	; table $0DCDA2
+dict_off_1649:
+	dc.w $24B5	; table $0DCDA4
+dict_off_1650:
+	dc.w $24B9	; table $0DCDA6
+dict_off_1651:
+	dc.w $24BE	; table $0DCDA8
+dict_off_1652:
+	dc.w $24C4	; table $0DCDAA
+dict_off_1653:
+	dc.w $24C8	; table $0DCDAC
+dict_off_1654:
+	dc.w $24CE	; table $0DCDAE
+dict_off_1655:
+	dc.w $24D1	; table $0DCDB0
+dict_off_1656:
+	dc.w $24D5	; table $0DCDB2
+dict_off_1657:
+	dc.w $24DD	; table $0DCDB4
+dict_off_1658:
+	dc.w $24E6	; table $0DCDB6
+dict_off_1659:
+	dc.w $24ED	; table $0DCDB8
+dict_off_1660:
+	dc.w $24F7	; table $0DCDBA
+dict_off_1661:
+	dc.w $24FE	; table $0DCDBC
+dict_off_1662:
+	dc.w $2503	; table $0DCDBE
+dict_off_1663:
+	dc.w $2509	; table $0DCDC0
+dict_off_1664:
+	dc.w $250D	; table $0DCDC2
+dict_off_1665:
+	dc.w $2512	; table $0DCDC4
+dict_off_1666:
+	dc.w $251A	; table $0DCDC6
+dict_off_1667:
+	dc.w $251E	; table $0DCDC8
+dict_off_1668:
+	dc.w $2522	; table $0DCDCA
+dict_off_1669:
+	dc.w $2526	; table $0DCDCC
+dict_off_1670:
+	dc.w $252B	; table $0DCDCE
+dict_off_1671:
+	dc.w $2530	; table $0DCDD0
+dict_off_1672:
+	dc.w $2534	; table $0DCDD2
+dict_off_1673:
+	dc.w $2538	; table $0DCDD4
+dict_off_1674:
+	dc.w $253D	; table $0DCDD6
+dict_off_1675:
+	dc.w $2542	; table $0DCDD8
+dict_off_1676:
+	dc.w $2548	; table $0DCDDA
+dict_off_1677:
+	dc.w $254E	; table $0DCDDC
+dict_off_1678:
+	dc.w $2551	; table $0DCDDE
+dict_off_1679:
+	dc.w $2556	; table $0DCDE0
+dict_off_1680:
+	dc.w $255B	; table $0DCDE2
+dict_off_1681:
+	dc.w $255F	; table $0DCDE4
+dict_off_1682:
+	dc.w $2564	; table $0DCDE6
+dict_off_1683:
+	dc.w $2568	; table $0DCDE8
+dict_off_1684:
+	dc.w $256A	; table $0DCDEA
+dict_off_1685:
+	dc.w $256D	; table $0DCDEC
+dict_off_1686:
+	dc.w $2572	; table $0DCDEE
+dict_off_1687:
+	dc.w $2577	; table $0DCDF0
+dict_off_1688:
+	dc.w $257B	; table $0DCDF2
+dict_off_1689:
+	dc.w $257E	; table $0DCDF4
+dict_off_1690:
+	dc.w $2587	; table $0DCDF6
+dict_off_1691:
+	dc.w $258B	; table $0DCDF8
+dict_off_1692:
+	dc.w $258F	; table $0DCDFA
+dict_off_1693:
+	dc.w $2597	; table $0DCDFC
+dict_off_1694:
+	dc.w $259D	; table $0DCDFE
+dict_off_1695:
+	dc.w $25A2	; table $0DCE00
+dict_off_1696:
+	dc.w $25AA	; table $0DCE02
+dict_off_1697:
+	dc.w $25AF	; table $0DCE04
+dict_off_1698:
+	dc.w $25B9	; table $0DCE06
+dict_off_1699:
+	dc.w $25BE	; table $0DCE08
+dict_off_1700:
+	dc.w $25C7	; table $0DCE0A
+dict_off_1701:
+	dc.w $25CC	; table $0DCE0C
+dict_off_1702:
+	dc.w $25D3	; table $0DCE0E
+dict_off_1703:
+	dc.w $25D9	; table $0DCE10
+dict_off_1704:
+	dc.w $25E1	; table $0DCE12
+dict_off_1705:
+	dc.w $25E8	; table $0DCE14
+dict_off_1706:
+	dc.w $25EF	; table $0DCE16
+dict_off_1707:
+	dc.w $25F5	; table $0DCE18
+dict_off_1708:
+	dc.w $25FC	; table $0DCE1A
+dict_off_1709:
+	dc.w $2600	; table $0DCE1C
+dict_off_1710:
+	dc.w $2606	; table $0DCE1E
+dict_off_1711:
+	dc.w $260E	; table $0DCE20
+dict_off_1712:
+	dc.w $2615	; table $0DCE22
+dict_off_1713:
+	dc.w $2618	; table $0DCE24
+dict_off_1714:
+	dc.w $261D	; table $0DCE26
+dict_off_1715:
+	dc.w $2625	; table $0DCE28
+dict_off_1716:
+	dc.w $262A	; table $0DCE2A
+dict_off_1717:
+	dc.w $2630	; table $0DCE2C
+dict_off_1718:
+	dc.w $2635	; table $0DCE2E
+dict_off_1719:
+	dc.w $263C	; table $0DCE30
+dict_off_1720:
+	dc.w $263F	; table $0DCE32
+dict_off_1721:
+	dc.w $2643	; table $0DCE34
+dict_off_1722:
+	dc.w $2649	; table $0DCE36
+dict_off_1723:
+	dc.w $264E	; table $0DCE38
+dict_off_1724:
+	dc.w $2655	; table $0DCE3A
+dict_off_1725:
+	dc.w $2658	; table $0DCE3C
+dict_off_1726:
+	dc.w $265F	; table $0DCE3E
+dict_off_1727:
+	dc.w $2664	; table $0DCE40
+dict_off_1728:
+	dc.w $2667	; table $0DCE42
+dict_off_1729:
+	dc.w $266E	; table $0DCE44
+dict_off_1730:
+	dc.w $2674	; table $0DCE46
+dict_off_1731:
+	dc.w $2679	; table $0DCE48
+dict_off_1732:
+	dc.w $267E	; table $0DCE4A
+dict_off_1733:
+	dc.w $2682	; table $0DCE4C
+dict_off_1734:
+	dc.w $2686	; table $0DCE4E
+dict_off_1735:
+	dc.w $268B	; table $0DCE50
+dict_off_1736:
+	dc.w $268F	; table $0DCE52
+dict_off_1737:
+	dc.w $2694	; table $0DCE54
+dict_off_1738:
+	dc.w $2698	; table $0DCE56
+dict_off_1739:
+	dc.w $269C	; table $0DCE58
+dict_off_1740:
+	dc.w $26A2	; table $0DCE5A
+dict_off_1741:
+	dc.w $26AA	; table $0DCE5C
+dict_off_1742:
+	dc.w $26AF	; table $0DCE5E
+dict_off_1743:
+	dc.w $26B3	; table $0DCE60
+dict_off_1744:
+	dc.w $26BE	; table $0DCE62
+dict_off_1745:
+	dc.w $26C3	; table $0DCE64
+dict_off_1746:
+	dc.w $26C7	; table $0DCE66
+dict_off_1747:
+	dc.w $26D1	; table $0DCE68
+dict_off_1748:
+	dc.w $26D6	; table $0DCE6A
+dict_off_1749:
+	dc.w $26DA	; table $0DCE6C
+dict_off_1750:
+	dc.w $26DF	; table $0DCE6E
+dict_off_1751:
+	dc.w $26E3	; table $0DCE70
+dict_off_1752:
+	dc.w $26EA	; table $0DCE72
+dict_off_1753:
+	dc.w $26ED	; table $0DCE74
+dict_off_1754:
+	dc.w $26F1	; table $0DCE76
+dict_off_1755:
+	dc.w $26F8	; table $0DCE78
+dict_off_1756:
+	dc.w $26FB	; table $0DCE7A
+dict_off_1757:
+	dc.w $2700	; table $0DCE7C
+dict_off_1758:
+	dc.w $2706	; table $0DCE7E
+dict_off_1759:
+	dc.w $270C	; table $0DCE80
+dict_off_1760:
+	dc.w $271E	; table $0DCE82
+dict_off_1761:
+	dc.w $2724	; table $0DCE84
+dict_off_1762:
+	dc.w $272B	; table $0DCE86
+dict_off_1763:
+	dc.w $2732	; table $0DCE88
+dict_off_1764:
+	dc.w $2736	; table $0DCE8A
+dict_off_1765:
+	dc.w $273A	; table $0DCE8C
+dict_off_1766:
+	dc.w $2744	; table $0DCE8E
+dict_off_1767:
+	dc.w $274B	; table $0DCE90
+dict_off_1768:
+	dc.w $2751	; table $0DCE92
+dict_off_1769:
+	dc.w $2755	; table $0DCE94
+dict_off_1770:
+	dc.w $275D	; table $0DCE96
+dict_off_1771:
+	dc.w $2764	; table $0DCE98
+dict_off_1772:
+	dc.w $276D	; table $0DCE9A
+dict_off_1773:
+	dc.w $2771	; table $0DCE9C
+dict_off_1774:
+	dc.w $2775	; table $0DCE9E
+dict_off_1775:
+	dc.w $2782	; table $0DCEA0
+dict_off_1776:
+	dc.w $2786	; table $0DCEA2
+dict_off_1777:
+	dc.w $278D	; table $0DCEA4
+dict_off_1778:
+	dc.w $2799	; table $0DCEA6
+dict_off_1779:
+	dc.w $27A2	; table $0DCEA8
+dict_off_1780:
+	dc.w $27A9	; table $0DCEAA
+dict_off_1781:
+	dc.w $27AF	; table $0DCEAC
+dict_off_1782:
+	dc.w $27B8	; table $0DCEAE
+dict_off_1783:
+	dc.w $27C0	; table $0DCEB0
+dict_off_1784:
+	dc.w $27C5	; table $0DCEB2
+dict_off_1785:
+	dc.w $27CA	; table $0DCEB4
+dict_off_1786:
+	dc.w $27D1	; table $0DCEB6
+dict_off_1787:
+	dc.w $27DA	; table $0DCEB8
+dict_off_1788:
+	dc.w $27DF	; table $0DCEBA
+dict_off_1789:
+	dc.w $27E5	; table $0DCEBC
+dict_off_1790:
+	dc.w $27EB	; table $0DCEBE
+dict_off_1791:
+	dc.w $27F3	; table $0DCEC0
+dict_off_1792:
+	dc.w $27FB	; table $0DCEC2
+dict_off_1793:
+	dc.w $2803	; table $0DCEC4
+dict_off_1794:
+	dc.w $2808	; table $0DCEC6
+dict_off_1795:
+	dc.w $280E	; table $0DCEC8
+dict_off_1796:
+	dc.w $2812	; table $0DCECA
+dict_off_1797:
+	dc.w $2817	; table $0DCECC
+dict_off_1798:
+	dc.w $281E	; table $0DCECE
+dict_off_1799:
+	dc.w $2826	; table $0DCED0
+dict_off_1800:
+	dc.w $282B	; table $0DCED2
+dict_off_1801:
+	dc.w $2832	; table $0DCED4
+dict_off_1802:
+	dc.w $283D	; table $0DCED6
+dict_off_1803:
+	dc.w $2841	; table $0DCED8
+dict_off_1804:
+	dc.w $284E	; table $0DCEDA
+dict_off_1805:
+	dc.w $2852	; table $0DCEDC
+dict_off_1806:
+	dc.w $2858	; table $0DCEDE
+dict_off_1807:
+	dc.w $2860	; table $0DCEE0
+dict_off_1808:
+	dc.w $2867	; table $0DCEE2
+dict_off_1809:
+	dc.w $286F	; table $0DCEE4
+dict_off_1810:
+	dc.w $2872	; table $0DCEE6
+dict_off_1811:
+	dc.w $287D	; table $0DCEE8
+dict_off_1812:
+	dc.w $288A	; table $0DCEEA
+dict_off_1813:
+	dc.w $2893	; table $0DCEEC
+dict_off_1814:
+	dc.w $289D	; table $0DCEEE
+dict_off_1815:
+	dc.w $28A2	; table $0DCEF0
+dict_off_1816:
+	dc.w $28A9	; table $0DCEF2
+dict_off_1817:
+	dc.w $28AF	; table $0DCEF4
+dict_off_1818:
+	dc.w $28B6	; table $0DCEF6
+dict_off_1819:
+	dc.w $28BB	; table $0DCEF8
+dict_off_1820:
+	dc.w $28C1	; table $0DCEFA
+dict_off_1821:
+	dc.w $28CA	; table $0DCEFC
+dict_off_1822:
+	dc.w $28CE	; table $0DCEFE
+dict_off_1823:
+	dc.w $28D5	; table $0DCF00
+dict_off_1824:
+	dc.w $28DB	; table $0DCF02
+dict_off_1825:
+	dc.w $28DF	; table $0DCF04
+dict_off_1826:
+	dc.w $28E8	; table $0DCF06
+dict_off_1827:
+	dc.w $28F1	; table $0DCF08
+dict_off_1828:
+	dc.w $28FC	; table $0DCF0A
+dict_off_1829:
+	dc.w $2900	; table $0DCF0C
+dict_off_1830:
+	dc.w $2908	; table $0DCF0E
+dict_off_1831:
+	dc.w $2914	; table $0DCF10
+dict_off_1832:
+	dc.w $291A	; table $0DCF12
+dict_off_1833:
+	dc.w $291F	; table $0DCF14
+dict_off_1834:
+	dc.w $2924	; table $0DCF16
+dict_off_1835:
+	dc.w $2933	; table $0DCF18
+dict_off_1836:
+	dc.w $293B	; table $0DCF1A
+dict_off_1837:
+	dc.w $293E	; table $0DCF1C
+dict_off_1838:
+	dc.w $2946	; table $0DCF1E
+dict_off_1839:
+	dc.w $294B	; table $0DCF20
+dict_off_1840:
+	dc.w $2950	; table $0DCF22
+dict_off_1841:
+	dc.w $2956	; table $0DCF24
+dict_off_1842:
+	dc.w $295E	; table $0DCF26
+dict_off_1843:
+	dc.w $2963	; table $0DCF28
+dict_off_1844:
+	dc.w $296A	; table $0DCF2A
+dict_off_1845:
+	dc.w $2972	; table $0DCF2C
+dict_off_1846:
+	dc.w $297A	; table $0DCF2E
+dict_off_1847:
+	dc.w $2982	; table $0DCF30
+dict_off_1848:
+	dc.w $2988	; table $0DCF32
+dict_off_1849:
+	dc.w $2990	; table $0DCF34
+dict_off_1850:
+	dc.w $2995	; table $0DCF36
+dict_off_1851:
+	dc.w $299A	; table $0DCF38
+dict_off_1852:
+	dc.w $299F	; table $0DCF3A
+dict_off_1853:
+	dc.w $29A4	; table $0DCF3C
+dict_off_1854:
+	dc.w $29AA	; table $0DCF3E
+dict_off_1855:
+	dc.w $29B3	; table $0DCF40
+dict_off_1856:
+	dc.w $29B9	; table $0DCF42
+dict_off_1857:
+	dc.w $29BF	; table $0DCF44
+dict_off_1858:
+	dc.w $29C6	; table $0DCF46
+dict_off_1859:
+	dc.w $29CD	; table $0DCF48
+dict_off_1860:
+	dc.w $29D2	; table $0DCF4A
+dict_off_1861:
+	dc.w $29D9	; table $0DCF4C
+dict_off_1862:
+	dc.w $29DF	; table $0DCF4E
+dict_off_1863:
+	dc.w $29E4	; table $0DCF50
+dict_off_1864:
+	dc.w $29EA	; table $0DCF52
+dict_off_1865:
+	dc.w $29F0	; table $0DCF54
+dict_off_1866:
+	dc.w $29F4	; table $0DCF56
+dict_off_1867:
+	dc.w $29F9	; table $0DCF58
+dict_off_1868:
+	dc.w $29FF	; table $0DCF5A
+dict_off_1869:
+	dc.w $2A04	; table $0DCF5C
+dict_off_1870:
+	dc.w $2A09	; table $0DCF5E
+dict_off_1871:
+	dc.w $2A10	; table $0DCF60
+dict_off_1872:
+	dc.w $2A19	; table $0DCF62
+dict_off_1873:
+	dc.w $2A23	; table $0DCF64
+dict_off_1874:
+	dc.w $2A28	; table $0DCF66
+dict_off_1875:
+	dc.w $2A2C	; table $0DCF68
+dict_off_1876:
+	dc.w $2A32	; table $0DCF6A
+dict_off_1877:
+	dc.w $2A37	; table $0DCF6C
+dict_off_1878:
+	dc.w $2A3B	; table $0DCF6E
+dict_off_1879:
+	dc.w $2A3F	; table $0DCF70
+dict_off_1880:
+	dc.w $2A45	; table $0DCF72
+dict_off_1881:
+	dc.w $2A49	; table $0DCF74
+dict_off_1882:
+	dc.w $2A4F	; table $0DCF76
+dict_off_1883:
+	dc.w $2A54	; table $0DCF78
+dict_off_1884:
+	dc.w $2A59	; table $0DCF7A
+dict_off_1885:
+	dc.w $2A5B	; table $0DCF7C
+dict_off_1886:
+	dc.w $2A65	; table $0DCF7E
+dict_off_1887:
+	dc.w $2A6B	; table $0DCF80
+dict_off_1888:
+	dc.w $2A6F	; table $0DCF82
+dict_off_1889:
+	dc.w $2A75	; table $0DCF84
+dict_off_1890:
+	dc.w $2A7B	; table $0DCF86
+dict_off_1891:
+	dc.w $2A82	; table $0DCF88
+dict_off_1892:
+	dc.w $2A88	; table $0DCF8A
+dict_off_1893:
+	dc.w $2A8D	; table $0DCF8C
+dict_off_1894:
+	dc.w $2A8F	; table $0DCF8E
+dict_off_1895:
+	dc.w $2A94	; table $0DCF90
+dict_off_1896:
+	dc.w $2A98	; table $0DCF92
+dict_off_1897:
+	dc.w $2A9E	; table $0DCF94
+dict_off_1898:
+	dc.w $2AA2	; table $0DCF96
+dict_off_1899:
+	dc.w $2AAA	; table $0DCF98
+dict_off_1900:
+	dc.w $2AB0	; table $0DCF9A
+dict_off_1901:
+	dc.w $2AB4	; table $0DCF9C
+dict_off_1902:
+	dc.w $2AB9	; table $0DCF9E
+dict_off_1903:
+	dc.w $2AC4	; table $0DCFA0
+dict_off_1904:
+	dc.w $2ACE	; table $0DCFA2
+dict_off_1905:
+	dc.w $2AD4	; table $0DCFA4
+dict_off_1906:
+	dc.w $2ADA	; table $0DCFA6
+dict_off_1907:
+	dc.w $2AE0	; table $0DCFA8
+dict_off_1908:
+	dc.w $2AE5	; table $0DCFAA
+dict_off_1909:
+	dc.w $2AEB	; table $0DCFAC
+dict_off_1910:
+	dc.w $2AEF	; table $0DCFAE
+dict_off_1911:
+	dc.w $2AF6	; table $0DCFB0
+dict_off_1912:
+	dc.w $2AFD	; table $0DCFB2
+dict_off_1913:
+	dc.w $2B01	; table $0DCFB4
+dict_off_1914:
+	dc.w $2B06	; table $0DCFB6
+dict_off_1915:
+	dc.w $2B0E	; table $0DCFB8
+dict_off_1916:
+	dc.w $2B15	; table $0DCFBA
+dict_off_1917:
+	dc.w $2B19	; table $0DCFBC
+dict_off_1918:
+	dc.w $2B1B	; table $0DCFBE
+dict_off_1919:
+	dc.w $2B20	; table $0DCFC0
+dict_off_1920:
+	dc.w $2B25	; table $0DCFC2
+dict_off_1921:
+	dc.w $2B2A	; table $0DCFC4
+dict_off_1922:
+	dc.w $2B31	; table $0DCFC6
+dict_off_1923:
+	dc.w $2B35	; table $0DCFC8
+dict_off_1924:
+	dc.w $2B3F	; table $0DCFCA
+dict_off_1925:
+	dc.w $2B49	; table $0DCFCC
+dict_off_1926:
+	dc.w $2B4F	; table $0DCFCE
+dict_off_1927:
+	dc.w $2B54	; table $0DCFD0
+dict_off_1928:
+	dc.w $2B59	; table $0DCFD2
+dict_off_1929:
+	dc.w $2B5D	; table $0DCFD4
+dict_off_1930:
+	dc.w $2B62	; table $0DCFD6
+dict_off_1931:
+	dc.w $2B68	; table $0DCFD8
+dict_off_1932:
+	dc.w $2B6F	; table $0DCFDA
+dict_off_1933:
+	dc.w $2B75	; table $0DCFDC
+dict_off_1934:
+	dc.w $2B79	; table $0DCFDE
+dict_off_1935:
+	dc.w $2B7E	; table $0DCFE0
+dict_off_1936:
+	dc.w $2B85	; table $0DCFE2
+dict_off_1937:
+	dc.w $2B88	; table $0DCFE4
+dict_off_1938:
+	dc.w $2B92	; table $0DCFE6
+dict_off_1939:
+	dc.w $2B98	; table $0DCFE8
+dict_off_1940:
+	dc.w $2BA1	; table $0DCFEA
+dict_off_1941:
+	dc.w $2BA6	; table $0DCFEC
+dict_off_1942:
+	dc.w $2BAC	; table $0DCFEE
+dict_off_1943:
+	dc.w $2BB1	; table $0DCFF0
+dict_off_1944:
+	dc.w $2BB9	; table $0DCFF2
+dict_off_1945:
+	dc.w $2BC0	; table $0DCFF4
+dict_off_1946:
+	dc.w $2BC6	; table $0DCFF6
+dict_off_1947:
+	dc.w $2BCC	; table $0DCFF8
+dict_off_1948:
+	dc.w $2BD3	; table $0DCFFA
+dict_off_1949:
+	dc.w $2BDE	; table $0DCFFC
+dict_off_1950:
+	dc.w $2BE6	; table $0DCFFE
+dict_off_1951:
+	dc.w $2BEE	; table $0DD000
+dict_off_1952:
+	dc.w $2BF2	; table $0DD002
+dict_off_1953:
+	dc.w $2BF7	; table $0DD004
+dict_off_1954:
+	dc.w $2C00	; table $0DD006
+dict_off_1955:
+	dc.w $2C03	; table $0DD008
+dict_off_1956:
+	dc.w $2C08	; table $0DD00A
+dict_off_1957:
+	dc.w $2C10	; table $0DD00C
+dict_off_1958:
+	dc.w $2C16	; table $0DD00E
+dict_off_1959:
+	dc.w $2C1A	; table $0DD010
+dict_off_1960:
+	dc.w $2C23	; table $0DD012
+dict_off_1961:
+	dc.w $2C28	; table $0DD014
+dict_off_1962:
+	dc.w $2C2F	; table $0DD016
+dict_off_1963:
+	dc.w $2C39	; table $0DD018
+dict_off_1964:
+	dc.w $2C3F	; table $0DD01A
+dict_off_1965:
+	dc.w $2C44	; table $0DD01C
+dict_off_1966:
+	dc.w $2C47	; table $0DD01E
+dict_off_1967:
+	dc.w $2C4B	; table $0DD020
+dict_off_1968:
+	dc.w $2C4F	; table $0DD022
+dict_off_1969:
+	dc.w $2C53	; table $0DD024
+dict_off_1970:
+	dc.w $2C5A	; table $0DD026
+dict_off_1971:
+	dc.w $2C63	; table $0DD028
+dict_off_1972:
+	dc.w $2C68	; table $0DD02A
+dict_off_1973:
+	dc.w $2C6D	; table $0DD02C
+dict_off_1974:
+	dc.w $2C72	; table $0DD02E
+dict_off_1975:
+	dc.w $2C78	; table $0DD030
+dict_off_1976:
+	dc.w $2C7F	; table $0DD032
+dict_off_1977:
+	dc.w $2C83	; table $0DD034
+dict_off_1978:
+	dc.w $2C8D	; table $0DD036
+dict_off_1979:
+	dc.w $2C93	; table $0DD038
+dict_off_1980:
+	dc.w $2C99	; table $0DD03A
+dict_off_1981:
+	dc.w $2C9E	; table $0DD03C
+dict_off_1982:
+	dc.w $2CA5	; table $0DD03E
+dict_off_1983:
+	dc.w $2CAE	; table $0DD040
+dict_off_1984:
+	dc.w $2CB6	; table $0DD042
+dict_off_1985:
+	dc.w $2CBC	; table $0DD044
+dict_off_1986:
+	dc.w $2CC3	; table $0DD046
+dict_off_1987:
+	dc.w $2CC7	; table $0DD048
+dict_off_1988:
+	dc.w $2CCC	; table $0DD04A
+dict_off_1989:
+	dc.w $2CD4	; table $0DD04C
+dict_off_1990:
+	dc.w $2CD9	; table $0DD04E
+dict_off_1991:
+	dc.w $2CDC	; table $0DD050
+dict_off_1992:
+	dc.w $2CE1	; table $0DD052
+dict_off_1993:
+	dc.w $2CE6	; table $0DD054
+dict_off_1994:
+	dc.w $2CEC	; table $0DD056
+dict_off_1995:
+	dc.w $2CF4	; table $0DD058
+dict_off_1996:
+	dc.w $2CFE	; table $0DD05A
+dict_off_1997:
+	dc.w $2D03	; table $0DD05C
+dict_off_1998:
+	dc.w $2D07	; table $0DD05E
+dict_off_1999:
+	dc.w $2D0F	; table $0DD060
+dict_off_2000:
+	dc.w $2D16	; table $0DD062
+dict_off_2001:
+	dc.w $2D1E	; table $0DD064
+dict_off_2002:
+	dc.w $2D26	; table $0DD066
+dict_off_2003:
+	dc.w $2D2D	; table $0DD068
+dict_off_2004:
+	dc.w $2D2E	; table $0DD06A
+dict_off_2005:
+	dc.w $2D33	; table $0DD06C
+dict_off_2006:
+	dc.w $2D3D	; table $0DD06E
+dict_off_2007:
+	dc.w $2D44	; table $0DD070
+dict_off_2008:
+	dc.w $2D45	; table $0DD072
+dict_off_2009:
+	dc.w $2D4B	; table $0DD074
+dict_off_2010:
+	dc.w $2D55	; table $0DD076
+dict_off_2011:
+	dc.w $2D57	; table $0DD078
+dict_off_2012:
+	dc.w $2D60	; table $0DD07A
+dict_off_2013:
+	dc.w $2D66	; table $0DD07C
+dict_off_2014:
+	dc.w $2D6A	; table $0DD07E
+dict_off_2015:
+	dc.w $2D72	; table $0DD080
+dict_off_2016:
+	dc.w $2D77	; table $0DD082
+dict_off_2017:
+	dc.w $2D80	; table $0DD084
+dict_off_2018:
+	dc.w $2D86	; table $0DD086
+dict_off_2019:
+	dc.w $2D8D	; table $0DD088
+dict_off_2020:
+	dc.w $2D95	; table $0DD08A
+dict_off_2021:
+	dc.w $2D9E	; table $0DD08C
+dict_off_2022:
+	dc.w $2DA4	; table $0DD08E
+dict_off_2023:
+	dc.w $2DAA	; table $0DD090
+dict_off_2024:
+	dc.w $2DAE	; table $0DD092
+dict_off_2025:
+	dc.w $2DB7	; table $0DD094
+dict_off_2026:
+	dc.w $2DBB	; table $0DD096
+dict_off_2027:
+	dc.w $2DC1	; table $0DD098
+dict_off_2028:
+	dc.w $2DC7	; table $0DD09A
+dict_off_2029:
+	dc.w $2DCE	; table $0DD09C
+dict_off_2030:
+	dc.w $2DD8	; table $0DD09E
+dict_off_2031:
+	dc.w $2DDB	; table $0DD0A0
+dict_off_2032:
+	dc.w $2DE3	; table $0DD0A2
+dict_off_2033:
+	dc.w $2DE7	; table $0DD0A4
+dict_off_2034:
+	dc.w $2DEF	; table $0DD0A6
+dict_off_2035:
+	dc.w $2DF3	; table $0DD0A8
+dict_off_2036:
+	dc.w $2DF9	; table $0DD0AA
+dict_off_2037:
+	dc.w $2E01	; table $0DD0AC
+dict_off_2038:
+	dc.w $2E06	; table $0DD0AE
+dict_off_2039:
+	dc.w $2E0B	; table $0DD0B0
+dict_off_2040:
+	dc.w $2E10	; table $0DD0B2
+dict_off_2041:
+	dc.w $2E14	; table $0DD0B4
+dict_off_2042:
+	dc.w $2E1D	; table $0DD0B6
+dict_off_2043:
+	dc.w $2E25	; table $0DD0B8
+dict_off_2044:
+	dc.w $2E2A	; table $0DD0BA
+dict_off_2045:
+	dc.w $2E30	; table $0DD0BC
+dict_off_2046:
+	dc.w $2E36	; table $0DD0BE
+dict_off_2047:
+	dc.w $2E3B	; table $0DD0C0
+dict_off_2048:
+	dc.w $2E3F	; table $0DD0C2
+dict_off_2049:
+	dc.w $2E44	; table $0DD0C4
+dict_off_2050:
+	dc.w $2E4B	; table $0DD0C6
+dict_off_2051:
+	dc.w $2E54	; table $0DD0C8
+dict_off_2052:
+	dc.w $2E5A	; table $0DD0CA
+dict_off_2053:
+	dc.w $2E5E	; table $0DD0CC
+dict_off_2054:
+	dc.w $2E65	; table $0DD0CE
+dict_off_2055:
+	dc.w $2E68	; table $0DD0D0
+dict_off_2056:
+	dc.w $2E6C	; table $0DD0D2
+dict_off_2057:
+	dc.w $2E6F	; table $0DD0D4
+dict_off_2058:
+	dc.w $2E76	; table $0DD0D6
+dict_off_2059:
+	dc.w $2E7A	; table $0DD0D8
+dict_off_2060:
+	dc.w $2E82	; table $0DD0DA
+dict_off_2061:
+	dc.w $2E88	; table $0DD0DC
+dict_off_2062:
+	dc.w $2E8D	; table $0DD0DE
+dict_off_2063:
+	dc.w $2E94	; table $0DD0E0
+dict_off_2064:
+	dc.w $2E98	; table $0DD0E2
+dict_off_2065:
+	dc.w $2E9C	; table $0DD0E4
+dict_off_2066:
+	dc.w $2EA2	; table $0DD0E6
+dict_off_2067:
+	dc.w $2EA9	; table $0DD0E8
+dict_off_2068:
+	dc.w $2EAC	; table $0DD0EA
+dict_off_2069:
+	dc.w $2EAF	; table $0DD0EC
+dict_off_2070:
+	dc.w $2EB7	; table $0DD0EE
+dict_off_2071:
+	dc.w $2EBB	; table $0DD0F0
+dict_off_2072:
+	dc.w $2EC0	; table $0DD0F2
+dict_off_2073:
+	dc.w $2EC5	; table $0DD0F4
+dict_off_2074:
+	dc.w $2ECA	; table $0DD0F6
+dict_off_2075:
+	dc.w $2ED2	; table $0DD0F8
+dict_off_2076:
+	dc.w $2ED7	; table $0DD0FA
+dict_off_2077:
+	dc.w $2EDB	; table $0DD0FC
+dict_off_2078:
+	dc.w $2EE4	; table $0DD0FE
+dict_off_2079:
+	dc.w $2EEA	; table $0DD100
+dict_off_2080:
+	dc.w $2EEF	; table $0DD102
+dict_off_2081:
+	dc.w $2EF3	; table $0DD104
+dict_off_2082:
+	dc.w $2EFC	; table $0DD106
+dict_off_2083:
+	dc.w $2F01	; table $0DD108
+dict_off_2084:
+	dc.w $2F06	; table $0DD10A
+dict_off_2085:
+	dc.w $2F0D	; table $0DD10C
+dict_off_2086:
+	dc.w $2F11	; table $0DD10E
+dict_off_2087:
+	dc.w $2F17	; table $0DD110
+dict_off_2088:
+	dc.w $2F1F	; table $0DD112
+dict_off_2089:
+	dc.w $2F23	; table $0DD114
+dict_off_2090:
+	dc.w $2F28	; table $0DD116
+dict_off_2091:
+	dc.w $2F2C	; table $0DD118
+dict_off_2092:
+	dc.w $2F31	; table $0DD11A
+dict_off_2093:
+	dc.w $2F35	; table $0DD11C
+dict_off_2094:
+	dc.w $2F3C	; table $0DD11E
+dict_off_2095:
+	dc.w $2F40	; table $0DD120
+dict_off_2096:
+	dc.w $2F46	; table $0DD122
+dict_off_2097:
+	dc.w $2F4A	; table $0DD124
+dict_off_2098:
+	dc.w $2F50	; table $0DD126
+dict_off_2099:
+	dc.w $2F54	; table $0DD128
+dict_off_2100:
+	dc.w $2F58	; table $0DD12A
+dict_off_2101:
+	dc.w $2F5D	; table $0DD12C
+dict_off_2102:
+	dc.w $2F63	; table $0DD12E
+dict_off_2103:
+	dc.w $2F67	; table $0DD130
+dict_off_2104:
+	dc.w $2F6B	; table $0DD132
+dict_off_2105:
+	dc.w $2F6F	; table $0DD134
+dict_off_2106:
+	dc.w $2F72	; table $0DD136
+dict_off_2107:
+	dc.w $2F75	; table $0DD138
+dict_off_2108:
+	dc.w $2F7F	; table $0DD13A
+dict_off_2109:
+	dc.w $2F8B	; table $0DD13C
+dict_off_2110:
+	dc.w $2F92	; table $0DD13E
+dict_off_2111:
+	dc.w $2F99	; table $0DD140
+dict_off_2112:
+	dc.w $2FA0	; table $0DD142
+dict_off_2113:
+	dc.w $2FA7	; table $0DD144
+dict_off_2114:
+	dc.w $2FAB	; table $0DD146
+dict_off_2115:
+	dc.w $2FB0	; table $0DD148
+dict_off_2116:
+	dc.w $2FB4	; table $0DD14A
+dict_off_2117:
+	dc.w $2FBB	; table $0DD14C
+dict_off_2118:
+	dc.w $2FC3	; table $0DD14E
+dict_off_2119:
+	dc.w $2FC7	; table $0DD150
+dict_off_2120:
+	dc.w $2FC8	; table $0DD152
+dict_off_2121:
+	dc.w $2FCD	; table $0DD154
+dict_off_2122:
+	dc.w $2FD2	; table $0DD156
+dict_off_2123:
+	dc.w $2FD7	; table $0DD158
+dict_off_2124:
+	dc.w $2FDA	; table $0DD15A
+dict_off_2125:
+	dc.w $2FE0	; table $0DD15C
+dict_off_2126:
+	dc.w $2FE5	; table $0DD15E
+dict_off_2127:
+	dc.w $2FE9	; table $0DD160
+dict_off_2128:
+	dc.w $2FEF	; table $0DD162
+dict_off_2129:
+	dc.w $2FF3	; table $0DD164
+dict_off_2130:
+	dc.w $2FF7	; table $0DD166
+dict_off_2131:
+	dc.w $2FFC	; table $0DD168
+dict_off_2132:
+	dc.w $3001	; table $0DD16A
+dict_off_2133:
+	dc.w $3005	; table $0DD16C
+dict_off_2134:
+	dc.w $3007	; table $0DD16E
+dict_off_2135:
+	dc.w $300E	; table $0DD170
+dict_off_2136:
+	dc.w $3014	; table $0DD172
+dict_off_2137:
+	dc.w $3018	; table $0DD174
+dict_off_2138:
+	dc.w $301D	; table $0DD176
+dict_off_2139:
+	dc.w $3021	; table $0DD178
+dict_off_2140:
+	dc.w $3027	; table $0DD17A
+dict_off_2141:
+	dc.w $302C	; table $0DD17C
+dict_off_2142:
+	dc.w $3032	; table $0DD17E
+dict_off_2143:
+	dc.w $303A	; table $0DD180
+dict_off_2144:
+	dc.w $3040	; table $0DD182
+dict_off_2145:
+	dc.w $3047	; table $0DD184
+dict_off_2146:
+	dc.w $304C	; table $0DD186
+dict_off_2147:
+	dc.w $3050	; table $0DD188
+dict_off_2148:
+	dc.w $3057	; table $0DD18A
+dict_off_2149:
+	dc.w $305C	; table $0DD18C
+dict_off_2150:
+	dc.w $3061	; table $0DD18E
+dict_off_2151:
+	dc.w $3065	; table $0DD190
+dict_off_2152:
+	dc.w $306A	; table $0DD192
+dict_off_2153:
+	dc.w $306F	; table $0DD194
+dict_off_2154:
+	dc.w $3075	; table $0DD196
+dict_off_2155:
+	dc.w $3079	; table $0DD198
+dict_off_2156:
+	dc.w $3080	; table $0DD19A
+dict_off_2157:
+	dc.w $3086	; table $0DD19C
+dict_off_2158:
+	dc.w $3092	; table $0DD19E
+dict_off_2159:
+	dc.w $309A	; table $0DD1A0
+dict_off_2160:
+	dc.w $30A1	; table $0DD1A2
+dict_off_2161:
+	dc.w $30A9	; table $0DD1A4
+dict_off_2162:
+	dc.w $30AE	; table $0DD1A6
+dict_off_2163:
+	dc.w $30B2	; table $0DD1A8
+dict_off_2164:
+	dc.w $30B8	; table $0DD1AA
+dict_off_2165:
+	dc.w $30BC	; table $0DD1AC
+dict_off_2166:
+	dc.w $30C1	; table $0DD1AE
+dict_off_2167:
+	dc.w $30C5	; table $0DD1B0
+dict_off_2168:
+	dc.w $30C9	; table $0DD1B2
+dict_off_2169:
+	dc.w $30D0	; table $0DD1B4
+dict_off_2170:
+	dc.w $30D6	; table $0DD1B6
+dict_off_2171:
+	dc.w $30DA	; table $0DD1B8
+dict_off_2172:
+	dc.w $30E2	; table $0DD1BA
+dict_off_2173:
+	dc.w $30EA	; table $0DD1BC
+dict_off_2174:
+	dc.w $30F1	; table $0DD1BE
+dict_off_2175:
+	dc.w $30F7	; table $0DD1C0
+dict_off_2176:
+	dc.w $30FC	; table $0DD1C2
+dict_off_2177:
+	dc.w $3101	; table $0DD1C4
+dict_off_2178:
+	dc.w $3106	; table $0DD1C6
+dict_off_2179:
+	dc.w $310E	; table $0DD1C8
+dict_off_2180:
+	dc.w $3113	; table $0DD1CA
+dict_off_2181:
+	dc.w $3119	; table $0DD1CC
+dict_off_2182:
+	dc.w $3121	; table $0DD1CE
+dict_off_2183:
+	dc.w $3125	; table $0DD1D0
+dict_off_2184:
+	dc.w $3129	; table $0DD1D2
+dict_off_2185:
+	dc.w $3130	; table $0DD1D4
+dict_off_2186:
+	dc.w $3134	; table $0DD1D6
+dict_off_2187:
+	dc.w $3139	; table $0DD1D8
+dict_off_2188:
+	dc.w $3140	; table $0DD1DA
+dict_off_2189:
+	dc.w $3144	; table $0DD1DC
+dict_off_2190:
+	dc.w $314B	; table $0DD1DE
+dict_off_2191:
+	dc.w $3152	; table $0DD1E0
+dict_off_2192:
+	dc.w $315B	; table $0DD1E2
+dict_off_2193:
+	dc.w $3160	; table $0DD1E4
+dict_off_2194:
+	dc.w $3166	; table $0DD1E6
+dict_off_2195:
+	dc.w $3168	; table $0DD1E8
+dict_off_2196:
+	dc.w $3172	; table $0DD1EA
+dict_off_2197:
+	dc.w $3176	; table $0DD1EC
+dict_off_2198:
+	dc.w $317D	; table $0DD1EE
+dict_off_2199:
+	dc.w $3183	; table $0DD1F0
+dict_off_2200:
+	dc.w $318A	; table $0DD1F2
+dict_off_2201:
+	dc.w $3191	; table $0DD1F4
+dict_off_2202:
+	dc.w $3195	; table $0DD1F6
+dict_off_2203:
+	dc.w $319B	; table $0DD1F8
+dict_off_2204:
+	dc.w $31A4	; table $0DD1FA
+dict_off_2205:
+	dc.w $31AA	; table $0DD1FC
+dict_off_2206:
+	dc.w $31B1	; table $0DD1FE
+dict_off_2207:
+	dc.w $31BB	; table $0DD200
+dict_off_2208:
+	dc.w $31C1	; table $0DD202
+dict_off_2209:
+	dc.w $31C9	; table $0DD204
+dict_off_2210:
+	dc.w $31D4	; table $0DD206
+dict_off_2211:
+	dc.w $31DB	; table $0DD208
+dict_off_2212:
+	dc.w $31E1	; table $0DD20A
+dict_off_2213:
+	dc.w $31E7	; table $0DD20C
+dict_off_2214:
+	dc.w $31EE	; table $0DD20E
+dict_off_2215:
+	dc.w $31F5	; table $0DD210
+dict_off_2216:
+	dc.w $31FB	; table $0DD212
+dict_off_2217:
+	dc.w $3203	; table $0DD214
+dict_off_2218:
+	dc.w $320B	; table $0DD216
+dict_off_2219:
+	dc.w $320F	; table $0DD218
+dict_off_2220:
+	dc.w $321A	; table $0DD21A
+dict_off_2221:
+	dc.w $3221	; table $0DD21C
+dict_off_2222:
+	dc.w $322A	; table $0DD21E
+dict_off_2223:
+	dc.w $3232	; table $0DD220
+dict_off_2224:
+	dc.w $3236	; table $0DD222
+dict_off_2225:
+	dc.w $323C	; table $0DD224
+dict_off_2226:
+	dc.w $3242	; table $0DD226
+dict_off_2227:
+	dc.w $324B	; table $0DD228
+dict_off_2228:
+	dc.w $3254	; table $0DD22A
+dict_off_2229:
+	dc.w $325C	; table $0DD22C
+dict_off_2230:
+	dc.w $3261	; table $0DD22E
+dict_off_2231:
+	dc.w $3269	; table $0DD230
+dict_off_2232:
+	dc.w $326E	; table $0DD232
+dict_off_2233:
+	dc.w $3274	; table $0DD234
+dict_off_2234:
+	dc.w $327E	; table $0DD236
+dict_off_2235:
+	dc.w $3286	; table $0DD238
+dict_off_2236:
+	dc.w $328D	; table $0DD23A
+dict_off_2237:
+	dc.w $3293	; table $0DD23C
+dict_off_2238:
+	dc.w $329B	; table $0DD23E
+dict_off_2239:
+	dc.w $32A3	; table $0DD240
+dict_off_2240:
+	dc.w $32A8	; table $0DD242
+dict_off_2241:
+	dc.w $32AD	; table $0DD244
+dict_off_2242:
+	dc.w $32B5	; table $0DD246
+dict_off_2243:
+	dc.w $32BA	; table $0DD248
+dict_off_2244:
+	dc.w $32BE	; table $0DD24A
+dict_off_2245:
+	dc.w $32C7	; table $0DD24C
+dict_off_2246:
+	dc.w $32CB	; table $0DD24E
+dict_off_2247:
+	dc.w $32D3	; table $0DD250
+dict_off_2248:
+	dc.w $32DA	; table $0DD252
+dict_off_2249:
+	dc.w $32DF	; table $0DD254
+dict_off_2250:
+	dc.w $32E7	; table $0DD256
+dict_off_2251:
+	dc.w $32EB	; table $0DD258
+dict_off_2252:
+	dc.w $32F2	; table $0DD25A
+dict_off_2253:
+	dc.w $32F8	; table $0DD25C
+dict_off_2254:
+	dc.w $32FE	; table $0DD25E
+dict_off_2255:
+	dc.w $3303	; table $0DD260
+dict_off_2256:
+	dc.w $3309	; table $0DD262
+dict_off_2257:
+	dc.w $330F	; table $0DD264
+dict_off_2258:
+	dc.w $331F	; table $0DD266
+dict_off_2259:
+	dc.w $3325	; table $0DD268
+dict_off_2260:
+	dc.w $332B	; table $0DD26A
+dict_off_2261:
+	dc.w $332E	; table $0DD26C
+dict_off_2262:
+	dc.w $3331	; table $0DD26E
+dict_off_2263:
+	dc.w $333C	; table $0DD270
+dict_off_2264:
+	dc.w $3342	; table $0DD272
+dict_off_2265:
+	dc.w $3349	; table $0DD274
+dict_off_2266:
+	dc.w $334D	; table $0DD276
+dict_off_2267:
+	dc.w $3354	; table $0DD278
+dict_off_2268:
+	dc.w $3357	; table $0DD27A
+dict_off_2269:
+	dc.w $335B	; table $0DD27C
+dict_off_2270:
+	dc.w $3362	; table $0DD27E
+dict_off_2271:
+	dc.w $3368	; table $0DD280
+dict_off_2272:
+	dc.w $336F	; table $0DD282
+dict_off_2273:
+	dc.w $3376	; table $0DD284
+dict_off_2274:
+	dc.w $337B	; table $0DD286
+dict_off_2275:
+	dc.w $3382	; table $0DD288
+dict_off_2276:
+	dc.w $3387	; table $0DD28A
+dict_off_2277:
+	dc.w $338C	; table $0DD28C
+dict_off_2278:
+	dc.w $3392	; table $0DD28E
+dict_off_2279:
+	dc.w $3398	; table $0DD290
+dict_off_2280:
+	dc.w $339D	; table $0DD292
+dict_off_2281:
+	dc.w $33A8	; table $0DD294
+dict_off_2282:
+	dc.w $33AD	; table $0DD296
+dict_off_2283:
+	dc.w $33B2	; table $0DD298
+dict_off_2284:
+	dc.w $33B8	; table $0DD29A
+dict_off_2285:
+	dc.w $33BD	; table $0DD29C
+dict_off_2286:
+	dc.w $33C0	; table $0DD29E
+dict_off_2287:
+	dc.w $33CB	; table $0DD2A0
+dict_off_2288:
+	dc.w $33D3	; table $0DD2A2
+dict_off_2289:
+	dc.w $33D8	; table $0DD2A4
+dict_off_2290:
+	dc.w $33E1	; table $0DD2A6
+dict_off_2291:
+	dc.w $33E8	; table $0DD2A8
+dict_off_2292:
+	dc.w $33EE	; table $0DD2AA
+dict_off_2293:
+	dc.w $33F7	; table $0DD2AC
+dict_off_2294:
+	dc.w $33FE	; table $0DD2AE
+dict_off_2295:
+	dc.w $3404	; table $0DD2B0
+dict_off_2296:
+	dc.w $340D	; table $0DD2B2
+dict_off_2297:
+	dc.w $3413	; table $0DD2B4
+dict_off_2298:
+	dc.w $341D	; table $0DD2B6
+dict_off_2299:
+	dc.w $3424	; table $0DD2B8
+dict_off_2300:
+	dc.w $342D	; table $0DD2BA
+dict_off_2301:
+	dc.w $3433	; table $0DD2BC
+dict_off_2302:
+	dc.w $343A	; table $0DD2BE
+dict_off_2303:
+	dc.w $3444	; table $0DD2C0
+dict_off_2304:
+	dc.w $344C	; table $0DD2C2
+dict_off_2305:
+	dc.w $3450	; table $0DD2C4
+dict_off_2306:
+	dc.w $3453	; table $0DD2C6
+dict_off_2307:
+	dc.w $3456	; table $0DD2C8
+dict_off_2308:
+	dc.w $345C	; table $0DD2CA
+dict_off_2309:
+	dc.w $3463	; table $0DD2CC
+dict_off_2310:
+	dc.w $346D	; table $0DD2CE
+dict_off_2311:
+	dc.w $3477	; table $0DD2D0
+dict_off_2312:
+	dc.w $347F	; table $0DD2D2
+dict_off_2313:
+	dc.w $3486	; table $0DD2D4
+dict_off_2314:
+	dc.w $3489	; table $0DD2D6
+dict_off_2315:
+	dc.w $3491	; table $0DD2D8
+dict_off_2316:
+	dc.w $3497	; table $0DD2DA
+dict_off_2317:
+	dc.w $349F	; table $0DD2DC
+dict_off_2318:
+	dc.w $34A4	; table $0DD2DE
+dict_off_2319:
+	dc.w $34AA	; table $0DD2E0
+dict_off_2320:
+	dc.w $34B3	; table $0DD2E2
+dict_off_2321:
+	dc.w $34BB	; table $0DD2E4
+dict_off_2322:
+	dc.w $34C5	; table $0DD2E6
+dict_off_2323:
+	dc.w $34CC	; table $0DD2E8
+dict_off_2324:
+	dc.w $34D5	; table $0DD2EA
+dict_off_2325:
+	dc.w $34D9	; table $0DD2EC
+dict_off_2326:
+	dc.w $34E2	; table $0DD2EE
+dict_off_2327:
+	dc.w $34ED	; table $0DD2F0
+dict_off_2328:
+	dc.w $34F3	; table $0DD2F2
+dict_off_2329:
+	dc.w $34F7	; table $0DD2F4
+dict_off_2330:
+	dc.w $34FB	; table $0DD2F6
+dict_off_2331:
+	dc.w $34FE	; table $0DD2F8
+dict_off_2332:
+	dc.w $3507	; table $0DD2FA
+dict_off_2333:
+	dc.w $350F	; table $0DD2FC
+dict_off_2334:
+	dc.w $3517	; table $0DD2FE
+dict_off_2335:
+	dc.w $351C	; table $0DD300
+dict_off_2336:
+	dc.w $3521	; table $0DD302
+dict_off_2337:
+	dc.w $3529	; table $0DD304
+dict_off_2338:
+	dc.w $352E	; table $0DD306
+dict_off_2339:
+	dc.w $3534	; table $0DD308
+dict_off_2340:
+	dc.w $353B	; table $0DD30A
+dict_off_2341:
+	dc.w $3540	; table $0DD30C
+dict_off_2342:
+	dc.w $3548	; table $0DD30E
+dict_off_2343:
+	dc.w $354E	; table $0DD310
+dict_off_2344:
+	dc.w $3553	; table $0DD312
+dict_off_2345:
+	dc.w $3557	; table $0DD314
+dict_off_2346:
+	dc.w $3561	; table $0DD316
+dict_off_2347:
+	dc.w $3566	; table $0DD318
+dict_off_2348:
+	dc.w $356D	; table $0DD31A
+dict_off_2349:
+	dc.w $3571	; table $0DD31C
+dict_off_2350:
+	dc.w $3575	; table $0DD31E
+dict_off_2351:
+	dc.w $357B	; table $0DD320
+dict_off_2352:
+	dc.w $3580	; table $0DD322
+dict_off_2353:
+	dc.w $3588	; table $0DD324
+dict_off_2354:
+	dc.w $358C	; table $0DD326
+dict_off_2355:
+	dc.w $3594	; table $0DD328
+dict_off_2356:
+	dc.w $35A0	; table $0DD32A
+dict_off_2357:
+	dc.w $35A7	; table $0DD32C
+dict_off_2358:
+	dc.w $35AF	; table $0DD32E
+dict_off_2359:
+	dc.w $35B5	; table $0DD330
+dict_off_2360:
+	dc.w $35BA	; table $0DD332
+dict_off_2361:
+	dc.w $35BD	; table $0DD334
+dict_off_2362:
+	dc.w $35C2	; table $0DD336
+dict_off_2363:
+	dc.w $35C9	; table $0DD338
+dict_off_2364:
+	dc.w $35D1	; table $0DD33A
+dict_off_2365:
+	dc.w $35D5	; table $0DD33C
+dict_off_2366:
+	dc.w $35DA	; table $0DD33E
+dict_off_2367:
+	dc.w $35E1	; table $0DD340
+dict_off_2368:
+	dc.w $35E5	; table $0DD342
+dict_off_2369:
+	dc.w $35EA	; table $0DD344
+dict_off_2370:
+	dc.w $35ED	; table $0DD346
+dict_off_2371:
+	dc.w $35F4	; table $0DD348
+dict_off_2372:
+	dc.w $35F7	; table $0DD34A
+dict_off_2373:
+	dc.w $35FB	; table $0DD34C
+dict_off_2374:
+	dc.w $35FF	; table $0DD34E
+dict_off_2375:
+	dc.w $3605	; table $0DD350
+dict_off_2376:
+	dc.w $3609	; table $0DD352
+dict_off_2377:
+	dc.w $3613	; table $0DD354
+dict_off_2378:
+	dc.w $361A	; table $0DD356
+dict_off_2379:
+	dc.w $361D	; table $0DD358
+dict_off_2380:
+	dc.w $3622	; table $0DD35A
+dict_off_2381:
+	dc.w $3624	; table $0DD35C
+dict_off_2382:
+	dc.w $362A	; table $0DD35E
+dict_off_2383:
+	dc.w $362F	; table $0DD360
+dict_off_2384:
+	dc.w $3635	; table $0DD362
+dict_off_2385:
+	dc.w $363C	; table $0DD364
+dict_off_2386:
+	dc.w $3647	; table $0DD366
+dict_off_2387:
+	dc.w $3650	; table $0DD368
+dict_off_2388:
+	dc.w $3657	; table $0DD36A
+dict_off_2389:
+	dc.w $365F	; table $0DD36C
+dict_off_2390:
+	dc.w $3668	; table $0DD36E
+dict_off_2391:
+	dc.w $366C	; table $0DD370
+dict_off_2392:
+	dc.w $3670	; table $0DD372
+dict_off_2393:
+	dc.w $3675	; table $0DD374
+dict_off_2394:
+	dc.w $367A	; table $0DD376
+dict_off_2395:
+	dc.w $367E	; table $0DD378
+dict_off_2396:
+	dc.w $3684	; table $0DD37A
+dict_off_2397:
+	dc.w $3689	; table $0DD37C
+dict_off_2398:
+	dc.w $368F	; table $0DD37E
+dict_off_2399:
+	dc.w $3694	; table $0DD380
+dict_off_2400:
+	dc.w $3696	; table $0DD382
+dict_off_2401:
+	dc.w $369C	; table $0DD384
+dict_off_2402:
+	dc.w $36A4	; table $0DD386
+dict_off_2403:
+	dc.w $36AA	; table $0DD388
+dict_off_2404:
+	dc.w $36B6	; table $0DD38A
+dict_off_2405:
+	dc.w $36BD	; table $0DD38C
+dict_off_2406:
+	dc.w $36C4	; table $0DD38E
+dict_off_2407:
+	dc.w $36CE	; table $0DD390
+dict_off_2408:
+	dc.w $36D2	; table $0DD392
+dict_off_2409:
+	dc.w $36D8	; table $0DD394
+dict_off_2410:
+	dc.w $36DD	; table $0DD396
+dict_off_2411:
+	dc.w $36E2	; table $0DD398
+dict_off_2412:
+	dc.w $36E7	; table $0DD39A
+dict_off_2413:
+	dc.w $36F1	; table $0DD39C
+dict_off_2414:
+	dc.w $36F8	; table $0DD39E
+dict_off_2415:
+	dc.w $36FF	; table $0DD3A0
+dict_off_2416:
+	dc.w $3705	; table $0DD3A2
+dict_off_2417:
+	dc.w $370B	; table $0DD3A4
+dict_off_2418:
+	dc.w $3711	; table $0DD3A6
+dict_off_2419:
+	dc.w $3717	; table $0DD3A8
+dict_off_2420:
+	dc.w $371F	; table $0DD3AA
+dict_off_2421:
+	dc.w $3723	; table $0DD3AC
+dict_off_2422:
+	dc.w $3727	; table $0DD3AE
+dict_off_2423:
+	dc.w $372E	; table $0DD3B0
+dict_off_2424:
+	dc.w $3731	; table $0DD3B2
+dict_off_2425:
+	dc.w $3735	; table $0DD3B4
+dict_off_2426:
+	dc.w $3739	; table $0DD3B6
+dict_off_2427:
+	dc.w $3740	; table $0DD3B8
+dict_off_2428:
+	dc.w $3743	; table $0DD3BA
+dict_off_2429:
+	dc.w $374B	; table $0DD3BC
+dict_off_2430:
+	dc.w $3752	; table $0DD3BE
+dict_off_2431:
+	dc.w $3758	; table $0DD3C0
+dict_off_2432:
+	dc.w $375F	; table $0DD3C2
+dict_off_2433:
+	dc.w $3764	; table $0DD3C4
+dict_off_2434:
+	dc.w $376C	; table $0DD3C6
+dict_off_2435:
+	dc.w $3779	; table $0DD3C8
+dict_off_2436:
+	dc.w $3780	; table $0DD3CA
+dict_off_2437:
+	dc.w $3783	; table $0DD3CC
+dict_off_2438:
+	dc.w $3788	; table $0DD3CE
+dict_off_2439:
+	dc.w $378F	; table $0DD3D0
+dict_off_2440:
+	dc.w $3798	; table $0DD3D2
+dict_off_2441:
+	dc.w $379E	; table $0DD3D4
+dict_off_2442:
+	dc.w $37A4	; table $0DD3D6
+dict_off_2443:
+	dc.w $37AC	; table $0DD3D8
+dict_off_2444:
+	dc.w $37B3	; table $0DD3DA
+dict_off_2445:
+	dc.w $37B9	; table $0DD3DC
+dict_off_2446:
+	dc.w $37BE	; table $0DD3DE
+dict_off_2447:
+	dc.w $37C3	; table $0DD3E0
+dict_off_2448:
+	dc.w $37CA	; table $0DD3E2
+dict_off_2449:
+	dc.w $37D5	; table $0DD3E4
+dict_off_2450:
+	dc.w $37DC	; table $0DD3E6
+dict_off_2451:
+	dc.w $37E0	; table $0DD3E8
+dict_off_2452:
+	dc.w $37E5	; table $0DD3EA
+dict_off_2453:
+	dc.w $37EA	; table $0DD3EC
+dict_off_2454:
+	dc.w $37F4	; table $0DD3EE
+dict_off_2455:
+	dc.w $37FA	; table $0DD3F0
+dict_off_2456:
+	dc.w $37FF	; table $0DD3F2
+dict_off_2457:
+	dc.w $3807	; table $0DD3F4
+dict_off_2458:
+	dc.w $380B	; table $0DD3F6
+dict_off_2459:
+	dc.w $3816	; table $0DD3F8
+dict_off_2460:
+	dc.w $381D	; table $0DD3FA
+dict_off_2461:
+	dc.w $3825	; table $0DD3FC
+dict_off_2462:
+	dc.w $382D	; table $0DD3FE
+dict_off_2463:
+	dc.w $3833	; table $0DD400
+dict_off_2464:
+	dc.w $383F	; table $0DD402
+dict_off_2465:
+	dc.w $3846	; table $0DD404
+dict_off_2466:
+	dc.w $384D	; table $0DD406
+dict_off_2467:
+	dc.w $3853	; table $0DD408
+dict_off_2468:
+	dc.w $3856	; table $0DD40A
+dict_off_2469:
+	dc.w $385F	; table $0DD40C
+dict_off_2470:
+	dc.w $3864	; table $0DD40E
+dict_off_2471:
+	dc.w $3868	; table $0DD410
+dict_off_2472:
+	dc.w $3872	; table $0DD412
+dict_off_2473:
+	dc.w $3875	; table $0DD414
+dict_off_2474:
+	dc.w $387C	; table $0DD416
+dict_off_2475:
+	dc.w $3886	; table $0DD418
+dict_off_2476:
+	dc.w $388A	; table $0DD41A
+dict_off_2477:
+	dc.w $3892	; table $0DD41C
+dict_off_2478:
+	dc.w $3899	; table $0DD41E
+dict_off_2479:
+	dc.w $38A1	; table $0DD420
+dict_off_2480:
+	dc.w $38AF	; table $0DD422
+dict_off_2481:
+	dc.w $38B7	; table $0DD424
+dict_off_2482:
+	dc.w $38BC	; table $0DD426
+dict_off_2483:
+	dc.w $38C2	; table $0DD428
+dict_off_2484:
+	dc.w $38C6	; table $0DD42A
+dict_off_2485:
+	dc.w $38CE	; table $0DD42C
+dict_off_2486:
+	dc.w $38D4	; table $0DD42E
+dict_off_2487:
+	dc.w $38D9	; table $0DD430
+dict_off_2488:
+	dc.w $38DD	; table $0DD432
+dict_off_2489:
+	dc.w $38E4	; table $0DD434
+dict_off_2490:
+	dc.w $38EA	; table $0DD436
+dict_off_2491:
+	dc.w $38F1	; table $0DD438
+dict_off_2492:
+	dc.w $38F5	; table $0DD43A
+dict_off_2493:
+	dc.w $38FE	; table $0DD43C
+dict_off_2494:
+	dc.w $3903	; table $0DD43E
+dict_off_2495:
+	dc.w $3909	; table $0DD440
+dict_off_2496:
+	dc.w $390F	; table $0DD442
+dict_off_2497:
+	dc.w $3916	; table $0DD444
+dict_off_2498:
+	dc.w $391B	; table $0DD446
+dict_off_2499:
+	dc.w $391F	; table $0DD448
+dict_off_2500:
+	dc.w $3926	; table $0DD44A
+dict_off_2501:
+	dc.w $3929	; table $0DD44C
+dict_off_2502:
+	dc.w $3932	; table $0DD44E
+dict_off_2503:
+	dc.w $3936	; table $0DD450
+dict_off_2504:
+	dc.w $393D	; table $0DD452
+dict_off_2505:
+	dc.w $3941	; table $0DD454
+dict_off_2506:
+	dc.w $3946	; table $0DD456
+dict_off_2507:
+	dc.w $394E	; table $0DD458
+dict_off_2508:
+	dc.w $3953	; table $0DD45A
+dict_off_2509:
+	dc.w $3959	; table $0DD45C
+dict_off_2510:
+	dc.w $395E	; table $0DD45E
+dict_off_2511:
+	dc.w $3962	; table $0DD460
+dict_off_2512:
+	dc.w $3968	; table $0DD462
+dict_off_2513:
+	dc.w $396E	; table $0DD464
+dict_off_2514:
+	dc.w $3976	; table $0DD466
+dict_off_2515:
+	dc.w $397E	; table $0DD468
+dict_off_2516:
+	dc.w $3988	; table $0DD46A
+dict_off_2517:
+	dc.w $398E	; table $0DD46C
+dict_off_2518:
+	dc.w $3993	; table $0DD46E
+dict_off_2519:
+	dc.w $3998	; table $0DD470
+dict_off_2520:
+	dc.w $399F	; table $0DD472
+dict_off_2521:
+	dc.w $39A8	; table $0DD474
+dict_off_2522:
+	dc.w $39AE	; table $0DD476
+dict_off_2523:
+	dc.w $39B4	; table $0DD478
+dict_off_2524:
+	dc.w $39B9	; table $0DD47A
+dict_off_2525:
+	dc.w $39C2	; table $0DD47C
+dict_off_2526:
+	dc.w $39CA	; table $0DD47E
+dict_off_2527:
+	dc.w $39CE	; table $0DD480
+dict_off_2528:
+	dc.w $39D4	; table $0DD482
+dict_off_2529:
+	dc.w $39DB	; table $0DD484
+dict_off_2530:
+	dc.w $39DF	; table $0DD486
+dict_off_2531:
+	dc.w $39E4	; table $0DD488
+dict_off_2532:
+	dc.w $39E9	; table $0DD48A
+dict_off_2533:
+	dc.w $39EE	; table $0DD48C
+dict_off_2534:
+	dc.w $39F3	; table $0DD48E
+dict_off_2535:
+	dc.w $39F5	; table $0DD490
+dict_off_2536:
+	dc.w $39FA	; table $0DD492
+dict_off_2537:
+	dc.w $3A00	; table $0DD494
+dict_off_2538:
+	dc.w $3A03	; table $0DD496
+dict_off_2539:
+	dc.w $3A0A	; table $0DD498
+dict_off_2540:
+	dc.w $3A11	; table $0DD49A
+dict_off_2541:
+	dc.w $3A18	; table $0DD49C
+dict_off_2542:
+	dc.w $3A1D	; table $0DD49E
+dict_off_2543:
+	dc.w $3A24	; table $0DD4A0
+dict_off_2544:
+	dc.w $3A27	; table $0DD4A2
+dict_off_2545:
+	dc.w $3A2C	; table $0DD4A4
+dict_off_2546:
+	dc.w $3A31	; table $0DD4A6
+dict_off_2547:
+	dc.w $3A39	; table $0DD4A8
+dict_off_2548:
+	dc.w $3A40	; table $0DD4AA
+dict_off_2549:
+	dc.w $3A48	; table $0DD4AC
+dict_off_2550:
+	dc.w $3A4F	; table $0DD4AE
+dict_off_2551:
+	dc.w $3A54	; table $0DD4B0
+dict_off_2552:
+	dc.w $3A58	; table $0DD4B2
+dict_off_2553:
+	dc.w $3A5D	; table $0DD4B4
+dict_off_2554:
+	dc.w $3A65	; table $0DD4B6
+dict_off_2555:
+	dc.w $3A69	; table $0DD4B8
+dict_off_2556:
+	dc.w $3A6D	; table $0DD4BA
+dict_off_2557:
+	dc.w $3A75	; table $0DD4BC
+dict_off_2558:
+	dc.w $3A7A	; table $0DD4BE
+dict_off_2559:
+	dc.w $3A80	; table $0DD4C0
+dict_off_2560:
+	dc.w $3A87	; table $0DD4C2
+dict_off_2561:
+	dc.w $3A95	; table $0DD4C4
+dict_off_2562:
+	dc.w $3A9B	; table $0DD4C6
+dict_off_2563:
+	dc.w $3AA3	; table $0DD4C8
+dict_off_2564:
+	dc.w $3AAE	; table $0DD4CA
+dict_off_2565:
+	dc.w $3AB4	; table $0DD4CC
+dict_off_2566:
+	dc.w $3AB9	; table $0DD4CE
+dict_off_2567:
+	dc.w $3ABD	; table $0DD4D0
+dict_off_2568:
+	dc.w $3AC8	; table $0DD4D2
+dict_off_2569:
+	dc.w $3ACF	; table $0DD4D4
+dict_off_2570:
+	dc.w $3AD5	; table $0DD4D6
+dict_off_2571:
+	dc.w $3ADE	; table $0DD4D8
+dict_off_2572:
+	dc.w $3AE4	; table $0DD4DA
+dict_off_2573:
+	dc.w $3AEF	; table $0DD4DC
+dict_off_2574:
+	dc.w $3AF4	; table $0DD4DE
+dict_off_2575:
+	dc.w $3AFC	; table $0DD4E0
+dict_off_2576:
+	dc.w $3B03	; table $0DD4E2
+dict_off_2577:
+	dc.w $3B06	; table $0DD4E4
+dict_off_2578:
+	dc.w $3B0D	; table $0DD4E6
+dict_off_2579:
+	dc.w $3B14	; table $0DD4E8
+dict_off_2580:
+	dc.w $3B1C	; table $0DD4EA
+dict_off_2581:
+	dc.w $3B25	; table $0DD4EC
+dict_off_2582:
+	dc.w $3B2F	; table $0DD4EE
+dict_off_2583:
+	dc.w $3B33	; table $0DD4F0
+dict_off_2584:
+	dc.w $3B3A	; table $0DD4F2
+dict_off_2585:
+	dc.w $3B40	; table $0DD4F4
+dict_off_2586:
+	dc.w $3B47	; table $0DD4F6
+dict_off_2587:
+	dc.w $3B4D	; table $0DD4F8
+dict_off_2588:
+	dc.w $3B53	; table $0DD4FA
+dict_off_2589:
+	dc.w $3B59	; table $0DD4FC
+dict_off_2590:
+	dc.w $3B61	; table $0DD4FE
+dict_off_2591:
+	dc.w $3B67	; table $0DD500
+dict_off_2592:
+	dc.w $3B6E	; table $0DD502
+dict_off_2593:
+	dc.w $3B72	; table $0DD504
+dict_off_2594:
+	dc.w $3B77	; table $0DD506
+dict_off_2595:
+	dc.w $3B7B	; table $0DD508
+dict_off_2596:
+	dc.w $3B85	; table $0DD50A
+dict_off_2597:
+	dc.w $3B8F	; table $0DD50C
+dict_off_2598:
+	dc.w $3B9A	; table $0DD50E
+dict_off_2599:
+	dc.w $3BA6	; table $0DD510
+dict_off_2600:
+	dc.w $3BAD	; table $0DD512
+dict_off_2601:
+	dc.w $3BB3	; table $0DD514
+dict_off_2602:
+	dc.w $3BB8	; table $0DD516
+dict_off_2603:
+	dc.w $3BBF	; table $0DD518
+dict_off_2604:
+	dc.w $3BC4	; table $0DD51A
+dict_off_2605:
+	dc.w $3BCE	; table $0DD51C
+dict_off_2606:
+	dc.w $3BD2	; table $0DD51E
+dict_off_2607:
+	dc.w $3BD6	; table $0DD520
+dict_off_2608:
+	dc.w $3BDC	; table $0DD522
+dict_off_2609:
+	dc.w $3BE5	; table $0DD524
+dict_off_2610:
+	dc.w $3BEA	; table $0DD526
+dict_off_2611:
+	dc.w $3BEE	; table $0DD528
+dict_off_2612:
+	dc.w $3BF8	; table $0DD52A
+dict_off_2613:
+	dc.w $3BFB	; table $0DD52C
+dict_off_2614:
+	dc.w $3C03	; table $0DD52E
+dict_off_2615:
+	dc.w $3C07	; table $0DD530
+dict_off_2616:
+	dc.w $3C0D	; table $0DD532
+dict_off_2617:
+	dc.w $3C12	; table $0DD534
+dict_off_2618:
+	dc.w $3C19	; table $0DD536
+dict_off_2619:
+	dc.w $3C22	; table $0DD538
+dict_off_2620:
+	dc.w $3C28	; table $0DD53A
+dict_off_2621:
+	dc.w $3C2F	; table $0DD53C
+dict_off_2622:
+	dc.w $3C34	; table $0DD53E
+dict_off_2623:
+	dc.w $3C3B	; table $0DD540
+dict_off_2624:
+	dc.w $3C41	; table $0DD542
+dict_off_2625:
+	dc.w $3C4B	; table $0DD544
+dict_off_2626:
+	dc.w $3C51	; table $0DD546
+dict_off_2627:
+	dc.w $3C5D	; table $0DD548
+dict_off_2628:
+	dc.w $3C66	; table $0DD54A
+dict_off_2629:
+	dc.w $3C6C	; table $0DD54C
+dict_off_2630:
+	dc.w $3C71	; table $0DD54E
+dict_off_2631:
+	dc.w $3C79	; table $0DD550
+dict_off_2632:
+	dc.w $3C82	; table $0DD552
+dict_off_2633:
+	dc.w $3C89	; table $0DD554
+dict_off_2634:
+	dc.w $3C91	; table $0DD556
+dict_off_2635:
+	dc.w $3C9E	; table $0DD558
+dict_off_2636:
+	dc.w $3CA8	; table $0DD55A
+dict_off_2637:
+	dc.w $3CAD	; table $0DD55C
+dict_off_2638:
+	dc.w $3CB9	; table $0DD55E
+dict_off_2639:
+	dc.w $3CC0	; table $0DD560
+dict_off_2640:
+	dc.w $3CCA	; table $0DD562
+dict_off_2641:
+	dc.w $3CD2	; table $0DD564
+dict_off_2642:
+	dc.w $3CD8	; table $0DD566
+dict_off_2643:
+	dc.w $3CDD	; table $0DD568
+dict_off_2644:
+	dc.w $3CE2	; table $0DD56A
+dict_off_2645:
+	dc.w $3CEA	; table $0DD56C
+dict_off_2646:
+	dc.w $3CEF	; table $0DD56E
+dict_off_2647:
+	dc.w $3CF7	; table $0DD570
+dict_off_2648:
+	dc.w $3D00	; table $0DD572
+dict_off_2649:
+	dc.w $3D05	; table $0DD574
+dict_off_2650:
+	dc.w $3D07	; table $0DD576
+dict_off_2651:
+	dc.w $3D10	; table $0DD578
+dict_off_2652:
+	dc.w $3D17	; table $0DD57A
+dict_off_2653:
+	dc.w $3D1C	; table $0DD57C
+dict_off_2654:
+	dc.w $3D1F	; table $0DD57E
+dict_off_2655:
+	dc.w $3D25	; table $0DD580
+dict_off_2656:
+	dc.w $3D29	; table $0DD582
+dict_off_2657:
+	dc.w $3D34	; table $0DD584
+dict_off_2658:
+	dc.w $3D3B	; table $0DD586
+dict_off_2659:
+	dc.w $3D41	; table $0DD588
+dict_off_2660:
+	dc.w $3D45	; table $0DD58A
+dict_off_2661:
+	dc.w $3D52	; table $0DD58C
+dict_off_2662:
+	dc.w $3D5A	; table $0DD58E
+dict_off_2663:
+	dc.w $3D61	; table $0DD590
+dict_off_2664:
+	dc.w $3D67	; table $0DD592
+dict_off_2665:
+	dc.w $3D6E	; table $0DD594
+dict_off_2666:
+	dc.w $3D72	; table $0DD596
+dict_off_2667:
+	dc.w $3D76	; table $0DD598
+dict_off_2668:
+	dc.w $3D7A	; table $0DD59A
+dict_off_2669:
+	dc.w $3D7E	; table $0DD59C
+dict_off_2670:
+	dc.w $3D83	; table $0DD59E
+dict_off_2671:
+	dc.w $3D8B	; table $0DD5A0
+dict_off_2672:
+	dc.w $3D90	; table $0DD5A2
+dict_off_2673:
+	dc.w $3D9A	; table $0DD5A4
+dict_off_2674:
+	dc.w $3DA4	; table $0DD5A6
+dict_off_2675:
+	dc.w $3DA9	; table $0DD5A8
+dict_off_2676:
+	dc.w $3DAF	; table $0DD5AA
+dict_off_2677:
+	dc.w $3DB0	; table $0DD5AC
+dict_off_2678:
+	dc.w $3DB7	; table $0DD5AE
+dict_off_2679:
+	dc.w $3DBE	; table $0DD5B0
+dict_off_2680:
+	dc.w $3DC1	; table $0DD5B2
+dict_off_2681:
+	dc.w $3DCB	; table $0DD5B4
+dict_off_2682:
+	dc.w $3DD1	; table $0DD5B6
+dict_off_2683:
+	dc.w $3DD8	; table $0DD5B8
+dict_off_2684:
+	dc.w $3DDB	; table $0DD5BA
+dict_off_2685:
+	dc.w $3DDF	; table $0DD5BC
+dict_off_2686:
+	dc.w $3DE5	; table $0DD5BE
+dict_off_2687:
+	dc.w $3DEE	; table $0DD5C0
+dict_off_2688:
+	dc.w $3DF4	; table $0DD5C2
+dict_off_2689:
+	dc.w $3DF9	; table $0DD5C4
+dict_off_2690:
+	dc.w $3E00	; table $0DD5C6
+dict_off_2691:
+	dc.w $3E08	; table $0DD5C8
+dict_off_2692:
+	dc.w $3E0E	; table $0DD5CA
+dict_off_2693:
+	dc.w $3E17	; table $0DD5CC
+dict_off_2694:
+	dc.w $3E1E	; table $0DD5CE
+dict_off_2695:
+	dc.w $3E26	; table $0DD5D0
+dict_off_2696:
+	dc.w $3E2B	; table $0DD5D2
+dict_off_2697:
+	dc.w $3E31	; table $0DD5D4
+dict_off_2698:
+	dc.w $3E37	; table $0DD5D6
+dict_off_2699:
+	dc.w $3E3D	; table $0DD5D8
+dict_off_2700:
+	dc.w $3E42	; table $0DD5DA
+dict_off_2701:
+	dc.w $3E47	; table $0DD5DC
+dict_off_2702:
+	dc.w $3E4C	; table $0DD5DE
+dict_off_2703:
+	dc.w $3E53	; table $0DD5E0
+dict_off_2704:
+	dc.w $3E5C	; table $0DD5E2
+dict_off_2705:
+	dc.w $3E64	; table $0DD5E4
+dict_off_2706:
+	dc.w $3E6A	; table $0DD5E6
+dict_off_2707:
+	dc.w $3E73	; table $0DD5E8
+dict_off_2708:
+	dc.w $3E77	; table $0DD5EA
+dict_off_2709:
+	dc.w $3E7D	; table $0DD5EC
+dict_off_2710:
+	dc.w $3E85	; table $0DD5EE
+dict_off_2711:
+	dc.w $3E8C	; table $0DD5F0
+dict_off_2712:
+	dc.w $3E93	; table $0DD5F2
+dict_off_2713:
+	dc.w $3E99	; table $0DD5F4
+dict_off_2714:
+	dc.w $3E9F	; table $0DD5F6
+dict_off_2715:
+	dc.w $3EA6	; table $0DD5F8
+dict_off_2716:
+	dc.w $3EAC	; table $0DD5FA
+dict_off_2717:
+	dc.w $3EB3	; table $0DD5FC
+dict_off_2718:
+	dc.w $3EBC	; table $0DD5FE
+dict_off_2719:
+	dc.w $3EC2	; table $0DD600
+dict_off_2720:
+	dc.w $3EC7	; table $0DD602
+dict_off_2721:
+	dc.w $3ECF	; table $0DD604
+dict_off_2722:
+	dc.w $3ED3	; table $0DD606
+dict_off_2723:
+	dc.w $3EDC	; table $0DD608
+dict_off_2724:
+	dc.w $3EE7	; table $0DD60A
+dict_off_2725:
+	dc.w $3EEE	; table $0DD60C
+dict_off_2726:
+	dc.w $3EF6	; table $0DD60E
+dict_off_2727:
+	dc.w $3EFC	; table $0DD610
+dict_off_2728:
+	dc.w $3F04	; table $0DD612
+dict_off_2729:
+	dc.w $3F0B	; table $0DD614
+dict_off_2730:
+	dc.w $3F0E	; table $0DD616
+dict_off_2731:
+	dc.w $3F13	; table $0DD618
+dict_off_2732:
+	dc.w $3F19	; table $0DD61A
+dict_off_2733:
+	dc.w $3F1F	; table $0DD61C
+dict_off_2734:
+	dc.w $3F28	; table $0DD61E
+dict_off_2735:
+	dc.w $3F33	; table $0DD620
+dict_off_2736:
+	dc.w $3F38	; table $0DD622
+dict_off_2737:
+	dc.w $3F3F	; table $0DD624
+dict_off_2738:
+	dc.w $3F42	; table $0DD626
+dict_off_2739:
+	dc.w $3F45	; table $0DD628
+dict_off_2740:
+	dc.w $3F4C	; table $0DD62A
+dict_off_2741:
+	dc.w $3F52	; table $0DD62C
+dict_off_2742:
+	dc.w $3F58	; table $0DD62E
+dict_off_2743:
+	dc.w $3F5E	; table $0DD630
+dict_off_2744:
+	dc.w $3F62	; table $0DD632
+dict_off_2745:
+	dc.w $3F6B	; table $0DD634
+dict_off_2746:
+	dc.w $3F70	; table $0DD636
+dict_off_2747:
+	dc.w $3F75	; table $0DD638
+dict_off_2748:
+	dc.w $3F83	; table $0DD63A
+dict_off_2749:
+	dc.w $3F89	; table $0DD63C
+dict_off_2750:
+	dc.w $3F91	; table $0DD63E
+dict_off_2751:
+	dc.w $3F99	; table $0DD640
+dict_off_2752:
+	dc.w $3F9E	; table $0DD642
+dict_off_2753:
+	dc.w $3FA4	; table $0DD644
+dict_off_2754:
+	dc.w $3FAA	; table $0DD646
+dict_off_2755:
+	dc.w $3FB0	; table $0DD648
+dict_off_2756:
+	dc.w $3FB9	; table $0DD64A
+dict_off_2757:
+	dc.w $3FC2	; table $0DD64C
+dict_off_2758:
+	dc.w $3FC7	; table $0DD64E
+dict_off_2759:
+	dc.w $3FCE	; table $0DD650
+dict_off_2760:
+	dc.w $3FD5	; table $0DD652
+dict_off_2761:
+	dc.w $3FDD	; table $0DD654
+dict_off_2762:
+	dc.w $3FE9	; table $0DD656
+dict_off_2763:
+	dc.w $3FF2	; table $0DD658
+dict_off_2764:
+	dc.w $3FF8	; table $0DD65A
+dict_off_2765:
+	dc.w $3FFD	; table $0DD65C
+dict_off_2766:
+	dc.w $4003	; table $0DD65E
+dict_off_2767:
+	dc.w $400C	; table $0DD660
+dict_off_2768:
+	dc.w $4015	; table $0DD662
+dict_off_2769:
+	dc.w $401D	; table $0DD664
+dict_off_2770:
+	dc.w $4029	; table $0DD666
+dict_off_2771:
+	dc.w $4036	; table $0DD668
+dict_off_2772:
+	dc.w $403C	; table $0DD66A
+dict_off_2773:
+	dc.w $4041	; table $0DD66C
+dict_off_2774:
+	dc.w $4045	; table $0DD66E
+dict_off_2775:
+	dc.w $4049	; table $0DD670
+dict_off_2776:
+	dc.w $404C	; table $0DD672
+dict_off_2777:
+	dc.w $4055	; table $0DD674
+dict_off_2778:
+	dc.w $4058	; table $0DD676
+dict_off_2779:
+	dc.w $4061	; table $0DD678
+dict_off_2780:
+	dc.w $4067	; table $0DD67A
+dict_off_2781:
+	dc.w $406B	; table $0DD67C
+dict_off_2782:
+	dc.w $4070	; table $0DD67E
+dict_off_2783:
+	dc.w $4078	; table $0DD680
+dict_off_2784:
+	dc.w $4083	; table $0DD682
+dict_off_2785:
+	dc.w $4088	; table $0DD684
+dict_off_2786:
+	dc.w $408F	; table $0DD686
+dict_off_2787:
+	dc.w $4096	; table $0DD688
+dict_off_2788:
+	dc.w $409A	; table $0DD68A
+dict_off_2789:
+	dc.w $409E	; table $0DD68C
+dict_off_2790:
+	dc.w $40A6	; table $0DD68E
+dict_off_2791:
+	dc.w $40AD	; table $0DD690
+dict_off_2792:
+	dc.w $40B3	; table $0DD692
+dict_off_2793:
+	dc.w $40BA	; table $0DD694
+dict_off_2794:
+	dc.w $40C1	; table $0DD696
+dict_off_2795:
+	dc.w $40C8	; table $0DD698
+dict_off_2796:
+	dc.w $40CF	; table $0DD69A
+dict_off_2797:
+	dc.w $40D5	; table $0DD69C
+dict_off_2798:
+	dc.w $40DD	; table $0DD69E
+dict_off_2799:
+	dc.w $40E5	; table $0DD6A0
+dict_off_2800:
+	dc.w $40EC	; table $0DD6A2
+dict_off_2801:
+	dc.w $40F6	; table $0DD6A4
+dict_off_2802:
+	dc.w $40FB	; table $0DD6A6
+dict_off_2803:
+	dc.w $4102	; table $0DD6A8
+dict_off_2804:
+	dc.w $4107	; table $0DD6AA
+dict_off_2805:
+	dc.w $4111	; table $0DD6AC
+dict_off_2806:
+	dc.w $411A	; table $0DD6AE
+dict_off_2807:
+	dc.w $4120	; table $0DD6B0
+dict_off_2808:
+	dc.w $4124	; table $0DD6B2
+dict_off_2809:
+	dc.w $412E	; table $0DD6B4
+dict_off_2810:
+	dc.w $4133	; table $0DD6B6
+dict_off_2811:
+	dc.w $4139	; table $0DD6B8
+dict_off_2812:
+	dc.w $4140	; table $0DD6BA
+dict_off_2813:
+	dc.w $4147	; table $0DD6BC
+dict_off_2814:
+	dc.w $414E	; table $0DD6BE
+dict_off_2815:
+	dc.w $4153	; table $0DD6C0
+dict_off_2816:
+	dc.w $415A	; table $0DD6C2
+dict_off_2817:
+	dc.w $415E	; table $0DD6C4
+dict_off_2818:
+	dc.w $4168	; table $0DD6C6
+dict_off_2819:
+	dc.w $4171	; table $0DD6C8
+dict_off_2820:
+	dc.w $4177	; table $0DD6CA
+dict_off_2821:
+	dc.w $417F	; table $0DD6CC
+dict_off_2822:
+	dc.w $4186	; table $0DD6CE
+dict_off_2823:
+	dc.w $418D	; table $0DD6D0
+dict_off_2824:
+	dc.w $4194	; table $0DD6D2
+dict_off_2825:
+	dc.w $419B	; table $0DD6D4
+dict_off_2826:
+	dc.w $41A5	; table $0DD6D6
+dict_off_2827:
+	dc.w $41AA	; table $0DD6D8
+dict_off_2828:
+	dc.w $41B3	; table $0DD6DA
+dict_off_2829:
+	dc.w $41B8	; table $0DD6DC
+dict_off_2830:
+	dc.w $41BC	; table $0DD6DE
+dict_off_2831:
+	dc.w $41C7	; table $0DD6E0
+dict_off_2832:
+	dc.w $41D0	; table $0DD6E2
+dict_off_2833:
+	dc.w $41DA	; table $0DD6E4
+dict_off_2834:
+	dc.w $41E1	; table $0DD6E6
+dict_off_2835:
+	dc.w $41E6	; table $0DD6E8
+dict_off_2836:
+	dc.w $41EE	; table $0DD6EA
+dict_off_2837:
+	dc.w $41F4	; table $0DD6EC
+dict_off_2838:
+	dc.w $41FB	; table $0DD6EE
+dict_off_2839:
+	dc.w $4204	; table $0DD6F0
+dict_off_2840:
+	dc.w $4208	; table $0DD6F2
+dict_off_2841:
+	dc.w $420B	; table $0DD6F4
+dict_off_2842:
+	dc.w $4214	; table $0DD6F6
+dict_off_2843:
+	dc.w $421C	; table $0DD6F8
+dict_off_2844:
+	dc.w $4224	; table $0DD6FA
+dict_off_2845:
+	dc.w $422A	; table $0DD6FC
+dict_off_2846:
+	dc.w $4233	; table $0DD6FE
+dict_off_2847:
+	dc.w $4237	; table $0DD700
+dict_off_2848:
+	dc.w $423F	; table $0DD702
+dict_off_2849:
+	dc.w $4243	; table $0DD704
+dict_off_2850:
+	dc.w $4248	; table $0DD706
+dict_off_2851:
+	dc.w $4250	; table $0DD708
+dict_off_2852:
+	dc.w $4253	; table $0DD70A
+dict_off_2853:
+	dc.w $4259	; table $0DD70C
+dict_off_2854:
+	dc.w $4260	; table $0DD70E
+dict_off_2855:
+	dc.w $4269	; table $0DD710
+dict_off_2856:
+	dc.w $4270	; table $0DD712
+dict_off_2857:
+	dc.w $4277	; table $0DD714
+dict_off_2858:
+	dc.w $427D	; table $0DD716
+dict_off_2859:
+	dc.w $4289	; table $0DD718
+dict_off_2860:
+	dc.w $428E	; table $0DD71A
+dict_off_2861:
+	dc.w $4292	; table $0DD71C
+dict_off_2862:
+	dc.w $429A	; table $0DD71E
+dict_off_2863:
+	dc.w $42A1	; table $0DD720
+dict_off_2864:
+	dc.w $42AA	; table $0DD722
+dict_off_2865:
+	dc.w $42B2	; table $0DD724
+dict_off_2866:
+	dc.w $42B8	; table $0DD726
+dict_off_2867:
+	dc.w $42BD	; table $0DD728
+dict_off_2868:
+	dc.w $42CA	; table $0DD72A
+dict_off_2869:
+	dc.w $42D0	; table $0DD72C
+dict_off_2870:
+	dc.w $42D6	; table $0DD72E
+dict_off_2871:
+	dc.w $42DC	; table $0DD730
+dict_off_2872:
+	dc.w $42E1	; table $0DD732
+dict_off_2873:
+	dc.w $42E9	; table $0DD734
+dict_off_2874:
+	dc.w $42EC	; table $0DD736
+dict_off_2875:
+	dc.w $42F5	; table $0DD738
+dict_off_2876:
+	dc.w $42FF	; table $0DD73A
+dict_off_2877:
+	dc.w $4308	; table $0DD73C
+dict_off_2878:
+	dc.w $430C	; table $0DD73E
+dict_off_2879:
+	dc.w $4314	; table $0DD740
+dict_off_2880:
+	dc.w $431B	; table $0DD742
+dict_off_2881:
+	dc.w $431D	; table $0DD744
+dict_off_2882:
+	dc.w $4324	; table $0DD746
+dict_off_2883:
+	dc.w $4329	; table $0DD748
+dict_off_2884:
+	dc.w $4332	; table $0DD74A
+dict_off_2885:
+	dc.w $4336	; table $0DD74C
+dict_off_2886:
+	dc.w $433E	; table $0DD74E
+dict_off_2887:
+	dc.w $4340	; table $0DD750
+dict_off_2888:
+	dc.w $4346	; table $0DD752
+dict_off_2889:
+	dc.w $434F	; table $0DD754
+dict_off_2890:
+	dc.w $4356	; table $0DD756
+dict_off_2891:
+	dc.w $435B	; table $0DD758
+dict_off_2892:
+	dc.w $4366	; table $0DD75A
+dict_off_2893:
+	dc.w $436E	; table $0DD75C
+dict_off_2894:
+	dc.w $4376	; table $0DD75E
+dict_off_2895:
+	dc.w $437E	; table $0DD760
+dict_off_2896:
+	dc.w $4384	; table $0DD762
+dict_off_2897:
+	dc.w $438D	; table $0DD764
+dict_off_2898:
+	dc.w $4395	; table $0DD766
+dict_off_2899:
+	dc.w $4399	; table $0DD768
+dict_off_2900:
+	dc.w $439C	; table $0DD76A
+dict_off_2901:
+	dc.w $43A7	; table $0DD76C
+dict_off_2902:
+	dc.w $43AD	; table $0DD76E
+dict_off_2903:
+	dc.w $43B7	; table $0DD770
+dict_off_2904:
+	dc.w $43BD	; table $0DD772
+dict_off_2905:
+	dc.w $43C4	; table $0DD774
+dict_off_2906:
+	dc.w $43CB	; table $0DD776
+dict_off_2907:
+	dc.w $43D4	; table $0DD778
+dict_off_2908:
+	dc.w $43DA	; table $0DD77A
+dict_off_2909:
+	dc.w $43E2	; table $0DD77C
+dict_off_2910:
+	dc.w $43E7	; table $0DD77E
+dict_off_2911:
+	dc.w $43F3	; table $0DD780
+dict_off_2912:
+	dc.w $43F9	; table $0DD782
+dict_off_2913:
+	dc.w $4402	; table $0DD784
+dict_off_2914:
+	dc.w $4406	; table $0DD786
+dict_off_2915:
+	dc.w $440D	; table $0DD788
+dict_off_2916:
+	dc.w $4413	; table $0DD78A
+dict_off_2917:
+	dc.w $441B	; table $0DD78C
+dict_off_2918:
+	dc.w $4424	; table $0DD78E
+dict_off_2919:
+	dc.w $442A	; table $0DD790
+dict_off_2920:
+	dc.w $4435	; table $0DD792
+dict_off_2921:
+	dc.w $443F	; table $0DD794
+dict_off_2922:
+	dc.w $4444	; table $0DD796
+dict_off_2923:
+	dc.w $444B	; table $0DD798
+dict_off_2924:
+	dc.w $444F	; table $0DD79A
+dict_off_2925:
+	dc.w $4458	; table $0DD79C
+dict_off_2926:
+	dc.w $4466	; table $0DD79E
+dict_off_2927:
+	dc.w $446E	; table $0DD7A0
+dict_off_2928:
+	dc.w $4472	; table $0DD7A2
+dict_off_2929:
+	dc.w $4478	; table $0DD7A4
+dict_off_2930:
+	dc.w $447F	; table $0DD7A6
+dict_off_2931:
+	dc.w $4488	; table $0DD7A8
+dict_off_2932:
+	dc.w $4491	; table $0DD7AA
+dict_off_2933:
+	dc.w $449A	; table $0DD7AC
+dict_off_2934:
+	dc.w $44A0	; table $0DD7AE
+dict_off_2935:
+	dc.w $44A6	; table $0DD7B0
+dict_off_2936:
+	dc.w $44AD	; table $0DD7B2
+dict_off_2937:
+	dc.w $44B9	; table $0DD7B4
+dict_off_2938:
+	dc.w $44C4	; table $0DD7B6
+dict_off_2939:
+	dc.w $44D0	; table $0DD7B8
+dict_off_2940:
+	dc.w $44D5	; table $0DD7BA
+dict_off_2941:
+	dc.w $44DE	; table $0DD7BC
+dict_off_2942:
+	dc.w $44E4	; table $0DD7BE
+dict_off_2943:
+	dc.w $44EC	; table $0DD7C0
+dict_off_2944:
+	dc.w $44F4	; table $0DD7C2
+dict_off_2945:
+	dc.w $44F9	; table $0DD7C4
+dict_off_2946:
+	dc.w $4500	; table $0DD7C6
+dict_off_2947:
+	dc.w $4509	; table $0DD7C8
+dict_off_2948:
+	dc.w $450F	; table $0DD7CA
+dict_off_2949:
+	dc.w $4518	; table $0DD7CC
+dict_off_2950:
+	dc.w $4521	; table $0DD7CE
+dict_off_2951:
+	dc.w $4527	; table $0DD7D0
+dict_off_2952:
+	dc.w $452A	; table $0DD7D2
+dict_off_2953:
+	dc.w $4530	; table $0DD7D4
+dict_off_2954:
+	dc.w $4537	; table $0DD7D6
+dict_off_2955:
+	dc.w $453E	; table $0DD7D8
+dict_off_2956:
+	dc.w $4546	; table $0DD7DA
+dict_off_2957:
+	dc.w $454F	; table $0DD7DC
+dict_off_2958:
+	dc.w $4553	; table $0DD7DE
+dict_off_2959:
+	dc.w $4557	; table $0DD7E0
+dict_off_2960:
+	dc.w $455D	; table $0DD7E2
+dict_off_2961:
+	dc.w $4565	; table $0DD7E4
+dict_off_2962:
+	dc.w $456C	; table $0DD7E6
+dict_off_2963:
+	dc.w $4574	; table $0DD7E8
+dict_off_2964:
+	dc.w $457C	; table $0DD7EA
+dict_off_2965:
+	dc.w $4582	; table $0DD7EC
+dict_off_2966:
+	dc.w $4589	; table $0DD7EE
+dict_off_2967:
+	dc.w $458E	; table $0DD7F0
+dict_off_2968:
+	dc.w $4592	; table $0DD7F2
+dict_off_2969:
+	dc.w $4597	; table $0DD7F4
+dict_off_2970:
+	dc.w $459C	; table $0DD7F6
+dict_off_2971:
+	dc.w $45A1	; table $0DD7F8
+dict_off_2972:
+	dc.w $45A8	; table $0DD7FA
+dict_off_2973:
+	dc.w $45AE	; table $0DD7FC
+dict_off_2974:
+	dc.w $45B6	; table $0DD7FE
+dict_off_2975:
+	dc.w $45BF	; table $0DD800
+dict_off_2976:
+	dc.w $45C6	; table $0DD802
+dict_off_2977:
+	dc.w $45D3	; table $0DD804
+dict_off_2978:
+	dc.w $45D9	; table $0DD806
+dict_off_2979:
+	dc.w $45E5	; table $0DD808
+dict_off_2980:
+	dc.w $45EC	; table $0DD80A
+dict_off_2981:
+	dc.w $45F3	; table $0DD80C
+dict_off_2982:
+	dc.w $45FA	; table $0DD80E
+dict_off_2983:
+	dc.w $45FF	; table $0DD810
+dict_off_2984:
+	dc.w $4604	; table $0DD812
+dict_off_2985:
+	dc.w $460F	; table $0DD814
+dict_off_2986:
+	dc.w $4615	; table $0DD816
+dict_off_2987:
+	dc.w $461D	; table $0DD818
+dict_off_2988:
+	dc.w $4621	; table $0DD81A
+dict_off_2989:
+	dc.w $4626	; table $0DD81C
+dict_off_2990:
+	dc.w $462D	; table $0DD81E
+dict_off_2991:
+	dc.w $4638	; table $0DD820
+dict_off_2992:
+	dc.w $463D	; table $0DD822
+dict_off_2993:
+	dc.w $4642	; table $0DD824
+dict_off_2994:
+	dc.w $464B	; table $0DD826
+dict_off_2995:
+	dc.w $4652	; table $0DD828
+dict_off_2996:
+	dc.w $465D	; table $0DD82A
+dict_off_2997:
+	dc.w $4660	; table $0DD82C
+dict_off_2998:
+	dc.w $4667	; table $0DD82E
+dict_off_2999:
+	dc.w $466F	; table $0DD830
+dict_off_3000:
+	dc.w $4676	; table $0DD832
+dict_off_3001:
+	dc.w $467B	; table $0DD834
+dict_off_3002:
+	dc.w $467F	; table $0DD836
+dict_off_3003:
+	dc.w $4688	; table $0DD838
+dict_off_3004:
+	dc.w $468F	; table $0DD83A
+dict_off_3005:
+	dc.w $4697	; table $0DD83C
+dict_off_3006:
+	dc.w $469E	; table $0DD83E
+dict_off_3007:
+	dc.w $46A1	; table $0DD840
+dict_off_3008:
+	dc.w $46A9	; table $0DD842
+dict_off_3009:
+	dc.w $46B2	; table $0DD844
+dict_off_3010:
+	dc.w $46B8	; table $0DD846
+dict_off_3011:
+	dc.w $46BC	; table $0DD848
+dict_off_3012:
+	dc.w $46C3	; table $0DD84A
+dict_off_3013:
+	dc.w $46C9	; table $0DD84C
+dict_off_3014:
+	dc.w $46CD	; table $0DD84E
+dict_off_3015:
+	dc.w $46D6	; table $0DD850
+dict_off_3016:
+	dc.w $46DC	; table $0DD852
+dict_off_3017:
+	dc.w $46E2	; table $0DD854
+dict_off_3018:
+	dc.w $46E7	; table $0DD856
+dict_off_3019:
+	dc.w $46EF	; table $0DD858
+dict_off_3020:
+	dc.w $46F7	; table $0DD85A
+dict_off_3021:
+	dc.w $46FF	; table $0DD85C
+dict_off_3022:
+	dc.w $4708	; table $0DD85E
+dict_off_3023:
+	dc.w $470E	; table $0DD860
+dict_off_3024:
+	dc.w $4715	; table $0DD862
+dict_off_3025:
+	dc.w $4719	; table $0DD864
+dict_off_3026:
+	dc.w $4722	; table $0DD866
+dict_off_3027:
+	dc.w $472A	; table $0DD868
+dict_off_3028:
+	dc.w $4732	; table $0DD86A
+dict_off_3029:
+	dc.w $4739	; table $0DD86C
+dict_off_3030:
+	dc.w $473F	; table $0DD86E
+dict_off_3031:
+	dc.w $4744	; table $0DD870
+dict_off_3032:
+	dc.w $474D	; table $0DD872
+dict_off_3033:
+	dc.w $4759	; table $0DD874
+dict_off_3034:
+	dc.w $475D	; table $0DD876
+dict_off_3035:
+	dc.w $4764	; table $0DD878
+dict_off_3036:
+	dc.w $4768	; table $0DD87A
+dict_off_3037:
+	dc.w $476F	; table $0DD87C
+dict_off_3038:
+	dc.w $4774	; table $0DD87E
+dict_off_3039:
+	dc.w $4779	; table $0DD880
+dict_off_3040:
+	dc.w $4781	; table $0DD882
+dict_off_3041:
+	dc.w $478A	; table $0DD884
+dict_off_3042:
+	dc.w $4790	; table $0DD886
+dict_off_3043:
+	dc.w $4796	; table $0DD888
+dict_off_3044:
+	dc.w $479B	; table $0DD88A
+dict_off_3045:
+	dc.w $47A2	; table $0DD88C
+dict_off_3046:
+	dc.w $47A8	; table $0DD88E
+dict_off_3047:
+	dc.w $47AC	; table $0DD890
+dict_off_3048:
+	dc.w $47B0	; table $0DD892
+dict_off_3049:
+	dc.w $47B5	; table $0DD894
+dict_off_3050:
+	dc.w $47BA	; table $0DD896
+dict_off_3051:
+	dc.w $47BF	; table $0DD898
+dict_off_3052:
+	dc.w $47C8	; table $0DD89A
+dict_off_3053:
+	dc.w $47CE	; table $0DD89C
+dict_off_3054:
+	dc.w $47D5	; table $0DD89E
+dict_off_3055:
+	dc.w $47DA	; table $0DD8A0
+dict_off_3056:
+	dc.w $47E2	; table $0DD8A2
+dict_off_3057:
+	dc.w $47EC	; table $0DD8A4
+dict_off_3058:
+	dc.w $47F6	; table $0DD8A6
+dict_off_3059:
+	dc.w $47FB	; table $0DD8A8
+dict_off_3060:
+	dc.w $4805	; table $0DD8AA
+dict_off_3061:
+	dc.w $480C	; table $0DD8AC
+dict_off_3062:
+	dc.w $4818	; table $0DD8AE
+dict_off_3063:
+	dc.w $481F	; table $0DD8B0
+dict_off_3064:
+	dc.w $4825	; table $0DD8B2
+dict_off_3065:
+	dc.w $4830	; table $0DD8B4
+dict_off_3066:
+	dc.w $4836	; table $0DD8B6
+dict_off_3067:
+	dc.w $483E	; table $0DD8B8
+dict_off_3068:
+	dc.w $4843	; table $0DD8BA
+dict_off_3069:
+	dc.w $484E	; table $0DD8BC
+dict_off_3070:
+	dc.w $4859	; table $0DD8BE
+dict_off_3071:
+	dc.w $4861	; table $0DD8C0
+dict_off_3072:
+	dc.w $4868	; table $0DD8C2
+dict_off_3073:
+	dc.w $486D	; table $0DD8C4
+dict_off_3074:
+	dc.w $4875	; table $0DD8C6
+dict_off_3075:
+	dc.w $487E	; table $0DD8C8
+dict_off_3076:
+	dc.w $4884	; table $0DD8CA
+dict_off_3077:
+	dc.w $4888	; table $0DD8CC
+dict_off_3078:
+	dc.w $488E	; table $0DD8CE
+dict_off_3079:
+	dc.w $4894	; table $0DD8D0
+dict_off_3080:
+	dc.w $4899	; table $0DD8D2
+dict_off_3081:
+	dc.w $48A0	; table $0DD8D4
+dict_off_3082:
+	dc.w $48A6	; table $0DD8D6
+dict_off_3083:
+	dc.w $48AB	; table $0DD8D8
+dict_off_3084:
+	dc.w $48B2	; table $0DD8DA
+dict_off_3085:
+	dc.w $48B9	; table $0DD8DC
+dict_off_3086:
+	dc.w $48BE	; table $0DD8DE
+dict_off_3087:
+	dc.w $48C4	; table $0DD8E0
+dict_off_3088:
+	dc.w $48D1	; table $0DD8E2
+dict_off_3089:
+	dc.w $48D8	; table $0DD8E4
+dict_off_3090:
+	dc.w $48DD	; table $0DD8E6
+dict_off_3091:
+	dc.w $48E5	; table $0DD8E8
+dict_off_3092:
+	dc.w $48EE	; table $0DD8EA
+dict_off_3093:
+	dc.w $48F1	; table $0DD8EC
+dict_off_3094:
+	dc.w $48F8	; table $0DD8EE
+dict_off_3095:
+	dc.w $48FB	; table $0DD8F0
+dict_off_3096:
+	dc.w $4901	; table $0DD8F2
+dict_off_3097:
+	dc.w $4904	; table $0DD8F4
+dict_off_3098:
+	dc.w $4907	; table $0DD8F6
+dict_off_3099:
+	dc.w $490E	; table $0DD8F8
+dict_off_3100:
+	dc.w $4913	; table $0DD8FA
+dict_off_3101:
+	dc.w $491E	; table $0DD8FC
+dict_off_3102:
+	dc.w $4924	; table $0DD8FE
+dict_off_3103:
+	dc.w $492B	; table $0DD900
+dict_off_3104:
+	dc.w $4932	; table $0DD902
+dict_off_3105:
+	dc.w $493B	; table $0DD904
+dict_off_3106:
+	dc.w $4944	; table $0DD906
+dict_off_3107:
+	dc.w $4948	; table $0DD908
+dict_off_3108:
+	dc.w $494F	; table $0DD90A
+dict_off_3109:
+	dc.w $4956	; table $0DD90C
+dict_off_3110:
+	dc.w $495C	; table $0DD90E
+dict_off_3111:
+	dc.w $4962	; table $0DD910
+dict_off_3112:
+	dc.w $4969	; table $0DD912
+dict_off_3113:
+	dc.w $4970	; table $0DD914
+dict_off_3114:
+	dc.w $4978	; table $0DD916
+dict_off_3115:
+	dc.w $497D	; table $0DD918
+dict_off_3116:
+	dc.w $4986	; table $0DD91A
+dict_off_3117:
+	dc.w $498E	; table $0DD91C
+dict_off_3118:
+	dc.w $4993	; table $0DD91E
+dict_off_3119:
+	dc.w $499B	; table $0DD920
+dict_off_3120:
+	dc.w $49A0	; table $0DD922
+dict_off_3121:
+	dc.w $49A7	; table $0DD924
+dict_off_3122:
+	dc.w $49AB	; table $0DD926
+dict_off_3123:
+	dc.w $49B0	; table $0DD928
+dict_off_3124:
+	dc.w $49B5	; table $0DD92A
+dict_off_3125:
+	dc.w $49BC	; table $0DD92C
+dict_off_3126:
+	dc.w $49C2	; table $0DD92E
+dict_off_3127:
+	dc.w $49C9	; table $0DD930
+dict_off_3128:
+	dc.w $49CF	; table $0DD932
+dict_off_3129:
+	dc.w $49D4	; table $0DD934
+dict_off_3130:
+	dc.w $49DC	; table $0DD936
+dict_off_3131:
+	dc.w $49E5	; table $0DD938
+dict_off_3132:
+	dc.w $49EA	; table $0DD93A
+dict_off_3133:
+	dc.w $49F6	; table $0DD93C
+dict_off_3134:
+	dc.w $49FF	; table $0DD93E
+dict_off_3135:
+	dc.w $4A02	; table $0DD940
+dict_off_3136:
+	dc.w $4A0D	; table $0DD942
+dict_off_3137:
+	dc.w $4A12	; table $0DD944
+dict_off_3138:
+	dc.w $4A17	; table $0DD946
+dict_off_3139:
+	dc.w $4A1E	; table $0DD948
+dict_off_3140:
+	dc.w $4A27	; table $0DD94A
+dict_off_3141:
+	dc.w $4A30	; table $0DD94C
+dict_off_3142:
+	dc.w $4A37	; table $0DD94E
+dict_off_3143:
+	dc.w $4A3B	; table $0DD950
+dict_off_3144:
+	dc.w $4A3F	; table $0DD952
+dict_off_3145:
+	dc.w $4A41	; table $0DD954
+dict_off_3146:
+	dc.w $4A45	; table $0DD956
+dict_off_3147:
+	dc.w $4A49	; table $0DD958
+dict_off_3148:
+	dc.w $4A4D	; table $0DD95A
+dict_off_3149:
+	dc.w $4A52	; table $0DD95C
+dict_off_3150:
+	dc.w $4A55	; table $0DD95E
+dict_off_3151:
+	dc.w $4A5E	; table $0DD960
+dict_off_3152:
+	dc.w $4A62	; table $0DD962
+dict_off_3153:
+	dc.w $4A68	; table $0DD964
+dict_off_3154:
+	dc.w $4A6C	; table $0DD966
+dict_off_3155:
+	dc.w $4A71	; table $0DD968
+dict_off_3156:
+	dc.w $4A78	; table $0DD96A
+dict_off_3157:
+	dc.w $4A7C	; table $0DD96C
+dict_off_3158:
+	dc.w $4A7F	; table $0DD96E
+dict_off_3159:
+	dc.w $4A82	; table $0DD970
+dict_off_3160:
+	dc.w $4A84	; table $0DD972
+dict_off_3161:
+	dc.w $4A87	; table $0DD974
+dict_off_3162:
+	dc.w $4A8A	; table $0DD976
+dict_off_3163:
+	dc.w $4A8E	; table $0DD978
+dict_off_3164:
+	dc.w $4A96	; table $0DD97A
+dict_off_3165:
+	dc.w $4A9B	; table $0DD97C
+dict_off_3166:
+	dc.w $4AA1	; table $0DD97E
+dict_off_3167:
+	dc.w $4AA5	; table $0DD980
+dict_off_3168:
+	dc.w $4AAD	; table $0DD982
+dict_off_3169:
+	dc.w $4AB1	; table $0DD984
+dict_off_3170:
+	dc.w $4AB8	; table $0DD986
+dict_off_3171:
+	dc.w $4ABC	; table $0DD988
+dict_off_3172:
+	dc.w $4AC7	; table $0DD98A
+dict_off_3173:
+	dc.w $4ACC	; table $0DD98C
+dict_off_3174:
+	dc.w $4AD3	; table $0DD98E
+dict_off_3175:
+	dc.w $4ADB	; table $0DD990
+dict_off_3176:
+	dc.w $4AE2	; table $0DD992
+dict_off_3177:
+	dc.w $4AE9	; table $0DD994
+dict_off_3178:
+	dc.w $4AF0	; table $0DD996
+dict_off_3179:
+	dc.w $4AF6	; table $0DD998
+dict_off_3180:
+	dc.w $4AFD	; table $0DD99A
+dict_off_3181:
+	dc.w $4B02	; table $0DD99C
+dict_off_3182:
+	dc.w $4B09	; table $0DD99E
+dict_off_3183:
+	dc.w $4B10	; table $0DD9A0
+dict_off_3184:
+	dc.w $4B17	; table $0DD9A2
+dict_off_3185:
+	dc.w $4B1D	; table $0DD9A4
+dict_off_3186:
+	dc.w $4B22	; table $0DD9A6
+dict_off_3187:
+	dc.w $4B2A	; table $0DD9A8
+dict_off_3188:
+	dc.w $4B30	; table $0DD9AA
+dict_off_3189:
+	dc.w $4B39	; table $0DD9AC
+dict_off_3190:
+	dc.w $4B42	; table $0DD9AE
+dict_off_3191:
+	dc.w $4B48	; table $0DD9B0
+dict_off_3192:
+	dc.w $4B4F	; table $0DD9B2
+dict_off_3193:
+	dc.w $4B57	; table $0DD9B4
+dict_off_3194:
+	dc.w $4B5E	; table $0DD9B6
+dict_off_3195:
+	dc.w $4B60	; table $0DD9B8
+dict_off_3196:
+	dc.w $4B67	; table $0DD9BA
+dict_off_3197:
+	dc.w $4B6D	; table $0DD9BC
+dict_off_3198:
+	dc.w $4B74	; table $0DD9BE
+dict_off_3199:
+	dc.w $4B7C	; table $0DD9C0
+dict_off_3200:
+	dc.w $4B82	; table $0DD9C2
+dict_off_3201:
+	dc.w $4B87	; table $0DD9C4
+dict_off_3202:
+	dc.w $4B8B	; table $0DD9C6
+dict_off_3203:
+	dc.w $4B8E	; table $0DD9C8
+dict_off_3204:
+	dc.w $4B91	; table $0DD9CA
+dict_off_3205:
+	dc.w $4B99	; table $0DD9CC
+dict_off_3206:
+	dc.w $4B9F	; table $0DD9CE
+dict_off_3207:
+	dc.w $4BA3	; table $0DD9D0
+dict_off_3208:
+	dc.w $4BA9	; table $0DD9D2
+dict_off_3209:
+	dc.w $4BAF	; table $0DD9D4
+dict_off_3210:
+	dc.w $4BB5	; table $0DD9D6
+dict_off_3211:
+	dc.w $4BB9	; table $0DD9D8
+dict_off_3212:
+	dc.w $4BC3	; table $0DD9DA
+dict_off_3213:
+	dc.w $4BC8	; table $0DD9DC
+dict_off_3214:
+	dc.w $4BD0	; table $0DD9DE
+dict_off_3215:
+	dc.w $4BD4	; table $0DD9E0
+dict_off_3216:
+	dc.w $4BDD	; table $0DD9E2
+dict_off_3217:
+	dc.w $4BE3	; table $0DD9E4
+dict_off_3218:
+	dc.w $4BE7	; table $0DD9E6
+dict_off_3219:
+	dc.w $4BED	; table $0DD9E8
+dict_off_3220:
+	dc.w $4BF5	; table $0DD9EA
+dict_off_3221:
+	dc.w $4BFC	; table $0DD9EC
+dict_off_3222:
+	dc.w $4C02	; table $0DD9EE
+dict_off_3223:
+	dc.w $4C07	; table $0DD9F0
+dict_off_3224:
+	dc.w $4C14	; table $0DD9F2
+dict_off_3225:
+	dc.w $4C19	; table $0DD9F4
+dict_off_3226:
+	dc.w $4C1F	; table $0DD9F6
+dict_off_3227:
+	dc.w $4C24	; table $0DD9F8
+dict_off_3228:
+	dc.w $4C29	; table $0DD9FA
+dict_off_3229:
+	dc.w $4C37	; table $0DD9FC
+dict_off_3230:
+	dc.w $4C44	; table $0DD9FE
+dict_off_3231:
+	dc.w $4C4A	; table $0DDA00
+dict_off_3232:
+	dc.w $4C50	; table $0DDA02
+dict_off_3233:
+	dc.w $4C59	; table $0DDA04
+dict_off_3234:
+	dc.w $4C66	; table $0DDA06
+dict_off_3235:
+	dc.w $4C72	; table $0DDA08
+dict_off_3236:
+	dc.w $4C7B	; table $0DDA0A
+dict_off_3237:
+	dc.w $4C86	; table $0DDA0C
+dict_off_3238:
+	dc.w $4C8D	; table $0DDA0E
+dict_off_3239:
+	dc.w $4C95	; table $0DDA10
+dict_off_3240:
+	dc.w $4C9A	; table $0DDA12
+dict_off_3241:
+	dc.w $4CA1	; table $0DDA14
+dict_off_3242:
+	dc.w $4CA5	; table $0DDA16
+dict_off_3243:
+	dc.w $4CAC	; table $0DDA18
+dict_off_3244:
+	dc.w $4CB3	; table $0DDA1A
+dict_off_3245:
+	dc.w $4CB6	; table $0DDA1C
+dict_off_3246:
+	dc.w $4CBB	; table $0DDA1E
+dict_off_3247:
+	dc.w $4CC7	; table $0DDA20
+dict_off_3248:
+	dc.w $4CCF	; table $0DDA22
+dict_off_3249:
+	dc.w $4CD8	; table $0DDA24
+dict_off_3250:
+	dc.w $4CDB	; table $0DDA26
+dict_off_3251:
+	dc.w $4CDF	; table $0DDA28
+dict_off_3252:
+	dc.w $4CE5	; table $0DDA2A
+dict_off_3253:
+	dc.w $4CEF	; table $0DDA2C
+dict_off_3254:
+	dc.w $4CF5	; table $0DDA2E
+dict_off_3255:
+	dc.w $4CFB	; table $0DDA30
+dict_off_3256:
+	dc.w $4D02	; table $0DDA32
+dict_off_3257:
+	dc.w $4D0A	; table $0DDA34
+dict_off_3258:
+	dc.w $4D0F	; table $0DDA36
+dict_off_3259:
+	dc.w $4D16	; table $0DDA38
+dict_off_3260:
+	dc.w $4D1B	; table $0DDA3A
+dict_off_3261:
+	dc.w $4D24	; table $0DDA3C
+dict_off_3262:
+	dc.w $4D2C	; table $0DDA3E
+dict_off_3263:
+	dc.w $4D34	; table $0DDA40
+dict_off_3264:
+	dc.w $4D41	; table $0DDA42
+dict_off_3265:
+	dc.w $4D44	; table $0DDA44
+dict_off_3266:
+	dc.w $4D49	; table $0DDA46
+dict_off_3267:
+	dc.w $4D4F	; table $0DDA48
+dict_off_3268:
+	dc.w $4D54	; table $0DDA4A
+dict_off_3269:
+	dc.w $4D5B	; table $0DDA4C
+dict_off_3270:
+	dc.w $4D5D	; table $0DDA4E
+dict_off_3271:
+	dc.w $4D62	; table $0DDA50
+dict_off_3272:
+	dc.w $4D65	; table $0DDA52
+dict_off_3273:
+	dc.w $4D6B	; table $0DDA54
+dict_off_3274:
+	dc.w $4D73	; table $0DDA56
+dict_off_3275:
+	dc.w $4D79	; table $0DDA58
+dict_off_3276:
+	dc.w $4D82	; table $0DDA5A
+dict_off_3277:
+	dc.w $4D87	; table $0DDA5C
+dict_off_3278:
+	dc.w $4D92	; table $0DDA5E
+dict_off_3279:
+	dc.w $4D97	; table $0DDA60
+dict_off_3280:
+	dc.w $4D9C	; table $0DDA62
+dict_off_3281:
+	dc.w $4DA2	; table $0DDA64
+dict_off_3282:
+	dc.w $4DA8	; table $0DDA66
+dict_off_3283:
+	dc.w $4DAF	; table $0DDA68
+dict_off_3284:
+	dc.w $4DB6	; table $0DDA6A
+dict_off_3285:
+	dc.w $4DBE	; table $0DDA6C
+dict_off_3286:
+	dc.w $4DC3	; table $0DDA6E
+dict_off_3287:
+	dc.w $4DCA	; table $0DDA70
+dict_off_3288:
+	dc.w $4DD3	; table $0DDA72
+dict_off_3289:
+	dc.w $4DDC	; table $0DDA74
+dict_off_3290:
+	dc.w $4DE2	; table $0DDA76
+dict_off_3291:
+	dc.w $4DE6	; table $0DDA78
+dict_off_3292:
+	dc.w $4DEB	; table $0DDA7A
+dict_off_3293:
+	dc.w $4DF1	; table $0DDA7C
+dict_off_3294:
+	dc.w $4DF7	; table $0DDA7E
+dict_off_3295:
+	dc.w $4DFB	; table $0DDA80
+dict_off_3296:
+	dc.w $4E02	; table $0DDA82
+dict_off_3297:
+	dc.w $4E08	; table $0DDA84
+dict_off_3298:
+	dc.w $4E11	; table $0DDA86
+dict_off_3299:
+	dc.w $4E15	; table $0DDA88
+dict_off_3300:
+	dc.w $4E1C	; table $0DDA8A
+dict_off_3301:
+	dc.w $4E26	; table $0DDA8C
+dict_off_3302:
+	dc.w $4E29	; table $0DDA8E
+dict_off_3303:
+	dc.w $4E2E	; table $0DDA90
+dict_off_3304:
+	dc.w $4E36	; table $0DDA92
+dict_off_3305:
+	dc.w $4E3A	; table $0DDA94
+dict_off_3306:
+	dc.w $4E3F	; table $0DDA96
+dict_off_3307:
+	dc.w $4E4F	; table $0DDA98
+dict_off_3308:
+	dc.w $4E54	; table $0DDA9A
+dict_off_3309:
+	dc.w $4E58	; table $0DDA9C
+dict_off_3310:
+	dc.w $4E5C	; table $0DDA9E
+dict_off_3311:
+	dc.w $4E5D	; table $0DDAA0
+dict_off_3312:
+	dc.w $4E5F	; table $0DDAA2
+dict_off_3313:
+	dc.w $4E63	; table $0DDAA4
+dict_off_3314:
+	dc.w $4E6B	; table $0DDAA6
+dict_off_3315:
+	dc.w $4E6F	; table $0DDAA8
+dict_off_3316:
+	dc.w $4E73	; table $0DDAAA
+dict_off_3317:
+	dc.w $4E79	; table $0DDAAC
+dict_off_3318:
+	dc.w $4E80	; table $0DDAAE
+dict_off_3319:
+	dc.w $4E87	; table $0DDAB0
+dict_off_3320:
+	dc.w $4E90	; table $0DDAB2
+dict_off_3321:
+	dc.w $4E99	; table $0DDAB4
+dict_off_3322:
+	dc.w $4EA0	; table $0DDAB6
+dict_off_3323:
+	dc.w $4EA4	; table $0DDAB8
+dict_off_3324:
+	dc.w $4EA9	; table $0DDABA
+dict_off_3325:
+	dc.w $4EAE	; table $0DDABC
+dict_off_3326:
+	dc.w $4EB4	; table $0DDABE
+dict_off_3327:
+	dc.w $4EB5	; table $0DDAC0
+dict_off_3328:
+	dc.w $4EBB	; table $0DDAC2
+dict_off_3329:
+	dc.w $4EC1	; table $0DDAC4
+dict_off_3330:
+	dc.w $4EC6	; table $0DDAC6
+dict_off_3331:
+	dc.w $4ECB	; table $0DDAC8
+dict_off_3332:
+	dc.w $4ECD	; table $0DDACA
+dict_off_3333:
+	dc.w $4ED4	; table $0DDACC
+dict_off_3334:
+	dc.w $4ED9	; table $0DDACE
+dict_off_3335:
+	dc.w $4EDE	; table $0DDAD0
+dict_off_3336:
+	dc.w $4EE4	; table $0DDAD2
+dict_off_3337:
+	dc.w $4EEC	; table $0DDAD4
+dict_off_3338:
+	dc.w $4EF1	; table $0DDAD6
+dict_off_3339:
+	dc.w $4EF4	; table $0DDAD8
+dict_off_3340:
+	dc.w $4EF8	; table $0DDADA
+dict_off_3341:
+	dc.w $4EFE	; table $0DDADC
+dict_off_3342:
+	dc.w $4F05	; table $0DDADE
+dict_off_3343:
+	dc.w $4F09	; table $0DDAE0
+dict_off_3344:
+	dc.w $4F10	; table $0DDAE2
+dict_off_3345:
+	dc.w $4F14	; table $0DDAE4
+dict_off_3346:
+	dc.w $4F17	; table $0DDAE6
+dict_off_3347:
+	dc.w $4F1A	; table $0DDAE8
+dict_off_3348:
+	dc.w $4F20	; table $0DDAEA
+dict_off_3349:
+	dc.w $4F27	; table $0DDAEC
+dict_off_3350:
+	dc.w $4F2E	; table $0DDAEE
+dict_off_3351:
+	dc.w $4F34	; table $0DDAF0
+dict_off_3352:
+	dc.w $4F3D	; table $0DDAF2
+dict_off_3353:
+	dc.w $4F46	; table $0DDAF4
+dict_off_3354:
+	dc.w $4F4B	; table $0DDAF6
+dict_off_3355:
+	dc.w $4F4E	; table $0DDAF8
+dict_off_3356:
+	dc.w $4F56	; table $0DDAFA
+dict_off_3357:
+	dc.w $4F5D	; table $0DDAFC
+dict_off_3358:
+	dc.w $4F60	; table $0DDAFE
+dict_off_3359:
+	dc.w $4F62	; table $0DDB00
+dict_off_3360:
+	dc.w $4F66	; table $0DDB02
+dict_off_3361:
+	dc.w $4F6A	; table $0DDB04
+dict_off_3362:
+	dc.w $4F70	; table $0DDB06
+dict_off_3363:
+	dc.w $4F75	; table $0DDB08
+dict_off_3364:
+	dc.w $4F7B	; table $0DDB0A
+dict_off_3365:
+	dc.w $4F7D	; table $0DDB0C
+dict_off_3366:
+	dc.w $4F85	; table $0DDB0E
+dict_off_3367:
+	dc.w $4F8D	; table $0DDB10
+dict_off_3368:
+	dc.w $4F94	; table $0DDB12
+dict_off_3369:
+	dc.w $4F99	; table $0DDB14
+dict_off_3370:
+	dc.w $4F9F	; table $0DDB16
+dict_off_3371:
+	dc.w $4FA8	; table $0DDB18
+dict_off_3372:
+	dc.w $4FAD	; table $0DDB1A
+dict_off_3373:
+	dc.w $4FB5	; table $0DDB1C
+dict_off_3374:
+	dc.w $4FBE	; table $0DDB1E
+dict_off_3375:
+	dc.w $4FC8	; table $0DDB20
+dict_off_3376:
+	dc.w $4FD1	; table $0DDB22
+dict_off_3377:
+	dc.w $4FDB	; table $0DDB24
+dict_off_3378:
+	dc.w $4FDE	; table $0DDB26
+dict_off_3379:
+	dc.w $4FE5	; table $0DDB28
+dict_off_3380:
+	dc.w $4FE9	; table $0DDB2A
+dict_off_3381:
+	dc.w $4FED	; table $0DDB2C
+dict_off_3382:
+	dc.w $4FF1	; table $0DDB2E
+dict_off_3383:
+	dc.w $4FF5	; table $0DDB30
+dict_off_3384:
+	dc.w $4FFD	; table $0DDB32
+dict_off_3385:
+	dc.w $5002	; table $0DDB34
+dict_off_3386:
+	dc.w $5005	; table $0DDB36
+dict_off_3387:
+	dc.w $5009	; table $0DDB38
+dict_off_3388:
+	dc.w $500D	; table $0DDB3A
+dict_off_3389:
+	dc.w $5015	; table $0DDB3C
+dict_off_3390:
+	dc.w $501A	; table $0DDB3E
+dict_off_3391:
+	dc.w $501E	; table $0DDB40
+dict_off_3392:
+	dc.w $5027	; table $0DDB42
+dict_off_3393:
+	dc.w $502F	; table $0DDB44
+dict_off_3394:
+	dc.w $5037	; table $0DDB46
+dict_off_3395:
+	dc.w $503B	; table $0DDB48
+dict_off_3396:
+	dc.w $5040	; table $0DDB4A
+dict_off_3397:
+	dc.w $5047	; table $0DDB4C
+dict_off_3398:
+	dc.w $504C	; table $0DDB4E
+dict_off_3399:
+	dc.w $5052	; table $0DDB50
+dict_off_3400:
+	dc.w $505A	; table $0DDB52
+dict_off_3401:
+	dc.w $5060	; table $0DDB54
+dict_off_3402:
+	dc.w $5066	; table $0DDB56
+dict_off_3403:
+	dc.w $506B	; table $0DDB58
+dict_off_3404:
+	dc.w $5072	; table $0DDB5A
+dict_off_3405:
+	dc.w $507B	; table $0DDB5C
+dict_off_3406:
+	dc.w $5086	; table $0DDB5E
+dict_off_3407:
+	dc.w $508E	; table $0DDB60
+dict_off_3408:
+	dc.w $5096	; table $0DDB62
+dict_off_3409:
+	dc.w $50A0	; table $0DDB64
+dict_off_3410:
+	dc.w $50A6	; table $0DDB66
+dict_off_3411:
+	dc.w $50AA	; table $0DDB68
+dict_off_3412:
+	dc.w $50B3	; table $0DDB6A
+dict_off_3413:
+	dc.w $50C0	; table $0DDB6C
+dict_off_3414:
+	dc.w $50C5	; table $0DDB6E
+dict_off_3415:
+	dc.w $50CA	; table $0DDB70
+dict_off_3416:
+	dc.w $50D0	; table $0DDB72
+dict_off_3417:
+	dc.w $50DA	; table $0DDB74
+dict_off_3418:
+	dc.w $50E1	; table $0DDB76
+dict_off_3419:
+	dc.w $50EC	; table $0DDB78
+dict_off_3420:
+	dc.w $50F3	; table $0DDB7A
+dict_off_3421:
+	dc.w $50FB	; table $0DDB7C
+dict_off_3422:
+	dc.w $5100	; table $0DDB7E
+dict_off_3423:
+	dc.w $5109	; table $0DDB80
+dict_off_3424:
+	dc.w $5112	; table $0DDB82
+dict_off_3425:
+	dc.w $5119	; table $0DDB84
+dict_off_3426:
+	dc.w $511D	; table $0DDB86
+dict_off_3427:
+	dc.w $5123	; table $0DDB88
+dict_off_3428:
+	dc.w $5128	; table $0DDB8A
+dict_off_3429:
+	dc.w $5131	; table $0DDB8C
+dict_off_3430:
+	dc.w $5138	; table $0DDB8E
+dict_off_3431:
+	dc.w $513D	; table $0DDB90
+dict_off_3432:
+	dc.w $5140	; table $0DDB92
+dict_off_3433:
+	dc.w $5145	; table $0DDB94
+dict_off_3434:
+	dc.w $5149	; table $0DDB96
+dict_off_3435:
+	dc.w $514D	; table $0DDB98
+dict_off_3436:
+	dc.w $5155	; table $0DDB9A
+dict_off_3437:
+	dc.w $515D	; table $0DDB9C
+dict_off_3438:
+	dc.w $5169	; table $0DDB9E
+dict_off_3439:
+	dc.w $516E	; table $0DDBA0
+dict_off_3440:
+	dc.w $5173	; table $0DDBA2
+dict_off_3441:
+	dc.w $517B	; table $0DDBA4
+dict_off_3442:
+	dc.w $5181	; table $0DDBA6
+dict_off_3443:
+	dc.w $5187	; table $0DDBA8
+dict_off_3444:
+	dc.w $518B	; table $0DDBAA
+dict_off_3445:
+	dc.w $5191	; table $0DDBAC
+dict_off_3446:
+	dc.w $5196	; table $0DDBAE
+dict_off_3447:
+	dc.w $519B	; table $0DDBB0
+dict_off_3448:
+	dc.w $519F	; table $0DDBB2
+dict_off_3449:
+	dc.w $51A4	; table $0DDBB4
+dict_off_3450:
+	dc.w $51AB	; table $0DDBB6
+dict_off_3451:
+	dc.w $51B0	; table $0DDBB8
+dict_off_3452:
+	dc.w $51B4	; table $0DDBBA
+dict_off_3453:
+	dc.w $51BB	; table $0DDBBC
+dict_off_3454:
+	dc.w $51C1	; table $0DDBBE
+dict_off_3455:
+	dc.w $51C5	; table $0DDBC0
+dict_off_3456:
+	dc.w $51C9	; table $0DDBC2
+dict_off_3457:
+	dc.w $51CD	; table $0DDBC4
+dict_off_3458:
+	dc.w $51D3	; table $0DDBC6
+dict_off_3459:
+	dc.w $51DB	; table $0DDBC8
+dict_off_3460:
+	dc.w $51E0	; table $0DDBCA
+dict_off_3461:
+	dc.w $51E5	; table $0DDBCC
+dict_off_3462:
+	dc.w $51E9	; table $0DDBCE
+dict_off_3463:
+	dc.w $51EE	; table $0DDBD0
+dict_off_3464:
+	dc.w $51F5	; table $0DDBD2
+dict_off_3465:
+	dc.w $51FB	; table $0DDBD4
+dict_off_3466:
+	dc.w $5206	; table $0DDBD6
 L0DDBD8:
 	; data $0DDBD8-$0E0A17
 	incbin "rop-original.gen",$0DDBD8,$2E40
