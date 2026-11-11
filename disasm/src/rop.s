@@ -60895,93 +60895,98 @@ L0B86AE:
 L0B8A32:
 	; data $0B8A32-$0CC9D7
 	incbin "rop-original.gen",$0B8A32,$13FA6
+	; table $0CC9D8-$0CCDB7: 31 records x 16 words
+pal_master_00:
 L0CC9D8:
-	; data $0CC9D8-$0CC9F7
-	incbin "rop-original.gen",$0CC9D8,$20
+	dc.w $0000,$0A00,$00A0,$0AA0,$000A,$0A0A,$004A,$0AAA,$0444,$0E44,$04E4,$0EE4,$044E,$0E4E,$04EE,$0EEE	; table $0CC9D8
+pal_master_01:
 L0CC9F8:
-	; data $0CC9F8-$0CCA17
-	incbin "rop-original.gen",$0CC9F8,$20
+	dc.w $0000,$0000,$0444,$0888,$0AAA,$0CCC,$0024,$0026,$0046,$0048,$0268,$028A,$0E62,$000C,$008E,$0EEE	; table $0CC9F8
+pal_master_02:
 L0CCA18:
-	; data $0CCA18-$0CCA37
-	incbin "rop-original.gen",$0CCA18,$20
+	dc.w $00E0,$0000,$000C,$004E,$008E,$00AE,$02CE,$04EE,$0E40,$0E60,$0E80,$0EA0,$0EC0,$0CC2,$0CC8,$0EEE	; table $0CCA18
+pal_master_03:
 L0CCA38:
-	; data $0CCA38-$0CCA97
-	incbin "rop-original.gen",$0CCA38,$60
+	dc.w $00EE,$0000,$0020,$0060,$0080,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0000,$0088,$06EE,$0EEE	; table $0CCA38
+pal_master_04:
+	dc.w $00E0,$0000,$0444,$0666,$0888,$0AAA,$0CCC,$0EEE,$0222,$0444,$0666,$0888,$0AAA,$0CCC,$0EEE,$0E0E	; table $0CCA58
+pal_master_05:
+	dc.w $00E0,$0000,$0444,$0666,$0888,$0AAA,$0CCC,$0EEE,$0000,$0444,$0666,$0888,$0000,$0088,$06EE,$0EEE	; table $0CCA78
+pal_master_06:
 L0CCA98:
-	; data $0CCA98-$0CCAB7
-	incbin "rop-original.gen",$0CCA98,$20
+	dc.w $0EE0,$0000,$0A26,$0E40,$0E80,$0880,$00C0,$00E8,$00EE,$008E,$004E,$004C,$000A,$0006,$00AE,$00CE	; table $0CCA98
+pal_master_07:
 L0CCAB8:
-	; data $0CCAB8-$0CCAD7
-	incbin "rop-original.gen",$0CCAB8,$20
+	dc.w $0000,$0000,$066C,$046A,$044A,$0248,$0028,$0026,$0006,$0004,$0E40,$04EE,$028C,$0AAA,$0CCC,$0EEE	; table $0CCAB8
+pal_master_08:
 L0CCAD8:
-	; data $0CCAD8-$0CCAF7
-	incbin "rop-original.gen",$0CCAD8,$20
+	dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000	; table $0CCAD8
+pal_master_09:
 L0CCAF8:
-	; data $0CCAF8-$0CCB17
-	incbin "rop-original.gen",$0CCAF8,$20
+	dc.w $0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE	; table $0CCAF8
+pal_master_10:
 L0CCB18:
-	; data $0CCB18-$0CCB37
-	incbin "rop-original.gen",$0CCB18,$20
+	dc.w $0000,$0A00,$0C60,$0080,$0EA0,$02C2,$0004,$0444,$04E4,$0666,$0028,$0AAA,$044E,$0000,$04EE,$0EEE	; table $0CCB18
+pal_master_11:
 L0CCB38:
-	; data $0CCB38-$0CCB57
-	incbin "rop-original.gen",$0CCB38,$20
+	dc.w $0000,$0000,$0666,$0222,$0024,$044A,$0026,$0448,$0008,$046A,$0888,$028A,$066C,$0444,$0246,$04EE	; table $0CCB38
+pal_master_12:
 L0CCB58:
-	; data $0CCB58-$0CCB77
-	incbin "rop-original.gen",$0CCB58,$20
+	dc.w $0000,$0000,$0024,$0008,$0224,$0226,$0002,$000A,$0248,$0268,$046C,$028A,$048C,$044A,$088C,$04AA	; table $0CCB58
+pal_master_13:
 L0CCB78:
-	; data $0CCB78-$0CCB97
-	incbin "rop-original.gen",$0CCB78,$20
+	dc.w $00A0,$0000,$0008,$00EE,$00CC,$008E,$006E,$004E,$002E,$000C,$08EE,$0088,$0006,$0E6E,$0E6E,$0EEE	; table $0CCB78
+pal_master_14:
 L0CCB98:
-	; data $0CCB98-$0CCBB7
-	incbin "rop-original.gen",$0CCB98,$20
+	dc.w $0E0E,$0000,$0222,$0444,$0666,$0888,$0026,$0048,$046A,$068C,$0040,$0060,$0080,$00A0,$00EE,$0EEE	; table $0CCB98
+pal_master_15:
 L0CCBB8:
-	; data $0CCBB8-$0CCBD7
-	incbin "rop-original.gen",$0CCBB8,$20
+	dc.w $0000,$00E0,$0EEC,$0ECA,$0EA8,$0E86,$0E64,$0E42,$0E8E,$0E8E,$0266,$0488,$06AA,$08CC,$0AEE,$0EEE	; table $0CCBB8
+pal_master_16:
 L0CCBD8:
-	; data $0CCBD8-$0CCBF7
-	incbin "rop-original.gen",$0CCBD8,$20
+	dc.w $0000,$00E0,$0020,$0060,$0080,$0024,$0240,$0460,$0680,$08A0,$0AC0,$0CE0,$00E0,$00E0,$0EEC,$0EEE	; table $0CCBD8
+pal_master_17:
 L0CCBF8:
-	; data $0CCBF8-$0CCC17
-	incbin "rop-original.gen",$0CCBF8,$20
+	dc.w $0404,$0000,$0222,$0444,$0666,$0888,$0AAA,$0E8E,$0644,$0866,$0A88,$0CAA,$06AA,$00EE,$0EEE,$0E8E	; table $0CCBF8
+pal_master_18:
 L0CCC18:
-	; data $0CCC18-$0CCC37
-	incbin "rop-original.gen",$0CCC18,$20
+	dc.w $0E0E,$0000,$0000,$0C20,$0A00,$0666,$0040,$0080,$0EA4,$0800,$0020,$0400,$0E80,$0EEE,$0C40,$0200	; table $0CCC18
+pal_master_19:
 L0CCC38:
-	; data $0CCC38-$0CCC57
-	incbin "rop-original.gen",$0CCC38,$20
+	dc.w $0000,$0200,$0400,$0420,$0820,$0640,$0204,$0000,$0640,$0200,$0202,$0824,$0406,$0000,$0844,$0A66	; table $0CCC38
+pal_master_20:
 L0CCC58:
-	; data $0CCC58-$0CCC77
-	incbin "rop-original.gen",$0CCC58,$20
+	dc.w $0000,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE,$0EEE	; table $0CCC58
+pal_master_21:
 L0CCC78:
-	; data $0CCC78-$0CCC97
-	incbin "rop-original.gen",$0CCC78,$20
+	dc.w $0000,$0A00,$0C44,$0000,$0E88,$0000,$0000,$0C44,$0C44,$0C66,$0000,$0EAA,$0C44,$0000,$0EEE,$0EEE	; table $0CCC78
+pal_master_22:
 L0CCC98:
-	; data $0CCC98-$0CCCB7
-	incbin "rop-original.gen",$0CCC98,$20
+	dc.w $0000,$0004,$000A,$000A,$006E,$000E,$0004,$0008,$00AE,$0006,$0008,$002E,$000E,$0000,$04EE,$0EEE	; table $0CCC98
+pal_master_23:
 L0CCCB8:
-	; data $0CCCB8-$0CCCD7
-	incbin "rop-original.gen",$0CCCB8,$20
+	dc.w $0000,$0A00,$0C60,$0680,$0EA0,$0CC2,$0A04,$0E44,$0EE4,$0E66,$0A28,$0EAA,$0E4A,$0000,$0ECC,$0ECC	; table $0CCCB8
+pal_master_24:
 L0CCCD8:
-	; data $0CCCD8-$0CCCF7
-	incbin "rop-original.gen",$0CCCD8,$20
+	dc.w $0000,$0E88,$0ECA,$0AEA,$0ECA,$0AEA,$088A,$0AAA,$0CEC,$0AAA,$0ACE,$0CCC,$0CCE,$0888,$0CEE,$0EEE	; table $0CCCD8
+pal_master_25:
 L0CCCF8:
-	; data $0CCCF8-$0CCD17
-	incbin "rop-original.gen",$0CCCF8,$20
+	dc.w $0000,$0E40,$0E62,$0EA2,$0EC4,$0EE6,$0000,$00E0,$000E,$0222,$0444,$0400,$0888,$0AAA,$0CCC,$0EEE	; table $0CCCF8
+pal_master_26:
 L0CCD18:
-	; data $0CCD18-$0CCD37
-	incbin "rop-original.gen",$0CCD18,$20
+	dc.w $0E0E,$0000,$0022,$0066,$0088,$00CC,$00EE,$0EEE,$0200,$0600,$0ECA,$0C00,$0E00,$00E0,$0E82,$0E0E	; table $0CCD18
+pal_master_27:
 L0CCD38:
-	; data $0CCD38-$0CCD57
-	incbin "rop-original.gen",$0CCD38,$20
+	dc.w $0000,$0000,$0AAC,$0CAA,$088A,$0A88,$0666,$0444,$00CC,$0088,$0044,$0022,$000E,$0060,$0080,$00E0	; table $0CCD38
+pal_master_28:
 L0CCD58:
-	; data $0CCD58-$0CCD77
-	incbin "rop-original.gen",$0CCD58,$20
+	dc.w $0E0E,$0E00,$0E22,$0E66,$0EAA,$0ECC,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E	; table $0CCD58
+pal_master_29:
 L0CCD78:
-	; data $0CCD78-$0CCD97
-	incbin "rop-original.gen",$0CCD78,$20
+	dc.w $0E0E,$000A,$000E,$046E,$088E,$0CCE,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E,$0E0E	; table $0CCD78
+pal_master_30:
 L0CCD98:
-	; data $0CCD98-$0CCDB7
-	incbin "rop-original.gen",$0CCD98,$20
+	dc.w $00E0,$0000,$0222,$000E,$0400,$0800,$0A00,$0666,$0888,$0446,$0668,$0E22,$0000,$000A,$0444,$0EEE	; table $0CCD98
 L0CCDB8:
 	; data $0CCDB8-$0CD42F
 	incbin "rop-original.gen",$0CCDB8,$678
@@ -61491,7 +61496,7 @@ L0EBB56:
 	rts	; $0EBB6C
 L0EBB6E:
 	; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)
-	incbin "build/z80_snd_driver.bin"
+	incbin "build/z80_snd_driver.bin"	; $0EBB6E
 	; data $0ED0E4-$0ED0E7
 	incbin "rop-original.gen",$0ED0E4,$4
 L0ED0E8:

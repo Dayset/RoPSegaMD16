@@ -29,6 +29,7 @@ from pathlib import Path
 import capstone
 
 ROM = Path("rop-original.gen")
+TABLES_CSV = Path("disasm/tables.csv")  # structured data tables (#14): start,end,prefix,words_per_record
 BODIES = Path("disasm/ghidra/function_bodies.txt")
 OUT = Path("disasm/src/rop.s")
 VASM = Path("tools/vasm/vasmm68k_mot")
@@ -362,8 +363,46 @@ def main():
     label_addrs = targets | entry_names | set(NAMES)  # every named address gets a label
     labelled = set()
 
+    tables = []
+    if TABLES_CSV.exists():
+        import csv as _csv
+        with TABLES_CSV.open(newline="") as fh:
+            for r in _csv.DictReader(fh):
+                tables.append((int(r["start"], 16), int(r["end"], 16), r["prefix"], int(r["words_per_record"])))
+    tables.sort()
+
+    def emit_table(ts, te, prefix, wpr):
+        """Structured table: one labelled record per wpr words; dc.w lines break at interior labels."""
+        rec = wpr * 2
+        assert (te - ts) % rec == 0, f"table {ts:#x}-{te:#x} not a whole number of {rec}-byte records"
+        out.append(f"\t; table ${ts:06X}-${te - 1:06X}: {(te - ts) // rec} records x {wpr} words")
+        for k in range((te - ts) // rec):
+            base = ts + k * rec
+            out.append(f"{prefix}{k:02d}:")
+            if base in label_addrs:  # code refers to this record start by its L label too
+                out.append(f"{lab(base)}:")
+            line = []
+            line_at = base
+            for i in range(wpr):
+                addr = base + 2 * i
+                if i > 0 and addr in label_addrs:  # code refers into this record: flush and label
+                    out.append(f"\tdc.w {','.join(line)}\t; table ${line_at:06X}")
+                    out.append(f"{lab(addr)}:")
+                    line, line_at = [], addr
+                line.append(f"${rom[addr] << 8 | rom[addr + 1]:04X}")
+            out.append(f"\tdc.w {','.join(line)}\t; table ${line_at:06X}")
+
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
+        for ts, te, prefix, wpr in tables:
+            if a < te and b > ts:
+                if a < ts:
+                    emit_data(a, ts)
+                assert a <= ts and te <= b, f"table {ts:#x}-{te:#x} straddles a data piece"
+                emit_table(ts, te, prefix, wpr)
+                if te < b:
+                    emit_data(te, b)
+                return
         if a < Z80_END and b > Z80_START:
             # Z80 sound driver: assembled from disasm/z80/snd_driver.s by tools/build.sh (#78)
             if a < Z80_START:
@@ -374,7 +413,7 @@ def main():
                 out.append(f"{lab(Z80_START)}:")
                 labelled.add(Z80_START)
             out.append("\t; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)")
-            out.append('\tincbin "build/z80_snd_driver.bin"')
+            out.append(f'\tincbin "build/z80_snd_driver.bin"\t; ${Z80_START:06X}')
             if b > Z80_END:
                 emit_data(Z80_END, b)
             return
