@@ -371,3 +371,4 @@ addr,name,tier,note
 0x0EBAFA,snd_sfx_entry_b,2,sound.md:150 public SFX entry point (called by 17586); tries EBBFE immediately
 0x0ebafe,snd_sfx_deliver_7,2,SFX deliver slot 7 per sound.md:149; sets $000C=7 and copies 23-byte block to Z80 $003A or queues pointer in $FF023A when busy; reached via public entry $EBAFA
 0x0EBB04,snd_sfx_muted,2,sound.md:67 SFX path when sound is off (EBB04)
+0x0EB9A0,z80_unk_0eb9a0,0,auto: 68000 bus-wrapper tail (move.l 4(a7) then bsr and move.b to $0B(a0)); not Ghidra-named
