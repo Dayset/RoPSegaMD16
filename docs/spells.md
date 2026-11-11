@@ -458,6 +458,67 @@ bit test on `+0x2C`) calling `$398E0(0x2F0, member)`.
   lookup — Ghidra decompiles of `$3B51E` / `$36E2E` / `$3B748`
   mislead on this; the asm is authoritative.
 
+### 6.7 Mood and tactic (`+0x2C` bits 8–12) — PINNED (static)
+
+FIGHT menu (table 1, grp 6): **Flee (C=6), Berzrk (C=1), Advnce
+(C=2), Hold (C=3), Wary (C=4)** — all grp-8 picks setting `$FFBB6F`,
+all free (no gold, mana, or HP cost). MOOD menu (table 2, grp 4):
+same C=1–4. TACTIC menu (table 4, grp 4): **Asasin (C=8), GangUp
+(C=9), Cover (C=10), Guard (C=11)** — all grp 8.
+
+`spell_dispatch_effect` (`$037850`, arg = `$FFBB6F`; jump table
+`$03788C`, 12 words): 0/5/7 no-op; 1–4 → `spell_set_status_lo(4−arg)`
+= mood; 6 → `combat_set_mode()`; 8–11 →
+`spell_set_status_hi(arg−8)` = tactic. Only observed caller: the
+C=16 handler (TALK "Fight"); single call site in the ROM (`$020326`).
+
+- `spell_set_status_lo` (`$0378BA`): `lsl.w #8`, `and.w #$300`,
+  OR into the char's `+0x2C` — **bits 8–9 = MOOD: 3 Berzrk, 2 Advnce,
+  1 Hold, 0 Wary.**
+- `spell_set_status_hi` (`$037918`): **bits 10–12 = TACTIC: 0 Asasin,
+  1 GangUp, 2 Cover, 3 Guard.**
+
+Mood consumers (targeting): `combat_pick_target` (`$03B748`) reads
+the mood — Wary/Hold get a `rand_next(3)` distance jitter, Berzrk
+picks farthest where others pick nearest — and
+`spell_find_target_cell` takes the caster's mood as an input arg.
+
+**Damage — lead correction (2026-11-11): `damage_calc` DOES read the
+mood.** The vessel report said it does not; that is wrong.
+`damage_calc` (`$3B1EE`) at `$03B2C4`/`$03B2DA` reads attacker and
+defender `+0x2C>>8 & 3` and adds (attacker mood × `$c`)>>4 while
+subtracting (defender mood × `$c`)>>4, where `$c` is the routine's
+third arg (a base power: a masked struct word at `$03B094`, a caller
+local at `$03A842`). So a Berserk attacker deals more damage than a
+Wary one (by 3×`$c`/16), and a Berserk defender takes less. The
+TerraBreaks hint's "higher damage" half HAS a traced mechanism; the
+"lower cost" half has none found — no cost path reads the mood in this
+investigation. The flat-70/flat-5 branch (event codes 0x8E–0x92/0x97)
+bypasses the computed path including the mood terms. The `$03B724`
+`+0x2C` read is the dead-bit test (bit 13), not a mood read.
+
+Flee: C=6 → `spell_dispatch_effect(6)` → `combat_set_mode()`
+(`$0368E4`); whether that implements a retreat is NOT established
+(it sets combat-flags bits 6–8 from party composition). rec_1107 'You
+manage to flee your enemy.' exists in text, but no code reference to
+record 1107 was found. "Advance" is the Advnce mood (C=2), not a
+separate command. Open: the mood→`spell_dispatch_effect` sequencing
+(menu-close dispatch site), tactic consumers (no reader of bits 10–12
+found), MANUAL/AUTO modes, C=56/80/101/102/105 handlers.
+
+### 6.8 No world-cast path — PINNED (static)
+
+Full verb menu table parsed (`$CCDB8`–`$CD430`, 26 menus). MAIN
+offers Inven/Spells/Party/Search/Map/Camp/System — no cast verb.
+SPELLS (table 24) is a listing/buying menu → PICK → C=8
+`spell_assign_by_rank` (assignment, not casting). C-dispatch `$2068E`:
+C=16 → `spell_dispatch_effect` (status applier, via TALK "Fight");
+**C=24 and C=27 → `bra settings_menu_open`** (menu returns, not
+casts). The casting machinery (`spell_find_target_cell` /
+`spell_apply_actor` / the `$FF012C` action codes) is combat-routed
+only. No C value casts a spell in the world — Buc has no world-cast
+path, and neither does any vessel (see docs/logic.md vessel section).
+
 ## 7. Struct-field conflicts and navigation notes
 
 ### 7.1 `+0x2A` is dual-purpose — verified (conflict recorded)
