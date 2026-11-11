@@ -963,3 +963,18 @@ all decompressed clean by #005 (62/62 + 90/90).
   `disasm/graphics/016_terrain_rec06_full.png`,
   `disasm/graphics/016_portrait_b86ae_rec00_full.png` — the #016
   full-tileset renders (corrected palette)
+
+## LZSS stream check (2026-11-11, `tools/lzss_check.py`, read only)
+
+- `$96120` table (base `0x09638C`): 62 of 62 type-1 records decode to their
+  declared length; last stream ends `0x0B86AE`.
+- `$B86AE` table (90 records, `0x0B86AE–0x0B8A31`), streams base `0x0B8A32`:
+  90 of 90 type-1 records decode to their declared length; last stream ends
+  `0x0CC9D8`.
+- Correction: `disasm/text/README.md` lists the `$B8A32` table with base
+  `$B86AE`, which is swapped. The table is at `0x0B86AE` and the streams base is
+  `0x0B8A32`.
+
+The decoder is the documented `$DD5C` format (32-bit LE length, mask bytes,
+12-bit offset, 4 KB ring pre-filled with 0x20). A clean length match on every
+record is strong evidence, and it covers the whole `lzss-stream` span.
