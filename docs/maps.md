@@ -447,7 +447,20 @@ coordinates when `$FF00AE`==2. Live 19/19: 8 in-bounds coords
 mode17=1, s253fe=0; 3 out-of-bounds coords (352,100), (100,224),
 (400,300) with `$FF00AE`=2 all mode17=0, s253fe=`$FE`;
 mode17 == NOT(s253fe) in all 19 cases, and the mode-0 results
-re-confirmed 6/6 in the same run. (When `$FF00AE`!=2 the bounds
+re-confirmed 6/6 in the same run. **Correction (2026-11-11, static):
+the "regardless of `$5EDC4` type" part is an artifact of the harness
+context, not the mode-$17 rule.** The harness ran hooked at the
+attract loop `0x35C`, i.e. before `main_init` — and `$FF00A4` (the
+`$01CF38` terrain-dispatch gate in `$1C892`) is 0 there
+(`vdp_ram_clear` at `$000330` zeroed it; `main_init` at `$0003A6`
+copies `$FFFF` into it from ROM `$FCEE0` only after input, and no
+code writes it afterwards). So in that run the dispatch never ran and
+every in-bounds coordinate read walkable. In real play
+(`$FF00A4=$FFFF`) the dispatch runs and mode-$17 follows the mode-2
+handler rules (`-$a(a6)` step count, see `docs/logic.md` §3.7): e.g.
+types 5/9/18/6 leave `-$a`=0 in mode 2 (blocked) while types 0/1 set
+it to 1. A live re-run of mode-$17 with `$FF00A4=1` is owed to
+confirm. (When `$FF00AE`!=2 the bounds
 gate is skipped, so mode `$17` is walkable even out of bounds
 [static] — out-of-bounds was only live-tested with `$FF00AE`=2,
 to avoid `$1C176` on an out-of-bounds tile.) The player's arrow-key
