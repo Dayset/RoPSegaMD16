@@ -10,6 +10,7 @@ Usage:
     checksum.py fix <rom> <out>         # write a copy with the header checksum fixed
     checksum.py fix --in-place <rom>    # fix the file in place (never use on the original!)
     checksum.py fix-all <rom> <out>     # fix header checksum AND runtime constant
+    checksum.py inc <image> <out.inc>   # build-time: RUNTIME_SUM / HEADER_SUM equ lines (#16)
 
 Runtime checksum (found 2026-11-09, issue #002): the game self-checks at
 boot — jsr $FD07C from the entry code at 0x300 sums 32-bit big-endian words
@@ -23,6 +24,7 @@ the end of the summed range, so patching it does not change the sum.
 """
 import struct
 import sys
+from pathlib import Path
 
 CHECKSUM_OFFSET = 0x18E
 CHECKSUM_START = 0x200
@@ -111,13 +113,26 @@ def verify_all(path: str) -> bool:
 
 
 def main(argv):
-    if len(argv) < 3 or argv[1] not in ("verify", "verify-all", "fix", "fix-all"):
+    if len(argv) < 3 or argv[1] not in ("verify", "verify-all", "fix", "fix-all", "inc"):
         print(__doc__)
         return 2
     if argv[1] == "verify":
         return 0 if verify(argv[2]) else 1
     if argv[1] == "verify-all":
         return 0 if verify_all(argv[2]) else 1
+    if argv[1] == "inc":
+        # The runtime sum skips 0x18C and never reads 0xFD098, so it comes from the image as-is.
+        # The header sum reads 0xFD098, so it is taken after that immediate is set.
+        with open(argv[2], "rb") as f:
+            data = bytearray(f.read())
+        runtime = compute_runtime_checksum(bytes(data))
+        struct.pack_into(">I", data, RT_IMM_ADDR, runtime)
+        header = compute_checksum(bytes(data))
+        Path(argv[3]).write_text(
+            f"RUNTIME_SUM\tequ\t${runtime:08X}\n"
+            f"HEADER_SUM\tequ\t${header:04X}\n")
+        print(f"{argv[3]}: runtime ${runtime:08X}, header ${header:04X}")
+        return 0
     if argv[1] == "fix-all":
         src, dst = argv[2], argv[3]
         with open(src, "rb") as f:
