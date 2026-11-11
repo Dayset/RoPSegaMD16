@@ -4,7 +4,7 @@ ROM      := rop-original.gen
 REBUILT  := build/rop-rebuilt.gen
 PY       := python3
 
-.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean
+.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test
 
 help:
 	@echo "make vasm      install pinned assembler into tools/vasm"
@@ -12,6 +12,7 @@ help:
 	@echo "make verify    byte-compare rebuilt ROM with $(ROM) (fails on any difference)"
 	@echo "make coverage  coverage meter for disasm/src/rop.s"
 	@echo "make regions   ROM data-region inventory"
+	@echo "make assets    rebuild the DD5C asset records from assets/gfx/ -> build/assets.gen"
 	@echo "make gate      build + verify + coverage (run before every push touching disasm/src or tools/)"
 	@echo "make rom-free  fail if any ROM image (*.gen) is tracked by git"
 	@echo "make clean     remove build/"
@@ -30,6 +31,9 @@ coverage:
 
 regions:
 	$(PY) tools/regions_inventory.py disasm/src/rop.s --md
+
+assets:
+	$(PY) tools/build_assets.py
 
 gate: verify coverage
 
