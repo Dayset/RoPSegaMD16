@@ -41,4 +41,7 @@ check "m68k-linux-gnu-as" "$(m68k-linux-gnu-as --version 2>/dev/null | sed -n 1p
 check "blastem" "$(command -v blastem || ls /usr/games/blastem 2>/dev/null || echo missing)"; [ -e /usr/games/blastem ] || command -v blastem >/dev/null || fail=1
 check "xvfb-run" "$(command -v xvfb-run || echo missing)"
 check "java" "$(java -version 2>&1 | grep -v JAVA_TOOL_OPTIONS | sed -n 1p || echo missing)"
+if [ -d .git ]; then
+    git config core.hooksPath tools/hooks   # pre-push gate (#5)
+fi
 [ "$fail" -eq 0 ] && echo "PASS toolchain ready" || { echo "FAIL toolchain incomplete"; exit 1; }

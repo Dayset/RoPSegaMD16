@@ -52,5 +52,16 @@ status:
 shift-test:
 	sh tools/shift_test.sh
 
+setup:
+	sh tools/setup.sh
+
+rom: build
+
+boot:
+	sh tools/test_harness.sh
+
+unit:
+	@for t in tools/tests/test_*.py; do python3 "$$t" || exit 1; done
+
 clean:
 	rm -rf build

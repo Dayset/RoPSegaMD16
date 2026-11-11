@@ -1,0 +1,16 @@
+name: ci
+# No ROM here: the byte-compare runs locally (make check, pre-push hook). CI runs what needs no ROM (#5).
+on:
+  push:
+  pull_request:
+jobs:
+  lint-and-unit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python deps
+        run: python3 -m pip install "capstone==5.0.7"
+      - name: Lint symbol files
+        run: python3 tools/lint_symbols.py
+      - name: Unit tests (ROM-dependent tests skip without rop-original.gen)
+        run: make unit
