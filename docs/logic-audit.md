@@ -1020,4 +1020,4 @@ issue (parent verifies and pushes).
   filled just before; the boot and clear harness "0xFF blank" expectations
   are unreachable at the attract-loop hook (`$FF016A` is always zeros by
   then). Harness expectations are wrong, not the game. The boot-EEPROM
-  probe hooks `$000330`, before the clear (#112).
+  probe hooks `$000312` (the first instruction after `save_validate` returns), before the clear (#112).
