@@ -462,14 +462,25 @@ returns immediately.
   map-scroll sites (0x166FA, 0x16D6A) that pass computed values
   as `(v, v, h, h)` — both planes scrolled together by the map
   offset.
-- **`$16512`** (0x16512–0x1664D, verified in outline): the
+- **`$16512`** (0x16512–0x1664D, tier 2, doc-pinned): the
   column writer. Sets R15=`$80` (auto-inc 128 = one 64-wide row
   per write), sets the VRAM address from its args, then writes
   32 cells down a column, each word built from the `$1AE98`
-  descriptor table (flip bits from the descriptor, tile index
-  from descriptor bits 2–7) plus the tile base `$FF8678`, and
-  restores R15=`$02`. Called from the map-chunk path. Its exact
-  cell semantics are not fully traced (§8).
+  descriptor table plus the tile base `$FF8678`, and restores
+  R15=`$02`. Called only from `map_view` (`$1664E`): `$016C1A`
+  (scroll-right edge) and `$016C6A` (scroll-left edge). The
+  descriptor packs **two tile variants per entry**, selected by
+  cell bit 12: low variant = flip bits from descriptor bits 0–1
+  and tile 0–63 from bits 2–7; high variant = flips from bits
+  8–9 and tile from bits 10–15. Final word = flip bits | tile
+  (0–63) | `$FF8678` (a VRAM tile-index base, the
+  `gfx_dma_tile_upload` return copied from `$FF867C` at
+  `$012DC0`); palette and priority are always 0. 434/512
+  descriptor entries have identical variants; 78 differ. Cell
+  semantics resolved 2026-11-11 [static] — full layout in
+  `docs/maps.md` (chunk cell word: bits 0–8 tile-type index
+  0–511, bit 9 flag, bits 10–11 undecided, bit 12 variant,
+  bits 13–15 height).
 
 ### 6.5 Palette — `$170DA` and the loaders
 
@@ -649,13 +660,17 @@ disassembly; its H-scroll write is verified live in §7.2.
   should be re-verified against a live game CRAM snapshot on the
   world map; the #005 PNGs should be regenerated with the corrected
   palette.
-- **`$16512` column writer:** the cell semantics (the `$1AE98`
-  descriptor table layout, the `$FF8678` tile base, the exact
-  column/row mapping) are only outlined in §6.4.
-- **Tile bases `$FF8674` / `$FF8678`:** `$FF8674` is the VRAM
-  tile base for the `$1B918` map-chunk DMA (set at 0x12D7E in
-  `$12C20`); `$FF8678` is the base added by `$16512`. How each is
-  chosen per scene is not traced.
+- **`$16512` column writer:** RESOLVED 2026-11-11 [static] — the
+  cell semantics, the `$1AE98` descriptor table layout (two tile
+  variants per entry, selected by cell bit 12), the `$FF8678` tile
+  base, and the exact column/row mapping are traced in `docs/maps.md`
+  (column-writer section) and §6.4 above.
+- **Tile bases `$FF8674` / `$FF8678`:** `$FF8678` is RESOLVED
+  2026-11-11 — it is the `gfx_dma_tile_upload` return (the old VRAM
+  cursor = the base tile index), copied from `$FF867C` at `$012DC0`.
+  `$FF8674` is the same mechanism (a `gfx_dma_tile_upload` return
+  stored at `$012D7E` in `$12C20`); the `$1B918` DMA path that
+  consumes it was not re-traced.
 - **R18=`$94` window position** (0x1297C, inside `$123B0`):
   window down, V position 20 — the intro's window placement.
   Role not traced.
@@ -902,9 +917,9 @@ all decompressed clean by #005 (62/62 + 90/90).
 - The `#005` PNGs in `disasm/graphics/` (rendered with the old
   R/B-swapped palette) should be regenerated with the corrected
   `render_tiles.py`.
-- `$D28E` case-23 writer, `$16512` cell semantics, `$FF8674`/
-  `$FF8678` tile bases, R18=`$94`, `$4E6` phase-2 visuals — carried
-  from §9.
+- `$D28E` case-23 writer, R18=`$94`, `$4E6` phase-2 visuals — carried
+  from §9. ($16512 cell semantics and the `$FF8674`/`$FF8678` tile
+  bases are resolved — see §6.4 / §8.)
 
 ## Files
 

@@ -46,7 +46,7 @@ start,end,class,name,doc_ref,tier
 0x01ADE4,0x01ADE4,map-chunk-data,tbl_map_chunk_data_01ade4,rop.s map_chunk_load refs L01ADE4 (class by consumer; tier 1),1
 0x01ADE5,0x01AE37,map-chunk-data,tbl_map_chunk_data_01ade5,rop.s map_chunk_load refs L01ADE5 (class by consumer; tier 1),1
 0x01AE38,0x01AE97,map-chunk-data,tbl_map_chunk_data_01ae38,rop.s map_chunk_load refs L01AE38 (class by consumer; tier 1),1
-0x01AE98,0x01B297,word-lookup-table,tbl_word_lut_01ae98,rop.s sys_unk_0163ee reads word index (value and 0x1FF) x2 from L01AE98 (512 entries; duplicated-byte words) (tier 1),1
+0x01AE98,0x01B297,word-lookup-table,tbl_word_lut_01ae98,rop.s row_write reads word index (value and 0x1FF) x2 from L01AE98 (512 entries; each packs two tile variants selected by cell bit 12 — 434 identical; 78 differ) (tier 1),1
 0x01B298,0x01B298,map-chunk-data,tbl_map_chunk_data_01b298,rop.s map_chunk_load refs L01B298 (class by consumer; tier 1),1
 0x01B299,0x01B2DF,map-chunk-data,tbl_map_chunk_data_01b299,rop.s map_chunk_load refs L01B299 (class by consumer; tier 1),1
 0x01B2E0,0x01B2E1,map-chunk-data,tbl_map_chunk_data_01b2e0,rop.s map_chunk_load refs L01B2E0 (class by consumer; tier 1),1
