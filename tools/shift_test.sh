@@ -30,3 +30,24 @@ if cmp -s "$TMP/orig.log" "$TMP/shifted.log"; then
 else
     echo "FAIL shift test: event logs differ"; cmp "$TMP/orig.log" "$TMP/shifted.log" || true; exit 1
 fi
+# Reach check (#16 item 3): overwrite the prologue at $D28E (shifted by SHIFT) with a logged VDP write.
+# If the probe runs, the event logs diverge from their baselines at the same byte offset in both builds.
+python3 - "$SHIFT" "$TMP" <<'PY'
+import sys
+from pathlib import Path
+shift, tmp = int(sys.argv[1], 0), sys.argv[2]
+probe = bytes.fromhex("31fc8f0200c00004")  # move.w #$8F02,$C00004.l
+for name, src, at in [("orig", "rop-original.gen", 0xD28E), ("shift", f"{tmp}/shifted.gen", 0xD28E + shift)]:
+    rom = bytearray(Path(src).read_bytes())
+    rom[at:at + len(probe)] = probe
+    Path(f"{tmp}/probe_{name}.gen").write_bytes(bytes(rom))
+PY
+"$BLASTEM" -b "$FRAMES" -e "$TMP/probe_orig.log" "$TMP/probe_orig.gen" >/dev/null 2>&1 || true
+"$BLASTEM" -b "$FRAMES" -e "$TMP/probe_shift.log" "$TMP/probe_shift.gen" >/dev/null 2>&1 || true
+div_o=$(cmp "$TMP/orig.log" "$TMP/probe_orig.log" 2>/dev/null | sed -n 's/.*char \([0-9]*\).*/\1/p' || true)
+div_s=$(cmp "$TMP/shifted.log" "$TMP/probe_shift.log" 2>/dev/null | sed -n 's/.*char \([0-9]*\).*/\1/p' || true)
+if [ -n "$div_o" ] && [ "$div_o" = "$div_s" ]; then
+    echo "PASS reach \$D28E: probe diverges at byte $div_o in both original and shifted builds"
+else
+    echo "FAIL reach \$D28E: probe divergence orig=${div_o:-none} shift=${div_s:-none}"; exit 1
+fi
