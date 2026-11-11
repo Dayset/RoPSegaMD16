@@ -16,8 +16,9 @@ Rules:
     labels (`FUN_xxxxxx` for function entries, `Lxxxxxx` otherwise); data slices are
     split at them.
   * Non-flow absolute operands (`$hex` with a `.l`/`.w` suffix) that point at ROM
-    data positions get `Lxxxxxx` labels too; immediates, displacements,
-    pc-relative operands, and RAM/hardware addresses stay numeric.
+    data positions get `Lxxxxxx` labels too, as do immediates (`#$hex`) that load
+    a ROM address into an address register (step 1, #16); other immediates,
+    displacements, pc-relative operands, and RAM/hardware addresses stay numeric.
   * The whole file is then checked by tools/verify_rebuild.py (byte-identity gate).
 """
 import csv
@@ -96,6 +97,40 @@ def abs_operands(op):
     return refs
 
 
+IMM_OP_RE = re.compile(r"^#\$([0-9a-fA-F]+)$")
+IMM_PTR_MNEMS = {"movea", "adda", "suba", "cmpa"}  # address-register operations
+
+
+def imm_pointer_operands(mnem, op):
+    """Immediate operands `#$hex` that are ROM addresses: {operand index: value}.
+
+    Only immediates that load/compute a ROM address into an address register
+    count (step 1, #16): movea/adda/suba/cmpa, or `move` with an a0-a7
+    destination. Two exclusions keep constants numeric:
+      * values < $1000 are struct offsets / small counts, not addresses
+        (e.g. `adda.l #$2c,a0`, `movea.w #$4,a3`);
+      * immediates into data registers are values, not pointers
+        (e.g. `move.l #$10000,d1` — a 65536 size, not an address).
+    The caller applies the same ROM/not-in-code filter as for abs_operands.
+    """
+    base = mnem.split(".")[0]
+    parts = split_operands(op)
+    if len(parts) != 2:
+        return {}
+    refs = {}
+    for idx, operand in enumerate(parts):
+        if idx != 0 or not operand.startswith("#"):
+            continue
+        m = IMM_OP_RE.match(operand)
+        if not m:
+            continue
+        v = int(m.group(1), 16)
+        if v < 0x1000:
+            continue
+        dest = parts[-1]
+        if base in IMM_PTR_MNEMS or (base == "move" and re.match(r"^a[0-7]$", dest)):
+            refs[idx] = v
+    return refs
 
 
 def load_names():
@@ -294,6 +329,12 @@ def main():
                 # that operand stays numeric.
                 refs = {i: t for i, t in abs_operands(op).items()
                         if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code)}
+                # immediates that are ROM addresses (step 1, #16): pointer loads
+                # into address registers; small offsets / data-register values
+                # stay numeric (see imm_pointer_operands).
+                for i, t in imm_pointer_operands(mnem, op).items():
+                    if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code):
+                        refs[i] = t
                 if refs:
                     abs_refs[addr] = refs
             else:
@@ -386,8 +427,12 @@ def main():
         mnem, op, size = insn_by_addr[addr]
         parts = split_operands(op)
         for idx, t in refs.items():
-            m = ABS_OP_RE.match(parts[idx])
-            parts[idx] = f"{lab(t)}{m.group(2) or ''}"
+            if parts[idx].startswith("#"):
+                # immediate: #$hex -> #Label (the '#' prefix is kept)
+                parts[idx] = f"#{lab(t)}"
+            else:
+                m = ABS_OP_RE.match(parts[idx])
+                parts[idx] = f"{lab(t)}{m.group(2) or ''}"
         text = f"{mnem} {','.join(parts)}".strip()
         if verify_labelled(addr, text, size):
             abs_labelled_text[addr] = text
