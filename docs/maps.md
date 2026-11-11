@@ -852,3 +852,18 @@ Read from the reader loop in `map_terrain_tile_lookup` (`$E358`, loops at
 weak on its own: any byte run eventually hits `0x00`. The stronger evidence is
 the tiling and monotonic-offset result already in this doc. The check does not
 say what each lo-nibble value means in game terms; that still needs a trace.
+
+## Terrain lo-nibble dispatch, static reading (2026-11-11, not a trace)
+
+Path A of `map_terrain_tile_lookup` (`$E3B0`, the `d3 == 0` branch), read
+from the code and the `$DF58` longword table, with caller `d0` = 0 and 2:
+- The lo nibble `L` enters the table offset at `$435C0` as `2L + d0 - $40`,
+  so all 16 values pick different words.
+- The dispatch index into `$DF58` is `(hi << 4) | ((2L + d0) & 6)`. Only bits
+  0-1 of `L` reach the dispatch, so `L`, `L+4`, `L+8`, `L+12` share a
+  dispatch target for a given caller `d0`.
+- Dispatch targets are code inside the same routine (`$E3E2`, `$E43C`,
+  and the `$F6xx` blocks). Two of them carry 32 `(hi, lo)` pairs each.
+
+Not done: path B (`d3 != 0`, `$E412`), and the game-terrain meaning of each
+value. Both need a trace. Static tier is 1 for this reading.
