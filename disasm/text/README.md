@@ -50,7 +50,7 @@ translation's author states it himself (see §5): he changed the text system
 Record index × 10 into the table; data pointer = base + record+0.
 Known callers: `0x11AFE` (table `$B86AE`, base `$B8A32`),
 `0x13856` and `0x1485E` (table `$96120`, base `$9638C`),
-`0x19778` (call site not yet disassembled),
+`0x19778` (`map_chunk_load`, table `$43850`, base `$44228` — the map-chunk loader, 252 records, all type 1),
 `0x32EC4` (table `$DDBD8`, base `$E0A18` — the dialogue/location table).
 
 **`$DDBD8` table** (used by `0x32EC4`): 1,184 records, `0x0DDBD8–0x0E0A18`,

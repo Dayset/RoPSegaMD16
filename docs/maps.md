@@ -947,12 +947,15 @@ mappings per path match the static `$DF58` formula (path A
 dispatch to disjoint handler sets (even vs odd `$DF58` indices). Raw
 tables: `docs/terrain-sweep-tables.json`. Recording is first-seen across
 LOG_D0 0/2, so the LOG_D0 dependence is confirmed in aggregate, not
-per-LOG_D0.
+per-LOG_D0. A d1=50 rerun (3,776 calls, same sweep) reproduces the
+counters and the 105-entry target tables byte-identically; d1 has no
+effect on dispatch.
 
 **Natural args (live, 10-call breakpoint sample, Buc room).** Caller d0
 84–224 (LOG_D0 20–160, always ≥ 0x40), d1 27–98 (always positive, no
-pre-walk), d3 0 (9/10) or 1 (1/10). The sweep used d1=0; d1 does not
-affect the dispatch or the counts, but a d1=50 rerun would close it.
+pre-walk), d3 0 (9/10) or 1 (1/10). The sweep used d1=0; a d1=50 rerun
+(3,776 calls) reproduced the counters and target tables
+byte-identically, closing that open item.
 
 **Freeze note.** The 0xDFFFFE freeze reported by the earlier terrain-trace
 run does NOT reproduce with a correct harness: the `$35C` hook must start
