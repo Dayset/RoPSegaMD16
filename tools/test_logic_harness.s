@@ -285,9 +285,9 @@ sqrt_loop:
     move.w 0xFF02CC, %d0
     lsr.w #4, %d0
     andi.w #0xF, %d0
-    move.w %d0, (%a5)+          /* level: expect 7 */
-    move.w 0xFF02D4, (%a5)+     /* max HP: expect 125 */
-    move.w 0xFF02D6, (%a5)+     /* max Power: expect 8000 */
+    move.w %d0, (%a5)+          /* level: expect 8 */
+    move.w 0xFF02D4, (%a5)+     /* max HP: expect 140 */
+    move.w 0xFF02D6, (%a5)+     /* max Power: expect 9000 */
 
     /* ---- restore msg-queue header + index ---- */
     lea 0xFFD1AA, %a0
