@@ -55,7 +55,7 @@ addr,name,tier,note
 0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
 0x0123B0,window_down,2,architecture.md: $123B0 window down
 0x012bfc,sys_rng_seed_frame,1,seeds RNG seed $FF0072 from frame counter $FF0010 mod 0xFFFF via math_mod32; callers world_map_draw and $015012; logic.md:199 pins $FF0072 as the LCG seed
-0x012F48,sys_unk_012f48,0,auto: touches $FF0E14 $FF8646
+0x012F48,sys_poll_menu_input,2,docs/architecture.md:348 menu-input block $12F48 (0x12F4C and 0x12F6C); refreshes $FF0E14 and $FF8646 via joypad_queue_pop and pad2_read
 0x012F80,sys_unk_012f80,0,auto: touches $FF0E14 $FF8646
 0x012fb4,sys_wait_button_press,1,busy-waits to 0x9C40 then polls joypad queue until a button press (high nibble nonzero); called from text_blit before soft_reset
 0x013654,text_record_dispatch,2,disasm/text/inventory.json: decoder_routine 0x13654 record dispatcher
