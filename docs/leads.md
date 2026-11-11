@@ -1,0 +1,1 @@
+- 2026-11-11: 0x044228-0x05EDC3 (high-entropy) has 2087 big-endian longword values pointing into it from outside (chance about 13). Not jsr/jmp operands (0 of 2087); most hits cluster in 0x000000-0x04FFFF. Lead: either a pointer table or code referenced by value; check the 3F3C-prefixed hits next.
