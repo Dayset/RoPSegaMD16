@@ -33,6 +33,7 @@ BODIES = Path("disasm/ghidra/function_bodies.txt")
 OUT = Path("disasm/src/rop.s")
 VASM = Path("tools/vasm/vasmm68k_mot")
 ROM_SIZE = 0x100000
+Z80_START, Z80_END = 0x0EBB6E, 0x0ED0E4  # sound driver blob, end exclusive (#78)
 TARGET_RE = re.compile(r"\$([0-9a-fA-F]+)")
 ABS_OP_RE = re.compile(r"^\$([0-9a-fA-F]+)(\.[lwb])?$")
 
@@ -363,6 +364,20 @@ def main():
 
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
+        if a < Z80_END and b > Z80_START:
+            # Z80 sound driver: assembled from disasm/z80/snd_driver.s by tools/build.sh (#78)
+            if a < Z80_START:
+                emit_data(a, Z80_START)
+            inner = [t for t in label_addrs if Z80_START < t < Z80_END]
+            assert not inner, f"68000 label inside Z80 blob: {[hex(t) for t in inner]}"
+            if Z80_START in label_addrs and Z80_START not in labelled:
+                out.append(f"{lab(Z80_START)}:")
+                labelled.add(Z80_START)
+            out.append("\t; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)")
+            out.append('\tincbin "build/z80_snd_driver.bin"')
+            if b > Z80_END:
+                emit_data(Z80_END, b)
+            return
         cur = a
         for t in sorted(t for t in label_addrs if a <= t < b):
             if t > cur:
