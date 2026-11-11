@@ -126,7 +126,7 @@ ram_menu_field_02a2	equ	$FF02A2
 ram_sys_field_02a4	equ	$FF02A4
 ram_sys_ff02a5	equ	$FF02A5
 ram_sys_field_02a6	equ	$FF02A6
-ram_sys_verb_02a8	equ	$FF02A8
+ram_shop_merchant_02a8	equ	$FF02A8
 ram_sys_field_02aa	equ	$FF02AA
 ram_menu_record_02ac	equ	$FF02AC
 ram_sys_ff02ae	equ	$FF02AE
@@ -265,7 +265,7 @@ ram_shop_stock_byte	equ	$FFBB72
 ram_sys_field_bb74	equ	$FFBB74
 ram_sys_field_bb7a	equ	$FFBB7A
 ram_sys_verb_bb80	equ	$FFBB80
-ram_menu_record_bb82	equ	$FFBB82
+ram_sys_record_bb82	equ	$FFBB82
 ram_sys_field_bb86	equ	$FFBB86
 ram_sys_field_bc86	equ	$FFBC86
 ram_sys_ffbc94	equ	$FFBC94
