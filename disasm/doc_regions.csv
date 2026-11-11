@@ -151,3 +151,35 @@ start,end,class,name,doc_ref,tier
 0x02D480,0x02D494,jump-table,tbl_jump_table_02d480,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L02D480) (tier 1),1
 0x023938,0x023A9E,str-format-block,str_format_stat_line,rop.s sys_unk_0238b8 pea L023938 into sys_unk_01107a printf-style format text (Sp Dir Ac St Dr with %i),1
 0x02EE28,0x02EE2A,word-const-arg,word_const_02ee28,rop.s world_draw_link_icons pea L02EE28 pushes this address (2 bytes; tail reached by return; not decoded as code),1
+0x031BAA,0x031BB4,jump-table,tbl_jump_table_031baa,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L031BAA) (tier 1),1
+0x031C4C,0x031C56,jump-table,tbl_jump_table_031c4c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L031C4C) (tier 1),1
+0x031F2A,0x031F36,jump-table,tbl_jump_table_031f2a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L031F2A) (tier 1),1
+0x03211C,0x032126,jump-table,tbl_jump_table_03211c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03211C) (tier 1),1
+0x032262,0x03226C,jump-table,tbl_jump_table_032262,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L032262) (tier 1),1
+0x03266A,0x032678,jump-table,tbl_jump_table_03266a,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03266A) (tier 1),1
+0x0328FC,0x032906,jump-table,tbl_jump_table_0328fc,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0328FC) (tier 1),1
+0x032BB2,0x032BC2,jump-table,tbl_jump_table_032bb2,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L032BB2) (tier 1),1
+0x032DDE,0x032DEA,jump-table,tbl_jump_table_032dde,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L032DDE) (tier 1),1
+0x032E92,0x032E9E,jump-table,tbl_jump_table_032e92,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L032E92) (tier 1),1
+0x0334CA,0x0334D6,jump-table,tbl_jump_table_0334ca,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0334CA) (tier 1),1
+0x0348E2,0x0348EA,jump-table,tbl_jump_table_0348e2,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0348E2) (tier 1),1
+0x035234,0x03523C,jump-table,tbl_jump_table_035234,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L035234) (tier 1),1
+0x03788C,0x0378A4,jump-table,tbl_jump_table_03788c,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03788C) (tier 1),1
+0x038636,0x038640,jump-table,tbl_jump_table_038636,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L038636) (tier 1),1
+0x038788,0x038792,jump-table,tbl_jump_table_038788,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L038788) (tier 1),1
+0x038A80,0x038A88,jump-table,tbl_jump_table_038a80,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L038A80) (tier 1),1
+0x038AE2,0x038AEA,jump-table,tbl_jump_table_038ae2,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L038AE2) (tier 1),1
+0x0394A4,0x0394B2,jump-table,tbl_jump_table_0394a4,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0394A4) (tier 1),1
+0x03A220,0x03A228,jump-table,tbl_jump_table_03a220,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03A220) (tier 1),1
+0x03A354,0x03A35C,jump-table,tbl_jump_table_03a354,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03A354) (tier 1),1
+0x03A5D0,0x03A5D8,jump-table,tbl_jump_table_03a5d0,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03A5D0) (tier 1),1
+0x03B6A0,0x03B6A8,jump-table,tbl_jump_table_03b6a0,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03B6A0) (tier 1),1
+0x03CAAE,0x03CABC,jump-table,tbl_jump_table_03caae,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L03CAAE) (tier 1),1
+0x0428FE,0x042906,jump-table,tbl_jump_table_0428fe,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0428FE) (tier 1),1
+0x0429FA,0x042A02,jump-table,tbl_jump_table_0429fa,rop.s dispatch move.w table(pc;d0.w) then jmp; targets checked by #8 (L0429FA) (tier 1),1
+0x0317E2,0x0318C6,str-text-block,str_text_block_0317e2,rop.s text_char_summary pea L0317E2 .. L0318BA (NUL-terminated text strings passed to text_glyph_draw; 37 runs contiguous) (tier 1),1
+0x0433C0,0x0434C0,lut-nibble-expand,tbl_lut_nibble_0433c0,rop.s map_terrain_tile_lookup lea L0433C0 indexed by and f0 then lsr 4 (nibble LUT; 256 bytes) (tier 1),1
+0x0434C0,0x0435C0,lut-nibble-expand,tbl_lut_nibble_0434c0,rop.s map_terrain_tile_lookup lea L0434C0 nibble LUT (256 bytes) (tier 1),1
+0x0435C0,0x0436E0,lut-nibble-expand,tbl_lut_nibble_0435c0,rop.s map_terrain_tile_lookup lea L0435C0 nibble LUT (288 bytes) (tier 1),1
+0x0436E0,0x043850,lut-nibble-expand,tbl_lut_nibble_0436e0,rop.s map_terrain_tile_lookup lea L0436E0 nibble LUT (368 bytes) (tier 1),1
+0x043850,0x044228,map-chunk-data,tbl_map_chunk_data_043850,rop.s map_chunk_load pea L043850 (2520 bytes) (tier 1),1
