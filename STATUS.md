@@ -9,6 +9,6 @@ Measured from the repo. Issue counts are on GitHub, not here.
 | Bytes in code | 202,756 | 1,048,576 | 19.34% |
 | Bytes in incbin data | 845,820 | 0 | 80.66% |
 | Raw fallbacks in code | 0 | 0 | — |
-| Bytes accounted (M8) | 817,853 | 1,048,576 | 78.00% |
-| Bytes unknown | 230,723 | 0 | 22.00% |
+| Bytes accounted (M8) | 830,870 | 1,048,576 | 79.24% |
+| Bytes unknown | 217,706 | 0 | 20.76% |
 | Bytes high-entropy (opaque, counted in M8) | 109,468 | 0 | 10.44% |
