@@ -1006,3 +1006,18 @@ disassembly line; registers must be read explicitly.
 **ROM integrity.** `rop-original.gen` MD5 re-verified unchanged:
 `30c18fdbe2183f64702ae9f1a45d63f9`. No commit or push made by this
 issue (parent verifies and pushes).
+
+## 19. `vdp_ram_clear` boot RAM clear — not a game bug (#16, #112)
+
+- `$000A2C: movea.l #$ffff0000,a0` resolves to `$FF0000` on the 68000's
+  24-bit bus (start of work RAM). Same effect as `lea $FF0000,a0`.
+- Loop: `move.w #$3ff6,d0` + `dbra` = `$3FF7` longwords = 65,500 bytes.
+  `$FFFFDC-$FFFFFF` (36 bytes) is left uncleared. Nothing in `rop.s` or
+  `equates.s` reads that range and the initial SP (`$FFEC1E`) is below it,
+  so there is no observed effect. Recorded, not changed: ROM stays
+  byte-identical.
+- The clear also zeroes the EEPROM buffer `$FF016A` that `save_validate`
+  filled just before; the boot and clear harness "0xFF blank" expectations
+  are unreachable at the attract-loop hook (`$FF016A` is always zeros by
+  then). Harness expectations are wrong, not the game. The boot-EEPROM
+  probe hooks `$000330`, before the clear (#112).
