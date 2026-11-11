@@ -354,20 +354,20 @@ addr,name,tier,note
 0x042f5e,eeprom_read_tail,2,write $80 NOPs write $C0 NOPs write $80 to $200000; tail of eeprom_read_block before eeprom_stop; save.md:160 and save.md:189
 0x043006,eeprom_read,2,stack-arg wrapper for eeprom_read_block; loads d0 d1 a0 from stack and falls into $43012; called from save_validate_magic at $177E0 $17806 $1782C; save.md:194
 0x0430EC,sys_wrap_stack_arg,1,save.md:223 stack-arg wrapper 430EC
-0x0EB8E0,sys_unk_0eb8e0,0,auto: touches none
+0x0eb8e0,z80_write_val24_nobus,2,no-bus twin of z80_write_val24; writes 24-bit d0 to Z80 016E-0170 without bus request or 17C clear; sound.md:151; doc-pinned but no callers in ROM
 0x0EB8F2,z80_write_val24,2,sound.md:151 writes 24-bit d0 to Z80 016E-0170
-0x0EB920,sys_unk_0eb920,0,auto: touches none
-0x0EB922,sys_unk_0eb922,0,auto: touches none
+0x0eb920,snd_copy_bytes,2,byte-copy loop bra entry copies d0 bytes from (a1)+ to (a2)+; sound.md:159; called from sound_upload and SFX deliver
+0x0eb922,snd_copy_bytes_plus1,2,byte-copy loop direct entry copies d0+1 bytes from (a1)+ to (a2)+; sound.md:159; called from music streamer and song chunk set
 0x0EB924,z80_unk_0eb924,0,auto: touches $A00000 $A11100
-0x0EB93E,z80_unk_0eb93e,0,auto: touches $A11100
-0x0EB968,z80_unk_0eb968,0,auto: touches $A11100
-0x0EB986,sys_unk_0eb986,0,auto: touches none
+0x0eb93e,snd_sfx_pointer,2,SFX-pointer command (addr n): writes addr to Z80 016E via EB8F2 and 000A=n (1 if n==0); sound.md:152; called only from 17586 non-FFFF branch which no live site takes so unreachable in practice
+0x0eb968,snd_sfx_pointer_ff,2,SFX-pointer command (addr): writes addr to Z80 016E via EB8F2 and 000A=FF; sound.md:153; the pointer-SFX path every live call takes from 17586 FFFF branch
+0x0eb986,snd_sfx_pointer_12,2,SFX-pointer command: 016E=addr 000B=12 000A=n; sound.md:154; doc-pinned but no callers in ROM
 0x0EB9C4,snd_is_song_playing,2,sound.md:157 is a song playing? returns Z80 000B if FF021E
-0x0EB9EE,sys_unk_0eb9ee,0,auto: touches none
-0x0EBA00,z80_unk_0eba00,0,auto: touches $A01600 $A01A00 $A11100 $FF021E $FF021F $FF0224
+0x0eb9ee,snd_sfx_busy,2,returns Z80 000A via EB92A with no FF021E check unlike EB9C4; sound.md:158; SFX-busy gate with 4 callers in 3Dxxx combat routines where a new SFX starts only when 000A==0
+0x0eba00,snd_music_streamer,2,Music streamer per sound.md:147; every 16th frame from $EB772 when $FF021E set; copies 256 bytes from $FF0224 to $FF0228 with song-loop and ring-buffer wrap
 0x0EBA7E,z80_song_chunk_set,2,sound.md:119 writes song-stream chunk byte to 00DA
-0x0EBAC6,sys_unk_0ebac6,0,auto: touches $FF0236
+0x0ebac6,snd_sfx_queue_drain,2,SFX command queue per sound.md:148; called every frame from $EB772; drains slots $FF0236 and $FF023A via $EBB04 and $EBAFE
 0x0EBAF4,snd_sfx_entry_a,2,sound.md:150 public SFX entry point (called by 17586); tries EBB04 immediately
 0x0EBAFA,snd_sfx_entry_b,2,sound.md:150 public SFX entry point (called by 17586); tries EBBFE immediately
-0x0EBAFE,sys_unk_0ebafe,0,auto: touches none
+0x0ebafe,snd_sfx_deliver_7,2,SFX deliver slot 7 per sound.md:149; sets $000C=7 and copies 23-byte block to Z80 $003A or queues pointer in $FF023A when busy; reached via public entry $EBAFA
 0x0EBB04,snd_sfx_muted,2,sound.md:67 SFX path when sound is off (EBB04)
