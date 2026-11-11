@@ -38,7 +38,7 @@ check "capstone (need $CAPSTONE)" "$cap"; [ "$cap" = "$CAPSTONE" ] || fail=1
 check "vasmm68k_mot" "$([ -x tools/vasm/vasmm68k_mot ] && echo ok || echo missing)"; [ -x tools/vasm/vasmm68k_mot ] || fail=1
 check "vasmz80_oldstyle" "$([ -x tools/vasm/vasmz80_oldstyle ] && echo ok || echo missing)"; [ -x tools/vasm/vasmz80_oldstyle ] || fail=1
 check "m68k-linux-gnu-as" "$(m68k-linux-gnu-as --version 2>/dev/null | sed -n 1p || echo missing)"
-check "blastem" "$(command -v blastem || echo missing)"
+check "blastem" "$(command -v blastem || ls /usr/games/blastem 2>/dev/null || echo missing)"; [ -e /usr/games/blastem ] || command -v blastem >/dev/null || fail=1
 check "xvfb-run" "$(command -v xvfb-run || echo missing)"
 check "java" "$(java -version 2>&1 | grep -v JAVA_TOOL_OPTIONS | sed -n 1p || echo missing)"
 [ "$fail" -eq 0 ] && echo "PASS toolchain ready" || { echo "FAIL toolchain incomplete"; exit 1; }
