@@ -368,7 +368,7 @@ def main():
         import csv as _csv
         with TABLES_CSV.open(newline="") as fh:
             for r in _csv.DictReader(fh):
-                tables.append((int(r["start"], 16), int(r["end"], 16), r["prefix"], int(r["words_per_record"])))
+                tables.append((int(r["start"], 16), int(r["end"], 16), r["prefix"], int(r["words_per_record"]), r.get("note") or ""))
     tables.sort()
 
     def emit_table(ts, te, prefix, wpr):
@@ -420,14 +420,38 @@ def main():
             flush()
             vals = []
 
+    def emit_raw(ts, te, prefix, note):
+        """Raw byte blob (words_per_record 0): dc.b lines, cut at code labels; one name label at ts."""
+        if note:
+            out.append(f"\t; {note}")
+        out.append(f"{prefix}:")
+        if ts in label_addrs:
+            out.append(f"{lab(ts)}:")
+        line, line_at = [], ts
+        for addr in range(ts, te):
+            if addr != ts and addr in label_addrs:
+                if line:
+                    out.append(f"\tdc.b {','.join(line)}\t; table ${line_at:06X}")
+                line, line_at = [], addr
+                out.append(f"{lab(addr)}:")
+            line.append(f"${rom[addr]:02X}")
+            if len(line) == 16:
+                out.append(f"\tdc.b {','.join(line)}\t; table ${line_at:06X}")
+                line, line_at = [], addr + 1
+        if line:
+            out.append(f"\tdc.b {','.join(line)}\t; table ${line_at:06X}")
+
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
-        for ts, te, prefix, wpr in tables:
+        for ts, te, prefix, wpr, note in tables:
             if a < te and b > ts:
                 if a < ts:
                     emit_data(a, ts)
                 assert a <= ts and te <= b, f"table {ts:#x}-{te:#x} straddles a data piece"
-                emit_table(ts, te, prefix, wpr)
+                if wpr == 0:
+                    emit_raw(ts, te, prefix, note)
+                else:
+                    emit_table(ts, te, prefix, wpr)
                 if te < b:
                     emit_data(te, b)
                 return
