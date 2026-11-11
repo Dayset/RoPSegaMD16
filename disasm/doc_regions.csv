@@ -4,17 +4,16 @@ start,end,class,name,doc_ref,tier
 0x0E0A18,0x0EB772,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
 0x0EBB6E,0x0ED0E4,z80-driver-blob,snd_z80_driver,docs/sound.md:10 (0x1576 bytes uploaded to Z80 RAM),2
 0x00692E,0x09B2E,snd-song-11,snd_song_11,docs/sound.md:386 (song 11),2
-0x0ED0E8,0x0FCAE2,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records),2
+0x0ED0E4,0x0FCAE2,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
 0x0FCAE2,0x0FD036,snd-sfx-records,snd_sfx_records,docs/sound.md:623 (69 records x 22 bytes; wins $FCAE2-$FCB7C over song 17 tail — SFX 1 record live-verified; song 17 parser also consumes these bytes via running-status; docs/sound.md:385),2
 0x0197B0,0x019F8F,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
-0x0DC0C2,0x0DDBD5,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3466 words x 2 bytes),2
+0x0DC0C2,0x0DDBD8,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3467 words x 2 bytes: start offsets for words 1-3466 plus end sentinel 0x5206 = blob length 20998; reader $013788/$013798),2
 0x0CC9D8,0x0CCDB8,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8; emitted as tables.csv records; #14),2
 0x096120,0x0B86AE,gfx-tile-table,gfx_tile_table_96120,docs/graphics.md (62 records; streams 0x09638C-0x0B86AE),2
-0x05EDC4,0x05F1C3,map-terrain-grid,map_terrain_grid,docs/maps.md (512 words per-tile properties),2
+0x05EDC4,0x05F1C4,map-terrain-grid,map_terrain_grid,docs/maps.md (512 words per-tile properties),2
 0x05F524,0x05F7E4,map-terrain-stream-offsets,map_terrain_stream_offsets,docs/maps.md (176 u32 stream offsets; base $603E4; trace-verified 175/175 tiling),2
 0x05F7E4,0x0603E4,map-terrain-stream-offsets,map_terrain_stream_offsets_2,trace: 768 u32 offsets base $603E4 monotonic; every target preceded by 00; first target $68352 (end of family 1),2
 0x0D6768,0x0D6B6C,table-price,table_price,docs/logic.md (257 records x 4 bytes; rank tables start 0x0D6B6C),2
-0x0D63E7,0x0D6647,table-location-song,table_location_song,docs/sound.md (152 locations x 4 bytes stride 4),2
 0x0D66A6,0x0D6768,table-item-category,table_item_category,docs/logic.md:320 (20 x 10 bytes stated; range to price-table start is 194 bytes; CONFLICT recorded not resolved),1
 0x0D6B6C,0x0D6BEA,table-spell-rank,table_spell_rank_1,docs/spells.md:99 (rank 1; stride 0x7E from pointer table $FFA7CC),2
 0x0D6BEA,0x0D6C68,table-spell-rank,table_spell_rank_2,docs/spells.md:100 (rank 2; stride 0x7E),2
@@ -24,7 +23,7 @@ start,end,class,name,doc_ref,tier
 0x0D6DE2,0x0D6E60,table-spell-rank,table_spell_rank_6,docs/spells.md:104 (rank 6; end inferred from 0x7E stride; not doc-stated),1
 0x0603E4,0x068352,terrain-stream,terrain_streams,docs/maps.md:371 (176 streams at $603E4+; trace: skip-walk (read byte; advance 1+hi nibble; stop at 00) tiles 175/175; reader code logic-audit.md:552-553 adds $603E4),2
 0x068352,0x096120,terrain-stream,terrain_streams_2,trace: 768 streams from family-2 offset table at $5F7E4; skip-walk tiles 767/767; last ends $9611F (before $96120 table),2
-0x0B86AE,0x0B8A31,gfx-record-table,gfx_record_table_b86ae,docs/graphics.md:886 ($B86AE table 90 records x 10 bytes; tiling test base 0xB8A32 89/89 consecutive streams),2
+0x0B86AE,0x0B8A32,gfx-record-table,gfx_record_table_b86ae,docs/graphics.md:886 ($B86AE table 90 records x 10 bytes; tiling test base 0xB8A32 89/89 consecutive streams),2
 0x0B8A32,0x0CC9D7,lzss-stream,gfx_lzss_streams_b86ae,docs/graphics.md:886 (streams from base 0xB8A32; consecutive tiling exact 89/89; last ends 0xCC9D8),2
 0x09638C,0x0B86AD,lzss-stream,gfx_lzss_streams_96120,docs/graphics.md:886 ($96120 streams from base 0x9638C; consecutive tiling exact 61/61; last ends 0xB86AE),2
 0x019F90,0x01A228,menu-screen-script,tbl_menu_screen_0,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
@@ -188,9 +187,8 @@ start,end,class,name,doc_ref,tier
 0x000000,0x000200,vector-init-table,tbl_vector_init_000000,rop.s rom_start pea.l L000001/L000002/L00007E read this table (vector and init words; 512 bytes) (tier 1),1
 0x00028E,0x0002FA,boot-init-table,tbl_boot_init_00028e,rop.s reset_entry lea L00028E(pc) reads init values (108 bytes) (tier 1),1
 0x00E47C,0x011074,map-terrain-table,tbl_map_terrain_00e47c,rop.s map_terrain_tile_lookup pea.l L00F000 reads a 10-byte-period table (incl. unreferenced head at 0x00E47C) (tier 1),1
-0x0CD431,0x0D0701,str-name16-table,str_name16_cd431,docs/spells.md:30 ($CD431-$D0701 verified; NOTE doc count 893 x 16 = 14288 bytes disagrees with this span of 13009; both kept),2
+0x0CD430,0x0CECF0,str-name16-table,str_name16_cd430,docs/spells.md:30 (396 entries x 16 bytes; entry = [1-byte category][15-byte name NUL-padded]; base $CD430 per npc_find_best_char lea $CD430),2
 0x0CCDB8,0x0CD430,state-init-table,tbl_state_init_table_0ccdb8,rop.s sys_state_clear lea L0CCDB8 (class by consumer; tier 1),1
-0x0CD430,0x0CD431,npc-char-table,tbl_npc_char_table_0cd430,rop.s npc_find_best_char lea L0CD430 (class by consumer; tier 1),1
 0x0D1CFC,0x0D1CFD,npc-attitude-table,tbl_npc_attitude_table_0d1cfc,rop.s npc_attitude_event_apply lea L0D1CFC (class by consumer; tier 1),1
 0x0D1CFD,0x0D1D00,npc-attitude-table,tbl_npc_attitude_table_0d1cfd,rop.s npc_attitude_event_apply lea L0D1CFD (class by consumer; tier 1),1
 0x0D1D00,0x0D1D02,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup lea L0D1D00 (class by consumer; tier 1),1
@@ -200,12 +198,16 @@ start,end,class,name,doc_ref,tier
 0x0D2EC2,0x0D301E,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
 0x0D301E,0x0D3102,text-record-table,tbl_text_record_table_0d301e,rop.s text_record_lookup lea L0D301E (class by consumer; tier 1),1
 0x0D3102,0x0D601E,text-record-table,tbl_text_record_table_0d3102,rop.s text_event_resolve lea L0D3102 (class by consumer; tier 1),1
-0x0D63E4,0x0D63E5,world-location-table,tbl_world_location_table_0d63e4,rop.s world_enter_location lea L0D63E4 (class by consumer; tier 1),1
-0x0D63E5,0x0D63E6,world-location-table,tbl_world_location_table_0d63e5,rop.s world_enter_location lea L0D63E5 (class by consumer; tier 1),1
-0x0D63E6,0x0D63E7,world-location-table,tbl_world_location_table_0d63e6,rop.s world_enter_location lea L0D63E6 (class by consumer; tier 1),1
 0x0D66A0,0x0D66A1,entity-spawn-table,tbl_entity_spawn_table_0d66a0,rop.s entity_spawn lea L0D66A0 (class by consumer; tier 1),1
 0x0D66A1,0x0D66A2,cmd-arg-table,tbl_cmd_arg_table_0d66a1,rop.s cmd10_handler lea L0D66A1 (class by consumer; tier 1),1
 0x0D66A2,0x0D66A3,shop-merchant-table,tbl_shop_merchant_table_0d66a2,rop.s shop_merchant_setup lea L0D66A2 (class by consumer; tier 1),1
 0x0D66A3,0x0D66A4,shop-category-table,tbl_shop_category_table_0d66a3,rop.s shop_category_count lea L0D66A3 (class by consumer; tier 1),1
 0x0D66A4,0x0D66A6,word-record-table,tbl_word_record_table_0d66a4,rop.s menu_record_reload lea L0D66A4 (class by consumer; tier 1),1
 0x0D601E,0x0D63E4,enemy-record-table,tbl_enemy_record_0d601e,docs/logic.md:112 and 192 (enemy records; 6-byte stride; 0xA1 entries; word and 0x7FF gives gold/XP at FFC410; logic-audit.md:439 says 0xB8 entries via 2B5F4 so counts conflict),2
+0x05F1C4,0x05F524,map-terrain-grid,map_terrain_grid_ext,docs/maps.md:362 (terrain-grid extension in $5EDC4 format; secondary lookup $5EDC4[559..590] read by $01BB82; remaining 400 words same-format with no consumer found),1
+0x0D63E4,0x0D6644,table-location-song,table_location_song,docs/sound.md:403 (records 0-151; song = low nibble of record byte +3; placement bytes +0/+1/+2 read at $030956),2
+0x0D6644,0x0D66A0,table-location-song,table_location_song_ext,docs/sound.md:403 (records 152-174; same 4-byte layout; extension code-derived; doc covers 0-151 only),1
+0x0D6E60,0x0D6E9C,table-spell-rank,table_spell_rank_param_bounds,docs/spells.md:90 (6 ranks x 10 bytes: first record index of effect param 0-8 + 21 sentinel per rank; verified 6/6 against computed w1 low-nibble boundaries; no lea consumer found),1
+0x0D6E9C,0x0D6EBA,zero-fill,region_0d6e9c,,1
+0x0CECF0,0x0CF1AC,entity-spawn-table,tbl_entity_spawn_table_0cecf0,rop.s entity_spawn $023B84 mode 4 reads 202 x 6-byte records at $CECF0+6i (name/selector word; level-up arg; category; rank; level); npc_find_best_char $032FFA reads category at $CECF3+6i; world_camp $03019a reads +2 at $CECF2+6i,1
+0x0CF1AC,0x0D1CFC,entity-template-table,tbl_entity_template_table_0cf1ac,docs/architecture.md:237 + docs/spells.md:412; 24-byte entity templates at $CF1AC (462 total; t0-t461); consumers entity_spawn $23B84 + world_tick $021BDE,2

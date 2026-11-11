@@ -27,13 +27,20 @@ in `docs/logic.md` §Background and are not repeated here.
 
 ## 1. Spell list and names — verified
 
-### 1.1 The name table `$CD431` — verified
+### 1.1 The name table `$CD430` — verified
 
-893 entries × 16 bytes (`$CD431`–`$D0701`); entry = name, NUL-padded,
-trailing byte (`+15`) `0x10` / `0x11` / `0x0E` / `0x0F`, meaning
-unknown. Full dump: `disasm/spells/names_cd431.txt`. Referenced by
-the price table (`+0` word = name index), char struct `+0x14`, and
-the `$136FC` text-word indices.
+396 entries × 16 bytes (`$CD430`–`$CECF0`); entry = [1-byte category]
+[15-byte name, NUL-padded]. The category byte groups names — `0x11`:
+310 entries (the default); `0x10`: 28; `0x0E`: 26; `0x08`–`0x0D`:
+3 each (triples, e.g. `0x08`: Cerebrus/Brainiac/Smartus); `0x25`:
+'%Scourge'/'%Anthrax'; `0x30`: '0Sir George'/'0Sir Will'. Full dump:
+`disasm/spells/names_cd431.txt` (entries past 396 are binary data
+misread as names — the file needs regenerating at 396 entries).
+Referenced by the price table (`+0` word = name index), char struct
+`+0x14`, and the `$136FC` text-word indices. Base is `$CD430` per
+`npc_find_best_char` (`lea $CD430`); an earlier draft read the table
+from `$CD431` with 893 entries, which overruns into the spawn and
+template tables.
 
 Character names: **Buc 57, Slash 58, Mortimer 59, Obliky 60,
 Feather 61, Alexi 62**. No discipline names ("sorcerer", "knight",
