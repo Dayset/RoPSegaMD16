@@ -31,16 +31,16 @@ addr,name,tier,note
 0x00e358,map_terrain_tile_lookup,1,code: reads 32-bit offset table L05F524 indexed by id*4; cmp #ffeb bound
 0x01107A,sys_unk_01107a,0,auto: touches none
 0x011082,pal_load_set,2,architecture.md: loads palettes $CCC38/$CCB18/$CCCB8 via $11082
-0x0110D0,sys_unk_0110d0,0,auto: touches none
-0x01110A,sys_unk_01110a,0,auto: touches $FF8640
-0x01119E,sys_unk_01119e,0,auto: touches $FF8640
-0x0112BE,sys_unk_0112be,0,auto: touches $FF8640
-0x011416,sys_unk_011416,0,auto: touches $FF8642
-0x011514,sys_unk_011514,0,auto: touches $FF8640
+0x0110d0,pal_set_entry,2,writes one CRAM entry (slot index value); graphics.md:486; doc-pinned but no callers in ROM
+0x01110a,pal_get_entry,2,reads one CRAM entry (slot index) to d0; graphics.md:487; doc-pinned but no callers in ROM
+0x01119e,text_glyph_draw_wrap,1,wrapped text draw with case-folding and punctuation mapping; sibling of text_glyph_draw 0x01113c with line-wrap at width and special tiles for space comma hyphen period; called from intro block 0x015312 and 0x01534c
+0x0112be,text_draw_proportional,1,draws a string in the proportional variable-width font using width table $01B46E; two tile rows tall with wide glyphs spanning two columns; called from $014CBC
+0x011416,text_draw_gauge,1,draws a 2x2 tile block from a 5x5 tile grid by two scaled fractional values; delegates to text_glyph_draw when the $1A flag is set; callers pass HP Power food and water
+0x011514,text_draw_number,1,converts a number to a string via num_to_str and draws it at a VDP name-table position; called from stats and number display code
 0x011588,text_draw_at,1,static: calls helper 0x11FAE then text_glyph_draw with the caller's coordinates
 0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
 0x011820,gfx_tilemap_draw,1,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes
-0x0118C8,sys_unk_0118c8,0,auto: touches none
+0x0118c8,gfx_tilemap_fill_seq,1,fills a VRAM tilemap rect with incrementing tile numbers starting at a computed value; sibling of gfx_tilemap_fill which writes one constant tile; called from gfx_draw_screen at three sites
 0x01194A,gfx_set_tile_vram_addr,1,static: computes tile VRAM address from args at 0xc and 0x12; calls vdp_set_write_addr
 0x011a1a,gfx_tilemap_fill,1,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16
 0x011A7C,gfx_dma_tile_upload,1,code: dma_upload of arg size at VRAM counter FF0076 (asl 5); advances FF0076 by arg
