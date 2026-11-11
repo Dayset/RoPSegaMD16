@@ -102,6 +102,15 @@ def main():
         z = re.search(r'incbin\s+"build/z80_snd_driver\.bin"\s*;\s*\$([0-9A-Fa-f]+)', line)
         if z:  # Z80 sound driver blob (#78): assembled code, length from the built file
             spans.append((num('$' + z.group(1)), Path('build/z80_snd_driver.bin').stat().st_size))
+            continue
+        v = re.match(r'^\tdc\.l \S+\t; \$([0-9A-Fa-f]+) vector$', line)
+        if v:  # vector-table / jump-table pointer (dc.l label, #16 item 1) — mirrors status.py VEC
+            spans.append((num('$' + v.group(1)), 4))
+            continue
+        w = re.match(r'^\tdc\.([wb])\s+\S+\s*;\s*\$([0-9A-Fa-f]+)$', line)
+        if w:  # bare dc.w/dc.b data word (e.g. HEADER_SUM) — not a structured table record
+            spans.append((num('$' + w.group(2)), 2 if w.group(1) == 'w' else 1))
+            continue
     spans.sort()
     merged = []
     for s, n in spans:
