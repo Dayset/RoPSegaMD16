@@ -6,20 +6,143 @@
 	section rom,data
 	xdef rom_start
 rom_start:
-	; data $000000-$000000
-	incbin "rop-original.gen",$000000,$1
+	; vector table + SEGA header $000000-$00018D (dc.w; ROM pointers are labels)
+	dc.b $00	; table $000000
 L000001:
-	; data $000001-$000001
-	dcb.b $1,$FF	; $000001
+	dc.b $FF	; table $000001
 L000002:
-	; data $000002-$00007D
-	incbin "rop-original.gen",$000002,$7C
+	dc.b $EC,$1E	; table $000002
+	dc.w $0000, reset_entry+$0000	; table $000004
+	dc.w $0000,$0000	; table $000008
+	dc.w $0000,$0000	; table $00000C
+	dc.w $0000,$0000	; table $000010
+	dc.w $0000,$0000	; table $000014
+	dc.w $0000,$0000	; table $000018
+	dc.w $0000,$0000	; table $00001C
+	dc.w $0000,$0000	; table $000020
+	dc.w $0000,$0000	; table $000024
+	dc.w $0000,$0000	; table $000028
+	dc.w $0000,$0000	; table $00002C
+	dc.w $0000,$0000	; table $000030
+	dc.w $0000,$0000	; table $000034
+	dc.w $0000,$0000	; table $000038
+	dc.w $0000,$0000	; table $00003C
+	dc.w $0000,$0000	; table $000040
+	dc.w $0000,$0000	; table $000044
+	dc.w $0000,$0000	; table $000048
+	dc.w $0000,$0000	; table $00004C
+	dc.w $0000,$0000	; table $000050
+	dc.w $0000,$0000	; table $000054
+	dc.w $0000,$0000	; table $000058
+	dc.w $0000,$0000	; table $00005C
+	dc.w $0000,$0000	; table $000060
+	dc.w $0000,$0000	; table $000064
+	dc.w $0000,$0000	; table $000068
+	dc.w $0000,$0000	; table $00006C
+	dc.w $0000, hblank_empty+$0000	; table $000070
+	dc.w $0000,$0000	; table $000074
+	dc.w $0000, vblank_handler+$0000	; table $000078
+	dc.b $00,$00	; table $00007C
 L00007E:
-	; data $00007E-$00018D
-	incbin "rop-original.gen",$00007E,$110
+	dc.b $00,$00	; table $00007E
+	dc.w $0000,$0000	; table $000080
+	dc.w $0000,$0000	; table $000084
+	dc.w $0000,$0000	; table $000088
+	dc.w $0000,$0000	; table $00008C
+	dc.w $0000,$0000	; table $000090
+	dc.w $0000,$0000	; table $000094
+	dc.w $0000,$0000	; table $000098
+	dc.w $0000,$0000	; table $00009C
+	dc.w $0000,$0000	; table $0000A0
+	dc.w $0000,$0000	; table $0000A4
+	dc.w $0000,$0000	; table $0000A8
+	dc.w $0000,$0000	; table $0000AC
+	dc.w $0000,$0000	; table $0000B0
+	dc.w $0000,$0000	; table $0000B4
+	dc.w $0000,$0000	; table $0000B8
+	dc.w $0000,$0000	; table $0000BC
+	dc.w $0000,$0000	; table $0000C0
+	dc.w $0000,$0000	; table $0000C4
+	dc.w $0000,$0000	; table $0000C8
+	dc.w $0000,$0000	; table $0000CC
+	dc.w $0000,$0000	; table $0000D0
+	dc.w $0000,$0000	; table $0000D4
+	dc.w $0000,$0000	; table $0000D8
+	dc.w $0000,$0000	; table $0000DC
+	dc.w $0000,$0000	; table $0000E0
+	dc.w $0000,$0000	; table $0000E4
+	dc.w $0000,$0000	; table $0000E8
+	dc.w $0000,$0000	; table $0000EC
+	dc.w $0000,$0000	; table $0000F0
+	dc.w $0000,$0000	; table $0000F4
+	dc.w $0000,$0000	; table $0000F8
+	dc.w $0000,$0000	; table $0000FC
+	dc.w $5345,$4741	; table $000100
+	dc.w $2047,$454E	; table $000104
+	dc.w $4553,$4953	; table $000108
+	dc.w $2020,$2020	; table $00010C
+	dc.w $2843,$2954	; table $000110
+	dc.w $2D35,$3020	; table $000114
+	dc.w $3139,$3932	; table $000118
+	dc.w $2E4A,$414E	; table $00011C
+	dc.w $5249,$4E47	; table $000120
+	dc.w $5320,$4F46	; table $000124
+	dc.w $2050,$4F57	; table $000128
+	dc.w $4552,$2020	; table $00012C
+	dc.w $2020,$2020	; table $000130
+	dc.w $2020,$2020	; table $000134
+	dc.w $2020,$2020	; table $000138
+	dc.w $2020,$2020	; table $00013C
+	dc.w $2020,$2020	; table $000140
+	dc.w $2020,$2020	; table $000144
+	dc.w $2020,$2020	; table $000148
+	dc.w $2020,$2020	; table $00014C
+	dc.w $5249,$4E47	; table $000150
+	dc.w $5320,$4F46	; table $000154
+	dc.w $2050,$4F57	; table $000158
+	dc.w $4552,$2020	; table $00015C
+	dc.w $2020,$2020	; table $000160
+	dc.w $2020,$2020	; table $000164
+	dc.w $2020,$2020	; table $000168
+	dc.w $2020,$2020	; table $00016C
+	dc.w $2020,$2020	; table $000170
+	dc.w $2020,$2020	; table $000174
+	dc.w $2020,$2020	; table $000178
+	dc.w $2020,$2020	; table $00017C
+	dc.w $474D,$2054	; table $000180
+	dc.w $2D35,$3031	; table $000184
+	dc.w $3736,$202D	; table $000188
+	dc.b $30,$30	; table $00018C
 	dc.w HEADER_SUM	; $00018E
-	; data $000190-$0001FF
-	incbin "rop-original.gen",$000190,$70
+	; vector table + SEGA header $000190-$0001FF (dc.w; ROM pointers are labels)
+	dc.w $4A20,$2020	; table $000190
+	dc.w $2020,$2020	; table $000194
+	dc.w $2020,$2020	; table $000198
+	dc.w $2020,$2020	; table $00019C
+	dc.w $0000,$0000	; table $0001A0
+	dc.w $000F,$FFFF	; table $0001A4
+	dc.w $00FF,$0000	; table $0001A8
+	dc.w $00FF,$FFFF	; table $0001AC
+	dc.w $2020,$2020	; table $0001B0
+	dc.w $2020,$2020	; table $0001B4
+	dc.w $2020,$2020	; table $0001B8
+	dc.w $2020,$2020	; table $0001BC
+	dc.w $2020,$2020	; table $0001C0
+	dc.w $2020,$2020	; table $0001C4
+	dc.w $2020,$2020	; table $0001C8
+	dc.w $2020,$2020	; table $0001CC
+	dc.w $2020,$2020	; table $0001D0
+	dc.w $2020,$2020	; table $0001D4
+	dc.w $2020,$2020	; table $0001D8
+	dc.w $2020,$2020	; table $0001DC
+	dc.w $2020,$2020	; table $0001E0
+	dc.w $2020,$2020	; table $0001E4
+	dc.w $2020,$2020	; table $0001E8
+	dc.w $2020,$2020	; table $0001EC
+	dc.w $5520,$2020	; table $0001F0
+	dc.w $2020,$2020	; table $0001F4
+	dc.w $2020,$2020	; table $0001F8
+	dc.w $2020,$2020	; table $0001FC
 	; code $000200-$00028D
 reset_entry:
 	tst.l pad_port1_reg08.l	; $000200
@@ -949,7 +1072,7 @@ L0011B6:
 	sub.l #$ff0000,d0	; $0011DE
 	beq.b L0011FA	; $0011E4
 	lsr.l #$1,d0	; $0011E6
-	movea.l #$fce3c,a0	; $0011E8
+	movea.l #L0FCE3C,a0	; $0011E8
 	movea.l #$ff0000,a1	; $0011EE
 L0011F4:
 	move.w (a0)+,(a1)+	; $0011F4
@@ -2183,7 +2306,7 @@ map_terrain_tile_lookup:
 	move.w d2,d4	; $00E384
 	asl.w #$2,d4	; $00E386
 	movea.l (a1,d4.w),a0	; $00E388
-	adda.l #$603e4,a0	; $00E38C
+	adda.l #L0603E4,a0	; $00E38C
 	tst.w d1	; $00E392
 	bge.b L00E3B0	; $00E394
 	neg.w d1	; $00E396
@@ -61389,8 +61512,11 @@ L05EDC4:
 	; data $05EDC4-$05F523
 	incbin "rop-original.gen",$05EDC4,$760
 L05F524:
-	; data $05F524-$09611F
-	incbin "rop-original.gen",$05F524,$36BFC
+	; data $05F524-$0603E3
+	incbin "rop-original.gen",$05F524,$EC0
+L0603E4:
+	; data $0603E4-$09611F
+	incbin "rop-original.gen",$0603E4,$35D3C
 	; table $096120-$09638B: 62 records x 5 words
 gfx_tile_rec_00:
 L096120:
@@ -71567,8 +71693,11 @@ L0FBC7C:
 	; data $0FBC7C-$0FCAE1
 	incbin "rop-original.gen",$0FBC7C,$E66
 L0FCAE2:
-	; data $0FCAE2-$0FD07B
-	incbin "rop-original.gen",$0FCAE2,$59A
+	; data $0FCAE2-$0FCE3B
+	incbin "rop-original.gen",$0FCAE2,$35A
+L0FCE3C:
+	; data $0FCE3C-$0FD07B
+	incbin "rop-original.gen",$0FCE3C,$240
 	; code $0FD07C-$0FD0CB
 runtime_checksum:
 	moveq #$0,d0	; $0FD07C

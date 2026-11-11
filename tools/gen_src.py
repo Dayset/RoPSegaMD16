@@ -16,8 +16,9 @@ Rules:
     labels (`FUN_xxxxxx` for function entries, `Lxxxxxx` otherwise); data slices are
     split at them.
   * Non-flow absolute operands (`$hex` with a `.l`/`.w` suffix) that point at ROM
-    data positions get `Lxxxxxx` labels too; immediates, displacements,
-    pc-relative operands, and RAM/hardware addresses stay numeric.
+    data positions get `Lxxxxxx` labels too, as do immediates (`#$hex`) that load
+    a ROM address into an address register (step 1, #16); other immediates,
+    displacements, pc-relative operands, and RAM/hardware addresses stay numeric.
   * The whole file is then checked by tools/verify_rebuild.py (byte-identity gate).
 """
 import csv
@@ -88,6 +89,42 @@ def abs_operands(op):
         m = ABS_OP_RE.match(operand)
         if m:
             refs[idx] = int(m.group(1), 16)
+    return refs
+
+
+IMM_OP_RE = re.compile(r"^#\$([0-9a-fA-F]+)$")
+IMM_PTR_MNEMS = {"movea", "adda", "suba", "cmpa"}  # address-register operations
+
+
+def imm_pointer_operands(mnem, op):
+    """Immediate operands `#$hex` that are ROM addresses: {operand index: value}.
+
+    Only immediates that load/compute a ROM address into an address register
+    count (step 1, #16): movea/adda/suba/cmpa, or `move` with an a0-a7
+    destination. Two exclusions keep constants numeric:
+      * values < $1000 are struct offsets / small counts, not addresses
+        (e.g. `adda.l #$2c,a0`, `movea.w #$4,a3`);
+      * immediates into data registers are values, not pointers
+        (e.g. `move.l #$10000,d1` — a 65536 size, not an address).
+    The caller applies the same ROM/not-in-code filter as for abs_operands.
+    """
+    base = mnem.split(".")[0]
+    parts = split_operands(op)
+    if len(parts) != 2:
+        return {}
+    refs = {}
+    for idx, operand in enumerate(parts):
+        if idx != 0 or not operand.startswith("#"):
+            continue
+        m = IMM_OP_RE.match(operand)
+        if not m:
+            continue
+        v = int(m.group(1), 16)
+        if v < 0x1000:
+            continue
+        dest = parts[-1]
+        if base in IMM_PTR_MNEMS or (base == "move" and re.match(r"^a[0-7]$", dest)):
+            refs[idx] = v
     return refs
 
 
@@ -289,6 +326,12 @@ def main():
                 # that operand stays numeric.
                 refs = {i: t for i, t in abs_operands(op).items()
                         if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code)}
+                # immediates that are ROM addresses (step 1, #16): pointer loads
+                # into address registers; small offsets / data-register values
+                # stay numeric (see imm_pointer_operands).
+                for i, t in imm_pointer_operands(mnem, op).items():
+                    if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code):
+                        refs[i] = t
                 if refs:
                     abs_refs[addr] = refs
             else:
@@ -381,8 +424,12 @@ def main():
         mnem, op, size = insn_by_addr[addr]
         parts = split_operands(op)
         for idx, t in refs.items():
-            m = ABS_OP_RE.match(parts[idx])
-            parts[idx] = f"{lab(t)}{m.group(2) or ''}"
+            if parts[idx].startswith("#"):
+                # immediate: #$hex -> #Label (the '#' prefix is kept)
+                parts[idx] = f"#{lab(t)}"
+            else:
+                m = ABS_OP_RE.match(parts[idx])
+                parts[idx] = f"{lab(t)}{m.group(2) or ''}"
         text = f"{mnem} {','.join(parts)}".strip()
         if verify_labelled(addr, text, size):
             abs_labelled_text[addr] = text
@@ -489,6 +536,69 @@ def main():
         if line:
             out.append(f"\tdc.b {','.join(line)}\t; table ${line_at:06X}")
 
+    def emit_vector_bytes(a, b):
+        """Emit bytes [a,b) as dc.b lines (table format), inserting labels at label addresses."""
+        cur = a
+        for t in sorted(t for t in label_addrs if a <= t < b):
+            if t > cur:
+                vals = ",".join(f"${rom[x]:02X}" for x in range(cur, t))
+                out.append(f"\tdc.b {vals}\t; table ${cur:06X}")
+            if t not in labelled:
+                out.append(f"{lab(t)}:")
+                labelled.add(t)
+            cur = t
+        if b > cur:
+            vals = ",".join(f"${rom[x]:02X}" for x in range(cur, b))
+            out.append(f"\tdc.b {vals}\t; table ${cur:06X}")
+
+    def emit_vectors(a, b):
+        """ROM [a,b) within the vector table + SEGA header [0,0x200): dc.w records.
+
+        The 3 ROM pointers become label references (reset PC, HBlank, VBlank);
+        the reset SP stays numeric (a RAM value). Labels that fall inside a
+        longword (the pea small-constant artifacts at 1, 2, 0x7E) are emitted
+        byte-wise so they land at the right offsets. Lines use the #14 table
+        format (`; table $addr`) so status.py/coverage count them as incbin.
+        A pointer longword is `dc.w $0000, LABEL+$0000`: vasm in binary output
+        mode rejects shift/mask arithmetic on relocatable labels (error 39),
+        but a plain label + 0 assembles fine; the `+$0000` is a no-op that
+        supplies the second $hex literal the byte-counting regex needs.
+        The hardcoded high word $0000 is correct because all three pointers
+        are < $10000 and stay so for any shift that keeps them in the first
+        64 KB (the #16 shift test uses SHIFT=0x100).
+        """
+        out.append(f"\t; vector table + SEGA header ${a:06X}-${b - 1:06X} (dc.w; ROM pointers are labels)")
+        i = a
+        if i % 4:
+            nxt = min(b, (i + 3) & ~3)
+            emit_vector_bytes(i, nxt)
+            i = nxt
+        while i + 4 <= b:
+            if i in label_addrs and i not in labelled:
+                out.append(f"{lab(i)}:")
+                labelled.add(i)
+            inner = [t for t in label_addrs if i < t < i + 4]
+            if inner:
+                emit_vector_bytes(i, i + 4)
+            else:
+                val = int.from_bytes(rom[i:i + 4], "big")
+                if val in (0x200, 0x1270, 0x1272):
+                    # Pointer longword as two words: high word $0000 (all three
+                    # pointers are < $10000, and stay so for any shift that
+                    # keeps them in the first 64 KB — the #16 shift test uses
+                    # SHIFT=0x100), low word the label. `+$0000` is a no-op
+                    # that makes the byte count come out as 4: the accounting
+                    # tools count $hex literals, so the line needs two of them.
+                    # (A shift/mask expression is an illegal relocation for
+                    # vasm in binary output mode; a plain label + 0 is fine.)
+                    lbl = lab(val)
+                    out.append(f"\tdc.w $0000, {lbl}+$0000\t; table ${i:06X}")
+                else:
+                    out.append(f"\tdc.w ${val >> 16:04X},${val & 0xFFFF:04X}\t; table ${i:06X}")
+            i += 4
+        if i < b:
+            emit_vector_bytes(i, b)
+
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
         if a < HDR_SUM < b:  # header checksum word is a symbol (#16)
@@ -496,6 +606,13 @@ def main():
             emit_data(a, HDR_SUM)
             out.append(f"\tdc.w HEADER_SUM\t; ${HDR_SUM:06X}")
             emit_data(HDR_SUM + 2, b)
+            return
+        if a < 0x200 and b > 0:
+            # vector table + SEGA header: dc.w records, not incbin (step 2, #16)
+            hi = min(b, 0x200)
+            emit_vectors(a, hi)
+            if b > 0x200:
+                emit_data(0x200, b)
             return
         for ts, te, prefix, wpr, note in tables:
             if a < te and b > ts:
