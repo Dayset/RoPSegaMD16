@@ -32,6 +32,22 @@ Source: BlastEm recording at 60.4 fps (640x480), walk started from `slot_0.state
 - Debugger, same run type: X cell `0x0006` fixed; Y cell `0x0012`→`0x0017`, one cell per step, each Y commit preceded by an X write (`0x1C2D8` then `0x1C300`).
 - Open: map video time to keypress time (video start not aligned to the AHK F9 start); confirm the 60.4 fps rate (container reports ~30.1 fps).
 
+## Exact frame counts from the debugger (#127)
+The game keeps its own frame counter: long `$FF0010`, `addq.l #1` at `$127A` in `vblank_handler`, once per vblank. Read it at each Y commit instead of counting vblank breakpoint stops. No vblank breakpoint, so the game runs freely and keys register.
+
+```
+blastem -d -s slot_0.state rom-original.gen
+di/d 0xFF0010.l     prints L = counter at state load, and again at every stop
+di/x d0             low word = Y about to be written at $1C300
+b 0x1C300
+c                   press D, A (dialog 1), A (dialog 2) in the game window
+c                   at each "68K Breakpoint 0 hit", just c again
+```
+- Frame of a Y commit since load = printed counter − L. Frames per step = difference between consecutive stops.
+- Verified on BlastEm 0.6.3 (Linux): `di/d 0xFF0010.l` prints `0xFF0010.l: N` at every stop; counter steps by exactly 1 per vblank.
+- BlastEm 0.6.3 quirks seen here: it sometimes aborts at startup (`stack smashing detected`), rerun; `co` command lists did not parse (`end` unrecognized), so use `di`.
+- Results table: not yet run (needs `slot_0.state` from the run machine).
+
 ## Movement sequence (observed in the 60.4 fps recording, #28)
 1. Start: first cell step begins (video ≈ 9987 ms).
 2. Stop: step ends, screen holds still.
