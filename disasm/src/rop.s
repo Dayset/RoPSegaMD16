@@ -17403,7 +17403,7 @@ L01BA66:
 	add.l d1,d0	; $01BADC
 	lea.l ram_sys_ffaf42.l,a0	; $01BADE
 	move.w (a0,d0.l),-$c(a6)	; $01BAE4
-	tst.w ram_spell_scatter_0092.l	; $01BAEA
+	tst.w ram_gfx_phase_0092.l	; $01BAEA
 	beq.b L01BB04	; $01BAF0
 	lea.l -$6(a6),a0	; $01BAF2
 	move.w (a0),d0	; $01BAF6
@@ -17412,7 +17412,7 @@ L01BA66:
 	beq.b L01BB04	; $01BAFE
 	addq.w #$1,-$2(a6)	; $01BB00
 L01BB04:
-	tst.w ram_spell_scatter_0092.l	; $01BB04
+	tst.w ram_gfx_phase_0092.l	; $01BB04
 	beq.b L01BB1E	; $01BB0A
 	lea.l -$6(a6),a0	; $01BB0C
 	move.w (a0),d0	; $01BB10
@@ -19927,7 +19927,7 @@ world_location_transition:
 	move.w #$ffff,ram_sys_field_009c.l	; $01DA74
 	clr.w ram_sys_field_0142.l	; $01DA7C
 	jsr sys_record12_scan.l	; $01DA82
-	clr.w ram_spell_scatter_0092.l	; $01DA88
+	clr.w ram_gfx_phase_0092.l	; $01DA88
 	clr.w ram_world_field_0094.l	; $01DA8E
 	cmpi.w #$1,$8(a6)	; $01DA94
 	beq.b L01DAA6	; $01DA9A
@@ -24495,12 +24495,12 @@ world_tick:
 	divs.w #$4,d0	; $02157A
 	swap d0	; $02157E
 	move.w d0,$a(a0)	; $021580
-	move.w ram_spell_scatter_0092.l,d0	; $021584
+	move.w ram_gfx_phase_0092.l,d0	; $021584
 	addq.w #$1,d0	; $02158A
 	ext.l d0	; $02158C
 	divs.w #$2,d0	; $02158E
 	swap d0	; $021592
-	move.w d0,ram_spell_scatter_0092.l	; $021594
+	move.w d0,ram_gfx_phase_0092.l	; $021594
 	movea.l ram_map_grid_base.l,a0	; $02159A
 	movea.l ram_map_grid_base.l,a1	; $0215A0
 	move.w $a(a0),d0	; $0215A6
@@ -24554,7 +24554,7 @@ L021620:
 	move.w (a0,d1.l),d0	; $021656
 	bra.b L021676	; $02165A
 L02165C:
-	tst.w ram_spell_scatter_0092.l	; $02165C
+	tst.w ram_gfx_phase_0092.l	; $02165C
 	beq.b L021674	; $021662
 	move.w #$ffff,-(a7)	; $021664
 	move.w #$24,-(a7)	; $021668
@@ -26931,7 +26931,7 @@ L023534:
 	move.w $4(a3),d0	; $02358E
 	add.w $c(a6),d0	; $023592
 	move.w d0,-(a7)	; $023596
-	move.w ram_spell_scatter_0092.l,d0	; $023598
+	move.w ram_gfx_phase_0092.l,d0	; $023598
 	add.w #$222,d0	; $02359E
 	move.w d0,-(a7)	; $0235A2
 	jsr map_terrain_tile_lookup.l	; $0235A4
@@ -26948,7 +26948,7 @@ L0235AC:
 	move.w $4(a3),d0	; $0235C8
 	add.w $c(a6),d0	; $0235CC
 	move.w d0,-(a7)	; $0235D0
-	move.w ram_spell_scatter_0092.l,d0	; $0235D2
+	move.w ram_gfx_phase_0092.l,d0	; $0235D2
 	add.w #$224,d0	; $0235D8
 	move.w d0,-(a7)	; $0235DC
 	jsr map_terrain_tile_lookup.l	; $0235DE
@@ -26965,7 +26965,7 @@ L0235E6:
 	move.w $4(a3),d0	; $023602
 	add.w $c(a6),d0	; $023606
 	move.w d0,-(a7)	; $02360A
-	move.w ram_spell_scatter_0092.l,d0	; $02360C
+	move.w ram_gfx_phase_0092.l,d0	; $02360C
 	add.w #$22e,d0	; $023612
 	move.w d0,-(a7)	; $023616
 	jsr map_terrain_tile_lookup.l	; $023618
@@ -58504,7 +58504,7 @@ gfx_paint_stream_burst:
 	move.w #$359,-(a7)	; $03D26C
 	jsr map_terrain_tile_lookup.l	; $03D270
 	addq.w #$8,a7	; $03D276
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D278
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D278
 	move.w $a(a6),d0	; $03D27E
 	add.w #$5a,d0	; $03D282
 	move.w d0,-(a7)	; $03D286
@@ -58826,7 +58826,7 @@ gfx_paint_stream_grid:
 	addq.w #$8,a7	; $03D698
 	tst.w $c(a6)	; $03D69A
 	beq.b L03D6A8	; $03D69E
-	tst.w ram_spell_scatter_0092.l	; $03D6A0
+	tst.w ram_gfx_phase_0092.l	; $03D6A0
 	beq.b L03D6FE	; $03D6A6
 L03D6A8:
 	clr.w -(a7)	; $03D6A8
@@ -58890,7 +58890,7 @@ L03D756:
 spell_effect_scatter:
 	link.w a6,#$0	; $03D75A
 	movem.l d4-d5,-(a7)	; $03D75E
-	tst.w ram_spell_scatter_0092.l	; $03D762
+	tst.w ram_gfx_phase_0092.l	; $03D762
 	beq.b L03D774	; $03D768
 	moveq #$ff,d4	; $03D76A
 	subi.w #$1c,$8(a6)	; $03D76C
@@ -58898,7 +58898,7 @@ spell_effect_scatter:
 L03D774:
 	moveq #$1,d4	; $03D774
 L03D776:
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D776
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D776
 	move.w $a(a6),d0	; $03D77C
 	add.w #$17,d0	; $03D780
 	move.w d0,-(a7)	; $03D784
@@ -58909,7 +58909,7 @@ L03D776:
 	move.w #$389,-(a7)	; $03D792
 	jsr map_terrain_tile_lookup.l	; $03D796
 	addq.w #$8,a7	; $03D79C
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D79E
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D79E
 	move.w $a(a6),d0	; $03D7A4
 	add.w #$25,d0	; $03D7A8
 	move.w d0,-(a7)	; $03D7AC
@@ -58920,7 +58920,7 @@ L03D776:
 	move.w #$38a,-(a7)	; $03D7BA
 	jsr map_terrain_tile_lookup.l	; $03D7BE
 	addq.w #$8,a7	; $03D7C4
-	tst.w ram_spell_scatter_0092.l	; $03D7C6
+	tst.w ram_gfx_phase_0092.l	; $03D7C6
 	bne.b L03D7D2	; $03D7CC
 	moveq #$1,d0	; $03D7CE
 	bra.b L03D7D4	; $03D7D0
@@ -58939,7 +58939,7 @@ L03D7D4:
 	move.w #$389,-(a7)	; $03D7EE
 	jsr map_terrain_tile_lookup.l	; $03D7F2
 	addq.w #$8,a7	; $03D7F8
-	tst.w ram_spell_scatter_0092.l	; $03D7FA
+	tst.w ram_gfx_phase_0092.l	; $03D7FA
 	bne.b L03D806	; $03D800
 	moveq #$1,d0	; $03D802
 	bra.b L03D808	; $03D804
@@ -58958,7 +58958,7 @@ L03D808:
 	move.w #$38a,-(a7)	; $03D822
 	jsr map_terrain_tile_lookup.l	; $03D826
 	addq.w #$8,a7	; $03D82C
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D82E
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D82E
 	move.w $a(a6),-(a7)	; $03D834
 	move.w d4,d0	; $03D838
 	muls.w #$2a,d0	; $03D83A
@@ -58968,7 +58968,7 @@ L03D808:
 	move.w #$380,-(a7)	; $03D846
 	jsr map_terrain_tile_lookup.l	; $03D84A
 	addq.w #$8,a7	; $03D850
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D852
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D852
 	move.w $a(a6),-(a7)	; $03D858
 	move.w d4,d0	; $03D85C
 	muls.w #$e,d0	; $03D85E
@@ -58978,7 +58978,7 @@ L03D808:
 	move.w #$381,-(a7)	; $03D86A
 	jsr map_terrain_tile_lookup.l	; $03D86E
 	addq.w #$8,a7	; $03D874
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D876
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D876
 	move.w $a(a6),-(a7)	; $03D87C
 	move.w d4,d0	; $03D880
 	muls.w #$e,d0	; $03D882
@@ -58987,7 +58987,7 @@ L03D808:
 	move.w #$382,-(a7)	; $03D88C
 	jsr map_terrain_tile_lookup.l	; $03D890
 	addq.w #$8,a7	; $03D896
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D898
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D898
 	move.w $a(a6),d0	; $03D89E
 	add.w #$1e,d0	; $03D8A2
 	move.w d0,-(a7)	; $03D8A6
@@ -58999,7 +58999,7 @@ L03D808:
 	move.w #$383,-(a7)	; $03D8B6
 	jsr map_terrain_tile_lookup.l	; $03D8BA
 	addq.w #$8,a7	; $03D8C0
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D8C2
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D8C2
 	move.w $a(a6),d0	; $03D8C8
 	add.w #$1e,d0	; $03D8CC
 	move.w d0,-(a7)	; $03D8D0
@@ -59011,7 +59011,7 @@ L03D808:
 	move.w #$384,-(a7)	; $03D8E0
 	jsr map_terrain_tile_lookup.l	; $03D8E4
 	addq.w #$8,a7	; $03D8EA
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D8EC
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D8EC
 	move.w $a(a6),d0	; $03D8F2
 	add.w #$1e,d0	; $03D8F6
 	move.w d0,-(a7)	; $03D8FA
@@ -59022,7 +59022,7 @@ L03D808:
 	move.w #$385,-(a7)	; $03D908
 	jsr map_terrain_tile_lookup.l	; $03D90C
 	addq.w #$8,a7	; $03D912
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D914
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D914
 	move.w $a(a6),d0	; $03D91A
 	add.w #$3c,d0	; $03D91E
 	move.w d0,-(a7)	; $03D922
@@ -59034,7 +59034,7 @@ L03D808:
 	move.w #$386,-(a7)	; $03D932
 	jsr map_terrain_tile_lookup.l	; $03D936
 	addq.w #$8,a7	; $03D93C
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D93E
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D93E
 	move.w $a(a6),d0	; $03D944
 	add.w #$3c,d0	; $03D948
 	move.w d0,-(a7)	; $03D94C
@@ -59042,7 +59042,7 @@ L03D808:
 	move.w #$387,-(a7)	; $03D952
 	jsr map_terrain_tile_lookup.l	; $03D956
 	addq.w #$8,a7	; $03D95C
-	move.w ram_spell_scatter_0092.l,-(a7)	; $03D95E
+	move.w ram_gfx_phase_0092.l,-(a7)	; $03D95E
 	move.w $a(a6),d0	; $03D964
 	add.w #$5a,d0	; $03D968
 	move.w d0,-(a7)	; $03D96C

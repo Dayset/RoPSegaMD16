@@ -29,7 +29,7 @@ ram_sys_ff0078	equ	$FF0078
 ram_sys_ff007a	equ	$FF007A
 ram_menu_verb_0086	equ	$FF0086
 ram_sys_field_0088	equ	$FF0088
-ram_spell_scatter_0092	equ	$FF0092
+ram_gfx_phase_0092	equ	$FF0092
 ram_world_field_0094	equ	$FF0094
 ram_sys_field_0096	equ	$FF0096
 ram_sys_field_0098	equ	$FF0098
