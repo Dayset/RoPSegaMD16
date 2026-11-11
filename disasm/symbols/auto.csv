@@ -190,7 +190,7 @@ addr,name,tier,note
 0x02cdd4,world_reset_supplies,1,resets food and water to 2000 and clears state buffers; called from new_game_init and save_deserialise
 0x02CE74,npc_attitude_apply,2,logic.md:544 applies attitude delta to char; persistent FF00C0
 0x02d004,npc_place_group,1,places up to 6 characters around a position using direction offsets; calls npc_leader_init and npc_struct_setup
-0x02D284,sys_unk_02d284,0,auto: touches $FFC326
+0x02D284,sys_copy_stride6_2d284,1,static: copies 6-byte records from table L0D6020 into stack locals
 0x02d38c,shop_category_max,1,returns max quantity for an item category; 1 most 99 goods 9999 healing 30000 special case
 0x02d3dc,menu_select_screen,1,selects one of 10 menu screens by setting the screen pointer and initializes menu state
 0x02d50c,npc_attitude_raise_by_id,1,finds char by +0x02 identity word and calls npc_attitude_raise with 0; returns -1 if not found after 56 entries
@@ -302,7 +302,7 @@ addr,name,tier,note
 0x039be0,spell_travel_effect,1,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase
 0x039c8a,spell_step_effect_144,1,flat-70 phased spell effect action 144; visual 5 via $03CC4C; applies spell_apply_group while $FF012A below 65; called from combat_action_main dispatch
 0x039d34,spell_step_effect_145,1,flat-70 phased spell effect action 145; visual 6 or 8 if caster template $6E; same phased shape as 144; called from combat_action_main dispatch
-0x039DF4,sys_unk_039df4,0,auto: touches $FF010E $FF012A $FF02B4 $FF02DD $FF0EAA
+0x039DF4,spell_apply_actor_39df4,1,static: indexes actor record stride 34 then calls spell_effect_start when ff012a is 1 or 41
 0x039e9e,spell_step_effect_146,1,flat-70 phased spell effect action 146; visual 7 via $03CC4C; same phased shape as 144; called from combat_action_main dispatch
 0x039f48,spell_find_target_cell,1,evaluates 13x13 cost grid and writes best cell x y to $FF024C $FF024E; called from spell_damage_calc with range 0-7
 0x03A062,sys_unk_03a062,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
@@ -358,7 +358,7 @@ addr,name,tier,note
 0x0EB8F2,z80_write_val24,2,sound.md:151 writes 24-bit d0 to Z80 016E-0170
 0x0eb920,snd_copy_bytes,2,byte-copy loop bra entry copies d0 bytes from (a1)+ to (a2)+; sound.md:159; called from sound_upload and SFX deliver
 0x0eb922,snd_copy_bytes_plus1,2,byte-copy loop direct entry copies d0+1 bytes from (a1)+ to (a2)+; sound.md:159; called from music streamer and song chunk set
-0x0EB924,z80_unk_0eb924,0,auto: touches $A00000 $A11100
+0x0EB924,snd_copy_loop_eb924,1,static: dbra loop tail that falls into snd_copy_bytes_plus1
 0x0eb93e,snd_sfx_pointer,2,SFX-pointer command (addr n): writes addr to Z80 016E via EB8F2 and 000A=n (1 if n==0); sound.md:152; called only from 17586 non-FFFF branch which no live site takes so unreachable in practice
 0x0eb968,snd_sfx_pointer_ff,2,SFX-pointer command (addr): writes addr to Z80 016E via EB8F2 and 000A=FF; sound.md:153; the pointer-SFX path every live call takes from 17586 FFFF branch
 0x0eb986,snd_sfx_pointer_12,2,SFX-pointer command: 016E=addr 000B=12 000A=n; sound.md:154; doc-pinned but no callers in ROM
