@@ -89,9 +89,9 @@ pattern as `tools/ghidra_011_create_funcs_*.py`):
 | `0xEBA00` | 126 B | `jsr $EBA00` at `0xEB7BE` was in Ghidra's listing but the analyser never followed it to create the callee | Music streamer; clean decode ending `rts` at `0xEBA7C`; matches the #003 trace (called every 16 frames from `$EB772`) |
 | `0xEB7C8` | 62 B | Zero callers (dead code in the original) | Stop-sound; clean decode ending `rts` at `0xEB804`; revived by the music-off patch |
 | `0xEB8E0` | 18 B | No callers | 3-byte store helper, ends `rts` at `0xEB8F0` |
-| `0x2B2B2` | 336 B | No direct callers (computed dispatch) | Combatant-setup wrapper 2 (`link` prologue, calls `$243D6`/`$258EE`/`$23B84`, falls through into the `$2B3B0` field-write block) |
-| `0x2B502` | 242 B | No direct callers (computed dispatch) | Combatant-setup wrapper 4 (same shape; calls `$243D6`/`$1E022`/`$258EE`/`$23B84`, falls through into the `$2B5B0` block) |
-| `0x2988E` | 68 B | No direct callers (computed dispatch) | Counter loop calling `$2979A`; `link`/`unlk`/`rts` |
+| `0x2B2B2` | 336 B | No direct callers | Combatant-setup wrapper 2 (`link` prologue, calls `$243D6`/`$258EE`/`$23B84`, falls through into the `$2B3B0` field-write block) |
+| `0x2B502` | 242 B | No direct callers | Combatant-setup wrapper 4 (same shape; calls `$243D6`/`$1E022`/`$258EE`/`$23B84`, falls through into the `$2B5B0` block) |
+| `0x2988E` | 68 B | No direct callers | Counter loop calling `$2979A`; `link`/`unlk`/`rts` |
 | `0x3536C` | 46 B | No direct callers (computed dispatch) | Predicate routine (compares args>>2, returns 0/1); `link`/`unlk`/`rts` |
 | `0x3539A` | 266 B | No direct callers (computed dispatch) | Calls `$1E022`, reads struct tables `$FF02C0`/`$FF02C2`; `link` prologue |
 
