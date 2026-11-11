@@ -54,30 +54,30 @@ addr,name,tier,note
 0x012072,text_blit,2,logic.md: $12072 VDP/text drawing routine; blits $11820/$11A1A/$11AE4
 0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
 0x0123B0,window_down,2,architecture.md: $123B0 window down
-0x012BFC,sys_unk_012bfc,0,auto: touches $FF0010 $FF0072 $FF0076 $FF0114 $FF0E78 $FF1EC0
+0x012bfc,sys_rng_seed_frame,1,seeds RNG seed $FF0072 from frame counter $FF0010 mod 0xFFFF via math_mod32; callers world_map_draw and $015012; logic.md:199 pins $FF0072 as the LCG seed
 0x012F48,sys_unk_012f48,0,auto: touches $FF0E14 $FF8646
 0x012F80,sys_unk_012f80,0,auto: touches $FF0E14 $FF8646
-0x012FB4,sys_unk_012fb4,0,auto: touches $FF0086 $FF00AC $FF00AE $FF010E $FF0110 $FF0112
+0x012fb4,sys_wait_button_press,1,busy-waits to 0x9C40 then polls joypad queue until a button press (high nibble nonzero); called from text_blit before soft_reset
 0x013654,text_record_dispatch,2,disasm/text/inventory.json: decoder_routine 0x13654 record dispatcher
 0x0136FC,text_word_expand,2,disasm/text/inventory.json: decoder_routine 0x136FC word expander
-0x013882,sys_unk_013882,0,auto: touches $FF00AC $FF00AE $FF010E $FF0114 $FF0132 $FF0136
-0x013D84,sys_unk_013d84,0,auto: touches $FF0116 $FF8640 $FF867A $FF867C $FF867E
+0x013882,text_to_upper,1,ASCII lowercase to uppercase: subtracts 0x20 for codes 0x61-0x7a else returns input unchanged; called from cmd10_handler the D28E case-10 handler
+0x013d84,world_sprites_setup,1,clears sprite attributes then writes the fixed map-screen sprite set via 51 sprite_write calls plus one sprite_grid_write; called from world_map_draw sys_direct_apply and the map scroll path
 0x0147D0,gfx_plane_write,2,graphics.md: $147D0 R16=$11 plane writer
 0x014FB6,intro_story_driver,2,architecture.md: $14FB6 intro/story driver
 0x015012,intro_helper,2,architecture.md: helper $15012 plays music $173BC(1) + $15C08
 0x015C08,snd_music_start,1,architecture.md:186 helper plays music with 173BC(1) and 15C08
-0x0162FE,sys_unk_0162fe,0,auto: touches $FF0114 $FF8648 $FF8674 $FF8676
-0x0163EE,sys_unk_0163ee,0,auto: touches $FF8678
-0x01664E,sys_unk_01664e,0,auto: touches $FF00AE $FF0124 $FF0126 $FF02B2 $FF02C0 $FF02C2
-0x0171D6,sys_unk_0171d6,0,auto: touches $FF012E
+0x0162fe,world_map_redraw,1,redraws the world map tilemaps after wait_vblank and menu_format; decodes map 9 Ushka Bau and uploads tiles then requests full redraw; called from the map scroll path
+0x0163ee,row_write,1,row counterpart of column_write 0x016512 graphics.md:465; writes 64 map tiles along a VRAM row from the 0x1AE98 descriptor table with flip bits and tile base 0xFF8678
+0x01664e,map_view,1,interactive scrollable map screen centered on leader X and Y; draws map chunks glyphs and sprites; D-pad scrolls via column_write; exits on button and restores scene; called from verb handler 02dcce in map mode
+0x0171d6,vdp_write_hscroll_wave,1,writes 224-line H-scroll table to VRAM 4000 with zigzag plus decaying envelope; graphics.md:333 lists 4000 as an H-scroll table address; callers intro_helper and scene_draw
 0x0173EC,song_play_direct,2,sound.md: $173EC called directly by the Music menu and jingle path
 0x017586,sfx_request,2,sound.md: $17586 calls public SFX entry points $EBAF4/$EBAFA
 0x0176A0,save_parity,2,architecture.md: $176A0 parity over packed $FFA800
-0x017706,sys_unk_017706,0,auto: touches $FF014E $FFA800
+0x017706,save_write_eeprom,2,save.md:305 writes 128-byte EEPROM image magic 0x2A parity and FFA800 state then read-back-verifies via 177B4; returns 0x48 success 0x4A failure
 0x0177B4,save_validate_magic,2,save.md: real save validation is $177B4 magic byte
 0x017860,location_pic_draw,2,graphics.md: jsr $17860($FF009E) location-picture draw
 0x0179CA,vdp_scaled_table_write,1,static: table L01B4D2 scaled by arg/32; written to VDP data after set_write_addr $4000
-0x017A40,sys_unk_017a40,0,auto: touches $FF0076 $FF007A $FF8640 $FF8642 $FF8644 $FF8648
+0x017a40,sprite_write_block,1,writes 2x2 block of 4 sprite entries via sprite_write for one composite large sprite; called from scene_draw at 3 sites
 0x01960A,sys_unk_01960a,0,auto: touches $FF0078
 0x01961A,sys_unk_01961a,0,auto: touches none
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
