@@ -45663,7 +45663,7 @@ L032E3A:
 	bra.b L032EB0	; $032E72
 L032E74:
 	move.w $c(a6),-(a7)	; $032E74
-	jsr sys_unk_0337d0(pc)	; $032E78
+	jsr sys_set_flag_bit3_add44d(pc)	; $032E78
 	addq.w #$2,a7	; $032E7C
 	move.w d0,-$2(a6)	; $032E7E
 	bra.b L032EB0	; $032E82
@@ -46436,7 +46436,7 @@ L0337C8:
 	move.w -$8(a6),d0	; $0337C8
 	bra.w L033718	; $0337CC
 	; code $0337D0-$0337ED
-sys_unk_0337d0:
+sys_set_flag_bit3_add44d:
 	link.w a6,#$0	; $0337D0
 	lea.l ram_sys_ff02a2.l,a0	; $0337D4
 	andi.w #$fff7,(a0)	; $0337DA
