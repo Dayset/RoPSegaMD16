@@ -110,40 +110,40 @@ addr,name,tier,note
 0x020cca,sys_record12_scan_20cca,1,code: loop over 12-byte records at FFB0CC (muls #12); sibling of 20D0A
 0x020CF6,shop_merchant_clear_all,2,save.md:441 zeroes 6 merchant structs at FF0E82
 0x020d0a,sys_record12_scan,1,code: loop over 12-byte records at FFB0CC (muls #12)
-0x020D58,sys_unk_020d58,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
-0x020D9E,sys_unk_020d9e,0,auto: touches $FF0E8E $FF0E90 $FFA7FC
+0x020d58,map_scroll_offset,2,maps.md:458 sets scroll offsets from player pos $FF0E8E $FF0E90; writes X-6 Y-6 or 0 0
+0x020d9e,map_scroll_adjust,1,base scroll offset plus clamp and step adjustment; adds args to position; called from $02440A $025852 $0261EC
 0x020E7E,map_grid_create,2,maps.md:468-485 grid creation: type>=0 grid 0; type<0 grid 1
 0x02103E,map_grid_clear,2,maps.md:499 clears a record grid cell (frees record; FF0096 decremented)
 0x0210D8,map_record_remove,2,maps.md:498 removes a record; frees it; clears grid cell via 2103E
-0x021194,sys_unk_021194,0,auto: touches $FFA7FC $FFB0CC $FFB36C
-0x0212FC,sys_unk_0212fc,0,auto: touches $FFA7FC $FFB0CC $FFB36C
+0x021194,map_place_record_step,1,places 12-byte record on grid after step in direction 100-103; marks $FFB36C cell $FF; called from 4 direction sites
+0x0212fc,map_place_record,1,places 12-byte record on grid and marks $FFB36C cell $FF; bounds check then release on fail
 0x02140A,combat_effect_apply,1,logic.md:1159 effect 0x18 applied after 25DE4 check
-0x0214E8,sys_unk_0214e8,0,auto: touches $FF0092 $FF0094 $FF009A $FF009C $FF00AC $FF00AE
-0x021FE6,sys_unk_021fe6,0,auto: touches $FF010A $FF0110 $FF0112 $FF02A0 $FF02A2 $FF02A4
-0x0222D4,sys_unk_0222d4,0,auto: touches $FF012A $FF012C $FF02B4 $FF02B8 $FF0EAA $FFB0D0
-0x02241C,sys_unk_02241c,0,auto: touches $FF0130 $FF02B4 $FF02BE $FF02C0 $FF02C2 $FF0EAA
+0x0214e8,sys_condition_test,1,4-case predicate dispatch on code 0-3 returns $FF or 0; tests value against code sets
+0x021fe6,npc_merchant_attitude_tick,1,processes merchant $FF02A2 flag bits and raises attitude via npc_attitude_raise; called per-tick from main loop
+0x0222d4,combat_apply_turn_effects,1,loops over 56 chars; clears bit 14 and applies combat_effect_apply for matching chars; called from combat_turn_run in map mode
+0x02241c,combat_char_action,1,processes turn char $FF0130 and $FF0EAA; spell damage via spell_damage_calc and movement via combat_move_unit; called from combat_turn_run
 0x0226bc,combat_turn_run,1,code: if FF012A set calls combat_action_main with FF0094
-0x0232AC,sys_unk_0232ac,0,auto: touches none
-0x0232D2,sys_unk_0232d2,0,auto: touches $FF0148 $FFA7FC
+0x0232ac,map_tile_at_offset,2,maps.md:495 dispatch-2 tile handler; thin wrapper around map_terrain_tile_lookup at offset coords; called from $1BA4E driver
+0x0232d2,map_animated_tile,2,maps.md:495 dispatch-3 tile handler; animated tile from $197B0 records with frame counters; called from $1BA4E driver
 0x02343A,map_promote_record,2,maps.md:503 dispatch-1 case of 1BA4E promotes record (live)
-0x023628,sys_unk_023628,0,auto: touches $FFA7FC $FFB36C $FFB76C
-0x023770,sys_unk_023770,0,auto: touches $FFA7FC $FFB36C $FFB76C
+0x023628,map_grid_set_cell,1,sets record index into first free cell of grid 0 $FFB36C then grid 1 $FFB76C else error $19; maps.md:463; called from map_grid_create
+0x023770,map_grid_set_cell_1,1,sets record index into first free cell of grid 1 $FFB76C then grid 0 $FFB36C else error $19; maps.md:463; mirror of $023628
 0x0238B8,sys_unk_0238b8,0,auto: touches $FFB0CC $FFB0CE $FFB0D0 $FFB0D2 $FFB0D6
 0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
 0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
 0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence
-0x024676,sys_unk_024676,0,auto: touches $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE $FF02C0
+0x024676,map_grid_place_chars,1,places chars of type 1-3 on the map grid via map_grid_create; called from movement and combat code
 0x024916,npc_struct_release,1,code: reads FF02B8 map record; calls map_record_remove; sets FF02B8 to 0xFF
 0x024984,combat_move_unit,1,static: unit slot arg at 8 and a(a6); 0x34-byte unit records at $FF02B4; calls npc_leader_init; combat_target_check; sfx_request
-0x02513E,map_grid_setup,1,static: calls map_grid_clear and error_show 0x18; sets flags from grid bounds 4 and 7
+0x02513e,world_reposition_leader,1,clears char grid cell via map_grid_clear (error 24 if 0) then respawns leader at computed position via leader_spawn with 5-entry direction jump table; replaces map_grid_setup from PR #59 which names only the preamble
 0x0253FE,map_walk_check,2,maps.md:415-416;591 returns step-blocked flag (mode 0x17 walkability)
 0x025456,npc_leader_init,1,architecture.md:223 called with leader after load; role from callers
 0x02570A,sys_struct52_assign,1,code: sets FF02C0 field for index; error_show 0x1C if FF02B4 nibble empty
-0x025884,sys_unk_025884,0,auto: touches $FF02B4 $FF02B8 $FFB0CC
+0x025884,world_find_char_by_grid,1,finds the char whose +0x04 equals a placement record index; returns $FF if not found; error 230 if record is $270F
 0x0258EE,sys_struct52_find,1,code: scans 52-byte table FF02B4/FF02C0 for matching key arg; returns index
 0x02595a,sys_struct52_scan,1,code: loop over 52-byte table entries (muls #52)
 0x025b4e,sys_struct52_nibble_read,1,code: low nibble of 52-byte table FF02B4 indexed by arg*52
-0x025C44,sys_unk_025c44,0,auto: touches $FF02B4
+0x025c44,world_release_chars_by_type,1,releases all chars of a given type via npc_struct_release then runs combat_attacker_check; called from map code
 0x025cb4,world_vessel_grid_value,1,decodes vessel mount +0x06 into a numeric value stored in the map grid; used by npc_struct_setup for map placement and combat effects
 0x025d2e,world_vessel_class,1,decodes vessel mount +0x06 into a 0-3 class index; used by npc_struct_setup for map placement
 0x025d8e,world_vessel_mode,2,decodes vessel mount +0x06 into the movement mode; logic.md:703 Mode section
