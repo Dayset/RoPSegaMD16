@@ -191,10 +191,7 @@ start,end,class,name,doc_ref,tier
 0x0CCDB8,0x0CD430,state-init-table,tbl_state_init_table_0ccdb8,rop.s sys_state_clear lea L0CCDB8 (class by consumer; tier 1),1
 0x0D1CFC,0x0D1CFD,npc-attitude-table,tbl_npc_attitude_table_0d1cfc,rop.s npc_attitude_event_apply lea L0D1CFC (class by consumer; tier 1),1
 0x0D1CFD,0x0D1D00,npc-attitude-table,tbl_npc_attitude_table_0d1cfd,rop.s npc_attitude_event_apply lea L0D1CFD (class by consumer; tier 1),1
-0x0D1D00,0x0D1D02,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup lea L0D1D00 (class by consumer; tier 1),1
-0x0D1D02,0x0D1D04,world-location-table,tbl_world_location_table_0d1d02,rop.s world_location_lookup lea L0D1D02 (class by consumer; tier 1),1
-0x0D1D04,0x0D1D05,struct52-flag-table,tbl_struct52_flag_table_0d1d04,rop.s sys_struct52_flag_test lea L0D1D04 (class by consumer; tier 1),1
-0x0D1D05,0x0D2EC2,world-cost-table,tbl_world_cost_table_0d1d05,rop.s move_cost_calc lea L0D1D05 (class by consumer; tier 1),1
+0x0D1D00,0x0D2EC6,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup scans 455 recs x 10 B; $2C212 indexes rec[location]; +0/+2 cell key; +4 byte world_location_transition arg2; +5 byte text msg id (class by consumer; tier 1),1
 0x0D2EC2,0x0D301E,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
 0x0D301E,0x0D3102,text-record-table,tbl_text_record_table_0d301e,rop.s text_record_lookup lea L0D301E (class by consumer; tier 1),1
 0x0D3102,0x0D601E,text-record-table,tbl_text_record_table_0d3102,rop.s text_event_resolve lea L0D3102 (class by consumer; tier 1),1

@@ -341,12 +341,26 @@ food/water = 2000).
   this handler.
 - **`$2C212` (`world_ensure_location_entity`, Q15):** finds the
   current location's entity (`$FF0E92 & 0x3FF`) in the 56 struct
-  slots by matching the `$D1D00` record's (+0x00, +0x02) key pair
-  (both `(+0+2, +2)` and `(+0, +2+2)` alignments tried); returns at
-  once if present. If absent, spawns it via `entity_spawn` with
+  slots by matching the `$D1D00` record's (+0x00, +0x02) cell key
+  against the slot's struct +0x0C/+0x0E cell; returns at once if
+  present. If absent, spawns it via `entity_spawn` with
   mode = code%64 (0→3, 1→2, 2→1, 3→4), then `npc_leader_init`.
-  The `$D1D00` table (175 × 10 B) holds 146 distinct key pairs;
-  30 locations hold (999,999) = "none".
+  The `$D1D00` table is 455 records × 10 B (the earlier "175 × 10 B,
+  146 distinct pairs" count was wrong — it counted only the first
+  175 records; the full table holds 426 distinct key pairs, and
+  `world_location_lookup` scans all 455). 30 records hold
+  (999,999) = "none", all in the first 175. **The +2 is a spawn
+  placement offset, not an alignment fix:** `entity_spawn` stores
+  its arg6/arg7 into the new struct's +0x0C/+0x0E unconditionally
+  (`$0243AE`/`$0243C0`), and `$2C212` passes (key1+2, key2) for
+  spawn modes 3/2 and (key1, key2+2) for modes 1/4 — so a
+  `$2C212`-spawned entity never stands on the anchor cell itself.
+  The search tries both alignments because either may have spawned
+  the entity; with +0 it could never find its own spawns and would
+  duplicate the entity on every Q15 event. Why the offset is
+  exactly 2 cells, and why the axis follows the mode (3/2 → X,
+  1/4 → Y), is unpinned — arg4 is stored to struct +0x06
+  (`$0241EC`), whose meaning is open.
 - **`$2C0D6` (`sys_set_paper_flag`, Q17):** same 16-byte shape,
   bitmap `$FFC345` (5 bytes). No immediate-code caller found.
 

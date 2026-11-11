@@ -203,11 +203,9 @@ start,end,class,name,doc_ref,tier
 0x0CF1AC,0x0D1CFB,entity-template-table,tbl_entity_template_table_0cf1ac,docs/architecture.md:237 + docs/spells.md:412; 24-byte entity templates at $CF1AC (462 total; t0-t461); consumers entity_spawn $23B84 + world_tick $021BDE,2
 0x0D1CFC,0x0D1CFC,npc-attitude-table,tbl_npc_attitude_table_0d1cfc,rop.s npc_attitude_event_apply lea L0D1CFC (class by consumer; tier 1),1
 0x0D1CFD,0x0D1CFF,npc-attitude-table,tbl_npc_attitude_table_0d1cfd,rop.s npc_attitude_event_apply lea L0D1CFD (class by consumer; tier 1),1
-0x0D1D00,0x0D1D01,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup lea L0D1D00 (class by consumer; tier 1),1
-0x0D1D02,0x0D1D03,world-location-table,tbl_world_location_table_0d1d02,rop.s world_location_lookup lea L0D1D02 (class by consumer; tier 1),1
-0x0D1D04,0x0D1D04,struct52-flag-table,tbl_struct52_flag_table_0d1d04,rop.s sys_struct52_flag_test lea L0D1D04 (class by consumer; tier 1),1
-0x0D1D05,0x0D2EC1,world-cost-table,tbl_world_cost_table_0d1d05,rop.s move_cost_calc lea L0D1D05 (class by consumer; tier 1),1
-0x0D2EC2,0x0D301D,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
+0x0D1D00,0x0D2EC1,world-location-table,tbl_world_location_table_0d1d00,rop.s world_location_lookup scans 455 recs x 10 B; $2C212 indexes rec[location]; +0/+2 cell key; +4 byte world_location_transition arg2; +5 byte text msg id (class by consumer; tier 1),1
+0x0D2EC2,0x0D2EC5,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
+0x0D2EC6,0x0D301D,text-record-table,tbl_text_record_table_0d2ec2,rop.s text_pick_record lea L0D2EC2 (class by consumer; tier 1),1
 0x0D301E,0x0D3101,text-record-table,tbl_text_record_table_0d301e,rop.s text_record_lookup lea L0D301E (class by consumer; tier 1),1
 0x0D3102,0x0D601D,text-record-table,tbl_text_record_table_0d3102,rop.s text_event_resolve lea L0D3102 (class by consumer; tier 1),1
 0x0D601E,0x0D63E3,enemy-record-table,tbl_enemy_record_0d601e,docs/logic.md:112 and 192 (enemy records; 6-byte stride; 0xA1 entries; word and 0x7FF gives gold/XP at FFC410; logic-audit.md:439 says 0xB8 entries via 2B5F4 so counts conflict),2
