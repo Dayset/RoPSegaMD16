@@ -47,7 +47,7 @@ addr,size,name,tier,note
 0xFFB08A,1,ram_sys_field_b08a,0,27 refs; subsystem from majority of named users; role not read
 0xFF02DE,4,ram_world_field_02de,0,27 refs; subsystem from majority of named users; role not read
 0xFF8642,2,ram_gfx_scene_8642,1,static: static: 17 of 25 sites in scene_draw; subsystem inferred from owner scene_draw; write check: 3 of 7 writes from outside owner
-0xFF0092,2,ram_spell_scatter_0092,1,static: static: 14 of 25 sites in spell_effect_scatter; write check FAILED: 0 of 2 writes from owner; weakest of six
+0xFF0092,2,ram_gfx_phase_0092,1,static: toggled mod 2 in world_tick at $021594; cleared in world_location_transition at $01DA88; read as arg in gfx_paint_stream_burst (6 reads); renamed from spell_scatter after writer check
 0xFFBB86,4,ram_sys_field_bb86,0,25 refs; subsystem from majority of named users; role not read
 0xFF02A8,2,ram_sys_verb_02a8,1,static: static: 16 of 24 sites in verb_exec; write check FAILED: 0 of 2 writes from owner; all from shop_merchant_setup
 0xFF02B6,4,ram_sys_field_02b6,0,23 refs; subsystem from majority of named users; role not read
