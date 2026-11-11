@@ -21,7 +21,7 @@ from pathlib import Path
 ROM_SIZE = 1048576
 INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
 DCB = re.compile(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;\s*\$([0-9A-Fa-f]+)')
-TBL = re.compile(r'^\tdc\.w\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$')
+TBL = re.compile(r'^\tdc\.([wb])\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$')
 RAW = re.compile(r'^\s*\.?(dc|fill|ds)\.[bwl]\b|^\s*\.fill\b')
 INSN = re.compile(r'^\s+[a-z]\S*\s.*;\s*\$[0-9A-Fa-f]{6}')
 
@@ -68,9 +68,10 @@ def main():
             continue
         t = TBL.match(line)
         if t:  # structured table record (#14): data bytes, 2 per word
-            length = 2 * len(re.findall(r'\$[0-9A-Fa-f]+', t.group(1)))
+            unit = 2 if t.group(1) == 'w' else 1
+            length = unit * len(re.findall(r'\$[0-9A-Fa-f]+', t.group(2)))
             incbin += length
-            known += known_bytes(num('$' + t.group(2)), length, regions)
+            known += known_bytes(num('$' + t.group(3)), length, regions)
             continue
         d = DCB.search(line)
         if d:  # all-$FF padding (#13): data, counted as incbin

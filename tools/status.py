@@ -16,7 +16,7 @@ from pathlib import Path
 ROM_SIZE = 1048576
 INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
 DCB = re.compile(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;')  # all-$FF padding (#13)
-TBL = re.compile(r'^\tdc\.w\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$')
+TBL = re.compile(r'^\tdc\.([wb])\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$')
 RAW = re.compile(r'^\s*\.?(dc|fill|ds)\.[bwl]\b|^\s*\.fill\b')
 START, END = '<!-- status:start -->', '<!-- status:end -->'
 
@@ -48,7 +48,7 @@ def measure():
         elif d:
             incbin += num(d.group(1))
         elif t:  # structured table record (#14)
-            incbin += 2 * len(re.findall(r'\$[0-9A-Fa-f]+', t.group(1)))
+            incbin += (2 if t.group(1) == 'w' else 1) * len(re.findall(r'\$[0-9A-Fa-f]+', t.group(2)))
         elif RAW.match(l):
             raw += 1
     size = ROM_SIZE

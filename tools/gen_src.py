@@ -372,25 +372,53 @@ def main():
     tables.sort()
 
     def emit_table(ts, te, prefix, wpr):
-        """Structured table: one labelled record per wpr words; dc.w lines break at interior labels."""
+        """Structured table: one labelled record per wpr words. Lines are dc.w, or dc.b for
+        odd bytes and bytes next to a label; a line is cut wherever code refers into the table."""
         rec = wpr * 2
         assert (te - ts) % rec == 0, f"table {ts:#x}-{te:#x} not a whole number of {rec}-byte records"
         out.append(f"\t; table ${ts:06X}-${te - 1:06X}: {(te - ts) // rec} records x {wpr} words")
+
+        def rom_word(a):
+            return rom[a] << 8 | rom[a + 1]
+
         for k in range((te - ts) // rec):
             base = ts + k * rec
+            end_rec = base + rec
             out.append(f"{prefix}{k:02d}:")
             if base in label_addrs:  # code refers to this record start by its L label too
                 out.append(f"{lab(base)}:")
-            line = []
-            line_at = base
-            for i in range(wpr):
-                addr = base + 2 * i
-                if i > 0 and addr in label_addrs:  # code refers into this record: flush and label
-                    out.append(f"\tdc.w {','.join(line)}\t; table ${line_at:06X}")
+            addr, kind, vals, line_at = base, None, [], base
+
+            def flush():
+                if vals:
+                    if kind == "w":
+                        out.append(f"\tdc.w {','.join(vals)}\t; table ${line_at:06X}")
+                    else:
+                        out.append(f"\tdc.b {','.join(vals)}\t; table ${line_at:06X}")
+
+            while addr < end_rec:
+                if addr != base and addr in label_addrs:
+                    flush()
+                    vals = []
                     out.append(f"{lab(addr)}:")
-                    line, line_at = [], addr
-                line.append(f"${rom[addr] << 8 | rom[addr + 1]:04X}")
-            out.append(f"\tdc.w {','.join(line)}\t; table ${line_at:06X}")
+                    line_at = addr
+                byte_mode = (addr % 2 == 1) or (addr + 1 in label_addrs and addr + 1 < end_rec)
+                want = "b" if byte_mode else "w"
+                if vals and want != kind:
+                    flush()
+                    vals = []
+                    line_at = addr
+                if not vals:
+                    line_at = addr
+                kind = want
+                if byte_mode:
+                    vals.append(f"${rom[addr]:02X}")
+                    addr += 1
+                else:
+                    vals.append(f"${rom_word(addr):04X}")
+                    addr += 2
+            flush()
+            vals = []
 
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
