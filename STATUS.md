@@ -11,4 +11,4 @@ Measured from the repo. Issue counts are on GitHub, not here.
 | Raw fallbacks in code | 0 | 0 | — |
 | Bytes accounted (M8) | 1,048,576 | 1,048,576 | 100.00% |
 | Bytes unknown | 0 | 0 | 0.00% |
-| Bytes high-entropy (opaque, counted in M8) | 109,468 | 0 | 10.44% |
+| Bytes high-entropy (opaque, counted in M8) | 0 | 0 | 0.00% |
