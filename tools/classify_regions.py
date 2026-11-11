@@ -89,6 +89,18 @@ def main():
         m = INC.search(line)
         if m:
             spans.append((num(m.group(1)), num(m.group(2))))
+            continue
+        d = re.search(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;\s*\$([0-9A-Fa-f]+)', line)
+        if d:  # all-$FF padding (dcb.b)
+            spans.append((num('$' + d.group(2)), num(d.group(1))))
+            continue
+        t = re.match(r'^\tdc\.w\s+(\S.*?)\s*;\s*table\s+\$([0-9A-Fa-f]+)\s*$', line)
+        if t:  # structured table record (#14)
+            spans.append((num('$' + t.group(2)), 2 * len(re.findall(r'\$[0-9A-Fa-f]+', t.group(1)))))
+            continue
+        z = re.search(r'incbin\s+"build/z80_snd_driver\.bin"\s*;\s*\$([0-9A-Fa-f]+)', line)
+        if z:  # Z80 sound driver blob (#78): assembled code, length from the built file
+            spans.append((num('$' + z.group(1)), Path('build/z80_snd_driver.bin').stat().st_size))
     spans.sort()
     merged = []
     for s, n in spans:

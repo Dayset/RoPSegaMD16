@@ -190,8 +190,7 @@ start,end,class,name,doc_ref,tier
 0x0B8A31,0x0B8A31,unknown,region_0b8a31,,1
 0x0B8A32,0x0CC9D6,lzss-stream,gfx_lzss_streams_b86ae,docs/graphics.md:886 (streams from base 0xB8A32; consecutive tiling exact 89/89; last ends 0xCC9D8),2
 0x0CC9D7,0x0CC9D7,zero-fill,region_0cc9d7,,1
-0x0CC9D8,0x0CCDB6,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8),2
-0x0CCDB7,0x0CCDB7,unknown,region_0ccdb7,,1
+0x0CC9D8,0x0CCDB7,gfx-palette-master-table,gfx_palettes,docs/graphics.md (31 palettes x 32 bytes; verb table starts 0x0CCDB8; emitted as tables.csv records; #14),2
 0x0CCDB8,0x0CD42F,state-init-table,tbl_state_init_table_0ccdb8,rop.s sys_state_clear lea L0CCDB8 (class by consumer; tier 1),1
 0x0CD430,0x0CD430,npc-char-table,tbl_npc_char_table_0cd430,rop.s npc_find_best_char lea L0CD430 (class by consumer; tier 1),1
 0x0CD431,0x0D0700,str-name16-table,str_name16_cd431,docs/spells.md:30 ($CD431-$D0701 verified; NOTE doc count 893 x 16 = 14288 bytes disagrees with this span of 13009; both kept),2
