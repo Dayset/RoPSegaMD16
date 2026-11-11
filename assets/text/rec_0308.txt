@@ -1,0 +1,27 @@
+# rec 308 | ptr=0x026F0 len=42 type=5 | entries=21
+# rendered: "You shouldn't be snooping around here Sorcerer. This place is not healthy for those who aren't fond of death. "
+# $136FC skips array[0] and renders array[1..21], inclusive of the read-past entry
+# (read-past entry: rec 309 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=8 sep=space # 'You'
+2 idx=1386 sep=space # "shouldn't"
+3 idx=395 sep=space # 'be'
+4 idx=1387 sep=space # 'snooping'
+5 idx=575 sep=space # 'around'
+6 idx=68 sep=space # 'here'
+7 idx=549 sep=period # 'Sorcerer'
+8 idx=4 sep=space # ' '
+9 idx=84 sep=space # 'This'
+10 idx=236 sep=space # 'place'
+11 idx=57 sep=space # 'is'
+12 idx=452 sep=space # 'not'
+13 idx=1388 sep=space # 'healthy'
+14 idx=185 sep=space # 'for'
+15 idx=616 sep=space # 'those'
+16 idx=399 sep=space # 'who'
+17 idx=859 sep=space # "aren't"
+18 idx=1389 sep=space # 'fond'
+19 idx=13 sep=space # 'of'
+20 idx=1204 sep=period # 'death'

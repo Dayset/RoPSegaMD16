@@ -1,0 +1,38 @@
+# rec 434 | ptr=0x03BA4 len=64 type=5 | entries=32
+# rendered: "Thank you master! I'll tell you where the witch's bone is. Search in the muck at the south east corner here. I saw her hide it in the muck. "
+# $136FC skips array[0] and renders array[1..32], inclusive of the read-past entry
+# (read-past entry: rec 435 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1761 sep=space # "don't!"
+1 idx=1033 sep=space # 'Thank'
+2 idx=12 sep=space # 'you'
+3 idx=1762 sep=space # 'master!'
+4 idx=479 sep=space # "I'll"
+5 idx=637 sep=space # 'tell'
+6 idx=12 sep=space # 'you'
+7 idx=146 sep=space # 'where'
+8 idx=14 sep=space # 'the'
+9 idx=1763 sep=space # "witch's"
+10 idx=1609 sep=space # 'bone'
+11 idx=57 sep=period # 'is'
+12 idx=4 sep=space # ' '
+13 idx=450 sep=space # 'Search'
+14 idx=76 sep=space # 'in'
+15 idx=14 sep=space # 'the'
+16 idx=1764 sep=space # 'muck'
+17 idx=508 sep=space # 'at'
+18 idx=14 sep=space # 'the'
+19 idx=414 sep=space # 'south'
+20 idx=412 sep=space # 'east'
+21 idx=1173 sep=space # 'corner'
+22 idx=68 sep=period # 'here'
+23 idx=4 sep=space # ' '
+24 idx=459 sep=space # 'I'
+25 idx=1291 sep=space # 'saw'
+26 idx=1087 sep=space # 'her'
+27 idx=1765 sep=space # 'hide'
+28 idx=114 sep=space # 'it'
+29 idx=76 sep=space # 'in'
+30 idx=14 sep=space # 'the'
+31 idx=1764 sep=period # 'muck'

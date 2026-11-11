@@ -1,0 +1,28 @@
+# rec 453 | ptr=0x03F4A len=44 type=5 | entries=22
+# rendered: "Thanks so much. You have worked a miracle -- we've been trying to get this lens for over a year. "
+# $136FC skips array[0] and renders array[1..22], inclusive of the read-past entry
+# (read-past entry: rec 454 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1816 sep=space # 'detail!'
+1 idx=506 sep=space # 'Thanks'
+2 idx=688 sep=space # 'so'
+3 idx=777 sep=period # 'much'
+4 idx=4 sep=space # ' '
+5 idx=8 sep=space # 'You'
+6 idx=161 sep=space # 'have'
+7 idx=1817 sep=space # 'worked'
+8 idx=42 sep=space # 'a'
+9 idx=1818 sep=space # 'miracle'
+10 idx=97 sep=space # '--'
+11 idx=1819 sep=space # "we've"
+12 idx=594 sep=space # 'been'
+13 idx=603 sep=space # 'trying'
+14 idx=103 sep=space # 'to'
+15 idx=678 sep=space # 'get'
+16 idx=104 sep=space # 'this'
+17 idx=1776 sep=space # 'lens'
+18 idx=185 sep=space # 'for'
+19 idx=163 sep=space # 'over'
+20 idx=42 sep=space # 'a'
+21 idx=1263 sep=period # 'year'

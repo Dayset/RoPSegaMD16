@@ -1,0 +1,38 @@
+# rec 387 | ptr=0x033B0 len=64 type=5 | entries=32
+# rendered: "Sorry, you can't go in there, King's orders. But if you donate all your money to the Doggon Throne I'll let you in. What do you say? "
+# $136FC skips array[0] and renders array[1..32], inclusive of the read-past entry
+# (read-past entry: rec 388 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=476 sep=comma # 'Sorry'
+2 idx=4 sep=space # ' '
+3 idx=12 sep=space # 'you'
+4 idx=562 sep=space # "can't"
+5 idx=659 sep=space # 'go'
+6 idx=76 sep=space # 'in'
+7 idx=173 sep=comma # 'there'
+8 idx=4 sep=space # ' '
+9 idx=1635 sep=space # "King's"
+10 idx=1500 sep=period # 'orders'
+11 idx=4 sep=space # ' '
+12 idx=964 sep=space # 'But'
+13 idx=623 sep=space # 'if'
+14 idx=12 sep=space # 'you'
+15 idx=1636 sep=space # 'donate'
+16 idx=373 sep=space # 'all'
+17 idx=101 sep=space # 'your'
+18 idx=1189 sep=space # 'money'
+19 idx=103 sep=space # 'to'
+20 idx=14 sep=space # 'the'
+21 idx=153 sep=space # 'Doggon'
+22 idx=1637 sep=space # 'Throne'
+23 idx=479 sep=space # "I'll"
+24 idx=1098 sep=space # 'let'
+25 idx=12 sep=space # 'you'
+26 idx=76 sep=period # 'in'
+27 idx=4 sep=space # ' '
+28 idx=654 sep=space # 'What'
+29 idx=461 sep=space # 'do'
+30 idx=12 sep=space # 'you'
+31 idx=513 sep=question # 'say'

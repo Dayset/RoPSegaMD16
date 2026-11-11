@@ -1,0 +1,40 @@
+# rec 302 | ptr=0x025CC len=68 type=5 | entries=34
+# rendered: "I have a hot date for tonight's seance, so if you could get the corpse out of the lab upstairs and bring it to old Tsalami's grave, I'd really appreciate it. "
+# $136FC skips array[0] and renders array[1..34], inclusive of the read-past entry
+# (read-past entry: rec 303 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=161 sep=space # 'have'
+3 idx=42 sep=space # 'a'
+4 idx=1126 sep=space # 'hot'
+5 idx=1361 sep=space # 'date'
+6 idx=185 sep=space # 'for'
+7 idx=1362 sep=space # "tonight's"
+8 idx=1363 sep=comma # 'seance'
+9 idx=4 sep=space # ' '
+10 idx=688 sep=space # 'so'
+11 idx=623 sep=space # 'if'
+12 idx=12 sep=space # 'you'
+13 idx=1181 sep=space # 'could'
+14 idx=678 sep=space # 'get'
+15 idx=14 sep=space # 'the'
+16 idx=1364 sep=space # 'corpse'
+17 idx=251 sep=space # 'out'
+18 idx=13 sep=space # 'of'
+19 idx=14 sep=space # 'the'
+20 idx=1365 sep=space # 'lab'
+21 idx=1112 sep=space # 'upstairs'
+22 idx=20 sep=space # 'and'
+23 idx=941 sep=space # 'bring'
+24 idx=114 sep=space # 'it'
+25 idx=103 sep=space # 'to'
+26 idx=1171 sep=space # 'old'
+27 idx=1366 sep=space # "Tsalami's"
+28 idx=1367 sep=comma # 'grave'
+29 idx=4 sep=space # ' '
+30 idx=901 sep=space # "I'd"
+31 idx=543 sep=space # 'really'
+32 idx=1368 sep=space # 'appreciate'
+33 idx=114 sep=period # 'it'

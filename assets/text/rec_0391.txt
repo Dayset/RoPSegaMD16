@@ -1,0 +1,32 @@
+# rec 391 | ptr=0x03424 len=52 type=5 | entries=26
+# rendered: "I don't talk to plebs like you. If you have completed a quest for me I might give you a momment of my time. "
+# $136FC skips array[0] and renders array[1..26], inclusive of the read-past entry
+# (read-past entry: rec 392 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1643 sep=space # 'permission!'
+1 idx=459 sep=space # 'I'
+2 idx=471 sep=space # "don't"
+3 idx=563 sep=space # 'talk'
+4 idx=103 sep=space # 'to'
+5 idx=1644 sep=space # 'plebs'
+6 idx=589 sep=space # 'like'
+7 idx=12 sep=period # 'you'
+8 idx=4 sep=space # ' '
+9 idx=937 sep=space # 'If'
+10 idx=12 sep=space # 'you'
+11 idx=161 sep=space # 'have'
+12 idx=1645 sep=space # 'completed'
+13 idx=42 sep=space # 'a'
+14 idx=1134 sep=space # 'quest'
+15 idx=185 sep=space # 'for'
+16 idx=494 sep=space # 'me'
+17 idx=459 sep=space # 'I'
+18 idx=1104 sep=space # 'might'
+19 idx=938 sep=space # 'give'
+20 idx=12 sep=space # 'you'
+21 idx=42 sep=space # 'a'
+22 idx=1646 sep=space # 'momment'
+23 idx=13 sep=space # 'of'
+24 idx=484 sep=space # 'my'
+25 idx=485 sep=period # 'time'

@@ -1,0 +1,39 @@
+# rec 497 | ptr=0x046EE len=66 type=5 | entries=33
+# rendered: "So you want to see our show? Please, sit down! Wait a sec, hold on to this false mustache of mine. I don't need it for this play. "
+# $136FC skips array[0] and renders array[1..33], inclusive of the read-past entry
+# (read-past entry: rec 498 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1202 sep=space # 'So'
+2 idx=12 sep=space # 'you'
+3 idx=474 sep=space # 'want'
+4 idx=103 sep=space # 'to'
+5 idx=906 sep=space # 'see'
+6 idx=355 sep=space # 'our'
+7 idx=878 sep=question # 'show'
+8 idx=4 sep=space # ' '
+9 idx=511 sep=comma # 'Please'
+10 idx=4 sep=space # ' '
+11 idx=848 sep=space # 'sit'
+12 idx=1965 sep=space # 'down!'
+13 idx=1749 sep=space # 'Wait'
+14 idx=42 sep=space # 'a'
+15 idx=1966 sep=comma # 'sec'
+16 idx=4 sep=space # ' '
+17 idx=1967 sep=space # 'hold'
+18 idx=82 sep=space # 'on'
+19 idx=103 sep=space # 'to'
+20 idx=104 sep=space # 'this'
+21 idx=1953 sep=space # 'false'
+22 idx=1950 sep=space # 'mustache'
+23 idx=13 sep=space # 'of'
+24 idx=1968 sep=period # 'mine'
+25 idx=4 sep=space # ' '
+26 idx=459 sep=space # 'I'
+27 idx=471 sep=space # "don't"
+28 idx=648 sep=space # 'need'
+29 idx=114 sep=space # 'it'
+30 idx=185 sep=space # 'for'
+31 idx=104 sep=space # 'this'
+32 idx=1493 sep=period # 'play'

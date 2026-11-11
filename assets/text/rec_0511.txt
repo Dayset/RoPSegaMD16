@@ -1,0 +1,14 @@
+# rec 511 | ptr=0x04926 len=16 type=5 | entries=8
+# rendered: 'Halt intruder, you are not welcome here! '
+# $136FC skips array[0] and renders array[1..8], inclusive of the read-past entry
+# (read-past entry: rec 512 array[0], idx=1588 sep=space 'here!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2013 sep=space # 'thief!'
+1 idx=2014 sep=space # 'Halt'
+2 idx=2015 sep=comma # 'intruder'
+3 idx=4 sep=space # ' '
+4 idx=12 sep=space # 'you'
+5 idx=207 sep=space # 'are'
+6 idx=452 sep=space # 'not'
+7 idx=381 sep=space # 'welcome'

@@ -1,0 +1,26 @@
+# rec 327 | ptr=0x02A0A len=40 type=5 | entries=20
+# rendered: "Go and tell Xylotyl I'm back to normal. He's on top of the Tower of Kaos every night. "
+# $136FC skips array[0] and renders array[1..20], inclusive of the read-past entry
+# (read-past entry: rec 328 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1458 sep=space # 'Rauchous!'
+1 idx=831 sep=space # 'Go'
+2 idx=20 sep=space # 'and'
+3 idx=637 sep=space # 'tell'
+4 idx=1066 sep=space # 'Xylotyl'
+5 idx=469 sep=space # "I'm"
+6 idx=857 sep=space # 'back'
+7 idx=103 sep=space # 'to'
+8 idx=855 sep=period # 'normal'
+9 idx=4 sep=space # ' '
+10 idx=1459 sep=space # "He's"
+11 idx=82 sep=space # 'on'
+12 idx=1460 sep=space # 'top'
+13 idx=13 sep=space # 'of'
+14 idx=14 sep=space # 'the'
+15 idx=111 sep=space # 'Tower'
+16 idx=13 sep=space # 'of'
+17 idx=112 sep=space # 'Kaos'
+18 idx=358 sep=space # 'every'
+19 idx=592 sep=period # 'night'

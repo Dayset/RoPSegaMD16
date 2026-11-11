@@ -1,0 +1,30 @@
+# rec 588 | ptr=0x0569E len=48 type=5 | entries=24
+# rendered: "I've heard that a mutated object or person must be shown the image of its  original form in order to be restored. "
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 589 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2235 sep=space # 'beware!"'
+1 idx=1866 sep=space # "I've"
+2 idx=627 sep=space # 'heard'
+3 idx=191 sep=space # 'that'
+4 idx=42 sep=space # 'a'
+5 idx=2236 sep=space # 'mutated'
+6 idx=997 sep=space # 'object'
+7 idx=677 sep=space # 'or'
+8 idx=2237 sep=space # 'person'
+9 idx=464 sep=space # 'must'
+10 idx=395 sep=space # 'be'
+11 idx=1525 sep=space # 'shown'
+12 idx=14 sep=space # 'the'
+13 idx=1452 sep=space # 'image'
+14 idx=13 sep=space # 'of'
+15 idx=199 sep=space # 'its'
+16 idx=4 sep=space # ' '
+17 idx=2238 sep=space # 'original'
+18 idx=766 sep=space # 'form'
+19 idx=76 sep=space # 'in'
+20 idx=1423 sep=space # 'order'
+21 idx=103 sep=space # 'to'
+22 idx=395 sep=space # 'be'
+23 idx=2239 sep=period # 'restored'

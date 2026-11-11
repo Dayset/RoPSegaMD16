@@ -1,0 +1,25 @@
+# rec 462 | ptr=0x040B0 len=38 type=5 | entries=19
+# rendered: 'It seems that the Ring was real after all. Old Richi had it on him all the time! '
+# $136FC skips array[0] and renders array[1..19], inclusive of the read-past entry
+# (read-past entry: rec 463 array[0], idx=1852 sep=space 'time!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1588 sep=space # 'here!'
+1 idx=142 sep=space # 'It'
+2 idx=1851 sep=space # 'seems'
+3 idx=191 sep=space # 'that'
+4 idx=14 sep=space # 'the'
+5 idx=1247 sep=space # 'Ring'
+6 idx=143 sep=space # 'was'
+7 idx=1805 sep=space # 'real'
+8 idx=180 sep=space # 'after'
+9 idx=373 sep=period # 'all'
+10 idx=4 sep=space # ' '
+11 idx=1406 sep=space # 'Old'
+12 idx=170 sep=space # 'Richi'
+13 idx=558 sep=space # 'had'
+14 idx=114 sep=space # 'it'
+15 idx=82 sep=space # 'on'
+16 idx=933 sep=space # 'him'
+17 idx=373 sep=space # 'all'
+18 idx=14 sep=space # 'the'

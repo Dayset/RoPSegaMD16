@@ -1,0 +1,31 @@
+# rec 465 | ptr=0x04136 len=50 type=5 | entries=25
+# rendered: 'I am the master blower here. I supervise all the work that goes on here. We make the finest crystal in the world! '
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 466 array[0], idx=1856 sep=space 'world!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1856 sep=space # 'world!'
+1 idx=459 sep=space # 'I'
+2 idx=495 sep=space # 'am'
+3 idx=14 sep=space # 'the'
+4 idx=52 sep=space # 'master'
+5 idx=1854 sep=space # 'blower'
+6 idx=68 sep=period # 'here'
+7 idx=4 sep=space # ' '
+8 idx=459 sep=space # 'I'
+9 idx=1855 sep=space # 'supervise'
+10 idx=373 sep=space # 'all'
+11 idx=14 sep=space # 'the'
+12 idx=1327 sep=space # 'work'
+13 idx=191 sep=space # 'that'
+14 idx=574 sep=space # 'goes'
+15 idx=82 sep=space # 'on'
+16 idx=68 sep=period # 'here'
+17 idx=4 sep=space # ' '
+18 idx=577 sep=space # 'We'
+19 idx=732 sep=space # 'make'
+20 idx=14 sep=space # 'the'
+21 idx=204 sep=space # 'finest'
+22 idx=263 sep=space # 'crystal'
+23 idx=76 sep=space # 'in'
+24 idx=14 sep=space # 'the'

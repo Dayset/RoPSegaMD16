@@ -1,0 +1,27 @@
+# rec 503 | ptr=0x04802 len=42 type=5 | entries=21
+# rendered: 'That will teach you not to trespass in the tower of the Great Enchanter Tutu! Now rot forever in my cell! '
+# $136FC skips array[0] and renders array[1..21], inclusive of the read-past entry
+# (read-past entry: rec 504 array[0], idx=1992 sep=space 'cell!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1986 sep=space # 'FREEZE!'
+1 idx=1987 sep=space # 'That'
+2 idx=394 sep=space # 'will'
+3 idx=1988 sep=space # 'teach'
+4 idx=12 sep=space # 'you'
+5 idx=452 sep=space # 'not'
+6 idx=103 sep=space # 'to'
+7 idx=1989 sep=space # 'trespass'
+8 idx=76 sep=space # 'in'
+9 idx=14 sep=space # 'the'
+10 idx=264 sep=space # 'tower'
+11 idx=13 sep=space # 'of'
+12 idx=14 sep=space # 'the'
+13 idx=140 sep=space # 'Great'
+14 idx=1153 sep=space # 'Enchanter'
+15 idx=1990 sep=space # 'Tutu!'
+16 idx=841 sep=space # 'Now'
+17 idx=1991 sep=space # 'rot'
+18 idx=530 sep=space # 'forever'
+19 idx=76 sep=space # 'in'
+20 idx=484 sep=space # 'my'

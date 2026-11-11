@@ -1,0 +1,40 @@
+# rec 522 | ptr=0x04B26 len=68 type=5 | entries=34
+# rendered: "My friends and I had a treasure map, but it was lost. If you find it and give it to me I'll tell you where the lost Sorcerer can be found. "
+# $136FC skips array[0] and renders array[1..34], inclusive of the read-past entry
+# (read-past entry: rec 523 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1235 sep=space # 'My'
+2 idx=1065 sep=space # 'friends'
+3 idx=20 sep=space # 'and'
+4 idx=459 sep=space # 'I'
+5 idx=558 sep=space # 'had'
+6 idx=42 sep=space # 'a'
+7 idx=2043 sep=space # 'treasure'
+8 idx=920 sep=comma # 'map'
+9 idx=4 sep=space # ' '
+10 idx=175 sep=space # 'but'
+11 idx=114 sep=space # 'it'
+12 idx=143 sep=space # 'was'
+13 idx=800 sep=period # 'lost'
+14 idx=4 sep=space # ' '
+15 idx=937 sep=space # 'If'
+16 idx=12 sep=space # 'you'
+17 idx=451 sep=space # 'find'
+18 idx=114 sep=space # 'it'
+19 idx=20 sep=space # 'and'
+20 idx=938 sep=space # 'give'
+21 idx=114 sep=space # 'it'
+22 idx=103 sep=space # 'to'
+23 idx=494 sep=space # 'me'
+24 idx=479 sep=space # "I'll"
+25 idx=637 sep=space # 'tell'
+26 idx=12 sep=space # 'you'
+27 idx=146 sep=space # 'where'
+28 idx=14 sep=space # 'the'
+29 idx=800 sep=space # 'lost'
+30 idx=549 sep=space # 'Sorcerer'
+31 idx=460 sep=space # 'can'
+32 idx=395 sep=space # 'be'
+33 idx=396 sep=period # 'found'

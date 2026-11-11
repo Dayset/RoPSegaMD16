@@ -1,0 +1,22 @@
+# rec 495 | ptr=0x046BC len=32 type=5 | entries=16
+# rendered: 'Welcome to our humble theatre. I hope you will stay for our little show. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 496 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1961 sep=space # 'know!'
+1 idx=322 sep=space # 'Welcome'
+2 idx=103 sep=space # 'to'
+3 idx=355 sep=space # 'our'
+4 idx=1824 sep=space # 'humble'
+5 idx=1962 sep=period # 'theatre'
+6 idx=4 sep=space # ' '
+7 idx=459 sep=space # 'I'
+8 idx=895 sep=space # 'hope'
+9 idx=12 sep=space # 'you'
+10 idx=394 sep=space # 'will'
+11 idx=676 sep=space # 'stay'
+12 idx=185 sep=space # 'for'
+13 idx=355 sep=space # 'our'
+14 idx=31 sep=space # 'little'
+15 idx=878 sep=period # 'show'

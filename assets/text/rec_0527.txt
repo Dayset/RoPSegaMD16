@@ -1,0 +1,40 @@
+# rec 527 | ptr=0x04BEC len=68 type=5 | entries=34
+# rendered: "My friend in Oxbridge lost my Orb. If you return it to me I'll give you the Intuition Key. This will aide you on your quest for the Ring of Intuition. "
+# $136FC skips array[0] and renders array[1..34], inclusive of the read-past entry
+# (read-past entry: rec 528 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2054 sep=space # 'Sesame!'
+1 idx=1235 sep=space # 'My'
+2 idx=825 sep=space # 'friend'
+3 idx=76 sep=space # 'in'
+4 idx=197 sep=space # 'Oxbridge'
+5 idx=800 sep=space # 'lost'
+6 idx=484 sep=space # 'my'
+7 idx=2055 sep=period # 'Orb'
+8 idx=4 sep=space # ' '
+9 idx=937 sep=space # 'If'
+10 idx=12 sep=space # 'you'
+11 idx=1557 sep=space # 'return'
+12 idx=114 sep=space # 'it'
+13 idx=103 sep=space # 'to'
+14 idx=494 sep=space # 'me'
+15 idx=479 sep=space # "I'll"
+16 idx=938 sep=space # 'give'
+17 idx=12 sep=space # 'you'
+18 idx=14 sep=space # 'the'
+19 idx=2017 sep=space # 'Intuition'
+20 idx=1564 sep=period # 'Key'
+21 idx=4 sep=space # ' '
+22 idx=84 sep=space # 'This'
+23 idx=394 sep=space # 'will'
+24 idx=2056 sep=space # 'aide'
+25 idx=12 sep=space # 'you'
+26 idx=82 sep=space # 'on'
+27 idx=101 sep=space # 'your'
+28 idx=1134 sep=space # 'quest'
+29 idx=185 sep=space # 'for'
+30 idx=14 sep=space # 'the'
+31 idx=1247 sep=space # 'Ring'
+32 idx=13 sep=space # 'of'
+33 idx=2017 sep=period # 'Intuition'

@@ -1,0 +1,38 @@
+# rec 582 | ptr=0x05590 len=64 type=5 | entries=32
+# rendered: "We protect people who hold contracts with us. We have a honey shortage of late. If you've got a honey comb, I'll gladly give you a contract.  "
+# $136FC skips array[0] and renders array[1..32], inclusive of the read-past entry
+# (read-past entry: rec 583 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=577 sep=space # 'We'
+2 idx=2221 sep=space # 'protect'
+3 idx=38 sep=space # 'people'
+4 idx=399 sep=space # 'who'
+5 idx=1967 sep=space # 'hold'
+6 idx=2222 sep=space # 'contracts'
+7 idx=41 sep=space # 'with'
+8 idx=534 sep=period # 'us'
+9 idx=4 sep=space # ' '
+10 idx=577 sep=space # 'We'
+11 idx=161 sep=space # 'have'
+12 idx=42 sep=space # 'a'
+13 idx=2193 sep=space # 'honey'
+14 idx=2223 sep=space # 'shortage'
+15 idx=13 sep=space # 'of'
+16 idx=571 sep=period # 'late'
+17 idx=4 sep=space # ' '
+18 idx=937 sep=space # 'If'
+19 idx=626 sep=space # "you've"
+20 idx=893 sep=space # 'got'
+21 idx=42 sep=space # 'a'
+22 idx=2193 sep=space # 'honey'
+23 idx=2224 sep=comma # 'comb'
+24 idx=4 sep=space # ' '
+25 idx=479 sep=space # "I'll"
+26 idx=2225 sep=space # 'gladly'
+27 idx=938 sep=space # 'give'
+28 idx=12 sep=space # 'you'
+29 idx=42 sep=space # 'a'
+30 idx=2209 sep=period # 'contract'
+31 idx=4 sep=space # ' '

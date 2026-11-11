@@ -1,0 +1,20 @@
+# rec 410 | ptr=0x03744 len=28 type=5 | entries=14
+# rendered: "I think it's called Division -- I'm still a little foggy... "
+# $136FC skips array[0] and renders array[1..14], inclusive of the read-past entry
+# (read-past entry: rec 411 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=1260 sep=space # 'think'
+3 idx=1256 sep=space # "it's"
+4 idx=715 sep=space # 'called'
+5 idx=329 sep=space # 'Division'
+6 idx=97 sep=space # '--'
+7 idx=469 sep=space # "I'm"
+8 idx=845 sep=space # 'still'
+9 idx=42 sep=space # 'a'
+10 idx=31 sep=space # 'little'
+11 idx=1697 sep=period # 'foggy'
+12 idx=631 sep=period # '.'
+13 idx=631 sep=period # '.'

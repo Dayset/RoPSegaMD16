@@ -1,0 +1,17 @@
+# rec 509 | ptr=0x0490C len=22 type=5 | entries=11
+# rendered: 'RANDOMNESS is "S to wall, W to wall, NNENNNWW" '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 510 array[0], idx=2012 sep=space 'NNENNNWW"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2009 sep=space # 'SSEEE"'
+1 idx=2010 sep=space # 'RANDOMNESS'
+2 idx=57 sep=space # 'is'
+3 idx=2011 sep=space # '"S'
+4 idx=103 sep=space # 'to'
+5 idx=1305 sep=comma # 'wall'
+6 idx=4 sep=space # ' '
+7 idx=2008 sep=space # 'W'
+8 idx=103 sep=space # 'to'
+9 idx=1305 sep=comma # 'wall'
+10 idx=4 sep=space # ' '
