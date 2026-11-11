@@ -163,7 +163,7 @@ addr,name,tier,note
 0x0297ce,world_party_size,1,returns 6 if group arg is 0x43 else 0; party group size
 0x0297f0,world_party_count,1,counts nonzero party members via world_party_member_at; called from menu and map code
 0x029834,world_party_nth_index,1,returns index of Nth nonzero party member or -1; called from menu and map code
-0x02988E,sys_unk_02988e,0,auto: touches none
+0x02988E,world_count_members_2988e,1,static: loops arg10 slots calling world_party_member_at and returns the match count
 0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
 0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
 0x02A2CA,combat_select_unit,1,static: compares unit side at $FF02DB with current unit $FF02B2; sets $FF009A and $FF0120
