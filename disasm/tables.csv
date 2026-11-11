@@ -6,3 +6,5 @@ start,end,prefix,words_per_record
 0x0D6B6C,0x0D6E60,spell_rank_,63
 0x0D6E60,0x0D6E9C,spell_bounds_,5
 0x0DC0C2,0x0DDBD8,dict_off_,1
+0x096120,0x09638C,gfx_tile_rec_,5
+0x0B86AE,0x0B8A32,gfx_rec_,5

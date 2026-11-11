@@ -60883,15 +60883,317 @@ L05EDC4:
 L05F524:
 	; data $05F524-$09611F
 	incbin "rop-original.gen",$05F524,$36BFC
+	; table $096120-$09638B: 62 records x 5 words
+gfx_tile_rec_00:
 L096120:
-	; data $096120-$09638B
-	incbin "rop-original.gen",$096120,$26C
+	dc.w $0000,$0000,$0000,$0CE0,$0001	; table $096120
+gfx_tile_rec_01:
+	dc.w $0000,$02C9,$0000,$0320,$0001	; table $09612A
+gfx_tile_rec_02:
+	dc.w $0000,$036B,$0000,$1200,$0001	; table $096134
+gfx_tile_rec_03:
+	dc.w $0000,$0F0B,$0000,$0800,$0001	; table $09613E
+gfx_tile_rec_04:
+	dc.w $0000,$11F1,$0000,$0100,$0001	; table $096148
+gfx_tile_rec_05:
+	dc.w $0000,$12FA,$0000,$1F80,$0001	; table $096152
+gfx_tile_rec_06:
+	dc.w $0000,$2261,$0000,$36C0,$0001	; table $09615C
+gfx_tile_rec_07:
+	dc.w $0000,$43B4,$0000,$2000,$0001	; table $096166
+gfx_tile_rec_08:
+	dc.w $0000,$52E0,$0000,$1800,$0001	; table $096170
+gfx_tile_rec_09:
+	dc.w $0000,$5F81,$0000,$08C0,$0001	; table $09617A
+gfx_tile_rec_10:
+	dc.w $0000,$6448,$0000,$0800,$0001	; table $096184
+gfx_tile_rec_11:
+	dc.w $0000,$6A90,$0000,$0C00,$0001	; table $09618E
+gfx_tile_rec_12:
+	dc.w $0000,$7019,$0000,$2EC0,$0001	; table $096198
+gfx_tile_rec_13:
+	dc.w $0000,$94DB,$0000,$0280,$0001	; table $0961A2
+gfx_tile_rec_14:
+	dc.w $0000,$96BB,$0000,$0280,$0001	; table $0961AC
+gfx_tile_rec_15:
+	dc.w $0000,$97DB,$0000,$0280,$0001	; table $0961B6
+gfx_tile_rec_16:
+	dc.w $0000,$99C4,$0000,$1000,$0001	; table $0961C0
+gfx_tile_rec_17:
+	dc.w $0000,$A0D0,$0000,$0980,$0001	; table $0961CA
+gfx_tile_rec_18:
+	dc.w $0000,$A3E4,$0000,$0F00,$0001	; table $0961D4
+gfx_tile_rec_19:
+	dc.w $0000,$AD47,$0000,$03C0,$0001	; table $0961DE
+gfx_tile_rec_20:
+	dc.w $0000,$AE77,$0000,$31E0,$0001	; table $0961E8
+gfx_tile_rec_21:
+	dc.w $0000,$C44B,$0000,$06E0,$0001	; table $0961F2
+gfx_tile_rec_22:
+	dc.w $0000,$C586,$0000,$063C,$0001	; table $0961FC
+gfx_tile_rec_23:
+	dc.w $0000,$C6CF,$0000,$017A,$0001	; table $096206
+gfx_tile_rec_24:
+	dc.w $0000,$C765,$0000,$0070,$0001	; table $096210
+gfx_tile_rec_25:
+	dc.w $0000,$C7BD,$0000,$0372,$0001	; table $09621A
+gfx_tile_rec_26:
+	dc.w $0000,$C88B,$0000,$05BE,$0001	; table $096224
+gfx_tile_rec_27:
+	dc.w $0000,$C9A8,$0000,$0600,$0001	; table $09622E
+gfx_tile_rec_28:
+	dc.w $0000,$CE1B,$0000,$3000,$0001	; table $096238
+gfx_tile_rec_29:
+	dc.w $0000,$E738,$0000,$2A00,$0001	; table $096242
+gfx_tile_rec_30:
+	dc.w $0000,$FF46,$0000,$01C0,$0001	; table $09624C
+gfx_tile_rec_31:
+	dc.w $0001,$0028,$0000,$0800,$0001	; table $096256
+gfx_tile_rec_32:
+	dc.w $0001,$035A,$0000,$0839,$0001	; table $096260
+gfx_tile_rec_33:
+	dc.w $0001,$088A,$0000,$2900,$0001	; table $09626A
+gfx_tile_rec_34:
+	dc.w $0001,$2669,$0000,$2320,$0001	; table $096274
+gfx_tile_rec_35:
+	dc.w $0001,$3AB1,$0000,$08C0,$0001	; table $09627E
+gfx_tile_rec_36:
+	dc.w $0001,$3FF6,$0000,$21C0,$0001	; table $096288
+gfx_tile_rec_37:
+	dc.w $0001,$4702,$0000,$4940,$0001	; table $096292
+gfx_tile_rec_38:
+	dc.w $0001,$79AD,$0000,$1080,$0001	; table $09629C
+gfx_tile_rec_39:
+	dc.w $0001,$81B7,$0000,$0780,$0001	; table $0962A6
+gfx_tile_rec_40:
+	dc.w $0001,$87F0,$0000,$0280,$0001	; table $0962B0
+gfx_tile_rec_41:
+	dc.w $0001,$894D,$0000,$1200,$0001	; table $0962BA
+gfx_tile_rec_42:
+	dc.w $0001,$9675,$0000,$0500,$0001	; table $0962C4
+gfx_tile_rec_43:
+	dc.w $0001,$97AC,$0000,$0240,$0001	; table $0962CE
+gfx_tile_rec_44:
+	dc.w $0001,$98EC,$0000,$0070,$0001	; table $0962D8
+gfx_tile_rec_45:
+	dc.w $0001,$993D,$0000,$0380,$0001	; table $0962E2
+gfx_tile_rec_46:
+	dc.w $0001,$9B0E,$0000,$2800,$0001	; table $0962EC
+gfx_tile_rec_47:
+	dc.w $0001,$AF72,$0000,$0960,$0001	; table $0962F6
+gfx_tile_rec_48:
+	dc.w $0001,$B1C4,$0000,$063C,$0001	; table $096300
+gfx_tile_rec_49:
+	dc.w $0001,$B2A4,$0000,$017A,$0001	; table $09630A
+gfx_tile_rec_50:
+	dc.w $0001,$B2DD,$0000,$0070,$0001	; table $096314
+gfx_tile_rec_51:
+	dc.w $0001,$B2F1,$0000,$0372,$0001	; table $09631E
+gfx_tile_rec_52:
+	dc.w $0001,$B39A,$0000,$05BE,$0001	; table $096328
+gfx_tile_rec_53:
+	dc.w $0001,$B483,$0000,$4300,$0001	; table $096332
+gfx_tile_rec_54:
+	dc.w $0001,$D320,$0000,$07D0,$0001	; table $09633C
+gfx_tile_rec_55:
+	dc.w $0001,$D9B4,$0000,$0712,$0001	; table $096346
+gfx_tile_rec_56:
+	dc.w $0001,$DE4E,$0000,$2440,$0001	; table $096350
+gfx_tile_rec_57:
+	dc.w $0001,$F7A7,$0000,$046E,$0001	; table $09635A
+gfx_tile_rec_58:
+	dc.w $0001,$FA80,$0000,$0A20,$0001	; table $096364
+gfx_tile_rec_59:
+	dc.w $0001,$FE95,$0000,$0636,$0001	; table $09636E
+gfx_tile_rec_60:
+	dc.w $0002,$02E0,$0000,$2E00,$0001	; table $096378
+gfx_tile_rec_61:
+	dc.w $0002,$2015,$0000,$04A4,$0001	; table $096382
 L09638C:
 	; data $09638C-$0B86AD
 	incbin "rop-original.gen",$09638C,$22322
+	; table $0B86AE-$0B8A31: 90 records x 5 words
+gfx_rec_00:
 L0B86AE:
-	; data $0B86AE-$0B8A31
-	incbin "rop-original.gen",$0B86AE,$384
+	dc.w $0000,$0000,$0000,$04A0,$0001	; table $0B86AE
+gfx_rec_01:
+	dc.w $0000,$0382,$0000,$04A0,$0001	; table $0B86B8
+gfx_rec_02:
+	dc.w $0000,$07A0,$0000,$04A0,$0001	; table $0B86C2
+gfx_rec_03:
+	dc.w $0000,$0C92,$0000,$04A0,$0001	; table $0B86CC
+gfx_rec_04:
+	dc.w $0000,$1164,$0000,$04A0,$0001	; table $0B86D6
+gfx_rec_05:
+	dc.w $0000,$1554,$0000,$04A0,$0001	; table $0B86E0
+gfx_rec_06:
+	dc.w $0000,$1A2F,$0000,$04A0,$0001	; table $0B86EA
+gfx_rec_07:
+	dc.w $0000,$1E33,$0000,$04A0,$0001	; table $0B86F4
+gfx_rec_08:
+	dc.w $0000,$2246,$0000,$04A0,$0001	; table $0B86FE
+gfx_rec_09:
+	dc.w $0000,$25A1,$0000,$04A0,$0001	; table $0B8708
+gfx_rec_10:
+	dc.w $0000,$29D9,$0000,$04A0,$0001	; table $0B8712
+gfx_rec_11:
+	dc.w $0000,$2E1F,$0000,$04A0,$0001	; table $0B871C
+gfx_rec_12:
+	dc.w $0000,$313E,$0000,$04A0,$0001	; table $0B8726
+gfx_rec_13:
+	dc.w $0000,$350A,$0000,$04A0,$0001	; table $0B8730
+gfx_rec_14:
+	dc.w $0000,$38B4,$0000,$04A0,$0001	; table $0B873A
+gfx_rec_15:
+	dc.w $0000,$3C89,$0000,$04A0,$0001	; table $0B8744
+gfx_rec_16:
+	dc.w $0000,$4009,$0000,$04A0,$0001	; table $0B874E
+gfx_rec_17:
+	dc.w $0000,$42B1,$0000,$04A0,$0001	; table $0B8758
+gfx_rec_18:
+	dc.w $0000,$46CE,$0000,$04A0,$0001	; table $0B8762
+gfx_rec_19:
+	dc.w $0000,$4A6F,$0000,$04A0,$0001	; table $0B876C
+gfx_rec_20:
+	dc.w $0000,$4E4C,$0000,$04A0,$0001	; table $0B8776
+gfx_rec_21:
+	dc.w $0000,$52BA,$0000,$04A0,$0001	; table $0B8780
+gfx_rec_22:
+	dc.w $0000,$56EE,$0000,$04A0,$0001	; table $0B878A
+gfx_rec_23:
+	dc.w $0000,$5B6E,$0000,$04A0,$0001	; table $0B8794
+gfx_rec_24:
+	dc.w $0000,$5F92,$0000,$04A0,$0001	; table $0B879E
+gfx_rec_25:
+	dc.w $0000,$6388,$0000,$04A0,$0001	; table $0B87A8
+gfx_rec_26:
+	dc.w $0000,$670D,$0000,$04A0,$0001	; table $0B87B2
+gfx_rec_27:
+	dc.w $0000,$6B08,$0000,$04A0,$0001	; table $0B87BC
+gfx_rec_28:
+	dc.w $0000,$6E9F,$0000,$04A0,$0001	; table $0B87C6
+gfx_rec_29:
+	dc.w $0000,$715C,$0000,$04A0,$0001	; table $0B87D0
+gfx_rec_30:
+	dc.w $0000,$751D,$0000,$04A0,$0001	; table $0B87DA
+gfx_rec_31:
+	dc.w $0000,$78CD,$0000,$04A0,$0001	; table $0B87E4
+gfx_rec_32:
+	dc.w $0000,$7C8D,$0000,$04A0,$0001	; table $0B87EE
+gfx_rec_33:
+	dc.w $0000,$805D,$0000,$04A0,$0001	; table $0B87F8
+gfx_rec_34:
+	dc.w $0000,$84C6,$0000,$04A0,$0001	; table $0B8802
+gfx_rec_35:
+	dc.w $0000,$8558,$0000,$04A0,$0001	; table $0B880C
+gfx_rec_36:
+	dc.w $0000,$8930,$0000,$04A0,$0001	; table $0B8816
+gfx_rec_37:
+	dc.w $0000,$8D70,$0000,$04A0,$0001	; table $0B8820
+gfx_rec_38:
+	dc.w $0000,$90CA,$0000,$04A0,$0001	; table $0B882A
+gfx_rec_39:
+	dc.w $0000,$9583,$0000,$04A0,$0001	; table $0B8834
+gfx_rec_40:
+	dc.w $0000,$9A1A,$0000,$04A0,$0001	; table $0B883E
+gfx_rec_41:
+	dc.w $0000,$9EFC,$0000,$04A0,$0001	; table $0B8848
+gfx_rec_42:
+	dc.w $0000,$A286,$0000,$04A0,$0001	; table $0B8852
+gfx_rec_43:
+	dc.w $0000,$A75A,$0000,$04A0,$0001	; table $0B885C
+gfx_rec_44:
+	dc.w $0000,$ABEF,$0000,$04A0,$0001	; table $0B8866
+gfx_rec_45:
+	dc.w $0000,$B054,$0000,$04A0,$0001	; table $0B8870
+gfx_rec_46:
+	dc.w $0000,$B460,$0000,$04A0,$0001	; table $0B887A
+gfx_rec_47:
+	dc.w $0000,$B77A,$0000,$04A0,$0001	; table $0B8884
+gfx_rec_48:
+	dc.w $0000,$BB92,$0000,$04A0,$0001	; table $0B888E
+gfx_rec_49:
+	dc.w $0000,$C00B,$0000,$04A0,$0001	; table $0B8898
+gfx_rec_50:
+	dc.w $0000,$C4B5,$0000,$04A0,$0001	; table $0B88A2
+gfx_rec_51:
+	dc.w $0000,$C8ED,$0000,$04A0,$0001	; table $0B88AC
+gfx_rec_52:
+	dc.w $0000,$CDE6,$0000,$04A0,$0001	; table $0B88B6
+gfx_rec_53:
+	dc.w $0000,$CE78,$0000,$04A0,$0001	; table $0B88C0
+gfx_rec_54:
+	dc.w $0000,$CF0A,$0000,$04A0,$0001	; table $0B88CA
+gfx_rec_55:
+	dc.w $0000,$D355,$0000,$04A0,$0001	; table $0B88D4
+gfx_rec_56:
+	dc.w $0000,$D755,$0000,$04A0,$0001	; table $0B88DE
+gfx_rec_57:
+	dc.w $0000,$DC34,$0000,$04A0,$0001	; table $0B88E8
+gfx_rec_58:
+	dc.w $0000,$DCC6,$0000,$04A0,$0001	; table $0B88F2
+gfx_rec_59:
+	dc.w $0000,$E154,$0000,$04A0,$0001	; table $0B88FC
+gfx_rec_60:
+	dc.w $0000,$E1E6,$0000,$04A0,$0001	; table $0B8906
+gfx_rec_61:
+	dc.w $0000,$E278,$0000,$04A0,$0001	; table $0B8910
+gfx_rec_62:
+	dc.w $0000,$E543,$0000,$04A0,$0001	; table $0B891A
+gfx_rec_63:
+	dc.w $0000,$E9EB,$0000,$04A0,$0001	; table $0B8924
+gfx_rec_64:
+	dc.w $0000,$EDD9,$0000,$04A0,$0001	; table $0B892E
+gfx_rec_65:
+	dc.w $0000,$F200,$0000,$04A0,$0001	; table $0B8938
+gfx_rec_66:
+	dc.w $0000,$F5D5,$0000,$04A0,$0001	; table $0B8942
+gfx_rec_67:
+	dc.w $0000,$F944,$0000,$04A0,$0001	; table $0B894C
+gfx_rec_68:
+	dc.w $0000,$FBD1,$0000,$04A0,$0001	; table $0B8956
+gfx_rec_69:
+	dc.w $0000,$FF01,$0000,$04A0,$0001	; table $0B8960
+gfx_rec_70:
+	dc.w $0001,$038A,$0000,$04A0,$0001	; table $0B896A
+gfx_rec_71:
+	dc.w $0001,$041C,$0000,$04A0,$0001	; table $0B8974
+gfx_rec_72:
+	dc.w $0001,$0811,$0000,$04A0,$0001	; table $0B897E
+gfx_rec_73:
+	dc.w $0001,$0BA4,$0000,$04A0,$0001	; table $0B8988
+gfx_rec_74:
+	dc.w $0001,$108C,$0000,$04A0,$0001	; table $0B8992
+gfx_rec_75:
+	dc.w $0001,$14D4,$0000,$04A0,$0001	; table $0B899C
+gfx_rec_76:
+	dc.w $0001,$184A,$0000,$04A0,$0001	; table $0B89A6
+gfx_rec_77:
+	dc.w $0001,$1BDE,$0000,$04A0,$0001	; table $0B89B0
+gfx_rec_78:
+	dc.w $0001,$2036,$0000,$04A0,$0001	; table $0B89BA
+gfx_rec_79:
+	dc.w $0001,$2470,$0000,$04A0,$0001	; table $0B89C4
+gfx_rec_80:
+	dc.w $0001,$2556,$0000,$04A0,$0001	; table $0B89CE
+gfx_rec_81:
+	dc.w $0001,$263C,$0000,$04A0,$0001	; table $0B89D8
+gfx_rec_82:
+	dc.w $0001,$28B2,$0000,$04A0,$0001	; table $0B89E2
+gfx_rec_83:
+	dc.w $0001,$2944,$0000,$04A0,$0001	; table $0B89EC
+gfx_rec_84:
+	dc.w $0001,$2CB4,$0000,$04A0,$0001	; table $0B89F6
+gfx_rec_85:
+	dc.w $0001,$303A,$0000,$04A0,$0001	; table $0B8A00
+gfx_rec_86:
+	dc.w $0001,$3356,$0000,$04A0,$0001	; table $0B8A0A
+gfx_rec_87:
+	dc.w $0001,$3720,$0000,$04A0,$0001	; table $0B8A14
+gfx_rec_88:
+	dc.w $0001,$38C4,$0000,$04A0,$0001	; table $0B8A1E
+gfx_rec_89:
+	dc.w $0001,$3D2F,$0000,$04A0,$0001	; table $0B8A28
 L0B8A32:
 	; data $0B8A32-$0CC9D7
 	incbin "rop-original.gen",$0B8A32,$13FA6
