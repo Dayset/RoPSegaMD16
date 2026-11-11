@@ -672,9 +672,27 @@ disassembly; its H-scroll write is verified live in §7.2.
 - **Tile bases `$FF8674` / `$FF8678`:** `$FF8678` is RESOLVED
   2026-11-11 — it is the `gfx_dma_tile_upload` return (the old VRAM
   cursor = the base tile index), copied from `$FF867C` at `$012DC0`.
-  `$FF8674` is the same mechanism (a `gfx_dma_tile_upload` return
-  stored at `$012D7E` in `$12C20`); the `$1B918` DMA path that
-  consumes it was not re-traced.
+  `$FF8674` is RESOLVED 2026-11-11 — it is the VRAM tile-index base
+  of the software-rendered room (36×23 = 828 tiles), reserved by
+  `sys_counter_add($33C)` at `$012D7E` in `world_map_draw`
+  (`$12C20`): the same `$FF0076` allocator the upload returns draw
+  from, but allocate-only (no upload attached). In the standard
+  scene setup its value is `$38E` (counter starts at `$134` at
+  `$012D00`; font 103 + rec 1: 25 + rec 6: 438 + `$24` reserve).
+  Its `$1B918` consumer is `redraw_check`: when `$FF0098` is set
+  it re-renders the room into `$FF1EC0` via `map_chunk_pos`
+  (`$1B950`) and DMA-uploads `$FF1EC0 → VRAM $FF8674×32`
+  (`$33C0` words) at `$01B9E8`; the same upload runs once at scene
+  setup (`$012EB4`). The room name table is drawn into the window
+  plane (VRAM `$1000`, rows 0–22, cols 2–37) by
+  `gfx_tilemap_draw` with base `$FF8674` (23 rows × 36 cols,
+  `$012E50`; re-drawn by `world_map_redraw`, `$0162FE`). The panel
+  routines repaint bands of the same grid via
+  `gfx_tilemap_fill_seq`: `gfx_fill_panel_plain` rows 0–11,
+  `gfx_fill_panel_flagged` rows 12–17, `text_event_message` rows
+  20–22. `$FF8674` (window-plane room render, `$38E`) and
+  `$FF8678` (Plane A scrolling-map tileset, `$72A`) are two
+  different tile regions, not a duplicate.
 - **R18=`$94` window position** (0x1297C, inside `$123B0`):
   window down, V position 20 — the intro's window placement.
   Role not traced.
