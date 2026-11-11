@@ -404,31 +404,33 @@ changes). The `+0x06` field's meaning (character type? party role?) is
 
 At `$1DC90` (location-arrival handler): the song index is the low nibble of
 the byte at `$D63E7 + location_id*4` (stride 4; the other 3 bytes per record
-are other location fields). Full dump of records 0–151 (verified by reading
-the ROM table; earlier drafts only checked 0–63 and had one error):
+are other location fields). Full dump of records 0–174 (verified by reading
+the ROM table; earlier drafts only checked 0–63 and had one error; records
+152–174 added 2026-11-11):
 
-| Song | Location ids (0–151) | Count |
+| Song | Location ids (0–174) | Count |
 |---|---|---|
 | 2 | 0–11, 13–19, 21–31, 38, 42, 57, 121, 132 | 35 |
-| 11 | 54, 68, 89, 93, 94, 99–101, 105–110, 133–136, 144–146 | 21 |
-| 7 | 66, 83–87, 90, 113–115, 122–125 | 14 |
-| 4 | 12, 20, 35–37, 39, 58–62, 91, 92, 116 | 14 |
-| 10 | 32–34, 40, 41, 48, 53, 55, 56, 67, 69, 111, 112 | 13 |
+| 11 | 54, 68, 89, 93, 94, 99–101, 105–110, 133–136, 144–146, 153, 160, 161, 164–166 | 27 |
+| 7 | 66, 83–87, 90, 113–115, 122–125, 169, 170 | 16 |
+| 4 | 12, 20, 35–37, 39, 58–62, 91, 92, 116, 167, 173, 174 | 17 |
+| 10 | 32–34, 40, 41, 48, 53, 55, 56, 67, 69, 111, 112, 154, 162, 163, 168, 171 | 18 |
 | 15 | 77–79, 81, 119, 120, 130, 131 | 8 |
-| 9 | 43, 44, 49, 51, 72, 73, 82, 140 | 8 |
+| 9 | 43, 44, 49, 51, 72, 73, 82, 140, 155 | 9 |
 | 12 | 46, 64, 65, 95–98 | 7 |
-| 13 | 47, 50, 126, 127, 137–139 | 7 |
-| 14 | 70, 71, 74–76, 141–143 | 7 |
-| 5 | 45, 102–104, 128, 129 | 6 |
-| 3 | 52, 63, 88 | 3 |
-| 1 | 117, 118 | 2 |
+| 13 | 47, 50, 126, 127, 137–139, 156 | 8 |
+| 14 | 70, 71, 74–76, 141–143, 172 | 9 |
+| 5 | 45, 102–104, 128, 129, 157 | 7 |
+| 3 | 52, 63, 88, 159 | 4 |
+| 1 | 117, 118, 158 | 3 |
 | 6 | 80 | 1 |
-| 0 | 147–151 (padding/terminator run) | 5 |
+| 0 | 147–152 (padding/terminator run) | 6 |
 
 Correction: an earlier draft said "ids 58–63 → 4" — loc 63 is song 3
-(byte `0x03`), not 4; 58–62 → 4. Records 152+ break the pattern (large
-b1/b2, high nibbles up to 9) — a different table or coordinate records, not
-part of this map. Songs 8, 16, 17, 20 never appear in the location table:
+(byte `0x03`), not 4; 58–62 → 4. Records 152–174 follow the same 4-byte
+layout with valid song bytes — the table is 175 records, ending exactly at
+the entity-spawn table (`$D66A0`); the earlier "records 152+ break the
+pattern — a different table" reading was wrong. Songs 8, 16, 17, 20 never appear in the location table:
 17 is the `$32D0E` alternate map theme, 8/16/20 are event stings/pieces
 (§7.4). No location-id → city-name mapping is recoverable from the ROM
 tables alone (city names exist only as dictionary words; see the L018
