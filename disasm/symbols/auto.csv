@@ -144,42 +144,42 @@ addr,name,tier,note
 0x02595a,sys_struct52_scan,1,code: loop over 52-byte table entries (muls #52)
 0x025b4e,sys_struct52_nibble_read,1,code: low nibble of 52-byte table FF02B4 indexed by arg*52
 0x025C44,sys_unk_025c44,0,auto: touches $FF02B4
-0x025CB4,sys_unk_025cb4,0,auto: touches none
-0x025D2E,sys_unk_025d2e,0,auto: touches none
-0x025D8E,sys_unk_025d8e,0,auto: touches none
+0x025cb4,world_vessel_grid_value,1,decodes vessel mount +0x06 into a numeric value stored in the map grid; used by npc_struct_setup for map placement and combat effects
+0x025d2e,world_vessel_class,1,decodes vessel mount +0x06 into a 0-3 class index; used by npc_struct_setup for map placement
+0x025d8e,world_vessel_mode,2,decodes vessel mount +0x06 into the movement mode; logic.md:703 Mode section
 0x025DE4,combat_target_check,1,logic.md:1159 checks target struct; nonzero -> 2140A effect
 0x025E12,sys_struct52_read_pair,1,code: index*52 into FF02B6 and FF02CB; reads two fields
-0x026076,npc_attitude_result,1,static: raises attitude via npc_attitude_raise and enqueues text messages 7 and 16
+0x026076,npc_location_greet,1,greeting message enqueued in both map and combat modes; attitude raise only in combat branch; replaces npc_attitude_result from PR #59
 0x02619C,sys_struct52_read_field,1,code: index*52 into FF02BA; reads one word field
 0x0265BE,sys_struct52_flag_test,1,code: index*52 into FF02BA; tests word and branches
 0x0269F2,world_step_apply,1,code: calls world_get_step_delta; reads FFA7FC pointer
-0x026A8C,combat_unk_026a8c,0,auto: touches $FF00AE $FF010E $FF011C $FF011E $FF02B2 $FF02BA
-0x026B08,sys_unk_026b08,0,auto: touches none
+0x026a8c,npc_show_greeting,1,displays merchant portrait and enqueues greeting message; sets $FF011C=4; called from main_loop
+0x026b08,world_location_lookup,1,searches the $D1D00 location table of 455 entries x 10 B for a record matching two key words; returns index or 0
 0x026CCA,msg_queue_consume,2,logic.md:277 queue consumer calls 1E426 (pop)
 0x026DD2,gfx_fill_panel_plain,1,static: wait_vblank then gfx_tilemap_fill 64 tiles at plane base; then sys_unk_0118c8 tile-rect write and sys_unk_01e4e6
 0x026E44,gfx_fill_panel_flagged,1,static: as gfx_fill_panel_plain but skips the fill when $FF00AC is set
 0x0275B0,text_event_message,2,logic.md:213 message routine 275B0 (giant event-message)
-0x02979A,sys_unk_02979a,0,auto: touches $FF0E82
-0x0297CE,sys_unk_0297ce,0,auto: touches none
-0x0297F0,sys_unk_0297f0,0,auto: touches none
-0x029834,sys_unk_029834,0,auto: touches none
+0x02979a,world_party_member_at,1,returns party list word at index arg2 from $FF0E82 if group arg1 is 0x43 else -1
+0x0297ce,world_party_size,1,returns 6 if group arg is 0x43 else 0; party group size
+0x0297f0,world_party_count,1,counts nonzero party members via world_party_member_at; called from menu and map code
+0x029834,world_party_nth_index,1,returns index of Nth nonzero party member or -1; called from menu and map code
 0x02988E,sys_unk_02988e,0,auto: touches none
 0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
 0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
 0x02A2CA,combat_select_unit,1,static: compares unit side at $FF02DB with current unit $FF02B2; sets $FF009A and $FF0120
-0x02A454,sys_unk_02a454,0,auto: touches $FF02A0 $FF02A2 $FF02A4 $FF02A6 $FF02A8 $FF02AA
-0x02A562,sys_unk_02a562,0,auto: touches $FF02B4 $FF02B6 $FF02BE $FF02C0 $FF02C2 $FF02C8
-0x02AD64,sys_unk_02ad64,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
-0x02AF72,sys_unk_02af72,0,auto: touches none
-0x02AFF2,sys_unk_02aff2,0,auto: touches $FF0142 $FF02BA $FF02BE $FF02C0 $FF02C2 $FF02CE
-0x02B190,sys_unk_02b190,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
+0x02a454,shop_merchant_setup,1,sets current merchant $FF02A0 and shop globals $FF02A8 $FF02AA $FF02AC; calls npc_attitude_raise; called from new-game init save load and shop code; logic.md:389 merchant is $FF02A0
+0x02a562,world_step_tile,1,moves a char one step via world_step_apply then dispatches on the tile stepped on; command 35 in d28e_switch.txt; called from main loop and event handlers
+0x02ad64,world_scan_ahead_for_char,1,scans up to 10 cells ahead of a char in a direction for another char and engages it via $02A2CA; called from main_loop
+0x02af72,text_item_grant_message,1,shows grant message for an item value; 100-plus checks item_category_of and enqueues message else shows message 25 or 26; called from $02A562
+0x02aff2,npc_spawn_from_char,1,spawns entity from a char type word with parameter triples then sets fields and plays SFX; called from main_loop and combat_turn_run
+0x02b190,npc_spawn_at_step,1,spawns char at a position stepped from a source char in a direction with caller-supplied struct fields; returns new index or 0
 0x02B2B2,sys_unk_02b2b2,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
-0x02B402,npc_spawn_at_step,1,static: finds or spawns a record via sys_struct52_find and entity_spawn; then npc_struct_setup on $FF02B4 records
+0x02b402,spell_spawn_entity,1,spawns entity at a stepped grid position for spell multihit and group effects; callers spell_multihit_scatter and spell_group_flash; replaces npc_spawn_at_step from PR #59 which would duplicate 0x02b190
 0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
 0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
 0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
 0x02b68c,sys_bitmap_write,1,code: clears bit (arg&7) in bitmap then ORs in value arg e
-0x02B6E0,sys_unk_02b6e0,0,auto: touches $FF02A0 $FF02B4 $FF02C8 $FF02DB $FF0E82 $FF0E92
+0x02b6e0,npc_attitude_event_apply,1,applies record-driven location events from the $0D601E table when NPC attitude turns positive; called from npc_attitude_positive
 0x02c8f2,item_category_of,1,code: divs.w #64 of arg; matches logic.md code/64 category switch
 0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct
 0x02cbea,shop_category_count,1,returns item count for a category from the category table; logic.md 3.3
