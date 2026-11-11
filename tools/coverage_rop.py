@@ -20,6 +20,7 @@ from pathlib import Path
 
 ROM_SIZE = 1048576
 INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
+DCB = re.compile(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;\s*\$([0-9A-Fa-f]+)')
 RAW = re.compile(r'^\s*\.?(dc|fill|ds)\.[bwl]\b|^\s*\.fill\b')
 INSN = re.compile(r'^\s+[a-z]\S*\s.*;\s*\$[0-9A-Fa-f]{6}')
 
@@ -61,6 +62,12 @@ def main():
         m = INC.search(line)
         if m:
             start, length = num(m.group(1)), num(m.group(2))
+            incbin += length
+            known += known_bytes(start, length, regions)
+            continue
+        d = DCB.search(line)
+        if d:  # all-$FF padding (#13): data, counted as incbin
+            start, length = num('$' + d.group(2)), num(d.group(1))
             incbin += length
             known += known_bytes(start, length, regions)
             continue

@@ -15,6 +15,7 @@ from pathlib import Path
 
 ROM_SIZE = 1048576
 INC = re.compile(r'incbin\s+"rop-original\.gen",\s*(\$[0-9A-Fa-f]+|\d+),\s*(\$[0-9A-Fa-f]+|\d+)')
+DCB = re.compile(r'dcb\.b\s+(\$[0-9A-Fa-f]+|\d+),\s*\$FF\s*;')  # all-$FF padding (#13)
 RAW = re.compile(r'^\s*\.?(dc|fill|ds)\.[bwl]\b|^\s*\.fill\b')
 START, END = '<!-- status:start -->', '<!-- status:end -->'
 
@@ -39,8 +40,11 @@ def measure():
     incbin = raw = 0
     for l in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
         m = INC.search(l)
+        d = DCB.search(l)
         if m:
             incbin += num(m.group(2))
+        elif d:
+            incbin += num(d.group(1))
         elif RAW.match(l):
             raw += 1
     size = ROM_SIZE
@@ -49,10 +53,13 @@ def measure():
     regions = None
     rp = Path('disasm/regions.csv')
     if rp.exists():
-        unknown = high_entropy = total = 0
+        unknown = high_entropy = total = z80 = 0
         with rp.open(newline='') as fh:
             for r in csv.DictReader(fh):
                 n = int(r['end'], 16) - int(r['start'], 16) + 1
+                if r['class'] == 'z80-driver-blob':  # assembled code, counted in code (#78)
+                    z80 += n
+                    continue
                 total += n
                 if r['class'] == 'unknown':
                     unknown += n
