@@ -1076,3 +1076,9 @@ loop to their full stream length with no invalid byte, and songs 8 and 16
 end at their documented `0xFC` offsets (103 and 1229).
 This is grammar-level evidence only. It doesn't check the note values, the
 `p1`/`p2` meanings (still open in section 6), or the playback.
+
+## Pointer-SFX payload at $1394 (static, 2026-11-11)
+
+- The 0x001394-0x00692D block is referenced by one `lea` in the pointer-SFX switch at 0x17602 (the switch that feeds `snd_sfx_pointer`, `docs/sound.md` section 2, SFX 90-96). Inner pointers 0x4500, 0x4502 and 0x4504 land inside the same block.
+- Weak tile signal (4bpp smoothness 3.20 vs 4.68 shuffled) so the block is not graphics.
+- Classed snd-sfx-payload, tier 1, static evidence only. Live check of the sample bytes is still open.
