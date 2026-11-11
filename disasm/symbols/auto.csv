@@ -341,18 +341,18 @@ addr,name,tier,note
 0x03cc4c,spell_effect_start,1,sets $FF013C effect mode and clears $FFC41C frame counter; called from $02D764 $0328F2 and spell multihit routines
 0x03cc62,gfx_paint_stream_column,1,paints terrain streams $330-$33D via $E358 in a vertical pattern around x y; called from spell-effect driver $03D9F8
 0x03ce30,gfx_paint_stream_spread,1,paints terrain streams $340+ via $E358 in a spreading pattern with repeated tail; called from $03DC32
-0x03D13E,sys_unk_03d13e,0,auto: touches $FF0092 $FF0124
-0x03D32E,sys_unk_03d32e,0,auto: touches none
-0x03D46C,sys_unk_03d46c,0,auto: touches none
-0x03D528,sys_unk_03d528,0,auto: touches $FF0092
-0x03D75A,sys_unk_03d75a,0,auto: touches $FF0092
-0x03D990,sys_unk_03d990,0,auto: touches none
-0x03D9F8,sys_unk_03d9f8,0,auto: touches $FF0110 $FF0124 $FF013C $FF0290 $FF0292 $FFC41C
-0x03E198,sys_unk_03e198,0,auto: touches none
+0x03d13e,gfx_paint_stream_burst,1,paints terrain stream $350-$359 in a 4x3 grid around x y plus $35B/$35C tail; 1-in-4 rand branch plays SFX $5F and loads palette $CCC98 and sets $FF0124; called from spell-effect driver $03D9F8
+0x03d32e,gfx_paint_stream_fan,1,paints terrain stream $360-$367 in an 8-tile fan around x y; $C arg mirrors the pattern (d4 1 or $FF) and shifts x by $24; called from spell-effect driver $03D9F8
+0x03d46c,gfx_paint_stream_block,1,paints terrain stream $368-$36B as a 2x2 block around x y; $E arg selects the tile variant base (clamped to 4) and $C arg mirrors it; called from spell-effect driver $03D9F8
+0x03d528,gfx_paint_stream_grid,1,paints terrain stream $370-$37B in a complete 4x3 grid around x y plus $37C/$37D variant pair tail selected by $C arg; called from spell-effect driver $03D9F8
+0x03d75a,spell_effect_scatter,1,places 13 tiles 380-38A at scattered offsets around a point with orientation flipped by FF0092 parity; called from spell effect mode 7 case with random x
+0x03d990,spell_effect_block,1,places a 4x4 block of tiles 390-39F (row*4+col+390) at a random position; called from spell effect mode 8 case
+0x03d9f8,spell_effect_step,1,spell effect sequencer: dispatches on FF013C mode set by spell_effect_start and advances FFC41C frame counter per call; plays SFX paints effect tiles and calls scene_draw; called from map redraw path 01C0DE
+0x03e198,spell_effect_line,1,places 8 identical tiles 212+arg along a diagonal line stepping 14 1C per tile at a moving position; called from spell effect mode 64 case via bsr
 0x03E2D4,combat_action_main,1,sound.md:739 and issue 12: large combat routine 3E2D4
-0x042F26,sys_unk_042f26,0,auto: touches $200000
-0x042F5E,sys_unk_042f5e,0,auto: touches $200000 $FF014C $FF014E
-0x043006,sys_unk_043006,0,auto: touches $FF014C $FF014E $FF0150 $FF0154 $FF0158 $FF015C
+0x042f26,eeprom_between_bytes,2,write $00 NOPs write $40 NOPs write $00 to $200000; called between bytes in the eeprom_read_block loop; save.md:159 and save.md:189
+0x042f5e,eeprom_read_tail,2,write $80 NOPs write $C0 NOPs write $80 to $200000; tail of eeprom_read_block before eeprom_stop; save.md:160 and save.md:189
+0x043006,eeprom_read,2,stack-arg wrapper for eeprom_read_block; loads d0 d1 a0 from stack and falls into $43012; called from save_validate_magic at $177E0 $17806 $1782C; save.md:194
 0x0430EC,sys_wrap_stack_arg,1,save.md:223 stack-arg wrapper 430EC
 0x0EB8E0,sys_unk_0eb8e0,0,auto: touches none
 0x0EB8F2,z80_write_val24,2,sound.md:151 writes 24-bit d0 to Z80 016E-0170
