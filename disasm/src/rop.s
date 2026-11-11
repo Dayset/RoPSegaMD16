@@ -47787,6 +47787,7 @@ combat_set_target:
 	movea.l d0,a3	; $0387EE
 	adda.l a0,a3	; $0387F0
 	clr.w -$2(a6)	; $0387F2
+L0387F6:
 	move.w -$2(a6),d0	; $0387F6
 	ext.l d0	; $0387FA
 	asl.l #$1,d0	; $0387FC
@@ -47813,11 +47814,29 @@ combat_set_target:
 	or.w d0,(a0)	; $038846
 L038848:
 	moveq #$1,d0	; $038848
+L03884A:
 	movea.l (a7)+,a3	; $03884A
 	unlk a6	; $03884C
 	rts	; $03884E
-	; data $038850-$038889
-	incbin "rop-original.gen",$038850,$3A
+	; code $038850-$038889
+FUN_038850:
+	addq.w #$1,-$2(a6)	; $038850
+	cmpi.w #$6,-$2(a6)	; $038854
+	blt.b L0387F6	; $03885A
+	move.w $8(a6),d0	; $03885C
+	muls.w #$34,d0	; $038860
+	lea.l $ff02db.l,a0	; $038864
+	moveq #$0,d1	; $03886A
+	move.b (a0,d0.l),d1	; $03886C
+	cmp.w $ff02b2.l,d1	; $038870
+	bne.b L038880	; $038876
+	jsr combat_victory_announce.l	; $038878
+	bra.b L038886	; $03887E
+L038880:
+	jsr combat_lock_action.l	; $038880
+L038886:
+	moveq #$0,d0	; $038886
+	bra.b L03884A	; $038888
 	; code $03888A-$038937
 spell_apply_group:
 	link.w a6,#$fffc	; $03888A
@@ -60766,8 +60785,9 @@ L0432F6:
 L043310:
 	moveq #$f,d0	; $043310
 	bra.b L04333A	; $043312
-	; data $043314-$043315
-	incbin "rop-original.gen",$043314,$2
+	; code $043314-$043315
+FUN_043314:
+	bra.b L04332E	; $043314
 	; code $043316-$0433BF
 L043316:
 	jsr pad2_read.l	; $043316
