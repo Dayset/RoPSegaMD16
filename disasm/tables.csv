@@ -3,3 +3,5 @@ start,end,prefix,words_per_record
 0x0D6768,0x0D6B6C,price_,2
 0x0CF1AC,0x0D1CFC,tmpl_,12
 0x0CD430,0x0CECF0,name16_,8
+0x0D6B6C,0x0D6E60,spell_rank_,63
+0x0D6E60,0x0D6E9C,spell_bounds_,5
