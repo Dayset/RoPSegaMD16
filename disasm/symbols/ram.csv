@@ -23,7 +23,7 @@ addr,size,name,tier,note
 0xFF02BA,4,ram_menu_field_02ba,0,56 refs; subsystem from majority of named users; role not read
 0xFF02CC,4,ram_world_field_02cc,0,55 refs; subsystem from majority of named users; role not read
 0xFFA800,4,ram_save_buffer_a800,1,static: save_serialise and save_deserialise 51 of 55 sites
-0xFF867A,2,ram_world_sprite_867a,1,static: 43 of 51 sites in world_sprites_setup
+0xFF867A,2,ram_world_sprite_867a,1,"static: writer is world_map_draw at $012D9C; 43 of 51 reads in world_sprites_setup; name kept, owner by writer"
 0xFF00AC,2,ram_menu_field_00ac,0,50 refs; subsystem from majority of named users; role not read
 0xFFC384,4,ram_sys_event_c384,1,static: 38 of 48 sites in sys_event_run
 0xFF00AE,2,ram_menu_field_00ae,0,45 refs; subsystem from majority of named users; role not read
