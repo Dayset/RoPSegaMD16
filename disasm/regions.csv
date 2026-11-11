@@ -10,53 +10,92 @@ start,end,class,name,doc_ref,tier
 0x00DF00,0x00DF09,unknown,region_00df00,,1
 0x00DF58,0x00E357,jump-table,region_00df58,disasm/region-classes.txt,2
 0x00E47C,0x011073,unknown,region_00e47c,,1
-0x01150E,0x011513,unknown,region_01150e,,1
-0x01215E,0x01225B,unknown,region_01215e,,1
-0x013052,0x01305D,unknown,region_013052,,1
-0x013078,0x013089,unknown,region_013078,,1
-0x0130D8,0x0130E3,unknown,region_0130d8,,1
-0x0130FE,0x01310F,unknown,region_0130fe,,1
+0x01150E,0x011513,text-glyph-data,tbl_text_glyph_data_01150e,rop.s sys_unk_011416 passes L01150E to text_glyph_draw (tier 1),1
+0x01215E,0x0121B1,text-glyph-data,tbl_text_glyph_data_01215e,rop.s text_blit refs L01215E (class by consumer; tier 1),1
+0x0121B2,0x01225B,text-glyph-data,tbl_text_glyph_data_0121b2,rop.s text_blit refs L0121B2 (class by consumer; tier 1),1
+0x013052,0x01305D,jump-table,tbl_jump_table_013052,rop.s menu_verb_input refs L013052 (class by consumer; tier 1),1
+0x013078,0x013089,jump-table,tbl_jump_table_013078,rop.s menu_verb_input refs L013078 (class by consumer; tier 1),1
+0x0130D8,0x0130E3,jump-table,tbl_jump_table_0130d8,rop.s menu_verb_input refs L0130D8 (class by consumer; tier 1),1
+0x0130FE,0x01310F,jump-table,tbl_jump_table_0130fe,rop.s menu_verb_input refs L0130FE (class by consumer; tier 1),1
 0x014FB4,0x014FB5,zero-fill,region_014fb4,,1
 0x015BB8,0x015C07,ascii,region_015bb8,,1
-0x0170CC,0x0170D9,unknown,region_0170cc,,1
-0x017366,0x01737D,unknown,region_017366,,1
+0x0170CC,0x0170D9,pal-fade-args,tbl_pal_fade_args_0170cc,rop.s pal_fade call sites at 0x0168A6 0x016ED6 0x016F12 pass L0170CC L0170CE L0170D0 (14 bytes) (tier 1),1
+0x017366,0x01737D,jump-table,tbl_jump_table_017366,rop.s L01737E dispatch cmp #$c reads word table at L017366 (12 entries; #8 target check) (tier 1),1
 0x017546,0x01756F,word-offset-table,region_017546,,1
-0x01764E,0x01765B,unknown,region_01764e,,1
+0x01764E,0x01765B,snd-sfx-params,tbl_snd_sfx_params_01764e,rop.s sfx_request refs L01764E (class by consumer; tier 1),1
 0x0179C6,0x0179C9,ascii,region_0179c6,,1
 0x0197B0,0x019F8E,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
 0x019F8F,0x019F8F,object-record-table,region_019f8f,disasm/region-classes.txt,2
-0x019F90,0x01A226,menu-screen-script,tbl_menu_screen_0,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A227,0x01A227,ascii,region_01a227,,1
-0x01A228,0x01A396,menu-screen-script,tbl_menu_screen_1,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A397,0x01A397,unknown,region_01a397,,1
-0x01A398,0x01A3AE,menu-screen-script,tbl_menu_screen_2,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A3AF,0x01A3AF,zero-fill,region_01a3af,,1
-0x01A3B0,0x01A3B6,menu-screen-script,tbl_menu_screen_3,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A3B7,0x01A3B7,zero-fill,region_01a3b7,,1
-0x01A3B8,0x01A4BE,menu-screen-script,tbl_menu_screen_4,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A4BF,0x01A4BF,unknown,region_01a4bf,,1
-0x01A4C0,0x01A4E6,menu-screen-script,tbl_menu_screen_5,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A4E7,0x01A4E7,zero-fill,region_01a4e7,,1
-0x01A4E8,0x01A51E,menu-screen-script,tbl_menu_screen_6,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A51F,0x01A51F,zero-fill,region_01a51f,,1
-0x01A520,0x01A58E,menu-screen-script,tbl_menu_screen_7,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A58F,0x01A58F,zero-fill,region_01a58f,,1
-0x01A590,0x01A5B6,menu-screen-script,tbl_menu_screen_8,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
-0x01A5B7,0x01AA5F,unknown,region_01a5b7,,1
-0x01AA60,0x01AD87,str-order-name,str_order_name,docs/logic.md:91 (order-name table; index = (rank-1)*90 + level*10; 81 records x 10 bytes),1
-0x01AD88,0x01AD89,zero-fill,region_01ad88,,1
-0x01AD8A,0x01ADE0,str-fixed10-table,str_npc_class_name,measured dump 2026-11-11: 10-byte null-padded names (Beggar..Queen); not a doc-stated table,1
-0x01ADE1,0x01B5D5,unknown,region_01ade1,,1
-0x01BE86,0x01BE8D,unknown,region_01be86,,1
-0x01C0A8,0x01C0AF,unknown,region_01c0a8,,1
-0x01C7BA,0x01C7C1,unknown,region_01c7ba,,1
+0x019F90,0x01A227,menu-screen-script,tbl_menu_screen_0,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A228,0x01A397,menu-screen-script,tbl_menu_screen_1,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A398,0x01A3AF,menu-screen-script,tbl_menu_screen_2,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A3B0,0x01A3B7,menu-screen-script,tbl_menu_screen_3,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A3B8,0x01A4BF,menu-screen-script,tbl_menu_screen_4,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A4C0,0x01A4E7,menu-screen-script,tbl_menu_screen_5,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A4E8,0x01A51F,menu-screen-script,tbl_menu_screen_6,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A520,0x01A58F,menu-screen-script,tbl_menu_screen_7,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A590,0x01A5B7,menu-screen-script,tbl_menu_screen_8,rop.s menu_select_screen $02D3EA-$02D46C loads table pointer into $FFC384; 8-byte opcode-led records (measured dump 2026-11-11),1
+0x01A5B8,0x01A5BF,map-chunk-data,tbl_map_chunk_data_01a5b8,rop.s map_chunk_load refs L01A5B8 (class by consumer; tier 1),1
+0x01A5C0,0x01A63F,map-chunk-data,tbl_map_chunk_data_01a5c0,rop.s map_chunk_load refs L01A5C0 (class by consumer; tier 1),1
+0x01A640,0x01A70F,map-chunk-data,tbl_map_chunk_data_01a640,rop.s map_chunk_load refs L01A640 (class by consumer; tier 1),1
+0x01A710,0x01A793,map-chunk-data,tbl_map_chunk_data_01a710,rop.s map_chunk_load refs L01A710 (class by consumer; tier 1),1
+0x01A794,0x01A7BF,map-chunk-data,tbl_map_chunk_data_01a794,rop.s map_chunk_load refs L01A794 (class by consumer; tier 1),1
+0x01A7C0,0x01A7EF,map-chunk-data,tbl_map_chunk_data_01a7c0,rop.s map_chunk_load refs L01A7C0 (class by consumer; tier 1),1
+0x01A7F0,0x01A8BF,map-chunk-data,tbl_map_chunk_data_01a7f0,rop.s map_chunk_load refs L01A7F0 (class by consumer; tier 1),1
+0x01A8C0,0x01A98F,map-chunk-data,tbl_map_chunk_data_01a8c0,rop.s map_chunk_load refs L01A8C0 (class by consumer; tier 1),1
+0x01A990,0x01AA5F,map-chunk-data,tbl_map_chunk_data_01a990,rop.s map_chunk_load refs L01A990 (class by consumer; tier 1),1
+0x01AA60,0x01AD89,str-order-name,str_order_name,docs/logic.md:91 (order-name table; index = (rank-1)*90 + level*10; 81 records x 10 bytes),1
+0x01AD8A,0x01ADE1,str-fixed10-table,str_npc_class_name,measured dump 2026-11-11: 10-byte null-padded names (Beggar..Queen); not a doc-stated table,1
+0x01ADE2,0x01ADE3,zero-fill,region_01ade2,,1
+0x01ADE4,0x01ADE4,map-chunk-data,tbl_map_chunk_data_01ade4,rop.s map_chunk_load refs L01ADE4 (class by consumer; tier 1),1
+0x01ADE5,0x01AE37,map-chunk-data,tbl_map_chunk_data_01ade5,rop.s map_chunk_load refs L01ADE5 (class by consumer; tier 1),1
+0x01AE38,0x01AE97,map-chunk-data,tbl_map_chunk_data_01ae38,rop.s map_chunk_load refs L01AE38 (class by consumer; tier 1),1
+0x01AE98,0x01B297,word-lookup-table,tbl_word_lut_01ae98,rop.s sys_unk_0163ee reads word index (value and 0x1FF) x2 from L01AE98 (512 entries; duplicated-byte words) (tier 1),1
+0x01B298,0x01B298,map-chunk-data,tbl_map_chunk_data_01b298,rop.s map_chunk_load refs L01B298 (class by consumer; tier 1),1
+0x01B299,0x01B2DF,map-chunk-data,tbl_map_chunk_data_01b299,rop.s map_chunk_load refs L01B299 (class by consumer; tier 1),1
+0x01B2E0,0x01B2E1,map-chunk-data,tbl_map_chunk_data_01b2e0,rop.s map_chunk_load refs L01B2E0 (class by consumer; tier 1),1
+0x01B2E2,0x01B31F,map-chunk-data,tbl_map_chunk_data_01b2e2,rop.s map_chunk_load refs L01B2E2 (class by consumer; tier 1),1
+0x01B320,0x01B445,intro-data,tbl_intro_data_01b320,rop.s intro_helper refs L01B320 (class by consumer; tier 1),1
+0x01B446,0x01B463,menu-format-data,tbl_menu_format_data_01b446,rop.s menu_format refs L01B446 (class by consumer; tier 1),1
+0x01B464,0x01B46D,map-chunk-data,tbl_map_chunk_data_01b464,rop.s map_chunk_load refs L01B464 (class by consumer; tier 1),1
+0x01B46E,0x01B4D1,text-glyph-width,tbl_text_glyph_width_01b46e,rop.s sys_unk_0112be indexes by char minus 0x20 (100 bytes) (tier 1),1
+0x01B4D2,0x01B4ED,vdp-scaled-table,tbl_vdp_scaled_table_01b4d2,rop.s vdp_scaled_table_write refs L01B4D2 (class by consumer; tier 1),1
+0x01B4EE,0x01B4EE,map-chunk-data,tbl_map_chunk_01b4ee,rop.s map_chunk_load refs L01B4EE (tier 1),1
+0x01B4EF,0x01B4EF,map-chunk-data,tbl_map_chunk_01b4ef,rop.s map_chunk_load refs L01B4EF (tier 1),1
+0x01B4F0,0x01B4F0,map-chunk-data,tbl_map_chunk_01b4f0,rop.s map_chunk_load refs L01B4F0 (tier 1),1
+0x01B4F1,0x01B50D,map-chunk-data,tbl_map_chunk_data_01b4f1,rop.s map_chunk_load refs L01B4F1 (class by consumer; tier 1),1
+0x01B50E,0x01B51F,map-chunk-data,tbl_map_chunk_data_01b50e,rop.s map_chunk_load refs L01B50E (class by consumer; tier 1),1
+0x01B520,0x01B531,map-chunk-data,tbl_map_chunk_data_01b520,rop.s map_chunk_load refs L01B520 (class by consumer; tier 1),1
+0x01B532,0x01B543,map-chunk-data,tbl_map_chunk_data_01b532,rop.s map_chunk_load refs L01B532 (class by consumer; tier 1),1
+0x01B544,0x01B555,map-chunk-data,tbl_map_chunk_data_01b544,rop.s map_chunk_load refs L01B544 (class by consumer; tier 1),1
+0x01B556,0x01B55F,map-chunk-data,tbl_map_chunk_data_01b556,rop.s map_chunk_load refs L01B556 (class by consumer; tier 1),1
+0x01B560,0x01B571,map-chunk-data,tbl_map_chunk_data_01b560,rop.s map_chunk_load refs L01B560 (class by consumer; tier 1),1
+0x01B572,0x01B583,map-chunk-data,tbl_map_chunk_data_01b572,rop.s map_chunk_load refs L01B572 (class by consumer; tier 1),1
+0x01B584,0x01B595,map-chunk-data,tbl_map_chunk_data_01b584,rop.s map_chunk_load refs L01B584 (class by consumer; tier 1),1
+0x01B596,0x01B5B9,map-chunk-data,tbl_map_chunk_data_01b596,rop.s map_chunk_load refs L01B596 (class by consumer; tier 1),1
+0x01B5BA,0x01B5CB,map-chunk-data,tbl_map_chunk_data_01b5ba,rop.s map_chunk_load refs L01B5BA (class by consumer; tier 1),1
+0x01B5CC,0x01B5D5,map-chunk-data,tbl_map_chunk_data_01b5cc,rop.s map_chunk_load refs L01B5CC (class by consumer; tier 1),1
+0x01BE86,0x01BE8D,map-chunk-data,tbl_map_chunk_data_01be86,rop.s map_chunk_pos refs L01BE86 (class by consumer; tier 1),1
+0x01C0A8,0x01C0AF,map-chunk-data,tbl_map_chunk_data_01c0a8,rop.s map_chunk_pos refs L01C0A8 (class by consumer; tier 1),1
+0x01C7BA,0x01C7C1,npc-spawn-data,tbl_npc_spawn_data_01c7ba,rop.s leader_spawn refs L01C7BA (class by consumer; tier 1),1
 0x01D73E,0x01D783,word-offset-table,region_01d73e,,1
-0x01E086,0x01E08D,unknown,region_01e086,,1
-0x01E0C6,0x01E0CF,unknown,region_01e0c6,,1
-0x01E102,0x01E109,unknown,region_01e102,,1
-0x01E13C,0x01E143,unknown,region_01e13c,,1
-0x01EEC2,0x01EEED,unknown,region_01eec2,,1
-0x01FADC,0x01FAED,unknown,region_01fadc,,1
+0x01E086,0x01E08D,jump-table,tbl_jump_table_01e086,rop.s L01E08E dispatch cmp #$4 reads word table at L01E086 (4 entries; #8 target check) (tier 1),1
+0x01E0C6,0x01E0CF,world-dir-table,tbl_world_dir_table_01e0c6,rop.s world_reverse_dir refs L01E0C6 (class by consumer; tier 1),1
+0x01E102,0x01E109,world-dir-table,tbl_world_dir_table_01e102,rop.s world_turn_dir_right refs L01E102 (class by consumer; tier 1),1
+0x01E13C,0x01E143,world-dir-table,tbl_world_dir_table_01e13c,rop.s world_turn_dir_left refs L01E13C (class by consumer; tier 1),1
+0x01EEC2,0x01EEC3,word-record-table,tbl_word_record_table_01eec2,rop.s menu_record_reload refs L01EEC2 (class by consumer; tier 1),1
+0x01EEC4,0x01EEC5,word-record-table,tbl_word_record_table_01eec4,rop.s menu_record_reload refs L01EEC4 (class by consumer; tier 1),1
+0x01EEC6,0x01EEC7,word-record-table,tbl_word_record_table_01eec6,rop.s menu_record_reload refs L01EEC6 (class by consumer; tier 1),1
+0x01EEC8,0x01EEC9,word-record-table,tbl_word_record_table_01eec8,rop.s menu_record_reload refs L01EEC8 (class by consumer; tier 1),1
+0x01EECA,0x01EECD,word-record-table,tbl_word_record_table_01eeca,rop.s menu_record_reload refs L01EECA (class by consumer; tier 1),1
+0x01EECE,0x01EECF,word-record-table,tbl_word_record_table_01eece,rop.s menu_record_reload refs L01EECE (class by consumer; tier 1),1
+0x01EED0,0x01EED1,word-record-table,tbl_word_record_table_01eed0,rop.s menu_record_reload refs L01EED0 (class by consumer; tier 1),1
+0x01EED2,0x01EED3,word-record-table,tbl_word_record_table_01eed2,rop.s menu_record_reload refs L01EED2 (class by consumer; tier 1),1
+0x01EED4,0x01EEDA,word-record-table,tbl_word_record_table_01eed4,rop.s menu_record_reload refs L01EED4 (class by consumer; tier 1),1
+0x01EEDB,0x01EEE0,word-record-table,tbl_word_record_table_01eedb,rop.s menu_record_reload refs L01EEDB (class by consumer; tier 1),1
+0x01EEE1,0x01EEE7,word-record-table,tbl_word_record_table_01eee1,rop.s menu_record_reload refs L01EEE1 (class by consumer; tier 1),1
+0x01EEE8,0x01EEED,word-record-table,tbl_word_record_table_01eee8,rop.s menu_record_reload refs L01EEE8 (class by consumer; tier 1),1
+0x01FADC,0x01FAED,verb-table,tbl_verb_table_01fadc,rop.s verb_exec refs L01FADC (class by consumer; tier 1),1
 0x020C3A,0x020C43,unknown,region_020c3a,,1
 0x021542,0x021549,unknown,region_021542,,1
 0x021B4C,0x021B53,unknown,region_021b4c,,1
