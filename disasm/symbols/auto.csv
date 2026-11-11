@@ -41,7 +41,7 @@ addr,name,tier,note
 0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
 0x011820,gfx_tilemap_draw,1,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes
 0x0118C8,sys_unk_0118c8,0,auto: touches none
-0x01194A,sys_unk_01194a,0,auto: touches none
+0x01194A,gfx_unk_01194a,0,auto: touches none; tile-grid offset loop; arg-driven
 0x011a1a,gfx_tilemap_fill,1,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16
 0x011A7C,gfx_dma_tile_upload,1,code: dma_upload of arg size at VRAM counter FF0076 (asl 5); advances FF0076 by arg
 0x011B58,sys_counter_add,1,static: returns old value of $FF0076; adds its argument to it
@@ -104,7 +104,7 @@ addr,name,tier,note
 0x0207D8,cmd22_handler,1,architecture.md:291 dispatch command 22 handler
 0x020884,cmd24_handler,1,architecture.md:291 dispatch command 24 handler
 0x020A36,cmd25_handler,1,architecture.md:291 dispatch command 25 handler; spell-sequencer step
-0x020A88,sys_unk_020a88,0,auto: touches $FF009A $FF009C $FF00AC $FF010E $FF0138 $FF02B2
+0x020A88,menu_unk_020a88,0,auto: touches joypad/input flags; dispatches cmd24_handler
 0x020C5E,map_prepare,1,maps.md:461 must run before 0x20E7E
 0x020C6A,table_fill_ff,2,maps.md: $FFB36C+1024 initialised to $FF (empty) by $20C6A
 0x020cca,sys_record12_scan_20cca,1,code: loop over 12-byte records at FFB0CC (muls #12); sibling of 20D0A
@@ -134,7 +134,7 @@ addr,name,tier,note
 0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence
 0x024676,sys_unk_024676,0,auto: touches $FF02B4 $FF02B8 $FF02BA $FF02BC $FF02BE $FF02C0
 0x024916,npc_struct_release,1,code: reads FF02B8 map record; calls map_record_remove; sets FF02B8 to 0xFF
-0x024984,sys_unk_024984,0,auto: touches $FF009A $FF00AE $FF010E $FF0110 $FF011C $FF011E
+0x024984,combat_move_unit,1,static: unit slot arg at 8 and a(a6); 0x34-byte unit records at $FF02B4; calls npc_leader_init; combat_target_check; sfx_request
 0x02513E,sys_unk_02513e,0,auto: touches $FF010E $FF02B8 $FF0E8E $FF0E90 $FFA7FC
 0x0253FE,map_walk_check,2,maps.md:415-416;591 returns step-blocked flag (mode 0x17 walkability)
 0x025456,npc_leader_init,1,architecture.md:223 called with leader after load; role from callers
@@ -166,7 +166,7 @@ addr,name,tier,note
 0x02988E,sys_unk_02988e,0,auto: touches none
 0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
 0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
-0x02A2CA,sys_unk_02a2ca,0,auto: touches $FF009A $FF010E $FF0120 $FF02A0 $FF02A2 $FF02A5
+0x02A2CA,combat_unk_02a2ca,0,auto: unit records $FF02DB/$FF02B2 and flag $FF010E; no clear role
 0x02A454,sys_unk_02a454,0,auto: touches $FF02A0 $FF02A2 $FF02A4 $FF02A6 $FF02A8 $FF02AA
 0x02A562,sys_unk_02a562,0,auto: touches $FF02B4 $FF02B6 $FF02BE $FF02C0 $FF02C2 $FF02C8
 0x02AD64,sys_unk_02ad64,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
@@ -174,7 +174,7 @@ addr,name,tier,note
 0x02AFF2,sys_unk_02aff2,0,auto: touches $FF0142 $FF02BA $FF02BE $FF02C0 $FF02C2 $FF02CE
 0x02B190,sys_unk_02b190,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
 0x02B2B2,sys_unk_02b2b2,0,auto: touches $FF02B4 $FF02BE $FF02C0 $FF02C2
-0x02B402,sys_unk_02b402,0,auto: touches $FF02B4
+0x02B402,world_unk_02b402,0,auto: calls world_get_step_delta and sys_struct52_find on $FF02B4 records
 0x02B502,sys_unk_02b502,0,auto: touches $FF02B4
 0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
 0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
