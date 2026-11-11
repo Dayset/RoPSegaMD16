@@ -91,7 +91,7 @@ addr,name,tier,note
 0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
 0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
 0x01da6c,world_location_transition,1,4-mode location entry dispatcher (0 scan 1 map 2 combat 3 victory); releases chars sets songs and state then calls world_enter_location; called from map and combat code
-0x01E02E,sys_unk_01e02e,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
+0x01E02E,sys_unk_01e02e,0,static: dispatch case 0 of world_get_step_delta ($01E022); direction 0=N; sets (dx dy)=(0 -1); table $01E086
 0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
 0x01E18A,world_decompose_direction,1,decomposes dx/dy into direction-component codes via two output pointers; called from world_get_direction $036DE8
 0x01e29c,world_decompose_direction_axis,1,decomposes dx/dy into direction-component codes via two output pointers with axis-order flag; sibling of world_decompose_direction; called from world_move_toward and world_check_toward
@@ -235,7 +235,7 @@ addr,name,tier,note
 0x032ffa,npc_find_best_char,1,scans 396-entry table $0CD430; best score via math_rem32_signed mod 2000; caller $023F7E stores result in group slot
 0x033136,text_record_lookup,1,searches 6-byte table $0D301E 35 entries for key pair; returns index+0x3A or hash fallback; called from $032E28
 0x0331A4,shop_record_score,1,logic.md:576 scores each record for template match
-0x033396,sys_unk_033396,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
+0x033396,sys_unk_033396,0,static: dispatch case 0 of shop_record_score ($0331A4); sets flag -$a(a6)=1 when goods-record byte +4 is NOT in $FFC326 bitmap; table $0334CA
 0x0337D0,sys_set_flag_bit3_add44d,1,static: sets bit 3 of ram_sys_ff02a2 and returns arg + $44D
 0x0337ee,npc_place_char,1,places char with HP and type guards; move via $024984 plus npc_leader_init; sets bit 14; called from $022958
 0x034b50,npc_move_leader,1,moves char via $024984 then npc_leader_init; sets bit 14; called from $034754
@@ -285,8 +285,8 @@ addr,name,tier,note
 0x03888a,spell_apply_group,1,Applies effect 24 via $02140A to each live member of a char 6-entry list; random gate and $025DE4 check; called by five spell-effect routines
 0x038938,map_animate_tiles,1,Animates map chunk tiles in 10x10 grid; toggles tile low bit by $FF012A parity skipping tiles 495 and 213; called from $03E2D4 when $FF012A below 20
 0x038a22,spell_step_duration,1,Advances a spell duration counter by 6 or 14 and sets a flag 0 or 1 by arg0 mod 4; threshold 448; called after world_decompose_direction
-0x038A40,sys_unk_038a40,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
-0x038AB2,sys_unk_038ab2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
+0x038A40,sys_unk_038a40,0,static: dispatch case 0 of spell_step_duration ($038A22) first dispatch; adds 14 to duration and clears flag; table $038A80
+0x038AB2,sys_unk_038ab2,0,static: dispatch case 0 of spell_step_duration ($038A22) second dispatch; adds 2 to duration and sets flag 1; table $038AE2
 0x038b00,map_load_group_chunks,1,loads map chunks at each group member X/Y via $0319ec $031a9c; called from $03F8FE $03FACA
 0x038b96,npc_wander_move,1,random NPC move via $024984 after $0253fe walkability check; called from $03F600 $03F654 $03F6C0
 0x038c5a,spell_multihit_scatter,1,action code 26 SFX 16; multi-hit random scatter via $03B152 $02B402
@@ -305,9 +305,9 @@ addr,name,tier,note
 0x039DF4,spell_apply_actor_39df4,1,static: indexes actor record stride 34 then calls spell_effect_start when ff012a is 1 or 41
 0x039e9e,spell_step_effect_146,1,flat-70 phased spell effect action 146; visual 7 via $03CC4C; same phased shape as 144; called from combat_action_main dispatch
 0x039f48,spell_find_target_cell,1,evaluates 13x13 cost grid and writes best cell x y to $FF024C $FF024E; called from spell_damage_calc with range 0-7
-0x03A062,sys_unk_03a062,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
-0x03A2E4,sys_unk_03a2e4,0,auto: code range from linear decode (extra_ranges.txt); dispatch target
-0x03A4A2,sys_unk_03a4a2,0,auto: code range from linear decode (extra_ranges.txt); dispatch table follows
+0x03A062,sys_unk_03a062,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); accumulates actor HP into 13x13 cost grid; table $03A220
+0x03A2E4,sys_unk_03a2e4,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); adds 1000 to cost-grid cell and marks bitmap; table $03A354
+0x03A4A2,sys_unk_03a4a2,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); best-cell search (min cost under distance); table $03A5D0
 0x03AAC4,sys_stub_03aac4,1,static: empty routine (link/unlk/rts only)
 0x03aacc,combat_victory_announce,1,shows message 0x20-0x23 by $FF00AE and food; plays Victory song 20 and SFX 91; sets $FF0112 to 1; flushes msg queue 3x; called when group alive
 0x03ab8c,combat_lock_action,2,sets $FF012C to 7 locked busy and $FF012A to 1; spells.md:262 0x07 locked busy set by $3AB8C; called from spell_effect_apply and $03B51E
