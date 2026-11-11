@@ -1,0 +1,13 @@
+# rec 1014 | ptr=0x09852 len=14 type=5 | entries=7
+# rendered: 'Hello fellow, welcome to Magicnia. '
+# $136FC skips array[0] and renders array[1..7], inclusive of the read-past entry
+# (read-past entry: rec 1015 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3170 sep=space # '<Drool>'
+1 idx=456 sep=space # 'Hello'
+2 idx=1105 sep=comma # 'fellow'
+3 idx=4 sep=space # ' '
+4 idx=381 sep=space # 'welcome'
+5 idx=103 sep=space # 'to'
+6 idx=386 sep=period # 'Magicnia'

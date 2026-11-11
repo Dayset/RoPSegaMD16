@@ -1,0 +1,33 @@
+# rec 924 | ptr=0x08AEC len=54 type=5 | entries=27
+# rendered: "Thieves from the Guild are not ordinary thieves; we don't bother normal citizens. Regular Robin Hood types we are, except we keep the money. "
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 925 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2962 sep=space # 'course!'
+1 idx=387 sep=space # 'Thieves'
+2 idx=23 sep=space # 'from'
+3 idx=14 sep=space # 'the'
+4 idx=7 sep=space # 'Guild'
+5 idx=207 sep=space # 'are'
+6 idx=452 sep=space # 'not'
+7 idx=2963 sep=space # 'ordinary'
+8 idx=2964 sep=space # 'thieves;'
+9 idx=645 sep=space # 'we'
+10 idx=471 sep=space # "don't"
+11 idx=2965 sep=space # 'bother'
+12 idx=855 sep=space # 'normal'
+13 idx=2402 sep=period # 'citizens'
+14 idx=4 sep=space # ' '
+15 idx=2966 sep=space # 'Regular'
+16 idx=2967 sep=space # 'Robin'
+17 idx=2968 sep=space # 'Hood'
+18 idx=712 sep=space # 'types'
+19 idx=645 sep=space # 'we'
+20 idx=207 sep=comma # 'are'
+21 idx=4 sep=space # ' '
+22 idx=217 sep=space # 'except'
+23 idx=645 sep=space # 'we'
+24 idx=391 sep=space # 'keep'
+25 idx=14 sep=space # 'the'
+26 idx=1189 sep=period # 'money'

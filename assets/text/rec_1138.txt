@@ -1,0 +1,30 @@
+# rec 1138 | ptr=0x0A644 len=48 type=5 | entries=24
+# rendered: 'You rot forever in the jail cell. You should have helped more people out when they were in trouble with the law. '
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 1139 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=8 sep=space # 'You'
+2 idx=1991 sep=space # 'rot'
+3 idx=530 sep=space # 'forever'
+4 idx=76 sep=space # 'in'
+5 idx=14 sep=space # 'the'
+6 idx=614 sep=space # 'jail'
+7 idx=1436 sep=period # 'cell'
+8 idx=4 sep=space # ' '
+9 idx=8 sep=space # 'You'
+10 idx=390 sep=space # 'should'
+11 idx=161 sep=space # 'have'
+12 idx=1994 sep=space # 'helped'
+13 idx=156 sep=space # 'more'
+14 idx=38 sep=space # 'people'
+15 idx=251 sep=space # 'out'
+16 idx=746 sep=space # 'when'
+17 idx=166 sep=space # 'they'
+18 idx=526 sep=space # 'were'
+19 idx=76 sep=space # 'in'
+20 idx=1310 sep=space # 'trouble'
+21 idx=41 sep=space # 'with'
+22 idx=14 sep=space # 'the'
+23 idx=3339 sep=period # 'law'

@@ -1,0 +1,15 @@
+# rec 923 | ptr=0x08ADA len=18 type=5 | entries=9
+# rendered: "You're very funny -- I steal, of course! "
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 924 array[0], idx=2962 sep=space 'course!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2087 sep=space # 'again!'
+1 idx=858 sep=space # "You're"
+2 idx=565 sep=space # 'very'
+3 idx=1582 sep=space # 'funny'
+4 idx=97 sep=space # '--'
+5 idx=459 sep=space # 'I'
+6 idx=1595 sep=comma # 'steal'
+7 idx=4 sep=space # ' '
+8 idx=13 sep=space # 'of'

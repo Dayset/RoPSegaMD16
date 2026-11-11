@@ -1,0 +1,17 @@
+# rec 1050 | ptr=0x09C7C len=22 type=5 | entries=11
+# rendered: 'You are a nasty man! No compassion for the poor. '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 1051 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=874 sep=space # 'you!'
+1 idx=8 sep=space # 'You'
+2 idx=207 sep=space # 'are'
+3 idx=42 sep=space # 'a'
+4 idx=1337 sep=space # 'nasty'
+5 idx=3211 sep=space # 'man!'
+6 idx=342 sep=space # 'No'
+7 idx=3212 sep=space # 'compassion'
+8 idx=185 sep=space # 'for'
+9 idx=14 sep=space # 'the'
+10 idx=1598 sep=period # 'poor'

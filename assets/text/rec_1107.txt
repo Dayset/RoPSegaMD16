@@ -1,0 +1,13 @@
+# rec 1107 | ptr=0x0A31E len=14 type=5 | entries=7
+# rendered: 'You manage to flee your enemy. '
+# $136FC skips array[0] and renders array[1..7], inclusive of the read-past entry
+# (read-past entry: rec 1108 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=8 sep=space # 'You'
+2 idx=696 sep=space # 'manage'
+3 idx=103 sep=space # 'to'
+4 idx=3299 sep=space # 'flee'
+5 idx=101 sep=space # 'your'
+6 idx=1049 sep=period # 'enemy'

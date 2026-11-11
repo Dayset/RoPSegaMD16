@@ -1,0 +1,22 @@
+# rec 944 | ptr=0x08E48 len=32 type=5 | entries=16
+# rendered: 'Fen Ho is our salvation, our leader, our father, and our brother. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 945 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=430 sep=space # 'Fen'
+2 idx=2195 sep=space # 'Ho'
+3 idx=57 sep=space # 'is'
+4 idx=355 sep=space # 'our'
+5 idx=3009 sep=comma # 'salvation'
+6 idx=4 sep=space # ' '
+7 idx=355 sep=space # 'our'
+8 idx=3010 sep=comma # 'leader'
+9 idx=4 sep=space # ' '
+10 idx=355 sep=space # 'our'
+11 idx=1694 sep=comma # 'father'
+12 idx=4 sep=space # ' '
+13 idx=20 sep=space # 'and'
+14 idx=355 sep=space # 'our'
+15 idx=2313 sep=period # 'brother'

@@ -1,0 +1,21 @@
+# rec 1110 | ptr=0x0A356 len=30 type=5 | entries=15
+# rendered: "You hit the Jackpot! 5000 Gold! Congratulations! Don't spend it all in one place. "
+# $136FC skips array[0] and renders array[1..15], inclusive of the read-past entry
+# (read-past entry: rec 1111 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3303 sep=space # 'gold!'
+1 idx=8 sep=space # 'You'
+2 idx=2379 sep=space # 'hit'
+3 idx=14 sep=space # 'the'
+4 idx=3304 sep=space # 'Jackpot!'
+5 idx=3305 sep=space # '5000'
+6 idx=3306 sep=space # 'Gold!'
+7 idx=3307 sep=space # 'Congratulations!'
+8 idx=607 sep=space # "Don't"
+9 idx=885 sep=space # 'spend'
+10 idx=114 sep=space # 'it'
+11 idx=373 sep=space # 'all'
+12 idx=76 sep=space # 'in'
+13 idx=380 sep=space # 'one'
+14 idx=236 sep=period # 'place'

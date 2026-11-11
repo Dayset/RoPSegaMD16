@@ -1,0 +1,20 @@
+# rec 1143 | ptr=0x0A73E len=28 type=5 | entries=14
+# rendered: 'Year 111 - Magic Mirror was moved to the Speed crypt -- better climate '
+# $136FC skips array[0] and renders array[1..14], inclusive of the read-past entry
+# (read-past entry: rec 1144 array[0], idx=3349 sep=space 'climate'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=114 sep=space # 'it'
+1 idx=3343 sep=space # 'Year'
+2 idx=3347 sep=space # '111'
+3 idx=363 sep=space # '-'
+4 idx=280 sep=space # 'Magic'
+5 idx=3348 sep=space # 'Mirror'
+6 idx=143 sep=space # 'was'
+7 idx=1745 sep=space # 'moved'
+8 idx=103 sep=space # 'to'
+9 idx=14 sep=space # 'the'
+10 idx=332 sep=space # 'Speed'
+11 idx=1784 sep=space # 'crypt'
+12 idx=97 sep=space # '--'
+13 idx=527 sep=space # 'better'

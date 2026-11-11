@@ -1,0 +1,19 @@
+# rec 1009 | ptr=0x097F8 len=26 type=5 | entries=13
+# rendered: 'Magic? Hey, watch me pull a rabbit out of my hat! '
+# $136FC skips array[0] and renders array[1..13], inclusive of the read-past entry
+# (read-past entry: rec 1010 array[0], idx=3167 sep=space 'hat!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=280 sep=question # 'Magic'
+2 idx=4 sep=space # ' '
+3 idx=619 sep=comma # 'Hey'
+4 idx=4 sep=space # ' '
+5 idx=2412 sep=space # 'watch'
+6 idx=494 sep=space # 'me'
+7 idx=1681 sep=space # 'pull'
+8 idx=42 sep=space # 'a'
+9 idx=3166 sep=space # 'rabbit'
+10 idx=251 sep=space # 'out'
+11 idx=13 sep=space # 'of'
+12 idx=484 sep=space # 'my'

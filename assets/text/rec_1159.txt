@@ -1,0 +1,31 @@
+# rec 1159 | ptr=0x0AA4C len=50 type=5 | entries=25
+# rendered: 'Eight stumps that disapear is how the Fluffi Tree is kept. Eight mounds of grass remove eight stumps when upon they are stepped. '
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 1160 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=3398 sep=space # 'Eight'
+2 idx=3399 sep=space # 'stumps'
+3 idx=191 sep=space # 'that'
+4 idx=3400 sep=space # 'disapear'
+5 idx=57 sep=space # 'is'
+6 idx=1188 sep=space # 'how'
+7 idx=14 sep=space # 'the'
+8 idx=2164 sep=space # 'Fluffi'
+9 idx=2168 sep=space # 'Tree'
+10 idx=57 sep=space # 'is'
+11 idx=1117 sep=period # 'kept'
+12 idx=4 sep=space # ' '
+13 idx=3398 sep=space # 'Eight'
+14 idx=3401 sep=space # 'mounds'
+15 idx=13 sep=space # 'of'
+16 idx=3001 sep=space # 'grass'
+17 idx=3402 sep=space # 'remove'
+18 idx=3403 sep=space # 'eight'
+19 idx=3399 sep=space # 'stumps'
+20 idx=746 sep=space # 'when'
+21 idx=741 sep=space # 'upon'
+22 idx=166 sep=space # 'they'
+23 idx=207 sep=space # 'are'
+24 idx=3404 sep=period # 'stepped'
