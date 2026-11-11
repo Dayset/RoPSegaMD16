@@ -7,9 +7,44 @@
  * (the attract-phase snapshot in harness #1/#3 was too early: the name
  * table was still blank and only the generated sprite tiles were up).
  *
- * Hook at 0x35C, harness at 0xFD0CC. Snapshot once when $FF8640 != 0,
- * flag 0xBEEF at $FFD000, canaries 0xA5A5/0x5A5A. Hook exit is `rts`
- * (never jmp -- #021 Q13).
+ * Hook at 0x1272 (VBlank handler entry, `move.w #$0,$FF0016`),
+ * harness at 0xFD0CC. Snapshot once when $FF8640 != 0, flag 0xBEEF
+ * at $FFD000, canaries 0xA5A5/0x5A5A.
+ *
+ * Why VBlank ($1272) and not the attract loop (0x35C, the original
+ * hook) or main_loop ($D28E, the first redesign):
+ * - 0x35C: the trigger ($FF8640 != 0) and the attract loop are
+ *   mutually exclusive. $FF8640 is written only inside window_down
+ *   ($01245E), called from intro_story_driver, called from
+ *   game_dispatch -- i.e. AFTER the attract loop is exited (frame
+ *   ~230). The 0x35C hook stops firing at exactly the moment the
+ *   trigger becomes true, so the harness as written could never
+ *   snapshot on either build (#112 batch 3).
+ * - $D28E (first redesign): main_loop is entered after
+ *   intro_story_driver, so $FF8640 is set when it first fires -- but
+ *   the game NEVER REACHES main_loop in debugger mode without input
+ *   (verified: original ROM, no hook, $D292 breakpoint never fires
+ *   in 150 s; the shift-test reach check proves it only in batch
+ *   mode). The $D292 hook is dead in the debugger. The intro waits
+ *   for input (or a long timeout) and main_loop is never entered.
+ * - $1272 (this redesign): the VBlank handler fires EVERY frame in
+ *   every phase (attract, intro, gameplay) -- verified live: a $1272
+ *   breakpoint fires once per frame for 400+ frames, and $FF8640
+ *   flips 0000 -> 0234 at step ~267, after which the handler keeps
+ *   firing. The harness checks $FF8640 on every VBlank and snapshots
+ *   on the first VBlank after the write. The logo tiles are in VRAM
+ *   by frame 81 (tiles2), so they are present at frame ~268.
+ *
+ * Interrupt-context note: $1272 is entered via the VBlank interrupt,
+ * so the trampoline must NOT use `rts` (that is for jsr hooks, #021
+ * Q13). It replicates the hooked `move.w #$0,$FF0016`, does the
+ * snapshot check, and jumps back into the handler at $127A, which
+ * continues normally and returns via `rte` at the handler's end.
+ * This is the debug overlay's proven $1272 hook pattern. The
+ * snapshot does VDP reads from interrupt context (one-shot); a
+ * transient VDP-address disturbance is acceptable for a harness.
+ * The `jmp $127A` is an absolute ROM address and shifts (+0x100 in
+ * the shifted build); build_tiles4.py shifts it (see its header).
  *
  * Result layout (words, base $FFD000):
  *  $FFD000 = 0xBEEF. $FFD002 = 0xA5A5. $FFD00E = 0x5A5A.
@@ -22,11 +57,13 @@
     .text
     .globl _start
 _start:
+    /* replicate the hooked instruction first (clears $FF0016) */
+    move.w #0, 0xFF0016
     cmpi.w #0xBEEF, 0xFFD000
-    beq already_done
+    beq done
     /* snapshot once the installers have run */
     tst.w 0xFF8640
-    beq not_yet
+    beq done
     movem.l %d0-%d3/%a0-%a1, -(%sp)
     move.w #0xBEEF, 0xFFD000
     move.w #0xA5A5, 0xFFD002
@@ -51,12 +88,8 @@ _start:
     move.w #127, %d1
     bsr vram_read
     movem.l (%sp)+, %d0-%d3/%a0-%a1
-already_done:
-    move.w 0xC00004, %d1
-    rts
-not_yet:
-    move.w 0xC00004, %d1
-    rts
+done:
+    jmp 0x127A
 
 /* vram_read: a0 = dest (words), d0 = VRAM byte address, d1 = count-1.
  * First read after setting the address returns the word AT that address
