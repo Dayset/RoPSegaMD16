@@ -12,7 +12,7 @@ tools/vasm/vasmz80_oldstyle -Fbin -o build/z80_snd_driver.bin disasm/z80/snd_dri
 # and pass 2 assembles them in. The sums do not change instruction sizes, so addresses hold.
 printf 'RUNTIME_SUM\tequ\t0\nHEADER_SUM\tequ\t0\n' > build/checksum.inc
 tools/vasm/vasmm68k_mot -Fbin -m68000 -no-opt -o build/pass1.gen disasm/src/rop.s
-python3 tools/checksum.py inc build/pass1.gen build/checksum.inc
+python3 tools/checksum.py inc build/pass1.gen build/checksum.inc "${SHIFT:-0}"
 tools/vasm/vasmm68k_mot -Fbin -m68000 -no-opt -o build/rop-rebuilt.gen disasm/src/rop.s
 test -f build/rop-rebuilt.gen
 rm -f build/pass1.gen

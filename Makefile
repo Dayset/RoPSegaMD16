@@ -45,5 +45,8 @@ check: lint gate rom-free
 status:
 	@python3 tools/status.py
 
+shift-test:
+	sh tools/shift_test.sh
+
 clean:
 	rm -rf build

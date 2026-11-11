@@ -21,6 +21,7 @@ Rules:
   * The whole file is then checked by tools/verify_rebuild.py (byte-identity gate).
 """
 import csv
+import os
 import re
 import subprocess
 import sys
@@ -32,7 +33,7 @@ import capstone
 ROM = Path("rop-original.gen")
 TABLES_CSV = Path("disasm/tables.csv")  # structured data tables (#14): start,end,prefix,words_per_record
 BODIES = Path("disasm/ghidra/function_bodies.txt")
-OUT = Path("disasm/src/rop.s")
+OUT = Path(os.environ.get("ROP_SRC", "disasm/src/rop.s"))  # shift test writes elsewhere (#16 item 3)
 VASM = Path("tools/vasm/vasmm68k_mot")
 ROM_SIZE = 0x100000
 Z80_START, Z80_END = 0x0EBB6E, 0x0ED0E4  # sound driver blob, end exclusive (#78)
@@ -47,6 +48,10 @@ HW_NAMES = {
     0xA000DA: "z80_mailbox_da", 0xA000E6: "z80_mailbox_e6",  # docs/sound.md §13 (tier 0 names)
     0xA10008: "pad_port1_reg08", 0xA1000C: "pad_port2_reg0c",  # IO registers, role not read (tier 0)
 }
+# Vector-table entries that hold code addresses (#16 item 1). Each is emitted as a label, so a shift moves it.
+VEC_PTR = {0x4: 0x200, 0x70: 0x1270, 0x78: 0x1272}  # reset PC; HBlank; VBlank handler
+SHIFT = int(os.environ.get("SHIFT", "0"), 0)  # shift test (#16 item 3): padding inserted before the code at $200
+SHIFT_AT = 0x200
 HDR_SUM = 0x18E    # header checksum word, a symbol set by build/checksum.inc (#16)
 RUNTIME_IMM = 0xFD098  # runtime self-check immediate, a symbol too (#16)
 RUNTIME_CMP = 0xFD096  # the cmpi.l instruction itself (its listing comment)
@@ -408,7 +413,7 @@ def main():
         pieces.append((start, "code", (end, entry, insns, tail)))
     pieces.sort()
     pos = 0
-    label_addrs = targets | entry_names | set(NAMES)  # every named address gets a label
+    label_addrs = targets | entry_names | set(NAMES) | set(VEC_PTR.values())  # every named address gets a label
     labelled = set()
 
     tables = []
@@ -491,6 +496,13 @@ def main():
 
     def emit_data(a, b):
         """Emit data [a,b), splitting it at label addresses; a label at a is emitted too."""
+        for k in sorted(VEC_PTR):
+            if a <= k < b:
+                emit_data(a, k)
+                out.append(f"\tdc.l {lab(VEC_PTR[k])}\t; ${k:06X} vector")
+                labelled.add(k)
+                emit_data(k + 4, b)
+                return
         if a < HDR_SUM < b:  # header checksum word is a symbol (#16)
             assert not any(HDR_SUM < t < HDR_SUM + 2 for t in label_addrs), "label inside header word"
             emit_data(a, HDR_SUM)
@@ -546,6 +558,8 @@ def main():
     for start, kind, payload in pieces:
         if start > pos:
             emit_data(pos, start)
+        if SHIFT and start == SHIFT_AT:
+            out.append(f"\tdcb.b ${SHIFT:X},$FF\t; shift test padding (SHIFT={SHIFT:#x})")
         end, entry, insns, tail = payload
         out.append(f"\t; code ${start:06X}-${end:06X}")
         for addr, size, mnem, op in insns:
@@ -580,8 +594,11 @@ def main():
             if len(t) % 2:
                 out.append(f"\tdc.b ${t[-1]:02X}")
         pos = end + 1
-    if pos < ROM_SIZE:
-        emit_data(pos, ROM_SIZE)
+    tail_end = ROM_SIZE - SHIFT  # padding shifts the image; the last SHIFT bytes are $FF and are dropped
+    if SHIFT:
+        assert all(b == 0xFF for b in ROM.read_bytes()[tail_end:]), "shift would drop non-padding bytes"
+    if pos < tail_end:
+        emit_data(pos, tail_end)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     text = "\n".join(out) + "\n"
