@@ -387,11 +387,11 @@ total = 1001 bits** (7 bits spare, bits 1001..1007, zero):
 The party HP-ratio field is computed inline: `((curHP*5 + curPow)
 << 2) / ((maxHP*5 + maxPow))`, clamped to [1,3], forced to 0 if
 struct `+0x2C` bit 3 (`rol #3 & 1`) is set. Inventory counts come
-from the category table +7 bytes (verified ROM bytes: `$D66AD`/
+from the category table's count bytes (+0 field, base `$D66A3` —
+see `docs/logic.md` §3.3; verified ROM bytes: `$D66AD`/
 `$D66B7`/`$D66C1`/`$D66CB`/`$D66D5`/`$D66DF` = 20 each for spell
 cats 1–6; `$D6707` = 11 rings; `$D671B` = 15 keys; `$D6725` = 33
-items; `$D674D` = 33 papers; `$D672F` = 25 goods — these ARE the
-`$D66A6` record +7 bytes).
+items; `$D674D` = 33 papers; `$D672F` = 25 goods).
 
 **`$FF00C0` 36-word table: RESOLVED (2026-11-10) [static] — the
 persistent merchant-attitude table.** 36 words, indices 0–35, one

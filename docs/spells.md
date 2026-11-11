@@ -20,7 +20,9 @@ in `docs/logic.md` §Background and are not repeated here.
   spells per character: Buc (sorcerer), Slash (knight), Arrow
   (archer), Alexi (conjuror), Mortimer (necromancer), Obliky
   (enchanter) — six characters, six disciplines, six price blocks.
-  That mapping is **not proven from code** (§1.3).
+  That mapping is **proven from code** (§1.3): block 1 = Sorc,
+  2 = Knight, 3 = Archer, 4 = Necro, 5 = Enchnt, 6 = Conjur.
+  (The guide's "Arrow" is the ROM's Feather, name 61 — see §1.1.)
 - The Russian walkthrough (rings-of-power.ru) mentions combat modes
   MANUAL / AUTO / Wary and spells STUN / WARN / CLUE. Player-observed
   only.
@@ -81,18 +83,49 @@ and block 4 rec 74), `Master` (block 1 rec 20 and block 6 rec 117),
 — different price records, different `name_idx` values, so the
 duplicates are distinct spells that happen to share a display name.
 
-### 1.3 Block ↔ discipline mapping — NOT proven (hypothesis only)
+### 1.3 Block ↔ discipline mapping — PINNED (code + guide agree)
 
-The names suggest block 2 = knight weapons (Stab, Cleave, Knives…),
-block 3 = archer (Dart, Arrow, Ambush…), block 4 = necromancer
-(Claw, Death, Raise, Reaper…), block 5 = conjuror summons (Bear,
-Dragon, Wyrm, Djinn-adjacent…), but **no code found ties a price
-block to a discipline or a character**. The six characters' spell
-access is decided by the rank tables (§2) and the `+0x25` selector,
-not by the price block. The remake must not hard-code
-block→discipline until a character-creation / shop trace proves it
-(#020). The fan guide's six-characters structure is the hypothesis
-to test, not the answer.
+| Block | Price recs | Discipline | Character |
+|-------|-----------|------------|-----------|
+| 1 | 1–20 | Sorc | Buc |
+| 2 | 21–40 | Knight | Slash |
+| 3 | 41–60 | Archer | Feather |
+| 4 | 61–80 | Necro | Mortimer |
+| 5 | 81–100 | Enchnt | Obliky |
+| 6 | 101–120 | Conjur | Alexi |
+
+The mapping is the SPELLS verb menu (table [24], `$CD3B6`): its six
+items are the disciplines in order Sorc, Knight, Archer, Necro,
+Enchnt, Conjur, and each item's record writes its value (1–6) into
+`$BB6F` (verb-record byte +12, target selector byte +13 = 8, via the
+`$01F552` branch of the verb dispatch; next menu 25 = PICK).
+`$BB6F` is the item-category index used by the shop/spell listing
+(`menu_record_reload` `$01E5A0`, listing loops `$01E8AE`/`$01EB28`):
+price record = base(`$BB6F`) + i, where the base comes from the
+item-category table `$D66A3` (+5 word): 1, 21, 41, 61, 81, 101 for
+categories 1–6 (each count 20; see `docs/logic.md` §3.3). The PARTY
+menu (table [3], `$CCECA`) lists the same six disciplines with
+values 0–5, so block N ↔ discipline N−1. The spell a character
+casts is still decided by the rank tables (§2) and the `+0x25`
+selector — the block selects *which price records are offered*, not
+the effect.
+
+Cross-check against the GameFAQs Spell Guide
+(`gamefaqs.gamespot.com/genesis/586420-rings-of-power/faqs/13940/spell-guide`,
+per-character spell lists): all 108 spells the guide attributes
+agree — Sorc 20/20, Knight 20/20, Necro 20/20, Enchnt 20/20,
+Archer 9/9 named (the other 11 are the guide's unnamed "Force
+spells"), Conjur 19/19 named (the guide never discusses block-6
+`Axes`, rec 112). Zero disagreements; the guide was the lead, the
+code is the proof. Duplicate display names across blocks (`Insane`,
+`Master`, `Icebrg`, `Lava`, `Axes`) are distinct spells with
+different `name_idx` values, so they do not blur the mapping.
+(The guide calls the archer "Arrow"; the ROM name is Feather,
+name 61 — see §1.1.)
+
+Not traced: which guild sells which block (the BUY menu's category
+source — merchant vs character — was not followed); that does not
+affect the block↔discipline mapping itself.
 
 ## 2. Spell effect (rank) tables — verified
 
@@ -640,9 +673,11 @@ ones from this issue:
    selection inside the giant function (`0x3E2D4`, state
    `$FF012A ≥ 22`) is not fully traced — which block runs for
    which effect class / `w1` value.
-3. **Discipline ↔ block mapping:** no code ties price blocks to
-   disciplines or characters (§1.3). Needs a character-creation /
-   shop trace (#020).
+3. **Discipline ↔ block mapping:** PINNED (§1.3) — SPELLS menu
+   values 1–6 → item-category bases 1/21/41/61/81/101; GameFAQs
+   guide cross-check 108/108 with zero disagreements. Open
+   remainder: which guild sells which block (BUY category source
+   untraced).
 4. **"Arrow" vs "Feather":** which is the archer's ROM name (§1.1).
    Needs a new-game character-creation trace (#020).
 5. **`$1E0A4(attacker.+0x0A)`** in `$3A62E`'s pre-check path:

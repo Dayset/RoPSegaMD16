@@ -763,9 +763,10 @@ Q15 find-or-spawn location entity, Q17 papers bitmap `$FFC345`.
 | 18 (goods) | [6, 68, 25, 3, 0, 1] |
 
 Meaning open (display/icon params hypothesis; consumers in
-shop/message code — `$D66A6` base read at `0x27DA6`/`0x286C2`,
-`$D66A8+2` read at `0x1E8B8`/`0x1EB28`/`0x1F19A`/`0x1FCC4`/
-`0x20072`/`0x27D44`/`0x27EDC`/`0x282C0`/`0x2873A`/`0x28886`).
+shop/message code — the +3 name_idx field (`$D66A6` = base+3) read
+at `0x27DA6`/`0x286C2`, `$D66A8+2` read at `0x1E8B8`/`0x1EB28`/
+`0x1F19A`/`0x1FCC4`/`0x20072`/`0x27D44`/`0x27EDC`/`0x282C0`/`0x2873A`/
+`0x28886`).
 
 **`$23B84` tail (type-1 only, CODE-VERIFIED).** Template-derived
 stat (template word at `$CF1BC` + template byte `$CF1BE` ×
