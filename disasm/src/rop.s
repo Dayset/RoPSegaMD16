@@ -34149,7 +34149,7 @@ L029878:
 	moveq #$ff,d0	; $02988A
 	bra.b L029840	; $02988C
 	; code $02988E-$0298D1
-sys_unk_02988e:
+world_count_members_2988e:
 	link.w a6,#$fffc	; $02988E
 	tst.w $a(a6)	; $029892
 	bne.b L02989E	; $029896
