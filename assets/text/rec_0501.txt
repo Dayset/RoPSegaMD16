@@ -1,0 +1,31 @@
+# rec 501 | ptr=0x047BA len=50 type=5 | entries=25
+# rendered: 'The "Key to Variation" is merely this: "Start on the third square from the south wall and proceed according to the Order of Variation." '
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 502 array[0], idx=134 sep=space '"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=134 sep=space # '"'
+1 idx=45 sep=space # 'The'
+2 idx=1977 sep=space # '"Key'
+3 idx=103 sep=space # 'to'
+4 idx=1978 sep=space # 'Variation"'
+5 idx=57 sep=space # 'is'
+6 idx=1979 sep=space # 'merely'
+7 idx=1280 sep=space # 'this:'
+8 idx=1980 sep=space # '"Start'
+9 idx=82 sep=space # 'on'
+10 idx=14 sep=space # 'the'
+11 idx=1981 sep=space # 'third'
+12 idx=1722 sep=space # 'square'
+13 idx=23 sep=space # 'from'
+14 idx=14 sep=space # 'the'
+15 idx=414 sep=space # 'south'
+16 idx=1305 sep=space # 'wall'
+17 idx=20 sep=space # 'and'
+18 idx=1982 sep=space # 'proceed'
+19 idx=1983 sep=space # 'according'
+20 idx=103 sep=space # 'to'
+21 idx=14 sep=space # 'the'
+22 idx=17 sep=space # 'Order'
+23 idx=13 sep=space # 'of'
+24 idx=1971 sep=period # 'Variation'

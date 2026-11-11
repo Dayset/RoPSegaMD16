@@ -1,0 +1,25 @@
+# rec 1091 | ptr=0x0A164 len=38 type=5 | entries=19
+# rendered: 'You dream of the demon Void: "In the end, time spent on your quest will be wasted." '
+# $136FC skips array[0] and renders array[1..19], inclusive of the read-past entry
+# (read-past entry: rec 1092 array[0], idx=134 sep=space '"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3264 sep=space # 'consumption!"'
+1 idx=8 sep=space # 'You'
+2 idx=3240 sep=space # 'dream'
+3 idx=13 sep=space # 'of'
+4 idx=14 sep=space # 'the'
+5 idx=2533 sep=space # 'demon'
+6 idx=3260 sep=space # 'Void:'
+7 idx=3265 sep=space # '"In'
+8 idx=14 sep=space # 'the'
+9 idx=1118 sep=comma # 'end'
+10 idx=4 sep=space # ' '
+11 idx=485 sep=space # 'time'
+12 idx=2433 sep=space # 'spent'
+13 idx=82 sep=space # 'on'
+14 idx=101 sep=space # 'your'
+15 idx=1134 sep=space # 'quest'
+16 idx=394 sep=space # 'will'
+17 idx=395 sep=space # 'be'
+18 idx=3254 sep=period # 'wasted'

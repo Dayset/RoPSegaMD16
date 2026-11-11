@@ -1,0 +1,33 @@
+# rec 1161 | ptr=0x0AAB2 len=54 type=5 | entries=27
+# rendered: 'During the dark years the Ring of Perfection was sealed away. The keys to its retreival are among those who never walk the earth simutaneously. '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 1162 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=3410 sep=space # 'During'
+2 idx=14 sep=space # 'the'
+3 idx=53 sep=space # 'dark'
+4 idx=159 sep=space # 'years'
+5 idx=14 sep=space # 'the'
+6 idx=1247 sep=space # 'Ring'
+7 idx=13 sep=space # 'of'
+8 idx=109 sep=space # 'Perfection'
+9 idx=143 sep=space # 'was'
+10 idx=1161 sep=space # 'sealed'
+11 idx=1088 sep=period # 'away'
+12 idx=4 sep=space # ' '
+13 idx=45 sep=space # 'The'
+14 idx=3411 sep=space # 'keys'
+15 idx=103 sep=space # 'to'
+16 idx=199 sep=space # 'its'
+17 idx=3412 sep=space # 'retreival'
+18 idx=207 sep=space # 'are'
+19 idx=397 sep=space # 'among'
+20 idx=616 sep=space # 'those'
+21 idx=399 sep=space # 'who'
+22 idx=539 sep=space # 'never'
+23 idx=630 sep=space # 'walk'
+24 idx=14 sep=space # 'the'
+25 idx=1908 sep=space # 'earth'
+26 idx=3413 sep=period # 'simutaneously'

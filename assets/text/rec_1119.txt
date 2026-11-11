@@ -1,0 +1,30 @@
+# rec 1119 | ptr=0x0A406 len=48 type=5 | entries=24
+# rendered: 'You hold up the Holy Seal. A bright light is emmited from it and the entrance to the Fount of Heaven opens. '
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 1120 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=8 sep=space # 'You'
+2 idx=1967 sep=space # 'hold'
+3 idx=100 sep=space # 'up'
+4 idx=14 sep=space # 'the'
+5 idx=16 sep=space # 'Holy'
+6 idx=2392 sep=period # 'Seal'
+7 idx=4 sep=space # ' '
+8 idx=5 sep=space # 'A'
+9 idx=3317 sep=space # 'bright'
+10 idx=734 sep=space # 'light'
+11 idx=57 sep=space # 'is'
+12 idx=3318 sep=space # 'emmited'
+13 idx=23 sep=space # 'from'
+14 idx=114 sep=space # 'it'
+15 idx=20 sep=space # 'and'
+16 idx=14 sep=space # 'the'
+17 idx=64 sep=space # 'entrance'
+18 idx=103 sep=space # 'to'
+19 idx=14 sep=space # 'the'
+20 idx=312 sep=space # 'Fount'
+21 idx=13 sep=space # 'of'
+22 idx=313 sep=space # 'Heaven'
+23 idx=1565 sep=period # 'opens'

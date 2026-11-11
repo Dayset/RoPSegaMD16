@@ -1,0 +1,23 @@
+# rec 949 | ptr=0x08EFC len=34 type=5 | entries=17
+# rendered: 'Arts of the mind are not important to me. Only skill in battle concerns me. '
+# $136FC skips array[0] and renders array[1..17], inclusive of the read-past entry
+# (read-past entry: rec 950 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3020 sep=space # 'matters!'
+1 idx=978 sep=space # 'Arts'
+2 idx=13 sep=space # 'of'
+3 idx=14 sep=space # 'the'
+4 idx=133 sep=space # 'mind'
+5 idx=207 sep=space # 'are'
+6 idx=452 sep=space # 'not'
+7 idx=737 sep=space # 'important'
+8 idx=103 sep=space # 'to'
+9 idx=494 sep=period # 'me'
+10 idx=4 sep=space # ' '
+11 idx=2035 sep=space # 'Only'
+12 idx=1514 sep=space # 'skill'
+13 idx=76 sep=space # 'in'
+14 idx=3016 sep=space # 'battle'
+15 idx=3021 sep=space # 'concerns'
+16 idx=494 sep=period # 'me'

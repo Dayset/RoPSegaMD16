@@ -1,0 +1,15 @@
+# rec 103 | ptr=0x008CA len=18 type=5 | entries=9
+# rendered: 'You must TALK to someone before attacking them. '
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 104 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=463 sep=space # '<NA>'
+1 idx=8 sep=space # 'You'
+2 idx=464 sep=space # 'must'
+3 idx=465 sep=space # 'TALK'
+4 idx=103 sep=space # 'to'
+5 idx=466 sep=space # 'someone'
+6 idx=151 sep=space # 'before'
+7 idx=467 sep=space # 'attacking'
+8 idx=468 sep=period # 'them'

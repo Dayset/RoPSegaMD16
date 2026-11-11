@@ -1,0 +1,30 @@
+# rec 629 | ptr=0x05C62 len=48 type=5 | entries=24
+# rendered: 'Take my message to the Spartan king and get his agreement to stop this slaughter and I will help you find the Ring. '
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 630 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=507 sep=space # 'Take'
+2 idx=484 sep=space # 'my'
+3 idx=2267 sep=space # 'message'
+4 idx=103 sep=space # 'to'
+5 idx=14 sep=space # 'the'
+6 idx=2323 sep=space # 'Spartan'
+7 idx=1668 sep=space # 'king'
+8 idx=20 sep=space # 'and'
+9 idx=678 sep=space # 'get'
+10 idx=239 sep=space # 'his'
+11 idx=2324 sep=space # 'agreement'
+12 idx=103 sep=space # 'to'
+13 idx=2325 sep=space # 'stop'
+14 idx=104 sep=space # 'this'
+15 idx=2326 sep=space # 'slaughter'
+16 idx=20 sep=space # 'and'
+17 idx=459 sep=space # 'I'
+18 idx=394 sep=space # 'will'
+19 idx=609 sep=space # 'help'
+20 idx=12 sep=space # 'you'
+21 idx=451 sep=space # 'find'
+22 idx=14 sep=space # 'the'
+23 idx=1247 sep=period # 'Ring'

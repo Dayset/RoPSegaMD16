@@ -1,0 +1,17 @@
+# rec 551 | ptr=0x0500A len=22 type=5 | entries=11
+# rendered: 'Good, I like a man who makes a deal. '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 552 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2135 sep=space # 'cutlas!'
+1 idx=486 sep=comma # 'Good'
+2 idx=4 sep=space # ' '
+3 idx=459 sep=space # 'I'
+4 idx=589 sep=space # 'like'
+5 idx=42 sep=space # 'a'
+6 idx=1426 sep=space # 'man'
+7 idx=399 sep=space # 'who'
+8 idx=306 sep=space # 'makes'
+9 idx=42 sep=space # 'a'
+10 idx=698 sep=period # 'deal'

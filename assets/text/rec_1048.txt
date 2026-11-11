@@ -1,0 +1,31 @@
+# rec 1048 | ptr=0x09C3A len=50 type=5 | entries=25
+# rendered: 'Please sir, alms for a humble beggar. Will you give me 50 gold? My family will starve this winter without it. '
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 1049 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=511 sep=space # 'Please'
+2 idx=1810 sep=comma # 'sir'
+3 idx=4 sep=space # ' '
+4 idx=3207 sep=space # 'alms'
+5 idx=185 sep=space # 'for'
+6 idx=42 sep=space # 'a'
+7 idx=1824 sep=space # 'humble'
+8 idx=3208 sep=period # 'beggar'
+9 idx=4 sep=space # ' '
+10 idx=967 sep=space # 'Will'
+11 idx=12 sep=space # 'you'
+12 idx=938 sep=space # 'give'
+13 idx=494 sep=space # 'me'
+14 idx=337 sep=space # '50'
+15 idx=482 sep=question # 'gold'
+16 idx=4 sep=space # ' '
+17 idx=1235 sep=space # 'My'
+18 idx=1759 sep=space # 'family'
+19 idx=394 sep=space # 'will'
+20 idx=3209 sep=space # 'starve'
+21 idx=104 sep=space # 'this'
+22 idx=3210 sep=space # 'winter'
+23 idx=340 sep=space # 'without'
+24 idx=114 sep=period # 'it'

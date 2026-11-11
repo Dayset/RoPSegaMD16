@@ -1,0 +1,20 @@
+# rec 727 | ptr=0x06CE6 len=28 type=5 | entries=14
+# rendered: 'Our skills are not born of Discipline, but given directly by Nexus. '
+# $136FC skips array[0] and renders array[1..14], inclusive of the read-past entry
+# (read-past entry: rec 728 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1655 sep=space # 'Our'
+2 idx=1150 sep=space # 'skills'
+3 idx=207 sep=space # 'are'
+4 idx=452 sep=space # 'not'
+5 idx=2139 sep=space # 'born'
+6 idx=13 sep=space # 'of'
+7 idx=890 sep=comma # 'Discipline'
+8 idx=4 sep=space # ' '
+9 idx=175 sep=space # 'but'
+10 idx=559 sep=space # 'given'
+11 idx=270 sep=space # 'directly'
+12 idx=69 sep=space # 'by'
+13 idx=48 sep=period # 'Nexus'

@@ -1,0 +1,13 @@
+# rec 123 | ptr=0x009E0 len=14 type=5 | entries=7
+# rendered: "I haven't asked you a question. "
+# $136FC skips array[0] and renders array[1..7], inclusive of the read-past entry
+# (read-past entry: rec 124 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=517 sep=space # "haven't"
+3 idx=518 sep=space # 'asked'
+4 idx=12 sep=space # 'you'
+5 idx=42 sep=space # 'a'
+6 idx=512 sep=period # 'question'

@@ -1,0 +1,33 @@
+# rec 1144 | ptr=0x0A75A len=54 type=5 | entries=27
+# rendered: "Certain exotic spells involving water summoning can be aided by the rare flame wood found only in the Cave of Fire, found around 5' 10'. "
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 1145 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3349 sep=space # 'climate'
+1 idx=3350 sep=space # 'Certain'
+2 idx=3351 sep=space # 'exotic'
+3 idx=951 sep=space # 'spells'
+4 idx=3352 sep=space # 'involving'
+5 idx=254 sep=space # 'water'
+6 idx=3353 sep=space # 'summoning'
+7 idx=460 sep=space # 'can'
+8 idx=395 sep=space # 'be'
+9 idx=3354 sep=space # 'aided'
+10 idx=69 sep=space # 'by'
+11 idx=14 sep=space # 'the'
+12 idx=1568 sep=space # 'rare'
+13 idx=1558 sep=space # 'flame'
+14 idx=1559 sep=space # 'wood'
+15 idx=396 sep=space # 'found'
+16 idx=300 sep=space # 'only'
+17 idx=76 sep=space # 'in'
+18 idx=14 sep=space # 'the'
+19 idx=1572 sep=space # 'Cave'
+20 idx=13 sep=space # 'of'
+21 idx=1571 sep=comma # 'Fire'
+22 idx=4 sep=space # ' '
+23 idx=396 sep=space # 'found'
+24 idx=575 sep=space # 'around'
+25 idx=1584 sep=space # "5'"
+26 idx=3355 sep=period # "10'"

@@ -1,0 +1,36 @@
+# rec 242 | ptr=0x01ABA len=60 type=5 | entries=30
+# rendered: "You kept your end of the bargain, I'll keep mine: the Mines of Misery are just to the east -- here, I'll make a map for you. "
+# $136FC skips array[0] and renders array[1..30], inclusive of the read-past entry
+# (read-past entry: rec 243 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=8 sep=space # 'You'
+2 idx=1117 sep=space # 'kept'
+3 idx=101 sep=space # 'your'
+4 idx=1118 sep=space # 'end'
+5 idx=13 sep=space # 'of'
+6 idx=14 sep=space # 'the'
+7 idx=1119 sep=comma # 'bargain'
+8 idx=4 sep=space # ' '
+9 idx=479 sep=space # "I'll"
+10 idx=391 sep=space # 'keep'
+11 idx=1120 sep=space # 'mine:'
+12 idx=14 sep=space # 'the'
+13 idx=136 sep=space # 'Mines'
+14 idx=13 sep=space # 'of'
+15 idx=137 sep=space # 'Misery'
+16 idx=207 sep=space # 'are'
+17 idx=179 sep=space # 'just'
+18 idx=103 sep=space # 'to'
+19 idx=14 sep=space # 'the'
+20 idx=412 sep=space # 'east'
+21 idx=97 sep=space # '--'
+22 idx=68 sep=comma # 'here'
+23 idx=4 sep=space # ' '
+24 idx=479 sep=space # "I'll"
+25 idx=732 sep=space # 'make'
+26 idx=42 sep=space # 'a'
+27 idx=920 sep=space # 'map'
+28 idx=185 sep=space # 'for'
+29 idx=12 sep=period # 'you'

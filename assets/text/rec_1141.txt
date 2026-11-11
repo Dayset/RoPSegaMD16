@@ -1,0 +1,33 @@
+# rec 1141 | ptr=0x0A6D0 len=54 type=5 | entries=27
+# rendered: "Go east from Speed into the hills. There is a hidden cave there above the falls -- it's the entrance to the Mines of Misery. "
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 1142 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=791 sep=space # 'Thalmus'
+1 idx=831 sep=space # 'Go'
+2 idx=412 sep=space # 'east'
+3 idx=23 sep=space # 'from'
+4 idx=332 sep=space # 'Speed'
+5 idx=271 sep=space # 'into'
+6 idx=14 sep=space # 'the'
+7 idx=925 sep=period # 'hills'
+8 idx=4 sep=space # ' '
+9 idx=588 sep=space # 'There'
+10 idx=57 sep=space # 'is'
+11 idx=42 sep=space # 'a'
+12 idx=58 sep=space # 'hidden'
+13 idx=54 sep=space # 'cave'
+14 idx=173 sep=space # 'there'
+15 idx=287 sep=space # 'above'
+16 idx=14 sep=space # 'the'
+17 idx=1097 sep=space # 'falls'
+18 idx=97 sep=space # '--'
+19 idx=1256 sep=space # "it's"
+20 idx=14 sep=space # 'the'
+21 idx=64 sep=space # 'entrance'
+22 idx=103 sep=space # 'to'
+23 idx=14 sep=space # 'the'
+24 idx=136 sep=space # 'Mines'
+25 idx=13 sep=space # 'of'
+26 idx=137 sep=period # 'Misery'

@@ -1,0 +1,30 @@
+# rec 1042 | ptr=0x09BA2 len=48 type=5 | entries=24
+# rendered: "I don't care what happens to the world, as long as we don't have a Golden Age. I hate to bathe. "
+# $136FC skips array[0] and renders array[1..24], inclusive of the read-past entry
+# (read-past entry: rec 1043 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1588 sep=space # 'here!'
+1 idx=459 sep=space # 'I'
+2 idx=471 sep=space # "don't"
+3 idx=1480 sep=space # 'care'
+4 idx=847 sep=space # 'what'
+5 idx=954 sep=space # 'happens'
+6 idx=103 sep=space # 'to'
+7 idx=14 sep=space # 'the'
+8 idx=90 sep=comma # 'world'
+9 idx=4 sep=space # ' '
+10 idx=538 sep=space # 'as'
+11 idx=564 sep=space # 'long'
+12 idx=538 sep=space # 'as'
+13 idx=645 sep=space # 'we'
+14 idx=471 sep=space # "don't"
+15 idx=161 sep=space # 'have'
+16 idx=42 sep=space # 'a'
+17 idx=2528 sep=space # 'Golden'
+18 idx=1270 sep=period # 'Age'
+19 idx=4 sep=space # ' '
+20 idx=459 sep=space # 'I'
+21 idx=851 sep=space # 'hate'
+22 idx=103 sep=space # 'to'
+23 idx=3201 sep=period # 'bathe'

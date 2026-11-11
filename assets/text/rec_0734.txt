@@ -1,0 +1,17 @@
+# rec 734 | ptr=0x06DCE len=22 type=5 | entries=11
+# rendered: 'I am done now. Read your tomes for more. '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 735 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=495 sep=space # 'am'
+3 idx=945 sep=space # 'done'
+4 idx=868 sep=period # 'now'
+5 idx=4 sep=space # ' '
+6 idx=2595 sep=space # 'Read'
+7 idx=101 sep=space # 'your'
+8 idx=1863 sep=space # 'tomes'
+9 idx=185 sep=space # 'for'
+10 idx=156 sep=period # 'more'

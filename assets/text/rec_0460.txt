@@ -1,0 +1,33 @@
+# rec 460 | ptr=0x0406C len=54 type=5 | entries=27
+# rendered: 'Listen to this: It says here that an object repelled by force from a surface can have its polarity reversed by touching all points on the surface! '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 461 array[0], idx=1849 sep=space 'surface!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1841 sep=space # 'Listen'
+2 idx=103 sep=space # 'to'
+3 idx=1280 sep=space # 'this:'
+4 idx=142 sep=space # 'It'
+5 idx=1512 sep=space # 'says'
+6 idx=68 sep=space # 'here'
+7 idx=191 sep=space # 'that'
+8 idx=234 sep=space # 'an'
+9 idx=997 sep=space # 'object'
+10 idx=1842 sep=space # 'repelled'
+11 idx=69 sep=space # 'by'
+12 idx=1843 sep=space # 'force'
+13 idx=23 sep=space # 'from'
+14 idx=42 sep=space # 'a'
+15 idx=1844 sep=space # 'surface'
+16 idx=460 sep=space # 'can'
+17 idx=161 sep=space # 'have'
+18 idx=199 sep=space # 'its'
+19 idx=1845 sep=space # 'polarity'
+20 idx=1846 sep=space # 'reversed'
+21 idx=69 sep=space # 'by'
+22 idx=1847 sep=space # 'touching'
+23 idx=373 sep=space # 'all'
+24 idx=1848 sep=space # 'points'
+25 idx=82 sep=space # 'on'
+26 idx=14 sep=space # 'the'

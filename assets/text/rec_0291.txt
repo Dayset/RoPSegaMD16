@@ -1,0 +1,18 @@
+# rec 291 | ptr=0x023F6 len=24 type=5 | entries=12
+# rendered: 'How is the quest going? Did you dig anything up? '
+# $136FC skips array[0] and renders array[1..12], inclusive of the read-past entry
+# (read-past entry: rec 292 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=502 sep=space # 'How'
+2 idx=57 sep=space # 'is'
+3 idx=14 sep=space # 'the'
+4 idx=1134 sep=space # 'quest'
+5 idx=802 sep=question # 'going'
+6 idx=4 sep=space # ' '
+7 idx=1328 sep=space # 'Did'
+8 idx=12 sep=space # 'you'
+9 idx=1329 sep=space # 'dig'
+10 idx=472 sep=space # 'anything'
+11 idx=100 sep=question # 'up'

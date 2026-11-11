@@ -1,0 +1,15 @@
+# rec 83 | ptr=0x007BC len=18 type=5 | entries=9
+# rendered: 'Speed - 72 klicks south ^Cathedral - 55 north '
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 84 array[0], idx=417 sep=space 'north'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=412 sep=space # 'east'
+1 idx=332 sep=space # 'Speed'
+2 idx=363 sep=space # '-'
+3 idx=413 sep=space # '72'
+4 idx=411 sep=space # 'klicks'
+5 idx=414 sep=space # 'south'
+6 idx=415 sep=space # '^Cathedral'
+7 idx=363 sep=space # '-'
+8 idx=416 sep=space # '55'

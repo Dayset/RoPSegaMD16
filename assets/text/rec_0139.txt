@@ -1,0 +1,20 @@
+# rec 139 | ptr=0x00B66 len=28 type=5 | entries=14
+# rendered: 'Violence has been on the rise lately. Guards are in high demand. '
+# $136FC skips array[0] and renders array[1..14], inclusive of the read-past entry
+# (read-past entry: rec 140 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=593 sep=space # 'Violence'
+2 idx=532 sep=space # 'has'
+3 idx=594 sep=space # 'been'
+4 idx=82 sep=space # 'on'
+5 idx=14 sep=space # 'the'
+6 idx=595 sep=space # 'rise'
+7 idx=596 sep=period # 'lately'
+8 idx=4 sep=space # ' '
+9 idx=597 sep=space # 'Guards'
+10 idx=207 sep=space # 'are'
+11 idx=76 sep=space # 'in'
+12 idx=598 sep=space # 'high'
+13 idx=599 sep=period # 'demand'

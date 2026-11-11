@@ -1,0 +1,27 @@
+# rec 492 | ptr=0x0463E len=42 type=5 | entries=21
+# rendered: 'Perhaps it could also dispel the undead. Unfortunately I am missing the primary ingredient: the mustache of a thespian. '
+# $136FC skips array[0] and renders array[1..21], inclusive of the read-past entry
+# (read-past entry: rec 493 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1945 sep=space # 'Perhaps'
+2 idx=114 sep=space # 'it'
+3 idx=1181 sep=space # 'could'
+4 idx=1138 sep=space # 'also'
+5 idx=1946 sep=space # 'dispel'
+6 idx=14 sep=space # 'the'
+7 idx=1947 sep=period # 'undead'
+8 idx=4 sep=space # ' '
+9 idx=1812 sep=space # 'Unfortunately'
+10 idx=459 sep=space # 'I'
+11 idx=495 sep=space # 'am'
+12 idx=1712 sep=space # 'missing'
+13 idx=14 sep=space # 'the'
+14 idx=1948 sep=space # 'primary'
+15 idx=1949 sep=space # 'ingredient:'
+16 idx=14 sep=space # 'the'
+17 idx=1950 sep=space # 'mustache'
+18 idx=13 sep=space # 'of'
+19 idx=42 sep=space # 'a'
+20 idx=1951 sep=period # 'thespian'

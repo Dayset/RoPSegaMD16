@@ -1,0 +1,27 @@
+# rec 870 | ptr=0x08328 len=42 type=5 | entries=21
+# rendered: 'Look, mister -- talking about this stuff is really boring. Wanna play Rings of Power on my computer? '
+# $136FC skips array[0] and renders array[1..21], inclusive of the read-past entry
+# (read-past entry: rec 871 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1455 sep=comma # 'Look'
+2 idx=4 sep=space # ' '
+3 idx=2870 sep=space # 'mister'
+4 idx=97 sep=space # '--'
+5 idx=932 sep=space # 'talking'
+6 idx=215 sep=space # 'about'
+7 idx=104 sep=space # 'this'
+8 idx=1874 sep=space # 'stuff'
+9 idx=57 sep=space # 'is'
+10 idx=543 sep=space # 'really'
+11 idx=2871 sep=period # 'boring'
+12 idx=4 sep=space # ' '
+13 idx=2872 sep=space # 'Wanna'
+14 idx=1493 sep=space # 'play'
+15 idx=801 sep=space # 'Rings'
+16 idx=13 sep=space # 'of'
+17 idx=560 sep=space # 'Power'
+18 idx=82 sep=space # 'on'
+19 idx=484 sep=space # 'my'
+20 idx=2873 sep=question # 'computer'

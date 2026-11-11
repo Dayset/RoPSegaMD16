@@ -1,0 +1,25 @@
+# rec 552 | ptr=0x05020 len=38 type=5 | entries=19
+# rendered: 'This map will lead you right to the Ahab. Blimey, was I sorry when she sank. '
+# $136FC skips array[0] and renders array[1..19], inclusive of the read-past entry
+# (read-past entry: rec 553 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=84 sep=space # 'This'
+2 idx=920 sep=space # 'map'
+3 idx=394 sep=space # 'will'
+4 idx=454 sep=space # 'lead'
+5 idx=12 sep=space # 'you'
+6 idx=1550 sep=space # 'right'
+7 idx=103 sep=space # 'to'
+8 idx=14 sep=space # 'the'
+9 idx=2100 sep=period # 'Ahab'
+10 idx=4 sep=space # ' '
+11 idx=2136 sep=comma # 'Blimey'
+12 idx=4 sep=space # ' '
+13 idx=143 sep=space # 'was'
+14 idx=459 sep=space # 'I'
+15 idx=470 sep=space # 'sorry'
+16 idx=746 sep=space # 'when'
+17 idx=1124 sep=space # 'she'
+18 idx=2137 sep=period # 'sank'

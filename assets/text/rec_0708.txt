@@ -1,0 +1,10 @@
+# rec 708 | ptr=0x06A90 len=8 type=5 | entries=4
+# rendered: 'Very well then. '
+# $136FC skips array[0] and renders array[1..4], inclusive of the read-past entry
+# (read-past entry: rec 709 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=2345 sep=space # 'Very'
+2 idx=642 sep=space # 'well'
+3 idx=1090 sep=period # 'then'

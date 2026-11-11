@@ -1,0 +1,21 @@
+# rec 756 | ptr=0x07130 len=30 type=5 | entries=15
+# rendered: 'Will can accomplish amazing things and can be found in the most unlikely places. '
+# $136FC skips array[0] and renders array[1..15], inclusive of the read-past entry
+# (read-past entry: rec 757 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=967 sep=space # 'Will'
+2 idx=460 sep=space # 'can'
+3 idx=2640 sep=space # 'accomplish'
+4 idx=2174 sep=space # 'amazing'
+5 idx=244 sep=space # 'things'
+6 idx=20 sep=space # 'and'
+7 idx=460 sep=space # 'can'
+8 idx=395 sep=space # 'be'
+9 idx=396 sep=space # 'found'
+10 idx=76 sep=space # 'in'
+11 idx=14 sep=space # 'the'
+12 idx=87 sep=space # 'most'
+13 idx=2641 sep=space # 'unlikely'
+14 idx=2642 sep=period # 'places'

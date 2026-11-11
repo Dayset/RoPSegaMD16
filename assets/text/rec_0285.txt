@@ -1,0 +1,32 @@
+# rec 285 | ptr=0x0229C len=52 type=5 | entries=26
+# rendered: 'The oasis is to the west of Division. Take your boat and hug the north wall of the city heading west to the corner. '
+# $136FC skips array[0] and renders array[1..26], inclusive of the read-past entry
+# (read-past entry: rec 286 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=70 sep=space # 'oasis'
+3 idx=57 sep=space # 'is'
+4 idx=103 sep=space # 'to'
+5 idx=14 sep=space # 'the'
+6 idx=422 sep=space # 'west'
+7 idx=13 sep=space # 'of'
+8 idx=329 sep=period # 'Division'
+9 idx=4 sep=space # ' '
+10 idx=507 sep=space # 'Take'
+11 idx=101 sep=space # 'your'
+12 idx=1295 sep=space # 'boat'
+13 idx=20 sep=space # 'and'
+14 idx=1304 sep=space # 'hug'
+15 idx=14 sep=space # 'the'
+16 idx=417 sep=space # 'north'
+17 idx=1305 sep=space # 'wall'
+18 idx=13 sep=space # 'of'
+19 idx=14 sep=space # 'the'
+20 idx=165 sep=space # 'city'
+21 idx=1306 sep=space # 'heading'
+22 idx=422 sep=space # 'west'
+23 idx=103 sep=space # 'to'
+24 idx=14 sep=space # 'the'
+25 idx=1173 sep=period # 'corner'

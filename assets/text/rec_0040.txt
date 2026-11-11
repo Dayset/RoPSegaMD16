@@ -1,0 +1,23 @@
+# rec 40 | ptr=0x00354 len=34 type=5 | entries=17
+# rendered: 'This is the Great Ampitheatre, where the finest theatrical performances in the world are held. '
+# $136FC skips array[0] and renders array[1..17], inclusive of the read-past entry
+# (read-past entry: rec 41 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=84 sep=space # 'This'
+2 idx=57 sep=space # 'is'
+3 idx=14 sep=space # 'the'
+4 idx=140 sep=space # 'Great'
+5 idx=203 sep=comma # 'Ampitheatre'
+6 idx=4 sep=space # ' '
+7 idx=146 sep=space # 'where'
+8 idx=14 sep=space # 'the'
+9 idx=204 sep=space # 'finest'
+10 idx=205 sep=space # 'theatrical'
+11 idx=206 sep=space # 'performances'
+12 idx=76 sep=space # 'in'
+13 idx=14 sep=space # 'the'
+14 idx=90 sep=space # 'world'
+15 idx=207 sep=space # 'are'
+16 idx=208 sep=period # 'held'

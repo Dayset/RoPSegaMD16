@@ -1,0 +1,17 @@
+# rec 195 | ptr=0x0125E len=22 type=5 | entries=11
+# rendered: 'Why hello Buc, what can I do for you? '
+# $136FC skips array[0] and renders array[1..11], inclusive of the read-past entry
+# (read-past entry: rec 196 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=829 sep=space # 'Sorcerer!'
+1 idx=862 sep=space # 'Why'
+2 idx=877 sep=space # 'hello'
+3 idx=784 sep=comma # 'Buc'
+4 idx=4 sep=space # ' '
+5 idx=847 sep=space # 'what'
+6 idx=460 sep=space # 'can'
+7 idx=459 sep=space # 'I'
+8 idx=461 sep=space # 'do'
+9 idx=185 sep=space # 'for'
+10 idx=12 sep=question # 'you'

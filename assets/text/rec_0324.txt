@@ -1,0 +1,33 @@
+# rec 324 | ptr=0x029BC len=54 type=5 | entries=27
+# rendered: "I gotta have that mirror. As long as I can see my image, the head Void priest can't convince me that I like pain. "
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 325 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1449 sep=space # 'Tower!'
+1 idx=459 sep=space # 'I'
+2 idx=1450 sep=space # 'gotta'
+3 idx=161 sep=space # 'have'
+4 idx=191 sep=space # 'that'
+5 idx=1451 sep=period # 'mirror'
+6 idx=4 sep=space # ' '
+7 idx=973 sep=space # 'As'
+8 idx=564 sep=space # 'long'
+9 idx=538 sep=space # 'as'
+10 idx=459 sep=space # 'I'
+11 idx=460 sep=space # 'can'
+12 idx=906 sep=space # 'see'
+13 idx=484 sep=space # 'my'
+14 idx=1452 sep=comma # 'image'
+15 idx=4 sep=space # ' '
+16 idx=14 sep=space # 'the'
+17 idx=1453 sep=space # 'head'
+18 idx=238 sep=space # 'Void'
+19 idx=912 sep=space # 'priest'
+20 idx=562 sep=space # "can't"
+21 idx=1454 sep=space # 'convince'
+22 idx=494 sep=space # 'me'
+23 idx=191 sep=space # 'that'
+24 idx=459 sep=space # 'I'
+25 idx=589 sep=space # 'like'
+26 idx=520 sep=period # 'pain'

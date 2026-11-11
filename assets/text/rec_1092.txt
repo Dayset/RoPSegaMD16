@@ -1,0 +1,15 @@
+# rec 1092 | ptr=0x0A18A len=18 type=5 | entries=9
+# rendered: 'You dream of the demon Void: "Pain awaits you!" '
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 1093 array[0], idx=3268 sep=space 'you!"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=134 sep=space # '"'
+1 idx=8 sep=space # 'You'
+2 idx=3240 sep=space # 'dream'
+3 idx=13 sep=space # 'of'
+4 idx=14 sep=space # 'the'
+5 idx=2533 sep=space # 'demon'
+6 idx=3260 sep=space # 'Void:'
+7 idx=3266 sep=space # '"Pain'
+8 idx=3267 sep=space # 'awaits'

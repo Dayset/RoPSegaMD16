@@ -1,0 +1,33 @@
+# rec 320 | ptr=0x02900 len=54 type=5 | entries=27
+# rendered: "If you are like looking for master Xylotyl, you'll have a hard time finding him without his secretary. Check the cell in the Temple. "
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 321 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1431 sep=space # 'yoursss!'
+1 idx=937 sep=space # 'If'
+2 idx=12 sep=space # 'you'
+3 idx=207 sep=space # 'are'
+4 idx=589 sep=space # 'like'
+5 idx=1432 sep=space # 'looking'
+6 idx=185 sep=space # 'for'
+7 idx=52 sep=space # 'master'
+8 idx=1066 sep=comma # 'Xylotyl'
+9 idx=4 sep=space # ' '
+10 idx=883 sep=space # "you'll"
+11 idx=161 sep=space # 'have'
+12 idx=42 sep=space # 'a'
+13 idx=1433 sep=space # 'hard'
+14 idx=485 sep=space # 'time'
+15 idx=1434 sep=space # 'finding'
+16 idx=933 sep=space # 'him'
+17 idx=340 sep=space # 'without'
+18 idx=239 sep=space # 'his'
+19 idx=1435 sep=period # 'secretary'
+20 idx=4 sep=space # ' '
+21 idx=947 sep=space # 'Check'
+22 idx=14 sep=space # 'the'
+23 idx=1436 sep=space # 'cell'
+24 idx=76 sep=space # 'in'
+25 idx=14 sep=space # 'the'
+26 idx=47 sep=period # 'Temple'

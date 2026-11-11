@@ -1,0 +1,23 @@
+# rec 1157 | ptr=0x0A9EC len=34 type=5 | entries=17
+# rendered: '...lat 4\'0". Take a little boat out and look for her there. '
+# $136FC skips array[0] and renders array[1..17], inclusive of the read-past entry
+# (read-past entry: rec 1158 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=631 sep=period # '.'
+2 idx=631 sep=period # '.'
+3 idx=631 sep=period # '.'
+4 idx=3386 sep=space # 'lat'
+5 idx=3391 sep=period # '4\'0"'
+6 idx=4 sep=space # ' '
+7 idx=507 sep=space # 'Take'
+8 idx=42 sep=space # 'a'
+9 idx=31 sep=space # 'little'
+10 idx=1295 sep=space # 'boat'
+11 idx=251 sep=space # 'out'
+12 idx=20 sep=space # 'and'
+13 idx=304 sep=space # 'look'
+14 idx=185 sep=space # 'for'
+15 idx=1087 sep=space # 'her'
+16 idx=173 sep=period # 'there'

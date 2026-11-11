@@ -1,0 +1,29 @@
+# rec 463 | ptr=0x040D6 len=46 type=5 | entries=23
+# rendered: "I hate to do this Buc, but if you want this Ring you're going to have to take it from me. "
+# $136FC skips array[0] and renders array[1..23], inclusive of the read-past entry
+# (read-past entry: rec 464 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1852 sep=space # 'time!'
+1 idx=459 sep=space # 'I'
+2 idx=851 sep=space # 'hate'
+3 idx=103 sep=space # 'to'
+4 idx=461 sep=space # 'do'
+5 idx=104 sep=space # 'this'
+6 idx=784 sep=comma # 'Buc'
+7 idx=4 sep=space # ' '
+8 idx=175 sep=space # 'but'
+9 idx=623 sep=space # 'if'
+10 idx=12 sep=space # 'you'
+11 idx=474 sep=space # 'want'
+12 idx=104 sep=space # 'this'
+13 idx=1247 sep=space # 'Ring'
+14 idx=1054 sep=space # "you're"
+15 idx=802 sep=space # 'going'
+16 idx=103 sep=space # 'to'
+17 idx=161 sep=space # 'have'
+18 idx=103 sep=space # 'to'
+19 idx=480 sep=space # 'take'
+20 idx=114 sep=space # 'it'
+21 idx=23 sep=space # 'from'
+22 idx=494 sep=period # 'me'

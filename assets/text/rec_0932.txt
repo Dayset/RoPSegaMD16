@@ -1,0 +1,31 @@
+# rec 932 | ptr=0x08C52 len=50 type=5 | entries=25
+# rendered: "I don't really believe in all that hocus pocus. If you want to know about that, you should talk to the Guildmaster. "
+# $136FC skips array[0] and renders array[1..25], inclusive of the read-past entry
+# (read-past entry: rec 933 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=471 sep=space # "don't"
+3 idx=543 sep=space # 'really'
+4 idx=680 sep=space # 'believe'
+5 idx=76 sep=space # 'in'
+6 idx=373 sep=space # 'all'
+7 idx=191 sep=space # 'that'
+8 idx=2983 sep=space # 'hocus'
+9 idx=2984 sep=period # 'pocus'
+10 idx=4 sep=space # ' '
+11 idx=937 sep=space # 'If'
+12 idx=12 sep=space # 'you'
+13 idx=474 sep=space # 'want'
+14 idx=103 sep=space # 'to'
+15 idx=622 sep=space # 'know'
+16 idx=215 sep=space # 'about'
+17 idx=191 sep=comma # 'that'
+18 idx=4 sep=space # ' '
+19 idx=12 sep=space # 'you'
+20 idx=390 sep=space # 'should'
+21 idx=563 sep=space # 'talk'
+22 idx=103 sep=space # 'to'
+23 idx=14 sep=space # 'the'
+24 idx=2985 sep=period # 'Guildmaster'

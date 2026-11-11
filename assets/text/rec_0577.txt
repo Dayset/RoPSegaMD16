@@ -1,0 +1,24 @@
+# rec 577 | ptr=0x054BE len=36 type=5 | entries=18
+# rendered: "If you could secure a contract for us from the Protector's guild I would be much obliged. "
+# $136FC skips array[0] and renders array[1..18], inclusive of the read-past entry
+# (read-past entry: rec 578 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=937 sep=space # 'If'
+2 idx=12 sep=space # 'you'
+3 idx=1181 sep=space # 'could'
+4 idx=1343 sep=space # 'secure'
+5 idx=42 sep=space # 'a'
+6 idx=2209 sep=space # 'contract'
+7 idx=185 sep=space # 'for'
+8 idx=534 sep=space # 'us'
+9 idx=23 sep=space # 'from'
+10 idx=14 sep=space # 'the'
+11 idx=2210 sep=space # "Protector's"
+12 idx=1157 sep=space # 'guild'
+13 idx=459 sep=space # 'I'
+14 idx=1145 sep=space # 'would'
+15 idx=395 sep=space # 'be'
+16 idx=777 sep=space # 'much'
+17 idx=2211 sep=period # 'obliged'

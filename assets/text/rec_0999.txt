@@ -1,0 +1,28 @@
+# rec 999 | ptr=0x096B8 len=44 type=5 | entries=22
+# rendered: "Pixels! Pixels and more pixels! I'm sick of pixels. Not an extra still, not an extra animated character type! Arrarraragh! "
+# $136FC skips array[0] and renders array[1..22], inclusive of the read-past entry
+# (read-past entry: rec 1000 array[0], idx=3133 sep=space 'Arrarraragh!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3124 sep=space # 'Spam!'
+1 idx=3125 sep=space # 'Pixels!'
+2 idx=3126 sep=space # 'Pixels'
+3 idx=20 sep=space # 'and'
+4 idx=156 sep=space # 'more'
+5 idx=3127 sep=space # 'pixels!'
+6 idx=469 sep=space # "I'm"
+7 idx=1656 sep=space # 'sick'
+8 idx=13 sep=space # 'of'
+9 idx=3128 sep=period # 'pixels'
+10 idx=4 sep=space # ' '
+11 idx=687 sep=space # 'Not'
+12 idx=234 sep=space # 'an'
+13 idx=3129 sep=space # 'extra'
+14 idx=845 sep=comma # 'still'
+15 idx=4 sep=space # ' '
+16 idx=452 sep=space # 'not'
+17 idx=234 sep=space # 'an'
+18 idx=3129 sep=space # 'extra'
+19 idx=3130 sep=space # 'animated'
+20 idx=3131 sep=space # 'character'
+21 idx=3132 sep=space # 'type!'

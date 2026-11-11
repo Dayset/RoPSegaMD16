@@ -1,0 +1,38 @@
+# rec 383 | ptr=0x032C0 len=64 type=5 | entries=32
+# rendered: "Someone stole my precious. My little Ogre's Egg. The nasty Conjurers of the South Ice Cave stole my Perfect egg. I'll trade you the key for my egg. "
+# $136FC skips array[0] and renders array[1..32], inclusive of the read-past entry
+# (read-past entry: rec 384 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=1614 sep=space # 'Someone'
+2 idx=1209 sep=space # 'stole'
+3 idx=484 sep=space # 'my'
+4 idx=1615 sep=period # 'precious'
+5 idx=4 sep=space # ' '
+6 idx=1235 sep=space # 'My'
+7 idx=31 sep=space # 'little'
+8 idx=1616 sep=space # "Ogre's"
+9 idx=1617 sep=period # 'Egg'
+10 idx=4 sep=space # ' '
+11 idx=45 sep=space # 'The'
+12 idx=1337 sep=space # 'nasty'
+13 idx=1335 sep=space # 'Conjurers'
+14 idx=13 sep=space # 'of'
+15 idx=14 sep=space # 'the'
+16 idx=1618 sep=space # 'South'
+17 idx=1619 sep=space # 'Ice'
+18 idx=1572 sep=space # 'Cave'
+19 idx=1209 sep=space # 'stole'
+20 idx=484 sep=space # 'my'
+21 idx=1504 sep=space # 'Perfect'
+22 idx=1620 sep=period # 'egg'
+23 idx=4 sep=space # ' '
+24 idx=479 sep=space # "I'll"
+25 idx=656 sep=space # 'trade'
+26 idx=12 sep=space # 'you'
+27 idx=14 sep=space # 'the'
+28 idx=915 sep=space # 'key'
+29 idx=185 sep=space # 'for'
+30 idx=484 sep=space # 'my'
+31 idx=1620 sep=period # 'egg'

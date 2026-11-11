@@ -1,0 +1,7 @@
+# rec 75 | ptr=0x00742 len=2 type=5 | entries=1
+# rendered: 'Mesa '
+# $136FC skips array[0] and renders array[1..1], inclusive of the read-past entry
+# (read-past entry: rec 76 array[0], idx=269 sep=space 'Mesa'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '

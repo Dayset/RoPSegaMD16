@@ -1,0 +1,18 @@
+# rec 490 | ptr=0x045EC len=24 type=5 | entries=12
+# rendered: 'I am Lucius, the greatest Necromancer in the world.  '
+# $136FC skips array[0] and renders array[1..12], inclusive of the read-past entry
+# (read-past entry: rec 491 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1938 sep=space # 'disapears>'
+1 idx=459 sep=space # 'I'
+2 idx=495 sep=space # 'am'
+3 idx=1939 sep=comma # 'Lucius'
+4 idx=4 sep=space # ' '
+5 idx=14 sep=space # 'the'
+6 idx=811 sep=space # 'greatest'
+7 idx=1152 sep=space # 'Necromancer'
+8 idx=76 sep=space # 'in'
+9 idx=14 sep=space # 'the'
+10 idx=90 sep=period # 'world'
+11 idx=4 sep=space # ' '

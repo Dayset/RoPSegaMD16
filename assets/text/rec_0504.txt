@@ -1,0 +1,43 @@
+# rec 504 | ptr=0x0482C len=74 type=5 | entries=37
+# rendered: "Why hello Buc, fancy meeting you here. It's Fiver. I'm doing some work for Tutu, but since you helped me out when I was in need, I'll give you a hand. "
+# $136FC skips array[0] and renders array[1..37], inclusive of the read-past entry
+# (read-past entry: rec 505 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1992 sep=space # 'cell!'
+1 idx=862 sep=space # 'Why'
+2 idx=877 sep=space # 'hello'
+3 idx=784 sep=comma # 'Buc'
+4 idx=4 sep=space # ' '
+5 idx=1993 sep=space # 'fancy'
+6 idx=804 sep=space # 'meeting'
+7 idx=12 sep=space # 'you'
+8 idx=68 sep=period # 'here'
+9 idx=4 sep=space # ' '
+10 idx=736 sep=space # "It's"
+11 idx=1665 sep=period # 'Fiver'
+12 idx=4 sep=space # ' '
+13 idx=469 sep=space # "I'm"
+14 idx=641 sep=space # 'doing'
+15 idx=853 sep=space # 'some'
+16 idx=1327 sep=space # 'work'
+17 idx=185 sep=space # 'for'
+18 idx=1969 sep=comma # 'Tutu'
+19 idx=4 sep=space # ' '
+20 idx=175 sep=space # 'but'
+21 idx=178 sep=space # 'since'
+22 idx=12 sep=space # 'you'
+23 idx=1994 sep=space # 'helped'
+24 idx=494 sep=space # 'me'
+25 idx=251 sep=space # 'out'
+26 idx=746 sep=space # 'when'
+27 idx=459 sep=space # 'I'
+28 idx=143 sep=space # 'was'
+29 idx=76 sep=space # 'in'
+30 idx=648 sep=comma # 'need'
+31 idx=4 sep=space # ' '
+32 idx=479 sep=space # "I'll"
+33 idx=938 sep=space # 'give'
+34 idx=12 sep=space # 'you'
+35 idx=42 sep=space # 'a'
+36 idx=177 sep=period # 'hand'

@@ -1,0 +1,21 @@
+# rec 891 | ptr=0x08674 len=30 type=5 | entries=15
+# rendered: "Recently someone even managed to paint a person in perspective! You wouldn't believe it. "
+# $136FC skips array[0] and renders array[1..15], inclusive of the read-past entry
+# (read-past entry: rec 892 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1852 sep=space # 'time!'
+1 idx=2909 sep=space # 'Recently'
+2 idx=466 sep=space # 'someone'
+3 idx=999 sep=space # 'even'
+4 idx=1342 sep=space # 'managed'
+5 idx=103 sep=space # 'to'
+6 idx=2910 sep=space # 'paint'
+7 idx=42 sep=space # 'a'
+8 idx=2237 sep=space # 'person'
+9 idx=76 sep=space # 'in'
+10 idx=2911 sep=space # 'perspective!'
+11 idx=8 sep=space # 'You'
+12 idx=1116 sep=space # "wouldn't"
+13 idx=680 sep=space # 'believe'
+14 idx=114 sep=period # 'it'

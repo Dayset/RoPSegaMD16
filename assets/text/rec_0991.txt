@@ -1,0 +1,29 @@
+# rec 991 | ptr=0x09554 len=46 type=5 | entries=23
+# rendered: 'We are here because of the Great Tomb, the place where the world of death and the world of living intersect. '
+# $136FC skips array[0] and renders array[1..23], inclusive of the read-past entry
+# (read-past entry: rec 992 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=3104 sep=space # 'future!'
+1 idx=577 sep=space # 'We'
+2 idx=207 sep=space # 'are'
+3 idx=68 sep=space # 'here'
+4 idx=1786 sep=space # 'because'
+5 idx=13 sep=space # 'of'
+6 idx=14 sep=space # 'the'
+7 idx=140 sep=space # 'Great'
+8 idx=277 sep=comma # 'Tomb'
+9 idx=4 sep=space # ' '
+10 idx=14 sep=space # 'the'
+11 idx=236 sep=space # 'place'
+12 idx=146 sep=space # 'where'
+13 idx=14 sep=space # 'the'
+14 idx=90 sep=space # 'world'
+15 idx=13 sep=space # 'of'
+16 idx=1204 sep=space # 'death'
+17 idx=20 sep=space # 'and'
+18 idx=14 sep=space # 'the'
+19 idx=90 sep=space # 'world'
+20 idx=13 sep=space # 'of'
+21 idx=384 sep=space # 'living'
+22 idx=3105 sep=period # 'intersect'

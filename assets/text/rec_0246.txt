@@ -1,0 +1,22 @@
+# rec 246 | ptr=0x01B44 len=32 type=5 | entries=16
+# rendered: "Hello Sorcerer. I have heard of your quest and I'm anxious to join you. "
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 247 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1133 sep=space # 'Out>'
+1 idx=456 sep=space # 'Hello'
+2 idx=549 sep=period # 'Sorcerer'
+3 idx=4 sep=space # ' '
+4 idx=459 sep=space # 'I'
+5 idx=161 sep=space # 'have'
+6 idx=627 sep=space # 'heard'
+7 idx=13 sep=space # 'of'
+8 idx=101 sep=space # 'your'
+9 idx=1134 sep=space # 'quest'
+10 idx=20 sep=space # 'and'
+11 idx=469 sep=space # "I'm"
+12 idx=1135 sep=space # 'anxious'
+13 idx=103 sep=space # 'to'
+14 idx=1095 sep=space # 'join'
+15 idx=12 sep=period # 'you'

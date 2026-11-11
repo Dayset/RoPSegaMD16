@@ -1,0 +1,33 @@
+# rec 484 | ptr=0x044E2 len=54 type=5 | entries=27
+# rendered: 'I guard the entrance to the Great Tomb. I might allow you to enter if you would end this mockery of a life I lead. '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 485 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1920 sep=space # 'Here!'
+1 idx=459 sep=space # 'I'
+2 idx=582 sep=space # 'guard'
+3 idx=14 sep=space # 'the'
+4 idx=64 sep=space # 'entrance'
+5 idx=103 sep=space # 'to'
+6 idx=14 sep=space # 'the'
+7 idx=140 sep=space # 'Great'
+8 idx=277 sep=period # 'Tomb'
+9 idx=4 sep=space # ' '
+10 idx=459 sep=space # 'I'
+11 idx=1104 sep=space # 'might'
+12 idx=1094 sep=space # 'allow'
+13 idx=12 sep=space # 'you'
+14 idx=103 sep=space # 'to'
+15 idx=1921 sep=space # 'enter'
+16 idx=623 sep=space # 'if'
+17 idx=12 sep=space # 'you'
+18 idx=1145 sep=space # 'would'
+19 idx=1118 sep=space # 'end'
+20 idx=104 sep=space # 'this'
+21 idx=1922 sep=space # 'mockery'
+22 idx=13 sep=space # 'of'
+23 idx=42 sep=space # 'a'
+24 idx=852 sep=space # 'life'
+25 idx=459 sep=space # 'I'
+26 idx=454 sep=period # 'lead'

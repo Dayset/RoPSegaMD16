@@ -1,0 +1,43 @@
+# rec 306 | ptr=0x02690 len=74 type=5 | entries=37
+# rendered: "I'm the custodian around here... and let me tell you something bub. These Necromancers say they ain't evil... but for my money... they sure ain't good. "
+# $136FC skips array[0] and renders array[1..37], inclusive of the read-past entry
+# (read-past entry: rec 307 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=469 sep=space # "I'm"
+2 idx=14 sep=space # 'the'
+3 idx=1379 sep=space # 'custodian'
+4 idx=575 sep=space # 'around'
+5 idx=68 sep=period # 'here'
+6 idx=631 sep=period # '.'
+7 idx=631 sep=period # '.'
+8 idx=4 sep=space # ' '
+9 idx=20 sep=space # 'and'
+10 idx=1098 sep=space # 'let'
+11 idx=494 sep=space # 'me'
+12 idx=637 sep=space # 'tell'
+13 idx=12 sep=space # 'you'
+14 idx=458 sep=space # 'something'
+15 idx=1380 sep=period # 'bub'
+16 idx=4 sep=space # ' '
+17 idx=643 sep=space # 'These'
+18 idx=1336 sep=space # 'Necromancers'
+19 idx=513 sep=space # 'say'
+20 idx=166 sep=space # 'they'
+21 idx=1381 sep=space # "ain't"
+22 idx=235 sep=period # 'evil'
+23 idx=631 sep=period # '.'
+24 idx=631 sep=period # '.'
+25 idx=4 sep=space # ' '
+26 idx=175 sep=space # 'but'
+27 idx=185 sep=space # 'for'
+28 idx=484 sep=space # 'my'
+29 idx=1189 sep=period # 'money'
+30 idx=631 sep=period # '.'
+31 idx=631 sep=period # '.'
+32 idx=4 sep=space # ' '
+33 idx=166 sep=space # 'they'
+34 idx=733 sep=space # 'sure'
+35 idx=1381 sep=space # "ain't"
+36 idx=489 sep=period # 'good'

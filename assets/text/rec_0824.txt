@@ -1,0 +1,15 @@
+# rec 824 | ptr=0x07C52 len=18 type=5 | entries=9
+# rendered: 'We follow the laws of Body in Blood. '
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 825 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=577 sep=space # 'We'
+2 idx=780 sep=space # 'follow'
+3 idx=14 sep=space # 'the'
+4 idx=2788 sep=space # 'laws'
+5 idx=13 sep=space # 'of'
+6 idx=2789 sep=space # 'Body'
+7 idx=76 sep=space # 'in'
+8 idx=333 sep=period # 'Blood'

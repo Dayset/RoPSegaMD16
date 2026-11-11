@@ -1,0 +1,24 @@
+# rec 697 | ptr=0x068B0 len=36 type=5 | entries=18
+# rendered: 'Greetings, Sorcerer. What brings you to me on this fine day Nexus has given us? '
+# $136FC skips array[0] and renders array[1..18], inclusive of the read-past entry
+# (read-past entry: rec 698 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1439 sep=space # 'Pain!'
+1 idx=455 sep=comma # 'Greetings'
+2 idx=4 sep=space # ' '
+3 idx=549 sep=period # 'Sorcerer'
+4 idx=4 sep=space # ' '
+5 idx=654 sep=space # 'What'
+6 idx=2513 sep=space # 'brings'
+7 idx=12 sep=space # 'you'
+8 idx=103 sep=space # 'to'
+9 idx=494 sep=space # 'me'
+10 idx=82 sep=space # 'on'
+11 idx=104 sep=space # 'this'
+12 idx=1393 sep=space # 'fine'
+13 idx=545 sep=space # 'day'
+14 idx=48 sep=space # 'Nexus'
+15 idx=532 sep=space # 'has'
+16 idx=559 sep=space # 'given'
+17 idx=534 sep=question # 'us'

@@ -1,0 +1,16 @@
+# rec 342 | ptr=0x02C1C len=20 type=5 | entries=10
+# rendered: 'then we have, lets see... 32 '
+# $136FC skips array[0] and renders array[1..10], inclusive of the read-past entry
+# (read-past entry: rec 343 array[0], idx=1486 sep=space '32'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1484 sep=space # '59'
+1 idx=1090 sep=space # 'then'
+2 idx=645 sep=space # 'we'
+3 idx=161 sep=comma # 'have'
+4 idx=4 sep=space # ' '
+5 idx=1485 sep=space # 'lets'
+6 idx=906 sep=period # 'see'
+7 idx=631 sep=period # '.'
+8 idx=631 sep=period # '.'
+9 idx=4 sep=space # ' '

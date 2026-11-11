@@ -1,0 +1,32 @@
+# rec 427 | ptr=0x03AA6 len=52 type=5 | entries=26
+# rendered: "I lost the Key! Now we can't go downstairs and play! Wait, maybe I left it on the dresser by the bed down the street! "
+# $136FC skips array[0] and renders array[1..26], inclusive of the read-past entry
+# (read-past entry: rec 428 array[0], idx=1755 sep=space 'street!'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=459 sep=space # 'I'
+2 idx=800 sep=space # 'lost'
+3 idx=14 sep=space # 'the'
+4 idx=1746 sep=space # 'Key!'
+5 idx=841 sep=space # 'Now'
+6 idx=645 sep=space # 'we'
+7 idx=562 sep=space # "can't"
+8 idx=659 sep=space # 'go'
+9 idx=1747 sep=space # 'downstairs'
+10 idx=20 sep=space # 'and'
+11 idx=1748 sep=space # 'play!'
+12 idx=1749 sep=comma # 'Wait'
+13 idx=4 sep=space # ' '
+14 idx=1750 sep=space # 'maybe'
+15 idx=459 sep=space # 'I'
+16 idx=1751 sep=space # 'left'
+17 idx=114 sep=space # 'it'
+18 idx=82 sep=space # 'on'
+19 idx=14 sep=space # 'the'
+20 idx=1752 sep=space # 'dresser'
+21 idx=69 sep=space # 'by'
+22 idx=14 sep=space # 'the'
+23 idx=1753 sep=space # 'bed'
+24 idx=1754 sep=space # 'down'
+25 idx=14 sep=space # 'the'

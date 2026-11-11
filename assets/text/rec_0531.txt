@@ -1,0 +1,33 @@
+# rec 531 | ptr=0x04CA2 len=54 type=5 | entries=27
+# rendered: '"Over rolling seas of sand shall the hero go with key in hand, search neither high nor low to discover the path aglow..." '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 532 array[0], idx=134 sep=space '"'). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=2061 sep=space # 'story:'
+1 idx=2062 sep=space # '"Over'
+2 idx=2063 sep=space # 'rolling'
+3 idx=2064 sep=space # 'seas'
+4 idx=13 sep=space # 'of'
+5 idx=272 sep=space # 'sand'
+6 idx=1199 sep=space # 'shall'
+7 idx=14 sep=space # 'the'
+8 idx=2065 sep=space # 'hero'
+9 idx=659 sep=space # 'go'
+10 idx=41 sep=space # 'with'
+11 idx=915 sep=space # 'key'
+12 idx=76 sep=space # 'in'
+13 idx=177 sep=comma # 'hand'
+14 idx=4 sep=space # ' '
+15 idx=2066 sep=space # 'search'
+16 idx=2067 sep=space # 'neither'
+17 idx=598 sep=space # 'high'
+18 idx=2068 sep=space # 'nor'
+19 idx=2069 sep=space # 'low'
+20 idx=103 sep=space # 'to'
+21 idx=2070 sep=space # 'discover'
+22 idx=14 sep=space # 'the'
+23 idx=2071 sep=space # 'path'
+24 idx=2072 sep=period # 'aglow'
+25 idx=631 sep=period # '.'
+26 idx=631 sep=period # '.'

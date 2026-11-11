@@ -1,0 +1,19 @@
+# rec 262 | ptr=0x01DF8 len=26 type=5 | entries=13
+# rendered: 'Hello Buc. Is there something more I can do for you? '
+# $136FC skips array[0] and renders array[1..13], inclusive of the read-past entry
+# (read-past entry: rec 263 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1201 sep=space # 'earth!'
+1 idx=456 sep=space # 'Hello'
+2 idx=784 sep=period # 'Buc'
+3 idx=4 sep=space # ' '
+4 idx=457 sep=space # 'Is'
+5 idx=173 sep=space # 'there'
+6 idx=458 sep=space # 'something'
+7 idx=156 sep=space # 'more'
+8 idx=459 sep=space # 'I'
+9 idx=460 sep=space # 'can'
+10 idx=461 sep=space # 'do'
+11 idx=185 sep=space # 'for'
+12 idx=12 sep=question # 'you'

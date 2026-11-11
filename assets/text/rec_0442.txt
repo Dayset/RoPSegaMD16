@@ -1,0 +1,22 @@
+# rec 442 | ptr=0x03CFA len=32 type=5 | entries=16
+# rendered: 'The telescope in our new observatory is all up and running, thanks to you. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 443 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=1779 sep=space # 'telescope'
+3 idx=76 sep=space # 'in'
+4 idx=355 sep=space # 'our'
+5 idx=1158 sep=space # 'new'
+6 idx=184 sep=space # 'observatory'
+7 idx=57 sep=space # 'is'
+8 idx=373 sep=space # 'all'
+9 idx=100 sep=space # 'up'
+10 idx=20 sep=space # 'and'
+11 idx=1780 sep=comma # 'running'
+12 idx=4 sep=space # ' '
+13 idx=1781 sep=space # 'thanks'
+14 idx=103 sep=space # 'to'
+15 idx=12 sep=period # 'you'

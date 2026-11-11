@@ -1,0 +1,15 @@
+# rec 614 | ptr=0x059FC len=18 type=5 | entries=9
+# rendered: "Hello Sorcerer. I'm an expert on Perfection. "
+# $136FC skips array[0] and renders array[1..9], inclusive of the read-past entry
+# (read-past entry: rec 615 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=456 sep=space # 'Hello'
+2 idx=549 sep=period # 'Sorcerer'
+3 idx=4 sep=space # ' '
+4 idx=469 sep=space # "I'm"
+5 idx=234 sep=space # 'an'
+6 idx=1246 sep=space # 'expert'
+7 idx=82 sep=space # 'on'
+8 idx=109 sep=period # 'Perfection'

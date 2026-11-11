@@ -1,0 +1,25 @@
+# rec 1018 | ptr=0x098B8 len=38 type=5 | entries=19
+# rendered: 'The town fathers were very talented at the Arts. Our village has a reputation for magical prowess. '
+# $136FC skips array[0] and renders array[1..19], inclusive of the read-past entry
+# (read-past entry: rec 1019 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=605 sep=space # 'town'
+3 idx=3174 sep=space # 'fathers'
+4 idx=526 sep=space # 'were'
+5 idx=565 sep=space # 'very'
+6 idx=3175 sep=space # 'talented'
+7 idx=508 sep=space # 'at'
+8 idx=14 sep=space # 'the'
+9 idx=978 sep=period # 'Arts'
+10 idx=4 sep=space # ' '
+11 idx=1655 sep=space # 'Our'
+12 idx=3176 sep=space # 'village'
+13 idx=532 sep=space # 'has'
+14 idx=42 sep=space # 'a'
+15 idx=2681 sep=space # 'reputation'
+16 idx=185 sep=space # 'for'
+17 idx=3177 sep=space # 'magical'
+18 idx=3178 sep=period # 'prowess'

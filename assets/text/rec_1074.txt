@@ -1,0 +1,16 @@
+# rec 1074 | ptr=0x09F72 len=20 type=5 | entries=10
+# rendered: 'The Temple is the only significant organization around here. '
+# $136FC skips array[0] and renders array[1..10], inclusive of the read-past entry
+# (read-past entry: rec 1075 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=47 sep=space # 'Temple'
+3 idx=57 sep=space # 'is'
+4 idx=14 sep=space # 'the'
+5 idx=300 sep=space # 'only'
+6 idx=3237 sep=space # 'significant'
+7 idx=2404 sep=space # 'organization'
+8 idx=575 sep=space # 'around'
+9 idx=68 sep=period # 'here'

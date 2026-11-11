@@ -1,0 +1,22 @@
+# rec 791 | ptr=0x076FC len=32 type=5 | entries=16
+# rendered: 'The Ring of Advancing is ours, but it was lost just after the cataclysm. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 792 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=1247 sep=space # 'Ring'
+3 idx=13 sep=space # 'of'
+4 idx=1782 sep=space # 'Advancing'
+5 idx=57 sep=space # 'is'
+6 idx=763 sep=comma # 'ours'
+7 idx=4 sep=space # ' '
+8 idx=175 sep=space # 'but'
+9 idx=114 sep=space # 'it'
+10 idx=143 sep=space # 'was'
+11 idx=800 sep=space # 'lost'
+12 idx=179 sep=space # 'just'
+13 idx=180 sep=space # 'after'
+14 idx=14 sep=space # 'the'
+15 idx=2734 sep=period # 'cataclysm'

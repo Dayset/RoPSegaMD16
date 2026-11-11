@@ -1,0 +1,37 @@
+# rec 280 | ptr=0x0218E len=62 type=5 | entries=31
+# rendered: "There is a town in the far south on the polar plains where old and young live Divided. It can be found at about 3' 22'. Good luck. "
+# $136FC skips array[0] and renders array[1..31], inclusive of the read-past entry
+# (read-past entry: rec 281 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=1280 sep=space # 'this:'
+1 idx=588 sep=space # 'There'
+2 idx=57 sep=space # 'is'
+3 idx=42 sep=space # 'a'
+4 idx=605 sep=space # 'town'
+5 idx=76 sep=space # 'in'
+6 idx=14 sep=space # 'the'
+7 idx=1013 sep=space # 'far'
+8 idx=414 sep=space # 'south'
+9 idx=82 sep=space # 'on'
+10 idx=14 sep=space # 'the'
+11 idx=1281 sep=space # 'polar'
+12 idx=1282 sep=space # 'plains'
+13 idx=146 sep=space # 'where'
+14 idx=1171 sep=space # 'old'
+15 idx=20 sep=space # 'and'
+16 idx=668 sep=space # 'young'
+17 idx=646 sep=space # 'live'
+18 idx=1274 sep=period # 'Divided'
+19 idx=4 sep=space # ' '
+20 idx=142 sep=space # 'It'
+21 idx=460 sep=space # 'can'
+22 idx=395 sep=space # 'be'
+23 idx=396 sep=space # 'found'
+24 idx=508 sep=space # 'at'
+25 idx=215 sep=space # 'about'
+26 idx=1283 sep=space # "3'"
+27 idx=1284 sep=period # "22'"
+28 idx=4 sep=space # ' '
+29 idx=486 sep=space # 'Good'
+30 idx=1234 sep=period # 'luck'

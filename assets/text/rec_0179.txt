@@ -1,0 +1,34 @@
+# rec 179 | ptr=0x010A0 len=56 type=5 | entries=28
+# rendered: "It is exciting to be at the greatest center of Sorcery in the world. Some of history's most powerful Sorcerers have been graduates of the Academy. "
+# $136FC skips array[0] and renders array[1..28], inclusive of the read-past entry
+# (read-past entry: rec 180 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=142 sep=space # 'It'
+2 idx=57 sep=space # 'is'
+3 idx=810 sep=space # 'exciting'
+4 idx=103 sep=space # 'to'
+5 idx=395 sep=space # 'be'
+6 idx=508 sep=space # 'at'
+7 idx=14 sep=space # 'the'
+8 idx=811 sep=space # 'greatest'
+9 idx=71 sep=space # 'center'
+10 idx=13 sep=space # 'of'
+11 idx=324 sep=space # 'Sorcery'
+12 idx=76 sep=space # 'in'
+13 idx=14 sep=space # 'the'
+14 idx=90 sep=period # 'world'
+15 idx=4 sep=space # ' '
+16 idx=812 sep=space # 'Some'
+17 idx=13 sep=space # 'of'
+18 idx=813 sep=space # "history's"
+19 idx=87 sep=space # 'most'
+20 idx=88 sep=space # 'powerful'
+21 idx=553 sep=space # 'Sorcerers'
+22 idx=161 sep=space # 'have'
+23 idx=594 sep=space # 'been'
+24 idx=814 sep=space # 'graduates'
+25 idx=13 sep=space # 'of'
+26 idx=14 sep=space # 'the'
+27 idx=79 sep=period # 'Academy'

@@ -1,0 +1,22 @@
+# rec 69 | ptr=0x006CA len=32 type=5 | entries=16
+# rendered: 'Welcome to Richi, capitol of the Richi Empire. All hail Queen Richileu IXX. '
+# $136FC skips array[0] and renders array[1..16], inclusive of the read-past entry
+# (read-past entry: rec 70 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=321 sep=space # 'Home'
+1 idx=322 sep=space # 'Welcome'
+2 idx=103 sep=space # 'to'
+3 idx=170 sep=comma # 'Richi'
+4 idx=4 sep=space # ' '
+5 idx=353 sep=space # 'capitol'
+6 idx=13 sep=space # 'of'
+7 idx=14 sep=space # 'the'
+8 idx=170 sep=space # 'Richi'
+9 idx=366 sep=period # 'Empire'
+10 idx=4 sep=space # ' '
+11 idx=367 sep=space # 'All'
+12 idx=368 sep=space # 'hail'
+13 idx=369 sep=space # 'Queen'
+14 idx=370 sep=space # 'Richileu'
+15 idx=371 sep=period # 'IXX'

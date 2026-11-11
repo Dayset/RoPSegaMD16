@@ -1,0 +1,33 @@
+# rec 448 | ptr=0x03E50 len=54 type=5 | entries=27
+# rendered: 'The Queen says she knows where the Ring of Advancing is, but I think she is just humoring me. Ask her about our QUEST. '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 449 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=369 sep=space # 'Queen'
+3 idx=1512 sep=space # 'says'
+4 idx=1124 sep=space # 'she'
+5 idx=1671 sep=space # 'knows'
+6 idx=146 sep=space # 'where'
+7 idx=14 sep=space # 'the'
+8 idx=1247 sep=space # 'Ring'
+9 idx=13 sep=space # 'of'
+10 idx=1782 sep=space # 'Advancing'
+11 idx=57 sep=comma # 'is'
+12 idx=4 sep=space # ' '
+13 idx=175 sep=space # 'but'
+14 idx=459 sep=space # 'I'
+15 idx=1260 sep=space # 'think'
+16 idx=1124 sep=space # 'she'
+17 idx=57 sep=space # 'is'
+18 idx=179 sep=space # 'just'
+19 idx=1799 sep=space # 'humoring'
+20 idx=494 sep=period # 'me'
+21 idx=4 sep=space # ' '
+22 idx=1071 sep=space # 'Ask'
+23 idx=1087 sep=space # 'her'
+24 idx=215 sep=space # 'about'
+25 idx=355 sep=space # 'our'
+26 idx=1212 sep=period # 'QUEST'

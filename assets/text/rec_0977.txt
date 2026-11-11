@@ -1,0 +1,33 @@
+# rec 977 | ptr=0x092D2 len=54 type=5 | entries=27
+# rendered: 'The city of Mesa is filled with a proud and simple people. Our forefathers came to Mesa to escape the meaningless life of the lowlands. '
+# $136FC skips array[0] and renders array[1..27], inclusive of the read-past entry
+# (read-past entry: rec 978 array[0], idx=4 sep=space ' '). array[0] below is stored but not rendered in this record.
+# Separators (top 2 bits of each entry): space=0 comma=1 period=2 question=3. The entry (idx + sep) is authoritative
+# for re-encoding; the word after '#' is a human-readable comment from the dictionary.
+0 idx=4 sep=space # ' '
+1 idx=45 sep=space # 'The'
+2 idx=165 sep=space # 'city'
+3 idx=13 sep=space # 'of'
+4 idx=269 sep=space # 'Mesa'
+5 idx=57 sep=space # 'is'
+6 idx=1421 sep=space # 'filled'
+7 idx=41 sep=space # 'with'
+8 idx=42 sep=space # 'a'
+9 idx=3068 sep=space # 'proud'
+10 idx=20 sep=space # 'and'
+11 idx=3064 sep=space # 'simple'
+12 idx=38 sep=period # 'people'
+13 idx=4 sep=space # ' '
+14 idx=1655 sep=space # 'Our'
+15 idx=3069 sep=space # 'forefathers'
+16 idx=227 sep=space # 'came'
+17 idx=103 sep=space # 'to'
+18 idx=269 sep=space # 'Mesa'
+19 idx=103 sep=space # 'to'
+20 idx=611 sep=space # 'escape'
+21 idx=14 sep=space # 'the'
+22 idx=3070 sep=space # 'meaningless'
+23 idx=852 sep=space # 'life'
+24 idx=13 sep=space # 'of'
+25 idx=14 sep=space # 'the'
+26 idx=3071 sep=period # 'lowlands'
