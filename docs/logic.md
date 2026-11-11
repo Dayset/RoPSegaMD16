@@ -787,10 +787,29 @@ water = base_water(mode) + terrain_water(type, mode)
   | 19 | mode 0 | +3 | +4 | `$01D37C`/`$01D384` |
   | 19 | mode 1 | +3 | +6 | `$01D394`/`$01D39C` |
 
-  All other types leave the base unchanged. Most handlers also set the
-  step-blocked flag `-$a(a6)` (1 = blocked, 0 = free); types 4, 12–16,
-  29, 31–34 clear it unconditionally, the rest test the mode and the
-  step-direction deltas (struct `+0x0A`/`+0x0C`).
+  All other types leave the base unchanged. `-$a(a6)` is the **step
+  count** the routine returns in `d0` — 0 = no step, 1 = one cell,
+  2 = two cells — not a blocked flag (the old "(1 = blocked, 0 = free)"
+  reading was inverted: handlers set it to 1 when the step is
+  *allowed* and leave it at its entry-cleared 0 when it is not). It is
+  set to 2 only by types 10/11 in mode 2, for a straight
+  vertical/horizontal step (with `-$c(a6)=$FFFF`, which skips the slope
+  check below). Types 4, 12–16, 29 clear it unconditionally (never set
+  it); types 30–34 clear it and set it to 1 only for mode 7 (31–33
+  also for mode 6 when combat-flags bit 0 is set); the rest test the
+  mode and the step-direction deltas (struct `+0x0A`/`+0x0C`). The
+  caller (`combat_move_unit` `$024984`) uses the return as a count:
+  `d4==0` skips the position update and `map_place_record_step` runs
+  `d4` times; inside `$1C892` the step deltas are multiplied by `-$a`
+  (`$01D916`/`$01D926`) and `-$a==0` at the end marks the step record
+  blocked (struct `+0x18=$FF`, `$01D946`). A slope check also zeroes
+  it: if `-$c(a6)==0` and `-$12(a6)` (|height delta|, minus 1 when both
+  tiles have bit 8 set) `>= -$1a(a6)` (4), the step is blocked
+  (`$01D938`). Note the mode matters: walkability is judged in mode 2
+  (via `map_walk_check`, the `$02DC0C` gate), where Grass → 1 and
+  Forest → 0; in vessel mode 0 the Grass handler leaves `-$a`=0 — the
+  harness's mode-0 (3,1) on Grass is the cost, not a step (the cost is
+  computed before the dispatch regardless of `-$a`).
 * **Height term — `$01D800`–`$01D8B4`:** after the dispatch, `$1C892`
   computes a height delta `-$10(a6)` from the source/destination tile
   words' bit fields (tile bits 13–15, `$5EDC4` bits 7–8 — the same
@@ -973,11 +992,15 @@ dragon** — the dispatch bypass at `$01CF50`–`$01CF68` returns via
 during the run: the type extraction used `lsr #6` (wrong — it reads
 bits 6–11, not 10–15; fixed to `rol #6` like `$02dc0c`), and the
 `lsr #10` fix attempt was rejected by GAS (immediate shifts are 1–8
-only). `$1C892` also returns a step-blocked flag (`d0` + struct
-`+0x18`): it varies by **coordinate**, not by terrain type (the same
-type 9 gives d0 = 1 at (151,15) and (150,15) but d0 = 0 at (148,15)
-and (266,101)) — likely entity occupancy at the destination, separate
-from the cost, and not pursued here.
+only). `$1C892` also returns the step count in `d0` (0/1/2, see the
+`-$a(a6)` note above) plus a blocked marker in struct `+0x18`
+(`$FF` when blocked): `d0` varies by terrain type *and* by
+coordinate — the handler sets it per type+mode (e.g. Grass mode 0
+leaves it 0 at every coordinate), and the same type 9 gives d0 = 1 at
+(151,15) and (150,15) but d0 = 0 at (148,15) (a +4 slope — likely
+the `$01D938` slope check, unconfirmed) and (266,101) — likely entity
+occupancy at the destination, separate from the cost, and not pursued
+here.
 
 **No plain rate table exists in the ROM** (searched byte sequences
 `[1,8,7,4,4]`/`[1,4,5,3,2]`, fan order, interleaved pairs, word tables
