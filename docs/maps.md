@@ -967,3 +967,25 @@ freeze was not directly observed (its harness sources are gone).
 The per-lo game meaning (which tile/type each lo value writes) is still
 open — the sweep gives dispatch counts and targets, not meanings. The
 dispatch mapping itself is live-verified (tier 2).
+
+## Correction and chunk-index caller trace (2026-11-11, static)
+
+**Correction.** The `$43850` records are `[u32 offset][u32 length][u16 type]`. The offset is relative to the stream base `$44228`, not an absolute ROM address. `text_record_dispatch` (`0x13654`) gets the table in `$C(a6)` (`$43850`) and the base in `$8(a6)` (`$44228`). Its record index is `$10(a6)` and it reads the record at `table + index*10`. The earlier reading that the values `$979E`–`$B374` point into the `0x9B2E` block was wrong. For example, record 43 (`$439FE`) offset `$9BC8` gives `$44228 + $9BC8 = $4DDF0`, inside the map-chunk streams.
+
+**Reader chain.** `text_record_dispatch` (`0x13654`) ← `map_chunk_load` (`0x19692`) ← `map_chunk_load_buf` (`0x1C802`). `map_chunk_load_buf` has seven call sites, and each passes `index = location_divide(x, y)`:
+
+| Caller | Call site | Index argument |
+|---|---|---|
+| `map_chunk_cache_read` | `0x1C1C2` | `location_divide` on its position args |
+| `world_pos_add_x` | `0x31A44` | `location_divide($c, $a)` |
+| `world_pos_add_y` | `0x31AF4` | `location_divide($e, $c)` |
+| `map_cell_set_field` | `0x31FBE` | `location_divide($e, $c)` |
+| `map_cell_get_field` | `0x32194` | `location_divide($c, $a)` |
+| `map_animate_tiles` | `0x38952` | `location_divide(5, 5)` |
+| unnamed `L03F6E2` | `0x3F720` | `location_divide(5, 5)` |
+
+`location_divide` (`0x1C83E`) computes `(y / d) * m + (x / d) + base`, where `d` is the word at `+4` and `m` the word at `+6` of the struct at `$FFA7FC`, and `base` is `0` or `$FF0E98 + $4D`.
+
+**Disagreement (both kept).** `docs/maps.md` above says `(y / H) * W + (x / W)`, with `+6` as the x divisor. The code at `0x1C84E` and `0x1C868` divides both `y` and `x` by the word at `+4`, and multiplies by `+6`. The `$FFA7FC` field list in the next section agrees with the code for `+6` (row width) but gives `+4` as the chunk-height divisor, not a shared divisor. Needs a live read of `$FFB08C` on a known map to settle.
+
+**Open.** Which caller produces index 42 (`$43850 + 42×10 = $439F0`) is not settled statically. It depends on the live `$FFB08C` fields and the player position. The next step is to log `location_divide` results for the `map_animate_tiles` and `world_pos_add_*` calls on one map.
