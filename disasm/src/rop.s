@@ -958,7 +958,7 @@ L0011B6:
 	sub.l #$ff0000,d0	; $0011DE
 	beq.b L0011FA	; $0011E4
 	lsr.l #$1,d0	; $0011E6
-	movea.l #$fce3c,a0	; $0011E8
+	movea.l #L0FCE3C,a0	; $0011E8
 	movea.l #$ff0000,a1	; $0011EE
 L0011F4:
 	move.w (a0)+,(a1)+	; $0011F4
@@ -2192,7 +2192,7 @@ map_terrain_tile_lookup:
 	move.w d2,d4	; $00E384
 	asl.w #$2,d4	; $00E386
 	movea.l (a1,d4.w),a0	; $00E388
-	adda.l #$603e4,a0	; $00E38C
+	adda.l #L0603E4,a0	; $00E38C
 	tst.w d1	; $00E392
 	bge.b L00E3B0	; $00E394
 	neg.w d1	; $00E396
@@ -61398,8 +61398,11 @@ L05EDC4:
 	; data $05EDC4-$05F523
 	incbin "rop-original.gen",$05EDC4,$760
 L05F524:
-	; data $05F524-$09611F
-	incbin "rop-original.gen",$05F524,$36BFC
+	; data $05F524-$0603E3
+	incbin "rop-original.gen",$05F524,$EC0
+L0603E4:
+	; data $0603E4-$09611F
+	incbin "rop-original.gen",$0603E4,$35D3C
 	; table $096120-$09638B: 62 records x 5 words
 gfx_tile_rec_00:
 L096120:
@@ -71576,8 +71579,11 @@ L0FBC7C:
 	; data $0FBC7C-$0FCAE1
 	incbin "rop-original.gen",$0FBC7C,$E66
 L0FCAE2:
-	; data $0FCAE2-$0FD07B
-	incbin "rop-original.gen",$0FCAE2,$59A
+	; data $0FCAE2-$0FCE3B
+	incbin "rop-original.gen",$0FCAE2,$35A
+L0FCE3C:
+	; data $0FCE3C-$0FD07B
+	incbin "rop-original.gen",$0FCE3C,$240
 	; code $0FD07C-$0FD0CB
 runtime_checksum:
 	moveq #$0,d0	; $0FD07C
