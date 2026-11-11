@@ -81,13 +81,11 @@ from the $1194A call sites). Chunks are 32x32 (2048 B) or 11x11 (242 B).
 
 ## Rebuilding from scratch
 
-The sources were generated from rop-original.gen by a one-time export
-(.scratch-assets/gen_sources.py in the worktree — not a repo tool):
-decompress each record, unpack tiles / tilemap words, write the indexed
-PNGs + JSONs + manifest. The canonical regeneration path is
-tools/extract_assets.py once it lands on main with indexed-PNG export
-and sprite-palette JSON export (it currently emits RGB PNGs and does not
-export sprite palettes — those are known gaps, not fixed here).
+The sources are regenerated from rop-original.gen by the committed
+exporter `tools/export_assets.py`: decompress each record, unpack tiles /
+tilemap words, write the indexed PNGs + JSONs + manifest. Verify with
+`python3 tools/export_assets.py --out /tmp/regen-gfx --verify assets/gfx`
+(regeneration is byte-identical to these files).
 
 To rebuild the assets from these sources:
 
