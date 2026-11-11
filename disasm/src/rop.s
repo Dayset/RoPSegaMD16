@@ -9146,7 +9146,7 @@ L016C70:
 	divs.w (a0),d0	; $016CA2
 	swap d0	; $016CA4
 	move.w d0,-(a7)	; $016CA6
-	jsr sys_unk_03081a.l	; $016CA8
+	jsr world_refresh_chars.l	; $016CA8
 	addq.w #$4,a7	; $016CAE
 L016CB0:
 	moveq #$0,d0	; $016CB0
@@ -12618,7 +12618,7 @@ L01B81A:
 	move.w $ff02b2.l,-(a7)	; $01B834
 	jsr npc_leader_init.l	; $01B83A
 	lea.l $10(a7),a7	; $01B840
-	jsr sys_unk_02cdd4.l	; $01B844
+	jsr world_reset_supplies.l	; $01B844
 	move.w $ff02b2.l,-(a7)	; $01B84A
 	jsr npc_struct_setup.l	; $01B850
 	addq.w #$2,a7	; $01B856
@@ -12633,7 +12633,7 @@ L01B81A:
 	move.l d0,-(a7)	; $01B87C
 	jsr queue_init.l	; $01B87E
 	addq.w #$6,a7	; $01B884
-	jsr sys_unk_02e9a6.l	; $01B886
+	jsr world_seen_reset.l	; $01B886
 	jsr sys_state_clear.l	; $01B88C
 	clr.l -(a7)	; $01B892
 	clr.w -(a7)	; $01B894
@@ -15436,7 +15436,7 @@ L01DC08:
 L01DC14:
 	move.w $a(a6),$ff0e98.l	; $01DC14
 	move.w #$2,$ff00ae.l	; $01DC1C
-	jsr sys_unk_03090a.l	; $01DC24
+	jsr world_enter_location.l	; $01DC24
 	cmpi.w #$3,$8(a6)	; $01DC2A
 	bne.b L01DC76	; $01DC30
 	move.w d5,-(a7)	; $01DC32
@@ -15683,13 +15683,13 @@ L01DF08:
 	move.w #$7,-(a7)	; $01DFC2
 	move.w #$5,-(a7)	; $01DFC6
 	move.w $ff02b2.l,-(a7)	; $01DFCA
-	jsr sys_unk_02d004.l	; $01DFD0
+	jsr npc_place_group.l	; $01DFD0
 	addq.w #$8,a7	; $01DFD6
 	move.w #$2,-(a7)	; $01DFD8
 	move.w #$3,-(a7)	; $01DFDC
 	move.w #$5,-(a7)	; $01DFE0
 	move.w $c(a6),-(a7)	; $01DFE4
-	jsr sys_unk_02d004.l	; $01DFE8
+	jsr npc_place_group.l	; $01DFE8
 	addq.w #$8,a7	; $01DFEE
 	move.w #$6,$ff012e.l	; $01DFF0
 	move.w #$1,$ff009e.l	; $01DFF8
@@ -16668,7 +16668,7 @@ L01EA4E:
 	move.b $ffbb6f.l,d0	; $01EA50
 	move.w d0,-(a7)	; $01EA56
 	move.w $ff02b2.l,-(a7)	; $01EA58
-	jsr sys_unk_02cc14.l	; $01EA5E
+	jsr shop_count_category_items.l	; $01EA5E
 	addq.w #$4,a7	; $01EA64
 	move.w d0,d6	; $01EA66
 	moveq #$0,d0	; $01EA68
@@ -16748,7 +16748,7 @@ L01EAF8:
 	move.b $ffbb6f.l,d0	; $01EB00
 	move.w d0,-(a7)	; $01EB06
 	move.w $ff02b2.l,-(a7)	; $01EB08
-	jsr sys_unk_02cc62.l	; $01EB0E
+	jsr shop_find_nth_category_item.l	; $01EB0E
 	addq.w #$6,a7	; $01EB14
 	move.w d0,d7	; $01EB16
 	lea.l -$8(a6),a0	; $01EB18
@@ -17195,7 +17195,7 @@ L01F094:
 	move.b $ffbb6f.l,d0	; $01F0B2
 	move.w d0,-(a7)	; $01F0B8
 	move.w $ff02b2.l,-(a7)	; $01F0BA
-	jsr sys_unk_02cc14.l	; $01F0C0
+	jsr shop_count_category_items.l	; $01F0C0
 	addq.w #$4,a7	; $01F0C6
 	move.w (a7)+,d1	; $01F0C8
 	cmp.w d0,d1	; $01F0CA
@@ -17204,7 +17204,7 @@ L01F094:
 	move.b $ffbb6f.l,d0	; $01F0D0
 	move.w d0,-(a7)	; $01F0D6
 	move.w $ff02b2.l,-(a7)	; $01F0D8
-	jsr sys_unk_02cc14.l	; $01F0DE
+	jsr shop_count_category_items.l	; $01F0DE
 	addq.w #$4,a7	; $01F0E4
 	subq.w #$1,d0	; $01F0E6
 	move.b d0,$ffbb72.l	; $01F0E8
@@ -17224,7 +17224,7 @@ L01F0FE:
 	move.b $ffbb6f.l,d0	; $01F11C
 	move.w d0,-(a7)	; $01F122
 	move.w $ff02b2.l,-(a7)	; $01F124
-	jsr sys_unk_02cc62.l	; $01F12A
+	jsr shop_find_nth_category_item.l	; $01F12A
 	addq.w #$6,a7	; $01F130
 	move.w d0,-(a7)	; $01F132
 	move.w #$f,-(a7)	; $01F134
@@ -17246,7 +17246,7 @@ L01F15A:
 	move.b $ffbb6f.l,d0	; $01F172
 	move.w d0,-(a7)	; $01F178
 	move.w $ff02b2.l,-(a7)	; $01F17A
-	jsr sys_unk_02cc62.l	; $01F180
+	jsr shop_find_nth_category_item.l	; $01F180
 	addq.w #$6,a7	; $01F186
 	move.b d0,$ffbb70.l	; $01F188
 	moveq #$0,d0	; $01F18E
@@ -17378,7 +17378,7 @@ L01F31C:
 	move.b $ffbb6f.l,d0	; $01F342
 	move.w d0,-(a7)	; $01F348
 	move.w $ff02b2.l,-(a7)	; $01F34A
-	jsr sys_unk_02cc62.l	; $01F350
+	jsr shop_find_nth_category_item.l	; $01F350
 	addq.w #$6,a7	; $01F356
 	move.w d0,-(a7)	; $01F358
 	move.w $ff0eaa.l,-(a7)	; $01F35A
@@ -17421,7 +17421,7 @@ L01F3D8:
 	move.b $ffbb6f.l,d0	; $01F3E6
 	move.w d0,-(a7)	; $01F3EC
 	move.w $ff02b2.l,-(a7)	; $01F3EE
-	jsr sys_unk_02cc62.l	; $01F3F4
+	jsr shop_find_nth_category_item.l	; $01F3F4
 	addq.w #$6,a7	; $01F3FA
 	move.b d0,$ffbb6f.l	; $01F3FC
 	bra.b L01F410	; $01F402
@@ -17441,7 +17441,7 @@ L01F410:
 	move.b $ffbb6f.l,d0	; $01F41E
 	move.w d0,-(a7)	; $01F424
 	move.w $ff02b2.l,-(a7)	; $01F426
-	jsr sys_unk_02cc62.l	; $01F42C
+	jsr shop_find_nth_category_item.l	; $01F42C
 	addq.w #$6,a7	; $01F432
 	move.b d0,$ffbb70.l	; $01F434
 	movea.l -$4(a6),a0	; $01F43A
@@ -17926,7 +17926,7 @@ L01FB2E:
 	move.b $ffbb6f.l,d0	; $01FB3C
 	move.w d0,-(a7)	; $01FB42
 	move.w $ff02b2.l,-(a7)	; $01FB44
-	jsr sys_unk_02cc62.l	; $01FB4A
+	jsr shop_find_nth_category_item.l	; $01FB4A
 	addq.w #$6,a7	; $01FB50
 	move.w d0,-$e(a6)	; $01FB52
 	cmpi.w #$2,-$e(a6)	; $01FB56
@@ -17990,7 +17990,7 @@ L01FB2E:
 	move.b $ffbb6f.l,d0	; $01FC34
 	move.w d0,-(a7)	; $01FC3A
 	move.w $ff02b2.l,-(a7)	; $01FC3C
-	jsr sys_unk_02cc62.l	; $01FC42
+	jsr shop_find_nth_category_item.l	; $01FC42
 	addq.w #$6,a7	; $01FC48
 	move.w d0,-$e(a6)	; $01FC4A
 	clr.l -(a7)	; $01FC4E
@@ -18060,7 +18060,7 @@ L01FCA4:
 	asl.w #$6,d0	; $01FD3A
 	add.w -$e(a6),d0	; $01FD3C
 	move.w d0,-(a7)	; $01FD40
-	jsr sys_unk_02d38c.l	; $01FD42
+	jsr shop_category_max.l	; $01FD42
 	addq.w #$2,a7	; $01FD48
 	move.w (a7)+,d1	; $01FD4A
 	cmp.w d0,d1	; $01FD4C
@@ -18213,7 +18213,7 @@ L01FF44:
 	move.b $ffbb6f.l,d0	; $01FF60
 	move.w d0,-(a7)	; $01FF66
 	move.w $ff02b2.l,-(a7)	; $01FF68
-	jsr sys_unk_02cc62.l	; $01FF6E
+	jsr shop_find_nth_category_item.l	; $01FF6E
 	addq.w #$6,a7	; $01FF74
 	move.w d0,-(a7)	; $01FF76
 	move.w #$f,-(a7)	; $01FF78
@@ -18259,7 +18259,7 @@ L01FFC6:
 	and.w #$f,d1	; $020016
 	move.w d1,-(a7)	; $02001A
 	move.w $ff02b2.l,-(a7)	; $02001C
-	jsr sys_unk_02ccc4.l	; $020022
+	jsr shop_count_category_prefix.l	; $020022
 	addq.w #$6,a7	; $020028
 	move.b d0,$ffbb72.l	; $02002A
 L020030:
@@ -18273,7 +18273,7 @@ L020030:
 	move.b $ffbb6f.l,d0	; $02004A
 	move.w d0,-(a7)	; $020050
 	move.w $ff02b2.l,-(a7)	; $020052
-	jsr sys_unk_02cc62.l	; $020058
+	jsr shop_find_nth_category_item.l	; $020058
 	addq.w #$6,a7	; $02005E
 	move.b d0,$ffbb70.l	; $020060
 	moveq #$0,d0	; $020066
@@ -18529,7 +18529,7 @@ L0203C6:
 L0203D8:
 	clr.w $ff0116.l	; $0203D8
 L0203DE:
-	jsr sys_unk_02ee2a.l	; $0203DE
+	jsr sys_direct_apply.l	; $0203DE
 	bra.w settings_menu_open	; $0203E4
 L0203E8:
 	move.w #$1,-(a7)	; $0203E8
@@ -18602,7 +18602,7 @@ L0204CA:
 	bra.w settings_menu_open	; $0204CA
 L0204CE:
 	clr.w -(a7)	; $0204CE
-	jsr sys_unk_03019a.l	; $0204D0
+	jsr world_camp.l	; $0204D0
 	addq.w #$2,a7	; $0204D6
 	bra.w settings_menu_open	; $0204D8
 L0204DC:
@@ -21276,7 +21276,7 @@ L022764:
 	movea.l $ffa7fc.l,a0	; $02276C
 	tst.w $a(a0)	; $022772
 	bne.b L02277E	; $022776
-	jsr sys_unk_02d56a.l	; $022778
+	jsr sys_event_run.l	; $022778
 L02277E:
 	lea.l $ff010e.l,a0	; $02277E
 	move.w (a0),d0	; $022784
@@ -27714,7 +27714,7 @@ L027F26:
 	lea.l $c(a7),a7	; $027F40
 	bra.w L029368	; $027F44
 L027F48:
-	jsr sys_unk_030da4.l	; $027F48
+	jsr text_char_summary.l	; $027F48
 	bra.w L029368	; $027F4E
 L027F52:
 	bra.w L029368	; $027F52
@@ -28202,7 +28202,7 @@ L028612:
 	move.w #$96,-(a7)	; $028618
 	move.w #$44,-(a7)	; $02861C
 	move.w $ff02b2.l,-(a7)	; $028620
-	jsr sys_unk_02ecca.l	; $028626
+	jsr world_draw_link_icons.l	; $028626
 	addq.w #$8,a7	; $02862C
 	move.w $ff0eaa.l,-(a7)	; $02862E
 	move.w #$96,-(a7)	; $028634
@@ -28213,7 +28213,7 @@ L028612:
 	moveq #$0,d1	; $02864C
 	move.b (a0,d0.l),d1	; $02864E
 	move.w d1,-(a7)	; $028652
-	jsr sys_unk_02ecca.l	; $028654
+	jsr world_draw_link_icons.l	; $028654
 	addq.w #$8,a7	; $02865A
 	bra.w L029368	; $02865C
 L028660:
@@ -28828,7 +28828,7 @@ L028F0C:
 L028F0E:
 	move.w d5,-(a7)	; $028F0E
 	move.w -$2(a6),-(a7)	; $028F10
-	jsr sys_unk_02cc14.l	; $028F14
+	jsr shop_count_category_items.l	; $028F14
 	addq.w #$4,a7	; $028F1A
 	tst.w d0	; $028F1C
 	bne.b L028F24	; $028F1E
@@ -28948,7 +28948,7 @@ L029068:
 	move.w d0,-(a7)	; $029084
 	move.w d5,-(a7)	; $029086
 	move.w -$2(a6),-(a7)	; $029088
-	jsr sys_unk_02cc62.l	; $02908C
+	jsr shop_find_nth_category_item.l	; $02908C
 	addq.w #$6,a7	; $029092
 	move.w (a7)+,d1	; $029094
 	add.w d0,d1	; $029096
@@ -28993,13 +28993,13 @@ L0290D2:
 	move.w d0,-(a7)	; $0290FA
 	move.w -$4(a6),-(a7)	; $0290FC
 	pea.l -$d2(a6)	; $029100
-	jsr sys_unk_02cd10.l	; $029104
+	jsr text_event_draw_glyph.l	; $029104
 	lea.l $c(a7),a7	; $02910A
 	addq.w #$1,d4	; $02910E
 L029110:
 	move.w d5,-(a7)	; $029110
 	move.w -$2(a6),-(a7)	; $029112
-	jsr sys_unk_02cc14.l	; $029116
+	jsr shop_count_category_items.l	; $029116
 	addq.w #$4,a7	; $02911C
 	cmp.w d0,d4	; $02911E
 	blt.w L029068	; $029120
@@ -29722,7 +29722,7 @@ L029A56:
 	lea.l $ff02c8.l,a0	; $029AA8
 	move.w (a0,d0.l),-(a7)	; $029AAE
 	move.w $ff0e82.l,-(a7)	; $029AB2
-	jsr sys_unk_02ef4e.l	; $029AB8
+	jsr npc_face_each_other.l	; $029AB8
 	addq.w #$4,a7	; $029ABE
 L029AC0:
 	clr.w -$e(a6)	; $029AC0
@@ -29922,7 +29922,7 @@ L029D16:
 	subq.w #$3,d0	; $029D20
 	move.w d0,-$12(a6)	; $029D22
 	move.w -$12(a6),-(a7)	; $029D26
-	jsr sys_unk_02ee6c.l	; $029D2A
+	jsr npc_spawn_party_member.l	; $029D2A
 	addq.w #$2,a7	; $029D30
 	bra.w L029DC6	; $029D32
 L029D36:
@@ -30253,7 +30253,7 @@ L02A17C:
 	move.w (a0),d0	; $02A180
 	and.w #$fff,d0	; $02A182
 	move.w d0,-(a7)	; $02A186
-	jsr sys_unk_02d3dc.l	; $02A188
+	jsr menu_select_screen.l	; $02A188
 	addq.w #$2,a7	; $02A18E
 	move.w #$ffff,-$c(a6)	; $02A190
 	bra.w L02A21C	; $02A196
@@ -30328,7 +30328,7 @@ L02A260:
 	rts	; $02A262
 L02A264:
 	move.w $8(a6),-(a7)	; $02A264
-	jsr sys_unk_0308c6.l	; $02A268
+	jsr world_count_char_fields.l	; $02A268
 	addq.w #$2,a7	; $02A26E
 	cmp.w #$1,d0	; $02A270
 	bgt.b L02A27C	; $02A274
@@ -32025,7 +32025,7 @@ L02B9B8:
 	mulu.w #$6,d0	; $02B9BC
 	lea.l L0D6020.l,a0	; $02B9C0
 	move.w (a0,d0.l),-(a7)	; $02B9C6
-	jsr sys_unk_02d50c.l	; $02B9CA
+	jsr npc_attitude_raise_by_id.l	; $02B9CA
 	addq.w #$2,a7	; $02B9D0
 	move.w d0,-$4(a6)	; $02B9D2
 	tst.w $a(a6)	; $02B9D6
@@ -32127,7 +32127,7 @@ L02BAE4:
 	move.b (a0,d0.l),d1	; $02BB48
 	move.w d1,-(a7)	; $02BB4C
 	move.w -$2(a6),-(a7)	; $02BB4E
-	jsr sys_unk_02d004.l	; $02BB52
+	jsr npc_place_group.l	; $02BB52
 	addq.w #$8,a7	; $02BB58
 L02BB5A:
 	tst.w $a(a6)	; $02BB5A
@@ -32369,7 +32369,7 @@ L02BE4A:
 	bra.w L02BF66	; $02BE50
 L02BE54:
 	move.w #$1,-(a7)	; $02BE54
-	jsr sys_unk_03019a.l	; $02BE58
+	jsr world_camp.l	; $02BE58
 	addq.w #$2,a7	; $02BE5E
 	bra.w L02BF72	; $02BE60
 L02BE64:
@@ -33379,7 +33379,7 @@ sys_struct52_set_field:
 	unlk a6	; $02CBE6
 	rts	; $02CBE8
 	; code $02CBEA-$02CC11
-sys_unk_02cbea:
+shop_category_count:
 	link.w a6,#$0	; $02CBEA
 	move.w $8(a6),d0	; $02CBEE
 	ext.l d0	; $02CBF2
@@ -33398,11 +33398,11 @@ L02CC10:
 	; data $02CC12-$02CC13
 	incbin "rop-original.gen",$02CC12,$2
 	; code $02CC14-$02CC61
-sys_unk_02cc14:
+shop_count_category_items:
 	link.w a6,#$fffa	; $02CC14
 	clr.w -$6(a6)	; $02CC18
 	move.w $a(a6),-(a7)	; $02CC1C
-	bsr.b sys_unk_02cbea	; $02CC20
+	bsr.b shop_category_count	; $02CC20
 	addq.w #$2,a7	; $02CC22
 	move.w d0,-$4(a6)	; $02CC24
 	clr.w -$2(a6)	; $02CC28
@@ -33428,7 +33428,7 @@ L02CC50:
 	unlk a6	; $02CC5E
 	rts	; $02CC60
 	; code $02CC62-$02CCC3
-sys_unk_02cc62:
+shop_find_nth_category_item:
 	link.w a6,#$fffc	; $02CC62
 	tst.w $c(a6)	; $02CC66
 	bne.b L02CC72	; $02CC6A
@@ -33460,7 +33460,7 @@ L02CCAA:
 	addq.w #$1,-$2(a6)	; $02CCAA
 L02CCAE:
 	move.w $a(a6),-(a7)	; $02CCAE
-	jsr sys_unk_02cbea(pc)	; $02CCB2
+	jsr shop_category_count(pc)	; $02CCB2
 	addq.w #$2,a7	; $02CCB6
 	move.w -$2(a6),d1	; $02CCB8
 	cmp.w d0,d1	; $02CCBC
@@ -33468,7 +33468,7 @@ L02CCAE:
 	moveq #$ff,d0	; $02CCC0
 	bra.b L02CC6E	; $02CCC2
 	; code $02CCC4-$02CD0F
-sys_unk_02ccc4:
+shop_count_category_prefix:
 	link.w a6,#$fffc	; $02CCC4
 	tst.w $c(a6)	; $02CCC8
 	bne.b L02CCD4	; $02CCCC
@@ -33500,7 +33500,7 @@ L02CD00:
 	move.w -$4(a6),d0	; $02CD0A
 	bra.b L02CCD0	; $02CD0E
 	; code $02CD10-$02CDD3
-sys_unk_02cd10:
+text_event_draw_glyph:
 	link.w a6,#$0	; $02CD10
 	move.w $12(a6),d0	; $02CD14
 	ext.l d0	; $02CD18
@@ -33566,7 +33566,7 @@ L02CDD0:
 	unlk a6	; $02CDD0
 	rts	; $02CDD2
 	; code $02CDD4-$02CE73
-sys_unk_02cdd4:
+world_reset_supplies:
 	link.w a6,#$fffe	; $02CDD4
 	clr.w -$2(a6)	; $02CDD8
 L02CDDC:
@@ -33721,7 +33721,7 @@ L02D000:
 	unlk a6	; $02D000
 	rts	; $02D002
 	; code $02D004-$02D283
-sys_unk_02d004:
+npc_place_group:
 	link.w a6,#$ffe8	; $02D004
 	movem.l d4-d6,-(a7)	; $02D008
 	move.w $8(a6),-(a7)	; $02D00C
@@ -34040,7 +34040,7 @@ L02D382:
 	unlk a6	; $02D388
 	rts	; $02D38A
 	; code $02D38C-$02D3DB
-sys_unk_02d38c:
+shop_category_max:
 	link.w a6,#$fffc	; $02D38C
 	move.w $8(a6),d0	; $02D390
 	ext.l d0	; $02D394
@@ -34067,7 +34067,7 @@ L02D3C6:
 	move.w (a0,d1.l),d0	; $02D3D6
 	bra.b L02D3C2	; $02D3DA
 	; code $02D3DC-$02D47F
-sys_unk_02d3dc:
+menu_select_screen:
 	link.w a6,#$0	; $02D3DC
 	move.w $8(a6),d0	; $02D3E0
 	ext.l d0	; $02D3E4
@@ -34149,7 +34149,7 @@ L02D4FC:
 	clr.w $ff009c.l	; $02D502
 	bra.w L02D47C	; $02D508
 	; code $02D50C-$02D569
-sys_unk_02d50c:
+npc_attitude_raise_by_id:
 	link.w a6,#$fffe	; $02D50C
 	clr.w -$2(a6)	; $02D510
 L02D514:
@@ -34180,7 +34180,7 @@ L02D55A:
 	moveq #$ff,d0	; $02D566
 	bra.b L02D556	; $02D568
 	; code $02D56A-$02DBB7
-sys_unk_02d56a:
+sys_event_run:
 	link.w a6,#$fff4	; $02D56A
 	tst.w $ff010a.l	; $02D56E
 	bne.b L02D592	; $02D574
@@ -34279,7 +34279,7 @@ L02D67C:
 	bne.w L02D73C	; $02D6B8
 L02D6BC:
 	move.w #$156,-(a7)	; $02D6BC
-	jsr sys_unk_02d50c(pc)	; $02D6C0
+	jsr npc_attitude_raise_by_id(pc)	; $02D6C0
 	addq.w #$2,a7	; $02D6C4
 	muls.w #$34,d0	; $02D6C6
 	lea.l $ff02ca.l,a0	; $02D6CA
@@ -34359,7 +34359,7 @@ L02D7D6:
 	move.w d0,-(a7)	; $02D7E2
 	movea.l $ffc384.l,a0	; $02D7E4
 	move.w $4(a0),-(a7)	; $02D7EA
-	jsr sys_unk_02d50c(pc)	; $02D7EE
+	jsr npc_attitude_raise_by_id(pc)	; $02D7EE
 	addq.w #$2,a7	; $02D7F2
 	move.w d0,-(a7)	; $02D7F4
 	jsr sys_unk_024984.l	; $02D7F6
@@ -34367,7 +34367,7 @@ L02D7D6:
 	bra.w L02DBEA	; $02D7FE
 L02D802:
 	move.w $ff02b2.l,-(a7)	; $02D802
-	jsr sys_unk_02d50c(pc)	; $02D808
+	jsr npc_attitude_raise_by_id(pc)	; $02D808
 	addq.w #$2,a7	; $02D80C
 	move.w d0,-$2(a6)	; $02D80E
 	movea.l $ffc384.l,a0	; $02D812
@@ -34390,7 +34390,7 @@ L02D802:
 L02D852:
 	movea.l $ffc384.l,a0	; $02D852
 	move.w $4(a0),-(a7)	; $02D858
-	jsr sys_unk_02d50c(pc)	; $02D85C
+	jsr npc_attitude_raise_by_id(pc)	; $02D85C
 	addq.w #$2,a7	; $02D860
 	move.w d0,-$2(a6)	; $02D862
 	movea.l $ffc384.l,a0	; $02D866
@@ -34430,13 +34430,13 @@ L02D892:
 	move.b $1(a0),d0	; $02D8E0
 	move.w d0,-(a7)	; $02D8E4
 	move.w -$2(a6),-(a7)	; $02D8E6
-	jsr sys_unk_02d004(pc)	; $02D8EA
+	jsr npc_place_group(pc)	; $02D8EA
 	addq.w #$8,a7	; $02D8EE
 	bra.w L02DBEA	; $02D8F0
 L02D8F4:
 	movea.l $ffc384.l,a0	; $02D8F4
 	move.w $4(a0),-(a7)	; $02D8FA
-	jsr sys_unk_02d50c(pc)	; $02D8FE
+	jsr npc_attitude_raise_by_id(pc)	; $02D8FE
 	addq.w #$2,a7	; $02D902
 	move.w d0,-$2(a6)	; $02D904
 	move.w #$ffff,-(a7)	; $02D908
@@ -34470,7 +34470,7 @@ L02D964:
 	beq.b L02D998	; $02D970
 	movea.l $ffc384.l,a0	; $02D972
 	move.w $6(a0),-(a7)	; $02D978
-	jsr sys_unk_02d50c(pc)	; $02D97C
+	jsr npc_attitude_raise_by_id(pc)	; $02D97C
 	addq.w #$2,a7	; $02D980
 	muls.w #$34,d0	; $02D982
 	lea.l $ff02ca.l,a0	; $02D986
@@ -34512,7 +34512,7 @@ L02DA06:
 L02DA0A:
 	movea.l $ffc384.l,a0	; $02DA0A
 	move.w $4(a0),-(a7)	; $02DA10
-	jsr sys_unk_02d50c(pc)	; $02DA14
+	jsr npc_attitude_raise_by_id(pc)	; $02DA14
 	addq.w #$2,a7	; $02DA18
 	muls.w #$34,d0	; $02DA1A
 	lea.l $ff02db.l,a0	; $02DA1E
@@ -34526,7 +34526,7 @@ L02DA0A:
 L02DA3E:
 	movea.l $ffc384.l,a0	; $02DA3E
 	move.w $4(a0),-(a7)	; $02DA44
-	jsr sys_unk_02d50c(pc)	; $02DA48
+	jsr npc_attitude_raise_by_id(pc)	; $02DA48
 	addq.w #$2,a7	; $02DA4C
 	move.w d0,-$2(a6)	; $02DA4E
 	move.w -$2(a6),d0	; $02DA52
@@ -34587,7 +34587,7 @@ L02DB2A:
 L02DB2E:
 	movea.l $ffc384.l,a0	; $02DB2E
 	move.w $4(a0),-(a7)	; $02DB34
-	jsr sys_unk_02d50c(pc)	; $02DB38
+	jsr npc_attitude_raise_by_id(pc)	; $02DB38
 	addq.w #$2,a7	; $02DB3C
 	move.w d0,-$2(a6)	; $02DB3E
 	move.w #$ffff,-(a7)	; $02DB42
@@ -34610,7 +34610,7 @@ L02DB2E:
 L02DB88:
 	movea.l $ffc384.l,a0	; $02DB88
 	move.w $4(a0),-(a7)	; $02DB8E
-	jsr sys_unk_02d50c(pc)	; $02DB92
+	jsr npc_attitude_raise_by_id(pc)	; $02DB92
 	addq.w #$2,a7	; $02DB96
 	move.w d0,-$2(a6)	; $02DB98
 	movea.l $ffc384.l,a0	; $02DB9C
@@ -34793,13 +34793,13 @@ L02DDBC:
 	addq.w #$1,-$e(a6)	; $02DDD8
 L02DDDC:
 	move.w #$a,-(a7)	; $02DDDC
-	jsr sys_unk_02cbea.l	; $02DDE0
+	jsr shop_category_count.l	; $02DDE0
 	addq.w #$2,a7	; $02DDE6
 	move.w -$e(a6),d1	; $02DDE8
 	cmp.w d0,d1	; $02DDEC
 	blt.b L02DDBC	; $02DDEE
 	move.w #$a,-(a7)	; $02DDF0
-	jsr sys_unk_02cbea.l	; $02DDF4
+	jsr shop_category_count.l	; $02DDF4
 	addq.w #$2,a7	; $02DDFA
 	move.w -$10(a6),d1	; $02DDFC
 	cmp.w d0,d1	; $02DE00
@@ -34900,7 +34900,7 @@ L02DE8A:
 	jsr song_play_direct.l	; $02DF68
 	addq.w #$2,a7	; $02DF6E
 	move.w #$e5,-(a7)	; $02DF70
-	jsr sys_unk_02d50c(pc)	; $02DF74
+	jsr npc_attitude_raise_by_id(pc)	; $02DF74
 	addq.w #$2,a7	; $02DF78
 	move.w d0,-$8(a6)	; $02DF7A
 	move.w -$8(a6),d0	; $02DF7E
@@ -35031,7 +35031,7 @@ L02E116:
 	asl.l #$2,d0	; $02E15C
 	lea.l L01B2E0.l,a0	; $02E15E
 	move.w (a0,d0.l),-(a7)	; $02E164
-	jsr sys_unk_03081a(pc)	; $02E168
+	jsr world_refresh_chars(pc)	; $02E168
 	addq.w #$4,a7	; $02E16C
 	move.w #$ffff,-(a7)	; $02E16E
 	move.w #$c,-(a7)	; $02E172
@@ -35112,7 +35112,7 @@ L02E24A:
 	asl.l #$2,d0	; $02E286
 	lea.l L01B2E0.l,a0	; $02E288
 	move.w (a0,d0.l),-(a7)	; $02E28E
-	jsr sys_unk_03081a(pc)	; $02E292
+	jsr world_refresh_chars(pc)	; $02E292
 	addq.w #$4,a7	; $02E296
 	move.w #$ffff,-(a7)	; $02E298
 	move.w #$c,-(a7)	; $02E29C
@@ -35632,7 +35632,7 @@ L02E9A2:
 	moveq #$0,d0	; $02E9A2
 	bra.b L02E964	; $02E9A4
 	; code $02E9A6-$02E9EB
-sys_unk_02e9a6:
+world_seen_reset:
 	link.w a6,#$fffe	; $02E9A6
 	clr.w $ff0122.l	; $02E9AA
 	clr.w -$2(a6)	; $02E9B0
@@ -35653,7 +35653,7 @@ L02E9B4:
 	unlk a6	; $02E9E8
 	rts	; $02E9EA
 	; code $02E9EC-$02EA3F
-sys_unk_02e9ec:
+world_seen_record:
 	link.w a6,#$0	; $02E9EC
 	move.w $ff0122.l,d0	; $02E9F0
 	ext.l d0	; $02E9F6
@@ -35677,7 +35677,7 @@ sys_unk_02e9ec:
 	unlk a6	; $02EA3C
 	rts	; $02EA3E
 	; code $02EA40-$02EA91
-sys_unk_02ea40:
+world_seen_check:
 	link.w a6,#$0	; $02EA40
 	move.l d4,-(a7)	; $02EA44
 	moveq #$0,d4	; $02EA46
@@ -35905,7 +35905,7 @@ L02ECBA:
 	; data $02ECC8-$02ECC9
 	incbin "rop-original.gen",$02ECC8,$2
 	; code $02ECCA-$02EE27
-sys_unk_02ecca:
+world_draw_link_icons:
 	link.w a6,#$0	; $02ECCA
 	movem.l d4-d6,-(a7)	; $02ECCE
 	moveq #$0,d5	; $02ECD2
@@ -36022,7 +36022,7 @@ L02EE28:
 	; data $02EE28-$02EE29
 	incbin "rop-original.gen",$02EE28,$2
 	; code $02EE2A-$02EE6B
-sys_unk_02ee2a:
+sys_direct_apply:
 	link.w a6,#$0	; $02EE2A
 	tst.w $ff0116.l	; $02EE2E
 	beq.b L02EE48	; $02EE34
@@ -36039,7 +36039,7 @@ L02EE56:
 	unlk a6	; $02EE68
 	rts	; $02EE6A
 	; code $02EE6C-$02EF4D
-sys_unk_02ee6c:
+npc_spawn_party_member:
 	link.w a6,#$fffe	; $02EE6C
 	clr.w -(a7)	; $02EE70
 	clr.w -(a7)	; $02EE72
@@ -36098,7 +36098,7 @@ sys_unk_02ee6c:
 	unlk a6	; $02EF4A
 	rts	; $02EF4C
 	; code $02EF4E-$02F02F
-sys_unk_02ef4e:
+npc_face_each_other:
 	link.w a6,#$fffc	; $02EF4E
 	movem.l a3-a4,-(a7)	; $02EF52
 	lea.l $ff010e.l,a0	; $02EF56
@@ -36168,7 +36168,7 @@ xp_to_level:
 L02F038:
 	move.w #$64,-(a7)	; $02F038
 	move.w -$2(a6),-(a7)	; $02F03C
-	bsr.b sys_unk_02f05a	; $02F040
+	bsr.b math_mul_pow2	; $02F040
 	addq.w #$4,a7	; $02F042
 	move.w $8(a6),d1	; $02F044
 	cmp.w d0,d1	; $02F048
@@ -36180,7 +36180,7 @@ L02F052:
 	unlk a6	; $02F056
 	rts	; $02F058
 	; code $02F05A-$02F081
-sys_unk_02f05a:
+math_mul_pow2:
 	link.w a6,#$0	; $02F05A
 	tst.w $8(a6)	; $02F05E
 	bne.b L02F06C	; $02F062
@@ -36195,7 +36195,7 @@ L02F06C:
 	move.w $8(a6),d0	; $02F074
 	subq.w #$1,d0	; $02F078
 	move.w d0,-(a7)	; $02F07A
-	bsr.b sys_unk_02f05a	; $02F07C
+	bsr.b math_mul_pow2	; $02F07C
 	addq.w #$4,a7	; $02F07E
 	bra.b L02F068	; $02F080
 	; code $02F082-$02F0CF
@@ -36812,8 +36812,8 @@ L02F8E6:
 	cmpi.w #$6,-$4(a6)	; $02F8FC
 	bcs.b L02F8E6	; $02F902
 	jsr shop_merchant_scan.l	; $02F904
-	jsr sys_unk_02e9a6(pc)	; $02F90A
-	jsr sys_unk_02cdd4.l	; $02F90E
+	jsr world_seen_reset(pc)	; $02F90A
+	jsr world_reset_supplies.l	; $02F90E
 	clr.b $ffc34a.l	; $02F914
 	clr.b $ffc34b.l	; $02F91A
 	clr.w -(a7)	; $02F920
@@ -36966,7 +36966,7 @@ L02FB3E:
 	move.w -$4(a6),d0	; $02FB90
 	subq.w #$1,d0	; $02FB94
 	move.w d0,-(a7)	; $02FB96
-	jsr sys_unk_02ee6c(pc)	; $02FB98
+	jsr npc_spawn_party_member(pc)	; $02FB98
 	addq.w #$2,a7	; $02FB9C
 	tst.w -$6(a6)	; $02FB9E
 	bne.b L02FBCC	; $02FBA2
@@ -37350,12 +37350,12 @@ L0300A6:
 	cmpi.w #$24,-$6(a6)	; $0300EE
 	bcs.b L0300A6	; $0300F4
 	clr.w $ff0112.l	; $0300F6
-	jsr sys_unk_02ee2a(pc)	; $0300FC
+	jsr sys_direct_apply(pc)	; $0300FC
 	move.w #$ffff,$ff0124.l	; $030100
 	move.w -$e(a6),d0	; $030108
 	bra.w L02F8AA	; $03010C
 	; code $030110-$030199
-sys_unk_030110:
+combat_kill_announce:
 	link.w a6,#$fffe	; $030110
 	move.w $ff0e82.l,-$2(a6)	; $030114
 	move.w -$2(a6),d0	; $03011C
@@ -37391,7 +37391,7 @@ L030166:
 	unlk a6	; $030196
 	rts	; $030198
 	; code $03019A-$030627
-sys_unk_03019a:
+world_camp:
 	link.w a6,#$fff4	; $03019A
 	cmpi.w #$2,$ff00ae.l	; $03019E
 	bne.b L0301AE	; $0301A6
@@ -37772,7 +37772,7 @@ L0306B2:
 	jsr inv_apply_resource.l	; $0306C6
 	addq.w #$8,a7	; $0306CC
 	move.w #$e,-(a7)	; $0306CE
-	jsr sys_unk_02cbea.l	; $0306D2
+	jsr shop_category_count.l	; $0306D2
 	addq.w #$2,a7	; $0306D8
 	move.w d0,-(a7)	; $0306DA
 	jsr rand_next.l	; $0306DC
@@ -37873,7 +37873,7 @@ L030800:
 	unlk a6	; $030816
 	rts	; $030818
 	; code $03081A-$0308C5
-sys_unk_03081a:
+world_refresh_chars:
 	link.w a6,#$fffe	; $03081A
 	cmpi.w #$1,$ff00ae.l	; $03081E
 	beq.b L03082C	; $030826
@@ -37922,7 +37922,7 @@ L030898:
 	addq.w #$6,a7	; $0308C0
 	bra.w L030828	; $0308C2
 	; code $0308C6-$030909
-sys_unk_0308c6:
+world_count_char_fields:
 	link.w a6,#$fffc	; $0308C6
 	clr.w -$2(a6)	; $0308CA
 	clr.w -$4(a6)	; $0308CE
@@ -37947,7 +37947,7 @@ L0308FA:
 	unlk a6	; $030906
 	rts	; $030908
 	; code $03090A-$030DA3
-sys_unk_03090a:
+world_enter_location:
 	link.w a6,#$fffc	; $03090A
 	movem.l d4-d7/a3,-(a7)	; $03090E
 	lea.l $ff0e92.l,a0	; $030912
@@ -37966,7 +37966,7 @@ sys_unk_03090a:
 	move.w #$5,-(a7)	; $03093E
 	move.w #$5,-(a7)	; $030942
 	move.w $ff02b2.l,-(a7)	; $030946
-	jsr sys_unk_02d004.l	; $03094C
+	jsr npc_place_group.l	; $03094C
 	addq.w #$8,a7	; $030952
 	bra.b L0309A0	; $030954
 L030956:
@@ -37992,7 +37992,7 @@ L030956:
 	move.b (a0,d0.l),d1	; $03098C
 	move.w d1,-(a7)	; $030990
 	move.w $ff02b2.l,-(a7)	; $030992
-	jsr sys_unk_02d004.l	; $030998
+	jsr npc_place_group.l	; $030998
 	addq.w #$8,a7	; $03099E
 L0309A0:
 	moveq #$0,d6	; $0309A0
@@ -38049,7 +38049,7 @@ L0309A2:
 	add.w -$4(a6),d1	; $030A3E
 	move.w d1,-(a7)	; $030A42
 	move.w d6,-(a7)	; $030A44
-	jsr sys_unk_02d004.l	; $030A46
+	jsr npc_place_group.l	; $030A46
 	addq.w #$8,a7	; $030A4C
 	bra.b L030A5A	; $030A4E
 L030A50:
@@ -38098,7 +38098,7 @@ L030AA8:
 	cmp.w #$ffff,d7	; $030AD4
 	bne.b L030AE8	; $030AD8
 	move.w d6,-(a7)	; $030ADA
-	jsr sys_unk_02ea40.l	; $030ADC
+	jsr world_seen_check.l	; $030ADC
 	addq.w #$2,a7	; $030AE2
 	tst.w d0	; $030AE4
 	beq.b L030B06	; $030AE6
@@ -38166,7 +38166,7 @@ L030B58:
 	move.b (a0,d0.l),d1	; $030BB2
 	move.w d1,-(a7)	; $030BB6
 	move.w d7,-(a7)	; $030BB8
-	jsr sys_unk_02d004.l	; $030BBA
+	jsr npc_place_group.l	; $030BBA
 	addq.w #$8,a7	; $030BC0
 L030BC2:
 	addq.w #$1,d6	; $030BC2
@@ -38319,7 +38319,7 @@ L030D9C:
 	unlk a6	; $030DA0
 	rts	; $030DA2
 	; code $030DA4-$0317E1
-sys_unk_030da4:
+text_char_summary:
 	link.w a6,#$ff94	; $030DA4
 	move.w #$9f,-$4a(a6)	; $030DA8
 	clr.w -$4c(a6)	; $030DAE
@@ -38369,7 +38369,7 @@ L030E32:
 	beq.b L030E6C	; $030E58
 	addq.w #$1,-$4c(a6)	; $030E5A
 	move.w -$64(a6),-(a7)	; $030E5E
-	jsr sys_unk_0308c6(pc)	; $030E62
+	jsr world_count_char_fields(pc)	; $030E62
 	addq.w #$2,a7	; $030E66
 	add.w d0,-$4e(a6)	; $030E68
 L030E6C:
@@ -39168,7 +39168,7 @@ L0318BA:
 	; data $0318BA-$0318C5
 	incbin "rop-original.gen",$0318BA,$C
 	; code $0318C6-$031945
-sys_unk_0318c6:
+combat_damage_party:
 	link.w a6,#$fffe	; $0318C6
 	clr.w -$2(a6)	; $0318CA
 L0318CE:
@@ -40107,7 +40107,7 @@ L03231E:
 	and.w #$1,d0	; $032342
 	beq.b L032352	; $032346
 	move.w #$1a,-(a7)	; $032348
-	jsr sys_unk_0318c6(pc)	; $03234C
+	jsr combat_damage_party(pc)	; $03234C
 	addq.w #$2,a7	; $032350
 L032352:
 	bra.w L03268A	; $032352
@@ -40485,7 +40485,7 @@ L0327F0:
 	and.w #$1,d0	; $032810
 	beq.b L032820	; $032814
 	move.w #$1,-(a7)	; $032816
-	jsr sys_unk_0318c6(pc)	; $03281A
+	jsr combat_damage_party(pc)	; $03281A
 	addq.w #$2,a7	; $03281E
 L032820:
 	bra.w L03291A	; $032820
@@ -44169,7 +44169,7 @@ L0357E8:
 	muls.w #$34,d0	; $0357EC
 	lea.l $ff02b6.l,a0	; $0357F0
 	move.w (a0,d0.l),-(a7)	; $0357F6
-	jsr sys_unk_02e9ec.l	; $0357FA
+	jsr world_seen_record.l	; $0357FA
 	addq.w #$2,a7	; $035800
 L035802:
 	move.w #$14,$ffc40c.l	; $035802
@@ -45186,7 +45186,7 @@ L036698:
 	jsr sys_unk_026a8c.l	; $0366B6
 	move.w #$54,-(a7)	; $0366BC
 	move.w #$35,-(a7)	; $0366C0
-	jsr sys_unk_03081a.l	; $0366C4
+	jsr world_refresh_chars.l	; $0366C4
 	addq.w #$4,a7	; $0366CA
 	move.w #$3,-(a7)	; $0366CC
 	move.w $ff02b2.l,-(a7)	; $0366D0
@@ -45315,7 +45315,7 @@ L0368A2:
 	jsr sys_unk_02513e.l	; $0368CC
 	addq.w #$6,a7	; $0368D2
 	move.w #$8,-(a7)	; $0368D4
-	jsr sys_unk_02d3dc.l	; $0368D8
+	jsr menu_select_screen.l	; $0368D8
 	addq.w #$2,a7	; $0368DE
 L0368E0:
 	unlk a6	; $0368E0
@@ -45340,7 +45340,7 @@ combat_set_mode:
 	cmp.w #$fd,d0	; $036922
 	beq.b L036950	; $036926
 	move.w $ff02b2.l,-(a7)	; $036928
-	jsr sys_unk_0308c6.l	; $03692E
+	jsr world_count_char_fields.l	; $03692E
 	addq.w #$2,a7	; $036934
 	ext.l d0	; $036936
 	divs.w #$2,d0	; $036938
@@ -46831,7 +46831,7 @@ L037C52:
 	bne.b L037CBC	; $037CA8
 	cmpi.w #$2,$ff00ae.l	; $037CAA
 	bne.b L037CBC	; $037CB2
-	jsr sys_unk_030110.l	; $037CB4
+	jsr combat_kill_announce.l	; $037CB4
 	bra.b L037CC2	; $037CBA
 L037CBC:
 	jsr combat_victory_announce.l	; $037CBC
@@ -50560,7 +50560,7 @@ L03AA30:
 	jsr rand_next.l	; $03AA68
 	addq.w #$2,a7	; $03AA6E
 	move.w d0,-(a7)	; $03AA70
-	jsr sys_unk_0318c6.l	; $03AA72
+	jsr combat_damage_party.l	; $03AA72
 	addq.w #$2,a7	; $03AA78
 	bra.b L03AAAE	; $03AA7A
 L03AA7C:
@@ -52078,7 +52078,7 @@ spell_ai_pick:
 	move.w d0,-$10(a6)	; $03BD90
 	move.w -$4(a6),-(a7)	; $03BD94
 	move.w $8(a6),-(a7)	; $03BD98
-	jsr sys_unk_02cc14.l	; $03BD9C
+	jsr shop_count_category_items.l	; $03BD9C
 	addq.w #$4,a7	; $03BDA2
 	subq.w #$1,d0	; $03BDA4
 	move.w d0,-$6(a6)	; $03BDA6
@@ -52091,7 +52091,7 @@ L03BDB6:
 	move.w d0,-(a7)	; $03BDBC
 	move.w -$4(a6),-(a7)	; $03BDBE
 	move.w $8(a6),-(a7)	; $03BDC2
-	jsr sys_unk_02cc62.l	; $03BDC6
+	jsr shop_find_nth_category_item.l	; $03BDC6
 	addq.w #$6,a7	; $03BDCC
 	move.w d0,-$a(a6)	; $03BDCE
 	move.w -$8(a6),d0	; $03BDD2
@@ -52653,7 +52653,7 @@ L03C3F0:
 	move.w d0,-$2(a6)	; $03C41A
 	move.w -$2(a6),-(a7)	; $03C41E
 	move.w $8(a6),-(a7)	; $03C422
-	jsr sys_unk_02cc14.l	; $03C426
+	jsr shop_count_category_items.l	; $03C426
 	addq.w #$4,a7	; $03C42C
 	move.w d0,-(a7)	; $03C42E
 	jsr rng_rand_below(pc)	; $03C430
@@ -52662,7 +52662,7 @@ L03C3F0:
 	clr.w -$c(a6)	; $03C43A
 	move.w -$2(a6),-(a7)	; $03C43E
 	move.w $8(a6),-(a7)	; $03C442
-	jsr sys_unk_02cc14.l	; $03C446
+	jsr shop_count_category_items.l	; $03C446
 	addq.w #$4,a7	; $03C44C
 	subq.w #$1,d0	; $03C44E
 	move.w d0,-$4(a6)	; $03C450
@@ -52675,7 +52675,7 @@ L03C460:
 	move.w d0,-(a7)	; $03C466
 	move.w -$2(a6),-(a7)	; $03C468
 	move.w $8(a6),-(a7)	; $03C46C
-	jsr sys_unk_02cc62.l	; $03C470
+	jsr shop_find_nth_category_item.l	; $03C470
 	addq.w #$6,a7	; $03C476
 	move.w d0,-$8(a6)	; $03C478
 	move.w -$6(a6),d0	; $03C47C
@@ -52755,7 +52755,7 @@ L03C546:
 	move.w d0,-$2(a6)	; $03C56C
 	move.w -$2(a6),-(a7)	; $03C570
 	move.w $8(a6),-(a7)	; $03C574
-	jsr sys_unk_02cc14.l	; $03C578
+	jsr shop_count_category_items.l	; $03C578
 	addq.w #$4,a7	; $03C57E
 	subq.w #$1,d0	; $03C580
 	move.w d0,-$4(a6)	; $03C582
@@ -52765,7 +52765,7 @@ L03C586:
 	move.w d0,-(a7)	; $03C58C
 	move.w -$2(a6),-(a7)	; $03C58E
 	move.w $8(a6),-(a7)	; $03C592
-	jsr sys_unk_02cc62.l	; $03C596
+	jsr shop_find_nth_category_item.l	; $03C596
 	addq.w #$6,a7	; $03C59C
 	move.w d0,-$8(a6)	; $03C59E
 	move.w -$6(a6),-(a7)	; $03C5A2
@@ -52907,7 +52907,7 @@ L03C754:
 	addq.w #$1,-$2(a6)	; $03C754
 L03C758:
 	move.w -$8(a6),-(a7)	; $03C758
-	jsr sys_unk_02cbea.l	; $03C75C
+	jsr shop_category_count.l	; $03C75C
 	addq.w #$2,a7	; $03C762
 	move.w -$2(a6),d1	; $03C764
 	cmp.w d0,d1	; $03C768
@@ -52960,7 +52960,7 @@ L03C7FA:
 	addq.w #$1,-$2(a6)	; $03C7FA
 L03C7FE:
 	move.w -$8(a6),-(a7)	; $03C7FE
-	jsr sys_unk_02cbea.l	; $03C802
+	jsr shop_category_count.l	; $03C802
 	addq.w #$2,a7	; $03C808
 	move.w -$2(a6),d1	; $03C80A
 	cmp.w d0,d1	; $03C80E
@@ -53013,7 +53013,7 @@ L03C8A0:
 	addq.w #$1,-$2(a6)	; $03C8A0
 L03C8A4:
 	move.w -$8(a6),-(a7)	; $03C8A4
-	jsr sys_unk_02cbea.l	; $03C8A8
+	jsr shop_category_count.l	; $03C8A8
 	addq.w #$2,a7	; $03C8AE
 	move.w -$2(a6),d1	; $03C8B0
 	cmp.w d0,d1	; $03C8B4
@@ -53066,7 +53066,7 @@ L03C946:
 	addq.w #$1,-$2(a6)	; $03C946
 L03C94A:
 	move.w -$8(a6),-(a7)	; $03C94A
-	jsr sys_unk_02cbea.l	; $03C94E
+	jsr shop_category_count.l	; $03C94E
 	addq.w #$2,a7	; $03C954
 	move.w -$2(a6),d1	; $03C956
 	cmp.w d0,d1	; $03C95A
@@ -53119,7 +53119,7 @@ L03C9EC:
 	addq.w #$1,-$2(a6)	; $03C9EC
 L03C9F0:
 	move.w -$8(a6),-(a7)	; $03C9F0
-	jsr sys_unk_02cbea.l	; $03C9F4
+	jsr shop_category_count.l	; $03C9F4
 	addq.w #$2,a7	; $03C9FA
 	move.w -$2(a6),d1	; $03C9FC
 	cmp.w d0,d1	; $03CA00
@@ -53172,7 +53172,7 @@ L03CA92:
 	addq.w #$1,-$2(a6)	; $03CA92
 L03CA96:
 	move.w -$8(a6),-(a7)	; $03CA96
-	jsr sys_unk_02cbea.l	; $03CA9A
+	jsr shop_category_count.l	; $03CA9A
 	addq.w #$2,a7	; $03CAA0
 	move.w -$2(a6),d1	; $03CAA2
 	cmp.w d0,d1	; $03CAA6

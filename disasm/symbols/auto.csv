@@ -182,42 +182,42 @@ addr,name,tier,note
 0x02B6E0,sys_unk_02b6e0,0,auto: touches $FF02A0 $FF02B4 $FF02C8 $FF02DB $FF0E82 $FF0E92
 0x02c8f2,item_category_of,1,code: divs.w #64 of arg; matches logic.md code/64 category switch
 0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct
-0x02CBEA,sys_unk_02cbea,0,auto: touches none
-0x02CC14,sys_unk_02cc14,0,auto: touches none
-0x02CC62,sys_unk_02cc62,0,auto: touches none
-0x02CCC4,sys_unk_02ccc4,0,auto: touches none
-0x02CD10,sys_unk_02cd10,0,auto: touches none
-0x02CDD4,sys_unk_02cdd4,0,auto: touches $FFC33E $FFC340 $FFC345 $FFC34A $FFC364 $FFC366
+0x02cbea,shop_category_count,1,returns item count for a category from the category table; logic.md 3.3
+0x02cc14,shop_count_category_items,1,counts items in a category matching the test; loops over the category count
+0x02cc62,shop_find_nth_category_item,1,returns index of the Nth matching item in a category or -1
+0x02ccc4,shop_count_category_prefix,1,counts matching items among the first N in a category
+0x02cd10,text_event_draw_glyph,1,draws one or two glyphs at tile positions for the event message display
+0x02cdd4,world_reset_supplies,1,resets food and water to 2000 and clears state buffers; called from new_game_init and save_deserialise
 0x02CE74,npc_attitude_apply,2,logic.md:544 applies attitude delta to char; persistent FF00C0
-0x02D004,sys_unk_02d004,0,auto: touches $FF02B2 $FF02C8 $FF02DC
+0x02d004,npc_place_group,1,places up to 6 characters around a position using direction offsets; calls npc_leader_init and npc_struct_setup
 0x02D284,sys_unk_02d284,0,auto: touches $FFC326
-0x02D38C,sys_unk_02d38c,0,auto: touches none
-0x02D3DC,sys_unk_02d3dc,0,auto: touches $FF009C $FF00AC $FF0110 $FFA7FA $FFB08A $FFC384
-0x02D50C,sys_unk_02d50c,0,auto: touches $FF02B4 $FF02B6
-0x02D56A,sys_unk_02d56a,0,auto: touches $FF009A $FF010A $FF0110 $FF0112 $FF02B2 $FF02B8
+0x02d38c,shop_category_max,1,returns max quantity for an item category; 1 most 99 goods 9999 healing 30000 special case
+0x02d3dc,menu_select_screen,1,selects one of 10 menu screens by setting the screen pointer and initializes menu state
+0x02d50c,npc_attitude_raise_by_id,1,finds char by +0x02 identity word and calls npc_attitude_raise with 0; returns -1 if not found after 56 entries
+0x02d56a,sys_event_run,1,runs 8-byte event records from $FFC384; first byte is opcode 0-15 via jump table; advances pointer by 8 per record; called from combat_turn_run
 0x02DC0C,map_walkable_test,2,logic.md:721 walkability gate 02DC0C tests struct fields
 0x02DCCE,sys_unk_02dcce,0,auto: touches $FF00AE $FF0124 $FF02B2 $FF02B8 $FF02BE $FF02C0
 0x02E8C8,sys_unk_02e8c8,0,auto: touches $FF02B6 $FF02C8 $FF02CB $FF02DB
-0x02E9A6,sys_unk_02e9a6,0,auto: touches $FF0122 $FFC388 $FFC3C8
-0x02E9EC,sys_unk_02e9ec,0,auto: touches $FF0122 $FF0E92 $FFC388 $FFC3C8
-0x02EA40,sys_unk_02ea40,0,auto: touches $FF0E92 $FFC388 $FFC3C8
+0x02e9a6,world_seen_reset,1,clears seen-at-location ring buffer; sets 32 entries of $FFC388 and $FFC3C8 to $FFFF and clears cursor $FF0122
+0x02e9ec,world_seen_record,1,appends value and current location $FF0E92 and $3FF to 32-entry ring buffer $FFC388 $FFC3C8; advances cursor $FF0122 mod 32
+0x02ea40,world_seen_check,1,searches ring buffer for value at current location $FF0E92 and $3FF; returns -1 if found else 0
 0x02EA92,shop_price_calc,2,logic.md:377 section 3.4 price function (verified)
 0x02EC64,sys_struct24_read,1,code: index*24 into table at L0CF1BA; reads a 24-byte record
-0x02ECCA,sys_unk_02ecca,0,auto: touches $FF02C8 $FF02CC $FF02D0 $FF02D2 $FF02E0
-0x02EE2A,sys_unk_02ee2a,0,auto: touches $FF0116 $FF0118 $FF011A
-0x02EE6C,sys_unk_02ee6c,0,auto: touches $FF02B2 $FF02B3 $FF02C8 $FF02D8 $FF02DA $FF02DB
-0x02EF4E,sys_unk_02ef4e,0,auto: touches $FF010E $FF02B4
-0x02F05A,sys_unk_02f05a,0,auto: touches none
+0x02ecca,world_draw_link_icons,1,draws glyphs for the 6 linked chars in char +0x14 array at screen coords from args; highlights arg char
+0x02ee2a,sys_direct_apply,2,sets display params $FF0118 $FF011A from Direct flag $FF0116 then refreshes via wait_vblank sprite write and menu_format; logic-audit.md:254 and :476
+0x02ee6c,npc_spawn_party_member,1,spawns entity via entity_spawn and links it into party list $FF0E82 and char +0x14 array then calls npc_leader_init
+0x02ef4e,npc_face_each_other,1,makes two chars face each other via world_decompose_direction and npc_leader_init; called from npc_attitude_positive
+0x02f05a,math_mul_pow2,1,returns arg2 times 2 to the power arg1 by recursion; XP threshold helper for xp_to_level
 0x02F082,save_record_fill,1,save.md:337 fills save record at LOAD (2F082)
 0x02F0D0,save_bits_unpack,2,save.md:344 bit unpacker 2F0D0 (packer/unpacker pair with 2F082)
-0x030110,sys_unk_030110,0,auto: touches $FF02B8 $FF02D0 $FF02E0 $FF0E82 $FFB0D4
-0x03019A,sys_unk_03019a,0,auto: touches $FF00AE $FF00C0 $FF0124 $FF02D0 $FF02D2 $FF02D4
+0x030110,combat_kill_announce,1,marks char at $FF0E82 dead with HP 0 and dead bit then announces victory; called from combat_target_select
+0x03019a,world_camp,2,logic.md:930 CAMP handler C=28; food and water minus 100 and clock set 0 or 540 and attitude plus 3
 0x030628,npc_attitude_step,1,logic.md:531 attitude adjustment 30628
-0x03081A,sys_unk_03081a,0,auto: touches $FF00AE $FF011C $FF02B2 $FF02B4
-0x0308C6,sys_unk_0308c6,0,auto: touches $FF02C8
-0x03090A,sys_unk_03090a,0,auto: touches $FF02B2 $FF02B4 $FF02C8 $FF0E92 $FF0E98 $FFC326
-0x030DA4,sys_unk_030da4,0,auto: touches $FF00AE $FF02B2 $FF02B4 $FF02B8 $FF02C0 $FF02C2
-0x0318C6,sys_unk_0318c6,0,auto: touches $FF009C $FF02B4 $FF02D0 $FF0E82
+0x03081a,world_refresh_chars,1,iterates all char slots and runs attacker check for type 1 and release for type 2 then assigns struct; called from combat_battle_start
+0x0308c6,world_count_char_fields,1,counts nonzero words in char struct plus 0x14 to plus 0x1E; used by npc_attitude_raise and combat_set_mode
+0x03090a,world_enter_location,1,places party and NPCs at a location from $FF0E92 and $FF0E98 via placement calls; called when mode set to 2
+0x030da4,text_char_summary,1,counts chars by type and draws a text summary of the counts; called from text_event_message
+0x0318c6,combat_damage_party,1,subtracts arg HP from every party member and selects targets; called from ambient and step events and attack_dispatch
 0x031998,world_find_char_template,2,finds direct char in 56-char table whose +0x02 template equals arg1; returns index or 0; logic.md:83 type 1 is direct char; callers $02D680 $02E07A
 0x0319EC,world_pos_add_x,1,code: leader pointer FFA7FC + arg a; adds to position word (x)
 0x031A9C,world_pos_add_y,1,code: leader pointer FFA7FC + arg c; adds to position word (y)
