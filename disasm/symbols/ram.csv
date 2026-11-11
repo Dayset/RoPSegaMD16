@@ -34,7 +34,7 @@ addr,size,name,tier,note
 0xFF02D4,4,ram_world_field_02d4,0,37 refs; subsystem from majority of named users; role not read
 0xFF02D2,4,ram_world_field_02d2,0,37 refs; subsystem from majority of named users; role not read
 0xFFBB82,4,ram_sys_field_bb82,0,37 refs; subsystem from majority of named users; role not read
-0xFFC418,2,ram_sys_field_c418,0,37 refs; subsystem from majority of named users; role not read
+0xFFC418,2,ram_combat_field_c418,1,static: 30 of 37 sites in combat_action_main
 0xFF0E14,1,ram_sys_field_0e14,0,36 refs; subsystem from majority of named users; role not read
 0xFFBB6F,1,ram_sys_field_bb6f,0,36 refs; subsystem from majority of named users; role not read
 0xFFA7F8,1,ram_menu_field_a7f8,0,35 refs; subsystem from majority of named users; role not read
