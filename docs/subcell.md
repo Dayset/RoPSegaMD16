@@ -1,6 +1,6 @@
 # Sub-cell movement reference (#27, #31)
 
-Status: partial. Static findings only. The Buc cutscene offset path is not yet traced.
+Status: cutscene mechanism traced live (2026-11-11, see "Cutscene sub-cell mechanism"). Player-walk patch not started.
 
 ## Repro (#31)
 - `tools/walk_repro.sh ROM STATE KEYS [FRAMES]` runs BlastEm from a state, sends keys, writes `build/walk-repro/events.bin`.
@@ -46,7 +46,32 @@ c                   at each "68K Breakpoint 0 hit", just c again
 - Frame of a Y commit since load = printed counter − L. Frames per step = difference between consecutive stops.
 - Verified on BlastEm 0.6.3 (Linux): `di/d 0xFF0010.l` prints `0xFF0010.l: N` at every stop; counter steps by exactly 1 per vblank.
 - BlastEm 0.6.3 quirks seen here: it sometimes aborts at startup (`stack smashing detected`), rerun; `co` command lists did not parse (`end` unrecognized), so use `di`.
-- Results table: not yet run (needs `slot_0.state` from the run machine).
+- Results (BlastEm 0.6.3, own state at the same spot: New Game route below to cell (7,7), then `d`, `a`, `a`; not `slot_0.state`):
+
+| commit | Y (d0 low word) | frame | frames since previous |
+|---|---|---|---|
+| 1 | `$12` | 15009 | |
+| 2 | `$13` | 15082 | 73 |
+| 3 | `$14` | 15156 | 74 |
+| 4 | `$15` | 15230 | 74 |
+| 5 | `$16` | 15304 | 74 |
+| 6 | `$17` | 15380 | 76 |
+| 7 | `$18` | 15454 | 74 |
+| 8 | `$19` | 15529 | 75 |
+
+  X stays `$06`. Mean 74.3 frames per cell (≈1.24 s at 59.92 Hz). The 79-frame figure from the video is a capture-rate artefact. Re-runs from a save made before `d` give the same 74-frame spacing (14401, 14474, 14548, 14622, 14696).
+
+## Cutscene sub-cell mechanism (#27, #28, live 2026-11-11)
+Traced in BlastEm 0.6.3 debugger from the save before `d`, breakpoints logged with `$FF0010`.
+
+- **No scroll and no sprites.** `vdp_set_scroll` (`$DC16`) is never called during the walk. `vs` shows only HUD sprites (dialog frame, pad icon); `sprite_write` callers are the HUD set `$13916`–`$13C58`, same as idle. Figures are software-rendered into the planes.
+- **World tick every 18–19 frames.** The tick routine (`$226BC`, labelled `combat_turn_run`) ends at `$231CA` `jsr redraw_flag_set`. 19 hits in 355 frames. Each tick, `redraw_check` (`$1B918`) re-renders the room into `$FF1EC0` via `map_chunk_pos` and uploads it with `dma_upload` at `$1B9E8` (`$33C0` words). That DMA is the only upload during the walk (25 hits in 468 frames).
+- **4-phase animation counter = sub-cell step.** `geom+$A` (here `$FFB0B6`; `$FFA7FC` = `$FFB0AC` in this room) logged at each tick: 0, 1, 2, 3, 0, … The cell commit (`$1C300`) lands on the 3→0 wrap, so one cell = 4 ticks = 74 frames.
+- **Entity cells do not move between commits.** Entity records (`$FF02B4 + i×$34`, cell at +`$C`/+`$E`, previous cell at +`$10`/+`$12`) change only at the commit frame. The two walkers are entities 1 (X `$06`) and 3 (X `$08`).
+- **The offset comes from the draw template.** Walker draw records at `$FFB0CC` (records 0 and 1) have +2 = 2, +4 = `$24`, i.e. `$197B0` template 38. Its 4 groups (stream offset, param, dx, dy) are (0,0,0,0), (6,0,−4,2), (1,0,6,−4), (7,0,2,−2), tail (3,2). The renderer (`hero_track` `$231D8`, called from `map_chunk_pos` at `$1BD98`/`$1BF14`) adds group[`geom+$A`] dx/dy to the figure's screen position and picks the image frame. Non-walking figures use templates 5 and 7 (no offsets).
+- Screen check (Xvfb grabs every 0.15 s): between cell jumps only a ~170×120 px box around the figures changes (≈5.5k px vs ≈60k px at a jump); the walker's outline shifts a few pixels on each of the 3 updates (one direction), then snaps back when the room jumps one cell.
+- **Reusable for #28:** the per-tick 4-phase template (templates 36–55) already gives pixel offsets per phase. A smooth player walk can: keep the leader's cell commit at phase 3→0, draw the leader with a walk template during the 3 in-between ticks, and offset the room render by the same phase fraction. The camera jump at commit is what still needs an offset (the cutscene does not have one).
+- Route note: `1S` in the repro route is the `s` key (B); the first press of a new direction may only turn the figure (no cell change).
 
 ## Movement sequence (observed in the 60.4 fps recording, #28)
 1. Start: first cell step begins (video ≈ 9987 ms).
