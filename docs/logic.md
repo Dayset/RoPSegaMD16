@@ -379,6 +379,23 @@ food/water = 2000).
   adjacent rooms. The record index itself is the anchor's location
   number (stored to `$FF0E92` low 10 bits); +4 is the room it leads
   to. Locations 0–9 are never a +4 destination.
+  **Records 175–454 are extra anchors for the same 175 locations, not a
+  second location set** (pinned 2026-11-11, static): 280 records with
+  distinct keys, zero (999,999) placeholders, no key overlap with 0–174,
+  +4 destinations 10–174 (63 distinct). **$FF0E98 ≥ 175 has no
+  established path:** +4 is 10–174; the ±1 door graph maxes at location
+  161 (77 of 252 chunks carry door tiles 0x11a/0x11b, max chunk 238;
+  chunk 251, location 174, has zero doors); mode 2 is fixed 80; mode 3
+  restores a saved value. The single unguarded branch is the $1A640
+  table path ($02692A in `sys_struct52_flag_test`): 57 tile indices map
+  to 0xFF, including 8 bit-10 step-tiles (16 cells, one in location
+  164's chunk 241, cell (21,23)) — whether a real step reaches it is
+  unproven and needs a live trace. If it fired, `world_enter_location`
+  guards ≥ 175 by placing the party at (5,5). **$FF0E92 (low 10 bits)
+  can be 175–454** — it is the anchor record index; $FF0E98 is the
+  destination number. The $021F12 lookup passes (leader.X, leader.Y+1),
+  the cell south of the leader, and uses the result only as a
+  found/not-found gate for the spawn path; it cannot set $FF0E98.
   **+6..+9 are unread by any code.** The only table references in
   the ROM are `lea` to +0/+2/+4/+5 — no `lea` to +6..+9 exists, and
   every read is `(a0,d0.l)` with no displacement. Distributions:

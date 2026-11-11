@@ -692,7 +692,26 @@ disassembly; its H-scroll write is verified live in §7.2.
   `gfx_fill_panel_flagged` rows 12–17, `text_event_message` rows
   20–22. `$FF8674` (window-plane room render, `$38E`) and
   `$FF8678` (Plane A scrolling-map tileset, `$72A`) are two
-  different tile regions, not a duplicate.
+  different tile regions, not a duplicate. `$38E` is now
+  live-confirmed (2026-11-11): 3 breakpoint hits at `$01B9E8`
+  (`redraw_check`'s `dma_upload`), Buc save state, `$FF8674` = 0x38E
+  every time, d0 = $71C0 = $38E×32; `$FF8648` = $36A, `$FF8678` =
+  $72A, `$FF867A` = $6CA at the same hits.
+- **`$FF8648` = `$36A`: a shared 36-tile VRAM slot holding the
+  currently-active sprite record's tiles (palette 3), reloaded per
+  context** (pinned 2026-11-11, static; value live-confirmed above).
+  Reserved by `sys_counter_add($24)` at `$012D60–$012D6C`; a `$B86AE`
+  record is 1184 B = 32 B palette + 36 tiles, and `tile_record_load`
+  (`$011AE4`) uploads exactly 36 tiles (hardcoded `0x24`) from
+  `$FF1EE0` to VRAM `vram_base×32` plus the record's palette into slot
+  `pal_index`. Four `tile_record_load` sites pass `$FF8648` (all pal
+  3): rec 38 in the dialogue path (`$0120EC`), rec 23 at scene setup
+  (`$012EF2`), variable `$FF0E78` after `palette_fade` (`$01796E`),
+  variable `-$4(a6)` at `$026D6E` (guarded by `$FF0E78 != -$4(a6)`,
+  sets `$FF0E78` first). Six sites build the tilemap word `$E000 |
+  $FF8648` (palette 3, priority 1) to draw those tiles: `$012082`,
+  `$016372`, `$0195CA`, `$0275DE`, `$029140`, `$0163AC`. `$FF0E78` is
+  the currently-loaded record index for this slot.
 - **R18=`$94` window position** (0x1297C, inside `$123B0`):
   window down, V position 20 — the intro's window placement.
   Role not traced.
