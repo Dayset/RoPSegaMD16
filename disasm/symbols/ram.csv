@@ -73,25 +73,25 @@ addr,size,name,tier,note
 0xFF0142,2,ram_sys_field_0142,0,15 refs; subsystem from majority of named users; role not read
 0xFF0076,2,ram_world_field_0076,0,15 refs; subsystem from majority of named users; role not read
 0xFF0110,2,ram_menu_field_0110,0,15 refs; subsystem from majority of named users; role not read
-0xFF0086,1,ram_menu_field_0086,0,15 refs; subsystem from majority of named users; role not read
-0xFF0246,1,ram_menu_field_0246,0,15 refs; subsystem from majority of named users; role not read
-0xFF8686,2,ram_sys_field_8686,0,15 refs; subsystem from majority of named users; role not read
+0xFF0086,1,ram_menu_verb_0086,1,static: 15 of 15 sites in menu_verb_input
+0xFF0246,1,ram_menu_verb_0246,1,static: 15 of 15 sites in menu_verb_input
+0xFF8686,2,ram_snd_music_8686,1,static: 14 of 15 sites in snd_music_start
 0xFFB0CC,4,ram_sys_field_b0cc,0,15 refs; subsystem from majority of named users; role not read
 0xFFB0D4,4,ram_sys_field_b0d4,0,15 refs; subsystem from majority of named users; role not read
-0xFF0298,2,ram_sys_field_0298,0,15 refs; subsystem from majority of named users; role not read
+0xFF0298,2,ram_combat_field_0298,1,static: 15 of 15 sites in combat_action_main
 0xFF0E18,4,ram_menu_field_0e18,0,14 refs; subsystem from majority of named users; role not read
-0xFF013E,2,ram_sys_field_013e,0,14 refs; subsystem from majority of named users; role not read
-0xFF8680,2,ram_sys_field_8680,0,14 refs; subsystem from majority of named users; role not read
+0xFF013E,2,ram_world_location_013e,1,static: 9 of 14 sites in world_location_transition
+0xFF8680,2,ram_gfx_scene_8680,1,subsystem inferred from owner scene_draw 12 of 14 sites
 0xFF02D8,4,ram_sys_field_02d8,0,14 refs; subsystem from majority of named users; role not read
 0xFF02BC,4,ram_sys_field_02bc,0,14 refs; subsystem from majority of named users; role not read
-0xFF029A,2,ram_sys_field_029a,0,14 refs; subsystem from majority of named users; role not read
-0xFF029C,2,ram_sys_field_029c,0,14 refs; subsystem from majority of named users; role not read
-0xFF029E,2,ram_sys_field_029e,0,14 refs; subsystem from majority of named users; role not read
+0xFF029A,2,ram_combat_field_029a,1,static: 14 of 14 sites in combat_action_main
+0xFF029C,2,ram_combat_field_029c,1,static: 14 of 14 sites in combat_action_main
+0xFF029E,2,ram_combat_field_029e,1,static: 14 of 14 sites in combat_action_main
 0xFF0112,2,ram_menu_field_0112,0,13 refs; subsystem from majority of named users; role not read
-0xFF0244,1,ram_menu_field_0244,0,13 refs; subsystem from majority of named users; role not read
-0xFFC324,2,ram_sys_field_c324,0,13 refs; subsystem from majority of named users; role not read
+0xFF0244,1,ram_menu_verb_0244,1,static: 13 of 13 sites in menu_verb_input
+0xFFC324,2,ram_text_message_c324,1,static: 12 of 13 sites in text_enqueue_message
 0xFF0E90,2,ram_world_field_0e90,0,13 refs; subsystem from majority of named users; role not read
-0xFF013C,2,ram_sys_field_013c,0,13 refs; subsystem from majority of named users; role not read
+0xFF013C,2,ram_spell_effect_013c,1,static: 10 of 13 sites in spell_effect_step
 0xFF02A0,2,ram_sys_field_02a0,0,13 refs; subsystem from majority of named users; role not read
 0xFF0250,2,ram_sys_field_0250,0,13 refs; subsystem from majority of named users; role not read
 0xFFC00C,2,ram_sys_field_c00c,0,12 refs; subsystem from majority of named users; role not read
