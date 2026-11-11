@@ -1,30 +1,30 @@
 addr,name,tier,note
-0x00044C,sys_unk_00044c,0,auto: touches none
-0x000462,sys_unk_000462,0,auto: touches none
-0x000474,sys_unk_000474,0,auto: touches none
-0x0004A0,sys_unk_0004a0,0,auto: touches none
+0x00044c,vdp_write_ramp_words,1,Writes 18 words from RAM table to VDP data port adding a linear ramp offset per pair from -4xd1 to +4xd1; called from attract_scroll phase 2 with d1 = frame/3; graphics.md sec 8
+0x000462,vdp_write_vflip_words,1,Writes 18 words from RAM table to VDP data port clearing bit 12 and OR-ing d1 to force the V-flip bit; called from attract_scroll phase 2 with d1 = $1000 to set flip or $0000 to clear; graphics.md sec 8
+0x000474,vdp_write_spread_pair,1,Writes one pair of values 9 times to VDP data port with a d1-based centering adjustment so the pair spreads apart as d1 grows; called from attract_scroll variant 0 with d3 = $68 - frame; graphics.md sec 8
+0x0004a0,vdp_write_fixed_pair,1,Writes one pair of values 9 times to VDP data port with fixed $20 gap and no centering adjustment; called from attract_scroll variant 2 with d3 = $98 + frame; graphics.md sec 8
 0x0004C2,vdp_fill_rows,1,static: word-pair writes to VDP data port with ori $c00 address bits in a row loop
-0x00088A,sys_unk_00088a,0,auto: touches none
+0x00088a,vdp_sprite_entry_write,1,Writes one sprite entry Y and size/link and tile words to VDP data port and returns the X value in d0; called 18 times by vdp_row_pair_write for the sprite table at $DC00; values match the live sprite decode in graphics.md sec 7.3
 0x0008AE,vdp_row_pair_write,1,static: 8 iterations; each writes two tile words via sys_unk_00088a; stride 0x20
 0x0008D2,plane_cell_index,1,static: index = d5 + 4*d4 (cell offset from two coordinates)
-0x0008DC,sys_unk_0008dc,0,auto: touches $FFC008
-0x0008F4,sys_unk_0008f4,0,auto: touches $FFC008
-0x00093E,vdp_unk_00093e,0,auto: touches $C00004 $C00200 $C01200
-0x00096C,sys_unk_00096c,0,auto: touches $333333 $AAAAAA $DDDDDD $FFC008 $FFD2EA
+0x0008dc,sys_bitmap_pixel_addr,1,4bpp bitmap pixel address: word offset in d4 and nibble shift in d5 for pixel index in d0 high word; loads fill pattern d3 from $FFC008; called only from sys_bitmap_fill_range
+0x0008f4,sys_bitmap_fill_range,1,Fills 4bpp pixels d1 to d2 in bitmap at a6 with pattern in $FFC008; handles start and end partial words plus full-word middle fill; called from $96C and $AB2 dither generators
+0x00093e,vdp_palette_pulse,2,Attract palette pulse step (graphics.md:629): when phase counter d7 is 24 writes color d0 to CRAM 18 and dimmed d0 & $666 to CRAM 2; $E86 maps to $E22 before dimming; called from attract_scroll with d0 $4E4 $CE or $E86
+0x00096c,gfx_bitmap_dither_fill,1,Fills $FFD2EA attract bitmap in 9 rows by 6 columns with dither patterns $AAAAAAAA $33333333 $DDDDDDDD via sys_bitmap_fill_range using tables $D92 $D9B $DBF; buffer uploaded by attract phase 2 to VRAM $4920; called from attract_scroll
 0x000A14,vdp_ram_clear,1,static: clears $FFC000 and RAM by longs; sets VDP write addresses $C00004/$C00000
 0x000AB2,vram_cram_clear,2,architecture.md: clears 64 KB VRAM and CRAM via $AB2
-0x000CFA,sys_unk_000cfa,0,auto: touches none
-0x000D04,vdp_unk_000d04,0,auto: touches $202020 $4D414E $C00004 $FF0000 $FF000C $FF0010
+0x000cfa,vdp_write_word_pair,1,Writes d4 then d4+1 to VDP data port (a5) incrementing d4 twice; called 3 times from title setup after VDP address writes
+0x000d04,vdp_lzss_decompress,1,LZSS decompressor with register args a3=src a1=dst d2=len and 4KB window at $FFE7EA prefilled with $20; sole caller vram_cram_clear decompresses the boot palette and tile stream at $000DC8 into $FFDBEA
 0x001270,hblank_empty,2,architecture.md: level 4 (HBlank) handler is a single rte; empty
 0x001272,vblank_handler,2,architecture.md / sound.md:130: VBlank handler 0x1272 calls per-frame sound tick
 0x00DA92,vdp_dma_copy,1,static: VDP autoincrement 2 ($8F02) and DMA length register ($93xx) setup
 0x00DB30,vdp_dma_fill,1,static: VDP autoincrement 1 ($8F01) and DMA length register ($93xx) setup
 0x00DBCC,vdp_write_block,1,static: VDP write address command $4000 then word writes to data port
-0x00DC16,vdp_unk_00dc16,0,auto: touches $A10003 $A10009 $A11100 $C00000 $C00004
+0x00dc16,vdp_set_scroll,2,Writes VSRAM words 0-1 = a b for Plane A/B vertical scroll and VRAM $2000 words 0-1 = c d for Plane A/B horizontal scroll; graphics.md:454
 0x00DCCA,wait_delay,2,save.md: bsr $DCCA delay routine (move.w #0;$A11100 timing loop)
-0x00DD5C,sys_unk_00dd5c,0,auto: touches $202020 $FF0EAC
+0x00dd5c,sys_lzss_decompress,2,LZSS decompressor for type-1 records with 4KB window at $FF0EAC and length from stream header; maps.md:47 and maps.md:103; re-implemented and verified in tools/extract_text.py
 0x00DE02,sys_unk_00de02,0,auto: touches none
-0x00DE1A,sys_unk_00de1a,0,auto: touches none
+0x00de1a,sys_copy_bytes,2,Plain byte copy of d0 bytes from src to dst; type-0 record handler per maps.md:103; called from the $013654 record loader alongside $DD5C and $136FC
 0x00DEDA,math_rem32_signed,1,"static: takes absolute values, calls math_udiv32, returns remainder in d0"
 0x00DEF4,math_mod32,2,logic.md: $DEF4(arg) = modulo by arg
 0x00DF0A,math_udiv32,2,logic.md: unsigned divide; remainder in d0; core divide
