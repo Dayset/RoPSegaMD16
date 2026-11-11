@@ -35295,7 +35295,7 @@ L02A7D0:
 	pea.l -$18(a6)	; $02A7D0
 	move.w #$ffff,-(a7)	; $02A7D4
 	move.w #$1,-(a7)	; $02A7D8
-	jsr sys_unk_02d284.l	; $02A7DC
+	jsr sys_copy_stride6_2d284.l	; $02A7DC
 	addq.w #$8,a7	; $02A7E2
 	move.w d0,-$10(a6)	; $02A7E4
 	lea.l -$2(a6),a0	; $02A7E8
@@ -35374,7 +35374,7 @@ L02A8CC:
 	pea.l -$18(a6)	; $02A8CC
 	move.w #$ffff,-(a7)	; $02A8D0
 	move.w #$2,-(a7)	; $02A8D4
-	jsr sys_unk_02d284.l	; $02A8D8
+	jsr sys_copy_stride6_2d284.l	; $02A8D8
 	addq.w #$8,a7	; $02A8DE
 	move.w d0,-$10(a6)	; $02A8E0
 	lea.l -$2(a6),a0	; $02A8E4
@@ -35450,7 +35450,7 @@ L02A9BC:
 	clr.l -(a7)	; $02A9C6
 	move.w -$10(a6),-(a7)	; $02A9C8
 	move.w #$4,-(a7)	; $02A9CC
-	jsr sys_unk_02d284.l	; $02A9D0
+	jsr sys_copy_stride6_2d284.l	; $02A9D0
 	addq.w #$8,a7	; $02A9D6
 	move.w d0,-$10(a6)	; $02A9D8
 	cmpi.w #$ffff,-$10(a6)	; $02A9DC
@@ -35615,7 +35615,7 @@ L02AC2E:
 	pea.l -$18(a6)	; $02AC2E
 	move.w #$ffff,-(a7)	; $02AC32
 	move.w #$6,-(a7)	; $02AC36
-	jsr sys_unk_02d284.l	; $02AC3A
+	jsr sys_copy_stride6_2d284.l	; $02AC3A
 	addq.w #$8,a7	; $02AC40
 	move.w d0,-$10(a6)	; $02AC42
 	cmpi.w #$ffff,-$10(a6)	; $02AC46
@@ -38542,7 +38542,7 @@ L02D272:
 	unlk a6	; $02D280
 	rts	; $02D282
 	; code $02D284-$02D38B
-sys_unk_02d284:
+sys_copy_stride6_2d284:
 	link.w a6,#$fffc	; $02D284
 	movem.l d4-d5,-(a7)	; $02D288
 	moveq #$ff,d5	; $02D28C
@@ -42684,7 +42684,7 @@ L030AA8:
 	clr.l -(a7)	; $030AC4
 	move.w d6,-(a7)	; $030AC6
 	clr.w -(a7)	; $030AC8
-	jsr sys_unk_02d284.l	; $030ACA
+	jsr sys_copy_stride6_2d284.l	; $030ACA
 	addq.w #$8,a7	; $030AD0
 	move.w d0,d7	; $030AD2
 	cmp.w #$ffff,d7	; $030AD4
@@ -43306,7 +43306,7 @@ L031308:
 	pea.l -$6c(a6)	; $031318
 	move.w #$ffff,-(a7)	; $03131C
 	move.w #$1,-(a7)	; $031320
-	jsr sys_unk_02d284.l	; $031324
+	jsr sys_copy_stride6_2d284.l	; $031324
 	addq.w #$8,a7	; $03132A
 	move.w d0,-$68(a6)	; $03132C
 	cmpi.w #$ffff,-$68(a6)	; $031330
@@ -43330,7 +43330,7 @@ L031360:
 	pea.l -$6c(a6)	; $031370
 	move.w #$ffff,-(a7)	; $031374
 	move.w #$2,-(a7)	; $031378
-	jsr sys_unk_02d284.l	; $03137C
+	jsr sys_copy_stride6_2d284.l	; $03137C
 	addq.w #$8,a7	; $031382
 	move.w d0,-$68(a6)	; $031384
 	cmpi.w #$ffff,-$68(a6)	; $031388
@@ -48697,7 +48697,7 @@ L0356D2:
 	lea.l ram_sys_ff02b6.l,a0	; $0356F4
 	move.w (a0,d0.l),-(a7)	; $0356FA
 	move.w #$5,-(a7)	; $0356FE
-	jsr sys_unk_02d284.l	; $035702
+	jsr sys_copy_stride6_2d284.l	; $035702
 	addq.w #$8,a7	; $035708
 	move.w d0,-$6(a6)	; $03570A
 	cmpi.w #$ffff,-$6(a6)	; $03570E
@@ -48745,7 +48745,7 @@ L0357A8:
 	lea.l ram_sys_ff02b6.l,a0	; $0357B2
 	move.w (a0,d0.l),-(a7)	; $0357B8
 	clr.w -(a7)	; $0357BC
-	jsr sys_unk_02d284.l	; $0357BE
+	jsr sys_copy_stride6_2d284.l	; $0357BE
 	addq.w #$8,a7	; $0357C4
 	move.w d0,-$6(a6)	; $0357C6
 	cmpi.w #$ffff,-$6(a6)	; $0357CA
@@ -54117,7 +54117,7 @@ L039DEE:
 	unlk a6	; $039DF0
 	rts	; $039DF2
 	; code $039DF4-$039E9D
-sys_unk_039df4:
+spell_apply_actor_39df4:
 	link.w a6,#$0	; $039DF4
 	move.l a3,-(a7)	; $039DF8
 	move.w ram_actor_index.l,d0	; $039DFA
@@ -75867,12 +75867,12 @@ z80_write_val24:
 	rts	; $0EB91E
 	; code $0EB920-$0EB921
 snd_copy_bytes:
-	bra.b z80_unk_0eb924	; $0EB920
+	bra.b snd_copy_loop_eb924	; $0EB920
 	; code $0EB922-$0EB923
 snd_copy_bytes_plus1:
 	move.b (a1)+,(a2)+	; $0EB922
 	; code $0EB924-$0EB929
-z80_unk_0eb924:
+snd_copy_loop_eb924:
 	dbra d0,snd_copy_bytes_plus1	; $0EB924
 	rts	; $0EB928
 	; code $0EB92A-$0EB93D
