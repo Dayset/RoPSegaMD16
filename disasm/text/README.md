@@ -291,3 +291,9 @@ doesn't stick — it auto-enables on location/screen change.
   font table is #005/#016 work).
 - The `$DD5C` streams' exact callers (which code calls the decompressor
   for the story/title text) — #017/#020.
+
+## 1a. Dictionary index check (2026-11-11, `tools/textword_check.py`)
+
+All 1184 `$DDBD8` records are type 5. Every word entry falls in the dictionary
+range 1..3466 except one entry in record 1183, which is the malformed record
+noted above. The check is read only and runs in the dictionary section's terms.
