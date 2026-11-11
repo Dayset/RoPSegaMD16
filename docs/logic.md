@@ -307,6 +307,49 @@ ptr=struct.+0x2E)` + party XP grant 350/500/3000 for code%64 in
 to `0x2C8A8`): 0→`0x2C474` gold, 1→`0x2C4E2` XP, 2→`0x2C640`,
 3→`0x2C6FA`, 4→`0x2C760`.
 
+The five handlers 12/13/14/15/17 are traced (2026-11-11, static).
+Quotient→category follows the name table (`$CD430`): 12 keys, 13
+items, 14 goods, 17 papers. The read counterpart is
+`item_category_of` (`$2C8F2`), which tests the same three bitmaps
+and returns the Q14 quantity — the write handlers and the read
+routine agree exactly. `world_reset_supplies` (`$2CDD4`) resets all
+four regions at new-game/load (clears `$FFC33E` 2 B, `$FFC340` 5 B,
+`$FFC345` 5 B, `$FFC34A` 25 B; sets bit 0 in `$FFC340`/`$FFC345`;
+food/water = 2000).
+
+- **`$2C0A6` (`sys_set_key_flag`, Q12):** 16 bytes. Sets/clears bit
+  (code%64) in the 2-byte keys bitmap `$FFC33E` via `sys_bitmap_write`
+  (`$2B68C`), value = flag. No immediate-code caller found (Q12
+  callers pass a computed code).
+- **`$2C0BE` (`sys_set_item_flag`, Q13):** same 16-byte shape, bitmap
+  `$FFC340` (5 bytes). Called at location 188 (in
+  `sys_dispatch_action_2dcce`, gated on `($FF0E92 & 0x3FF) == 0xBC`
+  and bit 0x3E in `$FFC326`): codes 0x34F (minor 15, value −1) and
+  0x34C (minor 12, value 1) set bits 15 and 12; the same branch
+  plays song 8 and raises NPC attitude by id 0xE5.
+- **`$2C0EE` (`sys_adjust_goods_qty`, Q14):** minor 0 → food
+  (`value*100 + $FFC364`, clamped [1, 30000]); minor 1 → water
+  (same, `$FFC366`); minor ≥ 2 → goods byte `$FFC34A[minor] +=
+  value`, capped at the word at `$D66A4 + quotient*10` — for
+  quotient 14 that is `$D6730` = **99**. **Bug (static):** the cap
+  comparison is unsigned (`cmp.w max,d1; bls`), so a negative new
+  quantity is clamped to the max (99), not to 0; and the would-be
+  floor-at-0 is unreachable anyway (`tst.w d1` clears C, so the
+  following `bcc` is always taken and `moveq #$0,d0` never runs).
+  Reachable: `$02E0DC` removes 5 of goods slot 21 (code 0x395),
+  and the Corpses grant re-dispatches code 0x386 (minor 6) through
+  this handler.
+- **`$2C212` (`world_ensure_location_entity`, Q15):** finds the
+  current location's entity (`$FF0E92 & 0x3FF`) in the 56 struct
+  slots by matching the `$D1D00` record's (+0x00, +0x02) key pair
+  (both `(+0+2, +2)` and `(+0, +2+2)` alignments tried); returns at
+  once if present. If absent, spawns it via `entity_spawn` with
+  mode = code%64 (0→3, 1→2, 2→1, 3→4), then `npc_leader_init`.
+  The `$D1D00` table (175 × 10 B) holds 146 distinct key pairs;
+  30 locations hold (999,999) = "none".
+- **`$2C0D6` (`sys_set_paper_flag`, Q17):** same 16-byte shape,
+  bitmap `$FFC345` (5 bytes). No immediate-code caller found.
+
 - **Gold handler `0x2C474`:** gold = `struct[−$6].+0x2A`, cap 15000,
   floor 0. Harness-proven: slot 0, gold 1000 → +500 → 1500; +20000 →
   15000 (cap); −20000 → 0 (floor).

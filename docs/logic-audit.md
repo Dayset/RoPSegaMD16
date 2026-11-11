@@ -747,7 +747,10 @@ OPEN.
 `$12B82(3)`: 0 → `0x5E` (94), 1 → `0x4D` (77), 2 → `0x4C` (76),
 then calls with `0x1E`; also calls `$26A8C` first if `$FF00AE==2`.
 Other `$2BBD2` handlers (`$2C0A6`/`$2C0BE`/`$2C0EE`/`$2C212`/
-`$2C0D6`) not yet traced — OPEN.
+`$2C0D6`) traced 2026-11-11 [static] — see logic.md §3.2: Q12 keys
+bitmap `$FFC33E`, Q13 items bitmap `$FFC340`, Q14 goods/food/water
+qty (cap 99; negative qty clamps to 99, floor-at-0 unreachable),
+Q15 find-or-spawn location entity, Q17 papers bitmap `$FFC345`.
 
 **Item-record +4..+9 bytes (dumped, meaning OPEN).**
 
@@ -974,7 +977,7 @@ disassembly line; registers must be read explicitly.
 | Doggonia 1,000-gold fee | OPEN | Player-observed only; no routine found (§16) |
 | Gems sell 428 | RESOLVED (2026-11-10) [live] | Guide was right; `$2EA92` slot-doubling table `$1B299` was missed. `$2EA92(14,2)` = 856 @ Commerce att 40, sell 428 (§16) |
 | Discipline↔spell-block mapping | OPEN | Names only suggest it; not proven from code (§14) |
-| `$2BBD2` handlers `$2C0A6`/`$2C0BE`/`$2C0EE`/`$2C212`/`$2C0D6` | OPEN | Not traced (§16) |
+| `$2BBD2` handlers `$2C0A6`/`$2C0BE`/`$2C0EE`/`$2C212`/`$2C0D6` | TRACED (2026-11-11) [static] | Q12 keys bitmap `$FFC33E`, Q13 items bitmap `$FFC340`, Q14 goods/food/water qty (cap 99; negative qty clamps to 99, floor-at-0 unreachable), Q15 find-or-spawn location entity, Q17 papers bitmap `$FFC345` (logic.md §3.2) |
 | Item-record +4..+9 byte meanings | OPEN | Dumped; consumers in shop/message code listed (§16) |
 | +0x27 exact semantic | OPEN (medium confidence: char index) | Read as an index in `$3B1EE` + message routines (§16) |
 | `$2B240` family entry mechanism | OPEN | No jsr/jmp/longword refs; computed-jump entry via `$2BBD2` falsified 2026-11-11 (all four `$2BBD2` tables decoded, no entry for `$2B2B2`/`$2B502`/`$2988E`; all 71 computed-jump tables decoded, zero targets among them). Entry mechanism still open (§10) |

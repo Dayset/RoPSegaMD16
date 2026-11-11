@@ -181,6 +181,11 @@ addr,name,tier,note
 0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
 0x02b68c,sys_bitmap_write,1,code: clears bit (arg&7) in bitmap then ORs in value arg e
 0x02b6e0,npc_attitude_event_apply,1,applies record-driven location events from the $0D601E table when NPC attitude turns positive; called from npc_attitude_positive
+0x02C0A6,sys_set_key_flag,1,static: $2BBD2 quotient-12 handler; sets/clears bit (code%64) in the 2-byte keys bitmap $FFC33E via sys_bitmap_write; read counterpart item_category_of Q12
+0x02C0BE,sys_set_item_flag,1,static: $2BBD2 quotient-13 handler; sets/clears bit (code%64) in the 5-byte items bitmap $FFC340 via sys_bitmap_write; read counterpart item_category_of Q13; called at location 188 (codes 0x34C/0x34F)
+0x02C0D6,sys_set_paper_flag,1,static: $2BBD2 quotient-17 handler; sets/clears bit (code%64) in the 5-byte papers bitmap $FFC345 via sys_bitmap_write; read counterpart item_category_of Q17
+0x02C0EE,sys_adjust_goods_qty,1,static: $2BBD2 quotient-14 handler; minor 0 food $FFC364 / minor 1 water $FFC366 (value*100 clamped [1..30000]); minor>=2 goods byte $FFC34A[minor] += value capped at 99 (word $D6730); negative result clamps to 99 (unsigned bls) and the floor-at-0 (bcc after tst) is unreachable
+0x02C212,world_ensure_location_entity,1,static: $2BBD2 quotient-15 handler; finds the current location ($FF0E92 & 0x3FF) entity in the 56 struct slots by $D1D00 key pair or spawns it via entity_spawn (mode = code%64) then npc_leader_init; returns at once if already present
 0x02c8f2,item_category_of,1,code: divs.w #64 of arg; matches logic.md code/64 category switch
 0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct
 0x02cbea,shop_category_count,1,returns item count for a category from the category table; logic.md 3.3

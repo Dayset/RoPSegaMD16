@@ -37239,28 +37239,28 @@ L02C094:
 	cmpi.w #$6,-$8(a6)	; $02C098
 	blt.w L02BFA6	; $02C09E
 	bra.w L02C8EE	; $02C0A2
-L02C0A6:
+sys_set_key_flag:
 	move.w $e(a6),-(a7)	; $02C0A6
 	move.w -$4(a6),-(a7)	; $02C0AA
 	pea.l ram_sys_ffc33e.l	; $02C0AE
 	jsr sys_bitmap_write(pc)	; $02C0B4
 	addq.w #$8,a7	; $02C0B8
 	bra.w L02C8EE	; $02C0BA
-L02C0BE:
+sys_set_item_flag:
 	move.w $e(a6),-(a7)	; $02C0BE
 	move.w -$4(a6),-(a7)	; $02C0C2
 	pea.l ram_sys_field_c340.l	; $02C0C6
 	jsr sys_bitmap_write(pc)	; $02C0CC
 	addq.w #$8,a7	; $02C0D0
 	bra.w L02C8EE	; $02C0D2
-L02C0D6:
+sys_set_paper_flag:
 	move.w $e(a6),-(a7)	; $02C0D6
 	move.w -$4(a6),-(a7)	; $02C0DA
 	pea.l ram_sys_field_c345.l	; $02C0DE
 	jsr sys_bitmap_write(pc)	; $02C0E4
 	addq.w #$8,a7	; $02C0E8
 	bra.w L02C8EE	; $02C0EA
-L02C0EE:
+sys_adjust_goods_qty:
 	cmpi.w #$1,-$4(a6)	; $02C0EE
 	ble.w L02C17A	; $02C0F4
 	move.w -$4(a6),d0	; $02C0F8
@@ -37350,7 +37350,7 @@ L02C208:
 	move.w d0,ram_world_field_c366.l	; $02C208
 L02C20E:
 	bra.w L02C8EE	; $02C20E
-L02C212:
+world_ensure_location_entity:
 	lea.l ram_menu_field_0e92.l,a0	; $02C212
 	move.w (a0),d0	; $02C218
 	and.w #$3ff,d0	; $02C21A
