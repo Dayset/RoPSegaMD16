@@ -11,18 +11,25 @@ from collections import defaultdict
 from pathlib import Path
 
 OP = re.compile(r'\$(ff[0-9a-fA-F]{4})\.[wl]\b')
+# rop.s also names RAM operands (ram_<subsys>_<thing>.l); resolve them through ram.csv
+SYM = re.compile(r'\b(ram_[a-z0-9_]+)\.[wl]\b')
 LAB = re.compile(r'^([A-Za-z_][A-Za-z0-9_]*):')
 
 
 def main():
     refs = defaultdict(lambda: {'count': 0, 'users': []})
+    names = {}
+    with open('disasm/symbols/ram.csv', newline='') as fh:
+        for row in csv.DictReader(l for l in fh if not l.startswith('#')):
+            names[row['name']] = int(row['addr'], 16)
     routine = '?'
     for line in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
         m = LAB.match(line)
         if m and not m.group(1).startswith('L'):
             routine = m.group(1)
-        for hit in OP.finditer(line):
-            addr = int(hit.group(1), 16)
+        hits = [int(h.group(1), 16) for h in OP.finditer(line)]
+        hits += [names[h.group(1)] for h in SYM.finditer(line) if h.group(1) in names]
+        for addr in hits:
             r = refs[addr]
             r['count'] += 1
             if routine not in r['users'] and len(r['users']) < 5:
