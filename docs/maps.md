@@ -804,8 +804,9 @@ redraw. The `$E358` output bitmap is transient.
 **Grid geometry is per-location, in RAM**: `$FFA7FC` is set once
 (`0x01B74E`, in the map-load routine) to `$FFB08C` — a RAM struct
 initialized by `$1DA10` calls with per-location values (fields
-used: +0 width divisor, +2 height divisor, +4 chunk-height
-divisor, +6 row width, +`$A` ×8). A second `$E358` caller, `$231D8`, is the dispatch-0 handler for
+used: +0 width divisor, +2 height divisor, +4 shared divisor for
+both x and y in `location_divide` (32 on the Buc map, live 2026-11-11),
++6 multiplier on y (row width in chunks, 1 on that map), +`$A` ×8). A second `$E358` caller, `$231D8`, is the dispatch-0 handler for
 `$FFB0CC` records: it indexes a `$197B0` record by the
 `$FFB0CC` record's (+`2` + +`4`), and calls `$E358` once — or
 twice, with stream `#$209` (521) first, when the record's +`0`
