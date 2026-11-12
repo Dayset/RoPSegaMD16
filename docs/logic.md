@@ -865,7 +865,7 @@ food  = base_food(mode)  + terrain_food(type, mode) + height_delta/2
 water = base_water(mode) + terrain_water(type, mode)
 ```
 
-* **Base — `$01C8C6`–`$01C928`, on the struct's `+0x08` (the "mode"):**
+* **Base — `$01C8C6`–`$01C928`, on the movement record's `+0x08` (the "mode"):**
 
   | mode | food | water |
   |------|------|-------|
@@ -883,8 +883,13 @@ water = base_water(mode) + terrain_water(type, mode)
   every type with no addition returned exactly (3,1), never (2,2).
 
 * **Mode — `$025D8E`**, called from `FUN_024984` at `$024B26` with the
-  moving character's **`+0x06`** word, stored to the struct's `+0x08`
-  (`move.w d0,-$1a(a6)`). It divides `+0x06` by `$100` (256) and
+  moving character's **`+0x06`** word, stored to the movement record's
+  `+0x08` (record base `-$22(a6)` in `combat_move_unit`, so `+0x08` =
+  `-$1a(a6)`; `move_cost_calc` is called with `pea.l -$22(a6)`).
+  **Correction (2026-11-11): the character struct's `+0x08` is NOT
+  the mode** — it is a 0/4 mount flag (0 mounted, 4 on foot; see the
+  vessel bullet below). The earlier 'struct's `+0x08` (the "mode")'
+  wording in this section is corrected. It divides `+0x06` by `$100` (256) and
   dispatches on the high byte (jump table `$25DBC`, 4 entries):
   high byte 0 → returns the low byte; 1 → 6; 2 → 5; 3 → 7; ≥ 4 → error
   `$12FA0($192)`. So `+0x06` is a packed vessel/mount value: high byte
@@ -934,6 +939,43 @@ water = base_water(mode) + terrain_water(type, mode)
   routine is unlocated — most plausible home is naval combat, not
   pinned. Vessels do NOT cast in the world either; the asymmetry is
   world-vs-combat, not vessel-vs-Buc.
+  **Board / dismount — traced, static, 2026-11-11:** B+D-pad →
+  cmd 30 → `sys_struct52_flag_test` (`$0265BE`), board block `L02693A`.
+  Boards iff leader `+0x06` == 0 (on foot), or == 2 with the vessel's
+  `+0x06` == 3 (Boat→Ship only). Sequence: `npc_leader_init`(vessel,
+  arg5=0) → `combat_move_unit` (leader steps onto the vessel cell) →
+  `npc_leader_init`(leader, arg6 = vessel's `+0x06`) → leader `+0x06`
+  := vessel's `+0x06`, `+0x08` := 0 (mounted). The vessel is not
+  hidden or removed. `npc_leader_init` arg6 rule (`$025504`): arg6 ==
+  `$FFFF` → unchanged; 1–255 → `+0x06` := arg6, `+0x08` := 0; arg6 == 0
+  → `+0x08` := 4; arg6 ≥ `0x100` → `+0x08` unchanged. **Char `+0x08`
+  is a 0/4 mount flag (0 mounted, 4 on foot), not the travel-mode
+  word** — travel mode is derived from `+0x06` by `world_vessel_mode`
+  and carried per-step in the movement record's `+0x08`. No terrain
+  check on boarding. C → cmd 50 → `sys_struct52_read_field`
+  (`$02619C`): guard `+0x06` == 0 or 5 → nothing; re-spawns a mode-2
+  vessel at the leader's cell with the old `+0x06`; leader `+0x06` :=
+  0 (2 for Ship→Boat), `+0x08` := 4 (0 for Ship→Boat). Terrain checks
+  live on dismount: Dragon needs terrain 5/9/18 or tile `$24`; Ship
+  needs a neighbouring road tile (Dino dismount condition not pinned).
+  Mode-5 grants are type-5 chars; the board scan accepts only type-1/2
+  chars, so a mode-5 char can never be boarded and the leader never
+  acquires `$200+E` by boarding. `combat_turn_run` L022B68 adjacency:
+  `rand_next(3)` (1/3 of ticks, not 1/8), orthogonal-only, and it cannot
+  board a vessel in normal play (it scans d4's own cell; vessels
+  dispatch to SKIP).
+  **Dino tension — OPEN, needs a live trace:** a boarded map Dino sets
+  leader `+0x06` = 1, so the next A press FIRES. Dayset: first A
+  engages auto-walk, second A while running fires. The code as read
+  cannot produce that — the A dispatch (`npc_spawn_from_char`,
+  `$02AFF2`) reads only `+0x06` (no `$FF0142` check), and no writer in
+  the auto-walk step path changes the leader's `+0x06`
+  (`combat_move_unit` never writes `+0x06`; every `npc_leader_init`
+  call in the auto-walk path passes arg6 = `$FFFF`; step-boarding does
+  not exist — no occupancy/vessel check in the step path). Either the
+  first A happens on foot with boarding by an as-yet-unfound path, or
+  a routine in the chain is still misread. Live trace needed: break on
+  `$FF02BA` stores across the two A presses.
 * **Auto Mode — real, per the official manual (corrected 2026-11-11;
   mechanism traced, static, 2026-11-11):** the manual's 'Getting
   around' section: 'Auto Mode: on foot paths, D-Pad in your direction
