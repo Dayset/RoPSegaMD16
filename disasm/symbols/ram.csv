@@ -169,36 +169,36 @@ addr,size,name,tier,note
 0xFFC376,2,ram_sys_field_c376,0,tier 0 owner read: combat_action_main 3, combat_turn_run 1 of 5 sites; role not read
 0xFF02CB,4,ram_sys_field_02cb,0,tier 0 owner read: npc_find_state1_2e8c8 2, entity_spawn 1 of 5 sites; role not read
 0xFF0122,2,ram_sys_field_0122,0,tier 0 owner read: world_seen_record 4, world_seen_reset 1 of 5 sites; role not read
-0xFFC41A,2,ram_sys_field_c41a,0,5 refs; subsystem from majority of named users; role not read
-0xFF014C,2,ram_sys_field_014c,0,5 refs; subsystem from majority of named users; role not read
-0xFF016A,4,ram_save_field_016a,0,5 refs; subsystem from majority of named users; role not read
-0xFFC000,2,ram_boot_field_c000,0,4 refs; subsystem from majority of named users; role not read
-0xFFC004,2,ram_sys_field_c004,0,4 refs; subsystem from majority of named users; role not read
-0xFF0010,4,ram_sys_field_0010,0,4 refs; subsystem from majority of named users; role not read
-0xFF001A,2,ram_sys_field_001a,0,4 refs; subsystem from majority of named users; role not read
-0xFF001B,2,ram_sys_field_001b,0,4 refs; subsystem from majority of named users; role not read
-0xFF011E,2,ram_sys_field_011e,0,4 refs; subsystem from majority of named users; role not read
-0xFF867C,2,ram_world_field_867c,0,4 refs; subsystem from majority of named users; role not read
-0xFFA884,4,ram_sys_field_a884,0,4 refs; subsystem from majority of named users; role not read
-0xFF01EA,4,ram_sys_field_01ea,0,4 refs; subsystem from majority of named users; role not read
-0xFF0096,2,ram_sys_field_0096,0,4 refs; subsystem from majority of named users; role not read
-0xFFB0D2,4,ram_sys_field_b0d2,0,4 refs; subsystem from majority of named users; role not read
-0xFFB0CE,4,ram_sys_field_b0ce,0,4 refs; subsystem from majority of named users; role not read
-0xFF02A4,1,ram_sys_field_02a4,0,4 refs; subsystem from majority of named users; role not read
-0xFF0146,1,ram_sys_field_0146,0,4 refs; subsystem from majority of named users; role not read
-0xFF0148,2,ram_sys_field_0148,0,4 refs; subsystem from majority of named users; role not read
-0xFF02C4,4,ram_sys_field_02c4,0,4 refs; subsystem from majority of named users; role not read
-0xFF02A6,2,ram_sys_field_02a6,0,4 refs; subsystem from majority of named users; role not read
-0xFFC340,4,ram_sys_field_c340,0,4 refs; subsystem from majority of named users; role not read
-0xFFC345,4,ram_sys_field_c345,0,4 refs; subsystem from majority of named users; role not read
-0xFF0160,4,ram_sys_field_0160,0,4 refs; subsystem from majority of named users; role not read
-0xFF0164,4,ram_sys_field_0164,0,4 refs; subsystem from majority of named users; role not read
-0xFF0224,4,ram_sys_field_0224,0,4 refs; subsystem from majority of named users; role not read
-0xFF0228,4,ram_sys_field_0228,0,4 refs; subsystem from majority of named users; role not read
-0xFFC00E,2,ram_boot_field_c00e,0,3 refs; subsystem from majority of named users; role not read
-0xFFC006,2,ram_sys_field_c006,0,3 refs; subsystem from majority of named users; role not read
-0xFFD2EA,4,ram_sys_field_d2ea,0,3 refs; subsystem from majority of named users; role not read
-0xFFC036,4,ram_sys_field_c036,0,3 refs; subsystem from majority of named users; role not read
+0xFFC41A,2,ram_sys_field_c41a,0,tier 0 owner read: combat_action_main 3, attack_dispatch 2 of 5 sites; role not read
+0xFF014C,2,ram_sys_field_014c,0,tier 0 owner read: eeprom_write_byte 3, eeprom_init 1 of 5 sites; role not read
+0xFF016A,4,ram_save_field_016a,0,tier 0 owner read: save_validate 4, FUN_043314 1 of 5 sites; role not read
+0xFFC000,2,ram_boot_field_c000,0,tier 0 owner read: attract_scroll 2, boot_display_attract 1 of 4 sites; role not read
+0xFFC004,2,ram_sys_field_c004,0,tier 0 owner read: attract_scroll 4 of 4 sites; role not read
+0xFF0010,4,ram_sys_field_0010,0,tier 0 owner read: main_init 2, vblank_handler 1 of 4 sites; role not read
+0xFF001A,2,ram_sys_field_001a,0,tier 0 owner read: vblank_handler 2, main_init 1 of 4 sites; role not read
+0xFF001B,2,ram_sys_field_001b,0,tier 0 owner read: joypad_queue_pop 2, main_init 1 of 4 sites; role not read
+0xFF011E,2,ram_sys_field_011e,0,tier 0 owner read: main_loop 1, struct52_dispatch 1 of 4 sites; role not read
+0xFF867C,2,ram_world_field_867c,0,tier 0 owner read: world_map_draw 2, world_sprites_setup 1 of 4 sites; role not read
+0xFFA884,4,ram_sys_field_a884,0,tier 0 owner read: map_chunk_load 4 of 4 sites; role not read
+0xFF01EA,4,ram_sys_field_01ea,0,tier 0 owner read: sys_state_clear 1, menu_record_reload 1 of 4 sites; role not read
+0xFF0096,2,ram_sys_field_0096,0,tier 0 owner read: shop_merchant_clear_all 1, map_grid_create 1 of 4 sites; role not read
+0xFFB0D2,4,ram_sys_field_b0d2,0,tier 0 owner read: sys_record12_scan 1, map_grid_create 1 of 4 sites; role not read
+0xFFB0CE,4,ram_sys_field_b0ce,0,tier 0 owner read: map_grid_create 1, combat_effect_apply 1 of 4 sites; role not read
+0xFF02A4,1,ram_sys_field_02a4,0,tier 0 owner read: npc_merchant_attitude_tick 2, npc_attitude_positive 1 of 4 sites; role not read
+0xFF0146,1,ram_sys_field_0146,0,tier 0 owner read: combat_turn_run 4 of 4 sites; role not read
+0xFF0148,2,ram_sys_field_0148,0,tier 0 owner read: map_animated_tile 4 of 4 sites; role not read
+0xFF02C4,4,ram_sys_field_02c4,0,tier 0 owner read: combat_move_unit 2, npc_struct_setup 1 of 4 sites; role not read
+0xFF02A6,2,ram_sys_field_02a6,0,tier 0 owner read: npc_attitude_positive 3, shop_merchant_setup 1 of 4 sites; role not read
+0xFFC340,4,ram_sys_field_c340,0,tier 0 owner read: world_reset_supplies 2, sys_set_item_flag 1 of 4 sites; role not read
+0xFFC345,4,ram_sys_field_c345,0,tier 0 owner read: world_reset_supplies 2, sys_set_paper_flag 1 of 4 sites; role not read
+0xFF0160,4,ram_sys_field_0160,0,tier 0 owner read: eeprom_write_byte 4 of 4 sites; role not read
+0xFF0164,4,ram_sys_field_0164,0,tier 0 owner read: eeprom_write_byte 4 of 4 sites; role not read
+0xFF0224,4,ram_sys_field_0224,0,tier 0 owner read: snd_music_streamer 3, z80_song_chunk_set 1 of 4 sites; role not read
+0xFF0228,4,ram_sys_field_0228,0,tier 0 owner read: snd_music_streamer 3, z80_song_chunk_set 1 of 4 sites; role not read
+0xFFC00E,2,ram_boot_field_c00e,0,tier 0 owner read: pad1_read_boot 2, boot_display_attract 1 of 3 sites; role not read
+0xFFC006,2,ram_sys_field_c006,0,tier 0 owner read: attract_scroll 3 of 3 sites; role not read
+0xFFD2EA,4,ram_sys_field_d2ea,0,tier 0 owner read: attract_scroll 2, gfx_bitmap_dither_fill 1 of 3 sites; role not read
+0xFFC036,4,ram_sys_field_c036,0,tier 0 owner read: attract_scroll 2, vram_cram_clear 1 of 3 sites; role not read
 0xFFC0C6,4,ram_sys_field_c0c6,0,3 refs; subsystem from majority of named users; role not read
 0xFFC07E,4,ram_sys_field_c07e,0,3 refs; subsystem from majority of named users; role not read
 0xFF0018,2,ram_sys_field_0018,0,3 refs; subsystem from majority of named users; role not read
