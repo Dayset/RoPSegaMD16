@@ -16,24 +16,31 @@ SYM = re.compile(r'\b(ram_[a-z0-9_]+)\.[wl]\b')
 LAB = re.compile(r'^([A-Za-z_][A-Za-z0-9_]*):')
 
 
-def main():
+def count(rop_text, ram_names):
+    """Count RAM operand references in rop.s text. ram_names maps symbol name -> address."""
     refs = defaultdict(lambda: {'count': 0, 'users': []})
-    names = {}
-    with open('disasm/symbols/ram.csv', newline='') as fh:
-        for row in csv.DictReader(l for l in fh if not l.startswith('#')):
-            names[row['name']] = int(row['addr'], 16)
     routine = '?'
-    for line in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
+    for line in rop_text.splitlines():
         m = LAB.match(line)
         if m and not m.group(1).startswith('L'):
             routine = m.group(1)
-        hits = [int(h.group(1), 16) for h in OP.finditer(line)]
-        hits += [names[h.group(1)] for h in SYM.finditer(line) if h.group(1) in names]
+        code = line.split(';')[0]
+        hits = [int(h.group(1), 16) for h in OP.finditer(code)]
+        hits += [ram_names[h.group(1)] for h in SYM.finditer(code) if h.group(1) in ram_names]
         for addr in hits:
             r = refs[addr]
             r['count'] += 1
             if routine not in r['users'] and len(r['users']) < 5:
                 r['users'].append(routine)
+    return refs
+
+
+def main():
+    names = {}
+    with open('disasm/symbols/ram.csv', newline='') as fh:
+        for row in csv.DictReader(l for l in fh if not l.startswith('#')):
+            names[row['name']] = int(row['addr'], 16)
+    refs = count(Path('disasm/src/rop.s').read_text(errors='replace'), names)
     out = Path('disasm/symbols/ram_refs.csv')
     with out.open('w', newline='') as fh:
         w = csv.writer(fh)
