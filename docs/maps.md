@@ -989,7 +989,7 @@ dispatch mapping itself is live-verified (tier 2).
 
 `location_divide` (`0x1C83E`) computes `(y / d) * m + (x / d) + base`, where `d` is the word at `+4` and `m` the word at `+6` of the struct at `$FFA7FC`, and `base` is `0` or `$FF0E98 + $4D`.
 
-**Disagreement (both kept).** `docs/maps.md` above says `(y / H) * W + (x / W)`, with `+6` as the x divisor. The code at `0x1C84E` and `0x1C868` divides both `y` and `x` by the word at `+4`, and multiplies by `+6`. The `$FFA7FC` field list in the next section agrees with the code for `+6` (row width) but gives `+4` as the chunk-height divisor, not a shared divisor. Needs a live read of `$FFB08C` on a known map to settle.
+**Resolved by live trace (2026-11-11, PR #211).** The code is right: `location_divide` divides both `y` and `x` by the word at `+4` (32 on the Buc map) and multiplies `y` by `+6` (1). The earlier reading that x is divided by `+6` gives 241–244 for the logged rows, and the log shows 233. The `$FFA7FC` field list in the next section should read `+4` as the shared divisor; the separate "chunk-height divisor" label there is not supported by the log. Still untested: any non-zero `y/32·m` or `x/32` term, since every logged x and y is below 32.
 
 **Open.** Which caller produces index 42 (`$43850 + 42×10 = $439F0`) is not settled statically. It depends on the live `$FFB08C` fields and the player position. The next step is to log `location_divide` results for the `map_animate_tiles` and `world_pos_add_*` calls on one map.
 
