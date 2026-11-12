@@ -70,9 +70,9 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
 | `$1A300` | `05 00 00 02 00 01 00 00` | +5 | Thalmus moves south (w4=1). |
 | `$1A308` | `05 00 00 02 00 01 00 00` | +5 | Thalmus moves south. |
 | `$1A310` | `F3 00 00 00 00 01 00 04` | -13 | Thalmus faces north (b3=0), template base 4. |
-| `$1A318` | `FA 00 00 00 00 7D 00 01` | -6 | Enqueue text 125 (Thalmus). Handler `$02D964`. |
-| `$1A320` | `06 00 00 00 00 7E 00 01` | +6 | Enqueue text 126 (Thalmus). Pauses. |
-| `$1A328` | `06 00 00 00 00 7F 00 01` | +6 | Enqueue text 127 (Thalmus). Pauses. |
+| `$1A318` | `FA 00 00 00 00 7D 00 01` | -6 | Enqueue text w4=125 → displays 221 (Thalmus). Handler `$02D964`. |
+| `$1A320` | `06 00 00 00 00 7E 00 01` | +6 | Enqueue text w4=126 → displays 222 (Thalmus). Pauses. |
+| `$1A328` | `06 00 00 00 00 7F 00 01` | +6 | Enqueue text w4=127 → displays 223 (Thalmus). Pauses. |
 | `$1A330` | `F3 00 00 03 00 01 00 10` | -13 | Thalmus faces west (b3=3), template base **16** (animated cast pose). |
 | `$1A338` | `04 01 FF 03 00 01 00 00` | +4 | SFX 3 + spawn mode-6 projectile west. Handler `$02D8F4`. Pauses. |
 | `$1A340` | `F3 00 00 03 00 01 00 10` | -13 | Thalmus cast pose again. |
@@ -81,10 +81,10 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
 | `$1A358` | `04 01 FF 03 00 01 00 00` | +4 | SFX 3 + projectile west. Pauses. |
 | `$1A360` | `F3 00 00 03 00 01 00 10` | -13 | Thalmus cast pose again. |
 | `$1A368` | `FC 01 FF 03 00 01 00 00` | -4 | SFX 3 + projectile west. Chains. |
-| `$1A370` | `06 00 00 00 00 80 00 01` | +6 | Enqueue text 128 (Thalmus). Pauses. |
-| `$1A378` | `06 00 00 00 00 81 00 01` | +6 | Enqueue text 129 (Thalmus). Pauses. |
+| `$1A370` | `06 00 00 00 00 80 00 01` | +6 | Enqueue text w4=128 → displays 224 (Thalmus). Pauses. |
+| `$1A378` | `06 00 00 00 00 81 00 01` | +6 | Enqueue text w4=129 → displays 225 (Thalmus). Pauses. |
 | `$1A380` | `F6 00 00 00 00 00 00 00` | -10 | Flush message queue + SFX 12. Handler `$02DAD4`. |
-| `$1A388` | `06 00 00 24 00 82 00 FF` | +6 | Enqueue text 130, speaker = b3=36 (meaning of speaker 36 open). Pauses. |
+| `$1A388` | `06 00 00 24 00 82 00 FF` | +6 | Enqueue text w4=130 → displays 226, speaker = b3=36 (meaning of speaker 36 open). Pauses. |
 | `$1A390` | `00 00 00 00 00 00 00 19` | 0 | Grant 25 XP to each party member; clear `$FF0110`. Handler `$02D5D4`. |
 
 `$1A398` begins the next script (`menu_select_screen` case 2).
@@ -95,7 +95,7 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
   `$2BBD2(member, 0x401, w6, 1)` per member, clears `$FF0110`. The
   quotient `0x401` = major 16, minor 1 → `xp_grant` (`$02C4E2`): adds
   `w6` = 25 XP to `char+0x1A`, clamped to 13000, recomputes level.
-- op 1 → `$02D67C`: teleport (place at b1,b2; w4 is the char id here).
+- op 1 → `$02D802`: teleport — resolves the party leader's attitude byte to a char (`npc_attitude_raise_by_id(leader)` → Buc), places it at (b1,b2), repositions the camera. Ignores w4.
 - op 2 → `$02D892`: `entity_spawn(1, -1, w4, -1, 0, 0, 0)` (mode-1
   template char), then `npc_place_group(slot, b1, b2, b3)`.
 - op 3 → `$02D852`: `npc_attitude_raise_by_id(w4)` → char, then
@@ -105,14 +105,13 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
   -1, 0, 0)` — spawns the mode-6 projectile.
 - op 5 → `$02D7D6`: move, via `npc_attitude_raise_by_id` →
   `combat_move_unit`.
-- op 6 → `$02D964`: enqueue text record `w4` via `$32D4C` + `$26B58`;
+- op 6 → `$02D964`: enqueue text record `w4 + 96` via `text_event_resolve(3, 11, w4)` (`$032D4C` → `$032D9E` `add.w #$60`);
   speaker = `npc_attitude_raise_by_id(w6)` unless `w6==0xFF`, then
   speaker = `b3`. If `b1!=0` it also consumes one message immediately.
-- op 7 → `$02DA0A`: `combat_attacker_check(w4)`-family; reads
-  `char[5].+0x27` and runs `sys_struct52_nibble_read` if the guard passes.
+- op 7 → `$02DA0A`: `npc_attitude_raise_by_id(w4)` → char, then `combat_attacker_check(char.+0x27 byte)`. The check husks the target char (map record removed; `+0x00` low byte → `0xA0`); if the target is a type-1 scaffold with `+0x27==1`, `sys_struct52_nibble_read` (`$025B4E`) first fans out over the scaffold's `+0x14` list. (The w4=2 instance here is El Gripa.)
 - op 10 → `$02DAD4`: `jsr $26A8c`, `msg_queue_consume(1)` x2,
   `sfx_request(12)`.
-- op 11 → `$02DB06`: calls `$2B6E0(b3, w4)` (not used in this script).
+- op 11 → `$02DB06`: `npc_attitude_event_apply` (`$02B6E0`, w4, b3) — event-bit write + location-gated tile/grant/spawn (not used in this script).
 - op 12 → `$02DB2A`: no-op.
 - op 13 → `$02DB2E`: `npc_attitude_raise_by_id(w4)` → char, then
   `combat_effect_apply(char+0x04, -1, -1, b3, w6, -1, -1)` — writes the
@@ -121,7 +120,7 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
   a spell cast.**
 - op 14 → `$02DB88`: `npc_attitude_raise_by_id(w4)` → char, then
   `world_step_tile(char, b3)`.
-- op 15 → `$02D67C` (same as op 1).
+- op 15 → `$02D67C`: text-event resolve (`world_find_char_template` `$031998` + `text_event_resolve(3, 11, …)`). Not a teleport.
 
 `id → char` is resolved by `npc_attitude_raise_by_id` (`$02D50C`): it
 scans for a type-1 char whose `+0x02` equals the id, then returns the
@@ -136,14 +135,14 @@ into them.
 
 | char | name (idx) | type | start | role in the scene |
 |---|---|---|---|---|
-| 0 | leader "Man" (117) | 1 | (117,113) | Party leader; stands on the overworld, never enters the room. Camera anchor at the end. |
+| 0 | leader "Man" (1) | 1 | (117,113) | Party leader; stands on the overworld, never enters the room. Camera anchor at the end. |
 | 1 | Buc (57) | 4 | (8,7) head S | Walks south 8 cells to (6,25); faces east at the end. |
-| 2 | Davin (1) | 1 | (0,0) | Inactive scaffold; Thalmus's `+0x27` link. |
-| 3 | Thalmus (75) | 4 | (9,17) head W | Walks to (8,26); speaks lines 125-129; fires the four shots west. |
-| 4 | Maldavin (2) | 1 | (0,0) | Inactive scaffold; Yoppa's `+0x27` link. |
-| 5 | El Gripa (95) | 4 | (16,13) head E | Present at load; not moved by the script. |
-| 6 | Beenie (96) | 4 | (15,14) head E | Present at load; not moved by the script. |
-| 7 | Dunn (3) | 1 | (0,0) | Inactive scaffold; Roakus's `+0x27` link. |
+| 2 | Davin (3) | 1 | (0,0) | Inactive scaffold; Thalmus's `+0x27` link. |
+| 3 | Thalmus (75) | 4 | (9,17) head W | Walks to (8,26); speaks lines 221-225; fires the four shots west. |
+| 4 | Maldavin (5) | 1 | (0,0) | Inactive scaffold; Yoppa's `+0x27` link. |
+| 5 | El Gripa (76) | 4 | (16,13) head E | Present at load; not moved by the script. |
+| 6 | Beenie (77) | 4 | (15,14) head E | Present at load; not moved by the script. |
+| 7 | Dunn (8) | 1 | (0,0) | Inactive scaffold; Roakus's `+0x27` link. |
 | 8 | Roakus (141) | 4 | (18,5) head S | Placed (10,24); faces west. Student. |
 | 9 | Opul (10) | 1 | (0,0) | Inactive scaffold (name 10); Imino's `+0x27` link. |
 | 10 | Imino (142) | 4 | (18,7) head N | Placed (10,26); faces west. Student. |
@@ -250,18 +249,20 @@ this ignition sting — not a Stun cast.
 
 ## 5. Dialog (verbatim)
 
-All spoken by Thalmus (`w6=1` → speaker id 1 → Thalmus), except 130,
+All spoken by Thalmus (`w6=1` → speaker id 1 → Thalmus), except 226,
 whose record has `w6=0xFF` so the speaker is `b3=36` (meaning of
-speaker 36 open). From `disasm/text/records_ddbd8.txt`.
+speaker 36 open). From `disasm/text/records_ddbd8.txt`. **Op-6 displays
+record w4 + 96** — the numbers below are the displayed records; the
+script's `w4` values are in the §2 table.
 
-- **125:** "Things were better before the Cataclysm. Void -- may he be cursed forever -- brought evil into the world."
-- **126:** "Nexus has forsaken us. Evil dwells again in the world as it never did before the coming of Void."
-- **127:** "I'm having a really bad day."
-- **128:** "Its always nice to meet a Sorcerer -- you folks really have good heads on your shoulders." ("Its" has no apostrophe in the ROM.)
-- **129:** "Sorcerers have meddled enough in my affairs. I wish Nexus had never given the Power to any of you."
-- **130:** "I can't talk for long, I'm very busy."
+- **221** (w4=125): "I see we are all here, even Darius and Fezzik. Thank you for joining us, gentlemen."
+- **222** (w4=126): "Today's topic is STUN. It takes very little energy to cast, and does little damage. As you gain experience, it will become your spell of last resort."
+- **223** (w4=127): "STUN has a range of about ten feet, and gives your enemy a painful jolt. I will demonstrate..."
+- **224** (w4=128): "Students, you are ready to use the STUN spell. I have a task for each of you."
+- **225** (w4=129): "Buc, Ak Thul at the Temple of Nexus has asked to see you. When you're finished there, come back and I'll give you your assignment."
+- **226** (w4=130): "Lesson over."
 
-These are generic NPC lore barks, not spell narration.
+This is the STUN lesson itself — Thalmus introduces the spell, demonstrates it, and assigns the students' tasks. (The lines 125–130 previously quoted here are Thalmus's generic TALK barks, not this scene's dialog.)
 
 ## 6. The students are protected — twice
 
@@ -324,7 +325,7 @@ completeness but does not change this scene.
   are **byte-identical** (SHA-256
   `7f3af108099ace860aaecf9e192800b2b47a5036725f23fd76cb1a59e904afe5`):
   both show the in-world room with the HUD, the scene stalled at the
-  same dialog point (text 127, waiting for A) — as expected, since the
+  same dialog point (text 223, waiting for A) — as expected, since the
   re-aim only affects the later projectile phase. The dialog text box
   is not distinctly visible in the capture; the stall point is
   established by the probe logs, not the screenshot. Separately,
@@ -352,8 +353,8 @@ major 16, minor 1 → `xp_grant` (`$02C4E2`): +25 XP to each of the 6
 party members (clamped to 13000, level recomputed). Then clears
 `$FF0110` (dialog unlock) and control returns to the player. If the XP
 crosses a level boundary, `xp_grant` plays song 8 (`$02C634`) as the
-level-up sting. The exit past `$1A378` (text 129) was not live-observed
-(the probes ended at text 129); the op-0 handler and the XP path are
+level-up sting. The exit past `$1A378` (text 225) was not live-observed
+(the probes ended at text 225); the op-0 handler and the XP path are
 verified statically.
 
 ## 8. Camera
@@ -383,7 +384,7 @@ walking south; the camera tracks his Y exactly.)
 
 **Live-proven** (BlastEm harness, `slot_0` state, probes e/h/i/j in
 `.scratch-buc-scene/`): the full first half (teleport, placements,
-spawns, 18 moves, text 125-127, no spell machinery, no SFX spike
+spawns, 18 moves, text 221-223, no spell machinery, no SFX spike
 except the ignition song-8 sting); Thalmus's final position (8,26)
 and heading; the students' identities, spawn slots, and final
 positions; all HPs unchanged at max; the four op-13 cast poses
@@ -391,7 +392,7 @@ positions; all HPs unchanged at max; the four op-13 cast poses
 `0x0096`, caster 3, slots 16/17, 1 cell/tick west along row 26,
 despawn at the wall cell (2,26)); the re-aimed projectile travelling
 east to Imino's cell (10,26) with Imino staying 20/20; the script
-advancing through `$1A378` (text 129).
+advancing through `$1A378` (text 225).
 
 **Static-only** (verified verbatim against ROM bytes / `rop.s`, not
 run live): the op-13/op-4/op-6/op-10/op-0 handler bodies; the
@@ -399,7 +400,7 @@ run live): the op-13/op-4/op-6/op-10/op-0 handler bodies; the
 guard and its non-firing for the students; the entry menu-choice
 mechanism (`menu_select_screen` case 1 via `npc_attitude_positive`);
 SFX 3 from the op-4 handler (the SFX itself is not visible in the
-song state); the op-0 25-XP grant and `$FF0110` clear; text 130 and
+song state); the op-0 25-XP grant and `$FF0110` clear; text 226 and
 the exit past `$1A378`.
 
 ## 11. Open items
@@ -413,7 +414,7 @@ the exit past `$1A378`.
   `sys_dispatch_action_2dcce` x2).
 - Which TALK-menu option text yields case 1 (needs the `$32D4C`
   menu-table trace for Thalmus).
-- Meaning of op-6 record 130's speaker `b3=36`.
+- Meaning of op-6 record 226's speaker `b3=36`.
 - Char 4's `+0x14` = 10 instead of 5 (Yoppa's slot) — unexplained.
 - When Maldavin/El Gripa/Beenie were freed before the scene spawns.
 - `sys_struct52_nibble_read(4)` effect beyond the op-7 check
