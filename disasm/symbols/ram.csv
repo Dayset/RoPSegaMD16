@@ -132,13 +132,13 @@ addr,size,name,tier,note
 0xFF0128,2,ram_world_field_0128,0,"tier 0 owner read: main_loop 3, new_game_init 2 of 7 sites; role not read"
 0xFF1EC0,4,ram_world_field_1ec0,0,"tier 0 owner read: map_terrain_tile_lookup 2, tile_record_load 2 of 9 sites; role not read"
 0xFFA7FA,2,ram_menu_field_a7fa,0,"tier 0 owner read: sys_event_run 4, menu_format 1 of 7 sites; role not read"
-0xFF8688,2,ram_sys_field_8688,0,7 refs; subsystem from majority of named users; role not read
-0xFFA896,4,ram_sys_field_a896,0,7 refs; subsystem from majority of named users; role not read
-0xFFBB6D,1,ram_sys_field_bb6d,0,7 refs; subsystem from majority of named users; role not read
-0xFF02E2,4,ram_sys_field_02e2,0,7 refs; subsystem from majority of named users; role not read
-0xFFC34A,4,ram_save_field_c34a,0,7 refs; subsystem from majority of named users; role not read
-0xFFBC86,2,ram_sys_field_bc86,0,7 refs; subsystem from majority of named users; role not read
-0xFF024C,2,ram_sys_field_024c,0,7 refs; subsystem from majority of named users; role not read
+0xFF8688,2,ram_sys_field_8688,0,tier 0 owner read: scene_draw 5, snd_music_start 2 of 7 sites; role not read
+0xFFA896,4,ram_sys_field_a896,0,tier 0 owner read: map_chunk_load 5, map_chunk_load_buf 2 of 7 sites; role not read
+0xFFBB6D,1,ram_sys_field_bb6d,0,tier 0 owner read: verb_exec 5, cmd24_handler 1, menu_set_mode 1 of 7 sites; role not read
+0xFF02E2,4,ram_sys_field_02e2,0,tier 0 owner read: entity_spawn 3, inv_apply_resource 2, item_category_of 2 of 7 sites; role not read
+0xFFC34A,4,ram_save_field_c34a,0,tier 0 owner read: sys_adjust_goods_qty 4, item_category_of 1, world_reset_supplies 1 of 7 sites; role not read
+0xFFBC86,2,ram_sys_field_bc86,0,tier 0 owner read: npc_place_char 7 of 7 sites; role not read
+0xFF024C,2,ram_sys_field_024c,0,tier 0 owner read: spell_damage_calc 7 of 7 sites; role not read
 0xFF024E,2,ram_sys_field_024e,0,7 refs; subsystem from majority of named users; role not read
 0xFF021E,1,ram_sys_field_021e,0,7 refs; subsystem from majority of named users; role not read
 0xFF0094,2,ram_world_field_0094,0,6 refs; subsystem from majority of named users; role not read
