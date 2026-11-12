@@ -199,16 +199,16 @@ addr,size,name,tier,note
 0xFFC006,2,ram_sys_field_c006,0,tier 0 owner read: attract_scroll 3 of 3 sites; role not read
 0xFFD2EA,4,ram_sys_field_d2ea,0,tier 0 owner read: attract_scroll 2, gfx_bitmap_dither_fill 1 of 3 sites; role not read
 0xFFC036,4,ram_sys_field_c036,0,tier 0 owner read: attract_scroll 2, vram_cram_clear 1 of 3 sites; role not read
-0xFFC0C6,4,ram_sys_field_c0c6,0,3 refs; subsystem from majority of named users; role not read
-0xFFC07E,4,ram_sys_field_c07e,0,3 refs; subsystem from majority of named users; role not read
-0xFF0018,2,ram_sys_field_0018,0,3 refs; subsystem from majority of named users; role not read
-0xFF002C,2,ram_sys_field_002c,0,3 refs; subsystem from majority of named users; role not read
-0xFF0019,2,ram_sys_field_0019,0,3 refs; subsystem from majority of named users; role not read
-0xFF0136,2,ram_menu_field_0136,0,3 refs; subsystem from majority of named users; role not read
-0xFF0088,2,ram_sys_field_0088,0,3 refs; subsystem from majority of named users; role not read
-0xFFA880,2,ram_sys_field_a880,0,3 refs; subsystem from majority of named users; role not read
-0xFFB08C,4,ram_sys_field_b08c,0,3 refs; subsystem from majority of named users; role not read
-0xFF0E9A,2,ram_sys_field_0e9a,0,3 refs; subsystem from majority of named users; role not read
-0xFF0E9C,2,ram_sys_field_0e9c,0,3 refs; subsystem from majority of named users; role not read
-0xFF0EA2,2,ram_sys_field_0ea2,0,3 refs; subsystem from majority of named users; role not read
-0xFFBB6E,1,ram_sys_field_bb6e,0,3 refs; subsystem from majority of named users; role not read
+0xFFC0C6,4,ram_sys_field_c0c6,0,tier 0 owner read: attract_scroll 2, vram_cram_clear 1 of 3 sites; role not read
+0xFFC07E,4,ram_sys_field_c07e,0,tier 0 owner read: attract_scroll 2, vram_cram_clear 1 of 3 sites; role not read
+0xFF0018,2,ram_sys_field_0018,0,tier 0 owner read: vblank_handler 2, main_init 1 of 3 sites; role not read
+0xFF002C,2,ram_sys_field_002c,0,tier 0 owner read: joypad_queue_pop 2, main_init 1 of 3 sites; role not read
+0xFF0019,2,ram_sys_field_0019,0,tier 0 owner read: main_init 1, vblank_handler 1 of 3 sites; role not read
+0xFF0136,2,ram_menu_field_0136,0,tier 0 owner read: menu_verb_input 2, menu_format 1 of 3 sites; role not read
+0xFF0088,2,ram_sys_field_0088,0,tier 0 owner read: sfx_request 3 of 3 sites; role not read
+0xFFA880,2,ram_sys_field_a880,0,tier 0 owner read: map_chunk_load 2, new_game_init 1 of 3 sites; role not read
+0xFFB08C,4,ram_sys_field_b08c,0,tier 0 owner read: new_game_init 2, world_location_transition 1 of 3 sites; role not read
+0xFF0E9A,2,ram_sys_field_0e9a,0,tier 0 owner read: world_location_transition 2, sys_event_run 1 of 3 sites; role not read
+0xFF0E9C,2,ram_sys_field_0e9c,0,tier 0 owner read: world_location_transition 2, sys_event_run 1 of 3 sites; role not read
+0xFF0EA2,2,ram_sys_field_0ea2,0,tier 0 owner read: world_location_transition 3 of 3 sites; role not read
+0xFFBB6E,1,ram_sys_field_bb6e,0,tier 0 owner read: verb_exec 1, cmd24_handler 1 of 3 sites; role not read
