@@ -139,36 +139,36 @@ addr,size,name,tier,note
 0xFFC34A,4,ram_save_field_c34a,0,tier 0 owner read: sys_adjust_goods_qty 4, item_category_of 1, world_reset_supplies 1 of 7 sites; role not read
 0xFFBC86,2,ram_sys_field_bc86,0,tier 0 owner read: npc_place_char 7 of 7 sites; role not read
 0xFF024C,2,ram_sys_field_024c,0,tier 0 owner read: spell_damage_calc 7 of 7 sites; role not read
-0xFF024E,2,ram_sys_field_024e,0,7 refs; subsystem from majority of named users; role not read
-0xFF021E,1,ram_sys_field_021e,0,7 refs; subsystem from majority of named users; role not read
-0xFF0094,2,ram_world_field_0094,0,6 refs; subsystem from majority of named users; role not read
-0xFF8672,2,ram_sys_field_8672,0,6 refs; subsystem from majority of named users; role not read
-0xFF0072,4,ram_sys_field_0072,0,6 refs; subsystem from majority of named users; role not read
-0xFF0240,4,ram_menu_field_0240,0,6 refs; subsystem from majority of named users; role not read
-0xFF0126,2,ram_world_field_0126,0,6 refs; subsystem from majority of named users; role not read
-0xFF012E,2,ram_world_field_012e,0,6 refs; subsystem from majority of named users; role not read
-0xFF0098,2,ram_sys_field_0098,0,6 refs; subsystem from majority of named users; role not read
-0xFF0118,2,ram_sys_field_0118,0,6 refs; subsystem from majority of named users; role not read
-0xFF011A,2,ram_sys_field_011a,0,6 refs; subsystem from majority of named users; role not read
-0xFF02D9,4,ram_sys_field_02d9,0,6 refs; subsystem from majority of named users; role not read
-0xFF0252,4,ram_sys_field_0252,0,6 refs; subsystem from majority of named users; role not read
-0xFFC002,2,ram_sys_field_c002,0,5 refs; subsystem from majority of named users; role not read
-0xFF0016,2,ram_sys_field_0016,0,5 refs; subsystem from majority of named users; role not read
-0xFF0E30,4,ram_sys_field_0e30,0,5 refs; subsystem from majority of named users; role not read
-0xFF0138,2,ram_sys_field_0138,0,5 refs; subsystem from majority of named users; role not read
-0xFF866A,2,ram_sys_field_866a,0,5 refs; subsystem from majority of named users; role not read
-0xFF0E78,2,ram_world_field_0e78,0,5 refs; subsystem from majority of named users; role not read
-0xFF0108,2,ram_sys_field_0108,0,5 refs; subsystem from majority of named users; role not read
-0xFF009E,2,ram_sys_field_009e,0,5 refs; subsystem from majority of named users; role not read
-0xFF0140,2,ram_sys_field_0140,0,5 refs; subsystem from majority of named users; role not read
-0xFF02AA,2,ram_sys_field_02aa,0,5 refs; subsystem from majority of named users; role not read
-0xFFB0D6,4,ram_sys_field_b0d6,0,5 refs; subsystem from majority of named users; role not read
-0xFF0144,2,ram_world_field_0144,0,5 refs; subsystem from majority of named users; role not read
-0xFF010C,2,ram_sys_field_010c,0,5 refs; subsystem from majority of named users; role not read
-0xFFC378,2,ram_sys_field_c378,0,5 refs; subsystem from majority of named users; role not read
-0xFFC376,2,ram_sys_field_c376,0,5 refs; subsystem from majority of named users; role not read
-0xFF02CB,4,ram_sys_field_02cb,0,5 refs; subsystem from majority of named users; role not read
-0xFF0122,2,ram_sys_field_0122,0,5 refs; subsystem from majority of named users; role not read
+0xFF024E,2,ram_sys_field_024e,0,tier 0 owner read: spell_damage_calc 7 of 7 sites; role not read
+0xFF021E,1,ram_sys_field_021e,0,tier 0 owner read: snd_sfx_muted 2, sound_stop 1 of 7 sites; role not read
+0xFF0094,2,ram_world_field_0094,0,tier 0 owner read: combat_turn_run 3, main_loop 1 of 6 sites; role not read
+0xFF8672,2,ram_sys_field_8672,0,tier 0 owner read: window_down 6 of 6 sites; role not read
+0xFF0072,4,ram_sys_field_0072,0,tier 0 owner read: rand_next 5, sys_rng_seed_frame 1 of 6 sites; role not read
+0xFF0240,4,ram_menu_field_0240,0,tier 0 owner read: menu_verb_input 6 of 6 sites; role not read
+0xFF0126,2,ram_world_field_0126,0,tier 0 owner read: world_location_transition 4, palette_fade 1 of 6 sites; role not read
+0xFF012E,2,ram_world_field_012e,0,tier 0 owner read: song_request 2, world_location_transition 2 of 6 sites; role not read
+0xFF0098,2,ram_sys_field_0098,0,tier 0 owner read: redraw_check 4, redraw_flag_set 1 of 6 sites; role not read
+0xFF0118,2,ram_sys_field_0118,0,tier 0 owner read: cmd10_handler 4, sys_direct_apply 2 of 6 sites; role not read
+0xFF011A,2,ram_sys_field_011a,0,tier 0 owner read: cmd10_handler 4, sys_direct_apply 2 of 6 sites; role not read
+0xFF02D9,4,ram_sys_field_02d9,0,tier 0 owner read: entity_spawn 2, shop_merchant_setup 2 of 6 sites; role not read
+0xFF0252,4,ram_sys_field_0252,0,tier 0 owner read: spell_damage_calc 6 of 6 sites; role not read
+0xFFC002,2,ram_sys_field_c002,0,tier 0 owner read: attract_scroll 4, vram_cram_clear 1 of 5 sites; role not read
+0xFF0016,2,ram_sys_field_0016,0,tier 0 owner read: vdp_dma_copy 2, wait_vblank 2 of 5 sites; role not read
+0xFF0E30,4,ram_sys_field_0e30,0,tier 0 owner read: combat_turn_run 2, main_loop 1 of 5 sites; role not read
+0xFF0138,2,ram_sys_field_0138,0,tier 0 owner read: main_loop 3, cmd24_handler 1 of 5 sites; role not read
+0xFF866A,2,ram_sys_field_866a,0,tier 0 owner read: window_down 5 of 5 sites; role not read
+0xFF0E78,2,ram_world_field_0e78,0,tier 0 owner read: msg_queue_consume 2, world_map_draw 1 of 5 sites; role not read
+0xFF0108,2,ram_sys_field_0108,0,tier 0 owner read: new_game_init 3, intro_helper 2 of 5 sites; role not read
+0xFF009E,2,ram_sys_field_009e,0,tier 0 owner read: redraw_check 3, world_location_transition 2 of 5 sites; role not read
+0xFF0140,2,ram_sys_field_0140,0,tier 0 owner read: world_location_transition 4, combat_battle_end 1 of 5 sites; role not read
+0xFF02AA,2,ram_sys_field_02aa,0,tier 0 owner read: shop_merchant_setup 2, menu_record_reload 1 of 5 sites; role not read
+0xFFB0D6,4,ram_sys_field_b0d6,0,tier 0 owner read: combat_move_unit 2, map_grid_create 1 of 5 sites; role not read
+0xFF0144,2,ram_world_field_0144,0,tier 0 owner read: world_tick 5 of 5 sites; role not read
+0xFF010C,2,ram_sys_field_010c,0,tier 0 owner read: combat_turn_run 2, combat_battle_end 1 of 5 sites; role not read
+0xFFC378,2,ram_sys_field_c378,0,tier 0 owner read: combat_action_main 2, combat_turn_run 1 of 5 sites; role not read
+0xFFC376,2,ram_sys_field_c376,0,tier 0 owner read: combat_action_main 3, combat_turn_run 1 of 5 sites; role not read
+0xFF02CB,4,ram_sys_field_02cb,0,tier 0 owner read: npc_find_state1_2e8c8 2, entity_spawn 1 of 5 sites; role not read
+0xFF0122,2,ram_sys_field_0122,0,tier 0 owner read: world_seen_record 4, world_seen_reset 1 of 5 sites; role not read
 0xFFC41A,2,ram_sys_field_c41a,0,5 refs; subsystem from majority of named users; role not read
 0xFF014C,2,ram_sys_field_014c,0,5 refs; subsystem from majority of named users; role not read
 0xFF016A,4,ram_save_field_016a,0,5 refs; subsystem from majority of named users; role not read
