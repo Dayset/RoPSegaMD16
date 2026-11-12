@@ -338,8 +338,19 @@ def export_all(rom_path, out_dir):
             "skipped_text": sorted(skipped)}
 
 
+def _same_content(a, b):
+    """PNGs compare by decoded pixels and mode (the encoder's zlib/metadata
+    output varies by Pillow version, so the file bytes do not); everything
+    else compares byte-for-byte."""
+    if a.suffix.lower() == ".png" and b.suffix.lower() == ".png":
+        with Image.open(a) as ia, Image.open(b) as ib:
+            return (ia.mode == ib.mode and ia.size == ib.size
+                    and ia.tobytes() == ib.tobytes())
+    return a.read_bytes() == b.read_bytes()
+
+
 def compare_dirs(out_dir, ref_dir):
-    """Compare an exported dir against a reference, byte-for-byte.
+    """Compare an exported dir against a reference (PNG by pixels, rest by bytes).
 
     Returns (differing, missing, extra): lists of relative paths.
     README.md is excluded: it is hand-written documentation in
@@ -353,7 +364,7 @@ def compare_dirs(out_dir, ref_dir):
                  if p.is_file() and p.name != "README.md"}
     differing = sorted(
         str(p) for p in (out_files & ref_files)
-        if (out_dir / p).read_bytes() != (ref_dir / p).read_bytes())
+        if not _same_content(out_dir / p, ref_dir / p))
     missing = sorted(str(p) for p in ref_files - out_files)
     extra = sorted(str(p) for p in out_files - ref_files)
     return differing, missing, extra
