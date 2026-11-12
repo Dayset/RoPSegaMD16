@@ -378,3 +378,14 @@ addr,name,tier,note
 0x0ebafe,snd_sfx_deliver_7,2,SFX deliver slot 7 per sound.md:149; sets $000C=7 and copies 23-byte block to Z80 $003A or queues pointer in $FF023A when busy; reached via public entry $EBAFA
 0x0EBB04,snd_sfx_muted,2,sound.md:67 SFX path when sound is off (EBB04)
 0x0EB9A0,snd_post_cmd_12_arg1,1,static: one-arg sibling of snd_sfx_pointer_12; writes d0 via z80_write_val24 then sets $0B(a0)=$12
+0x02d5d4,sys_event_op0_grant,1,op-0 handler: party XP grant and dialog unlock
+0x02d67c,sys_event_op1_teleport,1,op-1 and op-15 handler: teleport
+0x02d892,sys_event_op2_spawn,1,op-2 handler: template spawn and place_group
+0x02d852,sys_event_op3_place,1,op-3 handler: place char at b1 b2
+0x02d8f4,sys_event_op4_spawn,1,op-4 handler: SFX 3 and mode-6 spawn
+0x02d7d6,sys_event_op5_move,1,op-5 handler: move via combat_move_unit
+0x02d964,sys_event_op6_text,1,op-6 handler: enqueue text record
+0x02da0a,sys_event_op7_check,1,op-7 handler: attacker check
+0x02dad4,sys_event_op10_flush,1,op-10 handler: flush msg queue and SFX 12
+0x02db2e,sys_event_op13_pose,1,op-13 handler: draw-rec heading and template
+0x02db88,sys_event_op14_step,1,op-14 handler: world_step_tile
