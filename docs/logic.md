@@ -904,15 +904,49 @@ water = base_water(mode) + terrain_water(type, mode)
 * **Travel-mode names and the four vessels (pinned 2026-11-11,
   static):** mode 0 foot, 1 Dino, 2 Boat, 3 Ship, 4 Dragon, 5
   event-grant vessel, 6 unknown (high byte 1, no setter found), 7
-  high-byte-3 / spawn-type-6 'Tinini' (transient NPC travel). The
-  mountable vessels are spawn-mode-2 location entities from
-  `world_ensure_location_entity` (`$02C212`): Ship (`$e`=3, site
-  `$02C332`), Boat (`$e`=2, `$02C37E`), Dino (`$e`=1, `$02C3CA`),
-  Dragon (`$e`=4, `$02C414`) — identified by the cost table (Dino is
-  the only (3,1) vessel besides foot; Boat is the only mode paying the
-  deep-water (5,20); Ship is (1,1) everywhere; Dragon is (38,38)).
-  Which `$D1D00` locations host each vessel (the per-site gating in
-  `$02C2E0`–`$02C332`) is not enumerated. The Dragon template 75
+  high-byte-3 / spawn-type-6 'Tinini' (transient NPC travel). The four
+  travel modes are identified by the cost table (Dino is the only (3,1)
+  vessel besides foot; Boat is the only mode paying the deep-water
+  (5,20); Ship is (1,1) everywhere; Dragon is (38,38)). **Correction
+  (2026-11-12): the spawn mechanism is NOT location entities.**
+  `world_ensure_location_entity` (`$02C212`, the Q15 block — Ship
+  `$e`=3, Boat 2, Dino 1, Dragon 4, at the current `$D1D00` anchor)
+  is **dead code**: no Q15 code (960–1023) is producible from any
+  shipped source — event table `$D3102`, grant table `$D601E` (quotients
+  {0:54, 1:37, 5:1, 10:7, 12:11, 13:20, 14:6, 17:23, 18:2}, no Q15),
+  immediates, save loops (no `0x3C0` crafts loop), the computed
+  dispatcher (cats 13/14 only → Q13/Q14), or any char's `+0x02`
+  (bounded ≤461 / ≤201 / `$FFFF` / grant codes) — and the longword
+  `0002C212` occurs nowhere in the ROM, so no direct call exists either.
+  (Census correction: the event table has TWO Q15-range code values, not
+  one — rec 293 (+8 = `0x93E8`, type 9, code 1000) routes to a fixed
+  Q16 call, `inv_apply_resource`(leader, `0x400`, −1000, 1); rec 960
+  (+8 = `0x03C1`, type 0, code 961) routes to text re-resolution. The
+  no-Q15-invocation conclusion stands.) The block's name describes its
+  shape, not the live game.
+  **The live vessel source is the statue use:** C=21/22 (USE 'No',
+  `$CCFE6`/`$CD16A`/`$CD1E0`) → `sys_dispatch_action_2dcce`
+  (`$02DCCE`), goods-only. Goods idx 22 `DragSt` summons a Dragon
+  (`+0x06`=4), idx 23 `BoatSt` summons a Boat (`+0x06`=2), idx 24
+  `BrigSt` is the bridge-crossing action (not a vessel). Gates
+  (`$02E4B4`): `$FF00AE`==1 (overworld), event bit 0 of `$FFC326`
+  clear (which story event sets it is open), and a walkable cell in one
+  of the 4 directions from the leader — Boat needs adjacent water
+  (`map_walk_check`), Dragon needs adjacent walkable land (terrain
+  {5,9,18} or tile `$24`). Success plays SFX 15 and consumes the
+  statue (Q14 codes 918/919); no usable cell → message `0x18`, statue
+  kept. **There is no per-location mapping** — it works anywhere on the
+  overworld. **Ship and Dino have no reachable summon in the shipped
+  ROM.** One statue per use, no once-ever flag; a summoned vessel is an
+  ordinary type-2 char, released on entering a location (types 1,2,3,4,6;
+  type 2 at `$01DBC8`), so it does not follow the party inside. A
+  dismounted vessel persists across save/load (`save_deserialise`
+  re-spawn) but not across a location transition. The `+2` spawn offsets
+  are a property of the dead block only; the live path spawns in an
+  adjacent walkable cell. **Dino consequence:** no live Dino spawn exists
+  from any save, so the Dino A-press live trace needs a harness/patched
+  ROM forcing `+0x06`=1 (or a mode-2 Dino spawn), or a Q15 trigger if
+  one exists. The Dragon template 75
   (location 57) is NOT itself a mountable Dragon — template spawns
   pass `$e`=`$FFFF` → `+0x06`=0; no template uses 'Dino'/'Ship'/'Boat'.
   **Spawn mode and travel mode are different numberspaces:** spawn mode
