@@ -519,6 +519,69 @@ casts). The casting machinery (`spell_find_target_cell` /
 only. No C value casts a spell in the world — Buc has no world-cast
 path, and neither does any vessel (see docs/logic.md vessel section).
 
+### 6.9 Cast, resist, and hit poses (figure templates 16–27) — verified (static)
+
+The figure template table `tbl_map_figure_template` (`$197B0`,
+56×36 bytes; 4 phase groups × 8 bytes + 4-byte tail; stepcode +`$20`,
+stepphase +`$22`; indexed by record slot+4 + slot+2 in `hero_track`
+`$0231D8` / `map_promote_record` `$02343A`; see docs/maps.md) splits
+the 16–27 range three ways. Templates 16–27 use tile-stream offsets
+{0,2,3,4,5,8,10,11,12,13} — the cast poses Dayset identified
+("combat moves cast": front arms-out/cast, back with staff, back
+arms-out/cast); offsets 4, 5, 10, 11, 12, 13 appear in no walk or
+static template. No pose in 16–27 is unused.
+
+- **16–19 = the caster's cast pose.** `spell_effect_apply`
+  (`$037D0E`), call site `$037EB4`, calls `combat_effect_apply`
+  (`$02140A`) with the caster's record slot+4 = 16 and slot+2 =
+  direction, so the draw template becomes 16 + direction (0–3).
+  Call chain: `combat_turn_run` (`$0226BC`) → `combat_char_action`
+  (`$02241C`) → `spell_damage_calc` (`$036E2E`, returns `$40` +
+  direction) → `spell_effect_apply` (called at `$0225B2` with
+  d6−`$40`) → `combat_effect_apply`. If the direction is 4 (same
+  cell) it is first replaced by the actor's heading
+  (`ram_sys_field_02be`, `$037D1A` check). Note §3.2 documents
+  `$37D0E` as the Power-deduction routine but does not record the
+  pose assignment — the pose is set in the same routine's tail
+  (gated on `combat_target_check` returning nonzero).
+  `combat_action_main` (`$03E2D4`) also sets the actor's cast pose
+  to base 16 in spell-effect event branches (`$040460`, `$0416DE`;
+  slot+2 = `$FFFF`, unchanged).
+- **20–23 = the target resisted.** `spell_apply_target`
+  (`$03AF92`): if the resist roll succeeds, the target's record
+  gets slot+4 = 20 (`$03B072`; slot+2 = `$FFFF`). `attack_dispatch`
+  (`$03A62E`) also sets base 20 in attack-resolution branches
+  (`$03A7BA`, `$03A9C0`; slot+2 = reversed direction).
+- **24–27 = the target was hit.** `spell_apply_target`: if the
+  resist roll fails, `damage_calc` runs and the target gets slot+4
+  = 24 (`$03B0C8`). `spell_apply_group` (`$03888A`): a group spell
+  sets each live member's slot+4 = 24 (`$038918`). `attack_dispatch`
+  sets base 24 at `$03A80A`; `combat_action_main` sets base 24 at
+  `$03FB44` (slot+2 = `$FFFF` in both).
+
+Only 16–19 step: their tail is stepcode 5, stepphase 1, so the record
+stepper in `combat_turn_run` (`$022F52`) dispatches them at phase 1
+via jump table `$023076` to the NPC-spawn branch (`$023016`: if
+`ram_sys_field_010c` != 0, SFX 3 + `npc_spawn_at_step` + clear
+`$010c`) — the cast's effect trigger. Templates 20–27 are static
+(stepcode 0, stepphase 0), so they never step; they are pure display
+poses until the turn cleanup. `combat_apply_turn_effects` (`$0222D4`)
+resets slot+4 to 4 when it is 12, 16, 20, 24, 28, or ≥36
+(`$0223C0`); the leader idle reset sets slot+4 = 4 (`$02275C`).
+NPC pose is base 12 (`$029A4C`, in `npc_attitude_positive`); walk
+bases are 36/40/44/48/52 (`$024E68`/`$024EF0`).
+
+Open gaps: `ram_spell_0250` is written both as a direction output of
+`world_decompose_direction` (`$01E18A`, 0–4) and, in one
+`spell_damage_calc` branch, as a range flag (0 or `$10` at
+`$037500`/`$037508`); the `$037D1A` check supports the direction
+reading for the value reaching `spell_effect_apply`, but a
+live-combat breakpoint is still owed. `spell_dispatch_effect`
+(`$037850`, called from `$020326`) is a status applier on the menu
+TALK path, not the cast pose path. The +0x1E field puzzle
+(`attack_dispatch` reading attacker +0x1E as a target index) is
+already open as #021 (see §9 Q1).
+
 ## 7. Struct-field conflicts and navigation notes
 
 ### 7.1 `+0x2A` is dual-purpose — verified (conflict recorded)

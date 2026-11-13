@@ -782,7 +782,12 @@ belongs to. `FUN_0226bc` dispatches a record when `geom+$A` ==
 tail word 2 (`cmp.w $22(a4),d0; beq`), or when record+4 == `$28`
 and `geom+$A` == 3. Tail data: 32 records (0,0) — dispatch case 0
 on frame 0; recs 16–19 (5,1) — case 5 on frame 1; recs 36–55
-(1–4, 1–2) — cases 1–4 on frame 1 or 2. No record has tail word
+(1–4, 1–2) — cases 1–4 on frame 1 or 2. Case 5 is the cast step:
+templates 16–19 are the caster's cast pose, set by
+`spell_effect_apply` (`$037D0E`, call site `$037EB4`, slot+4=16,
+slot+2=direction); templates 20–23 are the target's resist pose
+and 24–27 the target's hit pose. See docs/spells.md §6.9.
+No record has tail word
 2 == 3, so frame 3 dispatches only via the record+4==`$28`
 special case. `FUN_0226bc` also gates periodic actions on
 `geom+$A` == 0 (every 4th frame): the `$02D56A` call

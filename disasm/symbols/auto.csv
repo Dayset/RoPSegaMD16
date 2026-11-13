@@ -81,6 +81,7 @@ addr,name,tier,note
 0x01960A,map_set_flag_ffff,1,static: writes $FFFF to ram_sys_ff0078 and returns ($FF0078 is never read anywhere in the ROM)
 0x01961a,map_chunk_cache_init,1,initializes the 4-slot map-chunk cache struct at $FFA880 with slot count 4; clears slot-index table and 377-entry pointer table; called once from new_game_init; maps.md:348 architecture.md:204
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
+0x0197b0,tbl_map_figure_template,1,56x36-byte figure template table: 4 phase groups x 8 bytes + 4-byte tail (stepcode +0x20; stepphase +0x22); indexed by record slot+4 + slot+2 in hero_track $0231D8 and map_promote_record $02343A; 16-19 cast (sc 5); 20-23 resist; 24-27 hit; 36-55 walk; docs/maps.md $197B0 layout and docs/spells.md §6.9
 0x01BA16,redraw_flag_set,1,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26
 0x01BA4E,map_chunk_pos,2,graphics.md:366 $1BA4E map-chunk position math
 0x01C176,map_chunk_cache_read,2,logic.md: destination tile read via $1C176 chunk cache
