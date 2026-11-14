@@ -1,0 +1,54 @@
+--- a/Engine/Source/Gui/Gui Object.cpp
++++ b/Engine/Source/Gui/Gui Object.cpp
+@@ -234,7 +234,13 @@
+ /******************************************************************************/
+ static void AdjustGuiKb()
+ {
+-   Gui._window=&Gui.kb()->first(GO_WINDOW)->asWindow();
++   // PATCH (RoP M7 #023, 2026-11-14): guard against null keyboard focus.
++   // The stock 2019 code dereferences Gui.kb() unconditionally, but Gui._kb
++   // is null when the first Desktop is constructed (GUI::create, before any
++   // keyboard focus exists), so the app segfaulted at startup in kbClear().
++   // With no focus there is no window to set; null is the GUI ctor's state.
++   if(GuiObj *kb=Gui.kb())Gui._window=&kb->first(GO_WINDOW)->asWindow();
++   else                   Gui._window=null;
+ }
+ GuiObj& GuiObj::kbSet() // this means setting keyboard focus to this element
+ {
+@@ -403,7 +409,10 @@
+ GuiObj& GuiObj::activate()
+ {
+    // hide all menus (from child to parent) until we reach any that belongs to 'this'
+-   for(GuiObj *menu=Gui.menu(); menu->is(GO_MENU); menu=menu->parent())if(!menu->contains(this))menu->hide();else break;
++   // PATCH (RoP M7 #023, 2026-11-14): Gui.menu() is null until the first menu
++   // exists (the first Desktop is activated before any menu), so guard the
++   // loop; the stock code dereferences the null menu pointer.
++   if(GuiObj *menu=Gui.menu())for(; menu->is(GO_MENU); menu=menu->parent())if(!menu->contains(this))menu->hide();else break;
+ 
+    if(type()==GO_DESKTOP)Gui._desktop=&asDesktop();
+ 
+@@ -422,9 +431,11 @@
+    windowsToTop();
+ 
+    // check if the object is fully visible
++   // PATCH (RoP M7 #023, 2026-11-14): first(GO_MENU) is null when there is no
++   // menu ancestor (the Desktop is the root); guard before asMenu().
+    if(visibleFull())
+    {
+-      Gui._menu=&first(GO_MENU)->asMenu();
++      if(GuiObj *menu=first(GO_MENU))Gui._menu=&menu->asMenu();
+    }
+    return T;
+ }
+@@ -434,7 +445,10 @@
+    kbClear();
+ 
+    // hide all menus that belong to 'this'
+-   for(GuiObj *menu=Gui.menu(); menu->is(GO_MENU); menu=menu->parent())if(contains(menu))menu->hide();else break;
++   // PATCH (RoP M7 #023, 2026-11-14): Gui.menu() is null until the first
++   // menu exists (the first Desktop is constructed before any menu), so
++   // guard the loop; the stock code dereferences the null menu pointer.
++   if(GuiObj *menu=Gui.menu())for(; menu->is(GO_MENU); menu=menu->parent())if(contains(menu))menu->hide();else break;
+ 
+    if(this ==  Gui.desktop        () )Gui._desktop         =null;
+    if(contains(Gui.menu           ()))Gui._menu            =&_parent->first(GO_MENU  )->asMenu  ();

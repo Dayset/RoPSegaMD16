@@ -2,6 +2,8 @@
 *.gen
 *.bin
 *.smd
+# M7 tribute assets: terrain_streams.bin is committed data, not a ROM.
+!tribute/assets/*.bin
 # NOTE: do NOT ignore *.md — the repo's docs, issues and PROGRESS.md are
 # markdown. (An earlier *.md rule silently ignored every doc file.)
 # Toolchain / build outputs

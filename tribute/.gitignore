@@ -1,0 +1,11 @@
+# Engine source + build outputs (never committed).
+# The engine is large (1.2 GB) and separately licenced; it is pinned by
+# hash in ENGINE_VERSION.txt and re-fetched by build.sh.
+EsenthelEngine/
+# Build outputs
+build/
+*.pch
+*.o
+*.d
+# The app binary
+RoP/RoP
