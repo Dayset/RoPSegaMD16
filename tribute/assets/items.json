@@ -1,0 +1,2266 @@
+{
+ "category_table": "0x0D66A0",
+ "categories": [
+  {
+   "category": 0,
+   "E": 6,
+   "A_sprite": 68,
+   "B_key": 0,
+   "count": 0,
+   "cap_w1": 1,
+   "name_idx": 0,
+   "base_w": 0
+  },
+  {
+   "category": 1,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 8,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 1
+  },
+  {
+   "category": 2,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 9,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 21
+  },
+  {
+   "category": 3,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 10,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 41
+  },
+  {
+   "category": 4,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 11,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 61
+  },
+  {
+   "category": 5,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 12,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 81
+  },
+  {
+   "category": 6,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 13,
+   "count": 20,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 101
+  },
+  {
+   "category": 7,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 0,
+   "count": 1,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 121
+  },
+  {
+   "category": 8,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 0,
+   "count": 1,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 122
+  },
+  {
+   "category": 9,
+   "E": 7,
+   "A_sprite": 72,
+   "B_key": 0,
+   "count": 1,
+   "cap_w1": 1,
+   "name_idx": 146,
+   "base_w": 123
+  },
+  {
+   "category": 10,
+   "E": 2,
+   "A_sprite": 67,
+   "B_key": 0,
+   "count": 11,
+   "cap_w1": 1,
+   "name_idx": 147,
+   "base_w": 125
+  },
+  {
+   "category": 11,
+   "E": 6,
+   "A_sprite": 68,
+   "B_key": 26,
+   "count": 2,
+   "cap_w1": 1,
+   "name_idx": 148,
+   "base_w": 136
+  },
+  {
+   "category": 12,
+   "E": 3,
+   "A_sprite": 87,
+   "B_key": 0,
+   "count": 15,
+   "cap_w1": 1,
+   "name_idx": 150,
+   "base_w": 138
+  },
+  {
+   "category": 13,
+   "E": 4,
+   "A_sprite": 86,
+   "B_key": 0,
+   "count": 33,
+   "cap_w1": 1,
+   "name_idx": 151,
+   "base_w": 153
+  },
+  {
+   "category": 14,
+   "E": 6,
+   "A_sprite": 68,
+   "B_key": 27,
+   "count": 25,
+   "cap_w1": 99,
+   "name_idx": 152,
+   "base_w": 186
+  },
+  {
+   "category": 15,
+   "E": 6,
+   "A_sprite": 22,
+   "B_key": 28,
+   "count": 4,
+   "cap_w1": 1,
+   "name_idx": 153,
+   "base_w": 211
+  },
+  {
+   "category": 16,
+   "E": 5,
+   "A_sprite": 86,
+   "B_key": 20,
+   "count": 5,
+   "cap_w1": 9999,
+   "name_idx": 155,
+   "base_w": 215
+  },
+  {
+   "category": 17,
+   "E": 7,
+   "A_sprite": 13,
+   "B_key": 0,
+   "count": 33,
+   "cap_w1": 1,
+   "name_idx": 154,
+   "base_w": 220
+  },
+  {
+   "category": 18,
+   "E": 0,
+   "A_sprite": 47,
+   "B_key": 0,
+   "count": 1,
+   "cap_w1": 1,
+   "name_idx": 152,
+   "base_w": 253
+  },
+  {
+   "category": 19,
+   "E": 6,
+   "A_sprite": 68,
+   "B_key": 25,
+   "count": 3,
+   "cap_w1": 1,
+   "name_idx": 149,
+   "base_w": 254
+  }
+ ],
+ "category_note": "E = vessel mode-5 sub-value; A = $B86AE sprite shown with the item message; B = merchant-kind key (char +0x17); count = records in the category; w1 = cap (1, 99 goods, 9999 healing); w = base index into the price table",
+ "price_table": "0x0D6768",
+ "prices": [
+  {
+   "record": 0,
+   "name_idx": 0,
+   "name": "Nobody",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 0
+  },
+  {
+   "record": 1,
+   "name_idx": 157,
+   "name": "Stun",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 2,
+   "name_idx": 164,
+   "name": "Clue",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 3,
+   "name_idx": 167,
+   "name": "Warn",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 4,
+   "name_idx": 168,
+   "name": "Inform",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 5,
+   "name_idx": 158,
+   "name": "Jolt",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 6,
+   "name_idx": 161,
+   "name": "Confse",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 7,
+   "name_idx": 165,
+   "name": "Knwldg",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 8,
+   "name_idx": 166,
+   "name": "Help",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 9,
+   "name_idx": 169,
+   "name": "Predict",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 10,
+   "name_idx": 159,
+   "name": "Daze",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 11,
+   "name_idx": 163,
+   "name": "Free",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 12,
+   "name_idx": 162,
+   "name": "Mesmer",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 13,
+   "name_idx": 172,
+   "name": "Insane",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 14,
+   "name_idx": 160,
+   "name": "Shock",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 15,
+   "name_idx": 170,
+   "name": "Support",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 16,
+   "name_idx": 171,
+   "name": "Assist",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 17,
+   "name_idx": 174,
+   "name": "Swarm",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 18,
+   "name_idx": 173,
+   "name": "Mirage",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 19,
+   "name_idx": 175,
+   "name": "Packs",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 20,
+   "name_idx": 176,
+   "name": "Master",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 21,
+   "name_idx": 179,
+   "name": "Stab",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 22,
+   "name_idx": 185,
+   "name": "Cleave",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 23,
+   "name_idx": 191,
+   "name": "Knives",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 24,
+   "name_idx": 180,
+   "name": "Cut",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 25,
+   "name_idx": 186,
+   "name": "Rend",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 26,
+   "name_idx": 181,
+   "name": "Dice",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 27,
+   "name_idx": 187,
+   "name": "Rip",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 28,
+   "name_idx": 182,
+   "name": "Split",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 29,
+   "name_idx": 188,
+   "name": "Sever",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 30,
+   "name_idx": 183,
+   "name": "Puree",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 31,
+   "name_idx": 189,
+   "name": "Sunder",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 32,
+   "name_idx": 195,
+   "name": "Frigid",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 33,
+   "name_idx": 192,
+   "name": "Swords",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 34,
+   "name_idx": 196,
+   "name": "Torrent",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 35,
+   "name_idx": 184,
+   "name": "Delete",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 36,
+   "name_idx": 193,
+   "name": "Axes",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 37,
+   "name_idx": 197,
+   "name": "Lava",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 38,
+   "name_idx": 190,
+   "name": "Divide",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 39,
+   "name_idx": 194,
+   "name": "Blades",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 40,
+   "name_idx": 198,
+   "name": "Pain",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 41,
+   "name_idx": 199,
+   "name": "Dart",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 42,
+   "name_idx": 209,
+   "name": "Ripple",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 43,
+   "name_idx": 212,
+   "name": "Shove",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 44,
+   "name_idx": 200,
+   "name": "Arrow",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 45,
+   "name_idx": 205,
+   "name": "Ambush",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 46,
+   "name_idx": 206,
+   "name": "Surround",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 47,
+   "name_idx": 213,
+   "name": "Dizzy",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 48,
+   "name_idx": 201,
+   "name": "Brand",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 49,
+   "name_idx": 210,
+   "name": "Blow",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 50,
+   "name_idx": 202,
+   "name": "Tempest",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 51,
+   "name_idx": 207,
+   "name": "Stream",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 52,
+   "name_idx": 214,
+   "name": "Fling",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 53,
+   "name_idx": 203,
+   "name": "Tornado",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 54,
+   "name_idx": 211,
+   "name": "Implode",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 55,
+   "name_idx": 204,
+   "name": "Fire",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 56,
+   "name_idx": 215,
+   "name": "Shield",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 57,
+   "name_idx": 216,
+   "name": "Unshield",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 58,
+   "name_idx": 208,
+   "name": "Propel",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 59,
+   "name_idx": 217,
+   "name": "Defend",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 60,
+   "name_idx": 218,
+   "name": "Twister",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 61,
+   "name_idx": 219,
+   "name": "Claw",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 62,
+   "name_idx": 220,
+   "name": "Graze",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 63,
+   "name_idx": 225,
+   "name": "Comfrt",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 64,
+   "name_idx": 221,
+   "name": "Hurt",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 65,
+   "name_idx": 226,
+   "name": "Relief",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 66,
+   "name_idx": 222,
+   "name": "Wound",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 67,
+   "name_idx": 227,
+   "name": "Solace",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 68,
+   "name_idx": 223,
+   "name": "Slay",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 69,
+   "name_idx": 228,
+   "name": "Cure",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 70,
+   "name_idx": 234,
+   "name": "Blind",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 71,
+   "name_idx": 224,
+   "name": "Death",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 72,
+   "name_idx": 229,
+   "name": "Health",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 73,
+   "name_idx": 232,
+   "name": "Dazzle",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 74,
+   "name_idx": 235,
+   "name": "Insane",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 75,
+   "name_idx": 236,
+   "name": "Repair",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 76,
+   "name_idx": 230,
+   "name": "Restore",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 77,
+   "name_idx": 233,
+   "name": "Freeze",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 78,
+   "name_idx": 231,
+   "name": "Perfct",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 79,
+   "name_idx": 237,
+   "name": "Raise",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 80,
+   "name_idx": 238,
+   "name": "Reaper",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 81,
+   "name_idx": 239,
+   "name": "Mix",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 82,
+   "name_idx": 240,
+   "name": "Scatter",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 83,
+   "name_idx": 246,
+   "name": "Dagger",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 84,
+   "name_idx": 242,
+   "name": "Icebrg",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 85,
+   "name_idx": 247,
+   "name": "Sword",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 86,
+   "name_idx": 241,
+   "name": "Frenzy",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 87,
+   "name_idx": 243,
+   "name": "Wall",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 88,
+   "name_idx": 255,
+   "name": "Swamp",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 89,
+   "name_idx": 244,
+   "name": "Geyser",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 90,
+   "name_idx": 248,
+   "name": "Axe",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 91,
+   "name_idx": 256,
+   "name": "Pool",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 92,
+   "name_idx": 245,
+   "name": "Lava",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 93,
+   "name_idx": 249,
+   "name": "Bear",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 94,
+   "name_idx": 250,
+   "name": "Corpse",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 95,
+   "name_idx": 253,
+   "name": "Alter",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 96,
+   "name_idx": 251,
+   "name": "Dragon",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 97,
+   "name_idx": 252,
+   "name": "Modify",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 98,
+   "name_idx": 257,
+   "name": "Random",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 99,
+   "name_idx": 254,
+   "name": "Mutate",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 100,
+   "name_idx": 258,
+   "name": "Wyrm",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 101,
+   "name_idx": 259,
+   "name": "Spark",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 2
+  },
+  {
+   "record": 102,
+   "name_idx": 265,
+   "name": "Earth",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 103,
+   "name_idx": 269,
+   "name": "Daggers",
+   "raw": 36,
+   "scaled": 100,
+   "shop_price": 100
+  },
+  {
+   "record": 104,
+   "name_idx": 260,
+   "name": "Rock",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 105,
+   "name_idx": 270,
+   "name": "Bolts",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 106,
+   "name_idx": 261,
+   "name": "Air",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 107,
+   "name_idx": 266,
+   "name": "Rapids",
+   "raw": 86,
+   "scaled": 350,
+   "shop_price": 350
+  },
+  {
+   "record": 108,
+   "name_idx": 262,
+   "name": "Energy",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 109,
+   "name_idx": 271,
+   "name": "Sabers",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 110,
+   "name_idx": 263,
+   "name": "Flare",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 111,
+   "name_idx": 267,
+   "name": "Icebrg",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 112,
+   "name_idx": 272,
+   "name": "Axes",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 113,
+   "name_idx": 264,
+   "name": "Blaze",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 114,
+   "name_idx": 273,
+   "name": "Stones",
+   "raw": 106,
+   "scaled": 1000,
+   "shop_price": 1000
+  },
+  {
+   "record": 115,
+   "name_idx": 268,
+   "name": "Inferno",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 116,
+   "name_idx": 274,
+   "name": "Flames",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 117,
+   "name_idx": 278,
+   "name": "Master",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 118,
+   "name_idx": 275,
+   "name": "Wave",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 119,
+   "name_idx": 277,
+   "name": "Servants",
+   "raw": 116,
+   "scaled": 2000,
+   "shop_price": 2000
+  },
+  {
+   "record": 120,
+   "name_idx": 279,
+   "name": "Djinn",
+   "raw": 125,
+   "scaled": 2900,
+   "shop_price": 2900
+  },
+  {
+   "record": 121,
+   "name_idx": 281,
+   "name": "Rot",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 122,
+   "name_idx": 280,
+   "name": "Claw",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 123,
+   "name_idx": 282,
+   "name": "Punch",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 124,
+   "name_idx": 283,
+   "name": "Kick",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 125,
+   "name_idx": 289,
+   "name": "Will",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 126,
+   "name_idx": 290,
+   "name": "Thought",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 127,
+   "name_idx": 291,
+   "name": "Intuitin",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 128,
+   "name_idx": 292,
+   "name": "Division",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 129,
+   "name_idx": 293,
+   "name": "Advance",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 130,
+   "name_idx": 294,
+   "name": "Blood",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 131,
+   "name_idx": 295,
+   "name": "Bile",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 132,
+   "name_idx": 296,
+   "name": "Mutation",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 133,
+   "name_idx": 297,
+   "name": "Variatin",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 134,
+   "name_idx": 298,
+   "name": "Calling",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 135,
+   "name_idx": 299,
+   "name": "Perfctin",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 136,
+   "name_idx": 284,
+   "name": "Sleep",
+   "raw": 31,
+   "scaled": 75,
+   "shop_price": 75
+  },
+  {
+   "record": 137,
+   "name_idx": 285,
+   "name": "Meal",
+   "raw": 26,
+   "scaled": 50,
+   "shop_price": 50
+  },
+  {
+   "record": 138,
+   "name_idx": 357,
+   "name": "Sorc Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 139,
+   "name_idx": 358,
+   "name": "Kngt Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 140,
+   "name_idx": 359,
+   "name": "Lab Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 141,
+   "name_idx": 360,
+   "name": "Conj Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 142,
+   "name_idx": 361,
+   "name": "Fire Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 143,
+   "name_idx": 362,
+   "name": "Iron Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 144,
+   "name_idx": 363,
+   "name": "Milk Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 145,
+   "name_idx": 364,
+   "name": "Chse Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 146,
+   "name_idx": 365,
+   "name": "War Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 147,
+   "name_idx": 366,
+   "name": "Intu Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 148,
+   "name_idx": 367,
+   "name": "Sun Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 149,
+   "name_idx": 368,
+   "name": "Twst Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 150,
+   "name_idx": 369,
+   "name": "Crwn Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 151,
+   "name_idx": 370,
+   "name": "Skul Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 152,
+   "name_idx": 371,
+   "name": "Div Key",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 153,
+   "name_idx": 324,
+   "name": "So Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 154,
+   "name_idx": 325,
+   "name": "Kn Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 155,
+   "name_idx": 326,
+   "name": "Ar Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 156,
+   "name_idx": 327,
+   "name": "Ne Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 157,
+   "name_idx": 328,
+   "name": "En Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 158,
+   "name_idx": 329,
+   "name": "Co Sym",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 159,
+   "name_idx": 330,
+   "name": "Map",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 160,
+   "name_idx": 331,
+   "name": "Sxtnt",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 161,
+   "name_idx": 332,
+   "name": "Bingo",
+   "raw": 10,
+   "scaled": 10,
+   "shop_price": 10
+  },
+  {
+   "record": 162,
+   "name_idx": 333,
+   "name": "Mirror",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 163,
+   "name_idx": 334,
+   "name": "F Wood",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 164,
+   "name_idx": 335,
+   "name": "O Egg",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 165,
+   "name_idx": 336,
+   "name": "HairLk",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 166,
+   "name_idx": 337,
+   "name": "SigRng",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 167,
+   "name_idx": 338,
+   "name": "Y Milk",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 168,
+   "name_idx": 339,
+   "name": "Finger",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 169,
+   "name_idx": 340,
+   "name": "So Eye",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 170,
+   "name_idx": 341,
+   "name": "Specs",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 171,
+   "name_idx": 342,
+   "name": "Lens",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 172,
+   "name_idx": 343,
+   "name": "Whip",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 173,
+   "name_idx": 344,
+   "name": "Mustch",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 174,
+   "name_idx": 345,
+   "name": "Orb",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 175,
+   "name_idx": 346,
+   "name": "Dove",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 176,
+   "name_idx": 347,
+   "name": "C Ball",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 177,
+   "name_idx": 348,
+   "name": "Leaf",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 178,
+   "name_idx": 349,
+   "name": "Honey",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 179,
+   "name_idx": 350,
+   "name": "MedSup",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 180,
+   "name_idx": 351,
+   "name": "S Gem",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 181,
+   "name_idx": 352,
+   "name": "M Gem",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 182,
+   "name_idx": 353,
+   "name": "H Seal",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 183,
+   "name_idx": 354,
+   "name": "Ruby",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 184,
+   "name_idx": 355,
+   "name": "Skull",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 185,
+   "name_idx": 356,
+   "name": "Goblet",
+   "raw": 99,
+   "scaled": 415,
+   "shop_price": 415
+  },
+  {
+   "record": 186,
+   "name_idx": 300,
+   "name": "Food",
+   "raw": 12,
+   "scaled": 12,
+   "shop_price": 12
+  },
+  {
+   "record": 187,
+   "name_idx": 301,
+   "name": "Water",
+   "raw": 8,
+   "scaled": 8,
+   "shop_price": 8
+  },
+  {
+   "record": 188,
+   "name_idx": 302,
+   "name": "Gems",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 189,
+   "name_idx": 303,
+   "name": "Blades",
+   "raw": 30,
+   "scaled": 70,
+   "shop_price": 70
+  },
+  {
+   "record": 190,
+   "name_idx": 304,
+   "name": "FlipSt",
+   "raw": 26,
+   "scaled": 50,
+   "shop_price": 50
+  },
+  {
+   "record": 191,
+   "name_idx": 305,
+   "name": "Casket",
+   "raw": 60,
+   "scaled": 220,
+   "shop_price": 220
+  },
+  {
+   "record": 192,
+   "name_idx": 156,
+   "name": "Corpse",
+   "raw": 110,
+   "scaled": 1400,
+   "shop_price": 1400
+  },
+  {
+   "record": 193,
+   "name_idx": 306,
+   "name": "LotTix",
+   "raw": 20,
+   "scaled": 20,
+   "shop_price": 20
+  },
+  {
+   "record": 194,
+   "name_idx": 307,
+   "name": "Flower",
+   "raw": 10,
+   "scaled": 10,
+   "shop_price": 10
+  },
+  {
+   "record": 195,
+   "name_idx": 308,
+   "name": "Tomes",
+   "raw": 5,
+   "scaled": 5,
+   "shop_price": 5
+  },
+  {
+   "record": 196,
+   "name_idx": 309,
+   "name": "Wood",
+   "raw": 15,
+   "scaled": 15,
+   "shop_price": 15
+  },
+  {
+   "record": 197,
+   "name_idx": 310,
+   "name": "GateSt",
+   "raw": 22,
+   "scaled": 30,
+   "shop_price": 30
+  },
+  {
+   "record": 198,
+   "name_idx": 311,
+   "name": "Nectar",
+   "raw": 50,
+   "scaled": 170,
+   "shop_price": 170
+  },
+  {
+   "record": 199,
+   "name_idx": 312,
+   "name": "Crystl",
+   "raw": 40,
+   "scaled": 120,
+   "shop_price": 120
+  },
+  {
+   "record": 200,
+   "name_idx": 313,
+   "name": "Wepons",
+   "raw": 35,
+   "scaled": 95,
+   "shop_price": 95
+  },
+  {
+   "record": 201,
+   "name_idx": 314,
+   "name": "Jewlry",
+   "raw": 80,
+   "scaled": 320,
+   "shop_price": 320
+  },
+  {
+   "record": 202,
+   "name_idx": 315,
+   "name": "Books",
+   "raw": 15,
+   "scaled": 15,
+   "shop_price": 15
+  },
+  {
+   "record": 203,
+   "name_idx": 316,
+   "name": "Mana",
+   "raw": 24,
+   "scaled": 40,
+   "shop_price": 40
+  },
+  {
+   "record": 204,
+   "name_idx": 317,
+   "name": "Balm",
+   "raw": 24,
+   "scaled": 40,
+   "shop_price": 40
+  },
+  {
+   "record": 205,
+   "name_idx": 318,
+   "name": "Sand",
+   "raw": 3,
+   "scaled": 3,
+   "shop_price": 3
+  },
+  {
+   "record": 206,
+   "name_idx": 319,
+   "name": "Finini",
+   "raw": 120,
+   "scaled": 2400,
+   "shop_price": 2400
+  },
+  {
+   "record": 207,
+   "name_idx": 320,
+   "name": "Flags",
+   "raw": 0,
+   "scaled": 0,
+   "shop_price": 0
+  },
+  {
+   "record": 208,
+   "name_idx": 321,
+   "name": "DragSt",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 209,
+   "name_idx": 322,
+   "name": "BoatSt",
+   "raw": 80,
+   "scaled": 320,
+   "shop_price": 320
+  },
+  {
+   "record": 210,
+   "name_idx": 323,
+   "name": "BrigSt",
+   "raw": 50,
+   "scaled": 170,
+   "shop_price": 170
+  },
+  {
+   "record": 211,
+   "name_idx": 372,
+   "name": "Ship",
+   "raw": 101,
+   "scaled": 500,
+   "shop_price": 500
+  },
+  {
+   "record": 212,
+   "name_idx": 373,
+   "name": "Boat",
+   "raw": 40,
+   "scaled": 120,
+   "shop_price": 120
+  },
+  {
+   "record": 213,
+   "name_idx": 374,
+   "name": "Dino",
+   "raw": 20,
+   "scaled": 20,
+   "shop_price": 20
+  },
+  {
+   "record": 214,
+   "name_idx": 375,
+   "name": "Dragon",
+   "raw": 90,
+   "scaled": 370,
+   "shop_price": 370
+  },
+  {
+   "record": 215,
+   "name_idx": 376,
+   "name": "Gold",
+   "raw": 1,
+   "scaled": 1,
+   "shop_price": 1
+  },
+  {
+   "record": 216,
+   "name_idx": 377,
+   "name": "Exper",
+   "raw": 1,
+   "scaled": 1,
+   "shop_price": 1
+  },
+  {
+   "record": 217,
+   "name_idx": 378,
+   "name": "Heal",
+   "raw": 46,
+   "scaled": 150,
+   "shop_price": 150
+  },
+  {
+   "record": 218,
+   "name_idx": 379,
+   "name": "Pow Up",
+   "raw": 46,
+   "scaled": 150,
+   "shop_price": 150
+  },
+  {
+   "record": 219,
+   "name_idx": 380,
+   "name": "Life",
+   "raw": 103,
+   "scaled": 700,
+   "shop_price": 700
+  },
+  {
+   "record": 220,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 39,
+   "scaled": 115,
+   "shop_price": 115
+  },
+  {
+   "record": 221,
+   "name_idx": 383,
+   "name": "MM map",
+   "raw": 40,
+   "scaled": 120,
+   "shop_price": 120
+  },
+  {
+   "record": 222,
+   "name_idx": 395,
+   "name": "memo",
+   "raw": 41,
+   "scaled": 125,
+   "shop_price": 125
+  },
+  {
+   "record": 223,
+   "name_idx": 395,
+   "name": "memo",
+   "raw": 42,
+   "scaled": 130,
+   "shop_price": 130
+  },
+  {
+   "record": 224,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 43,
+   "scaled": 135,
+   "shop_price": 135
+  },
+  {
+   "record": 225,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 44,
+   "scaled": 140,
+   "shop_price": 140
+  },
+  {
+   "record": 226,
+   "name_idx": 382,
+   "name": "tome",
+   "raw": 45,
+   "scaled": 145,
+   "shop_price": 145
+  },
+  {
+   "record": 227,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 46,
+   "scaled": 150,
+   "shop_price": 150
+  },
+  {
+   "record": 228,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 47,
+   "scaled": 155,
+   "shop_price": 155
+  },
+  {
+   "record": 229,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 48,
+   "scaled": 160,
+   "shop_price": 160
+  },
+  {
+   "record": 230,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 49,
+   "scaled": 165,
+   "shop_price": 165
+  },
+  {
+   "record": 231,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 50,
+   "scaled": 170,
+   "shop_price": 170
+  },
+  {
+   "record": 232,
+   "name_idx": 385,
+   "name": "file",
+   "raw": 51,
+   "scaled": 175,
+   "shop_price": 175
+  },
+  {
+   "record": 233,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 52,
+   "scaled": 180,
+   "shop_price": 180
+  },
+  {
+   "record": 234,
+   "name_idx": 387,
+   "name": "map",
+   "raw": 53,
+   "scaled": 185,
+   "shop_price": 185
+  },
+  {
+   "record": 235,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 54,
+   "scaled": 190,
+   "shop_price": 190
+  },
+  {
+   "record": 236,
+   "name_idx": 388,
+   "name": "mapbit",
+   "raw": 55,
+   "scaled": 195,
+   "shop_price": 195
+  },
+  {
+   "record": 237,
+   "name_idx": 388,
+   "name": "mapbit",
+   "raw": 56,
+   "scaled": 200,
+   "shop_price": 200
+  },
+  {
+   "record": 238,
+   "name_idx": 389,
+   "name": "pic",
+   "raw": 57,
+   "scaled": 205,
+   "shop_price": 205
+  },
+  {
+   "record": 239,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 58,
+   "scaled": 210,
+   "shop_price": 210
+  },
+  {
+   "record": 240,
+   "name_idx": 390,
+   "name": "contrct",
+   "raw": 59,
+   "scaled": 215,
+   "shop_price": 215
+  },
+  {
+   "record": 241,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 60,
+   "scaled": 220,
+   "shop_price": 220
+  },
+  {
+   "record": 242,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 61,
+   "scaled": 225,
+   "shop_price": 225
+  },
+  {
+   "record": 243,
+   "name_idx": 391,
+   "name": "pass",
+   "raw": 62,
+   "scaled": 230,
+   "shop_price": 230
+  },
+  {
+   "record": 244,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 63,
+   "scaled": 235,
+   "shop_price": 235
+  },
+  {
+   "record": 245,
+   "name_idx": 392,
+   "name": "ID",
+   "raw": 64,
+   "scaled": 240,
+   "shop_price": 240
+  },
+  {
+   "record": 246,
+   "name_idx": 393,
+   "name": "log",
+   "raw": 65,
+   "scaled": 245,
+   "shop_price": 245
+  },
+  {
+   "record": 247,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 66,
+   "scaled": 250,
+   "shop_price": 250
+  },
+  {
+   "record": 248,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 67,
+   "scaled": 255,
+   "shop_price": 255
+  },
+  {
+   "record": 249,
+   "name_idx": 381,
+   "name": "note",
+   "raw": 68,
+   "scaled": 260,
+   "shop_price": 260
+  },
+  {
+   "record": 250,
+   "name_idx": 392,
+   "name": "ID",
+   "raw": 69,
+   "scaled": 265,
+   "shop_price": 265
+  },
+  {
+   "record": 251,
+   "name_idx": 394,
+   "name": "diary",
+   "raw": 70,
+   "scaled": 270,
+   "shop_price": 270
+  },
+  {
+   "record": 252,
+   "name_idx": 384,
+   "name": "scrap",
+   "raw": 71,
+   "scaled": 275,
+   "shop_price": 275
+  },
+  {
+   "record": 253,
+   "name_idx": 156,
+   "name": "Corpse",
+   "raw": 1,
+   "scaled": 1,
+   "shop_price": 1
+  },
+  {
+   "record": 254,
+   "name_idx": 286,
+   "name": "Small",
+   "raw": 10,
+   "scaled": 10,
+   "shop_price": 10
+  },
+  {
+   "record": 255,
+   "name_idx": 287,
+   "name": "Med",
+   "raw": 15,
+   "scaled": 15,
+   "shop_price": 15
+  },
+  {
+   "record": 256,
+   "name_idx": 288,
+   "name": "Large",
+   "raw": 20,
+   "scaled": 20,
+   "shop_price": 20
+  }
+ ],
+ "price_note": "257 records x 4 B: +0 word name_idx, +2 word raw value; scaled = the $2EA92 output (raw<=20: v=raw; 20<raw<=100: v=(raw-16)*5; raw>100: v=(raw-96)*100; raw 0 -> 0, matching price_table.txt). shop_price = what the shop charges: for spells (1-120) the documented floor of 2 applies (first spell of each block, raw 0, sells for 2); otherwise shop_price == scaled. Rec 207 (Flags, raw 0, a trade good) has no documented clamp \u2014 open question. Ranges: 1-120 spells, 121-135 rings/quest words, 136-137 Sleep/Meal, 138-152 keys, 153-158 guild symbols, 159-185 quest items, 186-216 trade goods + food/water + transports, 217-218 Heal/Pow Up, 219-256 notes/tomes/scraps/maps"
+}

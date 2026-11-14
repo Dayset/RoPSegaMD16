@@ -1,0 +1,1742 @@
+{
+ "table": "0x0197B0",
+ "templates": [
+  {
+   "template": 0,
+   "groups": [
+    {
+     "stream_offset": 2,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 2,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 1,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 2,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 3,
+   "groups": [
+    {
+     "stream_offset": 2,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 2,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 4,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 5,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 6,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 7,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 8,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 9,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 10,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 11,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 12,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 1
+    },
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": -2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": -1
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 13,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": -1
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": -2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 1
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 2,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 14,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 1
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": -1
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": -2,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 15,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": -2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": -1
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 1
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 16,
+   "groups": [
+    {
+     "stream_offset": 10,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 11,
+     "param": 0,
+     "dx": 2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 10,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 5,
+   "stepphase": 1
+  },
+  {
+   "template": 17,
+   "groups": [
+    {
+     "stream_offset": 2,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 1,
+     "dx": -2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 2,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 5,
+   "stepphase": 1
+  },
+  {
+   "template": 18,
+   "groups": [
+    {
+     "stream_offset": 2,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 3,
+     "param": 0,
+     "dx": -2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 2,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 5,
+   "stepphase": 1
+  },
+  {
+   "template": 19,
+   "groups": [
+    {
+     "stream_offset": 10,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 11,
+     "param": 1,
+     "dx": 2,
+     "dy": 0
+    },
+    {
+     "stream_offset": 10,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 5,
+   "stepphase": 1
+  },
+  {
+   "template": 20,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 21,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 22,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 23,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 24,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 13,
+     "param": 0,
+     "dx": -3,
+     "dy": 0
+    },
+    {
+     "stream_offset": 13,
+     "param": 0,
+     "dx": -3,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 25,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 5,
+     "param": 1,
+     "dx": 3,
+     "dy": 0
+    },
+    {
+     "stream_offset": 5,
+     "param": 1,
+     "dx": 3,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 26,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 4,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 5,
+     "param": 0,
+     "dx": 3,
+     "dy": 0
+    },
+    {
+     "stream_offset": 5,
+     "param": 0,
+     "dx": 3,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 27,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 12,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 13,
+     "param": 1,
+     "dx": -3,
+     "dy": 0
+    },
+    {
+     "stream_offset": 13,
+     "param": 1,
+     "dx": -3,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 28,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 29,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 30,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 31,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 32,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 33,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 34,
+   "groups": [
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 35,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    }
+   ],
+   "stepcode": 0,
+   "stepphase": 0
+  },
+  {
+   "template": 36,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": 4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": -6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": -2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 1,
+   "stepphase": 2
+  },
+  {
+   "template": 37,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": 4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": -6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": -2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 2,
+   "stepphase": 2
+  },
+  {
+   "template": 38,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": -4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": 2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 3,
+   "stepphase": 2
+  },
+  {
+   "template": 39,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": -4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 4,
+   "stepphase": 2
+  },
+  {
+   "template": 40,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": -7,
+     "dy": 4
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 7,
+     "dy": 0
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": -7,
+     "dy": 4
+    }
+   ],
+   "stepcode": 1,
+   "stepphase": 1
+  },
+  {
+   "template": 41,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": -7,
+     "dy": -4
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": -4,
+     "dy": -4
+    }
+   ],
+   "stepcode": 2,
+   "stepphase": 1
+  },
+  {
+   "template": 42,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": 7,
+     "dy": -4
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": 7,
+     "dy": -4
+    }
+   ],
+   "stepcode": 3,
+   "stepphase": 1
+  },
+  {
+   "template": 43,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": 7,
+     "dy": 4
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 7,
+     "dy": 4
+    }
+   ],
+   "stepcode": 4,
+   "stepphase": 1
+  },
+  {
+   "template": 44,
+   "groups": [
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": 0,
+     "dy": -2
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": 4,
+     "dy": -6
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": -6,
+     "dy": -2
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": -2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 1,
+   "stepphase": 2
+  },
+  {
+   "template": 45,
+   "groups": [
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": 0,
+     "dy": -2
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": 4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": -6,
+     "dy": -10
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": -2,
+     "dy": -6
+    }
+   ],
+   "stepcode": 2,
+   "stepphase": 2
+  },
+  {
+   "template": 46,
+   "groups": [
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": 0,
+     "dy": -2
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": -4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": 6,
+     "dy": -10
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": 2,
+     "dy": -6
+    }
+   ],
+   "stepcode": 3,
+   "stepphase": 2
+  },
+  {
+   "template": 47,
+   "groups": [
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": 0,
+     "dy": -2
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": -4,
+     "dy": -6
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 6,
+     "dy": -2
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 4,
+   "stepphase": 2
+  },
+  {
+   "template": 48,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": 4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": -6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": -2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 1,
+   "stepphase": 2
+  },
+  {
+   "template": 49,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": 4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 8,
+     "param": 1,
+     "dx": -6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": -2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 2,
+   "stepphase": 2
+  },
+  {
+   "template": 50,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": -4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": 6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": 2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 3,
+   "stepphase": 2
+  },
+  {
+   "template": 51,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": -4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 1,
+     "param": 1,
+     "dx": 6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": 2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 4,
+   "stepphase": 2
+  },
+  {
+   "template": 52,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 1,
+     "dx": 4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 9,
+     "param": 0,
+     "dx": -6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 7,
+     "param": 1,
+     "dx": -2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 1,
+   "stepphase": 2
+  },
+  {
+   "template": 53,
+   "groups": [
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 14,
+     "param": 0,
+     "dx": 4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": -6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 7,
+     "param": 0,
+     "dx": -2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 2,
+   "stepphase": 2
+  },
+  {
+   "template": 54,
+   "groups": [
+    {
+     "stream_offset": 8,
+     "param": 0,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 1,
+     "dx": -4,
+     "dy": 2
+    },
+    {
+     "stream_offset": 1,
+     "param": 0,
+     "dx": 6,
+     "dy": -4
+    },
+    {
+     "stream_offset": 15,
+     "param": 1,
+     "dx": 2,
+     "dy": -2
+    }
+   ],
+   "stepcode": 3,
+   "stepphase": 2
+  },
+  {
+   "template": 55,
+   "groups": [
+    {
+     "stream_offset": 0,
+     "param": 1,
+     "dx": 0,
+     "dy": 0
+    },
+    {
+     "stream_offset": 6,
+     "param": 0,
+     "dx": -4,
+     "dy": -2
+    },
+    {
+     "stream_offset": 9,
+     "param": 1,
+     "dx": 6,
+     "dy": 4
+    },
+    {
+     "stream_offset": 15,
+     "param": 0,
+     "dx": 2,
+     "dy": 2
+    }
+   ],
+   "stepcode": 4,
+   "stepphase": 2
+  }
+ ],
+ "note": "56 x 36 B: 4 phase groups x 8 B + 4-byte tail. Group = (E358 stream-index offset, E358 4th-arg param, x-offset, y-offset). Groups 0-3 are the 4 animation frames, selected one per frame by geom+$A (cycles 0-3 every frame). Tail: stepcode (+0x20) is the dispatch case for $0226BC (0-5), stepphase (+0x22) the frame it belongs to. Templates 16-19 cast, 20-23 resist, 24-27 hit, 36-55 walk (36+facing dir)."
+}
