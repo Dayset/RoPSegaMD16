@@ -31,6 +31,21 @@ are the spec the remake implements.
   of a fork-of-a-fork. The version is pinned by hash in
   `ENGINE_VERSION.txt`; re-fetch it with the tarball URL in `build.sh`.
 - `build.sh` — top-level build (ThirdPartyLibs -> Engine -> RoP app).
+- `patches/` — engine patches applied by `build.sh` after a fresh fetch
+  (see "Engine patches" below).
+- `assets/` — extracted ROM assets (the #024 asset pipeline output).
+
+## Engine patches (#023)
+
+The stock 2019 engine segfaults at startup (Gui.* globals are null when
+the first Desktop is constructed). Three null-deref guards in
+`Engine/Source/Gui/Gui Object.cpp` fix it; they live in
+`patches/esenthel-null-deref.patch` (4 hunks) and `build.sh` applies the
+patch automatically after a fresh engine fetch (skipped when already
+applied). The patch was verified against the true 86f897a tarball:
+applies cleanly, result byte-identical to the #023 worktree's patched
+file, app starts and renders. The engine itself is never committed, so
+the patch file is the only copy of the fix — do not delete it.
 
 ## Engine source (#023)
 

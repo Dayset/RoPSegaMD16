@@ -1,0 +1,975 @@
+{
+ "record": 79,
+ "rows": 11,
+ "cols": 11,
+ "entries": [
+  {
+   "tile_type": 5,
+   "height": 6,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 89,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 90,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": true
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 6,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 89,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 6,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 90,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 14,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 14,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 15,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 89,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 12,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 12,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 8,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 12,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 3,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 81,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 12,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 3,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 3,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 15,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 14,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 4,
+   "height_stack": true,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 15,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 5,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 14,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 89,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 12,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 8,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 89,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 13,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 9,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 6,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 14,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 15,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 205,
+   "height": 4,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 3,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 15,
+   "height": 2,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 5,
+   "height": 1,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 80,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 0,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": true,
+   "variant": false
+  },
+  {
+   "tile_type": 2,
+   "height": 0,
+   "height_stack": false,
+   "step_tile": false,
+   "hazard": false,
+   "variant": false
+  }
+ ]
+}
