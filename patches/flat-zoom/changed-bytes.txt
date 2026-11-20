@@ -1,0 +1,42 @@
+Changed bytes: original (MD5 30c18fdbe2183f64702ae9f1a45d63f9) -> flat-zoom ROM
+All addresses are 68000 ROM offsets (= file offsets). Values are hex bytes.
+
+0x0018E-0x0018F (2 bytes):
+  0x0018E: 8b 9f  ->  27 02
+
+0x1BC1D-0x1BC1F (3 bytes):
+  0x1BC1D: 00 e3 58  ->  0f d4 00
+
+0x1BC3F-0x1BC41 (3 bytes):
+  0x1BC3F: 00 e3 58  ->  0f d4 00
+
+0x1BC87-0x1BC89 (3 bytes):
+  0x1BC87: 00 e3 58  ->  0f d4 18
+
+0xFD098-0xFD09B (4 bytes):
+  0xFD098: 8f 33 60 8c  ->  70 aa 51 52
+
+0xFD400-0xFD404 (5 bytes):
+  0xFD400: ff ff ff ff ff  ->  0c 79 00 02 00
+
+0xFD406-0xFD41C (23 bytes):
+  0xFD406: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  00 ae 66 48 30 2f 00 06 32 2f 00 08 34 06 52 42
+  0xFD416: ff ff ff ff ff ff ff  ->  60 40 0c 79 00 02 00
+
+0xFD41E-0xFD441 (36 bytes):
+  0xFD41E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  00 ae 66 30 30 2f 00 06 32 2f 00 08 34 2f 00 04
+  0xFD42E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  0c 42 00 1c 67 1a 0c 42 00 1d 67 14 0c 42 01 ee
+  0xFD43E: ff ff ff ff  ->  67 0e 34 2e
+
+0xFD443-0xFD478 (54 bytes):
+  0xFD443: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  fc e7 5a c4 7c 00 07 52 42 60 0a 74 09 60 06 4e
+  0xFD453: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  f9 00 00 e3 58 48 e7 0e 10 36 02 e9 4b 86 42 38
+  0xFD463: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  00 04 44 00 40 e2 44 41 f9 00 04 35 c0 43 f9 00
+  0xFD473: ff ff ff ff ff ff  ->  04 36 e0 45 f9 00
+
+0xFD47A-0xFD4BD (68 bytes):
+  0xFD47A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  1e c0 7a 00 3c 01 dc 45 6b 2c 0c 46 00 b8 6c 26
+  0xFD48A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  dc 46 3c 31 60 00 3e 05 de 44 6b 1a 0c 47 00 90
+  0xFD49A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  6c 14 de 47 3e 30 70 00 47 f2 60 00 d6 c7 16 c3
+  0xFD4AA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ->  16 c3 16 c3 16 c3 52 45 0c 45 00 08 6d c6 4c df
+  0xFD4BA: ff ff ff ff  ->  08 70 4e 75
