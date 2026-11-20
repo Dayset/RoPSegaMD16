@@ -1,0 +1,4 @@
+tall-objects-diag: 10 bytes differ from rop-tall-objects.rom
+noise_tbl[8] $FD5D6 $BBBBBBBB->$FFFFFFFF, noise_tbl[9] $FD5DA $99999999->$FFFFFFFF (solid white tall top)
+  $0018E-$0018F (2 bytes)
+  $FD5D6-$FD5DD (8 bytes)

@@ -1,0 +1,10 @@
+pacing: 42 bytes differ from rop-dither.rom
+pace_gate $FD900, blob $FD900-$FD921 (34 bytes), hook site $228CC
+  $0018E-$0018F (2 bytes)
+  $228CC-$228CD (2 bytes)
+  $228CF-$228D1 (3 bytes)
+  $FD098-$FD099 (2 bytes)
+  $FD09B-$FD09B (1 bytes)
+  $FD900-$FD906 (7 bytes)
+  $FD908-$FD915 (14 bytes)
+  $FD917-$FD921 (11 bytes)

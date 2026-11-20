@@ -1,0 +1,8 @@
+walk-frames-fix: 10 bytes differ from rop-walk-frames.rom
+map_promote_record $023480: lea.l $197B0,a0 -> jsr $FDA00.l (route the Y-shift hook through map_promote_record)
+No new blob; the existing walk-hook blob at $FDA00 is reused.
+  $0018E-$0018F (2 bytes)
+  $23480-$23481 (2 bytes)
+  $23483-$23485 (3 bytes)
+  $FD098-$FD099 (2 bytes)
+  $FD09B-$FD09B (1 bytes)
