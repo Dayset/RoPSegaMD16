@@ -41,3 +41,43 @@ writes `build/rop-<features>.rom` + `.ips` + `.manifest.json`
 (features, hooks, blob addresses, MD5). `FEATURES=` (empty) writes
 `build/rop-base.rom`, byte-identical to the original ROM. Tests:
 `python3 tools/tests/test_build_rom.py` (also run by `make unit`).
+
+## Deterministic playtest harness (issue #240)
+
+`make playtest` prints the metrics table for the original,
+flat-zoomed, and walk-unused-frames ROMs (input-replay overlay
+applied as a test-only overlay; never part of a shipped ROM).
+Each trace is ~100 s wall (BlastEm runs at real-time 60 fps
+under Xvfb :99); traces are cached in `.scratch-smooth240/`
+and reused when the overlay ROM + route are unchanged.
+
+- Input replay: `patches/input-replay/` — hooks
+  `joypad_queue_pop` ($1350), NOT `pad_latch_11bb8` ($11BB8,
+  dead code, nothing calls it). Blob at $FE000, table of
+  (frame_count, pad1) pairs. Build:
+  `python3 patches/input-replay/build.py --base <base.rom>
+  --route <route.txt> --out <out.rom>`.
+- Driver/metrics: `tools/playtest_metrics.py` — `trace`
+  (BlastEm debugger: VBlank $1272 + room DMA $1B9E8
+  breakpoints, `di` samples), `metrics`, `table`,
+  `determinism` (two fresh runs, metric dicts must match).
+- Frozen routes: `tools/playtest_route_orig.txt` (original,
+  18 f room holds = 1 step), `_flat.txt` / `_walk.txt`
+  (flat-zoomed, walk-unused-frames: 18 f holds = 2 steps,
+  half the presses). All three walk the same western loop
+  (L4 U4 D4 R4) in the Academy room from spawn (8,5).
+- Room leader is entity 1, cell `$FF02F4`/`$FF02F6`
+  (stride 0x34 from $FF02B4, cell at +$C/+$E); entity 0
+  ($FF02C0/$FF02C2) is the overworld leader and freezes at
+  the entrance cell inside a room.
+- Room exits: pressing into the north wall (y=0) or standing
+  on (0,0) exits the room; the east side has a wall at (6,1)
+  and teleports past (10,3). Routes must use exact step
+  counts and stay in open cells.
+- Cadence is reported per phase (overworld / room) and
+  overall; the original overall is ~19.86 (acceptance band
+  19-22). `bg_jump_px` and `leader_jitter_px` are one cell
+  vector (~16.1 px) on all three ROMs in v1 — the harness
+  separates the original (room 16.67 f) from the fast ROMs
+  (room 8.11 f) but not flat from walk-unused-frames; sub-cell
+  smoothness needs framebuffer/sub-cell tracking.
