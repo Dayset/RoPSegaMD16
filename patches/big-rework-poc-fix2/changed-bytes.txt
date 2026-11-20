@@ -1,0 +1,478 @@
+Changed bytes: original (MD5 30c18fdbe2183f64702ae9f1a45d63f9) -> rop-big-rework-poc-fix2.rom (big-rework PoC fix2: camera-aware re-decode gate, DESIGN.md §8 + fix2 REPORT.md)
+All addresses are 68000 ROM offsets (= file offsets). Values are hex bytes.
+
+Trampoline blob: 0xFD900-0xFDE25 (1318 bytes, source.s)
+  vbl_entry    0xFD900 (VBlank hook: D-pad scroll)
+  redraw_entry 0xFDB54 (redraw_check hook: Plane B install + re-decode gate)
+  scene_entry  0xFDDEC (world_map_draw hook: reset install state)
+Hooks:
+  0x01272 move.w #$0,$FF0016 -> jmp $FD900.l ; nop
+  0x1B918 link a6,#-2 ; tst.w $FF009C -> jsr $FDB54.l
+  0x12C20 link a6,#-4 ; pea.l -> jsr $FDDEC.l
+Statics:
+  0x12C9A move.w #$8400,-(a7) -> #$8402 (R4: Plane B $4000)
+  0x12E68 pea $001000.w -> pea $004000.w (world_map_draw room -> Plane B)
+  0x16326 pea $001000.w -> pea $004000.w (world_map_redraw room -> Plane B)
+Checksums: fixed with tools/checksum.py fix-all (runtime 0xFD098, header 0x18E)
+
+0x0018E-0x0018F (2 bytes):
+  0x0018E: 8b 9f 4a 20 20 20 20 20 20 20 20 20 20 20 20 20  -> 98 18
+
+0x01272-0x01273 (2 bytes):
+  0x01272: 33 fc 00 00 00 ff 00 16 52 b9 00 ff 00 10 48 e7  -> 4e f9
+
+0x01275-0x01279 (5 bytes):
+  0x01275: 00 00 ff 00 16 52 b9 00 ff 00 10 48 e7 e0 80 33  -> 0f d9 00 4e 71
+
+0x12C21-0x12C25 (5 bytes):
+  0x12C21: 56 ff fc 48 79 00 0c ca d8 42 67 4e b9 00 01 10  -> b9 00 0f dd ec
+
+0x12C9D-0x12C9D (1 bytes):
+  0x12C9D: 00 4e b9 00 00 d9 e2 54 4f 3f 3c 85 12 4e b9 00  -> 02
+
+0x12E6A-0x12E6A (1 bytes):
+  0x12E6A: 10 00 4e b9 00 01 18 20 4f ef 00 10 3f 3c 00 09  -> 40
+
+0x16328-0x16328 (1 bytes):
+  0x16328: 10 00 4e b9 00 01 18 20 4f ef 00 10 3f 3c 00 09  -> 40
+
+0x1B919-0x1B91D (5 bytes):
+  0x1B919: 56 ff fe 4a 79 00 ff 00 9c 66 10 4a 39 00 ff b0  -> b9 00 0f db 54
+
+0xFD098-0xFD09B (4 bytes):
+  0xFD098: 8f 33 60 8c 66 02 4e 75 28 7c 00 c0 00 04 38 bc  -> 34 b2 83 ae
+
+0xFD900-0xFD904 (5 bytes):
+  0xFD900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 33 fc 00 00 00
+
+0xFD906-0xFD910 (11 bytes):
+  0xFD906: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 16 48 e7 f8 c0 0c 79 9c 07 00
+
+0xFD912-0xFD91C (11 bytes):
+  0xFD912: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a0 67 00 00 4a 33 fc 9c 07 00
+
+0xFD91E-0xFD922 (5 bytes):
+  0xFD91E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a0 42 79 00
+
+0xFD924-0xFD928 (5 bytes):
+  0xFD924: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFD92A-0xFD92E (5 bytes):
+  0xFD92A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFD930-0xFD934 (5 bytes):
+  0xFD930: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFD936-0xFD93A (5 bytes):
+  0xFD936: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 42 79 00
+
+0xFD93C-0xFD940 (5 bytes):
+  0xFD93C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFD942-0xFD945 (4 bytes):
+  0xFD942: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 33 fc
+
+0xFD948-0xFD948 (1 bytes):
+  0xFD948: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD94A-0xFD94D (4 bytes):
+  0xFD94A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b4 33 fc
+
+0xFD950-0xFD950 (1 bytes):
+  0xFD950: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD952-0xFD955 (4 bytes):
+  0xFD952: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFD958-0xFD958 (1 bytes):
+  0xFD958: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD95A-0xFD962 (9 bytes):
+  0xFD95A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 60 00 01 ee 30 39 00
+
+0xFD964-0xFD974 (17 bytes):
+  0xFD964: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 0c 40 00 01 63 00 00 06 60 00 00 44 30 39
+  0xFD974: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD976-0xFD986 (17 bytes):
+  0xFD976: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 0c 40 00 01 63 00 00 06 60 00 00 32 30 39
+  0xFD986: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD988-0xFD993 (12 bytes):
+  0xFD988: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 0c 40 00 e0 6e 00 00 24 0c 40
+
+0xFD995-0xFD99C (8 bytes):
+  0xFD995: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 20 6d 00 00 1c 30 39 00
+
+0xFD99E-0xFD9A9 (12 bytes):
+  0xFD99E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 0c 40 00 80 6e 00 00 0e 0c 40
+
+0xFD9AB-0xFD9B6 (12 bytes):
+  0xFD9AB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 80 6d 00 00 06 60 00 00 3a 42 79 00
+
+0xFD9B8-0xFD9BC (5 bytes):
+  0xFD9B8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFD9BE-0xFD9C2 (5 bytes):
+  0xFD9BE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFD9C4-0xFD9C8 (5 bytes):
+  0xFD9C4: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFD9CA-0xFD9CE (5 bytes):
+  0xFD9CA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 42 79 00
+
+0xFD9D0-0xFD9D4 (5 bytes):
+  0xFD9D0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFD9D6-0xFD9D9 (4 bytes):
+  0xFD9D6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 33 fc
+
+0xFD9DC-0xFD9DC (1 bytes):
+  0xFD9DC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD9DE-0xFD9E1 (4 bytes):
+  0xFD9DE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFD9E4-0xFD9E4 (1 bytes):
+  0xFD9E4: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFD9E6-0xFD9EE (9 bytes):
+  0xFD9E6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 60 00 01 62 30 39 00
+
+0xFD9F0-0xFD9F4 (5 bytes):
+  0xFD9F0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 98 b0 79 00
+
+0xFD9F6-0xFD9FE (9 bytes):
+  0xFD9F6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b4 67 00 00 30 33 c0 00
+
+0xFDA00-0xFDA04 (5 bytes):
+  0xFDA00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b4 42 79 00
+
+0xFDA06-0xFDA0A (5 bytes):
+  0xFDA06: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFDA0C-0xFDA10 (5 bytes):
+  0xFDA0C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDA12-0xFDA16 (5 bytes):
+  0xFDA12: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDA18-0xFDA1B (4 bytes):
+  0xFDA18: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 33 fc
+
+0xFDA1E-0xFDA1E (1 bytes):
+  0xFDA1E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDA20-0xFDA23 (4 bytes):
+  0xFDA20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFDA26-0xFDA26 (1 bytes):
+  0xFDA26: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDA28-0xFDA2C (5 bytes):
+  0xFDA28: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 30 39 00
+
+0xFDA2E-0xFDA3A (13 bytes):
+  0xFDA2E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 98 0c 40 00 9c 66 00 00 d4 4a 79 00
+
+0xFDA3C-0xFDA46 (11 bytes):
+  0xFDA3C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 67 00 01 0c 70 00 10 39 00
+
+0xFDA48-0xFDA90 (73 bytes):
+  0xFDA48: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 18 42 41 42 42 08 00 00 00 67 00 00 0a 04 41
+  0xFDA58: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 10 04 42 00 09 08 00 00 01 67 00 00 0a 06 41
+  0xFDA68: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 10 06 42 00 09 08 00 00 02 67 00 00 0a 06 41
+  0xFDA78: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 10 04 42 00 09 08 00 00 03 67 00 00 0a 04 41
+  0xFDA88: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 10 06 42 00 09 36 39 00
+
+0xFDA92-0xFDAA3 (18 bytes):
+  0xFDA92: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 d6 41 0c 43 00 e0 6f 00 00 06 36 3c 00 e0
+  0xFDAA2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0c 43
+
+0xFDAA5-0xFDAAB (7 bytes):
+  0xFDAA5: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 20 6c 00 00 06 36 3c
+
+0xFDAAD-0xFDAB0 (4 bytes):
+  0xFDAAD: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 20 33 c3 00
+
+0xFDAB2-0xFDAB6 (5 bytes):
+  0xFDAB2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 38 39 00
+
+0xFDAB8-0xFDAC9 (18 bytes):
+  0xFDAB8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa d8 42 0c 44 00 80 6f 00 00 06 38 3c 00 80
+  0xFDAC8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0c 44
+
+0xFDACB-0xFDAD1 (7 bytes):
+  0xFDACB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 80 6c 00 00 06 38 3c
+
+0xFDAD3-0xFDAD6 (4 bytes):
+  0xFDAD3: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 80 33 c4 00
+
+0xFDAD8-0xFDAE4 (13 bytes):
+  0xFDAD8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 30 03 e8 40 32 04 e8 41 b0 79 00
+
+0xFDAE6-0xFDAEE (9 bytes):
+  0xFDAE6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 66 00 00 10 b2 79 00
+
+0xFDAF0-0xFDAFC (13 bytes):
+  0xFDAF0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 66 00 00 06 60 00 00 54 33 c0 00
+
+0xFDAFE-0xFDB02 (5 bytes):
+  0xFDAFE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 33 c1 00
+
+0xFDB04-0xFDB0C (9 bytes):
+  0xFDB04: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 60 00 00 34 42 79 00
+
+0xFDB0E-0xFDB12 (5 bytes):
+  0xFDB0E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDB14-0xFDB18 (5 bytes):
+  0xFDB14: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDB1A-0xFDB1E (5 bytes):
+  0xFDB1A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 30 39 00
+
+0xFDB20-0xFDB24 (5 bytes):
+  0xFDB20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 80 79 00
+
+0xFDB26-0xFDB2E (9 bytes):
+  0xFDB26: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 67 00 00 22 42 79 00
+
+0xFDB30-0xFDB34 (5 bytes):
+  0xFDB30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFDB36-0xFDB57 (34 bytes):
+  0xFDB36: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 70 00 72 00 3f 00 42 67 3f 01 42 67 4e b9
+  0xFDB46: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 00 dc 16 50 4f 4c df 03 1f 4e f8 12 7a 58 4f
+  0xFDB56: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 48 e7
+
+0xFDB59-0xFDB5E (6 bytes):
+  0xFDB59: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> fe 0c 79 9c 07 00
+
+0xFDB60-0xFDB6A (11 bytes):
+  0xFDB60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a0 67 00 00 4a 33 fc 9c 07 00
+
+0xFDB6C-0xFDB70 (5 bytes):
+  0xFDB6C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a0 42 79 00
+
+0xFDB72-0xFDB76 (5 bytes):
+  0xFDB72: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDB78-0xFDB7C (5 bytes):
+  0xFDB78: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFDB7E-0xFDB82 (5 bytes):
+  0xFDB7E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDB84-0xFDB88 (5 bytes):
+  0xFDB84: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 42 79 00
+
+0xFDB8A-0xFDB8E (5 bytes):
+  0xFDB8A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFDB90-0xFDB93 (4 bytes):
+  0xFDB90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 33 fc
+
+0xFDB96-0xFDB96 (1 bytes):
+  0xFDB96: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDB98-0xFDB9B (4 bytes):
+  0xFDB98: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b4 33 fc
+
+0xFDB9E-0xFDB9E (1 bytes):
+  0xFDB9E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDBA0-0xFDBA3 (4 bytes):
+  0xFDBA0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFDBA6-0xFDBA6 (1 bytes):
+  0xFDBA6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDBA8-0xFDBB0 (9 bytes):
+  0xFDBA8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 60 00 02 2a 30 39 00
+
+0xFDBB2-0xFDBC2 (17 bytes):
+  0xFDBB2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 0c 40 00 01 63 00 00 06 60 00 01 e0 30 39
+  0xFDBC2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDBC4-0xFDBD4 (17 bytes):
+  0xFDBC4: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 0c 40 00 01 63 00 00 06 60 00 01 ce 4a 79
+  0xFDBD4: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDBD6-0xFDBDE (9 bytes):
+  0xFDBD6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 66 00 00 ce 4a 79 00
+
+0xFDBE0-0xFDBE8 (9 bytes):
+  0xFDBE0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 98 67 00 01 f2 30 39 00
+
+0xFDBEA-0xFDC0A (33 bytes):
+  0xFDBEA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 86 74 67 00 01 e8 3f 3c 84 02 4e b9 00 00 d9 e2
+  0xFDBFA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 54 4f 3f 3c 90 01 4e b9 00 00 d9 e2 54 4f 3f 3c
+  0xFDC0A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 07
+
+0xFDC0C-0xFDC2C (33 bytes):
+  0xFDC0C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 3f 3c 00 20 3f 3c 00 40 42 67 42 67 3f 3c 00 40
+  0xFDC1C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 48 78 40 00 4e b9 00 01 1a 1a de fc 00 10 3f 39
+  0xFDC2C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDC2E-0xFDC52 (37 bytes):
+  0xFDC2E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 86 74 3f 3c 00 17 3f 3c 00 24 42 67 3f 3c 00 02
+  0xFDC3E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 3f 3c 00 40 48 78 40 00 4e b9 00 01 18 20 de fc
+  0xFDC4E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 10 3f 3c 07
+
+0xFDC54-0xFDC78 (37 bytes):
+  0xFDC54: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 3f 3c 00 17 3f 3c 00 24 42 67 3f 3c 00 02 3f 3c
+  0xFDC64: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 40 48 78 10 00 4e b9 00 01 1a 1a de fc 00 10
+  0xFDC74: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 33 fc 00 01 00
+
+0xFDC7A-0xFDC80 (7 bytes):
+  0xFDC7A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 33 fc 00 01 00
+
+0xFDC82-0xFDC86 (5 bytes):
+  0xFDC82: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDC88-0xFDC8C (5 bytes):
+  0xFDC88: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDC8E-0xFDC92 (5 bytes):
+  0xFDC8E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 33 f9 00
+
+0xFDC94-0xFDC96 (3 bytes):
+  0xFDC94: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 8e 00
+
+0xFDC98-0xFDC9C (5 bytes):
+  0xFDC98: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 f9 00
+
+0xFDC9E-0xFDCA0 (3 bytes):
+  0xFDC9E: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 90 00
+
+0xFDCA2-0xFDCAA (9 bytes):
+  0xFDCA2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 60 00 01 30 30 39 00
+
+0xFDCAC-0xFDCB8 (13 bytes):
+  0xFDCAC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 98 0c 40 00 9c 66 00 01 22 30 39 00
+
+0xFDCBA-0xFDCBE (5 bytes):
+  0xFDCBA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 8e 90 79 00
+
+0xFDCC0-0xFDCC4 (5 bytes):
+  0xFDCC0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 32 39 00
+
+0xFDCC6-0xFDCCA (5 bytes):
+  0xFDCC6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 90 92 79 00
+
+0xFDCCC-0xFDD0B (64 bytes):
+  0xFDCCC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 4a 40 66 00 00 08 4a 41 67 00 00 7c 34 00
+  0xFDCDC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 6a 00 00 04 44 42 36 01 6a 00 00 04 44 43 0c 42
+  0xFDCEC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 01 6e 00 00 6e 0c 43 00 01 6e 00 00 66 38 00
+  0xFDCFC: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 98 41 44 44 4a 44 67 00 00 16 6a 00 00 0a 38 3c
+
+0xFDD0D-0xFDD1E (18 bytes):
+  0xFDD0D: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 20 60 00 00 0c 38 3c 00 e0 60 00 00 04 42 44 b8
+  0xFDD1D: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 79 00
+
+0xFDD20-0xFDD35 (22 bytes):
+  0xFDD20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 66 00 00 30 3a 00 da 41 4a 45 67 00 00 16
+  0xFDD30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 6a 00 00 0a 3a 3c
+
+0xFDD37-0xFDD48 (18 bytes):
+  0xFDD37: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 80 60 00 00 0c 3a 3c 00 80 60 00 00 04 42 45 ba
+  0xFDD47: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 79 00
+
+0xFDD4A-0xFDD56 (13 bytes):
+  0xFDD4A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 66 00 00 06 60 00 00 0c 42 79 00
+
+0xFDD58-0xFDD60 (9 bytes):
+  0xFDD58: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 98 60 00 00 7a 33 f9 00
+
+0xFDD62-0xFDD64 (3 bytes):
+  0xFDD62: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 8e 00
+
+0xFDD66-0xFDD6A (5 bytes):
+  0xFDD66: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 f9 00
+
+0xFDD6C-0xFDD6E (3 bytes):
+  0xFDD6C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 0e 90 00
+
+0xFDD70-0xFDD74 (5 bytes):
+  0xFDD70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 42 79 00
+
+0xFDD76-0xFDD7A (5 bytes):
+  0xFDD76: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDD7C-0xFDD80 (5 bytes):
+  0xFDD7C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 42 79 00
+
+0xFDD82-0xFDD86 (5 bytes):
+  0xFDD82: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFDD88-0xFDDA0 (25 bytes):
+  0xFDD88: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 42 67 42 67 42 67 42 67 4e b9 00 00 dc 16
+  0xFDD98: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 50 4f 60 00 00 3a 42 79 00
+
+0xFDDA2-0xFDDA6 (5 bytes):
+  0xFDDA2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDDA8-0xFDDAC (5 bytes):
+  0xFDDA8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFDDAE-0xFDDB2 (5 bytes):
+  0xFDDAE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDDB4-0xFDDB8 (5 bytes):
+  0xFDDB4: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 42 79 00
+
+0xFDDBA-0xFDDBE (5 bytes):
+  0xFDDBA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b0 42 79 00
+
+0xFDDC0-0xFDDC3 (4 bytes):
+  0xFDDC0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 b2 33 fc
+
+0xFDDC6-0xFDDC6 (1 bytes):
+  0xFDDC6: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDDC8-0xFDDCB (4 bytes):
+  0xFDDC8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFDDCE-0xFDDCE (1 bytes):
+  0xFDDCE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDDD0-0xFDDD8 (9 bytes):
+  0xFDDD0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 60 00 00 02 4c df 7f
+
+0xFDDDA-0xFDDDB (2 bytes):
+  0xFDDDA: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 4e 56
+
+0xFDDDD-0xFDDE0 (4 bytes):
+  0xFDDDD: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> fe 30 39 00
+
+0xFDDE2-0xFDDF0 (15 bytes):
+  0xFDDE2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 9c 4a 40 4e f9 00 01 b9 22 58 4f 42 79 00
+
+0xFDDF2-0xFDDF6 (5 bytes):
+  0xFDDF2: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a6 42 79 00
+
+0xFDDF8-0xFDDFC (5 bytes):
+  0xFDDF8: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a2 42 79 00
+
+0xFDDFE-0xFDE02 (5 bytes):
+  0xFDDFE: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 a8 42 79 00
+
+0xFDE04-0xFDE07 (4 bytes):
+  0xFDE04: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 aa 33 fc
+
+0xFDE0A-0xFDE0A (1 bytes):
+  0xFDE0A: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDE0C-0xFDE0F (4 bytes):
+  0xFDE0C: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 bc 33 fc
+
+0xFDE12-0xFDE12 (1 bytes):
+  0xFDE12: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00
+
+0xFDE14-0xFDE17 (4 bytes):
+  0xFDE14: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> 00 c0 4e 56
+
+0xFDE19-0xFDE25 (13 bytes):
+  0xFDE19: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  -> fc 48 79 00 0c ca d8 4e f9 00 01 2c 2a
