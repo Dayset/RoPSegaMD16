@@ -16,3 +16,28 @@ GNU as rewrites some encodings (`cmp.w #imm,Dn` becomes `cmpi.w`, and other "opt
 ## Known traps
 - Running `vasmm68k_mot` with no arguments waits on stdin. Check for the binary with `-x`; do not run it to test it.
 - Stale `build/` output can hide a failed assembly; `tools/build.sh` removes old output first.
+
+## Feature build (`make rom FEATURES=…`, issue #239)
+A patch ships as a feature, never as a hand-assembled ROM: a directory
+`patches/<name>/` holding `feature.s` (the new code) and `hooks.csv`
+(one hook per line: `addr,len,kind,target`, kind ∈ `jsr|jmp|bytes`).
+`feature.s` must start with `org ORGVAL`; the build supplies ORGVAL as
+the allocator-chosen address, so no source hardcodes where it lands.
+In-blob branches must be PC-relative (labels); absolute-long references
+to fixed game addresses are fine. For `jsr`/`jmp`, `target` is a label
+defined in `feature.s` and `len` is 6 (`jsr.l`/`jmp.l`); for `bytes`,
+`target` is a hex byte string written verbatim and `len` is its length.
+
+`tools/build_rom.py` builds the byte-identical base first (`make build`,
+MD5-checked against the original), assembles each feature into a
+first-fit free-space allocator (regions from `disasm/regions.csv` —
+any class starting with `padding`, plus `zero-fill`; the file's only
+padding region today is class `padding-ff`, `$FD0CC–$FFFFF`), and
+fails the build if two hooks overlap, a hook splits an instruction
+(checked against the `; $ADDR` boundaries in `disasm/src/rop.s`), a
+hook target falls outside its feature's blob, or blobs collide. It
+then fixes both checksums (runtime immediate first, header last) and
+writes `build/rop-<features>.rom` + `.ips` + `.manifest.json`
+(features, hooks, blob addresses, MD5). `FEATURES=` (empty) writes
+`build/rop-base.rom`, byte-identical to the original ROM. Tests:
+`python3 tools/tests/test_build_rom.py` (also run by `make unit`).
