@@ -14,6 +14,8 @@ help:
 	@echo "make regions   ROM data-region inventory"
 	@echo "make assets    rebuild the DD5C asset records from assets/gfx/ -> build/assets.gen"
 	@echo "make gate      build + verify + coverage (run before every push touching disasm/src or tools/)"
+	@echo "make rom      build a feature ROM: make rom FEATURES=music-off"
+	@echo "              (FEATURES= empty builds the byte-identical base)"
 	@echo "make rom-free  fail if any ROM image (*.gen) is tracked by git"
 	@echo "make clean     remove build/"
 
@@ -56,7 +58,8 @@ shift-test:
 setup:
 	sh tools/setup.sh
 
-rom: build
+rom:
+	$(PY) tools/build_rom.py FEATURES=$(FEATURES)
 
 boot:
 	sh tools/test_harness.sh

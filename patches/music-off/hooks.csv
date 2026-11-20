@@ -1,0 +1,3 @@
+addr,len,kind,target
+0x173C0,6,jsr,music_off_gate
+0x173F4,6,jsr,music_off_stop
