@@ -4,7 +4,7 @@ ROM      := rop-original.gen
 REBUILT  := build/rop-rebuilt.gen
 PY       := python3
 
-.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test
+.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test playtest
 
 help:
 	@echo "make vasm      install pinned assembler into tools/vasm"
@@ -18,6 +18,7 @@ help:
 	@echo "              (FEATURES= empty builds the byte-identical base)"
 	@echo "make rom-free  fail if any ROM image (*.gen) is tracked by git"
 	@echo "make clean     remove build/"
+	@echo "make playtest  deterministic playtest table (issue #240): input-replay overlay + frozen routes on original, flat-zoomed, walk-unused-frames; reuses cached traces in .scratch-smooth240"
 
 vasm:
 	sh tools/install_vasm.sh
@@ -66,6 +67,17 @@ boot:
 
 unit:
 	@for t in tools/tests/test_*.py; do python3 "$$t" || exit 1; done
+
+# Deterministic playtest harness (issue #240). The table uses the
+# three frozen ROMs with the input-replay overlay applied as a
+# test-only overlay (the overlay is never part of a shipped ROM).
+# Wiring FEATURES= (the #239 feature build) into the table is a
+# follow-up. Traces are cached in .scratch-smooth240/ and reused
+# when the overlay ROM + route are unchanged; delete the
+# *.trace.json to force a re-run. Each trace is ~100 s wall
+# (emulator runs at real-time 60 fps).
+playtest:
+	python3 tools/playtest_metrics.py table
 
 clean:
 	rm -rf build
