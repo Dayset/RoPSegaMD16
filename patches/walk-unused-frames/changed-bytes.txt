@@ -1,0 +1,12 @@
+walk-unused-frames: 18 bytes differ from rop-walk-frames-fix.rom
+$023202 (hero_track): jsr $FDA00.l -> lea.l $197B0,a0 (Y-shift hook off)
+$023480 (map_promote_record): jsr $FDA00.l -> lea.l $197B0,a0 (Y-shift hook off)
+$FD866 (loop_drive): beq.b $FD86A -> bra.b $FD88A (step every call: one cell per 4 ticks, not 8)
+The $FDA00 walk-hook blob is left in place, now unreferenced.
+  $0018E-$0018F (2 bytes)
+  $23202-$23203 (2 bytes)
+  $23205-$23207 (3 bytes)
+  $23480-$23481 (2 bytes)
+  $23483-$23485 (3 bytes)
+  $FD098-$FD09B (4 bytes)
+  $FD866-$FD867 (2 bytes)
