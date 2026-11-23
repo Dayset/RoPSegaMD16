@@ -332,8 +332,20 @@ def main():
                 # Only the collected operands are ever rewritten (step 3b); an
                 # instruction with a RAM/hardware operand stays converted and
                 # that operand stays numeric.
-                refs = {i: t for i, t in abs_operands(op).items()
-                        if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code)}
+                # A .w absolute operand is NEVER a ROM pointer (#280): it is a
+                # 16-bit value (ROM is 1 MB, so pointers are .l here) — the
+                # observed .w uses are VRAM plane bases ($1000 window, $2000
+                # plane A, pushed by pea.l to gfx_tilemap_fill /
+                # gfx_set_tile_vram_addr) and EEPROM offsets ($1/$2/$7E).
+                # Labelling one moves it with the shift and displaces the
+                # plane fill/draw by SHIFT in VRAM (grey stripe, frame 430).
+                refs = {}
+                for i, t in abs_operands(op).items():
+                    m = ABS_OP_RE.match(split_operands(op)[i])
+                    if m and m.group(2) == ".w":
+                        continue
+                    if t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code):
+                        refs[i] = t
                 # immediates that are ROM addresses (step 1, #16): pointer loads
                 # into address registers; small offsets / data-register values
                 # stay numeric (see imm_pointer_operands).
