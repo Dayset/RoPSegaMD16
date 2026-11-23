@@ -50,9 +50,11 @@
 TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 TD_SLOT0	equ 68		; first sprite slot for blobs (game uses <= 67)
-TD_NSLOT	equ 12		; blob sprites max
+TD_NSLOT	equ 12		; our sprite slots (2 HUD box + figures)
+TD_NFIG		equ 10		; figure sprites max
+TD_BOXT		equ 802		; HUD box: 12 solid parchment tiles (bank offset)
 TD_VC		equ 84		; screen line the leader is centred on
-TD_NFC		equ 26		; figure images cached in VRAM (4x4 tiles each)
+TD_NFC		equ 25		; figure images cached in VRAM (4x4 tiles each)
 TD_SH		equ 3		; extra cell columns each side (shear margin)
 TD_BTAB		equ $C000	; static Plane B table (HUD band), bank tiles $600-$67F
 TD_BROW		equ 20		; first window row of the HUD band
@@ -116,7 +118,10 @@ TD_FC		equ TD+$328	; TD_NFC x (key.w, stamp.w): figure image cache
 TD_UPTXT	equ TD+$328+4*TD_NFC	; window rows above the band hold text
 TD_BAND		equ TD_UPTXT+2	; HUD band mode active
 TD_YMAX		equ TD_UPTXT+4	; sprites below this cell top are culled
-TD_END		equ TD_UPTXT+6
+TD_MSG		equ TD_UPTXT+6	; other text in the HUD rows (a message)
+TD_HASBOX	equ TD_UPTXT+8	; the HUD box holds moved HUD words
+TD_BOX		equ TD_UPTXT+10	; draw the HUD box backdrop sprites
+TD_END		equ TD_UPTXT+12
 
 NOPOS		equ $8000
 
@@ -364,6 +369,19 @@ td_restore:
 	clr.w	TD_VALID
 	clr.w	TD_TILES
 	bsr.w	td_unlay
+	moveq	#23,d1			; empty the HUD box (rows 23-25,
+.hb:	move.w	d1,d0			; cols 22-29): the game redraws the
+	lsl.w	#7,d0			; HUD in its own place
+	add.w	#$1000+22*2,d0
+	bsr.w	td_vwrite
+	moveq	#8-1,d0
+.hc:	move.w	FONTBLK,VDP_DATA
+	dbra	d0,.hc
+	addq.w	#1,d1
+	cmpi.w	#26,d1
+	bcs.s	.hb
+	clr.w	TD_HASBOX
+	clr.w	TD_BOX
 	cmpi.w	#$2400,SPRBASE
 	bne.s	.scr
 	move.w	SPRBASE,d0		; sprite 0 -> the game's first sprite
@@ -442,6 +460,7 @@ td_sync:
 	clr.w	TD_VALID
 .tok:
 	bsr.w	td_winfix		; window only; the plane is checked next
+	bsr.w	td_hud
 	tst.w	TD_VALID
 	beq.s	.redraw
 	bsr.w	td_plane_check
@@ -602,19 +621,23 @@ td_layers:
 	bne.s	.full
 	tst.w	TD_UPTXT
 	bne.s	.full
+	tst.w	TD_MSG			; a message: parchment strip
+	beq.s	.full
 	cmpi.w	#$38E,TD_BASE		; table position assumes this bank
 	bne.s	.full
+	clr.w	TD_BOX
 	move.w	#$8400+TD_BTAB/$2000,VDP_CTRL
 	move.w	#$9100,VDP_CTRL
 	move.w	#$9280+TD_BROW,VDP_CTRL
 	move.w	#1,TD_BAND
 	move.w	#TD_BROW*8-16,TD_YMAX
 	rts
-.full:	move.w	#$8400,VDP_CTRL
-	move.w	#$9180,VDP_CTRL
+.full:	move.w	#$8400,VDP_CTRL		; compact HUD: the game's window over
+	move.w	#$9180,VDP_CTRL		; the whole screen, map on Plane B
 	move.w	#$9200,VDP_CTRL
 	clr.w	TD_BAND
 	move.w	#224,TD_YMAX
+	move.w	TD_HASBOX,TD_BOX
 	rts
 
 ; td_unlay — back to the game's layout G registers (view invalid).
@@ -733,7 +756,7 @@ td_chars:
 	bsr.w	td_figure		; d0 = figure tile word, or -1
 	tst.w	d0
 	bmi.s	.blob
-	cmpi.w	#TD_NSLOT,TD_NB
+	cmpi.w	#TD_NFIG,TD_NB
 	bcc.w	.lchk
 	move.w	d5,(a2)+
 	move.w	d6,(a2)+
@@ -755,7 +778,7 @@ td_chars:
 	bne.s	.add
 .lead:	moveq	#0,d1			; variant 0 (yellow)
 .add:
-	cmpi.w	#TD_NSLOT,TD_NB
+	cmpi.w	#TD_NFIG,TD_NB
 	bcc.s	.lchk
 	move.w	d5,(a2)+
 	move.w	d6,(a2)+
@@ -1086,12 +1109,36 @@ td_sprites:
 .sn:	addq.w	#1,d6
 	bra.s	.so
 .sorted:
-	move.w	TD_CAMY,d0		; shear reference: the leader's line
+	moveq	#0,d6			; sprites written
+	tst.w	TD_BOX			; HUD box backdrop first (on top)
+	beq.s	.nobox
+	moveq	#0,d2
+.bx:	moveq	#TD_SLOT0,d0
+	add.w	d6,d0
+	lsl.w	#3,d0
+	add.w	SPRBASE,d0
+	bsr.w	td_vwrite
+	move.w	#184+128,VDP_DATA	; rows 23-25
+	move.w	d6,d0
+	add.w	#TD_SLOT0+1+$0E00,d0	; 32x24, link to the next
+	move.w	d0,VDP_DATA
+	move.w	TD_BASE,d0
+	add.w	#TD_BOXT+$2000,d0	; palette 1, low priority
+	move.w	d0,VDP_DATA
+	move.w	d2,d0
+	lsl.w	#5,d0
+	add.w	#172+128,d0		; columns 22-29 (4 px margin)
+	move.w	d0,VDP_DATA
+	movea.w	#$0E00,a0
+	addq.w	#1,d6
+	addq.w	#1,d2
+	cmpi.w	#2,d2
+	bcs.s	.bx
+.nobox:	move.w	TD_CAMY,d0		; shear reference: the leader's line
 	add.w	#TD_VC,d0
 	asr.w	#1,d0
 	movea.w	d0,a1
 	lea	TD_LIST,a2
-	moveq	#0,d6			; sprites written
 	bra.w	.cond
 .spr:	move.w	(a2)+,d2		; px
 	move.w	(a2)+,d3		; py
@@ -1461,6 +1508,8 @@ td_plane_check:
 td_winfix:
 	movem.l	d2-d6/a2,-(a7)
 	clr.w	TD_UPTXT
+	clr.w	TD_MSG
+	clr.w	TD_HASBOX
 	moveq	#0,d6			; row
 .row:	move.w	d6,d0			; read 36 words of row d6, cols 2..37
 	lsl.w	#7,d0
@@ -1476,8 +1525,10 @@ td_winfix:
 	lea	TD_ROW,a2
 	moveq	#0,d4			; column 0..35
 .col:	move.w	(a2)+,d0
-	cmp.w	FONTBLK,d0
-	beq.s	.nx
+	move.w	d0,d1
+	sub.w	FONTBLK,d1
+	andi.w	#$7FF,d1		; a blank, any attributes
+	beq.w	.nx
 	move.w	d0,d1
 	andi.w	#$F800,d1		; no palette / priority / flips
 	bne.s	.txt
@@ -1490,17 +1541,125 @@ td_winfix:
 	bsr.w	td_vwrite
 	move.w	FONTBLK,VDP_DATA
 	bra.s	.nx
-.txt:	cmpi.w	#TD_BROW,d6		; text above the HUD band
-	bcc.s	.nx
+.txt:	cmpi.w	#TD_BROW,d6		; text above the HUD rows
+	bcc.s	.band
 	move.w	#1,TD_UPTXT
+	bra.s	.nx
+.band:	move.w	d4,d0			; screen column
+	addq.w	#2,d0
+	cmpi.w	#32,d0			; portrait
+	bcs.s	.b1
+	cmpi.w	#37,d0
+	bls.s	.nx
+.b1:	cmpi.w	#23,d6			; HUD box (rows 23-25, cols 22-29)
+	bcs.s	.b2
+	cmpi.w	#22,d0
+	bcs.s	.b2
+	cmpi.w	#29,d0
+	bhi.s	.b2
+	move.w	#1,TD_HASBOX
+	bra.s	.nx
+.b2:	move.w	d6,d1			; the game's own HUD place for this row
+	sub.w	#TD_BROW,d1
+	add.w	d1,d1
+	lea	td_hsrc(pc),a0
+	adda.w	d1,a0
+	cmp.b	(a0)+,d0
+	bcs.s	.msg
+	cmp.b	(a0),d0
+	bls.s	.nx
+.msg:	move.w	#1,TD_MSG
 .nx:	addq.w	#1,d4
 	cmpi.w	#36,d4
-	bcs.s	.col
+	bcs.w	.col
 	addq.w	#1,d6
-	cmpi.w	#23,d6
+	cmpi.w	#26,d6
 	bcs.w	.row
 	movem.l	(a7)+,d2-d6/a2
 	rts
+
+td_hsrc:	; columns of the game's HUD words, rows 20-25 (lo, hi)
+	dc.b	6,9, 7,13, 10,13, 11,16, 14,16, 15,18
+
+;=======================================================================
+; td_hud — once per tick: move the HUD words the game (re)drew into the
+; box left of the portrait and blank them where the game put them.
+; Labels GOLD / TIME are dropped ($ and AM/PM say it). Not while a
+; message is in the HUD rows (its words would be mistaken for HUD).
+;=======================================================================
+td_hud:
+	tst.w	TD_MSG
+	bne.w	.out
+	movem.l	d2-d7/a2-a3,-(a7)
+	lea	td_hseg(pc),a3
+.seg:	moveq	#0,d2
+	move.b	(a3)+,d2		; source row (0 = end)
+	beq.w	.done
+	moveq	#0,d3
+	move.b	(a3)+,d3		; source column
+	moveq	#0,d4
+	move.b	(a3)+,d4		; length
+	moveq	#0,d5
+	move.b	(a3)+,d5		; dest row (0 = blank only)
+	moveq	#0,d6
+	move.b	(a3)+,d6		; dest column
+	addq.w	#1,a3
+	bsr.w	.addr
+	move.w	d0,d7			; source address
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	lea	TD_ROW,a2
+	move.w	d4,d0
+	subq.w	#1,d0
+.rd:	move.w	VDP_DATA,(a2)+
+	dbra	d0,.rd
+	lea	TD_ROW,a2		; anything there?
+	move.w	d4,d0
+	subq.w	#1,d0
+.ck:	move.w	(a2)+,d1
+	sub.w	FONTBLK,d1
+	andi.w	#$7FF,d1
+	bne.s	.mv
+	dbra	d0,.ck
+	bra.s	.seg
+.mv:	tst.w	d5
+	beq.s	.blank
+	move.w	d5,d2			; copy into the box
+	move.w	d6,d3
+	bsr.s	.addr
+	bsr.w	td_vwrite
+	lea	TD_ROW,a2
+	move.w	d4,d0
+	subq.w	#1,d0
+.wr:	move.w	(a2)+,VDP_DATA
+	dbra	d0,.wr
+	move.w	#1,TD_HASBOX
+.blank:	move.w	d7,d0			; blank the source
+	bsr.w	td_vwrite
+	move.w	d4,d0
+	subq.w	#1,d0
+.bl:	move.w	FONTBLK,VDP_DATA
+	dbra	d0,.bl
+	bra.w	.seg
+.done:	movem.l	(a7)+,d2-d7/a2-a3
+.out:	rts
+.addr:	move.w	d2,d0			; d0 = $1000 + row*128 + col*2
+	lsl.w	#7,d0
+	move.w	d3,d1
+	add.w	d1,d1
+	add.w	d1,d0
+	add.w	#$1000,d0
+	rts
+
+td_hseg:	; src row, src col, len, dest row (0 = blank only), dest col, pad
+	dc.b	21,7,7, 23,22,0		; gold
+	dc.b	23,11,6, 24,22,0	; time
+	dc.b	24,14,3, 25,22,0	; F/W
+	dc.b	25,15,4, 25,25,0	; food / water bars
+	dc.b	20,6,4, 0,0,0		; GOLD
+	dc.b	22,10,4, 0,0,0		; TIME
+	dc.b	0
+	even
 
 ;=======================================================================
 ; Tiles. VRAM layout from TD_BASE: 256 map quadrant tiles (tile t ->
@@ -1601,7 +1760,14 @@ td_tiles_load:
 	move.w	#64*(32-TD_BROW)-1,d0
 .bb:	move.w	d1,VDP_DATA
 	dbra	d0,.bb
-.nob:	move.w	#1,TD_TILES
+.nob:	move.w	TD_BASE,d0		; HUD box: 12 solid parchment tiles
+	add.w	#TD_BOXT,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	moveq	#12*8-1,d0
+.bx:	move.l	#$CCCCCCCC,VDP_DATA
+	dbra	d0,.bx
+	move.w	#1,TD_TILES
 	lea	TD_FC,a0		; figure cache empty (key $FFFF)
 	moveq	#TD_NFC-1,d0
 .fc:	move.l	#$FFFF0000,(a0)+

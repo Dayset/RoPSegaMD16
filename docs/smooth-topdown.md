@@ -137,6 +137,30 @@ Until step 2 exists, topdown is the playable smooth build.
 - **Small texture animation in top-down:** done as a VRAM pattern
   swap (water shimmer, see the patch README).
 
+- **Is the top-down view final — can it show height (tall buildings,
+  multi-level places)?** Not final. Every map cell carries a height of
+  0–7 levels (cell bits 13–15, `docs/maps.md`); the top-down view
+  ignores it today. The mock-up below (`tools/td_height_mock.py`,
+  ROM data only) draws each level as one tile row (8 px) of lift with
+  the south face as the same tiles at half brightness. On the Mega
+  Drive that half brightness is free: in shadow/highlight mode a
+  priority-0 tile is drawn shadowed, so faces need no extra VRAM, and
+  the tile grid stays 8-px aligned, so it still scrolls in hardware.
+  Figures on a raised cell move up with it. A building's floors are
+  separate locations (one height per cell), so a lighthouse is shown
+  floor by floor, as in the original. Whether to build it is Q14.
+- **Better textures while standing still?** Possible as the "detail on
+  idle" pass of #252: when the leader has not moved for a few ticks,
+  redraw the visible cells with richer tiles (the isometric top
+  textures resampled offline into 16×16 squares), and return to the
+  map tiles when walking. It needs those tiles in the ROM (the 2 MB
+  room) and a Python port of the `$E358` decoder to make them.
+
+![](img/topdown-height-mock.png)
+
+*Overworld from ROM data: left as drawn now (flat), right with cell
+height as raised tiles and shadowed south faces.*
+
 ![](img/linescroll-sim.png)
 
 *Line-scroll effects applied to the live top-down plane (VRAM capture,

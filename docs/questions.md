@@ -57,3 +57,8 @@ Work continues on the default.
 - Default taken: (a) original pace (`TD_T1`/`TD_T2` in `patches/topdown/feature.s`); (b) no renderer work yet; the next card is the byte-exact Python port of the `$E358` composite, which both options need.
 - If the answer is different: (a) change two constants; (b) decides the size of the offline atlas build and the ROM size.
 
+
+## Q14 — topdown (#255): show cell height in the oblique view?
+- Question: draw cell height (0–7 levels) as raised tiles with shadowed south faces (mock-up `docs/img/topdown-height-mock.png`), keep the view flat, or tint by height only?
+- Default taken: flat (no change); the mock-up and `tools/td_height_mock.py` are in.
+- If the answer is different: raised tiles needs shadow/highlight mode, a painter-order cell draw (a cell's top can cover up to 3.5 cells to its north), streaming lookahead of 4 rows, and figures lifted by their cell's height — about one card.

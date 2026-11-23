@@ -32,15 +32,23 @@ make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
   follows world rows, so scrolling stays a rigid 1-px translation;
   figures get the same offset at their cell's centre row. The streamed
   band is 27 cells wide (3 extra each side) to cover the slant.
-- **HUD strip:** the window is cut to rows 20–27 (`R18=$94`), the map
-  is on Plane A above it, and Plane B is a static table at `$C000`
-  (bank tiles `$600–$67F`): transparent above row 20, solid parchment
-  from row 20 down, so gold, time, food/water and the portrait sit on
-  their own background. While a menu is open, or the game has text in
-  the window above row 20, the game's full-screen window comes back
-  with the map on Plane B (same shear). Any layout install (an R2
-  write through `vdp_ctrl_write`) first drops these registers, so no
-  other screen inherits them.
+- **Compact HUD (#255):** the game's window stays over the whole
+  screen with the map on Plane B under it, so the map reaches the
+  bottom edge. Once per tick `td_hud` moves the HUD words the game drew
+  (gold, time, F/W, the food/water bars) into a 3-row box left of the
+  portrait (rows 23–25, columns 22–29) and blanks them where the game
+  put them; the GOLD/TIME labels are dropped (`$` and AM/PM say it).
+  Two low-priority 32×24 sprites (12 solid parchment tiles) are the
+  box's backdrop: above the map, under the HUD's high-priority text.
+  `td_restore` empties the box before the original view redraws the
+  HUD in its own place.
+- **Message strip:** when the window's HUD rows (20–25) hold any other
+  text (a message), the view switches to the parchment strip: window
+  cut to rows 20–27 (`R18=$94`), map on Plane A above it, Plane B a
+  static table at `$C000` (bank tiles `$600–$67F`, transparent above
+  row 20, parchment from row 20). Any layout install (an R2 write
+  through `vdp_ctrl_write`) first drops these registers, so no other
+  screen inherits them.
 - **Water shimmer:** every 16 frames colours 2 and 4 (mid and light
   blue) swap inside the 20 water map tiles, in VRAM, 20 tiles a frame —
   every water cell animates with no name-table writes (the game's own
@@ -136,7 +144,7 @@ after it re-links.
 
 RAM `$FFDC00–$FFDFAF` (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
-the boot RAM clear resets it). Blob 5,808 bytes at `$FD0CC–$FE77B` (padding). The figure cache is 26 images (slots skip the Plane B table).
+the boot RAM clear resets it). Blob 6,358 bytes at `$FD0CC–$FE9A1` (padding). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
 
 ## Limits (test build)
 
