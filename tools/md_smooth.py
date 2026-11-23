@@ -129,6 +129,9 @@ def main():
                                          if abs(r[2]) + abs(r[3]) == k)
                              for k in sorted({abs(r[2]) + abs(r[3])
                                               for r in moves})},
+        # hitch: a one-frame stop with the picture moving on both sides
+        "hitch_frames": sum(1 for p_, c, n_ in zip(rows, rows[1:], rows[2:])
+                            if not (c[2] or c[3]) and (p_[2] or p_[3]) and (n_[2] or n_[3])),
         "redraw_frames": len(redraws),
         "unchanged_frames": len(still),
         "palette_frames": sum(1 for r in rows if r[5]),
