@@ -191,7 +191,8 @@ TD_ICOLR	equ TD_ICOL+2	; ... pending for the resumed row
 TD_PSLOT	equ TD_ICOLR+2	; pool slots in use (rooms lend 128 to figures)
 TD_PSL24	equ TD_PSLOT+2	; TD_PSLOT - 24 (probe window start range)
 TD_PEND		equ TD_PSL24+2	; bank offset past the pool's last slot
-TD_END2		equ TD_PEND+2
+TD_OVN		equ TD_PEND+2	; figures in the last list that need an occlusion overlay
+TD_END2		equ TD_OVN+2
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -1048,6 +1049,7 @@ td_chars:
 	addq.w	#1,TD_STAMP
 	clr.w	TD_NB
 	clr.w	TD_XF
+	clr.w	TD_OVN
 	clr.w	TD_LEADOK
 	lea	CHARS,a3
 	lea	TD_CHR,a4
@@ -1131,6 +1133,12 @@ td_chars:
 	addq.w	#1,d0
 	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
+	tst.w	TD_ISO			; iso: occluded by a cell in front?
+	beq.s	.lchk
+	move.w	d2,d0
+	move.w	d3,d1
+	bsr.w	ti_ovl_need
+	add.w	d0,TD_OVN
 	bra.s	.lchk
 .blob:	; no image yet: a 16x16 blob (yellow = the leader's figure)
 	moveq	#1,d1			; variant 1 (white)
