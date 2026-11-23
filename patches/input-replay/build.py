@@ -209,8 +209,13 @@ def main():
     print(f"replay_pop ${addrs['replay_pop']:05X}, TABLE ${addrs['TABLE']:05X}")
 
     # --- read and verify the base ROM ---
+    # A 2 MB base (#252) is accepted: the blob and the hook both live
+    # in the first megabyte, and the checksums cover the whole file
+    # (checksum.py handles either size). The 1 MB assertions below
+    # (hook-site bytes, 0xFF padding, blob inside the first MB) are
+    # what actually pin the overlay's safety.
     orig = open(args.base, "rb").read()
-    assert len(orig) == 0x100000, f"base ROM size {len(orig)}"
+    assert len(orig) in (0x100000, 0x200000), f"base ROM size {len(orig)}"
     md5 = hashlib.md5(orig).hexdigest()
     base_name = KNOWN_BASES.get(md5, f"unknown ({md5})")
     print(f"base: {args.base} ({base_name})")

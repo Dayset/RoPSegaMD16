@@ -115,3 +115,34 @@ Issues live in `issues/` — one file each. Update both together.
 2. PR #35 (Claude's bit-ops + jump-table dispatch, `gh-12` branch `abfbcd9`) needs a rebase onto current main before it can merge — it would remove the last 102 `dc.w` fallbacks.
 3. #009 carve (`0x000200–0x00FFFF`) is Claude's; the other carve regions (#10–#13) and the symbol database (M11) are open.
 4. Tribute remake (Epic 5, M7) is **on hold** by Dayset's call — do not resume it. Research (Epic 6) — #032–#036 are all junior-agent-ready now. **M3 is complete** (#004–#006, #015–#018, #037 all done; images/maps/audio follow-ups done 2026-11-10).
+
+## Track B — 2 MB ROM container (#252, step 3 of docs/smooth-topdown.md)
+
+Branch: `gh-252-rom2mb` · Worktree: `~/workspace/rop-work/rom2mb` · Base: origin/main `771d950` · Started 2026-11-23
+
+- [x] Setup: worktree created at 771d950; `rop-original.gen` + `tools/vasm` copied in (untracked, never committed).
+- [x] Read docs/smooth-topdown.md, docs/save.md, docs/graphics.md; read tools/build_rom.py, checksum.py, md_run.py, test_harness.sh, playtest_metrics.py, tools/tests/test_build_rom.py.
+- [x] Implement `--size 2m` (+ `--data`) in tools/build_rom.py; `SIZE=` in Makefile `rom` target.
+- [x] Tests in tools/tests/test_build_rom.py (2 MB layout, IPS round-trip, 1 MB unchanged) — 18/18 pass.
+- [x] Verify (part): `make rom SIZE=2m` → 2,097,152 bytes, MD5 `dffe42e4b47727d9e23082b8c6c29cea`; header checksum `0x8BAF` OK, runtime `0x8F43608C` OK (runtime = original `0x8F33608C` + `0x100000`, the header ROM-end change at `0x1A4`, which lies inside the runtime sum range). `make rom` (1 MB) still byte-identical to the original (MD5 `30c18fdbe2183f64702ae9f1a45d63f9`).
+- [x] Verify (part): BlastEm headless boot, 600 frames: event logs byte-identical between the 1 MB original and the 2 MB ROM (98,306 bytes each).
+- [x] Verify (part): second-MB probe — see "BlastEm 2 MB findings" below.
+- [x] Verify (rest): save harness on the 2 MB ROM — ALL 21 result words identical to the #019 1 MB run (save `0x48`, load `0x49`, magic `0x2A`, parity `0x1B`, cksum errcount 3); flushed `save.eeprom` (128 B, magic `0x2A`, parity `0x1B`, tail `11…1100`) matches §8.1. Input-replay trace to the game world: 5301 VBlank hits, 131 DMA hits, 112 s wall; cadence mean 19.86 (the original's #240 number), 23 cells walked (7 overworld + 16 room), leader x 0→117 / y 0→125, final loc 30 in room mode.
+- [x] Docs: step 3 in docs/smooth-topdown.md + save-mapping note in docs/save.md (§13).
+- [x] `make check` passes (exit 0: lint 0 errors, gate PASS, rom-free PASS, ram_writecheck 0 failing, status 446/446 named); `make unit` passes (exit 0); 1 MB builds unchanged (`make rom` MD5 `30c18fdbe2183f64702ae9f1a45d63f9`, byte-identical).
+- [x] Cleanup: system rom.db restored byte-for-byte (md5 `6802ec73f4119d1e4e26b84bc5835b8b`); ineffective user rom.db copy removed; Xvfb :99 stopped. No push/merge/PR (per task).
+
+## BlastEm 2 MB findings (2026-11-23, measured)
+
+- Shipped rom.db entry for `T-50176` maps ROM only to `$FFFFF` (`last FFFFF`) and EEPROM at `$200000`. With it, every address in `$100000–$1FFFFF` reads `0x0801` in the debugger — the opcode word at the breakpoint PC (`0x362: btst.l #3,d1`), i.e. a stale-bus/open-bus read, NOT the second-megabyte contents. Marker ROM used: `ROM2MB-MARKER!!!` + `0xA000+i` words at `$100000`, `TOP-OF-2MB-ROM!!` at `$1FFFF0` (MD5 `c5a8de143cd495ea0d7b098ab30b2b2f`).
+- A one-line rom.db change (ROM `last FFFFF` → `last 1FFFFF`) makes BlastEm read the second MB correctly: `$100000=524F`, `$100010=A010`, `$1FFFF0=544F`, `$1FFFFE=2121`. Proven by temporarily patching the SYSTEM rom.db; a user copy at `~/.config/blastem/rom.db` is NOT consulted (no effect). System rom.db restored byte-for-byte afterwards (md5 `6802ec73f4119d1e4e26b84bc5835b8b`, verified).
+- Consequence: the 2 MB container is correct per the Genesis map (ROM `$000000–$1FFFFF`, EEPROM `$200000`); BlastEm's shipped database describes the 1 MB retail cart and needs that one-line entry update to model a 2 MB cart. Real hardware / flash carts decode by address lines, so this is an emulator-database limit, not a container defect. Document the exact rom.db line in docs/smooth-topdown.md step 3.
+
+Findings so far (2026-11-23):
+
+- Original header: ROM start `0x1A0 = 0x00000000`, ROM end `0x1A4 = 0x000FFFFF`; backup-RAM bytes `0x1B0–0x1BF` are spaces (no SRAM). For 2 MB the only header field that changes is ROM end → `0x001FFFFF`.
+- Runtime self-check sums only `0x000000–0xFD07B` (skips `0x18C`), so the second MB does not affect it; the header checksum sums `0x200` to end of file, so it covers the full 2 MB. `checksum.py` needs no change.
+- EEPROM is bit-banged through `$200000` (DI/DO=D7, CLK=D6); a 2 MB ROM occupies `$000000–$1FFFFF`, so `$200000` sits immediately after the ROM with no overlap — the save mapping is unchanged. A 4 MB ROM would swallow `$200000`, which is why step 3 says 4 MB needs a different board.
+- BlastEm is at `/usr/games/blastem` (not on PATH); its shipped rom.db entry for `T-50176` maps ROM only to `$FFFFF` (`last FFFFF`) and EEPROM at `$200000` (`last 3FFFFF`). Whether BlastEm matches that entry by header serial (→ second MB unmapped) or falls back to a size-based mapping must be settled empirically with a second-MB probe + the save harness on the 2 MB ROM.
+- stable-retro is NOT installed here (no `retro` module); md_run.py cannot run as-is. BlastEm is the verification vehicle.
+- capstone is missing in this python (`make check` needs it); will install per tools/setup.sh (`capstone==5.0.7`) if needed for the gate.
