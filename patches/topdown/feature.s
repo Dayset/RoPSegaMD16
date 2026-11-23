@@ -27,8 +27,8 @@
 ; Hooks (hooks.csv):
 ;   $01B958  jsr clear_decode_buffer        -> jsr td_tick (+ bra past
 ;            the map_chunk_pos call, bytes hook at $01B95E)
-;   $01B9D0  move.w #$33C0,-(a7) (room DMA) -> bra $01B9F2 (DMA skipped,
-;            $FF0098 still cleared by the instruction before)
+;   $01B9E8  jsr dma_upload (room DMA) -> jsr td_dma (original view only)
+;   $001352  joypad_queue_pop body -> jsr td_pad (A+B+C = switch views)
 ;   $01B97E  jsr menu_format -> jsr td_menufmt (menu_format waits for
 ;            a VBlank and rewrites the HUD sprites; update right after)
 ;   $00D2BE  tst.w $FF00AC (main loop head) -> jsr td_poll_head
@@ -52,6 +52,8 @@ TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 TD_SLOT0	equ 68		; first sprite slot for blobs (game uses <= 67)
 TD_NSLOT	equ 12		; blob sprites max
 TD_VC		equ 84		; screen line the leader is centred on
+TD_NFC		equ 34		; figure images cached in VRAM (4x4 tiles each)
+TD_FCB		equ 273		; first cache tile, relative to TD_BASE
 
 ; ---- game addresses --------------------------------------------------
 FRAME		equ $FF0012	; low word of the VBlank counter
@@ -96,10 +98,18 @@ TD_LEADOK	equ TD+$26	; leader position valid
 TD_LEADX	equ TD+$28	; leader world pixel
 TD_LEADY	equ TD+$2A
 TD_GHEAD	equ TD+$2C	; game's first sprite (sprite 0's own link)
-TD_LIST		equ TD+$40	; TD_NSLOT x (px.w, py.w, var.w) = 72 B
-TD_CHR		equ TD+$90	; 56 x 10: lx, ly (target cell), fpx, fpy (from px), t0
-TD_ROW		equ TD+$2D0	; 36-word window row buffer
-TD_END		equ TD+$318
+TD_CANX		equ TD+$2E	; may extract one figure image this update
+TD_STAMP	equ TD+$30	; figure-cache LRU clock
+TD_OFF		equ TD+$32	; 1 = the original isometric view (A+B+C toggles)
+TD_REQ		equ TD+$34	; view switch requested by td_pad
+TD_PADC		equ TD+$36	; A+B+C held (switch latched until release)
+TD_ANIMFR	equ TD+$38	; frame the last water toggle started
+TD_ANIMI	equ TD+$3A	; water quadrant tiles still to toggle
+TD_LIST		equ TD+$40	; TD_NSLOT x (px.w, py.w, tile.w, kind.w) = 96 B
+TD_CHR		equ TD+$A0	; 56 x 10: lx, ly (target cell), fpx, fpy (from px), t0
+TD_ROW		equ TD+$2E0	; 36-word window row buffer
+TD_FC		equ TD+$328	; TD_NFC x (key.w, stamp.w): figure image cache
+TD_END		equ TD+$328+4*TD_NFC
 
 NOPOS		equ $8000
 
@@ -110,7 +120,27 @@ NOPOS		equ $8000
 ;=======================================================================
 td_tick:
 	movem.l	d0-d7/a0-a6,-(a7)
-	moveq	#TD_T2,d0
+	cmpi.w	#$7D7D,TD_MAGIC
+	bne.s	.on
+	tst.w	TD_REQ			; A+B+C: switch views
+	beq.s	.noreq
+	clr.w	TD_REQ
+	eori.w	#1,TD_OFF
+	beq.s	.toon
+	bsr.w	td_restore
+	bra.s	.noreq
+.toon:	clr.w	TD_VALID		; reinstall from scratch
+	clr.w	TD_TILES
+.noreq:	tst.w	TD_OFF
+	beq.s	.on
+	jsr	($011DE8).l		; original view: the displaced code
+	move.w	$FF0E90,-(a7)		; (clear the decode buffer, render
+	move.w	$FF0E8E,-(a7)		; the 10x10 window)
+	jsr	($01BA4E).l
+	addq.w	#4,a7
+	movem.l	(a7)+,d0-d7/a0-a6
+	rts
+.on:	moveq	#TD_T2,d0
 	cmpi.w	#1,MODE
 	bne.s	.per
 	moveq	#TD_T1,d0
@@ -255,6 +285,8 @@ td_vdw:
 td_filt:				; d0 = word -> d0 = word to write
 	cmpi.w	#$7D7D,TD_MAGIC
 	bne.s	.keep
+	tst.w	TD_OFF
+	bne.s	.keep
 	tst.w	TD_TILES
 	beq.s	.keep
 	cmpi.w	#$2400,SPRBASE
@@ -272,9 +304,83 @@ td_filt:				; d0 = word -> d0 = word to write
 .keep:	rts
 
 ;=======================================================================
+; td_dma — redraw_check's room DMA ($01B9E8, jsr dma_upload): only in
+; the original view.
+;=======================================================================
+td_dma:
+	tst.w	TD_OFF
+	beq.s	.skip
+	jmp	($00DA04).l		; dma_upload, returns to redraw_check
+.skip:	rts
+
+;=======================================================================
+; td_pad — joypad_queue_pop ($001352, after its `moveq #0,d0`): the
+; whole pop, then A+B+C pressed together requests a view switch and is
+; hidden from the game. Returns to the pop's caller.
+;=======================================================================
+td_pad:
+	addq.w	#4,a7			; we return to the pop's caller
+	moveq	#0,d1
+	move.w	#$2700,sr
+	move.b	$FF001B,d1
+	lea	$FF001C,a0
+	cmp.b	$FF001A,d1
+	beq.s	.empty
+	move.b	(a0,d1.w),d0
+	move.b	d0,$FF002C
+	addq.b	#1,d1
+	andi.b	#$F,d1
+	move.b	d1,$FF001B
+	bra.s	.got
+.empty:	move.b	$FF002C,d0
+.got:	move.w	#$2000,sr
+	move.b	d0,d1
+	andi.b	#$70,d1
+	cmpi.b	#$70,d1
+	bne.s	.pass
+	tst.b	TD_PADC
+	bne.s	.mask
+	st	TD_PADC
+	move.w	#1,TD_REQ
+.mask:	andi.b	#$8F,d0			; strip A, B, C
+	rts
+.pass:	clr.b	TD_PADC
+	rts
+
+;=======================================================================
+; td_restore — back to the original view: unhook our sprites, zero the
+; scroll, and let the game redraw its scene (window identity map +
+; parchment, world_map_redraw). Its next ticks render and upload the
+; room bitmap as before.
+;=======================================================================
+td_restore:
+	clr.w	TD_VALID
+	clr.w	TD_TILES
+	cmpi.w	#$2400,SPRBASE
+	bne.s	.scr
+	move.w	SPRBASE,d0		; sprite 0 -> the game's first sprite
+	addq.w	#2,d0
+	bsr.w	td_vread
+	andi.w	#$FF80,d0
+	or.w	TD_GHEAD,d0
+	move.w	d0,d1
+	move.w	SPRBASE,d0
+	addq.w	#2,d0
+	bsr.w	td_vwrite
+	move.w	d1,VDP_DATA
+.scr:	clr.l	-(a7)			; vdp_set_scroll(0,0,0,0)
+	clr.l	-(a7)
+	jsr	($00DC16).l
+	addq.w	#8,a7
+	jsr	($0162FE).l		; world_map_redraw
+	rts
+
+;=======================================================================
 ; td_sync — (re)install the view when the scene changed under us.
 ;=======================================================================
 td_sync:
+	tst.w	TD_OFF
+	bne.w	.out
 	move.w	MODE,d0
 	cmpi.w	#1,d0
 	beq.s	.mok
@@ -334,6 +440,7 @@ td_sync:
 	tst.w	d0
 	beq.s	.out
 .redraw:
+	move.w	#1,TD_CANX
 	bsr.w	td_chars
 	bsr.w	td_camera
 	move.w	d0,TD_CAMX
@@ -388,6 +495,7 @@ td_frame_go:
 	bsr.w	td_sprites
 	rts
 .world:
+	move.w	d1,TD_CANX		; image extraction: game calls allowed?
 	move.w	d1,-(a7)
 	bsr.w	td_chars
 	bsr.w	td_camera
@@ -415,6 +523,7 @@ td_frame_go:
 	move.w	d1,TD_CAMY
 	bsr.w	td_scroll		; vblank-critical first
 	bsr.w	td_sprites
+	bsr.w	td_anim
 	tst.w	d2
 	beq.s	.out
 	bsr.w	td_stream
@@ -459,6 +568,7 @@ td_chr_reset:
 ;=======================================================================
 td_chars:
 	movem.l	d2-d7/a2-a4,-(a7)
+	addq.w	#1,TD_STAMP
 	clr.w	TD_NB
 	clr.w	TD_LEADOK
 	lea	CHARS,a3
@@ -525,8 +635,19 @@ td_chars:
 .start:	move.w	d2,(a4)
 	move.w	d3,2(a4)
 	move.w	FRAME,8(a4)
-.pos:	bsr.w	td_slidepos
-	; leader figure: char == leader, or a type-4 redirect to the leader
+.pos:	bsr.w	td_slidepos		; d5/d6 = position, d4 = elapsed
+	bsr.w	td_figure		; d0 = figure tile word, or -1
+	tst.w	d0
+	bmi.s	.blob
+	cmpi.w	#TD_NSLOT,TD_NB
+	bcc.w	.lchk
+	move.w	d5,(a2)+
+	move.w	d6,(a2)+
+	move.w	d0,(a2)+
+	move.w	#1,(a2)+		; kind 1: 32x32 figure
+	addq.w	#1,TD_NB
+	bra.s	.lchk
+.blob:	; no image yet: a 16x16 blob (yellow = the leader's figure)
 	moveq	#1,d1			; variant 1 (white)
 	cmp.w	LEADER,d7
 	beq.s	.lead
@@ -539,16 +660,31 @@ td_chars:
 	cmp.w	LEADER,d0
 	bne.s	.add
 .lead:	moveq	#0,d1			; variant 0 (yellow)
-	move.w	d5,TD_LEADX
-	move.w	d6,TD_LEADY
-	move.w	#1,TD_LEADOK
 .add:
 	cmpi.w	#TD_NSLOT,TD_NB
-	bcc.s	.next
+	bcc.s	.lchk
 	move.w	d5,(a2)+
 	move.w	d6,(a2)+
+	lsl.w	#2,d1			; tile: base+257+variant*4, pal 0
+	add.w	TD_BASE,d1
+	add.w	#257,d1
 	move.w	d1,(a2)+
+	clr.w	(a2)+			; kind 0: 16x16 blob
 	addq.w	#1,TD_NB
+.lchk:	; the leader's figure: char == leader, or a type-4 redirect to it
+	cmp.w	LEADER,d7
+	beq.s	.isl
+	move.w	(a3),d0
+	andi.w	#$F,d0
+	cmpi.w	#4,d0
+	bne.s	.next
+	moveq	#0,d0
+	move.b	$27(a3),d0
+	cmp.w	LEADER,d0
+	bne.s	.next
+.isl:	move.w	d5,TD_LEADX
+	move.w	d6,TD_LEADY
+	move.w	#1,TD_LEADOK
 	bra.s	.next
 .gone:
 	move.w	#NOPOS,(a4)
@@ -559,6 +695,169 @@ td_chars:
 	cmpi.w	#56,d7
 	bcs.w	.loop
 	movem.l	(a7)+,d2-d7/a2-a4
+	rts
+
+;=======================================================================
+; td_figure — the char's figure image as a sprite tile word (d0), or -1.
+; a3 = char, a4 = slide state, d4 = elapsed (from td_slidepos).
+; The image is the one the game itself would draw: record template
+; (+2 + +4) at the animation phase geom+$A, giving an $E358 stream
+; (record +0 + group offset) and a mirror param. While the figure slides
+; between cells, its facing's 4 walk frames (offsets 0,6,1,7 or
+; 8,14,9,15 — the poses of walk templates 36-39) are stepped through,
+; one per quarter of the slide.
+;=======================================================================
+td_figure:
+	movem.l	d1-d7/a0-a2,-(a7)
+	move.w	4(a3),d0		; record
+	mulu.w	#12,d0
+	lea	RECS,a1
+	adda.w	d0,a1
+	move.w	2(a1),d0		; template
+	add.w	4(a1),d0
+	cmpi.w	#56,d0
+	bcc.s	.none
+	mulu.w	#36,d0
+	movea.l	GRIDPTR,a0
+	move.w	$A(a0),d1		; phase 0..3
+	andi.w	#3,d1
+	lsl.w	#3,d1
+	add.w	d1,d0
+	lea	($0197B0).l,a0
+	adda.w	d0,a0
+	move.w	(a0),d2			; image offset
+	move.w	2(a0),d3		; mirror param
+	cmp.w	TD_PERIOD,d4		; sliding?
+	bcc.s	.key
+	move.w	(a4),d0
+	lsl.w	#4,d0
+	cmp.w	4(a4),d0
+	bne.s	.walk
+	move.w	2(a4),d0
+	lsl.w	#4,d0
+	cmp.w	6(a4),d0
+	beq.s	.key
+.walk:	move.w	d2,d0			; facing poses only (0,1,6,7 / 8,9,14,15)
+	andi.w	#6,d0
+	beq.s	.w1
+	cmpi.w	#6,d0
+	bne.s	.key
+.w1:	moveq	#0,d0			; walk frame = elapsed * 4 / T
+	move.w	d4,d0
+	lsl.w	#2,d0
+	divu.w	TD_PERIOD,d0
+	andi.w	#3,d0
+	andi.w	#8,d2
+	lea	td_walk(pc),a0
+	add.b	(a0,d0.w),d2
+.key:	add.w	(a1),d2			; stream = record +0 + offset
+	tst.w	d3
+	beq.s	.k1
+	ori.w	#$8000,d2		; key bit 15 = mirror
+.k1:	move.w	d2,d0
+	bsr.s	td_img
+	bra.s	.out
+.none:	moveq	#-1,d0
+.out:	movem.l	(a7)+,d1-d7/a0-a2
+	rts
+
+td_walk:
+	dc.b	0,6,1,7
+
+;=======================================================================
+; td_img — figure image cache. d0 = key (stream | mirror<<15) -> d0 =
+; tile word of its 4x4-tile copy in VRAM, or -1 (not cached and no
+; extraction allowed now). One extraction per update at most
+; (TD_CANX); the least recently used slot is replaced.
+;=======================================================================
+td_img:
+	lea	TD_FC,a0
+	moveq	#TD_NFC-1,d1
+	moveq	#0,d2			; slot
+.f:	cmp.w	(a0),d0
+	beq.s	.hit
+	addq.l	#4,a0
+	addq.w	#1,d2
+	dbra	d1,.f
+	tst.w	TD_CANX			; miss
+	beq.s	.no
+	clr.w	TD_CANX
+	lea	TD_FC,a0		; least recently used slot
+	moveq	#TD_NFC-1,d1
+	moveq	#0,d3			; candidate slot
+	moveq	#-1,d2			; best stamp so far (unsigned max)
+	moveq	#0,d4			; best slot
+.l:	cmp.w	2(a0),d2
+	bls.s	.l1
+	move.w	2(a0),d2
+	move.w	d3,d4
+.l1:	addq.l	#4,a0
+	addq.w	#1,d3
+	dbra	d1,.l
+	move.w	d4,d2
+	bsr.w	td_extract		; d0 = key, d2 = slot
+	move.w	d2,d1
+	lsl.w	#2,d1
+	lea	TD_FC,a0
+	adda.w	d1,a0
+	move.w	d0,(a0)
+.hit:	move.w	TD_STAMP,2(a0)
+	move.w	d2,d0			; tile word: base + FCB + slot*16
+	lsl.w	#4,d0
+	add.w	TD_BASE,d0
+	add.w	#TD_FCB,d0
+	rts
+.no:	moveq	#-1,d0
+	rts
+
+;=======================================================================
+; td_extract — draw one $E358 image alone into the decode buffer (at
+; x=192, y=16: buffer tiles rows 2-5, cols 16-19, where every figure
+; image fits) and copy those 16 tiles, column by column (sprite tile
+; order), to cache slot d2. d0 = key. Preserves d0, d2.
+;=======================================================================
+td_extract:
+	movem.l	d0-d7/a0-a6,-(a7)
+	move.w	d0,d7
+	moveq	#5-1,d1			; clear rows 2..6, cols 16..19
+	lea	DECBUF+(2*36+16)*32,a0
+.cr:	moveq	#32-1,d0
+	movea.l	a0,a1
+.cl:	clr.l	(a1)+
+	dbra	d0,.cl
+	lea	36*32(a0),a0
+	dbra	d1,.cr
+	moveq	#0,d0			; variant (mirror)
+	tst.w	d7
+	bpl.s	.v
+	moveq	#1,d0
+.v:	move.w	d0,-(a7)
+	move.w	#16,-(a7)		; y
+	move.w	#64+128,-(a7)		; x (buffer pixel 128 = tile col 16)
+	move.w	d7,d0
+	andi.w	#$7FFF,d0
+	move.w	d0,-(a7)		; stream
+	jsr	($00E358).l
+	addq.w	#8,a7
+	move.w	10(a7),d0		; saved d2 = slot -> VRAM address
+	lsl.w	#4,d0
+	add.w	TD_BASE,d0
+	add.w	#TD_FCB,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	DECBUF+(2*36+16)*32,a0
+	moveq	#4-1,d1			; columns
+.cc:	movea.l	a0,a1
+	moveq	#4-1,d2			; rows
+.cr2:	moveq	#8-1,d3
+	movea.l	a1,a2
+.cw:	move.l	(a2)+,VDP_DATA
+	dbra	d3,.cw
+	lea	36*32(a1),a1
+	dbra	d2,.cr2
+	lea	32(a0),a0
+	dbra	d1,.cc
+	movem.l	(a7)+,d0-d7/a0-a6
 	rts
 
 ;=======================================================================
@@ -647,39 +946,66 @@ td_camera:
 	rts
 
 ;=======================================================================
-; td_sprites — write the blob list to sprite slots TD_SLOT0.. and link
-; them in at the head of the game's chain (sprite 0 is the game's dummy
-; head; its link is redirected to our first slot and our last slot
-; links on to the game's first sprite). menu_format rewrites sprite 0
+; td_sprites — write the list (figures 32x32, blobs 16x16) to sprite
+; slots TD_SLOT0.., nearest first (larger y = in front), and link them
+; in at the head of the game's chain: sprite 0 (the game's dummy head)
+; -> ours -> the game's first sprite. menu_format rewrites sprite 0
 ; every main-loop pass; td_menufmt re-links right after it.
 ;=======================================================================
 td_sprites:
-	movem.l	d2-d7/a2,-(a7)
-	; game's first sprite: sprite 0's link, unless it already points at us
-	move.w	SPRBASE,d0
-	addq.w	#2,d0
+	movem.l	d2-d7/a2-a3,-(a7)
+	move.w	SPRBASE,d0		; sprite 0's link: the game's first
+	addq.w	#2,d0			; sprite, unless it points at us
 	bsr.w	td_vread
 	move.w	d0,d5			; sprite 0 word 1
 	andi.w	#$7F,d0
 	cmpi.w	#TD_SLOT0,d0
 	bcc.s	.ours
 	move.w	d0,TD_GHEAD
-.ours:
-	lea	TD_LIST,a2
+.ours:	; insertion sort, y descending (8-byte entries)
 	move.w	TD_NB,d7
+	moveq	#1,d6
+.so:	cmp.w	d7,d6
+	bcc.s	.sorted
+	move.w	d6,d4
+.si:	move.w	d4,d0
+	lsl.w	#3,d0
+	lea	TD_LIST,a2
+	adda.w	d0,a2			; entry i
+	move.w	2(a2),d0
+	cmp.w	-8+2(a2),d0
+	ble.s	.sn
+	move.l	(a2),d0			; swap with entry i-1
+	move.l	-8(a2),(a2)
+	move.l	d0,-8(a2)
+	move.l	4(a2),d0
+	move.l	-8+4(a2),4(a2)
+	move.l	d0,-8+4(a2)
+	subq.w	#1,d4
+	bne.s	.si
+.sn:	addq.w	#1,d6
+	bra.s	.so
+.sorted:
+	lea	TD_LIST,a2
 	moveq	#0,d6			; sprites written
 	bra.w	.cond
-.blob:
-	move.w	(a2)+,d2		; px
+.spr:	move.w	(a2)+,d2		; px
 	move.w	(a2)+,d3		; py
-	move.w	(a2)+,d4		; variant
+	move.w	(a2)+,d4		; tile word
+	move.w	(a2)+,d1		; kind
 	sub.w	TD_CAMX,d2
 	sub.w	TD_CAMY,d3
-	cmpi.w	#-16,d2
+	move.w	#$0500,a3		; 16x16
+	tst.w	d1
+	beq.s	.k0
+	subq.w	#8,d2			; 32x32 figure, feet on the cell
+	sub.w	#16,d3
+	move.w	#$0F00,a3
+.k0:	cmpi.w	#-32,d2
 	ble.s	.cond
 	cmpi.w	#320,d2
 	bge.s	.cond
-	cmpi.w	#-16,d3
+	cmpi.w	#-32,d3
 	ble.s	.cond
 	cmpi.w	#224,d3
 	bge.s	.cond
@@ -690,39 +1016,36 @@ td_sprites:
 	bsr.w	td_vwrite
 	add.w	#128,d3
 	move.w	d3,VDP_DATA		; Y
-	move.w	d6,d0			; link -> next slot (last fixed below)
+	move.w	d6,d0			; size | link -> next slot (last fixed below)
 	add.w	#TD_SLOT0+1,d0
-	ori.w	#$0500,d0		; 2x2 cells
+	add.w	a3,d0
 	move.w	d0,VDP_DATA
-	move.w	TD_BASE,d0		; tile: base+257+variant*4, pal 0
-	add.w	#257,d0
-	lsl.w	#2,d4
-	add.w	d4,d0
-	move.w	d0,VDP_DATA
+	move.w	d4,VDP_DATA		; tile, pal 0
 	add.w	#128,d2
 	move.w	d2,VDP_DATA		; X
+	movea.w	a3,a0			; size of the last sprite written
 	addq.w	#1,d6
-.cond:	dbra	d7,.blob
+.cond:	dbra	d7,.spr
 	move.w	TD_GHEAD,d2
 	tst.w	d6
 	beq.s	.none
-	moveq	#TD_SLOT0-1,d0		; last blob -> game's first sprite
+	moveq	#TD_SLOT0-1,d0		; last sprite -> game's first sprite
 	add.w	d6,d0
 	lsl.w	#3,d0
 	add.w	SPRBASE,d0
 	addq.w	#2,d0
 	bsr.w	td_vwrite
-	move.w	d2,d0
-	ori.w	#$0500,d0
+	move.w	a0,d0			; its size
+	or.w	d2,d0
 	move.w	d0,VDP_DATA
-	moveq	#TD_SLOT0,d2		; sprite 0 -> first blob
+	moveq	#TD_SLOT0,d2		; sprite 0 -> first of ours
 .none:	andi.w	#$FF80,d5
 	or.w	d2,d5
 	move.w	SPRBASE,d0
 	addq.w	#2,d0
 	bsr.w	td_vwrite
 	move.w	d5,VDP_DATA
-	movem.l	(a7)+,d2-d7/a2
+	movem.l	(a7)+,d2-d7/a2-a3
 	rts
 
 ;=======================================================================
@@ -746,6 +1069,64 @@ td_vcmd:
 	lsl.l	#2,d0			; bits 14-15 -> 16-17
 	lsr.w	#2,d0			; low word back to addr & $3FFF
 	swap	d0
+	rts
+
+;=======================================================================
+; td_anim — water shimmer: every 16 frames swap colours 2 and 4 (mid and
+; light blue) inside the water map tiles, in VRAM, 20 quadrant tiles per
+; frame. Every cell showing water animates; no name-table writes.
+;=======================================================================
+TD_NWT		equ 20
+td_anim:
+	movem.l	d2-d5/a2-a3,-(a7)
+	move.w	TD_ANIMI,d2
+	bne.s	.run
+	move.w	FRAME,d0
+	sub.w	TD_ANIMFR,d0
+	cmpi.w	#16,d0
+	bcs.w	.out
+	move.w	FRAME,TD_ANIMFR
+	moveq	#TD_NWT*4,d2
+.run:	lea	td_swap(pc),a3
+	moveq	#20-1,d4
+.t:	moveq	#TD_NWT*4,d3
+	sub.w	d2,d3			; quadrant index
+	move.w	d3,d0
+	lsr.w	#2,d0
+	lea	td_wtl(pc),a0
+	moveq	#0,d1
+	move.b	(a0,d0.w),d1
+	lsl.w	#2,d1
+	andi.w	#3,d3
+	add.w	d3,d1
+	add.w	TD_BASE,d1
+	lsl.w	#5,d1
+	move.w	d1,d3			; tile's VRAM address
+	move.w	d1,d0
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	lea	TD_ROW,a2
+	moveq	#16-1,d1
+.rd:	move.w	VDP_DATA,d0
+	moveq	#0,d5
+	move.b	d0,d5
+	move.b	(a3,d5.w),d0
+	ror.w	#8,d0
+	move.b	d0,d5
+	move.b	(a3,d5.w),d0
+	ror.w	#8,d0
+	move.w	d0,(a2)+
+	dbra	d1,.rd
+	move.w	d3,d0
+	bsr.w	td_vwrite
+	lea	TD_ROW,a2
+	moveq	#8-1,d1
+.wr:	move.l	(a2)+,VDP_DATA
+	dbra	d1,.wr
+	subq.w	#1,d2
+	dbeq	d4,.t
+.out:	move.w	d2,TD_ANIMI
+	movem.l	(a7)+,d2-d5/a2-a3
 	rts
 
 ;=======================================================================
@@ -1080,12 +1461,36 @@ td_tiles_load:
 	lea	DECBUF+$800+128*32+6,a0
 	move.w	(a0),TD_MAPSENT
 	move.w	#1,TD_TILES
+	lea	TD_FC,a0		; figure cache empty (key $FFFF)
+	moveq	#TD_NFC-1,d0
+.fc:	move.l	#$FFFF0000,(a0)+
+	dbra	d0,.fc
 	movem.l	(a7)+,d2-d7/a2-a4
 	rts
 
 ;=======================================================================
 ; Data (generated: pixel-double table, blank + blob tiles).
 ;=======================================================================
+td_wtl:	; water map tiles (contain colours 1/2)
+	dc.b 9,10,11,12,13,14,15,17,18,19,21,22,23,34,37,38,39,45,46,61
+	even
+td_swap:	; byte with nibbles 2<->4 swapped
+	dc.b $00,$01,$04,$03,$02,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F
+	dc.b $10,$11,$14,$13,$12,$15,$16,$17,$18,$19,$1A,$1B,$1C,$1D,$1E,$1F
+	dc.b $40,$41,$44,$43,$42,$45,$46,$47,$48,$49,$4A,$4B,$4C,$4D,$4E,$4F
+	dc.b $30,$31,$34,$33,$32,$35,$36,$37,$38,$39,$3A,$3B,$3C,$3D,$3E,$3F
+	dc.b $20,$21,$24,$23,$22,$25,$26,$27,$28,$29,$2A,$2B,$2C,$2D,$2E,$2F
+	dc.b $50,$51,$54,$53,$52,$55,$56,$57,$58,$59,$5A,$5B,$5C,$5D,$5E,$5F
+	dc.b $60,$61,$64,$63,$62,$65,$66,$67,$68,$69,$6A,$6B,$6C,$6D,$6E,$6F
+	dc.b $70,$71,$74,$73,$72,$75,$76,$77,$78,$79,$7A,$7B,$7C,$7D,$7E,$7F
+	dc.b $80,$81,$84,$83,$82,$85,$86,$87,$88,$89,$8A,$8B,$8C,$8D,$8E,$8F
+	dc.b $90,$91,$94,$93,$92,$95,$96,$97,$98,$99,$9A,$9B,$9C,$9D,$9E,$9F
+	dc.b $A0,$A1,$A4,$A3,$A2,$A5,$A6,$A7,$A8,$A9,$AA,$AB,$AC,$AD,$AE,$AF
+	dc.b $B0,$B1,$B4,$B3,$B2,$B5,$B6,$B7,$B8,$B9,$BA,$BB,$BC,$BD,$BE,$BF
+	dc.b $C0,$C1,$C4,$C3,$C2,$C5,$C6,$C7,$C8,$C9,$CA,$CB,$CC,$CD,$CE,$CF
+	dc.b $D0,$D1,$D4,$D3,$D2,$D5,$D6,$D7,$D8,$D9,$DA,$DB,$DC,$DD,$DE,$DF
+	dc.b $E0,$E1,$E4,$E3,$E2,$E5,$E6,$E7,$E8,$E9,$EA,$EB,$EC,$ED,$EE,$EF
+	dc.b $F0,$F1,$F4,$F3,$F2,$F5,$F6,$F7,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF
 	even
 td_dbl:	; byte (p0<<4|p1) -> word (p0 p0 p1 p1)
 	dc.w $0000,$0011,$0022,$0033,$0044,$0055,$0066,$0077

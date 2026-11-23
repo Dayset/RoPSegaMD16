@@ -1,7 +1,6 @@
 addr,len,kind,target
 0x01B958,6,jsr,td_tick
 0x01B95E,6,bytes,60104E714E71
-0x01B9D0,4,bytes,60204E71
 0x0227FC,6,jsr,td_poll
 0x01B97E,6,jsr,td_menufmt
 0x00D2BE,6,jsr,td_poll_head
@@ -9,3 +8,5 @@ addr,len,kind,target
 0x013876,6,jsr,td_wv
 0x0118A6,6,jsr,td_vdw
 0x01191A,6,jsr,td_vdw
+0x01B9E8,6,jsr,td_dma
+0x001352,6,jsr,td_pad
