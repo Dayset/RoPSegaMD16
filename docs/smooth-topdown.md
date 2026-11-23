@@ -114,7 +114,7 @@ Until step 2 exists, topdown is the playable smooth build.
   nothing moved, so they are jerky without any new decoding.
 - **Decode once, then move sprites (like a battle screen)?** Yes —
   that is the top-down view, and the plan for a smooth isometric view
-  (card in #251 follow-up): render the terrain only when the camera
+  (card #252): render the terrain only when the camera
   crosses a cell, keep it on a scrollable plane, glide the camera per
   frame, draw figures as cached sprites. Agreed direction (Dayset,
   2026-11-23): simplified terrain first, full detail filled in when
