@@ -122,5 +122,6 @@ the boot RAM clear resets it). Blob ~4 KB in the `$FD0CC` padding.
   faster than the original. TD_T1/TD_T2 are the knobs.
 - Sprite slots 68–79 assume the game's chain stays below 68 (true on
   every tested screen).
-- Tested in Genesis Plus GX (stable-retro). Not yet on BlastEm or
-  hardware.
+- Measured in Genesis Plus GX (stable-retro); smoke-tested in BlastEm
+  0.6.3 (input-replay overlay moved to `$FF000`, overworld → room →
+  walking, 4,700 frames). Not yet on hardware.
