@@ -1707,6 +1707,9 @@ td_vcmd:
 TD_NWT		equ 20
 TD_WPER		equ 32		; frames per shimmer step
 TD_WBUF		equ $FF4BC0	; 2,560 B: unused rows 10-12 of the room bitmap
+TD_SWAPT	equ DECBUF+13*1152	; 256 B shimmer swap table (built at load;
+TD_DBLT		equ TD_SWAPT+256	; free rows of the decode buffer in
+					; top-down) + 512 B pixel-double table
 td_anim:
 	movem.l	d2-d5/a2-a3,-(a7)
 	move.w	TD_ANIMI,d2
@@ -1718,7 +1721,7 @@ td_anim:
 	bcs.w	.out
 	move.w	FRAME,TD_ANIMFR
 	moveq	#TD_NWT*4,d2
-.run:	lea	td_swap(pc),a3
+.run:	lea	TD_SWAPT,a3
 	moveq	#20-1,d4
 .t:	moveq	#TD_NWT*4,d3
 	sub.w	d2,d3			; quadrant index
@@ -2250,9 +2253,33 @@ td_tiles_load:
 	move.w	#10,-(a7)		; map tileset record
 	jsr	(MAPDECODE).l
 	addq.w	#2,a7
+	lea	TD_SWAPT,a0		; build the swap and pixel-double
+	lea	TD_DBLT,a1		; tables: byte b = (hi, lo) ->
+	lea	td_nsw(pc),a2		; nsw[hi] nsw[lo], word hi hi lo lo
+	moveq	#0,d0
+.tb:	move.w	d0,d1
+	lsr.w	#4,d1
+	move.b	(a2,d1.w),d2
+	lsl.b	#4,d2
+	move.w	d0,d3
+	andi.w	#15,d3
+	or.b	(a2,d3.w),d2
+	move.b	d2,(a0)+
+	move.w	d1,d2			; hi * $1100 + lo * $0011
+	lsl.w	#4,d2
+	or.w	d1,d2
+	lsl.w	#8,d2
+	move.w	d3,d1
+	lsl.w	#4,d1
+	or.w	d3,d1
+	or.w	d1,d2
+	move.w	d2,(a1)+
+	addq.w	#1,d0
+	cmpi.w	#256,d0
+	bcs.s	.tb
 	lea	DECBUF,a3		; 64 source tiles
 	lea	DECBUF+$800,a4		; 256 scaled tiles
-	lea	td_dbl(pc),a2
+	lea	TD_DBLT,a2
 	moveq	#64-1,d7
 .tile:	moveq	#0,d6			; quadrant 0..3 (TL,TR,BL,BR)
 .quad:	move.w	d6,d0			; source bytes: rows (q>>1)*4, cols (q&1)*2
@@ -3274,57 +3301,9 @@ ti_etil:	; edge tiles, 1 bit per pixel (1 = parchment), 8 rows each
 td_wtl:	; water map tiles (contain colours 1/2)
 	dc.b 9,10,11,12,13,14,15,17,18,19,21,22,23,34,37,38,39,45,46,61
 	even
-td_swap:	; byte with nibbles 2<->4 swapped
-	dc.b $00,$01,$04,$03,$02,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F
-	dc.b $10,$11,$14,$13,$12,$15,$16,$17,$18,$19,$1A,$1B,$1C,$1D,$1E,$1F
-	dc.b $40,$41,$44,$43,$42,$45,$46,$47,$48,$49,$4A,$4B,$4C,$4D,$4E,$4F
-	dc.b $30,$31,$34,$33,$32,$35,$36,$37,$38,$39,$3A,$3B,$3C,$3D,$3E,$3F
-	dc.b $20,$21,$24,$23,$22,$25,$26,$27,$28,$29,$2A,$2B,$2C,$2D,$2E,$2F
-	dc.b $50,$51,$54,$53,$52,$55,$56,$57,$58,$59,$5A,$5B,$5C,$5D,$5E,$5F
-	dc.b $60,$61,$64,$63,$62,$65,$66,$67,$68,$69,$6A,$6B,$6C,$6D,$6E,$6F
-	dc.b $70,$71,$74,$73,$72,$75,$76,$77,$78,$79,$7A,$7B,$7C,$7D,$7E,$7F
-	dc.b $80,$81,$84,$83,$82,$85,$86,$87,$88,$89,$8A,$8B,$8C,$8D,$8E,$8F
-	dc.b $90,$91,$94,$93,$92,$95,$96,$97,$98,$99,$9A,$9B,$9C,$9D,$9E,$9F
-	dc.b $A0,$A1,$A4,$A3,$A2,$A5,$A6,$A7,$A8,$A9,$AA,$AB,$AC,$AD,$AE,$AF
-	dc.b $B0,$B1,$B4,$B3,$B2,$B5,$B6,$B7,$B8,$B9,$BA,$BB,$BC,$BD,$BE,$BF
-	dc.b $C0,$C1,$C4,$C3,$C2,$C5,$C6,$C7,$C8,$C9,$CA,$CB,$CC,$CD,$CE,$CF
-	dc.b $D0,$D1,$D4,$D3,$D2,$D5,$D6,$D7,$D8,$D9,$DA,$DB,$DC,$DD,$DE,$DF
-	dc.b $E0,$E1,$E4,$E3,$E2,$E5,$E6,$E7,$E8,$E9,$EA,$EB,$EC,$ED,$EE,$EF
-	dc.b $F0,$F1,$F4,$F3,$F2,$F5,$F6,$F7,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF
-	even
-td_dbl:	; byte (p0<<4|p1) -> word (p0 p0 p1 p1)
-	dc.w $0000,$0011,$0022,$0033,$0044,$0055,$0066,$0077
-	dc.w $0088,$0099,$00AA,$00BB,$00CC,$00DD,$00EE,$00FF
-	dc.w $1100,$1111,$1122,$1133,$1144,$1155,$1166,$1177
-	dc.w $1188,$1199,$11AA,$11BB,$11CC,$11DD,$11EE,$11FF
-	dc.w $2200,$2211,$2222,$2233,$2244,$2255,$2266,$2277
-	dc.w $2288,$2299,$22AA,$22BB,$22CC,$22DD,$22EE,$22FF
-	dc.w $3300,$3311,$3322,$3333,$3344,$3355,$3366,$3377
-	dc.w $3388,$3399,$33AA,$33BB,$33CC,$33DD,$33EE,$33FF
-	dc.w $4400,$4411,$4422,$4433,$4444,$4455,$4466,$4477
-	dc.w $4488,$4499,$44AA,$44BB,$44CC,$44DD,$44EE,$44FF
-	dc.w $5500,$5511,$5522,$5533,$5544,$5555,$5566,$5577
-	dc.w $5588,$5599,$55AA,$55BB,$55CC,$55DD,$55EE,$55FF
-	dc.w $6600,$6611,$6622,$6633,$6644,$6655,$6666,$6677
-	dc.w $6688,$6699,$66AA,$66BB,$66CC,$66DD,$66EE,$66FF
-	dc.w $7700,$7711,$7722,$7733,$7744,$7755,$7766,$7777
-	dc.w $7788,$7799,$77AA,$77BB,$77CC,$77DD,$77EE,$77FF
-	dc.w $8800,$8811,$8822,$8833,$8844,$8855,$8866,$8877
-	dc.w $8888,$8899,$88AA,$88BB,$88CC,$88DD,$88EE,$88FF
-	dc.w $9900,$9911,$9922,$9933,$9944,$9955,$9966,$9977
-	dc.w $9988,$9999,$99AA,$99BB,$99CC,$99DD,$99EE,$99FF
-	dc.w $AA00,$AA11,$AA22,$AA33,$AA44,$AA55,$AA66,$AA77
-	dc.w $AA88,$AA99,$AAAA,$AABB,$AACC,$AADD,$AAEE,$AAFF
-	dc.w $BB00,$BB11,$BB22,$BB33,$BB44,$BB55,$BB66,$BB77
-	dc.w $BB88,$BB99,$BBAA,$BBBB,$BBCC,$BBDD,$BBEE,$BBFF
-	dc.w $CC00,$CC11,$CC22,$CC33,$CC44,$CC55,$CC66,$CC77
-	dc.w $CC88,$CC99,$CCAA,$CCBB,$CCCC,$CCDD,$CCEE,$CCFF
-	dc.w $DD00,$DD11,$DD22,$DD33,$DD44,$DD55,$DD66,$DD77
-	dc.w $DD88,$DD99,$DDAA,$DDBB,$DDCC,$DDDD,$DDEE,$DDFF
-	dc.w $EE00,$EE11,$EE22,$EE33,$EE44,$EE55,$EE66,$EE77
-	dc.w $EE88,$EE99,$EEAA,$EEBB,$EECC,$EEDD,$EEEE,$EEFF
-	dc.w $FF00,$FF11,$FF22,$FF33,$FF44,$FF55,$FF66,$FF77
-	dc.w $FF88,$FF99,$FFAA,$FFBB,$FFCC,$FFDD,$FFEE,$FFFF
+td_nsw:	; nibble with 2 <-> 4 swapped (the shimmer's swap table is built
+	; from this into TD_SWAPT at load)
+	dc.b	0,1,4,3,2,5,6,7,8,9,10,11,12,13,14,15
 td_gfx:	; tile 0 void (solid colour 12 = parchment pink in palette 1),
 	; then 4 blob variants x (TL,BL,TR,BR)
 	dcb.l 8,$CCCCCCCC
