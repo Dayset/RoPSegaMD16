@@ -21,3 +21,6 @@ addr,len,kind,target
 0x01BA5A,6,jsr,ti_mso
 0x01BA60,4,bytes,4E714E71
 0x01C0CC,6,jsr,ti_row
+0x00E358,6,jmp,ti_e358
+0x01BA84,6,jsr,ti_ccr
+0x01BA66,6,jsr,ti_cell

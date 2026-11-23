@@ -359,6 +359,43 @@ numbers: `patches/topdown/README.md` § Smooth iso view.
   not a smaller cell set. Kept from the attempt: the shimmer swap and
   pixel-double tables are built in RAM at load (blob 11,444 → 10,762 B).
 
+## Smooth iso view v2: a picture per tick (#266, #270)
+
+Built: `make rom FEATURES=topdown SIZE=2m`. Design and numbers:
+`patches/topdown/README.md` § v2. Short version:
+
+- **Is a picture per tick possible on the game's own composite?** Yes,
+  with the 2 MB ROM: the terrain streams converted offline into runs
+  (`tools/iso_fast_streams.py`, exact for all 944 x 2 streams) and
+  drawn into a linear bitmap decode ~3x faster (overworld ~21 → ~6.5
+  frames per picture); with a cheaper commit (11 → 7), a faster cell
+  lookup, a per-cell stop and the picture drawn one step ahead of the
+  camera, the shown camera stays within a cell of the game camera on
+  99.5 % (overworld) and 99.2 % (room 156) of walking frames, steps
+  <= 2 px on 99.3 %+ of moving frames, Buc ends at (6,25).
+- **Simplified terrain first (your colour + dither idea)?** Measured
+  with the fast decoder, the most repeated layer (stream `$230`, the
+  filler drawn once per height level under raised cells) is 8 % of the
+  decode, ~0.5 frame per overworld picture; a generated fill would save
+  about that much, and the whole decode is now ~35 % of a picture. Not
+  built: the exact picture already lands every tick.
+- **Profile of a picture now** (VBlank PC sampling, overworld):
+  decode 41 % (stubs 26, record loop 15), commit 35 % (tile hashing 12,
+  pool 7, rows 5, reuse 5, uploads 3), `map_chunk_pos`'s own C code
+  11 %, cell lookup 5 %. Next lever if needed: our own cell loop in
+  place of `map_chunk_pos` (~2–3 frames).
+- **Terrain animation:** standing still, a new picture per terrain
+  phase (every tick), so water moves as in the original.
+- **Figures in rooms:** 16 cached images (the pool lends 128 tiles)
+  and extraction while a render is paused: old poses shown 7.8 % → 0.8 %
+  of figure lookups in room 156.
+- **Small rooms drawn once on entry (#270 item 1):** not needed any
+  more for cadence (a small-room picture costs ~6 frames and is only
+  redrawn on a camera step or a terrain phase); its VRAM point is met
+  by the pool lending tiles to the figure cache in all rooms.
+- **Still open:** tall terrain hiding figures (occlusion) and a hole as
+  large as the original's ±5 (see the cards).
+
 ## Tools
 
 - `tools/md_run.py` — frame-stepped runner (stable-retro / Genesis Plus
@@ -368,6 +405,10 @@ numbers: `patches/topdown/README.md` § Smooth iso view.
   in ±4 px; `--hole`: iso view, pixels inside the frame's hole only), redraws, palette changes, and the slot-68 blob position,
   from the rendered frames.
 - `tools/md_vram.py` — VRAM/CRAM/VSRAM/registers from a GPGX state.
+- `tools/md_iso_cadence.py` — iso picture cadence from RAM per frame:
+  picture lag, camera trail (per mode), CPU frames per render/commit.
+- `tools/iso_fast_streams.py` — the fast terrain streams (build,
+  verify against live renders).
 - `tools/md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
 
 One emulator per process (stable-retro limit); `md_video.py` forks.

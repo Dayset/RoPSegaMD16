@@ -45,9 +45,13 @@ byte-identical to the original ROM (MD5
 2 MB ROMs (issue #252 step 3): `--size 2m` appends a second
 megabyte (`$100000-$1FFFFF`, `0xFF`-filled, 1,048,576 usable
 bytes) for offline-made tile data, and sets the header ROM-end
-field at `0x1A4` to `0x001FFFFF`. The base 1 MB is unchanged, the
-feature blobs still allocate only in the first megabyte's padding
-regions, and the EEPROM save mapping is untouched — the EEPROM
+field at `0x1A4` to `0x001FFFFF`. The base 1 MB is unchanged.
+Features assemble with `SIZE2M=1` defined; a blob that no longer fits
+the first megabyte's padding goes to the code room `$1F0000-$1FFFFF`
+(payloads must end below it). A feature may bring its own payload:
+`patches/<name>/data2m.py` with `OFFSET` and `build(base_rom)`
+(generated from the ROM's own data, so nothing extra is committed).
+The EEPROM save mapping is untouched — the EEPROM
 window at `$200000` sits immediately after the 2 MB ROM's end.
 `--data FILE[@0xOFFSET]` (repeatable) places a payload binary in
 the second megabyte (default offset `$100000`); offsets must lie
@@ -88,6 +92,7 @@ from checksum import fix_checksum, fix_runtime_checksum  # noqa: E402
 ORIGINAL_MD5 = "30c18fdbe2183f64702ae9f1a45d63f9"
 BASE_SIZE = 0x100000
 SIZES = {"1m": 0x100000, "2m": 0x200000}
+CODE2M_START = 0x1F0000   # 2 MB builds: blobs may go here (last 64 KB)
 SECOND_MB_START = 0x100000
 SECOND_MB_FILL = 0xFF
 HEADER_CHECKSUM_ADDR = 0x18E
@@ -262,15 +267,18 @@ def parse_hooks(path: Path):
     return hooks
 
 
-def assemble(vasm: Path, src: Path, org: int, workdir: Path):
+def assemble(vasm: Path, src: Path, org: int, workdir: Path,
+             defines: tuple = ()):
     """Assemble feature.s at org (via -DORGVAL; the source must start
-    with `org ORGVAL`). Returns (blob bytes, {label: addr})."""
+    with `org ORGVAL`). Returns (blob bytes, {label: addr}). defines:
+    extra NAME=VALUE symbols (2 MB builds: SIZE2M=1)."""
     workdir.mkdir(parents=True, exist_ok=True)
     binp = workdir / "feature.bin"
     lstp = workdir / "feature.lst"
     r = subprocess.run(
         [str(vasm), "-Fbin", "-m68000", "-no-opt",
-         f"-DORGVAL=${org:X}", "-L", str(lstp), "-o", str(binp), str(src)],
+         f"-DORGVAL=${org:X}", *[f"-D{d}" for d in defines],
+         "-L", str(lstp), "-o", str(binp), str(src)],
         capture_output=True, text=True)
     if r.returncode != 0:
         raise BuildError(f"vasm failed for {src}:\n{r.stdout}\n{r.stderr}")
@@ -472,7 +480,19 @@ def build(features, repo: Path, base_override: Path | None = None,
     base = build_base(repo, base_override)
     regions = parse_regions(repo)
     instr_starts = parse_instruction_starts(repo)
-    allocator = Allocator(regions, base)
+    defines = ()
+    alloc_base = base
+    if size == "2m":
+        # 2 MB builds assemble with SIZE2M=1 (code that needs the second
+        # megabyte's data) and may place blobs in its last 64 KB when
+        # the first megabyte's padding is full; payloads start at
+        # $100000 and must end below CODE2M_START.
+        defines = ("SIZE2M=1",)
+        regions = regions + [{"start": CODE2M_START, "end": SIZES["2m"],
+                              "fill": SECOND_MB_FILL,
+                              "cls": "second-mb-code"}]
+        alloc_base = base + bytes([SECOND_MB_FILL]) * (SIZES["2m"] - BASE_SIZE)
+    allocator = Allocator(regions, alloc_base)
 
     rom = bytearray(base)
     blobs = {}
@@ -493,17 +513,19 @@ def build(features, repo: Path, base_override: Path | None = None,
         cand = allocator.peek()
         if cand is None:
             raise BuildError(f"feature {name}: no free space left")
-        blob1, labels1 = assemble(vasm, src, cand, workdir)
+        blob1, labels1 = assemble(vasm, src, cand, workdir, defines)
         addr = allocator.alloc(len(blob1), name)
         if addr != cand:
-            blob1, labels1 = assemble(vasm, src, addr, workdir)
-        blob, labels = assemble(vasm, src, addr, workdir)
+            blob1, labels1 = assemble(vasm, src, addr, workdir, defines)
+        blob, labels = assemble(vasm, src, addr, workdir, defines)
         if blob != blob1 or labels != labels1:
             raise BuildError(
                 f"feature {name}: assembly is origin-dependent "
                 "(second pass at the allocated address differs)")
         blobs[name] = {"start": addr, "end": addr + len(blob),
                        "size": len(blob), "labels": labels}
+        if addr + len(blob) > len(rom):
+            rom += bytes([SECOND_MB_FILL]) * (addr + len(blob) - len(rom))
         rom[addr:addr + len(blob)] = blob
         for h in parse_hooks(hcsv):
             h["feature"] = name
@@ -529,12 +551,27 @@ def build(features, repo: Path, base_override: Path | None = None,
     # immediately after it, so the save mapping is unchanged.
     data_placed = []
     if size == "2m":
-        if len(rom) != BASE_SIZE:
+        if len(rom) < BASE_SIZE:
             raise BuildError("internal error: 1 MB base is not 1 MB")
-        rom += bytes([SECOND_MB_FILL]) * (target_size - BASE_SIZE)
+        rom += bytes([SECOND_MB_FILL]) * (target_size - len(rom))
         rom[HEADER_ROM_END_ADDR:HEADER_ROM_END_ADDR + 4] = (
             target_size - 1).to_bytes(4, "big")
-        for dpath, offset in data:
+        # Features may bring their own payload: patches/<name>/data2m.py
+        # with OFFSET and build(base_rom) -> bytes (generated from the
+        # original ROM's own data, so nothing extra is committed).
+        gen = []
+        for name in features:
+            dpy = repo / "patches" / name / "data2m.py"
+            if dpy.is_file():
+                import importlib.util
+                spec = importlib.util.spec_from_file_location(
+                    f"data2m_{name}", dpy)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                gpath = out_dir / f"{name}-data2m.bin"
+                gpath.write_bytes(mod.build(bytes(base)))
+                gen.append((gpath, mod.OFFSET))
+        for dpath, offset in list(gen) + list(data):
             payload = dpath.read_bytes() if dpath.is_file() else None
             if payload is None:
                 raise BuildError(f"--data file not found: {dpath}")
@@ -543,6 +580,11 @@ def build(features, repo: Path, base_override: Path | None = None,
                     f"--data {dpath}: offset ${offset:X} is outside "
                     "the second megabyte (want an even address "
                     ">= $100000)")
+            if offset + len(payload) > CODE2M_START:
+                raise BuildError(
+                    f"--data {dpath}: {len(payload)} bytes at "
+                    f"${offset:X} reach the code room at "
+                    f"${CODE2M_START:X}")
             if offset + len(payload) > target_size:
                 raise BuildError(
                     f"--data {dpath}: {len(payload)} bytes at "
