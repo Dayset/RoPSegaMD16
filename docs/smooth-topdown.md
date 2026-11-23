@@ -345,6 +345,19 @@ numbers: `patches/topdown/README.md` § Smooth iso view.
   top-down picture stands in there.
 - **Decision recorded (Q15):** floating island in a fixed frame, not
   edge to edge.
+- **Partial render on a one-cell step (#266, measured, not kept).**
+  Built and checked pixel-exact against a full render (dirty 8×8 tiles:
+  the entering edge row or column, the old edge row whose stacks go,
+  the leaving row's old footprint, tiles entering the hole; cells
+  redrawn = those whose 28×30 px box plus lift touches a dirty tile).
+  On the explore route every step needed **85–95 of the 100 cells**:
+  one edge row alone touches ~50 cells, because each image spans two
+  cells sideways and its lift reaches up to 8 tile rows. At 0.25 frames
+  per cell that saves ≤ 1–4 frames of a ~25-frame render, less than the
+  plan costs to compute. Rejected; a picture per tick needs a cheaper
+  composite (own decoder or a first pass without the game's `$E358`),
+  not a smaller cell set. Kept from the attempt: the shimmer swap and
+  pixel-double tables are built in RAM at load (blob 11,444 → 10,762 B).
 
 ## Tools
 
