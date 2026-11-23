@@ -250,6 +250,18 @@ routes drift whenever tick timing changes):
 - Room: the remaining 10–14-frame stops are a slow picture (up to 35
   frames when many new tiles enter) committing while the camera is at
   the ±1 clamp of the old one: #279 (asymmetric range + edge checker).
+- Render edges (#279, `tools/md_iso_edges.py`): frames with a hole
+  pixel on an uncommitted tile, Buc route: #290 468, now 134 (of
+  5,526); overworld frames with parchment in the hole 151 / 129 of
+  ~590 (explore route 45 and 291 of 2,460). Measured safe camera range
+  per axis is [-0.5, +1] cell from the picture (the commit assumes
+  +-1): below -0.5 the hole reaches cells the 10x10 render does not
+  draw. Holding the camera to that range (tried: one-cell picture
+  steps, commit only with the camera in range, both pictures' range
+  while committing) removes most edges but costs trail in room 156
+  (97.8 % -> 54-64 %): pictures there take up to 35 frames and the
+  overlap window between two pictures is half a cell. Needs faster
+  pictures first (#283, td_sync's cost).
 - The 17 blob/void tiles are built at load from one quadrant
   (`td_blobs`, 544 → ~150 bytes), which keeps the 1 MB blob in its
   padding.
