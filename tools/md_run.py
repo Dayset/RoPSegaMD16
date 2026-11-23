@@ -132,6 +132,34 @@ def metrics(rec, lo=0, hi=None, thresh=50):
     return out
 
 
+def ramdump(rom, route, frames, outdir, addr, length, watch):
+    """Dump a RAM region to one file per frame in which the watched word
+    changes (or every frame if watch is 0). Files are
+    OUT/ram_fNNNNN.bin, plus OUT/manifest.json with the watched value
+    per dumped frame. Additive helper for harness verification; the
+    run/metrics paths are untouched."""
+    os.makedirs(outdir, exist_ok=True)
+    md = MD(rom)
+    seq = []
+    for n, pad in parse_route(route):
+        seq += [pad] * n
+    total = frames or len(seq)
+    manifest = []
+    prev = None
+    for i in range(total):
+        md.step(seq[i] if i < len(seq) else "")
+        ram = md.ram()
+        cur = w(ram, watch) if watch else i
+        if prev is None or cur != prev:
+            off = addr - 0xFF0000
+            open(os.path.join(outdir, "ram_f%05d.bin" % i), "wb").write(
+                bytes(ram[off:off + length]))
+            manifest.append({"frame": i, "watch": cur})
+            prev = cur
+    json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"))
+    return manifest
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -145,11 +173,22 @@ def main():
     m.add_argument("--trace", required=True)
     m.add_argument("--from", dest="lo", type=int, default=0)
     m.add_argument("--to", dest="hi", type=int, default=None)
+    d = sub.add_parser("ramdump")
+    d.add_argument("--rom", required=True)
+    d.add_argument("--route", required=True)
+    d.add_argument("--frames", type=int, default=0)
+    d.add_argument("--addr", type=lambda x: int(x, 0), default=0xFF1EC0)
+    d.add_argument("--len", type=lambda x: int(x, 0), default=26496)
+    d.add_argument("--watch", type=lambda x: int(x, 0), default=0)
+    d.add_argument("--out", default="build/md_ramdump")
     a = ap.parse_args()
     if a.cmd == "run":
         shots = {int(x) for x in a.shots.split(",") if x}
         rec, _ = run(a.rom, a.route, a.frames, shots, a.out)
         print(json.dumps(metrics(rec)))
+    elif a.cmd == "ramdump":
+        man = ramdump(a.rom, a.route, a.frames, a.out, a.addr, a.len, a.watch)
+        print(json.dumps({"dumped": len(man)}))
     else:
         rec = json.load(open(a.trace))
         print(json.dumps(metrics(rec, a.lo, a.hi)))

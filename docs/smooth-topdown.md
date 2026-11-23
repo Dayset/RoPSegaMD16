@@ -77,26 +77,101 @@ cache (#231). The fix is to move the composition offline:
 1. **Keep the topdown scheduler as is** — tick governor, per-frame
    VBlank updates, slides, ring-buffer streaming. It does not care what
    the tiles look like.
-2. **Pre-render the isometric world offline.** Port the `$E358`
-   composite to Python and check it byte-for-byte against `$FF1EC0`
-   captures from the original (`tools/md_run.py` reads RAM per frame).
-   Render each location once, cut it into 8×8 tiles, deduplicate, and
-   emit per-area tile sets + tilemaps.
-3. **Size it.** The original's 36×23-tile view holds 249 distinct tiles
-   on average (510 max) out of 828. A pre-rendered map aligns tiles
-   globally and repeats far more, but the overworld image is large
-   (352×224 cells), so its atlas plus tilemap will not fit in the 12 KB
-   left in the 1 MB ROM. The container is a **2 MB** ROM: the save
-   EEPROM sits at `$200000` (`docs/save.md`), so the original board's
-   address space ends at 2 MB; 4 MB needs a different board or a flash
-   cart with its own save mapping. Rooms are small. Step 2 gives exact
-   numbers.
+2. **Pre-render the isometric world offline — DONE 2026-11-23
+   (#252 Track A).** `tools/e358.py` ports the `$E358` composite to
+   Python; `tools/e358_atlas.py` renders each location once, cuts it
+   into 8×8 tiles, deduplicates, and emits per-area tile sets +
+   tilemaps. Byte-exactness: 4,298/4,298 cases match the original ROM
+   (fingerprint sweep over all 944 streams × d0/d3 variants + edge
+   cases, `tools/e358_capture.py`), 95 full-buffer single-case
+   compares byte-exact, and a 102-frame full-view replay (overworld
+   + rooms, both `$FF0092` phases) reproduces every terrain-written
+   byte — the only live-buffer bytes the replay does not reproduce
+   are the figure footprint (one ~200–250-byte blob per frame,
+   excluded by design) and, for interior bit-9-clear cells, the
+   height stack the live window omits. The atlas check itself is
+   exact: a window-only canvas vs a complete port replay is 0
+   mismatches on all 102 frames, and vs the live buffer it differs
+   only by those figure + stack bytes (0 extra, 0 missing).
+3. **Size it — MEASURED 2026-11-23: it does not fit flat.** The
+   original's 36×23-tile view holds 249 distinct tiles on average
+   (510 max) out of 828. A pre-rendered map aligns tiles globally
+   and repeats far more, but not enough:
+
+   | Area | Canvases | Distinct 8×8 tiles | Tile bytes | Tilemap bytes (u16) | Total |
+   |---|---|---|---|---|---|
+   | Overworld (352×224 cells, 8080×4616 px) | 1 | 75,310 | 2,409,920 | 1,165,540 | 3,575,460 |
+   | Big rooms (22 × 32×32) | 22 | 33,015 | 1,056,480 | 337,440 | 1,393,920 |
+   | Small rooms (153 × 11×11) | 153 | 38,831 | 1,242,592 | 312,400 | 1,554,992 |
+   | **Total** | **176** | **147,156** | **4,708,992** | **1,815,380** | **6,524,372** |
+
+   The 2 MB container holds 2,097,152 bytes, so the flat atlas
+   exceeds it by 4,427,220 bytes (3.11× the budget) — and the
+   overworld alone (3,575,460) already exceeds it. The container
+   is a **2 MB** ROM: the save EEPROM sits at `$200000`
+   (`docs/save.md`), so the original board's address space ends at
+   2 MB; 4 MB needs a different board or a flash cart with its own
+   save mapping. Caveats on the count: the atlas is phase 0 only —
+   520 of 2,614 distinct tile words draw differently at phase 1
+   (`$FF0092` toggles every tick), so a two-phase atlas would be
+   larger still; the 147,156 total is the sum over areas, and
+   sharing tiles across areas would cut it (unmeasured); the atlas
+   draws every cell complete (height stack included), unlike a live
+   window's interior bit-9-clear cells, and it is not wrapped at
+   the overworld seam. What fits as-is: the two uses split. The
+   detail-on-idle pass (use 1) needs only the visible window's
+   cells, so it can use the port live or per-position footprints
+   rather than the static atlas; the full atlas (use 2) needs a
+   smaller representation — cross-area tile sharing, tilemap
+   compression, or per-chunk streaming — before it fits 2 MB.
+   That is follow-up work, not this track.
+
+   **Shrink attempt — MEASURED 2026-11-23: no lossless fit**
+   (`tools/e358_shrink.py measure`, `build/e358-shrink-measure.json`).
+   Budget is the 1,048,576 usable bytes of the 2 MB ROM's second
+   megabyte; target was ≤ ~940,000 (10% margin). Levers, all
+   measured on the phase-0 atlas:
+
+   | Lever | Result |
+   |---|---|
+   | Cross-area tile sharing | 135,636 global distinct tiles vs 147,156 per-area sum (saves 368,640 B) |
+   | Tiles, $DD5C (game's own format) | 4,340,352 raw → 2,237,967; front-coded (sorted-delta) → **2,061,470** (best $DD5C); bitplane split 2,733,703; per-canvas 2,815,380; zlib reference 1,635,194 |
+   | Tile transforms | Flip-canonicalization 131,130 tiles (−3.3%); 2px-shift siblings 1,615; only 4 solid tiles — no special-casing available |
+   | Tilemaps, $DD5C area-local | Overworld 816,451 + big rooms 133,321 + small rooms 135,963 = **1,085,735** (delta worse; global remap worse; per-canvas 1,107,417) |
+   | Cell-word maps (bound only, no loader) | 119,889 cells, raw 239,778 → $DD5C 95,838 |
+   | Phase 1 stored separately | +26,421 tiles, $DD5C 482,257 — cannot be stored; a static atlas is phase-0-only |
+
+   Best $DD5C combination (front-coded tiles + area-local maps) is
+   **3,147,205 bytes — 3.00× the budget, gap 2,098,629**. Even with
+   cell maps it is 2,157,308 (2.06× over), and even with DEFLATE-class
+   zlib — which the game cannot decode — it is 2,198,143 (2.10× over).
+   The tile bytes alone (best $DD5C 2,061,470) are 1.97× the whole
+   budget. Two corrections to the flat baseline also landed: the
+   overworld area's 75,310 distinct tiles exceed u16, so a correct
+   flat tilemap needs 3-byte indices there (the 6,524,372 B flat
+   total understates it), and the $DD5C greedy encoder is
+   pathologically slow on multi-MB noisy inputs (okumura is the
+   usable encoder). No shrunk form was implemented and no lossy
+   scheme forced. What remains: either a smaller representation
+   (fewer distinct tiles — e.g. simplified terrain first, detail
+   filled in on idle — or a lossy decision by the owner), or
+   per-chunk streaming of the *port's* output instead of a static
+   atlas. Detail-on-idle is unaffected: it needs only the visible
+   window's cells.
 4. **Stream it** through the same ring buffer, isometric rows instead
    of square cells, switching tile sets at chunk or location edges;
    figures as sprites (their `$197B0` template images), tall objects
    in front via Plane A priority tiles.
 
-Until step 2 exists, topdown is the playable smooth build.
+**#231 verdict (2026-11-23):** confirmed — there is no per-cell tile
+to cache. One `$E358` call paints a median 215 bytes scattered over
+a median 3,480-byte span, neighbours overlap ~50 bytes, and a cell's
+drawing is a (mask, value) composite, not a tile. But the
+composition is exactly reproducible offline and translation-invariant
+per cell (the same tile word draws identically anywhere in the
+window interior), so the offline atlas is the right fix — it is just
+bigger than 2 MB in flat form (step 3). Topdown remains the playable
+smooth build until the atlas shrinks to fit.
 
 ## Follow-up answers (v2, #251)
 
@@ -153,7 +228,11 @@ Until step 2 exists, topdown is the playable smooth build.
   redraw the visible cells with richer tiles (the isometric top
   textures resampled offline into 16×16 squares), and return to the
   map tiles when walking. It needs those tiles in the ROM (the 2 MB
-  room) and a Python port of the `$E358` decoder to make them.
+  room) and a Python port of the `$E358` decoder to make them. The
+  port is done (step 2 above, byte-exact); the tiles' home is the
+  open part — the flat atlas does not fit 2 MB (step 3), so the idle
+  pass needs the port live or per-position footprints, not the
+  static atlas.
 
 - **Does tall terrain slow the original? (#258, attract dragon flight,
   `tools/md_flight.py`)** Only a little. Over 363 flight ticks the

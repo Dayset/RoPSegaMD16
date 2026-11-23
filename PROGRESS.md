@@ -115,3 +115,241 @@ Issues live in `issues/` — one file each. Update both together.
 2. PR #35 (Claude's bit-ops + jump-table dispatch, `gh-12` branch `abfbcd9`) needs a rebase onto current main before it can merge — it would remove the last 102 `dc.w` fallbacks.
 3. #009 carve (`0x000200–0x00FFFF`) is Claude's; the other carve regions (#10–#13) and the symbol database (M11) are open.
 4. Tribute remake (Epic 5, M7) is **on hold** by Dayset's call — do not resume it. Research (Epic 6) — #032–#036 are all junior-agent-ready now. **M3 is complete** (#004–#006, #015–#018, #037 all done; images/maps/audio follow-ups done 2026-11-10).
+
+## Track A — $E358 port (#252, branch `gh-252-e358-port`, 2026-11-23)
+
+- `tools/e358.py`: ROM-driven port of `map_terrain_tile_lookup` ($E358).
+  Handler decoder (68k subset) matches `disasm/src/rop.s` for all 112
+  live handlers, 0 mismatches. 56 A-handlers / 56 B-handlers; hi nibble
+  = pattern-byte count; writes are `(old & mask[$433C0]) | byte`.
+- Ground truth: vasm harness ROM (`tools/e358_harness.s`, hook at
+  $35C, one call/frame, buffer fingerprinted immediately — the game
+  clears $FF1EC0 later in the attract frame). Single-case halt ROMs
+  give full-buffer comparison: **26/26 byte-exact** (both paths,
+  natural args, all 12 edge cases). Full 4,298-case fingerprint sweep
+  running (`tools/e358_capture.py`); harness bug found + fixed en
+  route (divu needs a zero-extended dividend — stale high word gave
+  wrong phase-B args; the port was right).
+- Next: full-view verification (Python `map_chunk_pos` vs live
+  $FF1EC0 on routes), offline atlas renderer + exact tile counts,
+  docs/smooth-topdown.md steps 2–3, unit test, `make check`.
+- Sweep diagnosis (2026-11-23): the first full-sweep run stopped at
+  920/4298 with fingerprints 920/920 — the attract cycle ends after
+  ~230 cases (soft reset clears RAM; hook re-inits to START_CASE when
+  the title loop resumes) and the capture misread the idx jump
+  0→START_CASE as a completed case, and stored args AFTER the jsr
+  ($E358 clobbers d2–d5, so args_live showed e.g. d0=4 for 0x40).
+  Fixed: harness stores args BEFORE the call; capture resyncs on idx
+  jumps without recording; new `--chunks N` mode runs the sweep as
+  one emulator process per chunk ROM (150-case chunks, ~1244 frames
+  each). Chunk 230–380 re-verified clean: **150/150, rate 1.0000, no
+  arg mismatches**. Full 29-chunk sweep: **4298/4298 fingerprints
+  match, rate 1.0000, 0 mismatches, all chunks complete** (60 s wall).
+  70 arg_mismatches were a capture race, not a port bug: the poll can
+  land mid-`run_case` (zero loop ~1 frame), after the NEXT case's
+  args are stored but before its fingerprint — live args read as the
+  next case's, fingerprint still the current case's (case 4295: the
+  d0=0 call's own wild writes clobber the args store on the
+  emulator's address mirror). All 70 re-run as single-case halt ROMs
+  (full-buffer compare): **70/70 byte-exact**. Sweep verdict: port is
+  byte-exact on all 4,298 cases; 95 distinct cases also confirmed by
+  full-buffer comparison (26 original singles + 70 anomalies − 1
+  overlap, case 4295).
+- Full-view verification DONE (`tools/e358_map.py`, route
+  `tools/playtest_route_orig.txt`, 103 renders captured via
+  `md_run.py ramdump --watch $FF0098`, 102 render-complete frames
+  replayed): terrain-only replay of `map_chunk_pos` matches the live
+  `$FF1EC0` on **1,215,860 / 1,238,961 terrain-written bytes
+  (98.14%)** — overworld 23 frames (leader ~(111,122–125),
+  319,104/324,266 = 98.41%), rooms 79 frames (11×11, leader
+  (5,5)/(5,6)/(6,6), 896,756/914,695 = 98.04%). The other 23,101
+  bytes (1.86%) are EXACTLY ONE 4-connected blob per frame (0 frames
+  with >1 blob), ~200–250 bytes in ~4×4 tiles near the window
+  centre: the figure footprint, excluded by design. Proof it is not
+  terrain: two renders with identical terrain inputs (same leader,
+  same `$FF0092` phase — frames 3336 vs 3389) have identical terrain
+  bytes but live buffers differing in 432 bytes confined to tile
+  rows 6–11, cols 16–21 — a non-terrain writer (figure calls) moved
+  between renders. `grid_fill` formulas verified 0 mismatches on all
+  frames; no out-of-range writes; `$FF013C` spell flag 0 everywhere.
+  Note: `$FF0098` is `$FFFF` when set, not 1 (first capture run found
+  0 frames until the transition test was fixed).
+- Atlas (`tools/e358_atlas.py`): a cell's footprint (mask/value
+  triples) is EXACTLY translation-invariant — same tile at (4,4),
+  (5,4), (4,5) gives identical triples shifted by East (+14,+8) /
+  South (−14,+8) — BUT only in the window interior. Two edge
+  effects found by a 100-position probe: (1) at row 9 / col 9 the
+  height loop runs unconditionally, so a height>0 bit-9-clear cell
+  gains its stack there (e.g. tile 0x607a: 224 → 518 bytes); (2) at
+  (0,0) the footprint clips against the buffer edge (12 bytes).
+  Consequence: the atlas renders each cell COMPLETE (top + stack
+  whenever height>0) and paints in game order (world-X outer —
+  the first build painted wy-outer and failed verification with
+  ~25,500 mismatching bytes/frame). The first build's counts
+  (75,341 / 33,100 / 39,064 distinct tiles; total 6,531,908 bytes)
+  are STALE — they came from the gated footprints + wrong paint
+  order. Rebuild running with complete footprints + fixed order and
+  a two-part verify: (a) synthetic complete-window replay vs atlas
+  crop (expect 0), (b) live vs atlas crop (expect exactly figure
+  blob + stack bytes the live window omits).
+- Verify-mapping bug found (2026-11-23): the first two verify runs
+  compared buffer byte (bx,by) with canvas byte (bx+sx//2, by+sy),
+  treating the buffer as 184 contiguous rows of 144 bytes — WRONG.
+  The `$FF1EC0` buffer is tiled 36×23, so byte offset o maps to
+  pixels via the tile decomposition (tile_row=o//1152, tile_col,
+  row-in-tile, byte-in-row), NOT to pixel (2*(o%144), o//144). The
+  atlas canvas itself was correct (it paints through
+  `buf_offset_to_px`); only the verify's crop mapping was wrong,
+  which is why both runs showed ~25,500 mismatching bytes/frame at
+  every shift. Fixed: the crop is built buffer-byte by buffer-byte
+  through `buf_offset_to_px`, and the live expected set is computed
+  directly (figure = live vs gated replay; stack = complete vs
+  gated) instead of reusing the truncated `diff_offsets` (first 50)
+  from `e358-map.json`. Rebuild running.
+- Third build's verify (2026-11-23): synthetic mismatches fell from
+  ~25,500 to ~14,770/frame but stayed large, and live extra ≈
+  synthetic with missing 0 — the atlas differed from BOTH the live
+  buffer and the complete replay in the same places. Diagnosis by
+  spatial analysis of frame 3336 (correct pixel mapping): interior
+  window cells (rows 1-7, cols 1-8) have ~0 mismatches; the mismatch
+  is all at the window edge (row 9: 58-284/cell, col 9: 7-208/cell),
+  U-shaped by tile row/col. Cause: neighbouring cells OUTSIDE the
+  10x10 window legitimately paint over the edge cells' footprints in
+  the full atlas (they exist there and paint in (wx,wy) order), but
+  the game's window render never draws them. The atlas is right;
+  the verify's expectation was too strict. Proof: a WINDOW-ONLY
+  canvas (the frame's 100 cells, atlas machinery) vs the complete
+  port replay = 0 mismatches on frame 3336.
+- Verify rewritten (2026-11-23) to window-only canvases per frame
+  (all 102 frames, overworld + rooms): (a) synthetic window canvas
+  vs complete replay, expect 0; (b) live vs window canvas, expect
+  exactly figure bytes + stack bytes the live window omits. Full
+  build + verify re-running (session proc_753940dc2f05).
+- Self-inflicted bug (2026-11-23): replacing verify_overworld via
+  `s[:start] + new_fn` deleted the trailing `if __name__ ==
+  "__main__"` block (it followed verify_overworld) — the script
+  then exited 0 silently with no output, and two `nohup ... &`
+  launches appeared to die for the same reason. Restored the
+  guard; `--help` now works. Lesson: when replacing a function by
+  slicing to end-of-file, check what else lived after it.
+- Verify FINAL (2026-11-23): the 50/102 failing frames were the
+  `$FF0092` phase, not the atlas — phase toggles every tick
+  (passing frames $FF0092=0, failing frames =1; confirmed in the
+  snapshots), and the verify had built every window canvas at
+  phase 0 while MapReplayer used the frame's own phase. Fixed:
+  verify reads the phase from the snapshot and passes it to
+  render_canvas. Final run: **102 frames, synthetic mismatches 0,
+  live extra 0, live missing 0** (23 overworld + 79 rooms; 52 phase
+  0 + 50 phase 1; max live mismatch 268 bytes/frame = figure
+  <=247 + stack <=27). Atlas machinery fully verified.
+- Atlas FINAL numbers (phase 0, `build/e358-atlas.json`): overworld
+  75,310 distinct tiles, 2,409,920 tile bytes + 1,165,540 tilemap
+  bytes (u16, 577x1010 grid, canvas 8080x4616 px, origin
+  (-2992, 88)) = 3,575,460; big rooms 33,015 tiles = 1,393,920;
+  small rooms 38,831 tiles = 1,554,992; TOTAL 147,156 distinct
+  tiles, 6,524,372 bytes — EXCEEDS 2 MiB (2,097,152) by 4,427,220
+  (3.11x budget); the overworld alone already exceeds it.
+- Docs updated (2026-11-23): `docs/smooth-topdown.md` steps 2-3
+  with status + numbers, #231 verdict (confirmed: no per-cell
+  tile; composition exactly reproducible offline and
+  translation-invariant per cell, so the offline atlas is the right
+  fix, just too big flat), and the "better textures while standing
+  still" bullet now points at the measured result.
+- DONE (2026-11-23): `make check` passes (exit 0: lint 483 names 0
+  errors, gate byte-identical 1,048,576 bytes, no tracked ROM
+  images, writecheck 0 failing, status 446/446 named);
+  `python3 tools/tests/test_e358.py` 11/11 pass. No .gen files in
+  the tree. Branch gh-252-e358-port, worktree
+  ~/workspace/rop-work/e358-port. Not pushed, no PR (per task).
+
+## Shrink the atlas to fit 2 MB (#252, 2026-11-23)
+- Task: shrink the flat atlas (6,524,372 B) to the 1,048,576 usable
+  bytes of the 2 MB ROM's second megabyte, target <= ~940,000 B
+  (10% margin). Worktree ~/workspace/rop-work/e358-port, branch
+  gh-252-e358-port. Prior uncommitted work preserved; nothing
+  pushed/merged.
+- STEP 1 (measurement): new tools/e358_shrink.py `measure` — rebuilds
+  the atlas in memory and measures (a) cross-area tile sharing
+  (global hash dedup over all 176 canvases), (b) tilemap/tile
+  compression under the game's own $DD5C (tools/dd5c.py, runtime-
+  decodable) + zlib as reference only, (c) tile distribution,
+  (d) phase-1 extra tiles, (e) index-width requirements.
+- Finding (before measuring): the flat atlas's u16 tilemaps cannot
+  hold the overworld area — 75,310 distinct tiles > 65,535. A
+  correct flat representation needs 3-byte indices there, so the
+  6,524,372 B baseline UNDERSTATES the true flat size. The shrunk
+  form must use per-canvas tile sets (or 3-byte indices).
+
+- STEP 1 MEASUREMENT (2026-11-23, tools/e358_shrink.py `measure`,
+  build/e358-shrink-measure.json, build/e358-cellmaps.json):
+  Budget 1,048,576 usable bytes (2nd MB), target <= ~940,000.
+  - Cross-area sharing: GLOBAL distinct tiles 135,636 (vs 147,156
+    per-area sum; saves 11,520 tiles / 368,640 bytes). Per-canvas
+    distinct max 75,310 (the single overworld canvas), mean 982.
+  - Flat baseline correction: the overworld area's 75,310 distinct
+    tiles exceed u16, so a correct flat tilemap needs 3-byte indices
+    there (overworld map raw 1,748,310, not 1,165,540). The
+    6,524,372 B flat total UNDERSTATES a correct flat atlas.
+  - Tiles, global set 4,340,352 raw bytes: $DD5C (okumura)
+    2,237,967; zlib9 (reference only, not runtime-decodable)
+    1,635,194; per-canvas $DD5C total 2,815,380 (worse -- the
+    4 KB $DD5C window loses cross-canvas matches).
+  - Tile transforms: flip-canonicalization 131,130 tiles
+    (4,196,160 B, -3.3% -- VDP flip bits are free but barely
+    help); 2px-shift siblings 1,615 zero-fill / 172 wrap
+    (negligible); front-coded (sorted-delta) stream 2,937,082 B
+    -> $DD5C 2,061,470 (best $DD5C tile figure); bitplane split
+    -> $DD5C 2,733,703 (worse). Tile distribution: only 4 solid
+    tiles, 196 with <= 2 distinct byte values -- tiles are not
+    mostly flat; no special-casing available.
+  - Tilemaps, area-local $DD5C: overworld 816,451 (zlib 435,107),
+    big rooms 133,321 (zlib 92,158), small rooms 135,963 (zlib
+    108,978); total $DD5C 1,085,735, zlib 636,243. Delta encoding
+    is WORSE everywhere (overworld 861,661); global remap is
+    worse (1,225,663 total -- 3-byte indices, less locality);
+    per-canvas $DD5C total 1,107,417 (slightly worse).
+  - Cell-word maps instead of tile maps (bound, no loader built):
+    119,889 cells, raw 239,778 -> $DD5C 95,838. Saves ~990 KB
+    vs tile maps, but needs a footprint-stamping loader.
+  - Phase 1: global distinct 135,696; tiles not in phase 0:
+    26,421 -> 845,472 raw, $DD5C 482,257 to store separately.
+    Phase 1 cannot be stored within budget; a phase-0-only atlas
+    (no animated tiles) is the only static option.
+  - VERDICT: NO lossless combination fits. Best $DD5C:
+    front-coded tiles 2,061,470 + area-local maps 1,085,735 =
+    3,147,205 (3.00x budget, gap 2,098,629). Even with cell maps:
+    2,061,470 + 95,838 = 2,157,308 (2.06x over). Even with
+    DEFLATE-class zlib (not runtime-decodable): 1,561,900 +
+    636,243 = 2,198,143 (2.10x over). The tile bytes alone
+    (best $DD5C 2,061,470) are 1.97x the whole budget. Per the
+    brief, no shrunk form was implemented and no lossy scheme
+    was forced. The blocker is tile count/entropy, not the codec.
+  - Tool finding: tools/dd5c.py greedy encoder is pathologically
+    slow on multi-MB noisy inputs (4.34 MB global tiles ran
+    > 2 min without finishing, vs 26.8 s okumura). compress_report
+    now skips greedy over 200 KB. First measurement run was
+    killed at ~18 min for this reason; the run was re-done with
+    unbuffered progress logging. Also fixed: phase-1 join bug
+    (list of lists) and a cellmaps total bug (int in values()).
+- STEP 2: NOT IMPLEMENTED -- no combination fits (see verdict).
+- STEP 3 verification: test_e358.py + make check re-run below.
+- STEP 3 verification (2026-11-23, after the shrink work):
+  (a) round-trip: N/A -- no shrunk form was built (no-fit verdict),
+  so there is nothing to round-trip; the measurement tool only
+  reads the atlas canvases and never alters them.
+  (b) atlas verify: the flat 102-frame verify stands unchanged --
+  the shrink work touches no atlas-rendering code (new file
+  tools/e358_shrink.py + docs only); the measurement reused the
+  same build_area/render path.
+  (c) python3 tools/tests/test_e358.py -> 11/11 pass (exit 0).
+  (d) make check -> exit 0 (lint 483 names, 0 errors; status
+  446/446 named, 100.00% accounted).
+  (e) git ls-files | grep .gen -> 0 tracked .gen files.
+  Prior uncommitted work preserved exactly (same modified files
+  as before, plus new tools/e358_shrink.py). Nothing pushed,
+  merged, or PR'd. Branch gh-252-e358-port, worktree
+  ~/workspace/rop-work/e358-port.
+- OPEN: a smaller representation (simplified terrain / lossy call
+  by the owner, or per-chunk streaming of the port's output) --
+  needs owner direction. Detail-on-idle is unaffected by the
+  no-fit verdict (visible window only).
