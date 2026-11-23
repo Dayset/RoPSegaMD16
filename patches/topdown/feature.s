@@ -192,7 +192,10 @@ TD_PSLOT	equ TD_ICOLR+2	; pool slots in use (rooms lend 128 to figures)
 TD_PSL24	equ TD_PSLOT+2	; TD_PSLOT - 24 (probe window start range)
 TD_PEND		equ TD_PSL24+2	; bank offset past the pool's last slot
 TD_OVN		equ TD_PEND+2	; figures in the last list that need an occlusion overlay
-TD_END2		equ TD_OVN+2
+TD_OVM		equ TD_OVN+2	; occlusion subset render on (ti_cell, figure draws off)
+TD_OVX		equ TD_OVM+2	; ... the figure's cell
+TD_OVY		equ TD_OVX+2
+TD_END2		equ TD_OVY+2
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -1133,12 +1136,14 @@ td_chars:
 	addq.w	#1,d0
 	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
+	ifd	SIZE2M
 	tst.w	TD_ISO			; iso: occluded by a cell in front?
 	beq.s	.lchk
 	move.w	d2,d0
 	move.w	d3,d1
 	bsr.w	ti_ovl_need
 	add.w	d0,TD_OVN
+	endif
 	bra.s	.lchk
 .blob:	; no image yet: a 16x16 blob (yellow = the leader's figure)
 	moveq	#1,d1			; variant 1 (white)
@@ -2743,19 +2748,32 @@ ti_spr_xform:
 ; ti_fig_ht / ti_fig_pr / ti_spell — map_chunk_pos's figure draws and
 ; its spell-effect step: skipped while we render the terrain.
 ti_fig_ht:
+	ifd	SIZE2M
+	tst.w	TD_OVM
+	bne.s	ti_rts
+	endif
 	tst.w	TD_REND
 	bne.s	ti_rts
 	jmp	($0231D8).l		; hero_track
 ti_fig_pr:
+	ifd	SIZE2M
+	tst.w	TD_OVM
+	bne.s	ti_rts
+	endif
 	tst.w	TD_REND
 	bne.s	ti_rts
 	jmp	($02343A).l		; map_promote_record
 ti_spell:
+	ifd	SIZE2M
+	tst.w	TD_OVM
+	bne.s	ti_rts
+	endif
 	tst.w	TD_REND
 	bne.s	ti_rts
 	jmp	($03D9F8).l		; spell_effect_step
 ti_rts:	rts
 
+	ifd	SIZE2M
 ; ti_ovl_need — occlusion test (#278). d0/d1 = a figure's cell x/y ->
 ; d0 = 1 if a cell drawn after it (x > Fx, or x = Fx and y > Fy) within
 ; dx 0..2, dy -2..2, |dx-dy| <= 2 is taller than the figure's own cell
@@ -2815,6 +2833,7 @@ ti_ovl_h:	; d0/d1 = cell x/y -> d0 = its stack height
 	rol.w	#3,d0
 	andi.w	#7,d0
 	rts
+	endif
 
 ;=======================================================================
 ; td_iso_render — terrain render of the game camera cell into the decode
@@ -3216,6 +3235,10 @@ ti_mso:
 ; and the render stops before a cell when the tick's time is up (unwind
 ; to the epilogue at $1C0E4; td_iso_render resumes at TD_IROW/TD_ICOL).
 ti_cell:
+	ifd	SIZE2M
+	tst.w	TD_OVM
+	bne.s	ti_ocell
+	endif
 	tst.w	TD_REND
 	beq.s	.go
 	tst.w	TD_ICOLR
@@ -3233,6 +3256,43 @@ ti_cell:
 .go:	move.w	d4,d0
 	add.w	8(a6),d0
 	rts
+
+	ifd	SIZE2M
+; ti_ocell — subset render for a figure's occlusion overlay: only the cells
+; drawn after the figure and within dx 0..2, dy -2..2, |dx-dy| <= 2 of it
+; are drawn; the others unwind to the cell step ($01C0C2).
+ti_ocell:
+	move.w	d4,d0
+	add.w	8(a6),d0
+	sub.w	TD_OVX,d0		; dx
+	move.w	d5,d1
+	add.w	$A(a6),d1
+	sub.w	TD_OVY,d1		; dy
+	bmi.s	.dy
+	tst.w	d0
+	bmi.s	.sk
+	bne.s	.dy
+	tst.w	d1			; same x: only y > Fy is later
+	ble.s	.sk
+.dy:	cmpi.w	#2,d0
+	bgt.s	.sk
+	cmpi.w	#-2,d1
+	blt.s	.sk
+	cmpi.w	#2,d1
+	bgt.s	.sk
+	move.w	d0,d2
+	sub.w	d1,d2
+	bpl.s	.a
+	neg.w	d2
+.a:	cmpi.w	#2,d2
+	bgt.s	.sk
+	move.w	d4,d0
+	add.w	8(a6),d0
+	rts
+.sk:	addq.w	#4,a7			; drop our return: on to the next cell
+	jmp	($01C0C2).l
+
+	endif
 
 ; ti_row — map_chunk_pos's outer row step (`addq #1,d4; cmp #10,d4`):
 ; while we render, stop after a row when the tick's time is up (unwind
