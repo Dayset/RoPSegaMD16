@@ -412,3 +412,13 @@ Built: `make rom FEATURES=topdown SIZE=2m`. Design and numbers:
 - `tools/md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
 
 One emulator per process (stable-retro limit); `md_video.py` forks.
+
+### Occlusion (#278): the cell draw, as read from `map_chunk_pos` ($1BA4E)
+
+Per cell (x = d4 outer, y = d5 inner, record word w4 = cell, w6 = stack word):
+stack layers 0..h-1 are `$E358(stream, X, Y - 7*layer, d3)`; the top is
+`$E358(top, X, Y - 7*h, flag)`, then the figure draw (`hero_track` /
+`map_promote_record`). Edge cells (x or y = 9) are drawn even when the
+record bit 7 is clear. A figure is covered by every cell drawn after it
+whose image overlaps its 32x32 box: x > Fx, or x = Fx and y > Fy.
+Overlay = that cell subset drawn alone into the `td_extract` corner.
