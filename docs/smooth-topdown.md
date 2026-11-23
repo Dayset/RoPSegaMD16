@@ -91,6 +91,42 @@ cache (#231). The fix is to move the composition offline:
    address space ends at 2 MB; 4 MB needs a different board or a flash
    cart with its own save mapping. Rooms are small. Step 2 gives exact
    numbers.
+
+   The 2 MB container is built (issue #252, Track B): `make rom
+   SIZE=2m` (`python3 tools/build_rom.py --size 2m`) writes
+   `build/rop-<features>-2m.rom` = the 1 MB base unchanged + a second
+   megabyte at `$100000–$1FFFFF`, `0xFF`-filled — **1,048,576 usable
+   bytes** — with the header ROM-end field at `0x1A4` set to
+   `0x001FFFFF` and both checksums fixed (the runtime self-check sums
+   only `0x000000–0xFD07B`, so the second megabyte does not change it;
+   the header checksum sums `0x200` to end of file, so it covers the
+   full 2 MB). `--data FILE[@0xOFFSET]` (repeatable, default offset
+   `$100000`) places a payload binary in the second megabyte; the
+   manifest records the layout and every payload. Feature blobs still
+   allocate only in the first megabyte's padding regions — the second
+   megabyte is tile-data room, not allocator space. The save mapping
+   is unchanged: the EEPROM window at `$200000` sits immediately after
+   the 2 MB ROM's end (see `docs/save.md` §13), and the full #019 save
+   harness passes byte-for-byte on the 2 MB ROM (save `0x48`, load
+   `0x49`, magic `0x2A`, parity `0x1B`).
+
+   Emulator note (measured 2026-11-23): BlastEm's shipped `rom.db`
+   entry for `T-50176` describes the 1 MB retail cart (ROM `last
+   FFFFF`), so as shipped it leaves `$100000–$1FFFFF` unmapped —
+   reads there return the stale bus word (`0x0801`, the opcode at the
+   breakpoint PC), not the tile data — while the EEPROM at `$200000`
+   still works. One line in `rom.db` fixes it: in the `T-50176`
+   entry, `device ROM / last FFFFF` → `last 1FFFFF` (verified: the
+   marker bytes then read back correctly). That is an
+   emulator-database limit, not a container defect — real hardware
+   and flash carts decode the second megabyte by address lines.
+   A 2 MB ROM boots in BlastEm with event logs byte-identical to the
+   1 MB original over 600 attract frames, and reaches the game world
+   on the frozen original input-replay route (5300 frames,
+   `tools/playtest_metrics.py trace`): cadence mean 19.86 frames/tick
+   — the original's own number from the #240 table — 23 cells walked
+   (7 overworld, 16 room), leader overworld x 0→117, y 0→125, final
+   location 30 in room mode, 131 room-DMA uploads.
 4. **Stream it** through the same ring buffer, isometric rows instead
    of square cells, switching tile sets at chunk or location edges;
    figures as sprites (their `$197B0` template images), tall objects
