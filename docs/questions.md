@@ -54,7 +54,7 @@ Work continues on the default.
 
 ## Q13 — topdown (#249): walk pace and the next renderer
 - Question: (a) the top-down test runs at the original's measured pace (26 frames per tick overworld, 17 in rooms). Keep it, or speed it up? (b) For the isometric look: pre-render the whole world offline into tile sets (needs a 2–4 MB ROM), or isometric only in rooms and the top-down map for the overworld?
-- Default taken: (a) original pace (`TD_T1`/`TD_T2` in `patches/topdown/feature.s`); (b) no renderer work yet; the next card is the byte-exact Python port of the `$E358` composite, which both options need.
+- Default taken: (a) original pace (`TD_T1`/`TD_T2`, and `TD_TF` = 22 on the dragon, in `patches/topdown/feature.s`); (b) no renderer work yet; the next card is the byte-exact Python port of the `$E358` composite, which both options need.
 - If the answer is different: (a) change two constants; (b) decides the size of the offline atlas build and the ROM size.
 
 

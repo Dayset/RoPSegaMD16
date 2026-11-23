@@ -49,6 +49,7 @@
 ; ---- tuning ----------------------------------------------------------
 TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
+TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
 TD_SLOT0	equ 68		; first sprite slot for blobs (game uses <= 67)
 TD_NSLOT	equ 12		; our sprite slots (2 HUD box + figures)
 TD_NFIG		equ 10		; figure sprites max
@@ -156,6 +157,12 @@ td_tick:
 	cmpi.w	#1,MODE
 	bne.s	.per
 	moveq	#TD_T1,d0
+	move.w	LEADER,d1		; flying (travel mode 4, char +6):
+	mulu.w	#$34,d1			; the original's flight pace
+	lea	CHARS,a0
+	cmpi.w	#4,6(a0,d1.l)
+	bne.s	.per
+	moveq	#TD_TF,d0
 .per:
 	move.w	d0,TD_PERIOD
 	moveq	#0,d7			; synced yet?

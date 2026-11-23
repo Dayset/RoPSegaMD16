@@ -155,6 +155,21 @@ Until step 2 exists, topdown is the playable smooth build.
   map tiles when walking. It needs those tiles in the ROM (the 2 MB
   room) and a Python port of the `$E358` decoder to make them.
 
+- **Does tall terrain slow the original? (#258, attract dragon flight,
+  `tools/md_flight.py`)** Only a little. Over 363 flight ticks the
+  original takes 21.2 frames per tick with no height under the 10×10
+  view, 22.7–23.1 with some, 24.0 over the tallest ground; open sea is
+  the fastest (20.8). So height costs about 10–15 %; the visible
+  "fast over sea, slow over land" is mostly that sea all looks alike
+  while land shows every 28-px jump. Some single ticks take 35–58 frames
+  over flat ground. The cause is not traced: a 4-slot chunk-cache model
+  does not explain them. The flight's moves come from the game's own
+  leader movement (`leader_spawn`, `$01C21A`, called with a direction),
+  not from a coordinate table; the path is in the log of the tool's run.
+  Top-down flew at the walking period (26 frames per tick), slower than
+  the original flight; it now uses 22 frames per tick while the
+  leader's travel mode (char +6) is 4, the dragon.
+
 ![](img/topdown-height-mock.png)
 
 *Overworld from ROM data: left as drawn now (flat), right with cell
