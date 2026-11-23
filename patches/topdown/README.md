@@ -215,6 +215,65 @@ What v2 changed, in order of gain:
   640-byte corner with bitmap lines 160+ (never drawn in a linear
   render, never committed) before and after.
 
+### Jitter (#289)
+
+Measured on screen pixels (`tools/md_smooth.py --hole`: `wobble` =
+position against its own 15-frame moving average, per axis) and with
+`tools/md_iso_cadence.py`, 2 MB build, on the closed-loop Buc route
+(`tools/md_buc_route.py ... iso`, each ROM its own route: fixed input
+routes drift whenever tick timing changes):
+
+| Measure | #290 | + tick race, held lookahead (#291) |
+|---|---|---|
+| Wobble mean / p95 (px) | 0.45 / 1.33 | 0.37 / 1.00 (Ring of Perfection 0.33 / 0.87) |
+| Tick interval = period, overworld / rooms | 8 of 23 / 65 of 205 (up to 35 / 56 frames) | 23 of 23 / 222 of 224 |
+| Picture within one cell of the game camera | 79.9 % | 97.0 % |
+| Camera trail <= 1 cell (overworld / rooms) | 98.2 % / 92.9 % | 98.1 % / 97.8 % |
+| Scroll frames on the route (spurious motion included) | 1,034 | 844 |
+| 1 MB build trail, overworld / rooms | 79.0 % / 68.2 % | 93.2 % / 72.3 % |
+
+- **Tick race.** `td_vint` updates the picture itself while td_tick
+  waits (PC inside `ti_tw0..ti_tw1`) and stamps `TD_LASTFR`, so the
+  wait loop, which waited for `FRAME != TD_LASTFR`, saw a new frame
+  only when the VBlank fell between its two instructions: the period
+  check ran by chance and ticks ran 0–8 frames late, at random. The
+  loop now keeps its own last-seen frame (`TD_MSEEN`). Steps arrive
+  evenly, so the one-tick camera glide no longer finishes early and
+  waits.
+- **Held lookahead.** A picture is put on the plane only within one
+  cell (per axis) of the game camera (`ti_hold`). The two-step
+  lookahead used when a picture takes longer than a tick was shown
+  even after the leader stopped (a wall, a turn), and the camera,
+  which stays within a cell of the picture, was pulled a cell forward
+  and back. A held picture whose camera stopped stepping (2 periods)
+  is dropped; hold time does not count as render latency.
+- **Window scan** (`td_iso_winfix`, every 4th tick) cost 6–7 frames
+  in the overworld and 8–9 in rooms (two table walks per cell, 1,120
+  cells), a third of those ticks' render time. Each row's frame words
+  are now built once (`ti_erow`) and a cell costs one compare unless it
+  differs (window byte-identical at 7 sampled frames: overworld, room
+  156, cutscene with text box). Buc route: trail rooms 97.8 → 98.9 %,
+  picture within a cell 97.0 → 98.3 %, pictures 146 → 225; 1 MB build
+  rooms 72.3 → 91.7 %, overworld 93.2 → 95.1 %.
+- Room: the remaining 10–14-frame stops are a slow picture (up to 35
+  frames when many new tiles enter) committing while the camera is at
+  the ±1 clamp of the old one: #279 (asymmetric range + edge checker).
+- Render edges (#279, `tools/md_iso_edges.py`): frames with a hole
+  pixel on an uncommitted tile, Buc route: #290 468, now 134 (of
+  5,526); overworld frames with parchment in the hole 151 / 129 of
+  ~590 (explore route 45 and 291 of 2,460). Measured safe camera range
+  per axis is [-0.5, +1] cell from the picture (the commit assumes
+  +-1): below -0.5 the hole reaches cells the 10x10 render does not
+  draw. Holding the camera to that range (tried: one-cell picture
+  steps, commit only with the camera in range, both pictures' range
+  while committing) removes most edges but costs trail in room 156
+  (97.8 % -> 54-64 %): pictures there take up to 35 frames and the
+  overlap window between two pictures is half a cell. Needs faster
+  pictures first (#283, td_sync's cost).
+- The 17 blob/void tiles are built at load from one quadrant
+  (`td_blobs`, 544 → ~150 bytes), which keeps the 1 MB blob in its
+  padding.
+
 | Measure (smooth iso, v1) | value |
 |---|---|
 | Overworld walk: moving frames in ≤ 2 px steps | 226 / 226 (Buc route), 260 / 260 (explore route) |
@@ -320,9 +379,9 @@ after it re-links.
 | `$00D9E6` | `move.w d0,vdp_ctrl` (vdp_ctrl_write) | `jmp td_vctl` (drop our registers on a layout install) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
-RAM `$FFDC00–$FFE55F` (+ the iso pool tables at `$FFD2EA–$FFDA07`, the attract buffer) (free in play: the attract buffer ends at
+RAM `$FFDC00–$FFE6BF` (+ the iso pool tables at `$FFD2EA–$FFDA07`, the attract buffer) (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
-the boot RAM clear resets it). Blob 11,682 bytes at `$FD0CC` (padding) in the 1 MB build; the 2 MB build assembles with `SIZE2M` (the fast-terrain code) and places its 12,132-byte blob at `$1F0000`, the second megabyte's code room, with the fast streams at `$100000` (`ISOFAST`). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
+the boot RAM clear resets it). Blob 11,870 bytes at `$FD0CC` (padding, 12,084) in the 1 MB build; the 2 MB build assembles with `SIZE2M` (the fast-terrain code) and places its 12,392-byte blob at `$1F0000`, the second megabyte's code room, with the fast streams at `$100000` (`ISOFAST`). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
 
 ## Limits (test build)
 

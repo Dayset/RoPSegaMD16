@@ -10,7 +10,7 @@ moved in the last 64 frames and the scene (mode, location) has not
 changed in the last 64 ("walking"):
   picture lag  share of frames with the picture at the game camera
                cell (0) / at most 1 cell away per axis
-  camera trail share with the shown camera (TD_CMX/CMY, 1/16 cell)
+  camera trail share with the shown camera (TD_CMX/CMY, 1/TI_CU cell)
                at most 1 cell behind the game camera, and its mean
   renders, ticks, render frames (IRS != 0) per render.
 Addresses come from patches/topdown/feature.s (equ chain).
@@ -109,8 +109,9 @@ def main():
         walk += 1
         n0 += d == 0
         n1 += d <= 1
-        tr = max(abs(s16(w(ram, E["TD_CMX"])) - 16 * cam[0]),
-                 abs(s16(w(ram, E["TD_CMY"])) - 16 * cam[1]))
+        cu = E.get("TI_CU", 16)
+        tr = max(abs(w(ram, E["TD_CMX"]) - cu * cam[0]),
+                 abs(w(ram, E["TD_CMY"]) - cu * cam[1])) * 16 // cu
         ntr += tr <= 16
         trs += tr
         md_ = w(ram, 0xFF00AE)

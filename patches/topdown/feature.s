@@ -168,7 +168,9 @@ TD_ISH		equ TD_ISOU+10	; its X-table shift
 TD_IBAIL	equ TD_ISOU+12	; map_chunk_pos stopped early (tick time up)
 TD_INOB		equ TD_ISOU+14	; no time limit (first picture)
 TD_WFC		equ TD_ISOU+16	; iso tick counter (window scan cadence)
-TD_CMX		equ TD_ISOU+18	; iso camera (1/16 cell)
+TD_CMX		equ TD_ISOU+18	; iso camera (1/TI_CU cell)
+TI_CU		equ 112		; camera units per cell (8 = 1 px across)
+TI_CMAX		equ 8		; camera move cap per frame and axis (<= 2 px)
 TD_CMY		equ TD_ISOU+20
 TD_ICFR		equ TD_ISOU+22	; frame of its last update
 TD_NAMES	equ TD_ISOU+24	; 64-word plane row buffer
@@ -191,7 +193,19 @@ TD_ICOLR	equ TD_ICOL+2	; ... pending for the resumed row
 TD_PSLOT	equ TD_ICOLR+2	; pool slots in use (rooms lend 128 to figures)
 TD_PSL24	equ TD_PSLOT+2	; TD_PSLOT - 24 (probe window start range)
 TD_PEND		equ TD_PSL24+2	; bank offset past the pool's last slot
-TD_END2		equ TD_PEND+2
+TD_LF0		equ TD_PEND+2	; 56 words: a char's lift at the start of its slide
+TD_LFD		equ TD_LF0+112	; 56 words: its lift drawn last
+TD_LFT		equ TD_LFD+112	; 56 words: the slide start (t0) TD_LF0 belongs to
+TD_CGX		equ TD_LFT+112	; game camera cell seen last (camera glide)
+TD_CGY		equ TD_CGX+2
+TD_CFX		equ TD_CGY+2	; camera at that step (glide start)
+TD_CFY		equ TD_CFX+2
+TD_CT0		equ TD_CFY+2	; frame of that step
+TD_IHLD		equ TD_CT0+2	; finished render held back (ti_hold)
+TD_IHF		equ TD_IHLD+2	; frame the hold began
+TD_MSEEN	equ TD_IHF+2	; frame td_tick's wait saw last
+TD_EROW		equ TD_MSEEN+2	; 40 words: frame words of a window row
+TD_END2		equ TD_EROW+80
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -309,9 +323,12 @@ td_tick:
 	moveq	#0,d7			; synced yet?
 ti_tw0:
 .wait:
-	move.w	FRAME,d0
-	cmp.w	TD_LASTFR,d0
-	beq.s	.wait			; once per frame:
+	move.w	FRAME,d0		; once per frame (seen here, not by
+	cmp.w	TD_MSEEN,d0		; TD_LASTFR: td_vint updates the picture
+	beq.s	.wait			; itself while this loop waits, and the
+	move.w	d0,TD_MSEEN		; loop then saw a new frame only when
+	cmp.w	TD_LASTFR,d0		; the VBlank fell between two of its
+	beq.s	.upd			; instructions: ticks ran 0-8 late, #289)
 	move.w	VDP_CTRL,d1
 	btst	#3,d1
 	beq.s	.late
@@ -1380,7 +1397,8 @@ td_extract:
 ti_xswap:	; iso linear render in progress: swap td_extract's 640 bytes
 	; (tiled rows 2-6, cols 16-19) with TI_XSAVE (bitmap lines 160+,
 	; never drawn or committed). Called before and after: a swap twice
-	; restores both.
+	; restores both. (2 MB only: the linear render needs the fast streams.)
+	ifd	SIZE2M
 	tst.w	TD_IRS
 	beq.s	.x
 	tst.w	TD_ILIN
@@ -1397,7 +1415,9 @@ ti_xswap:	; iso linear render in progress: swap td_extract's 640 bytes
 	lea	36*32-128(a0),a0
 	dbra	d1,.r
 	movem.l	(a7)+,d0-d2/a0-a1
-.x:	rts
+.x:
+	endif
+	rts
 
 ;=======================================================================
 ; td_slidepos — a4 = slide state (lx, ly target cell; fpx, fpy from
@@ -2295,8 +2315,7 @@ td_tiles_check:				; clears TD_TILES if overwritten
 	lsl.w	#5,d0
 	add.w	#16,d0
 	bsr.w	td_vread
-	lea	td_gfx+32+16(pc),a0
-	cmp.w	(a0),d0
+	cmpi.w	#$0DDE,d0
 	bne.s	.bad
 	move.w	TD_BASE,d0		; a word inside map tile 128
 	add.w	#128,d0
@@ -2377,12 +2396,11 @@ td_tiles_load:
 	bcs.s	.quad
 	lea	32(a3),a3
 	dbra	d7,.tile
-	lea	td_gfx(pc),a0		; blank + blobs
-	move.w	#(td_gfx_end-td_gfx)/4-1,d0
-.cp:	move.l	(a0)+,(a4)+
-	dbra	d0,.cp
+	movea.l	a4,a0			; blank + blobs
+	movea.w	#4,a1
+	bsr.w	td_blobs
 	; DMA (256 + 17) tiles to VRAM
-	move.w	#(256*32+td_gfx_end-td_gfx)/2,-(a7)
+	move.w	#(256*32+TD_NGFX)/2,-(a7)
 	moveq	#0,d0
 	move.w	TD_BASE,d0
 	lsl.l	#5,d0
@@ -2476,10 +2494,19 @@ td_isync:
 .r1:	cmp.w	d2,d0
 	bne.s	.r2
 	cmp.w	d3,d1
-	beq.s	.out
+	beq.s	.onp
 .r2:	add.w	TD_DX,d2
 	add.w	TD_DY,d3
 	dbra	d4,.r1
+	bra.s	.drop
+.onp:	tst.w	TD_IHLD			; on the path but held back (ti_hold)
+	beq.s	.out			; and the camera stopped stepping:
+	move.w	FRAME,d0		; the prediction missed, drop it
+	sub.w	TD_MVFR,d0
+	move.w	TD_PERIOD,d1
+	add.w	d1,d1
+	cmp.w	d1,d0
+	bcs.s	.out
 .drop:	bsr.w	td_iso_cancel
 	bra.s	.mv
 .idle:	cmp.w	TD_ICX,d6		; (td_tick renders it, after this)
@@ -2567,66 +2594,92 @@ td_iso_pcheck:
 	bcc.s	.bad
 	rts
 
-; td_iso_cam — camera (TD_CMX/CMY, 1/16 cell) -> TD_IGX / TD_IGY (global
-; px at screen (0,0), the original's framing of that cell). The camera
-; chases the game camera by 1/16 cell per update per axis (1.6 x
-; the walking pace) but stays within one cell of the picture on the plane
-; (TD_ICX/ICY), so the frame's hole never shows past the picture.
+; td_iso_cam — camera (TD_CMX/CMY, 1/TI_CU cell) -> TD_IGX / TD_IGY
+; (global px at screen (0,0), the original's framing of that cell). Each
+; step of the game camera is glided over one tick (TD_PERIOD frames), the
+; leader figure's own slide timing, so the ground moves at the walking
+; pace with no stop-go per cell. The camera stays within one cell of the
+; picture on the plane (TD_ICX/ICY) and moves at most TI_CMAX per frame
+; (catching up after being held).
 td_iso_cam:
-	movem.l	d2-d4,-(a7)
-	moveq	#1,d4			; max move per frame (no catch-up after
-	move.w	FRAME,d0		; a held frame: steps stay <= 2 px), and
-	cmp.w	TD_ICFR,d0		; one move per frame however many
-	bne.s	.f			; updates it gets
-	moveq	#0,d4
-.f:	move.w	d0,TD_ICFR
-	move.w	$FF0E8E,d0		; x: target = game camera, clamped
+	movem.l	d2-d5,-(a7)
+	move.w	FRAME,d0
+	cmp.w	TD_ICFR,d0
+	beq.w	.xy			; one move per frame
+	move.w	d0,TD_ICFR
+	move.w	$FF0E8E,d0		; a game camera step: glide from here
+	move.w	$FF0E90,d1
+	cmp.w	TD_CGX,d0
+	bne.s	.ns
+	cmp.w	TD_CGY,d1
+	beq.s	.el
+.ns:	move.w	d0,TD_CGX
+	move.w	d1,TD_CGY
+	move.w	TD_CMX,TD_CFX
+	move.w	TD_CMY,TD_CFY
+	move.w	FRAME,TD_CT0
+.el:	move.w	FRAME,d4		; d4 = elapsed (0..T)
+	sub.w	TD_CT0,d4
+	bmi.s	.full
+	cmp.w	TD_PERIOD,d4
+	bls.s	.e1
+.full:	move.w	TD_PERIOD,d4
+.e1:	move.w	TD_CGX,d0
 	move.w	TD_ICX,d1
+	move.w	TD_CFX,d5
 	lea	TD_CMX,a0
 	bsr.s	.ax
-	move.w	$FF0E90,d0		; y
+	move.w	TD_CGY,d0
 	move.w	TD_ICY,d1
+	move.w	TD_CFY,d5
 	lea	TD_CMY,a0
 	bsr.s	.ax
-	move.w	TD_CMX,d0
+.xy:	move.w	TD_CMX,d0
 	sub.w	TD_CMY,d0
-	muls.w	#7,d0			; 14 * (x - y) / 16
-	asr.l	#3,d0
+	asr.w	#3,d0			; 14 (x - y) / 112
 	sub.w	#148,d0
 	move.w	d0,TD_IGX
+	moveq	#0,d0
 	move.w	TD_CMX,d0
-	add.w	TD_CMY,d0
-	asr.w	#1,d0			; 8 * (x + y) / 16
+	moveq	#0,d1
+	move.w	TD_CMY,d1
+	add.l	d1,d0
+	divu.w	#14,d0			; 8 (x + y) / 112
 	sub.w	#98,d0
 	move.w	d0,TD_IGY
-	movem.l	(a7)+,d2-d4
+	movem.l	(a7)+,d2-d5
 	rts
-.ax:	lsl.w	#4,d0			; target (1/16 cell)
-	lsl.w	#4,d1			; picture cell
-	move.w	d1,d2
-	sub.w	#16,d2
+.ax:	mulu.w	#TI_CU,d0		; d0 = game cell, d1 = picture cell,
+	mulu.w	#TI_CU,d1		; d5 = glide start, d4 = elapsed
+	move.w	d0,d2
+	sub.w	(a0),d2			; more than 3 cells away: snap
+	bpl.s	.a1
+	neg.w	d2
+.a1:	cmpi.w	#3*TI_CU,d2
+	bls.s	.gl
+	move.w	d0,(a0)
+	rts
+.gl:	sub.w	d5,d0			; want = start + (cell - start) el / T
+	muls.w	d4,d0
+	divs.w	TD_PERIOD,d0
+	add.w	d5,d0
+	move.w	d1,d2			; ... within one cell of the picture
+	sub.w	#TI_CU,d2
 	cmp.w	d2,d0
 	bge.s	.c1
 	move.w	d2,d0
-.c1:	add.w	#32,d2
+.c1:	add.w	#2*TI_CU,d2
 	cmp.w	d2,d0
 	ble.s	.c2
 	move.w	d2,d0
-.c2:	sub.w	(a0),d0			; distance
-	move.w	d0,d2
-	bpl.s	.p
-	neg.w	d2
-.p:	cmpi.w	#48,d2			; more than 3 cells: snap
-	bgt.s	.mv
-	cmp.w	d4,d2
-	ble.s	.mv
-	tst.w	d0
-	bmi.s	.n
-	move.w	d4,d0
-	bra.s	.mv
-.n:	move.w	d4,d0
-	neg.w	d0
-.mv:	add.w	d0,(a0)
+.c2:	sub.w	(a0),d0			; ... at most TI_CMAX per frame
+	cmpi.w	#TI_CMAX,d0
+	ble.s	.m1
+	moveq	#TI_CMAX,d0
+.m1:	cmpi.w	#-TI_CMAX,d0
+	bge.s	.m2
+	moveq	#-TI_CMAX,d0
+.m2:	add.w	d0,(a0)
 	rts
 
 td_iso_glide:	; (the camera follows by itself)
@@ -2634,10 +2687,10 @@ td_iso_glide:	; (the camera follows by itself)
 
 td_iso_snap:				; camera on the picture's cell now
 	move.w	TD_ICX,d0
-	lsl.w	#4,d0
+	mulu.w	#TI_CU,d0
 	move.w	d0,TD_CMX
 	move.w	TD_ICY,d0
-	lsl.w	#4,d0
+	mulu.w	#TI_CU,d0
 	move.w	d0,TD_CMY
 	move.w	FRAME,TD_ICFR
 	rts
@@ -2657,7 +2710,7 @@ td_ilift:
 	cmp.w	(a1),d2
 	bne.s	.new
 	cmp.w	112(a1),d3
-	beq.s	.have
+	beq.w	.have
 .new:	tst.w	TD_MAIN
 	beq.s	.have
 	move.w	d2,(a1)
@@ -2687,7 +2740,36 @@ td_ilift:
 	lsl.w	#2,d1
 	add.w	d1,d2
 	move.w	d2,224(a1)
-.have:	move.w	224(a1),TD_TLIFT
+.have:	move.w	d7,d0			; lift = from + (to - from) * el / T
+	add.w	d0,d0			; (d4 = elapsed, from td_slidepos)
+	lea	TD_LFT,a0		; a new slide: from the lift drawn last,
+	move.w	8(a4),d1		; unless the position snaps too
+	cmp.w	(a0,d0.w),d1
+	beq.s	.in
+	move.w	d1,(a0,d0.w)
+	lea	TD_LFD,a0
+	move.w	(a0,d0.w),d1
+	move.w	(a4),d3
+	lsl.w	#4,d3
+	cmp.w	4(a4),d3
+	bne.s	.gl
+	move.w	2(a4),d3
+	lsl.w	#4,d3
+	cmp.w	6(a4),d3
+	bne.s	.gl
+	move.w	224(a1),d1
+.gl:	lea	TD_LF0,a0
+	move.w	d1,(a0,d0.w)
+.in:	lea	TD_LF0,a0
+	move.w	(a0,d0.w),d1
+	move.w	224(a1),d2
+	sub.w	d1,d2
+	muls.w	d4,d2
+	divs.w	TD_PERIOD,d2
+	add.w	d1,d2
+	lea	TD_LFD,a0
+	move.w	d2,(a0,d0.w)
+	move.w	d2,TD_TLIFT
 	movem.l	(a7)+,d0-d3/a0-a2
 	rts
 
@@ -2767,6 +2849,7 @@ td_iso_render:
 	clr.w	TD_IREQ
 	bsr.w	ti_target		; start: the target cell, alignment shift
 	move.w	FRAME,TD_IST
+	clr.w	TD_IHLD
 	move.w	d6,TD_IRX
 	move.w	d7,TD_IRY
 	move.w	$FF0092,TD_IRPH
@@ -2818,7 +2901,11 @@ td_iso_render:
 	move.w	#2,TD_IRS
 	clr.w	TD_IROW
 	addq.w	#1,TD_IGEN
-.com:	bsr.w	td_iso_commit		; rows TD_IROW.. while time is left
+.com:	tst.w	TD_IROW			; before the first plane row: a
+	bne.s	.cm			; picture ahead of the game camera
+	bsr.w	ti_hold			; waits for it (ti_hold)
+	bne.w	.out
+.cm:	bsr.w	td_iso_commit		; rows TD_IROW.. while time is left
 	cmpi.w	#23,TD_IROW
 	bcs.w	.out
 	clr.w	TD_IRS			; done: the plane shows the new picture
@@ -2849,6 +2936,39 @@ td_iso_render:
 .nx:	move.w	#1,TD_IREQ
 	bra.w	.go
 .out:	movem.l	(a7)+,d2-d7/a2-a6
+	rts
+
+ti_hold:	; -> d0 != 0: keep the finished render off the plane. A picture
+	; is shown only within one cell (per axis) of the game camera:
+	; the camera stays within a cell of the picture, so a picture two
+	; steps ahead (lookahead, ti_target) shown when the leader stopped
+	; pulled the view a cell forward and back (#289). Hold time does
+	; not count as render latency (TD_ILAT).
+	tst.w	TD_VALID
+	beq.s	.go
+	move.w	TD_IRX,d0
+	sub.w	$FF0E8E,d0
+	addq.w	#1,d0
+	cmpi.w	#2,d0
+	bhi.s	.hold
+	move.w	TD_IRY,d0
+	sub.w	$FF0E90,d0
+	addq.w	#1,d0
+	cmpi.w	#2,d0
+	bhi.s	.hold
+.go:	tst.w	TD_IHLD
+	beq.s	.z
+	move.w	FRAME,d0
+	sub.w	TD_IHF,d0
+	add.w	d0,TD_IST
+	clr.w	TD_IHLD
+.z:	moveq	#0,d0
+	rts
+.hold:	tst.w	TD_IHLD
+	bne.s	.h1
+	move.w	#1,TD_IHLD
+	move.w	FRAME,TD_IHF
+.h1:	moveq	#1,d0
 	rts
 
 ti_target:	; -> d6/d7 = the cell the next picture shows: the game camera
@@ -3199,10 +3319,12 @@ td_iso_commit:
 	movem.l	d2-d7/a2-a6,-(a7)
 	moveq	#32,d2			; tile step and line stride: tiled
 	movea.w	#4,a2
+	ifd	SIZE2M
 	tst.w	TD_ILIN
 	beq.s	.lay
 	moveq	#4,d2			; linear bitmap: 144-byte lines
 	movea.w	#144,a2
+	endif
 .lay:	move.w	TD_IROW,d7		; bitmap row
 .row:	cmpi.w	#23,d7
 	bcc.w	.done
@@ -3572,10 +3694,9 @@ td_iso_load:
 	add.w	#256,d0
 	lsl.w	#5,d0
 	bsr.w	td_vwrite
-	lea	td_gfx(pc),a0
-	move.w	#(td_gfx_end-td_gfx)/4-1,d1
-.c:	move.l	(a0)+,VDP_DATA
-	dbra	d1,.c
+	lea	VDP_DATA,a0
+	suba.l	a1,a1
+	bsr.w	td_blobs
 	move.w	TD_BASE,d0		; edge tiles: bit 1 -> colour 12
 	add.w	#TI_EDGE,d0
 	lsl.w	#5,d0
@@ -3616,8 +3737,7 @@ td_iso_check:				; clears TD_TILES if overwritten
 	lsl.w	#5,d0
 	add.w	#16,d0
 	bsr.w	td_vread
-	lea	td_gfx+32+16(pc),a0
-	cmp.w	(a0),d0
+	cmpi.w	#$0DDE,d0
 	beq.s	.out
 	clr.w	TD_TILES
 .out:	rts
@@ -3628,7 +3748,7 @@ td_iso_check:				; clears TD_TILES if overwritten
 ; (TD_UNFR: the blank, to take the frame off).
 ;=======================================================================
 td_iso_winfix:
-	movem.l	d2-d6/a2,-(a7)
+	movem.l	d2-d6/a2-a3,-(a7)
 	move.w	#1,TD_INWF
 	moveq	#0,d6			; row
 .row:	tst.w	TD_UNFR
@@ -3647,27 +3767,23 @@ td_iso_winfix:
 .rd:	move.w	VDP_DATA,(a2)+
 	dbra	d1,.rd
 	move.w	(a7)+,sr
+	bsr.w	ti_erow			; the row's frame words (TD_EROW)
 	lea	TD_WROW,a2
+	lea	TD_EROW,a3
 	moveq	#0,d4
-.col:	move.w	(a2)+,d0
+.col:	move.w	(a2)+,d0		; as it should be: next (most cells,
+	move.w	(a3)+,d3		; one compare; per-cell table walks
+	cmp.w	d3,d0			; made the scan 6-9 frames, #289)
+	beq.s	.nx
 	bsr.w	ti_blankish
 	bne.s	.nx
-	move.w	FONTBLK,d0
-	tst.w	TD_UNFR
-	bne.s	.w
-	move.w	d4,d1
-	move.w	d6,d2
-	bsr.w	ti_frameword
-.w:	cmp.w	-2(a2),d0
-	beq.s	.nx
-	move.w	d0,d1
 	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d5,d0
 	move.w	sr,-(a7)
 	ori.w	#$0700,sr
 	bsr.w	td_vwrite
-	move.w	d1,VDP_DATA
+	move.w	d3,VDP_DATA
 	move.w	(a7)+,sr
 .nx:	addq.w	#1,d4
 	cmpi.w	#40,d4
@@ -3676,7 +3792,7 @@ td_iso_winfix:
 	cmpi.w	#28,d6
 	bcs.w	.row
 	clr.w	TD_INWF
-	movem.l	(a7)+,d2-d6/a2
+	movem.l	(a7)+,d2-d6/a2-a3
 	rts
 ti_wend:
 
@@ -3706,6 +3822,59 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	bra.s	.o
 .y:	moveq	#0,d1
 .o:	movem.l	(a7)+,d0-d1
+	rts
+
+ti_erow:	; d6 = window row -> TD_EROW = its 40 frame words (ti_frameword's
+	; for every column; all transparent while the frame comes off)
+	movem.l	d1-d3/a0-a1,-(a7)
+	lea	TD_EROW,a1
+	move.w	TD_BASE,d0		; parchment
+	add.w	#256+$2000,d0
+	tst.w	TD_UNFR
+	beq.s	.f
+	move.w	FONTBLK,d0
+.f:	moveq	#40-1,d1
+.p:	move.w	d0,(a1)+
+	dbra	d1,.p
+	tst.w	TD_UNFR
+	bne.s	.o
+	lea	-80(a1),a1
+	lea	ti_rows(pc),a0		; the hole's fully inside columns
+	move.w	d6,d0
+	add.w	d0,d0
+	moveq	#0,d1
+	move.b	(a0,d0.w),d1
+	moveq	#0,d2
+	move.b	1(a0,d0.w),d2
+	move.w	FONTBLK,d3
+	bra.s	.hc
+.h:	move.w	d1,d0
+	add.w	d0,d0
+	move.w	d3,(a1,d0.w)
+	addq.w	#1,d1
+.hc:	cmp.w	d2,d1
+	bls.s	.h
+	lea	ti_eoff(pc),a0		; its edge cells
+	moveq	#0,d1
+	move.b	(a0,d6.w),d1
+	moveq	#0,d2
+	move.b	1(a0,d6.w),d2
+	sub.w	d1,d2
+	lea	ti_ecel(pc),a0
+	add.w	d1,d1
+	adda.w	d1,a0
+	move.w	TD_BASE,d3
+	add.w	#TI_EDGE+$2000,d3
+	bra.s	.ec
+.e:	moveq	#0,d0
+	move.b	(a0)+,d0
+	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d3,d1
+	add.w	d0,d0
+	move.w	d1,(a1,d0.w)
+.ec:	dbra	d2,.e
+.o:	movem.l	(a7)+,d1-d3/a0-a1
 	rts
 
 ti_frameword:	; d1 = column, d2 = row -> d0 = frame word (keeps d1-d2)
@@ -3825,23 +3994,60 @@ td_wtl:	; water map tiles (contain colours 1/2)
 td_nsw:	; nibble with 2 <-> 4 swapped (the shimmer's swap table is built
 	; from this into TD_SWAPT at load)
 	dc.b	0,1,4,3,2,5,6,7,8,9,10,11,12,13,14,15
-td_gfx:	; tile 0 void (solid colour 12 = parchment pink in palette 1),
-	; then 4 blob variants x (TL,BL,TR,BR)
-	dcb.l 8,$CCCCCCCC
+TD_NGFX		equ 17*32
+td_blobs:	; tile 0 void (solid colour 12 = parchment pink in palette 1),
+	; then 4 blob variants x (TL,BL,TR,BR), built from one quadrant:
+	; BL/BR bottom up, TR/BR mirrored, highlight (F) in TL only.
+	; Longs to (a0), a0 += a1 after each (a1 = 0: a VDP data port).
+	movem.l	d2-d7/a2-a3,-(a7)
+	moveq	#8-1,d0
+.v0:	move.l	#$CCCCCCCC,(a0)
+	adda.l	a1,a0
+	dbra	d0,.v0
+	lea	td_bcol(pc),a2
+	lea	td_blob(pc),a3
+	moveq	#4-1,d7
+.var:	moveq	#0,d6			; quadrant 0..3: TL, BL, TR, BR
+.q:	moveq	#0,d5			; row
+.r:	move.w	d5,d0
+	btst	#0,d6
+	beq.s	.t
+	eori.w	#7,d0
+.t:	lsl.w	#2,d0
+	move.l	(a3,d0.w),d1
+	moveq	#8-1,d4
+.n:	btst	#1,d6
+	bne.s	.m
+	rol.l	#4,d1			; next pixel from the left
+	move.b	d1,d3
+	bra.s	.g
+.m:	move.b	d1,d3			; ... from the right (mirror)
+	ror.l	#4,d1
+.g:	andi.w	#$F,d3
+	cmpi.b	#$E,d3			; 0, D (outline) kept
+	bcs.s	.p
+	beq.s	.b
+	tst.w	d6			; F: highlight in TL only
+	bne.s	.b
+	move.b	1(a2),d3
+	bra.s	.p
+.b:	move.b	(a2),d3			; E: body colour
+.p:	lsl.l	#4,d2
+	or.b	d3,d2
+	dbra	d4,.n
+	move.l	d2,(a0)
+	adda.l	a1,a0
+	addq.w	#1,d5
+	cmpi.w	#8,d5
+	bcs.s	.r
+	addq.w	#1,d6
+	cmpi.w	#4,d6
+	bcs.s	.q
+	addq.w	#2,a2
+	dbra	d7,.var
+	movem.l	(a7)+,d2-d7/a2-a3
+	rts
+td_bcol:	; per variant: body, highlight colour
+	dc.b	$E,$F, $F,$B, $C,$F, $4,$F
+td_blob:	; TL quadrant (body E, highlight F)
 	dc.l $0000000D,$0000DDDD,$000DDEEE,$00DDEEEE,$0DDEEFFE,$0DEEFFEE,$0DEEEEEE,$DDEEEEEE
-	dc.l $DDEEEEEE,$0DEEEEEE,$0DEEEEEE,$0DDEEEEE,$00DDEEEE,$000DDEEE,$0000DDDD,$0000000D
-	dc.l $D0000000,$DDDD0000,$EEEDD000,$EEEEDD00,$EEEEEDD0,$EEEEEED0,$EEEEEED0,$EEEEEEDD
-	dc.l $EEEEEEDD,$EEEEEED0,$EEEEEED0,$EEEEEDD0,$EEEEDD00,$EEEDD000,$DDDD0000,$D0000000
-	dc.l $0000000D,$0000DDDD,$000DDFFF,$00DDFFFF,$0DDFFBBF,$0DFFBBFF,$0DFFFFFF,$DDFFFFFF
-	dc.l $DDFFFFFF,$0DFFFFFF,$0DFFFFFF,$0DDFFFFF,$00DDFFFF,$000DDFFF,$0000DDDD,$0000000D
-	dc.l $D0000000,$DDDD0000,$FFFDD000,$FFFFDD00,$FFFFFDD0,$FFFFFFD0,$FFFFFFD0,$FFFFFFDD
-	dc.l $FFFFFFDD,$FFFFFFD0,$FFFFFFD0,$FFFFFDD0,$FFFFDD00,$FFFDD000,$DDDD0000,$D0000000
-	dc.l $0000000D,$0000DDDD,$000DDCCC,$00DDCCCC,$0DDCCFFC,$0DCCFFCC,$0DCCCCCC,$DDCCCCCC
-	dc.l $DDCCCCCC,$0DCCCCCC,$0DCCCCCC,$0DDCCCCC,$00DDCCCC,$000DDCCC,$0000DDDD,$0000000D
-	dc.l $D0000000,$DDDD0000,$CCCDD000,$CCCCDD00,$CCCCCDD0,$CCCCCCD0,$CCCCCCD0,$CCCCCCDD
-	dc.l $CCCCCCDD,$CCCCCCD0,$CCCCCCD0,$CCCCCDD0,$CCCCDD00,$CCCDD000,$DDDD0000,$D0000000
-	dc.l $0000000D,$0000DDDD,$000DD444,$00DD4444,$0DD44FF4,$0D44FF44,$0D444444,$DD444444
-	dc.l $DD444444,$0D444444,$0D444444,$0DD44444,$00DD4444,$000DD444,$0000DDDD,$0000000D
-	dc.l $D0000000,$DDDD0000,$444DD000,$4444DD00,$44444DD0,$444444D0,$444444D0,$444444DD
-	dc.l $444444DD,$444444D0,$444444D0,$44444DD0,$4444DD00,$444DD000,$DDDD0000,$D0000000
-td_gfx_end:

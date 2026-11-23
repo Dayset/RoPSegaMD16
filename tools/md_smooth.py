@@ -59,6 +59,24 @@ def best_shift_masked(a, b, R, m):
     return best
 
 
+def wobble(rows, h=7):
+    """Per axis: the picture's position (sum of frame shifts) against its
+    own (2h+1)-frame moving average, over frames with motion nearby; stop-go
+    walking strays by px, an even glide by < 0.5 px. -> (mean, p95) px."""
+    xs, ys, x, y = [], [], 0, 0
+    for r in rows:
+        x += r[2]; y += r[3]
+        xs.append(x); ys.append(y)
+    dev = []
+    for t in range(h, len(rows) - h):
+        if sum(1 for r in rows[t - h:t + h + 1] if r[2] or r[3]) < 3:
+            continue
+        for v in (xs, ys):
+            dev.append(abs(v[t] - sum(v[t - h:t + h + 1]) / (2 * h + 1)))
+    dev.sort()
+    return (round(sum(dev) / len(dev), 2), round(dev[int(len(dev) * .95)], 2)) if dev else (0, 0)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rom", required=True)
@@ -129,6 +147,10 @@ def main():
                                          if abs(r[2]) + abs(r[3]) == k)
                              for k in sorted({abs(r[2]) + abs(r[3])
                                               for r in moves})},
+        # hitch: a one-frame stop with the picture moving on both sides
+        "hitch_frames": sum(1 for p_, c, n_ in zip(rows, rows[1:], rows[2:])
+                            if not (c[2] or c[3]) and (p_[2] or p_[3]) and (n_[2] or n_[3])),
+        "wobble_px_mean_p95": wobble(rows),
         "redraw_frames": len(redraws),
         "unchanged_frames": len(still),
         "palette_frames": sum(1 for r in rows if r[5]),
