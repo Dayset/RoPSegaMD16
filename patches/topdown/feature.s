@@ -191,7 +191,10 @@ TD_ICOLR	equ TD_ICOL+2	; ... pending for the resumed row
 TD_PSLOT	equ TD_ICOLR+2	; pool slots in use (rooms lend 128 to figures)
 TD_PSL24	equ TD_PSLOT+2	; TD_PSLOT - 24 (probe window start range)
 TD_PEND		equ TD_PSL24+2	; bank offset past the pool's last slot
-TD_END2		equ TD_PEND+2
+TD_LF0		equ TD_PEND+2	; 56 words: a char's lift at the start of its slide
+TD_LFD		equ TD_LF0+112	; 56 words: its lift drawn last
+TD_LFT		equ TD_LFD+112	; 56 words: the slide start (t0) TD_LF0 belongs to
+TD_END2		equ TD_LFT+112
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -2657,7 +2660,7 @@ td_ilift:
 	cmp.w	(a1),d2
 	bne.s	.new
 	cmp.w	112(a1),d3
-	beq.s	.have
+	beq.w	.have
 .new:	tst.w	TD_MAIN
 	beq.s	.have
 	move.w	d2,(a1)
@@ -2687,7 +2690,36 @@ td_ilift:
 	lsl.w	#2,d1
 	add.w	d1,d2
 	move.w	d2,224(a1)
-.have:	move.w	224(a1),TD_TLIFT
+.have:	move.w	d7,d0			; lift = from + (to - from) * el / T
+	add.w	d0,d0			; (d4 = elapsed, from td_slidepos)
+	lea	TD_LFT,a0		; a new slide: from the lift drawn last,
+	move.w	8(a4),d1		; unless the position snaps too
+	cmp.w	(a0,d0.w),d1
+	beq.s	.in
+	move.w	d1,(a0,d0.w)
+	lea	TD_LFD,a0
+	move.w	(a0,d0.w),d1
+	move.w	(a4),d3
+	lsl.w	#4,d3
+	cmp.w	4(a4),d3
+	bne.s	.gl
+	move.w	2(a4),d3
+	lsl.w	#4,d3
+	cmp.w	6(a4),d3
+	bne.s	.gl
+	move.w	224(a1),d1
+.gl:	lea	TD_LF0,a0
+	move.w	d1,(a0,d0.w)
+.in:	lea	TD_LF0,a0
+	move.w	(a0,d0.w),d1
+	move.w	224(a1),d2
+	sub.w	d1,d2
+	muls.w	d4,d2
+	divs.w	TD_PERIOD,d2
+	add.w	d1,d2
+	lea	TD_LFD,a0
+	move.w	d2,(a0,d0.w)
+	move.w	d2,TD_TLIFT
 	movem.l	(a7)+,d0-d3/a0-a2
 	rts
 
