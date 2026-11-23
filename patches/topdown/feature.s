@@ -103,6 +103,8 @@ TD_STAMP	equ TD+$30	; figure-cache LRU clock
 TD_OFF		equ TD+$32	; 1 = the original isometric view (A+B+C toggles)
 TD_REQ		equ TD+$34	; view switch requested by td_pad
 TD_PADC		equ TD+$36	; A+B+C held (switch latched until release)
+TD_ANIMFR	equ TD+$38	; frame the last water toggle started
+TD_ANIMI	equ TD+$3A	; water quadrant tiles still to toggle
 TD_LIST		equ TD+$40	; TD_NSLOT x (px.w, py.w, tile.w, kind.w) = 96 B
 TD_CHR		equ TD+$A0	; 56 x 10: lx, ly (target cell), fpx, fpy (from px), t0
 TD_ROW		equ TD+$2E0	; 36-word window row buffer
@@ -521,6 +523,7 @@ td_frame_go:
 	move.w	d1,TD_CAMY
 	bsr.w	td_scroll		; vblank-critical first
 	bsr.w	td_sprites
+	bsr.w	td_anim
 	tst.w	d2
 	beq.s	.out
 	bsr.w	td_stream
@@ -1069,6 +1072,64 @@ td_vcmd:
 	rts
 
 ;=======================================================================
+; td_anim — water shimmer: every 16 frames swap colours 2 and 4 (mid and
+; light blue) inside the water map tiles, in VRAM, 20 quadrant tiles per
+; frame. Every cell showing water animates; no name-table writes.
+;=======================================================================
+TD_NWT		equ 20
+td_anim:
+	movem.l	d2-d5/a2-a3,-(a7)
+	move.w	TD_ANIMI,d2
+	bne.s	.run
+	move.w	FRAME,d0
+	sub.w	TD_ANIMFR,d0
+	cmpi.w	#16,d0
+	bcs.w	.out
+	move.w	FRAME,TD_ANIMFR
+	moveq	#TD_NWT*4,d2
+.run:	lea	td_swap(pc),a3
+	moveq	#20-1,d4
+.t:	moveq	#TD_NWT*4,d3
+	sub.w	d2,d3			; quadrant index
+	move.w	d3,d0
+	lsr.w	#2,d0
+	lea	td_wtl(pc),a0
+	moveq	#0,d1
+	move.b	(a0,d0.w),d1
+	lsl.w	#2,d1
+	andi.w	#3,d3
+	add.w	d3,d1
+	add.w	TD_BASE,d1
+	lsl.w	#5,d1
+	move.w	d1,d3			; tile's VRAM address
+	move.w	d1,d0
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	lea	TD_ROW,a2
+	moveq	#16-1,d1
+.rd:	move.w	VDP_DATA,d0
+	moveq	#0,d5
+	move.b	d0,d5
+	move.b	(a3,d5.w),d0
+	ror.w	#8,d0
+	move.b	d0,d5
+	move.b	(a3,d5.w),d0
+	ror.w	#8,d0
+	move.w	d0,(a2)+
+	dbra	d1,.rd
+	move.w	d3,d0
+	bsr.w	td_vwrite
+	lea	TD_ROW,a2
+	moveq	#8-1,d1
+.wr:	move.l	(a2)+,VDP_DATA
+	dbra	d1,.wr
+	subq.w	#1,d2
+	dbeq	d4,.t
+.out:	move.w	d2,TD_ANIMI
+	movem.l	(a7)+,d2-d5/a2-a3
+	rts
+
+;=======================================================================
 ; td_stream — bring the ring buffer up to the camera.
 ;=======================================================================
 td_stream:
@@ -1410,6 +1471,26 @@ td_tiles_load:
 ;=======================================================================
 ; Data (generated: pixel-double table, blank + blob tiles).
 ;=======================================================================
+td_wtl:	; water map tiles (contain colours 1/2)
+	dc.b 9,10,11,12,13,14,15,17,18,19,21,22,23,34,37,38,39,45,46,61
+	even
+td_swap:	; byte with nibbles 2<->4 swapped
+	dc.b $00,$01,$04,$03,$02,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F
+	dc.b $10,$11,$14,$13,$12,$15,$16,$17,$18,$19,$1A,$1B,$1C,$1D,$1E,$1F
+	dc.b $40,$41,$44,$43,$42,$45,$46,$47,$48,$49,$4A,$4B,$4C,$4D,$4E,$4F
+	dc.b $30,$31,$34,$33,$32,$35,$36,$37,$38,$39,$3A,$3B,$3C,$3D,$3E,$3F
+	dc.b $20,$21,$24,$23,$22,$25,$26,$27,$28,$29,$2A,$2B,$2C,$2D,$2E,$2F
+	dc.b $50,$51,$54,$53,$52,$55,$56,$57,$58,$59,$5A,$5B,$5C,$5D,$5E,$5F
+	dc.b $60,$61,$64,$63,$62,$65,$66,$67,$68,$69,$6A,$6B,$6C,$6D,$6E,$6F
+	dc.b $70,$71,$74,$73,$72,$75,$76,$77,$78,$79,$7A,$7B,$7C,$7D,$7E,$7F
+	dc.b $80,$81,$84,$83,$82,$85,$86,$87,$88,$89,$8A,$8B,$8C,$8D,$8E,$8F
+	dc.b $90,$91,$94,$93,$92,$95,$96,$97,$98,$99,$9A,$9B,$9C,$9D,$9E,$9F
+	dc.b $A0,$A1,$A4,$A3,$A2,$A5,$A6,$A7,$A8,$A9,$AA,$AB,$AC,$AD,$AE,$AF
+	dc.b $B0,$B1,$B4,$B3,$B2,$B5,$B6,$B7,$B8,$B9,$BA,$BB,$BC,$BD,$BE,$BF
+	dc.b $C0,$C1,$C4,$C3,$C2,$C5,$C6,$C7,$C8,$C9,$CA,$CB,$CC,$CD,$CE,$CF
+	dc.b $D0,$D1,$D4,$D3,$D2,$D5,$D6,$D7,$D8,$D9,$DA,$DB,$DC,$DD,$DE,$DF
+	dc.b $E0,$E1,$E4,$E3,$E2,$E5,$E6,$E7,$E8,$E9,$EA,$EB,$EC,$ED,$EE,$EF
+	dc.b $F0,$F1,$F4,$F3,$F2,$F5,$F6,$F7,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF
 	even
 td_dbl:	; byte (p0<<4|p1) -> word (p0 p0 p1 p1)
 	dc.w $0000,$0011,$0022,$0033,$0044,$0055,$0066,$0077

@@ -86,14 +86,57 @@ cache (#231). The fix is to move the composition offline:
    on average (510 max) out of 828. A pre-rendered map aligns tiles
    globally and repeats far more, but the overworld image is large
    (352×224 cells), so its atlas plus tilemap will not fit in the 12 KB
-   left in the 1 MB ROM; a 2–4 MB ROM (no mapper needed up to 4 MB) is
-   the expected container. Rooms are small. Step 2 gives exact numbers.
+   left in the 1 MB ROM. The container is a **2 MB** ROM: the save
+   EEPROM sits at `$200000` (`docs/save.md`), so the original board's
+   address space ends at 2 MB; 4 MB needs a different board or a flash
+   cart with its own save mapping. Rooms are small. Step 2 gives exact
+   numbers.
 4. **Stream it** through the same ring buffer, isometric rows instead
    of square cells, switching tile sets at chunk or location edges;
    figures as sprites (their `$197B0` template images), tall objects
    in front via Plane A priority tiles.
 
 Until step 2 exists, topdown is the playable smooth build.
+
+## Follow-up answers (v2, #251)
+
+- **Top-down and isometric in the same 1 MB ROM?** Yes, done: A+B+C
+  switches views at any moment, same game state. The whole top-down
+  view is 5.3 KB of code and data in the ROM's padding.
+- **Sub-cell animation with the freed CPU?** Yes, done: figures are the
+  game's own images as sprites, sliding every frame and cycling their
+  four walk poses per step; the 68000 is still idle most frames.
+- **Is it texture decompression after all?** The CPU cost is the
+  terrain composite (`$E358`, ~16 of ~22 frames per tick in a room),
+  but the *jerk* is that the picture is rebuilt every tick with no
+  frame lock and lives in a plane that cannot scroll (causes 1–3).
+  Zoomed-in rooms rebuild the whole picture every tick even when
+  nothing moved, so they are jerky without any new decoding.
+- **Decode once, then move sprites (like a battle screen)?** Yes —
+  that is the top-down view, and the plan for a smooth isometric view
+  (card in #251 follow-up): render the terrain only when the camera
+  crosses a cell, keep it on a scrollable plane, glide the camera per
+  frame, draw figures as cached sprites. Agreed direction (Dayset,
+  2026-11-23): simplified terrain first, full detail filled in when
+  the player stands still.
+- **Tall terrain was very slow — fixable?** Yes. Height costs extra
+  composite work per cell; it is paid only when the picture is
+  rebuilt. Top-down pays it never; the planned isometric mode pays it
+  once per camera step instead of every tick.
+- **Row-shifting tricks?** The VDP scrolls each screen line
+  horizontally and each 16-px column vertically. That gives shear,
+  ripple and (with a per-line interrupt) a tilt, simulated below from
+  the real plane — but not a rotation, so it cannot turn the top-down
+  map into an isometric one. Per-line interrupts also clash with the
+  game writing the VDP from the main thread. Useful for water/heat
+  effects; not a renderer.
+- **Small texture animation in top-down:** done as a VRAM pattern
+  swap (water shimmer, see the patch README).
+
+![](img/linescroll-sim.png)
+
+*Line-scroll effects applied to the live top-down plane (VRAM capture,
+same arithmetic as the VDP).*
 
 ## Tools
 
