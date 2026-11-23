@@ -7,6 +7,8 @@
 - `md_run.py` — frame-stepped Mega Drive runner (Genesis Plus GX via
   `pip install stable-retro`): route files, per-frame RAM words, screen
   CRC, screenshots; ~500 frames/s, no X display (issue #249).
+- `md_stress.py` — N frames of seeded random pad input (A+B+C
+  included); longest VBlank gap and longest still screen.
 - `md_smooth.py` — smoothness of a route segment from the rendered
   frames: background shift per frame, redraws, palette changes, blob
   steps (issue #249).
