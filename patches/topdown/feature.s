@@ -2748,6 +2748,66 @@ ti_spell:
 	jmp	($03D9F8).l		; spell_effect_step
 ti_rts:	rts
 
+; ti_ovl_need — occlusion test (#278). d0/d1 = a figure's cell x/y ->
+; d0 = 1 if a cell drawn after it (x > Fx, or x = Fx and y > Fy) within
+; dx 0..2, dy -2..2, |dx-dy| <= 2 is taller than the figure's own cell
+; and its top reaches above the figure's feet: 7 (h - hf) > 8 (dx+dy-1).
+; Cell heights are the top 3 bits of map_chunk_cache_read's word.
+ti_ovl_need:
+	movem.l	d2-d7/a2-a4,-(a7)
+	move.w	d0,d4
+	move.w	d1,d5
+	bsr.s	ti_ovl_h
+	movea.w	d0,a3			; own height
+	moveq	#0,d6			; dx
+.dx:	moveq	#-2,d7			; dy
+.dy:	tst.w	d6
+	bne.s	.ok
+	tst.w	d7
+	ble.s	.nx			; same x: only y > Fy is later
+.ok:	move.w	d6,d0
+	sub.w	d7,d0
+	bpl.s	.a
+	neg.w	d0
+.a:	cmpi.w	#2,d0
+	bgt.s	.nx
+	move.w	d4,d0
+	add.w	d6,d0
+	move.w	d5,d1
+	add.w	d7,d1
+	bsr.s	ti_ovl_h
+	move.w	a3,d2
+	sub.w	d2,d0			; taller than the figure's cell?
+	ble.s	.nx
+	mulu.w	#7,d0
+	move.w	d6,d2
+	add.w	d7,d2
+	subq.w	#1,d2
+	asl.w	#3,d2
+	cmp.w	d2,d0
+	bgt.s	.yes
+.nx:	addq.w	#1,d7
+	cmpi.w	#3,d7
+	blt.s	.dy
+	addq.w	#1,d6
+	cmpi.w	#3,d6
+	blt.s	.dx
+	moveq	#0,d0
+	bra.s	.out
+.yes:	moveq	#1,d0
+.out:	movem.l	(a7)+,d2-d7/a2-a4
+	rts
+
+ti_ovl_h:	; d0/d1 = cell x/y -> d0 = its stack height
+	move.w	d1,-(a7)
+	move.w	d0,-(a7)
+	jsr	($01C176).l		; map_chunk_cache_read (word -> $FF0248)
+	addq.w	#4,a7
+	move.w	($FF0248).l,d0
+	rol.w	#3,d0
+	andi.w	#7,d0
+	rts
+
 ;=======================================================================
 ; td_iso_render — terrain render of the game camera cell into the decode
 ; buffer, aligned to the global grid, then td_iso_commit. Runs with
