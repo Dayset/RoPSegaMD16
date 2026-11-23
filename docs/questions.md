@@ -51,3 +51,9 @@ Work continues on the default.
 - Question: the round trip (`tools/text_roundtrip.py`) now re-encodes all 1184 dialogue records byte-identical. The export it writes is game text derived from ROM bytes, which is rule 4 (distributing ROM content).
 - Default taken: commit the tool only. `assets/text/dialogue.txt` is generated locally and left untracked.
 - If the answer is different: commit the export file as well, and the round-trip check can run in CI against it.
+
+## Q13 — topdown (#249): walk pace and the next renderer
+- Question: (a) the top-down test runs at the original's measured pace (26 frames per tick overworld, 17 in rooms). Keep it, or speed it up? (b) For the isometric look: pre-render the whole world offline into tile sets (needs a 2–4 MB ROM), or isometric only in rooms and the top-down map for the overworld?
+- Default taken: (a) original pace (`TD_T1`/`TD_T2` in `patches/topdown/feature.s`); (b) no renderer work yet; the next card is the byte-exact Python port of the `$E358` composite, which both options need.
+- If the answer is different: (a) change two constants; (b) decides the size of the offline atlas build and the ROM size.
+

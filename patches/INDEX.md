@@ -83,6 +83,12 @@ on the fixed C.
 **Current best of this line:** `d-governor-fix`
 (`a2569bc0c7d93342b8cb1f2d426fbdfe`).
 
+## 2b. Top-down line (#249, separate, on the original ROM)
+
+| Patch | Base | Build | State |
+|---|---|---|---|
+| topdown | original | `make rom FEATURES=topdown` | Delivered 2026-11-23 for Dayset's playtest. Smooth top-down test view on the original engine: frame-locked tick, per-frame VBlank scroll/sprite updates, ring-buffer streaming, sprite blobs. Measured, not eye-tested: see `patches/topdown/README.md`, `docs/smooth-topdown.md`. |
+
 ## 3. Building
 
 ```

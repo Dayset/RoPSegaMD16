@@ -4,6 +4,14 @@
 - `extract_text.py` — dump strings with offsets (issue #004)
 - `disassemble.py` — Capstone-based first-pass disassembly (issue #002)
 - `build.sh` — assemble `disasm/` back to a ROM (issue #009)
+- `md_run.py` — frame-stepped Mega Drive runner (Genesis Plus GX via
+  `pip install stable-retro`): route files, per-frame RAM words, screen
+  CRC, screenshots; ~500 frames/s, no X display (issue #249).
+- `md_smooth.py` — smoothness of a route segment from the rendered
+  frames: background shift per frame, redraws, palette changes, blob
+  steps (issue #249).
+- `md_vram.py` — VRAM/CRAM/VSRAM/registers from a GPGX savestate.
+- `md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
 - `build_rom.py` — feature build: `make rom FEATURES=a,b,c` (issue #239).
   Assembles each `patches/<name>/feature.s` into a free-space allocator
   (regions from `disasm/regions.csv`), applies `patches/<name>/hooks.csv`,
