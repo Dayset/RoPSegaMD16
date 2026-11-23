@@ -3,6 +3,7 @@
 ROM      := rop-original.gen
 REBUILT  := build/rop-rebuilt.gen
 PY       := python3
+SIZE     ?= 1m
 
 .PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test playtest
 
@@ -16,6 +17,8 @@ help:
 	@echo "make gate      build + verify + coverage (run before every push touching disasm/src or tools/)"
 	@echo "make rom      build a feature ROM: make rom FEATURES=music-off"
 	@echo "              (FEATURES= empty builds the byte-identical base)"
+	@echo "              make rom SIZE=2m builds the 2 MB container"
+	@echo "              (1 MB base + second megabyte for tile data, #252)"
 	@echo "make rom-free  fail if any ROM image (*.gen) is tracked by git"
 	@echo "make clean     remove build/"
 	@echo "make playtest  deterministic playtest table (issue #240): input-replay overlay + frozen routes on original, flat-zoomed, walk-unused-frames; reuses cached traces in .scratch-smooth240"
@@ -60,7 +63,7 @@ setup:
 	sh tools/setup.sh
 
 rom:
-	$(PY) tools/build_rom.py FEATURES=$(FEATURES)
+	$(PY) tools/build_rom.py FEATURES=$(FEATURES) --size $(SIZE)
 
 boot:
 	sh tools/test_harness.sh

@@ -887,3 +887,37 @@ see §4.6).
   A=78 handler writes to `$FFBB6C`, reaching `$2068E` cases 81/82.
 - **`docs/overview.md`:** no change needed — it does not carry the
   C=14 label.
+
+## 13. The 2 MB container does not change the save mapping (#252)
+
+The 2 MB ROM (issue #252, Track B — `make rom SIZE=2m`, see
+`docs/smooth-topdown.md` step 3) occupies `$000000–$1FFFFF`; the
+EEPROM window at `$200000` sits immediately after the ROM's end,
+with no overlap, so **nothing about the save mapping changes**:
+same 128-byte serial EEPROM, same bit-bang (DI/DO = D7, CLK = D6),
+same `$43012`/`$430F4` routines, same `$17706`/`$177B4` format
+(magic `0x2A` + parity + 1001-bit packed `$FFA800`). The only
+header field the container touches is the ROM-end address at
+`0x1A4` (`0x000FFFFF` → `0x001FFFFF`).
+
+Verified 2026-11-23 on the 2 MB ROM with the full §8.1 save
+harness (same test ROM recipe, built on the 2 MB base): **all 21
+result words identical to the 1 MB run** — save `$2F11A` returns
+`0x48`, load `$2F896` returns `0x49`, EEPROM[0] re-read `0x2A`,
+EEPROM[1] parity `0x1B`, EEPROM[126]/[127] `0x11`/`0x00`,
+`$4323C` checksum-error count 3, `$FF014E` = 0, `$FF0168` = 0,
+canaries intact — and the flushed `save.eeprom` (128 bytes, magic
+`0x2A`, parity `0x1B`) matches §8.1 byte-for-byte. BlastEm models
+the EEPROM for the 2 MB cart with its shipped `rom.db` entry
+(the entry is matched by header serial `T-50176`); what the
+shipped entry does NOT model is the second megabyte as ROM (it
+maps ROM only to `$FFFFF`) — see `docs/smooth-topdown.md` step 3
+for the one-line `rom.db` fix. That gap affects tile-data reads,
+not the save: the EEPROM device at `$200000` is a separate map
+entry and works either way.
+
+The 4 MB case is different and stays as step 3 says: a 4 MB ROM
+would occupy `$000000–$3FFFFF` and swallow `$200000`, so the
+EEPROM window would collide with ROM and 4 MB needs a different
+board or a flash cart with its own save mapping. Do not extend
+this container to 4 MB by changing the size constant alone.
