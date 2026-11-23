@@ -168,7 +168,9 @@ TD_ISH		equ TD_ISOU+10	; its X-table shift
 TD_IBAIL	equ TD_ISOU+12	; map_chunk_pos stopped early (tick time up)
 TD_INOB		equ TD_ISOU+14	; no time limit (first picture)
 TD_WFC		equ TD_ISOU+16	; iso tick counter (window scan cadence)
-TD_CMX		equ TD_ISOU+18	; iso camera (1/16 cell)
+TD_CMX		equ TD_ISOU+18	; iso camera (1/TI_CU cell)
+TI_CU		equ 112		; camera units per cell (8 = 1 px across)
+TI_CMAX		equ 8		; camera move cap per frame and axis (<= 2 px)
 TD_CMY		equ TD_ISOU+20
 TD_ICFR		equ TD_ISOU+22	; frame of its last update
 TD_NAMES	equ TD_ISOU+24	; 64-word plane row buffer
@@ -194,7 +196,12 @@ TD_PEND		equ TD_PSL24+2	; bank offset past the pool's last slot
 TD_LF0		equ TD_PEND+2	; 56 words: a char's lift at the start of its slide
 TD_LFD		equ TD_LF0+112	; 56 words: its lift drawn last
 TD_LFT		equ TD_LFD+112	; 56 words: the slide start (t0) TD_LF0 belongs to
-TD_END2		equ TD_LFT+112
+TD_CGX		equ TD_LFT+112	; game camera cell seen last (camera glide)
+TD_CGY		equ TD_CGX+2
+TD_CFX		equ TD_CGY+2	; camera at that step (glide start)
+TD_CFY		equ TD_CFX+2
+TD_CT0		equ TD_CFY+2	; frame of that step
+TD_END2		equ TD_CT0+2
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -1383,7 +1390,8 @@ td_extract:
 ti_xswap:	; iso linear render in progress: swap td_extract's 640 bytes
 	; (tiled rows 2-6, cols 16-19) with TI_XSAVE (bitmap lines 160+,
 	; never drawn or committed). Called before and after: a swap twice
-	; restores both.
+	; restores both. (2 MB only: the linear render needs the fast streams.)
+	ifd	SIZE2M
 	tst.w	TD_IRS
 	beq.s	.x
 	tst.w	TD_ILIN
@@ -1400,7 +1408,9 @@ ti_xswap:	; iso linear render in progress: swap td_extract's 640 bytes
 	lea	36*32-128(a0),a0
 	dbra	d1,.r
 	movem.l	(a7)+,d0-d2/a0-a1
-.x:	rts
+.x:
+	endif
+	rts
 
 ;=======================================================================
 ; td_slidepos — a4 = slide state (lx, ly target cell; fpx, fpy from
@@ -2570,66 +2580,92 @@ td_iso_pcheck:
 	bcc.s	.bad
 	rts
 
-; td_iso_cam — camera (TD_CMX/CMY, 1/16 cell) -> TD_IGX / TD_IGY (global
-; px at screen (0,0), the original's framing of that cell). The camera
-; chases the game camera by 1/16 cell per update per axis (1.6 x
-; the walking pace) but stays within one cell of the picture on the plane
-; (TD_ICX/ICY), so the frame's hole never shows past the picture.
+; td_iso_cam — camera (TD_CMX/CMY, 1/TI_CU cell) -> TD_IGX / TD_IGY
+; (global px at screen (0,0), the original's framing of that cell). Each
+; step of the game camera is glided over one tick (TD_PERIOD frames), the
+; leader figure's own slide timing, so the ground moves at the walking
+; pace with no stop-go per cell. The camera stays within one cell of the
+; picture on the plane (TD_ICX/ICY) and moves at most TI_CMAX per frame
+; (catching up after being held).
 td_iso_cam:
-	movem.l	d2-d4,-(a7)
-	moveq	#1,d4			; max move per frame (no catch-up after
-	move.w	FRAME,d0		; a held frame: steps stay <= 2 px), and
-	cmp.w	TD_ICFR,d0		; one move per frame however many
-	bne.s	.f			; updates it gets
-	moveq	#0,d4
-.f:	move.w	d0,TD_ICFR
-	move.w	$FF0E8E,d0		; x: target = game camera, clamped
+	movem.l	d2-d5,-(a7)
+	move.w	FRAME,d0
+	cmp.w	TD_ICFR,d0
+	beq.w	.xy			; one move per frame
+	move.w	d0,TD_ICFR
+	move.w	$FF0E8E,d0		; a game camera step: glide from here
+	move.w	$FF0E90,d1
+	cmp.w	TD_CGX,d0
+	bne.s	.ns
+	cmp.w	TD_CGY,d1
+	beq.s	.el
+.ns:	move.w	d0,TD_CGX
+	move.w	d1,TD_CGY
+	move.w	TD_CMX,TD_CFX
+	move.w	TD_CMY,TD_CFY
+	move.w	FRAME,TD_CT0
+.el:	move.w	FRAME,d4		; d4 = elapsed (0..T)
+	sub.w	TD_CT0,d4
+	bmi.s	.full
+	cmp.w	TD_PERIOD,d4
+	bls.s	.e1
+.full:	move.w	TD_PERIOD,d4
+.e1:	move.w	TD_CGX,d0
 	move.w	TD_ICX,d1
+	move.w	TD_CFX,d5
 	lea	TD_CMX,a0
 	bsr.s	.ax
-	move.w	$FF0E90,d0		; y
+	move.w	TD_CGY,d0
 	move.w	TD_ICY,d1
+	move.w	TD_CFY,d5
 	lea	TD_CMY,a0
 	bsr.s	.ax
-	move.w	TD_CMX,d0
+.xy:	move.w	TD_CMX,d0
 	sub.w	TD_CMY,d0
-	muls.w	#7,d0			; 14 * (x - y) / 16
-	asr.l	#3,d0
+	asr.w	#3,d0			; 14 (x - y) / 112
 	sub.w	#148,d0
 	move.w	d0,TD_IGX
+	moveq	#0,d0
 	move.w	TD_CMX,d0
-	add.w	TD_CMY,d0
-	asr.w	#1,d0			; 8 * (x + y) / 16
+	moveq	#0,d1
+	move.w	TD_CMY,d1
+	add.l	d1,d0
+	divu.w	#14,d0			; 8 (x + y) / 112
 	sub.w	#98,d0
 	move.w	d0,TD_IGY
-	movem.l	(a7)+,d2-d4
+	movem.l	(a7)+,d2-d5
 	rts
-.ax:	lsl.w	#4,d0			; target (1/16 cell)
-	lsl.w	#4,d1			; picture cell
-	move.w	d1,d2
-	sub.w	#16,d2
+.ax:	mulu.w	#TI_CU,d0		; d0 = game cell, d1 = picture cell,
+	mulu.w	#TI_CU,d1		; d5 = glide start, d4 = elapsed
+	move.w	d0,d2
+	sub.w	(a0),d2			; more than 3 cells away: snap
+	bpl.s	.a1
+	neg.w	d2
+.a1:	cmpi.w	#3*TI_CU,d2
+	bls.s	.gl
+	move.w	d0,(a0)
+	rts
+.gl:	sub.w	d5,d0			; want = start + (cell - start) el / T
+	muls.w	d4,d0
+	divs.w	TD_PERIOD,d0
+	add.w	d5,d0
+	move.w	d1,d2			; ... within one cell of the picture
+	sub.w	#TI_CU,d2
 	cmp.w	d2,d0
 	bge.s	.c1
 	move.w	d2,d0
-.c1:	add.w	#32,d2
+.c1:	add.w	#2*TI_CU,d2
 	cmp.w	d2,d0
 	ble.s	.c2
 	move.w	d2,d0
-.c2:	sub.w	(a0),d0			; distance
-	move.w	d0,d2
-	bpl.s	.p
-	neg.w	d2
-.p:	cmpi.w	#48,d2			; more than 3 cells: snap
-	bgt.s	.mv
-	cmp.w	d4,d2
-	ble.s	.mv
-	tst.w	d0
-	bmi.s	.n
-	move.w	d4,d0
-	bra.s	.mv
-.n:	move.w	d4,d0
-	neg.w	d0
-.mv:	add.w	d0,(a0)
+.c2:	sub.w	(a0),d0			; ... at most TI_CMAX per frame
+	cmpi.w	#TI_CMAX,d0
+	ble.s	.m1
+	moveq	#TI_CMAX,d0
+.m1:	cmpi.w	#-TI_CMAX,d0
+	bge.s	.m2
+	moveq	#-TI_CMAX,d0
+.m2:	add.w	d0,(a0)
 	rts
 
 td_iso_glide:	; (the camera follows by itself)
@@ -2637,10 +2673,10 @@ td_iso_glide:	; (the camera follows by itself)
 
 td_iso_snap:				; camera on the picture's cell now
 	move.w	TD_ICX,d0
-	lsl.w	#4,d0
+	mulu.w	#TI_CU,d0
 	move.w	d0,TD_CMX
 	move.w	TD_ICY,d0
-	lsl.w	#4,d0
+	mulu.w	#TI_CU,d0
 	move.w	d0,TD_CMY
 	move.w	FRAME,TD_ICFR
 	rts
@@ -3231,10 +3267,12 @@ td_iso_commit:
 	movem.l	d2-d7/a2-a6,-(a7)
 	moveq	#32,d2			; tile step and line stride: tiled
 	movea.w	#4,a2
+	ifd	SIZE2M
 	tst.w	TD_ILIN
 	beq.s	.lay
 	moveq	#4,d2			; linear bitmap: 144-byte lines
 	movea.w	#144,a2
+	endif
 .lay:	move.w	TD_IROW,d7		; bitmap row
 .row:	cmpi.w	#23,d7
 	bcc.w	.done
