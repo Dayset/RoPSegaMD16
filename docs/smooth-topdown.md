@@ -422,3 +422,13 @@ stack layers 0..h-1 are `$E358(stream, X, Y - 7*layer, d3)`; the top is
 record bit 7 is clear. A figure is covered by every cell drawn after it
 whose image overlaps its 32x32 box: x > Fx, or x = Fx and y > Fy.
 Overlay = that cell subset drawn alone into the `td_extract` corner.
+
+Refined plan (#278): `ti_ovl_need` is only a cheap superset prefilter
+(explore route, 2 MB: leader flagged on 36.6 % of frames). Exactness comes
+from the overlay image itself: render it, and if its 16 tiles are all
+blank, show no sprite. Render = run `map_chunk_pos` centred on the figure's
+cell while no picture render is in progress (the plane already holds the
+last picture, so the decode buffer is free), with `ti_cell` skipping every
+cell that is not drawn after the figure and not within dx 0..2, |dx-dy| <= 2;
+figure draws stay off (`TD_REND`). The 32x32 box around the figure's
+origin is then copied to a figure-cache slot like `td_extract` does.
