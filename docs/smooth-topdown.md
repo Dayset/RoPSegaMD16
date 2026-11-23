@@ -170,6 +170,14 @@ Until step 2 exists, topdown is the playable smooth build.
   the original flight; it now uses 22 frames per tick while the
   leader's travel mode (char +6) is 4, the dragon.
 
+- **Other vessels (#262, `tools/md_vessel_pace.py`):** over open sea at
+  (132,76) the original takes 19 frames per tick on the ship, 17 on the
+  boat and 19 on the dragon (median). The pace follows what is on
+  screen (sea is cheap to draw), not the vessel. Top-down uses 19 for
+  boat and ship, 22 for the dragon (its flight average over land and
+  sea), 26 on foot. Dino could not be measured (from the start it barely
+  moves: 28 frames per tick over 7 moves) and stays at the foot pace.
+
 ![](img/topdown-height-mock.png)
 
 *Overworld from ROM data: flat (as drawn now), raised tiles with
