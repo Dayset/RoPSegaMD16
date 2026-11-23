@@ -5,19 +5,19 @@ USA/Europe, 1992, Naughty Dog — GM T-50176).
 
 ## Demos
 
-Top-down view — the big world rendered flat from above instead of the original isometric diamond (`make rom FEATURES=topdown`).
+Top-down view — the big world rendered flat from above instead of the original isometric diamond (`make rom FEATURES=topdown`). Click a still to play the clip — GitHub plays the video on the file page (README pages can't embed a video player).
 
-<video src="docs/demos/topdown-dragon-flight-side-by-side.mp4" controls muted loop playsinline width="100%"></video>
+[![Dragon flight, original isometric (left) vs top-down (right)](docs/demos/topdown-dragon-flight-side-by-side.png)](docs/demos/topdown-dragon-flight-side-by-side.mp4)
 
-*[Dragon flight, original isometric (left) vs top-down (right) — desert, forest, ocean, snow, 60 s](docs/demos/topdown-dragon-flight-side-by-side.mp4)*
+*Dragon flight, original isometric (left) vs top-down (right) — desert, forest, ocean, snow, 60 s*
 
-<video src="docs/demos/topdown-walk-overworld.mp4" controls muted loop playsinline width="640"></video>
+[![Top-down walk, green overworld](docs/demos/topdown-walk-overworld.png)](docs/demos/topdown-walk-overworld.mp4)
 
-*[Top-down walk, green overworld, 20 s](docs/demos/topdown-walk-overworld.mp4)*
+*Top-down walk, green overworld, 20 s*
 
-<video src="docs/demos/topdown-walk-dark-to-bridge.mp4" controls muted loop playsinline width="640"></video>
+[![Top-down walk, dark terrain to river bridge](docs/demos/topdown-walk-dark-to-bridge.png)](docs/demos/topdown-walk-dark-to-bridge.mp4)
 
-*[Top-down walk, dark terrain to river bridge, 50 s](docs/demos/topdown-walk-dark-to-bridge.mp4)*
+*Top-down walk, dark terrain to river bridge, 50 s*
 
 Repo: https://github.com/Dayset/RoPSegaMD16
 
