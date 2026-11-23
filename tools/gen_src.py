@@ -56,6 +56,11 @@ VEC_PTR = {0x4: 0x200, 0x70: 0x1270, 0x78: 0x1272}  # reset PC; HBlank; VBlank h
 # (move.l (a6,d2.w),-(a7) + rts, no base added), so each entry is emitted as a dc.l label.
 JUMP_TABLE = 0xDF58
 JUMP_TABLE_END = 0xE358  # exclusive
+# Confirmed pointer tables (#281): 4-byte absolute longs in disasm/regions.csv
+# rows of class `ptr-table` (the 19 song end-pointer prefixes). Each row's
+# long is read from the ROM and its target added to label_addrs, so the
+# entry is emitted as `dc.l label` and relocates with a shift.
+REGIONS_CSV = Path("disasm/regions.csv")
 SHIFT = int(os.environ.get("SHIFT", "0"), 0)  # shift test (#16 item 3): padding inserted before the code at $200
 SHIFT_AT = 0x200
 HDR_SUM = 0x18E    # header checksum word, a symbol set by build/checksum.inc (#16)
@@ -478,6 +483,27 @@ def main():
     label_addrs = targets | entry_names | set(NAMES) | set(VEC_PTR.values())  # every named address gets a label
     labelled = set()
 
+    # Confirmed pointer tables (#281): each `ptr-table` row in regions.csv is
+    # one 4-byte absolute long; its target (read from the ROM) becomes a
+    # label address, so the entry is emitted as `dc.l label` below and
+    # relocates with a shift. Song starts are 2-aligned, so a row may sit
+    # at a 2-aligned address — that is fine for dc.l and for the reader
+    # (`move.l -$4(a0)` needs only even alignment).
+    ptr_tables = []
+    if REGIONS_CSV.exists():
+        with REGIONS_CSV.open(newline="") as fh:
+            for r in csv.DictReader(fh):
+                if r["class"] != "ptr-table":
+                    continue
+                ps, pe = int(r["start"], 16), int(r["end"], 16) + 1
+                assert pe - ps == 4, f"ptr-table row ${ps:06X} is not 4 bytes"
+                assert ps % 2 == 0, f"ptr-table row ${ps:06X} not 2-aligned"
+                t = int.from_bytes(rom[ps:pe], "big")
+                assert t < ROM_SIZE and not any(s <= t <= e for s, e, *_ in code), \
+                    f"ptr-table entry ${ps:06X} -> ${t:06X} is not a data address"
+                ptr_tables.append((ps, pe))
+                label_addrs.add(t)
+
     tables = []
     if TABLES_CSV.exists():
         import csv as _csv
@@ -587,6 +613,22 @@ def main():
             if b > JUMP_TABLE_END:
                 emit_data(JUMP_TABLE_END, b)
             return
+        for ps, pe in ptr_tables:
+            if a < pe and b > ps:
+                # confirmed pointer table (#281): one 4-byte absolute long
+                # emitted as a dc.l label. The `; $addr vector` comment is
+                # the accounting marker: status.py's VEC regex counts such a
+                # line as 4 incbin bytes, so typing a row does not change the
+                # incbin total and the M8 regions.csv join still holds.
+                if a < ps:
+                    emit_data(a, ps)
+                assert a <= ps and pe <= b, f"ptr-table row ${ps:06X} straddles a data piece"
+                t = int.from_bytes(rom[ps:pe], "big")
+                assert t in label_addrs, f"ptr-table entry ${ps:06X} -> ${t:06X} has no label"
+                out.append(f"\tdc.l {lab(t)}\t; ${ps:06X} vector")
+                if pe < b:
+                    emit_data(pe, b)
+                return
         if a < HDR_SUM < b:  # header checksum word is a symbol (#16)
             assert not any(HDR_SUM < t < HDR_SUM + 2 for t in label_addrs), "label inside header word"
             emit_data(a, HDR_SUM)

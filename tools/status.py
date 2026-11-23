@@ -47,12 +47,14 @@ def measure():
     tier1 = sum(1 for _, _, t in names if str(t).strip() in ('1', '2'))
     tier0 = sum(1 for _, _, t in names if str(t).strip() == '0')
     incbin = raw = 0
+    incbin_slices = []  # (start, len) of raw incbin slices, for the ptr-table line (#281)
     for l in Path('disasm/src/rop.s').read_text(errors='replace').splitlines():
         m = INC.search(l)
         d = DCB.search(l)
         t = TBL.match(l)
         if m:
             incbin += num(m.group(2))
+            incbin_slices.append((num(m.group(1)), num(m.group(2))))
         elif d:
             incbin += num(d.group(1))
         elif HDR.match(l):
@@ -67,12 +69,16 @@ def measure():
     code = size - incbin
     # M8 region join: regions.csv must cover exactly the incbin bytes.
     regions = None
+    ptr_incbin = 0  # pointer-bearing bytes still emitted as raw incbin (#281)
     rp = Path('disasm/regions.csv')
     if rp.exists():
         unknown = high_entropy = total = z80 = 0
+        ptr_rows = []
         with rp.open(newline='') as fh:
             for r in csv.DictReader(fh):
                 n = int(r['end'], 16) - int(r['start'], 16) + 1
+                if r['class'] == 'ptr-table':
+                    ptr_rows.append((int(r['start'], 16), int(r['end'], 16)))
                 if r['class'] == 'z80-driver-blob':  # assembled code, counted in code (#78)
                     z80 += n
                     continue
@@ -83,6 +89,11 @@ def measure():
                     high_entropy += n
         if total != incbin:
             sys.exit(f'status: regions.csv covers {total} bytes, incbin is {incbin}')
+        for ps, pe in ptr_rows:
+            for s, n in incbin_slices:
+                lo, hi = max(ps, s), min(pe, s + n - 1)
+                if lo <= hi:
+                    ptr_incbin += hi - lo + 1
         regions = {
             'accounted': code + (total - unknown),
             'unknown': unknown, 'high_entropy': high_entropy,
@@ -90,7 +101,7 @@ def measure():
     return {
         'named': tier1, 'tier0': tier0, 'funcs': funcs,
         'code': code, 'incbin': incbin, 'raw': raw, 'size': size,
-        'regions': regions,
+        'regions': regions, 'ptr_incbin': ptr_incbin,
     }
 
 
@@ -111,6 +122,7 @@ def tables(m):
             f"| Bytes accounted (M8) | {r['accounted']:,} | {m['size']:,} | {pct(r['accounted'], m['size'])} |",
             f"| Bytes unknown | {r['unknown']:,} | 0 | {pct(r['unknown'], m['size'])} |",
             f"| Bytes high-entropy (opaque, counted in M8) | {r['high_entropy']:,} | 0 | {pct(r['high_entropy'], m['size'])} |",
+            f"| Pointer-bearing bytes still incbin | {m['ptr_incbin']:,} | 0 | {pct(m['ptr_incbin'], m['size'])} |",
         ]
     return rows
 
@@ -134,7 +146,7 @@ def main():
         extra = (f"; M8 accounted {r['accounted']:,} "
                  f"({100.0 * r['accounted'] / m['size']:.2f}%), "
                  f"unknown {r['unknown']:,}, high-entropy {r['high_entropy']:,}")
-    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}{extra}")
+    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}; ptr-incbin {m['ptr_incbin']:,}{extra}")
 
 
 if __name__ == '__main__':

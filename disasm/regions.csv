@@ -2,7 +2,8 @@ start,end,class,name,doc_ref,tier
 0x000000,0x0001FF,vector-init-table,tbl_vector_init_000000,rop.s rom_start pea.l L000001/L000002/L00007E read this table (vector and init words; 512 bytes) (tier 1),1
 0x00028E,0x0002F9,boot-init-table,tbl_boot_init_00028e,rop.s reset_entry lea L00028E(pc) reads init values (108 bytes) (tier 1),1
 0x000D92,0x00119D,rle-byte-table,region_000d92,disasm/region-classes.txt,2
-0x001394,0x00692D,snd-sfx-payload,snd_sfx_payload_001394,rop.s L017602 lea (pointer-SFX case; inner ptrs L004500 L004502 L004504 lie in this block) and docs/sound.md:33 SFX 90-96 carry a ROM pointer,1
+0x001394,0x006929,snd-sfx-payload,snd_sfx_payload_001394,rop.s L017602 lea (pointer-SFX case; inner ptrs L004500 L004502 L004504 lie in this block) and docs/sound.md:33 SFX 90-96 carry a ROM pointer,1
+0x00692A,0x00692D,ptr-table,song_prefix_11,docs/sound.md:385 (song 11 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
 0x00692E,0x009B2D,snd-song-11,snd_song_11,docs/sound.md:386 (song 11),2
 0x009B2E,0x00D25B,binary-table,region_009b2e,disasm/region-classes.txt,2
 0x00DF58,0x00E357,jump-table,tbl_jump_table_00df58,rop.s map_terrain_tile_lookup lea L00DF58(pc) reads table (256 entries; 114 targets) (tier 1),1
@@ -227,7 +228,42 @@ start,end,class,name,doc_ref,tier
 0x0DDBD8,0x0E0A17,text-dialogue-records,str_dialogue_records,disasm/text/inventory.json:dialogue_record_table (1184 records),2
 0x0E0A18,0x0EB771,text-word-arrays,str_dialogue_word_arrays,disasm/text/inventory.json:dialogue_word_arrays,2
 0x0EBB6E,0x0ED0E3,z80-driver-blob,snd_z80_driver,docs/sound.md:10 (0x1576 bytes uploaded to Z80 RAM),2
-0x0ED0E4,0x0FCAE1,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0ED0E4,0x0ED0E7,ptr-table,song_prefix_00,docs/sound.md:385 (song 0 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0ED0E8,0x0ED4EF,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0ED4F0,0x0ED4F3,ptr-table,song_prefix_20,docs/sound.md:385 (song 20 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0ED4F4,0x0ED4F9,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0ED4FA,0x0ED4FD,ptr-table,song_prefix_02,docs/sound.md:385 (song 2 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0ED4FE,0x0EDDB5,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0EDDB6,0x0EDDB9,ptr-table,song_prefix_01,docs/sound.md:385 (song 1 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EDDBA,0x0EEF87,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0EEF88,0x0EEF8B,ptr-table,song_prefix_03,docs/sound.md:385 (song 3 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EEF8C,0x0EFBC3,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0EFBC4,0x0EFBC7,ptr-table,song_prefix_04,docs/sound.md:385 (song 4 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EFBC8,0x0F0759,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F075A,0x0F075D,ptr-table,song_prefix_16,docs/sound.md:385 (song 16 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F075E,0x0F0C2D,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F0C2E,0x0F0C31,ptr-table,song_prefix_06,docs/sound.md:385 (song 6 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F0C32,0x0F26C7,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F26C8,0x0F26CB,ptr-table,song_prefix_07,docs/sound.md:385 (song 7 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F26CC,0x0F3639,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F363A,0x0F363D,ptr-table,song_prefix_08,docs/sound.md:385 (song 8 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F363E,0x0F36A7,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F36A8,0x0F36AB,ptr-table,song_prefix_09,docs/sound.md:385 (song 9 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F36AC,0x0F517D,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F517E,0x0F5181,ptr-table,song_prefix_10,docs/sound.md:385 (song 10 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F5182,0x0F5DA9,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F5DAA,0x0F5DAD,ptr-table,song_prefix_12,docs/sound.md:385 (song 12 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F5DAE,0x0F683F,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F6840,0x0F6843,ptr-table,song_prefix_13,docs/sound.md:385 (song 13 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F6844,0x0F9005,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F9006,0x0F9009,ptr-table,song_prefix_14,docs/sound.md:385 (song 14 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F900A,0x0F9B33,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0F9B34,0x0F9B37,ptr-table,song_prefix_15,docs/sound.md:385 (song 15 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F9B38,0x0FA921,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0FA922,0x0FA925,ptr-table,song_prefix_05,docs/sound.md:385 (song 5 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0FA926,0x0FBC77,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x0FBC78,0x0FBC7B,ptr-table,song_prefix_17,docs/sound.md:385 (song 17 end-pointer prefix; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0FBC7C,0x0FCAE1,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
 0x0FCAE2,0x0FD035,snd-sfx-records,snd_sfx_records,docs/sound.md:623 (69 records x 22 bytes; wins $FCAE2-$FCB7C over song 17 tail — SFX 1 record live-verified; song 17 parser also consumes these bytes via running-status; docs/sound.md:385),2
 0x0FD036,0x0FD07B,word-offset-table,region_0fd036,,1
 0x0FD0CC,0x0FFFFF,padding-ff,region_0fd0cc,,1

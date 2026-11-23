@@ -12,3 +12,4 @@ Measured from the repo. Issue counts are on GitHub, not here.
 | Bytes accounted (M8) | 1,048,576 | 1,048,576 | 100.00% |
 | Bytes unknown | 0 | 0 | 0.00% |
 | Bytes high-entropy (opaque, counted in M8) | 0 | 0 | 0.00% |
+| Pointer-bearing bytes still incbin | 0 | 0 | 0.00% |

@@ -5,6 +5,25 @@ start,end,class,name,doc_ref,tier
 0x0EBB6E,0x0ED0E4,z80-driver-blob,snd_z80_driver,docs/sound.md:10 (0x1576 bytes uploaded to Z80 RAM),2
 0x00692E,0x09B2E,snd-song-11,snd_song_11,docs/sound.md:386 (song 11),2
 0x0ED0E4,0x0FCAE2,snd-songs,snd_songs_table,docs/sound.md:385 (songs 0-10 12-17 20; ends where the SFX table begins — SFX wins $FCAE2-$FCB7C; see snd_sfx_records); song 0 end-pointer prefix at $ED0E4 (0x000ED5E8); $EB88A reads *(addr-4) as end pointer; same pattern at song 2 ($ED4FA = 0x000EDDFE); live $FF0230=$0ED5E8,2
+0x00692A,0x00692E,ptr-table,song_prefix_11,docs/sound.md:386 (song 11 end-pointer prefix at $692A = 0x00009B2E; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0ED0E4,0x0ED0E8,ptr-table,song_prefix_00,docs/sound.md:385 (song 0 end-pointer prefix at $ED0E4 = 0x000ED5E8; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0ED4F0,0x0ED4F4,ptr-table,song_prefix_20,docs/sound.md:385 (song 20 end-pointer prefix at $ED4F0 = 0x000ED5F4; arrival jingle sharing song 2's tail; reader $EB88A; #281),2
+0x0ED4FA,0x0ED4FE,ptr-table,song_prefix_02,docs/sound.md:385 (song 2 end-pointer prefix at $ED4FA = 0x000EDDFE; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EDDB6,0x0EDDBA,ptr-table,song_prefix_01,docs/sound.md:385 (song 1 end-pointer prefix at $EDDB6 = 0x000EEFBA; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EEF88,0x0EEF8C,ptr-table,song_prefix_03,docs/sound.md:385 (song 3 end-pointer prefix at $EEF88 = 0x000EFC8C; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0EFBC4,0x0EFBC8,ptr-table,song_prefix_04,docs/sound.md:385 (song 4 end-pointer prefix at $EFBC4 = 0x000F07C8; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F075A,0x0F075E,ptr-table,song_prefix_16,docs/sound.md:385 (song 16 end-pointer prefix at $F075A = 0x000F0C5E; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F0C2E,0x0F0C32,ptr-table,song_prefix_06,docs/sound.md:385 (song 6 end-pointer prefix at $F0C2E = 0x000F2732; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F26C8,0x0F26CC,ptr-table,song_prefix_07,docs/sound.md:385 (song 7 end-pointer prefix at $F26C8 = 0x000F36CC; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F363A,0x0F363E,ptr-table,song_prefix_08,docs/sound.md:385 (song 8 end-pointer prefix at $F363A = 0x000F373E; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F36A8,0x0F36AC,ptr-table,song_prefix_09,docs/sound.md:385 (song 9 end-pointer prefix at $F36A8 = 0x000F51AC; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F517E,0x0F5182,ptr-table,song_prefix_10,docs/sound.md:385 (song 10 end-pointer prefix at $F517E = 0x000F5E82; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F5DAA,0x0F5DAE,ptr-table,song_prefix_12,docs/sound.md:385 (song 12 end-pointer prefix at $F5DAA = 0x000F68AE; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F6840,0x0F6844,ptr-table,song_prefix_13,docs/sound.md:385 (song 13 end-pointer prefix at $F6840 = 0x000F9044; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F9006,0x0F900A,ptr-table,song_prefix_14,docs/sound.md:385 (song 14 end-pointer prefix at $F9006 = 0x000F9C0A; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0F9B34,0x0F9B38,ptr-table,song_prefix_15,docs/sound.md:385 (song 15 end-pointer prefix at $F9B34 = 0x000FA938; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0FA922,0x0FA926,ptr-table,song_prefix_05,docs/sound.md:385 (song 5 end-pointer prefix at $FA922 = 0x000FBD26; reader sound_start_song $EB88A reads *(addr-4); #281),2
+0x0FBC78,0x0FBC7C,ptr-table,song_prefix_17,docs/sound.md:385 (song 17 end-pointer prefix at $FBC78 = 0x000FCB7C; reader sound_start_song $EB88A reads *(addr-4); #281),2
 0x0FCAE2,0x0FD036,snd-sfx-records,snd_sfx_records,docs/sound.md:623 (69 records x 22 bytes; wins $FCAE2-$FCB7C over song 17 tail — SFX 1 record live-verified; song 17 parser also consumes these bytes via running-status; docs/sound.md:385),2
 0x0197B0,0x019F8F,map-object-records,map_object_records,docs/maps.md:496 (56 x 36-byte records),2
 0x0DC0C2,0x0DDBD8,text-dictionary-offset-table,dict_offset_table,disasm/text/inventory.json:dictionary_offset_table (3467 words x 2 bytes: start offsets for words 1-3466 plus end sentinel 0x5206 = blob length 20998; reader $013788/$013798),2

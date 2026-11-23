@@ -1066,14 +1066,18 @@ L004502:
 	; data $004502-$004503
 	incbin "rop-original.gen",$004502,$2
 L004504:
-	; data $004504-$00692D
-	incbin "rop-original.gen",$004504,$242A
+	; data $004504-$006929
+	incbin "rop-original.gen",$004504,$2426
+	dc.l L009B2E	; $00692A vector
 L00692E:
 	; data $00692E-$009A5F
 	incbin "rop-original.gen",$00692E,$3132
 L009A60:
-	; data $009A60-$00AE55
-	incbin "rop-original.gen",$009A60,$13F6
+	; data $009A60-$009B2D
+	incbin "rop-original.gen",$009A60,$CE
+L009B2E:
+	; data $009B2E-$00AE55
+	incbin "rop-original.gen",$009B2E,$1328
 L00AE56:
 	; data $00AE56-$00D25B
 	incbin "rop-original.gen",$00AE56,$2406
@@ -76159,65 +76163,135 @@ L0EBB56:
 L0EBB6E:
 	; Z80 sound driver: disasm/z80/snd_driver.s -> build/z80_snd_driver.bin (tools/z80_carve.py)
 	incbin "build/z80_snd_driver.bin"	; $0EBB6E
-	; data $0ED0E4-$0ED0E7
-	incbin "rop-original.gen",$0ED0E4,$4
+	dc.l L0ED5E8	; $0ED0E4 vector
 L0ED0E8:
-	; data $0ED0E8-$0ED4F3
-	incbin "rop-original.gen",$0ED0E8,$40C
+	; data $0ED0E8-$0ED4EF
+	incbin "rop-original.gen",$0ED0E8,$408
+	dc.l L0ED5F4	; $0ED4F0 vector
 L0ED4F4:
-	; data $0ED4F4-$0ED4FD
-	incbin "rop-original.gen",$0ED4F4,$A
+	; data $0ED4F4-$0ED4F9
+	incbin "rop-original.gen",$0ED4F4,$6
+	dc.l L0EDDFE	; $0ED4FA vector
 L0ED4FE:
-	; data $0ED4FE-$0EDDB9
-	incbin "rop-original.gen",$0ED4FE,$8BC
+	; data $0ED4FE-$0ED5E7
+	incbin "rop-original.gen",$0ED4FE,$EA
+L0ED5E8:
+	; data $0ED5E8-$0ED5F3
+	incbin "rop-original.gen",$0ED5E8,$C
+L0ED5F4:
+	; data $0ED5F4-$0EDDB5
+	incbin "rop-original.gen",$0ED5F4,$7C2
+	dc.l L0EEFBA	; $0EDDB6 vector
 L0EDDBA:
-	; data $0EDDBA-$0EEF8B
-	incbin "rop-original.gen",$0EDDBA,$11D2
+	; data $0EDDBA-$0EDDFD
+	incbin "rop-original.gen",$0EDDBA,$44
+L0EDDFE:
+	; data $0EDDFE-$0EEF87
+	incbin "rop-original.gen",$0EDDFE,$118A
+	dc.l L0EFC8C	; $0EEF88 vector
 L0EEF8C:
-	; data $0EEF8C-$0EFBC7
-	incbin "rop-original.gen",$0EEF8C,$C3C
+	; data $0EEF8C-$0EEFB9
+	incbin "rop-original.gen",$0EEF8C,$2E
+L0EEFBA:
+	; data $0EEFBA-$0EFBC3
+	incbin "rop-original.gen",$0EEFBA,$C0A
+	dc.l L0F07C8	; $0EFBC4 vector
 L0EFBC8:
-	; data $0EFBC8-$0F075D
-	incbin "rop-original.gen",$0EFBC8,$B96
+	; data $0EFBC8-$0EFC8B
+	incbin "rop-original.gen",$0EFBC8,$C4
+L0EFC8C:
+	; data $0EFC8C-$0F0759
+	incbin "rop-original.gen",$0EFC8C,$ACE
+	dc.l L0F0C5E	; $0F075A vector
 L0F075E:
-	; data $0F075E-$0F0C31
-	incbin "rop-original.gen",$0F075E,$4D4
+	; data $0F075E-$0F07C7
+	incbin "rop-original.gen",$0F075E,$6A
+L0F07C8:
+	; data $0F07C8-$0F0C2D
+	incbin "rop-original.gen",$0F07C8,$466
+	dc.l L0F2732	; $0F0C2E vector
 L0F0C32:
-	; data $0F0C32-$0F26CB
-	incbin "rop-original.gen",$0F0C32,$1A9A
+	; data $0F0C32-$0F0C5D
+	incbin "rop-original.gen",$0F0C32,$2C
+L0F0C5E:
+	; data $0F0C5E-$0F26C7
+	incbin "rop-original.gen",$0F0C5E,$1A6A
+	dc.l L0F36CC	; $0F26C8 vector
 L0F26CC:
-	; data $0F26CC-$0F363D
-	incbin "rop-original.gen",$0F26CC,$F72
+	; data $0F26CC-$0F2731
+	incbin "rop-original.gen",$0F26CC,$66
+L0F2732:
+	; data $0F2732-$0F3639
+	incbin "rop-original.gen",$0F2732,$F08
+	dc.l L0F373E	; $0F363A vector
 L0F363E:
-	; data $0F363E-$0F36AB
-	incbin "rop-original.gen",$0F363E,$6E
+	; data $0F363E-$0F36A7
+	incbin "rop-original.gen",$0F363E,$6A
+	dc.l L0F51AC	; $0F36A8 vector
 L0F36AC:
-	; data $0F36AC-$0F5181
-	incbin "rop-original.gen",$0F36AC,$1AD6
+	; data $0F36AC-$0F36CB
+	incbin "rop-original.gen",$0F36AC,$20
+L0F36CC:
+	; data $0F36CC-$0F373D
+	incbin "rop-original.gen",$0F36CC,$72
+L0F373E:
+	; data $0F373E-$0F517D
+	incbin "rop-original.gen",$0F373E,$1A40
+	dc.l L0F5E82	; $0F517E vector
 L0F5182:
-	; data $0F5182-$0F5DAD
-	incbin "rop-original.gen",$0F5182,$C2C
+	; data $0F5182-$0F51AB
+	incbin "rop-original.gen",$0F5182,$2A
+L0F51AC:
+	; data $0F51AC-$0F5DA9
+	incbin "rop-original.gen",$0F51AC,$BFE
+	dc.l L0F68AE	; $0F5DAA vector
 L0F5DAE:
-	; data $0F5DAE-$0F6843
-	incbin "rop-original.gen",$0F5DAE,$A96
+	; data $0F5DAE-$0F5E81
+	incbin "rop-original.gen",$0F5DAE,$D4
+L0F5E82:
+	; data $0F5E82-$0F683F
+	incbin "rop-original.gen",$0F5E82,$9BE
+	dc.l L0F9044	; $0F6840 vector
 L0F6844:
-	; data $0F6844-$0F9009
-	incbin "rop-original.gen",$0F6844,$27C6
+	; data $0F6844-$0F68AD
+	incbin "rop-original.gen",$0F6844,$6A
+L0F68AE:
+	; data $0F68AE-$0F9005
+	incbin "rop-original.gen",$0F68AE,$2758
+	dc.l L0F9C0A	; $0F9006 vector
 L0F900A:
-	; data $0F900A-$0F9B37
-	incbin "rop-original.gen",$0F900A,$B2E
+	; data $0F900A-$0F9043
+	incbin "rop-original.gen",$0F900A,$3A
+L0F9044:
+	; data $0F9044-$0F9B33
+	incbin "rop-original.gen",$0F9044,$AF0
+	dc.l L0FA938	; $0F9B34 vector
 L0F9B38:
-	; data $0F9B38-$0FA925
-	incbin "rop-original.gen",$0F9B38,$DEE
+	; data $0F9B38-$0F9C09
+	incbin "rop-original.gen",$0F9B38,$D2
+L0F9C0A:
+	; data $0F9C0A-$0FA921
+	incbin "rop-original.gen",$0F9C0A,$D18
+	dc.l L0FBD26	; $0FA922 vector
 L0FA926:
-	; data $0FA926-$0FBC7B
-	incbin "rop-original.gen",$0FA926,$1356
+	; data $0FA926-$0FA937
+	incbin "rop-original.gen",$0FA926,$12
+L0FA938:
+	; data $0FA938-$0FBC77
+	incbin "rop-original.gen",$0FA938,$1340
+	dc.l L0FCB7C	; $0FBC78 vector
 L0FBC7C:
-	; data $0FBC7C-$0FCAE1
-	incbin "rop-original.gen",$0FBC7C,$E66
+	; data $0FBC7C-$0FBD25
+	incbin "rop-original.gen",$0FBC7C,$AA
+L0FBD26:
+	; data $0FBD26-$0FCAE1
+	incbin "rop-original.gen",$0FBD26,$DBC
 L0FCAE2:
-	; data $0FCAE2-$0FCE3B
-	incbin "rop-original.gen",$0FCAE2,$35A
+	; data $0FCAE2-$0FCB7B
+	incbin "rop-original.gen",$0FCAE2,$9A
+L0FCB7C:
+	; data $0FCB7C-$0FCE3B
+	incbin "rop-original.gen",$0FCB7C,$2C0
 L0FCE3C:
 	; data $0FCE3C-$0FD07B
 	incbin "rop-original.gen",$0FCE3C,$240
