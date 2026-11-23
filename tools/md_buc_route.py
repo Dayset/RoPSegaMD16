@@ -2,7 +2,8 @@
 """Closed-loop Buc cutscene check: walk the leader to Buc by position
 (not by frame), play the cutscene, print the end state (MODE, LOC, ...,
 Buc x, y). Robust to timing changes that break fixed-input routes.
-  md_buc_route.py ROM OUT_ROUTE.txt
+  md_buc_route.py ROM OUT_ROUTE.txt [iso]
+iso: press A+B+C once after the opening (top-down ROM -> smooth iso view).
 """
 import sys; sys.path.insert(0,'tools'); import md_run as m
 rom=sys.argv[1]; out=sys.argv[2]
@@ -15,6 +16,10 @@ for n,p in route:
 for n,p in pref:
     for k in range(n): md.step(p)
 steps=list(pref)
+if len(sys.argv)>3 and sys.argv[3]=='iso':
+    for k in range(10): md.step('ABC')
+    for k in range(200): md.step('')
+    steps+=[(10,'ABC'),(200,'.')]
 def pos():
     r=md.ram(); 
     lead=m.w(r,0xFF02B2)

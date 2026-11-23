@@ -20,6 +20,11 @@
 ;     measured average pace), and the waiting time is spent updating the
 ;     picture once per frame.
 ;
+; A+B+C cycles original -> top-down -> smooth iso (#252: the game's own
+; iso render, run only on a camera step and resumable across ticks, tiled
+; into a pool on Plane B at global positions, hardware-scrolled behind a
+; fixed parchment frame; see "SMOOTH ISO VIEW" below) -> original.
+;
 ; The window plane keeps the HUD, messages and menus exactly as the game
 ; draws them; the room-bitmap cells of the window are pointed at the
 ; transparent font blank so the world shows through.
@@ -40,7 +45,7 @@
 ;            head) -> jsr td_poll (one picture update per new frame
 ;            while the per-character logic runs)
 ;
-; RAM: $FFDC00-$FFE14F (free in play: the attract buffer ends at
+; RAM: $FFDC00-$FFE41D (+ iso pool tables $FFD2EA-$FFDA07) (free in play: the attract buffer ends at
 ; $FFDBEA, the stack low-water mark seen on the playtest routes is
 ; $FFE972; the boot RAM clear resets it).
 
@@ -133,7 +138,57 @@ TD_RAISED	equ TD_UPTXT+20	; 64 B: ring cell (cy&15, cx&31) is raised
 TD_GSP		equ TD_RAISED+64	; 80 words: tile word we gave priority to
 TD_WROW		equ TD_GSP+160	; 40-word window row buffer
 TD_ROWB		equ TD_WROW+80	; 64-word plane row buffer
-TD_END		equ TD_ROWB+128
+TD_ISO		equ TD_ROWB+128	; smooth iso view (with TD_OFF = 0)
+TD_IREQ		equ TD_ISO+2	; iso render requested
+TD_REND		equ TD_ISO+4	; inside our map_chunk_pos call (no figures)
+TD_ICX		equ TD_ISO+6	; camera cell of the plane picture ($8000 none)
+TD_ICY		equ TD_ISO+8
+TD_IOX		equ TD_ISO+10	; global tile column / row of bitmap tile (0,0)
+TD_IOY		equ TD_ISO+12
+TD_INX		equ TD_ISO+14	; the same for the render in progress
+TD_INY		equ TD_ISO+16
+TD_IGEN		equ TD_ISO+18	; render generation (tile pool ages)
+TD_IGX		equ TD_ISO+20	; camera: global pixel at screen (0,0)
+TD_IGY		equ TD_ISO+22
+TD_NFCV		equ TD_ISO+24	; figure cache slots in use
+TD_MAIN		equ TD_ISO+26	; this update may call the game (main thread)
+TD_TLIFT	equ TD_ISO+28	; lift of the char being listed (iso)
+TD_UNFR		equ TD_ISO+30	; td_iso_winfix: remove the frame instead
+TD_ICAM		equ TD_ISO+32	; camera glide (lx, ly, fpx, fpy, t0) = 10 B
+TD_CLK		equ TD_ISO+42	; 4 x 56 words: lift cell x, y, lift, last image key
+TD_XF		equ TD_CLK+448	; the blob list is already in iso screen form
+TD_INWF		equ TD_XF+2	; inside td_iso_winfix
+TD_ISOU		equ TD_INWF+2	; iso chosen (A+B+C); TD_ISO = in effect
+TD_IRS		equ TD_ISOU+2	; iso render state: 0 idle, 1 render, 2 commit
+TD_IROW		equ TD_ISOU+4	; next map_chunk_pos row (render) / bitmap row (commit)
+TD_IRX		equ TD_ISOU+6	; camera cell of the render in progress
+TD_IRY		equ TD_ISOU+8
+TD_ISH		equ TD_ISOU+10	; its X-table shift
+TD_IBAIL	equ TD_ISOU+12	; map_chunk_pos stopped early (tick time up)
+TD_INOB		equ TD_ISOU+14	; no time limit (first picture)
+TD_WFC		equ TD_ISOU+16	; iso tick counter (window scan cadence)
+TD_CMX		equ TD_ISOU+18	; iso camera (1/16 cell)
+TD_CMY		equ TD_ISOU+20
+TD_ICFR		equ TD_ISOU+22	; frame of its last update
+TD_NAMES	equ TD_ISOU+24	; 64-word plane row buffer
+TD_NBUF		equ TD_NAMES+128	; 36-word name buffer (one bitmap row)
+TD_END2		equ TD_NBUF+72
+TD_END		equ TD_END2
+
+TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
+TI_PHASH	equ $FFD2EA	; pool hashes (words) + ages (bytes): in the
+TI_PGEN		equ TI_PHASH+2*TI_NSLOT	; attract buffer, unused in play
+TI_POOLB	equ 401		; bank offset of pool slots 256-638 (401-783)
+TI_EDGE		equ 784		; bank offset of the frame edge tiles (44)
+TI_NFC		equ 8		; figure images cached in iso (tiles 273-400)
+TI_CX		equ 162		; hole centre and half sizes (screen px)
+TI_CY		equ 98
+TI_HW		equ 112
+TI_HH		equ 64
+XTAB		equ $FFAE7A	; map_chunk_pos X table (10 x 10 words)
+CLEARBUF	equ $011DE8	; clear_decode_buffer
+CHUNKPOS	equ $01BA4E	; map_chunk_pos(cx, cy): the 10 x 10 iso render
+DESC2		equ $05EDC4	; iso cell descriptors (word per tile)
 
 TD_BANDL	equ 152		; first screen line of the HUD band (untinted)
 TD_NBAND	equ 13		; plane tile rows treated as band (lines 145..255)
@@ -150,19 +205,49 @@ NOPOS		equ $8000
 td_tick:
 	movem.l	d0-d7/a0-a6,-(a7)
 	cmpi.w	#$7D7D,TD_MAGIC
-	bne.s	.on
-	tst.w	TD_REQ			; A+B+C: switch views
-	beq.s	.noreq
+	bne.w	.on
+	tst.w	TD_REQ			; A+B+C: original -> top-down ->
+	beq.s	.noreq			; smooth iso -> original
 	clr.w	TD_REQ
-	eori.w	#1,TD_OFF
-	beq.s	.toon
+	tst.w	TD_OFF
+	bne.s	.toon
+	tst.w	TD_ISOU
+	bne.s	.toorg
+	move.w	#1,TD_ISOU		; top-down -> iso (switched below)
+	bra.s	.noreq
+.toorg:	clr.w	TD_ISOU			; iso -> original
 	addq.w	#1,TD_BUSY
-	bsr.w	td_restore
+	tst.w	TD_ISO
+	beq.s	.o1
+	bsr.w	td_iso_off
+.o1:	bsr.w	td_restore
+	move.w	#1,TD_OFF
 	subq.w	#1,TD_BUSY
 	bra.s	.noreq
-.toon:	clr.w	TD_VALID		; reinstall from scratch
+.toon:	clr.w	TD_OFF			; original -> top-down
+	clr.w	TD_ISOU
+	clr.w	TD_ISO
+	clr.w	TD_VALID		; reinstall from scratch
 	clr.w	TD_TILES
-.noreq:	tst.w	TD_OFF
+.noreq:	tst.w	TD_OFF			; iso in effect = chosen, and not the
+	bne.s	.noiso			; combat arena (grid $FFB0BC, drawn
+	moveq	#0,d0			; zoomed by the game: the top-down
+	tst.w	TD_ISOU			; picture stands in there)
+	beq.s	.wi
+	cmpi.l	#$FFB0BC,GRIDPTR
+	beq.s	.wi
+	moveq	#1,d0
+.wi:	cmp.w	TD_ISO,d0
+	beq.s	.noiso
+	addq.w	#1,TD_BUSY
+	tst.w	d0
+	bne.s	.ion
+	bsr.w	td_iso_off		; iso -> top-down
+	bra.s	.ire
+.ion:	bsr.w	td_restore		; top-down -> iso: the game's own scene
+	move.w	#1,TD_ISO		; and HUD first, then install
+.ire:	subq.w	#1,TD_BUSY
+.noiso:	tst.w	TD_OFF
 	beq.s	.on
 	jsr	($011DE8).l		; original view: the displaced code
 	move.w	$FF0E90,-(a7)		; (clear the decode buffer, render
@@ -189,6 +274,7 @@ td_tick:
 .per:
 	move.w	d0,TD_PERIOD
 	moveq	#0,d7			; synced yet?
+ti_tw0:
 .wait:
 	move.w	FRAME,d0
 	cmp.w	TD_LASTFR,d0
@@ -205,12 +291,16 @@ td_tick:
 	bsr.w	td_sync			; right after an update, so the
 	subq.w	#1,TD_BUSY
 	moveq	#1,d7			; sync work never straddles a VBlank
+	tst.w	TD_ISO			; iso: render / commit what this tick
+	beq.s	.chk			; has time for (VBlank keeps the glide
+	bsr.w	td_iso_render		; going meanwhile)
 .chk:	move.w	FRAME,d0
 	move.w	d0,d1
 	sub.w	TD_TICKFR,d1		; frames since the last tick ended
 	cmp.w	TD_PERIOD,d1
 	bcs.s	.wait			; < period: keep waiting
 	move.w	d0,TD_TICKFR		; game logic starts near the top of
+ti_tw1:
 	movem.l	(a7)+,d0-d7/a0-a6	; a frame, right after an update
 	rts
 
@@ -300,7 +390,19 @@ td_vint:
 	beq.s	.q
 	movem.l	d0-d7/a0-a6,-(a7)
 	move.l	66(a7),d0		; interrupted PC (regs 60, return 4, SR 2)
-	lea	td_vwl(pc),a0
+	cmpi.l	#ti_tw0,d0		; td_tick's wait (main thread idle, no
+	bcs.s	.lst			; VDP sequence open): the full update
+	cmpi.l	#ti_tw1,d0		; here, in VBlank, not late
+	bcc.s	.lst
+	bsr.w	td_frame
+	bra.s	.out
+.lst:	tst.w	TD_INWF			; iso window scan's helpers (also used
+	beq.s	.l0			; from td_filt: only during the scan)
+	cmpi.l	#ti_blankish,d0
+	bcs.s	.l0
+	cmpi.l	#ti_rows,d0
+	bcs.s	.ns
+.l0:	lea	td_vwl(pc),a0
 .l:	move.l	(a0)+,d1
 	beq.s	.out
 	move.l	(a0)+,d2
@@ -308,7 +410,7 @@ td_vint:
 	bcs.s	.l
 	cmp.l	d2,d0
 	bcc.s	.l
-	bsr.w	td_frame_ns
+.ns:	bsr.w	td_frame_ns
 .out:	movem.l	(a7)+,d0-d7/a0-a6
 .q:	rts
 td_vwl:	; [start, end) of game routines with no VDP access of their own
@@ -320,6 +422,13 @@ td_vwl:	; [start, end) of game routines with no VDP access of their own
 	dc.l	$02155E,$021FE6		; world_tick
 	dc.l	$0226BC,$0231D8		; combat_turn_run
 	dc.l	$024676,$024916		; map_grid_place_chars
+	dc.l	$00E358,$01107A		; map_terrain_tile_lookup (iso render)
+	dc.l	$011DE8,$011E06		; clear_decode_buffer
+	dc.l	$01BA4E,$01C0EC		; map_chunk_pos
+	dc.l	$0232AC,$02343A		; map_tile_at_offset, map_animated_tile
+	dc.l	ti_cstart,ti_cend	; td_iso_commit (VDP writes masked)
+	dc.l	td_iso_winfix,ti_wend	; its window scan (likewise)
+	dc.l	$03A062,$03A4A2		; spell target / effect arithmetic
 	dc.l	0
 
 td_poll_vb:
@@ -390,6 +499,16 @@ td_filt:				; d0 = word -> d0 = word to write
 	cmpi.w	#828,d1
 	bcc.s	.k1
 	move.w	FONTBLK,d0
+	tst.w	TD_ISO			; iso: the frame word of that window
+	beq.s	.k1			; cell (identity map: col 2 + t mod 36,
+	movem.l	d2/a0,-(a7)		; row t / 36)
+	andi.l	#$FFFF,d1
+	divu.w	#36,d1
+	move.w	d1,d2			; row
+	swap	d1
+	addq.w	#2,d1			; column
+	bsr.w	ti_frameword
+	movem.l	(a7)+,d2/a0
 .k1:	move.w	(a7)+,d1
 .keep:	rts
 
@@ -533,6 +652,8 @@ td_sync:
 	clr.w	TD_VALID
 	bsr.w	td_chr_reset
 .same:
+	tst.w	TD_ISO
+	bne.w	td_isync
 	bsr.w	td_tiles_check		; reload tiles if overwritten
 	tst.w	TD_TILES
 	bne.s	.tok
@@ -582,6 +703,7 @@ td_fwrap:
 	subq.w	#1,TD_BUSY
 	rts
 td_frame_go:
+	move.w	d1,TD_MAIN
 	move.w	FRAME,TD_LASTFR
 	tst.w	TD_VALID
 	beq.w	.bad
@@ -614,6 +736,12 @@ td_frame_go:
 .bad:	bra.w	td_unlay
 .world:
 	move.w	d1,TD_CANX		; image extraction: game calls allowed?
+	tst.w	TD_IRS			; (not while the decode buffer holds an
+	beq.s	.cx			; iso render in progress)
+	clr.w	TD_CANX
+.cx:
+	tst.w	TD_ISO
+	bne.w	td_iframe
 	move.w	d1,-(a7)
 	bsr.w	td_chars
 	bsr.w	td_camera
@@ -656,7 +784,10 @@ td_frame_go:
 ;=======================================================================
 ; td_scroll — full-screen scroll of planes A and B to the camera.
 ;=======================================================================
-td_scroll:	; per-line H-scroll: world row wy is shifted by floor(wy/2)
+td_scroll:
+	tst.w	TD_ISO
+	bne.w	td_iso_scroll
+	; per-line H-scroll: world row wy is shifted by floor(wy/2)
 	; - floor((camY+TD_VC)/2) px (shear, rigid under scrolling);
 	; Plane B static in band mode. V-scroll first: it must land before
 	; the first visible line.
@@ -706,6 +837,8 @@ td_scroll:	; per-line H-scroll: world row wy is shifted by floor(wy/2)
 ; over the whole screen, map on Plane B. Per-line H-scroll in both.
 ;=======================================================================
 td_layers:
+	tst.w	TD_ISO
+	bne.w	td_ilayers
 	move.w	#1,TD_LAY
 	move.w	#$8B03,VDP_CTRL		; H-scroll per line
 	move.w	#$8C89,VDP_CTRL		; H40 + shadow/highlight (height tint)
@@ -749,6 +882,7 @@ td_unlay:
 	move.w	#$8400,VDP_CTRL
 	move.w	#$8B00,VDP_CTRL
 	move.w	#$8C81,VDP_CTRL		; shadow/highlight off
+	move.w	#$8700,VDP_CTRL		; backdrop colour 0 (iso: parchment)
 	move.w	#$9180,VDP_CTRL
 	move.w	#$9200,VDP_CTRL
 .out:	rts
@@ -860,6 +994,12 @@ td_chr_reset:
 .r:	move.w	#NOPOS,(a0)
 	lea	10(a0),a0
 	dbra	d1,.r
+	lea	TD_CLK,a0		; lift cache, last images: nothing known
+	moveq	#56-1,d1
+.l:	move.w	#NOPOS,(a0)
+	move.w	#NOPOS,336(a0)
+	addq.l	#2,a0
+	dbra	d1,.l
 	rts
 
 ;=======================================================================
@@ -870,6 +1010,7 @@ td_chars:
 	movem.l	d2-d7/a2-a4,-(a7)
 	addq.w	#1,TD_STAMP
 	clr.w	TD_NB
+	clr.w	TD_XF
 	clr.w	TD_LEADOK
 	lea	CHARS,a3
 	lea	TD_CHR,a4
@@ -936,7 +1077,11 @@ td_chars:
 	move.w	d3,2(a4)
 	move.w	FRAME,8(a4)
 .pos:	bsr.w	td_slidepos		; d5/d6 = position, d4 = elapsed
-	bsr.w	td_figure		; d0 = figure tile word, or -1
+	clr.w	TD_TLIFT
+	tst.w	TD_ISO
+	beq.s	.fig
+	bsr.w	td_ilift		; iso: lift of its target cell
+.fig:	bsr.w	td_figure		; d0 = figure tile word, or -1
 	tst.w	d0
 	bmi.s	.blob
 	cmpi.w	#TD_NFIG,TD_NB
@@ -944,7 +1089,10 @@ td_chars:
 	move.w	d5,(a2)+
 	move.w	d6,(a2)+
 	move.w	d0,(a2)+
-	move.w	#1,(a2)+		; kind 1: 32x32 figure
+	move.w	TD_TLIFT,d0		; kind 1: 32x32 figure (lift << 8)
+	lsl.w	#8,d0
+	addq.w	#1,d0
+	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
 	bra.s	.lchk
 .blob:	; no image yet: a 16x16 blob (yellow = the leader's figure)
@@ -969,7 +1117,9 @@ td_chars:
 	add.w	TD_BASE,d1
 	add.w	#257,d1
 	move.w	d1,(a2)+
-	clr.w	(a2)+			; kind 0: 16x16 blob
+	move.w	TD_TLIFT,d0		; kind 0: 16x16 blob (lift << 8)
+	lsl.w	#8,d0
+	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
 .lchk:	; the leader's figure: char == leader, or a type-4 redirect to it
 	cmp.w	LEADER,d7
@@ -1016,7 +1166,7 @@ td_figure:
 	move.w	2(a1),d0		; template
 	add.w	4(a1),d0
 	cmpi.w	#56,d0
-	bcc.s	.none
+	bcc.w	.none
 	mulu.w	#36,d0
 	movea.l	GRIDPTR,a0
 	move.w	$A(a0),d1		; phase 0..3
@@ -1054,7 +1204,20 @@ td_figure:
 	tst.w	d3
 	beq.s	.k1
 	ori.w	#$8000,d2		; key bit 15 = mirror
-.k1:	move.w	d2,d0
+.k1:	move.w	d2,d6			; key (td_img uses d2)
+	move.w	d2,d0
+	bsr.s	td_img
+	move.w	d7,d1			; this char's last image key
+	add.w	d1,d1
+	lea	TD_CLK+336,a0
+	adda.w	d1,a0
+	tst.w	d0
+	bmi.s	.old
+	move.w	d6,(a0)			; cached: remember it
+	bra.s	.out
+.old:	move.w	(a0),d0			; not cached yet: its last image if it
+	cmpi.w	#NOPOS,d0		; is still in the cache (no blob)
+	beq.s	.none
 	bsr.s	td_img
 	bra.s	.out
 .none:	moveq	#-1,d0
@@ -1072,7 +1235,8 @@ td_walk:
 ;=======================================================================
 td_img:
 	lea	TD_FC,a0
-	moveq	#TD_NFC-1,d1
+	move.w	TD_NFCV,d1
+	subq.w	#1,d1
 	moveq	#0,d2			; slot
 .f:	cmp.w	(a0),d0
 	beq.s	.hit
@@ -1083,7 +1247,8 @@ td_img:
 	beq.s	.no
 	clr.w	TD_CANX
 	lea	TD_FC,a0		; least recently used slot
-	moveq	#TD_NFC-1,d1
+	move.w	TD_NFCV,d1
+	subq.w	#1,d1
 	moveq	#0,d3			; candidate slot
 	moveq	#-1,d2			; best stamp so far (unsigned max)
 	moveq	#0,d4			; best slot
@@ -1268,7 +1433,10 @@ td_sprites:
 	cmpi.w	#TD_SLOT0,d0
 	bcc.s	.ours
 	move.w	d0,TD_GHEAD
-.ours:	; insertion sort, y descending (8-byte entries)
+.ours:	tst.w	TD_ISO			; iso: screen x + depth key
+	beq.s	.srt
+	bsr.w	ti_spr_xform
+.srt:	; insertion sort, y descending (8-byte entries)
 	move.w	TD_NB,d7
 	moveq	#1,d6
 .so:	cmp.w	d7,d6
@@ -1317,7 +1485,10 @@ td_sprites:
 	addq.w	#1,d2
 	cmpi.w	#2,d2
 	bcs.s	.bx
-.nobox:	move.w	TD_CAMY,d0		; shear reference: the leader's line
+.nobox:	lea	TD_LIST,a2
+	tst.w	TD_ISO
+	bne.w	.icond
+	move.w	TD_CAMY,d0		; shear reference: the leader's line
 	add.w	#TD_VC,d0
 	asr.w	#1,d0
 	movea.w	d0,a1
@@ -1327,6 +1498,7 @@ td_sprites:
 	move.w	(a2)+,d3		; py
 	move.w	(a2)+,d4		; tile word
 	move.w	(a2)+,d1		; kind
+	andi.w	#$FF,d1
 	sub.w	TD_CAMX,d2
 	sub.w	TD_CAMY,d3
 	cmp.w	TD_YMAX,d3		; below the HUD band
@@ -1360,7 +1532,7 @@ td_sprites:
 	bgt.s	.pw
 	ori.w	#$8000,d4
 .pw:
-	moveq	#TD_SLOT0,d0		; VRAM address of slot TD_SLOT0+d6
+.put:	moveq	#TD_SLOT0,d0		; VRAM address of slot TD_SLOT0+d6
 	add.w	d6,d0
 	lsl.w	#3,d0
 	add.w	SPRBASE,d0
@@ -1376,8 +1548,37 @@ td_sprites:
 	move.w	d2,VDP_DATA		; X
 	movea.w	a3,a0			; size of the last sprite written
 	addq.w	#1,d6
-.cond:	dbra	d7,.spr
-	move.w	TD_GHEAD,d2
+.cond:	tst.w	TD_ISO
+	bne.s	.icond
+	dbra	d7,.spr
+	bra.s	.endl
+.ispr:	move.w	(a2)+,d2		; iso entry: screen x ($8000 = culled),
+	move.w	(a2)+,d3		; depth y (global), tile, lift << 8 | kind
+	move.w	(a2)+,d4
+	move.w	(a2)+,d1
+	cmpi.w	#$8000,d2
+	beq.s	.icond
+	move.w	d1,d0
+	lsr.w	#8,d0
+	sub.w	d0,d3			; top = depth y - 8 - lift - camera
+	subq.w	#8,d3
+	sub.w	TD_IGY,d3
+	movea.w	#$0F00,a3		; 32x32
+	tst.b	d1
+	bne.s	.ik
+	addq.w	#8,d2			; blob: 16x16 in the middle
+	addq.w	#8,d3
+	movea.w	#$0500,a3
+.ik:	cmpi.w	#-32,d2
+	ble.s	.icond
+	cmpi.w	#320,d2
+	bge.s	.icond
+	cmpi.w	#-32,d3
+	ble.s	.icond
+	cmpi.w	#224,d3
+	blt.w	.put
+.icond:	dbra	d7,.ispr
+.endl:	move.w	TD_GHEAD,d2
 	tst.w	d6
 	beq.s	.none
 	moveq	#TD_SLOT0-1,d0		; last sprite -> game's first sprite
@@ -1791,6 +1992,8 @@ td_cell_put:	; d0 = TL:TR, d1 = BL:BR, TD_TMP = raised.
 ; the visible area must hold one of our tiles).
 ;=======================================================================
 td_plane_check:
+	tst.w	TD_ISO
+	bne.w	td_iso_pcheck
 	movem.l	d2-d3,-(a7)
 	moveq	#0,d2
 	moveq	#0,d3
@@ -2116,12 +2319,954 @@ td_tiles_load:
 .bx:	move.l	#$CCCCCCCC,VDP_DATA
 	dbra	d0,.bx
 	move.w	#1,TD_TILES
+	move.w	#TD_NFC,TD_NFCV
 	lea	TD_FC,a0		; figure cache empty (key $FFFF)
 	moveq	#TD_NFC-1,d0
 .fc:	move.l	#$FFFF0000,(a0)+
 	dbra	d0,.fc
 	movem.l	(a7)+,d2-d7/a2-a4
 	rts
+
+;=======================================================================
+; SMOOTH ISO VIEW (#252). The game's own isometric render, run only when
+; the camera cell changes and with no figures in it, lands on a global
+; 8-px grid (X table shifted so every render aligns), is cut into tiles
+; that are deduplicated into a pool (hash table, ages by render), and
+; is written to Plane B at global tile positions. The camera glides
+; between cells by hardware scroll; figures are the top-down's cached
+; images as sprites. A fixed parchment frame in the window hides the
+; render's edges (the hole is the camera's cells within +-4).
+;=======================================================================
+
+; td_iso_off — leave iso: frame off, top-down reinstalls from scratch.
+td_iso_off:
+	bsr.w	td_iso_cancel
+	move.w	#1,TD_UNFR
+	bsr.w	td_iso_winfix
+	clr.w	TD_UNFR
+	clr.w	TD_ISO
+	clr.w	TD_VALID
+	clr.w	TD_TILES
+	bra.w	td_unlay
+
+; td_isync — td_sync's tail in iso (td_sync branches here).
+td_isync:
+	bsr.w	td_iso_check
+	tst.w	TD_TILES
+	bne.s	.tok
+	bsr.w	td_iso_load
+.tok:	tst.w	TD_VALID		; window scan: on install, then every
+	beq.s	.wf			; 4th tick (it costs ~2 frames; td_filt
+	addq.w	#1,TD_WFC		; catches the game's room-bitmap words)
+	move.w	TD_WFC,d0
+	andi.w	#3,d0
+	bne.s	.nwf
+.wf:	subq.w	#1,TD_BUSY		; VBlank updates may run inside the
+	bsr.w	td_iso_winfix		; scan (td_vwl)
+	addq.w	#1,TD_BUSY
+.nwf:
+	tst.w	TD_VALID
+	beq.s	.full
+	bsr.w	td_iso_pcheck
+	tst.w	d0
+	bne.s	.full
+	tst.w	TD_IRS			; camera cell moved (from the picture,
+	bne.s	.out			; or none in progress): render it
+	move.w	$FF0E8E,d0		; (td_tick, after this)
+	cmp.w	TD_ICX,d0
+	bne.s	.mv
+	move.w	$FF0E90,d0
+	cmp.w	TD_ICY,d0
+	beq.s	.out
+.mv:	move.w	#1,TD_IREQ
+.out:	rts
+.full:	bsr.w	td_iso_cancel		; (re)install: camera on the cell,
+	clr.w	TD_VALID		; picture by td_tick's render
+	move.w	#1,TD_MAIN
+	move.w	#1,TD_CANX
+	bsr.w	td_chars
+	move.w	#1,TD_IREQ
+	rts
+
+; td_iframe — td_frame_go's world update in iso.
+td_iframe:
+	bsr.w	td_chars
+	bsr.w	td_iso_cam
+	bsr.w	td_layers
+	bsr.w	td_iso_scroll		; vblank-critical first
+	bra.w	td_sprites
+
+td_ilayers:
+	move.w	#1,TD_LAY
+	clr.w	TD_GSPON
+	clr.w	TD_BAND
+	clr.w	TD_BOX
+	move.w	#TI_CY+TI_HH,TD_YMAX
+	move.w	#$8B00,VDP_CTRL		; full-screen scroll
+	move.w	#$8C81,VDP_CTRL		; no shadow/highlight
+	move.w	#$871C,VDP_CTRL		; backdrop: parchment (pal 1 colour 12)
+	move.w	#$8400,VDP_CTRL		; the game's window over the whole
+	move.w	#$9180,VDP_CTRL		; screen, picture on Plane B
+	move.w	#$9200,VDP_CTRL
+	rts
+
+td_iso_scroll:
+	move.l	#$40000010,VDP_CTRL	; VSRAM 0: A, B
+	move.w	TD_IGY,d0
+	subq.w	#6,d0			; global row 6 = plane line 0
+	move.w	d0,VDP_DATA
+	move.w	d0,VDP_DATA
+	move.l	#$60000000,VDP_CTRL	; H-scroll $2000: A, B
+	move.w	TD_IGX,d0
+	neg.w	d0
+	move.w	d0,VDP_DATA
+	move.w	d0,VDP_DATA
+	rts
+
+; td_iso_pcheck -> d0 != 0 if the plane no longer holds our picture
+; (two cells of the last render: pool, void or edge tiles only).
+td_iso_pcheck:
+	movem.l	d2-d3,-(a7)
+	moveq	#18,d2
+	moveq	#11,d3
+	bsr.s	.one
+	moveq	#12,d2
+	moveq	#8,d3
+	bsr.s	.one
+	moveq	#0,d0
+	bra.s	.out
+.bad:	addq.w	#4,a7
+	moveq	#1,d0
+.out:	movem.l	(a7)+,d2-d3
+	rts
+.one:	add.w	TD_IOY,d3
+	andi.w	#31,d3
+	lsl.w	#7,d3
+	add.w	TD_IOX,d2
+	andi.w	#63,d2
+	add.w	d2,d2
+	add.w	d3,d2
+	move.w	d2,d0
+	bsr.w	td_vread
+	andi.w	#$7FF,d0
+	sub.w	TD_BASE,d0
+	cmpi.w	#TI_EDGE,d0		; pool, void, blobs or our figures
+	bcc.s	.bad
+	rts
+
+; td_iso_cam — camera (TD_CMX/CMY, 1/16 cell) -> TD_IGX / TD_IGY (global
+; px at screen (0,0), the original's framing of that cell). The camera
+; chases the game camera by 1/16 cell per update per axis (1.6 x
+; the walking pace) but stays within one cell of the picture on the plane
+; (TD_ICX/ICY), so the frame's hole never shows past the picture.
+td_iso_cam:
+	movem.l	d2-d4,-(a7)
+	moveq	#1,d4			; max move per frame (no catch-up after
+	move.w	FRAME,d0		; a held frame: steps stay <= 2 px), and
+	cmp.w	TD_ICFR,d0		; one move per frame however many
+	bne.s	.f			; updates it gets
+	moveq	#0,d4
+.f:	move.w	d0,TD_ICFR
+	move.w	$FF0E8E,d0		; x: target = game camera, clamped
+	move.w	TD_ICX,d1
+	lea	TD_CMX,a0
+	bsr.s	.ax
+	move.w	$FF0E90,d0		; y
+	move.w	TD_ICY,d1
+	lea	TD_CMY,a0
+	bsr.s	.ax
+	move.w	TD_CMX,d0
+	sub.w	TD_CMY,d0
+	muls.w	#7,d0			; 14 * (x - y) / 16
+	asr.l	#3,d0
+	sub.w	#148,d0
+	move.w	d0,TD_IGX
+	move.w	TD_CMX,d0
+	add.w	TD_CMY,d0
+	asr.w	#1,d0			; 8 * (x + y) / 16
+	sub.w	#98,d0
+	move.w	d0,TD_IGY
+	movem.l	(a7)+,d2-d4
+	rts
+.ax:	lsl.w	#4,d0			; target (1/16 cell)
+	lsl.w	#4,d1			; picture cell
+	move.w	d1,d2
+	sub.w	#16,d2
+	cmp.w	d2,d0
+	bge.s	.c1
+	move.w	d2,d0
+.c1:	add.w	#32,d2
+	cmp.w	d2,d0
+	ble.s	.c2
+	move.w	d2,d0
+.c2:	sub.w	(a0),d0			; distance
+	move.w	d0,d2
+	bpl.s	.p
+	neg.w	d2
+.p:	cmpi.w	#48,d2			; more than 3 cells: snap
+	bgt.s	.mv
+	cmp.w	d4,d2
+	ble.s	.mv
+	tst.w	d0
+	bmi.s	.n
+	move.w	d4,d0
+	bra.s	.mv
+.n:	move.w	d4,d0
+	neg.w	d0
+.mv:	add.w	d0,(a0)
+	rts
+
+td_iso_glide:	; (the camera follows by itself)
+	rts
+
+td_iso_snap:				; camera on the picture's cell now
+	move.w	TD_ICX,d0
+	lsl.w	#4,d0
+	move.w	d0,TD_CMX
+	move.w	TD_ICY,d0
+	lsl.w	#4,d0
+	move.w	d0,TD_CMY
+	move.w	FRAME,TD_ICFR
+	rts
+
+; td_ilift — iso lift (px) of the target cell of char d7 (slide record
+; a4) -> TD_TLIFT: (height + desc bit 7) * 7 + desc bit 8 * 4, as
+; map_chunk_pos passes it to hero_track. Cached per char; read from the
+; map only when game calls are allowed (TD_MAIN).
+td_ilift:
+	movem.l	d0-d3/a0-a2,-(a7)
+	move.w	d7,d1
+	add.w	d1,d1
+	lea	TD_CLK,a1
+	adda.w	d1,a1			; +0 cell x, +112 cell y, +224 lift
+	move.w	(a4),d2
+	move.w	2(a4),d3
+	cmp.w	(a1),d2
+	bne.s	.new
+	cmp.w	112(a1),d3
+	beq.s	.have
+.new:	tst.w	TD_MAIN
+	beq.s	.have
+	move.w	d2,(a1)
+	move.w	d3,112(a1)
+	move.l	a1,-(a7)
+	move.w	d3,-(a7)
+	move.w	d2,-(a7)
+	jsr	(CELLREAD).l
+	addq.w	#4,a7
+	movea.l	(a7)+,a1
+	movea.l	d0,a0
+	move.w	(a0),d2			; cell word
+	move.w	d2,d0
+	andi.w	#$1FF,d0
+	add.w	d0,d0
+	lea	(DESC2).l,a0
+	move.w	(a0,d0.w),d1		; descriptor
+	rol.w	#3,d2
+	andi.w	#7,d2			; height
+	move.w	d1,d0
+	lsr.w	#7,d0
+	andi.w	#1,d0
+	add.w	d0,d2
+	mulu.w	#7,d2
+	lsr.w	#8,d1
+	andi.w	#1,d1
+	lsl.w	#2,d1
+	add.w	d1,d2
+	move.w	d2,224(a1)
+.have:	move.w	224(a1),TD_TLIFT
+	movem.l	(a7)+,d0-d3/a0-a2
+	rts
+
+; ti_spr_xform — iso: the blob list (top-down cell pixels px, py) to
+; (screen x of the sprite, global depth y = 8 (x + y)); figures whose
+; cell face is outside the frame's hole are culled (x = $8000).
+ti_spr_xform:
+	tst.w	TD_XF			; once per list (td_menufmt re-links
+	bne.w	ti_rts			; with the same list)
+	move.w	#1,TD_XF
+	movem.l	d2-d3/d7/a2,-(a7)
+	lea	TD_LIST,a2
+	move.w	TD_NB,d7
+	bra.s	.c
+.t:	move.w	(a2),d0
+	move.w	2(a2),d1
+	move.w	d0,d2
+	sub.w	d1,d2
+	muls.w	#7,d2
+	asr.l	#3,d2			; global x = 14 (x - y)
+	add.w	d1,d0
+	asr.w	#1,d0			; global y = 8 (x + y)
+	move.w	d0,2(a2)
+	sub.w	TD_IGX,d2
+	move.w	d2,(a2)
+	add.w	#14-TI_CX,d2		; face centre in the hole?
+	bpl.s	.a
+	neg.w	d2
+.a:	mulu.w	#TI_HH,d2
+	addq.w	#8,d0
+	sub.w	TD_IGY,d0
+	sub.w	#TI_CY,d0
+	bpl.s	.b
+	neg.w	d0
+.b:	mulu.w	#TI_HW,d0
+	add.l	d2,d0
+	cmpi.l	#TI_HW*TI_HH,d0
+	bls.s	.n
+	move.w	#$8000,(a2)
+.n:	addq.w	#8,a2
+.c:	dbra	d7,.t
+	movem.l	(a7)+,d2-d3/d7/a2
+	rts
+
+; ti_fig_ht / ti_fig_pr / ti_spell — map_chunk_pos's figure draws and
+; its spell-effect step: skipped while we render the terrain.
+ti_fig_ht:
+	tst.w	TD_REND
+	bne.s	ti_rts
+	jmp	($0231D8).l		; hero_track
+ti_fig_pr:
+	tst.w	TD_REND
+	bne.s	ti_rts
+	jmp	($02343A).l		; map_promote_record
+ti_spell:
+	tst.w	TD_REND
+	bne.s	ti_rts
+	jmp	($03D9F8).l		; spell_effect_step
+ti_rts:	rts
+
+;=======================================================================
+; td_iso_render — terrain render of the game camera cell into the decode
+; buffer, aligned to the global grid, then td_iso_commit. Runs with
+; TD_BUSY clear: the VBlank handler keeps the picture gliding while the
+; game's composite runs (td_vwl).
+;=======================================================================
+td_iso_render:
+	movem.l	d2-d7/a2-a6,-(a7)
+	clr.w	TD_INOB
+	tst.w	TD_VALID		; first picture: all at once
+	bne.s	.go
+	move.w	#1,TD_INOB
+.go:	tst.w	TD_IRS
+	bne.w	.cont
+	tst.w	TD_IREQ
+	beq.w	.out
+	clr.w	TD_IREQ
+	move.w	$FF0E8E,d6		; start: camera cell, alignment shift
+	move.w	$FF0E90,d7
+	move.w	d6,TD_IRX
+	move.w	d7,TD_IRY
+	move.w	d6,d0			; bitmap x of a cell = 14 (X - Y) - Ox,
+	sub.w	d7,d0			; Ox = 14 (cx - cy) - 132
+	muls.w	#14,d0
+	sub.w	#132,d0
+	move.w	d0,d1			; shift the X table by e = Ox mod 8
+	andi.w	#7,d1			; (taken in -4..2: images stay inside
+	cmpi.w	#2,d1			; the 288-px bitmap), so the bitmap's
+	bls.s	.e			; columns sit on global tile columns
+	subq.w	#8,d1
+.e:	move.w	d1,TD_ISH
+	sub.w	d1,d0
+	asr.w	#3,d0
+	move.w	d0,TD_INX
+	move.w	d6,d0			; bitmap y = 8 (X + Y) - Oy, Oy = 8 (cx
+	add.w	d7,d0			; + cy) - 98 = 6 mod 8: global tile row
+	sub.w	#13,d0			; of bitmap row 0 = cx + cy - 13
+	move.w	d0,TD_INY
+	move.w	TD_ISH,d5
+	bsr.w	ti_xshift
+	move.w	#1,TD_IRS
+	clr.w	TD_IROW
+	jsr	(CLEARBUF).l
+.cont:	cmpi.w	#1,TD_IRS
+	bne.s	.com
+	bsr.w	ti_late			; no time left in this tick?
+	bne.w	.out
+	move.w	#1,TD_REND		; render rows TD_IROW.. (map_chunk_pos
+	clr.w	TD_IBAIL		; stops between rows when the tick's
+	move.w	TD_IRY,-(a7)		; time is up: ti_row)
+	move.w	TD_IRX,-(a7)
+	jsr	(CHUNKPOS).l
+	addq.w	#4,a7
+	clr.w	TD_REND
+	tst.w	TD_IBAIL
+	bne.w	.out			; resume next tick
+	move.w	TD_ISH,d5
+	neg.w	d5
+	bsr.w	ti_xshift
+	move.w	#2,TD_IRS
+	clr.w	TD_IROW
+	addq.w	#1,TD_IGEN
+.com:	bsr.w	td_iso_commit		; rows TD_IROW.. while time is left
+	cmpi.w	#23,TD_IROW
+	bcs.w	.out
+	clr.w	TD_IRS			; done: the plane shows the new picture
+	move.w	TD_INX,TD_IOX
+	move.w	TD_INY,TD_IOY
+	move.w	TD_IRX,TD_ICX
+	move.w	TD_IRY,TD_ICY
+	tst.w	TD_VALID
+	bne.s	.gl
+	addq.w	#1,TD_BUSY		; first picture: show it
+	bsr.w	td_iso_snap
+	bsr.w	td_iso_cam
+	bsr.w	td_layers
+	bsr.w	td_iso_scroll
+	move.w	#1,TD_VALID
+	subq.w	#1,TD_BUSY
+	bra.s	.out
+.gl:	bsr.w	td_iso_glide		; glide to the new picture's cell
+	move.w	$FF0E8E,d0		; the camera moved on meanwhile: start
+	cmp.w	TD_ICX,d0		; the next picture right away
+	bne.s	.nx
+	move.w	$FF0E90,d0
+	cmp.w	TD_ICY,d0
+	beq.s	.out
+.nx:	move.w	#1,TD_IREQ
+	bra.w	.go
+.out:	movem.l	(a7)+,d2-d7/a2-a6
+	rts
+
+ti_xshift:	; add d5 to the 100 X-table words
+	lea	XTAB,a0
+	moveq	#100-1,d0
+.x:	add.w	d5,(a0)+
+	dbra	d0,.x
+	rts
+
+ti_late:	; -> Z clear if this tick has < 3 frames left (and limits apply)
+	tst.w	TD_INOB
+	bne.s	.no
+	move.w	FRAME,d0
+	sub.w	TD_TICKFR,d0
+	addq.w	#3,d0
+	cmp.w	TD_PERIOD,d0
+	bcc.s	.yes
+.no:	moveq	#0,d0
+	rts
+.yes:	moveq	#1,d0
+	rts
+
+; td_iso_cancel — drop a render in progress (scene change, view off).
+td_iso_cancel:
+	cmpi.w	#1,TD_IRS
+	bne.s	.c
+	move.w	TD_ISH,d5
+	neg.w	d5
+	bsr.s	ti_xshift
+.c:	clr.w	TD_IRS
+	clr.w	TD_IREQ
+	clr.w	TD_REND
+	rts
+
+; ti_mso — map_chunk_pos's `jsr map_scroll_offset` (+ the removed
+; `addq #4,a7; moveq #0,d4`): row d4 starts at TD_IROW while we render.
+ti_mso:
+	move.l	4(a7),-(a7)
+	jsr	($020D58).l		; map_scroll_offset
+	addq.w	#4,a7
+	moveq	#0,d4
+	tst.w	TD_REND
+	beq.s	.r
+	move.w	TD_IROW,d4
+.r:	movea.l	(a7)+,a0		; drop the caller's argument
+	addq.w	#4,a7
+	jmp	(a0)
+
+; ti_row — map_chunk_pos's outer row step (`addq #1,d4; cmp #10,d4`):
+; while we render, stop after a row when the tick's time is up (unwind
+; to its epilogue at $1C0E4; td_iso_render resumes at TD_IROW).
+ti_row:
+	addq.w	#1,d4
+	tst.w	TD_REND
+	beq.s	.c
+	move.w	d4,TD_IROW
+	cmpi.w	#10,d4
+	bcc.s	.c
+	move.w	d0,-(a7)
+	bsr.w	ti_late
+	movem.w	(a7)+,d0		; (keeps the flags of ti_late)
+	beq.s	.c
+	move.w	#1,TD_IBAIL
+	addq.w	#4,a7			; drop our return: out of the row loop
+	jmp	($01C0E4).l		; (no spell step), back to td_iso_render
+.c:	cmpi.w	#10,d4
+	rts
+
+;=======================================================================
+; td_iso_commit — the bitmap to Plane B at global tile positions, rows
+; TD_IROW.. while the tick has time. Only the columns that can show
+; through the hole (ti_crow); each tile: blank -> void word, else a
+; 16-bit hash -> pool slot (ti_pool); the rest of the plane row is void.
+; The interrupt is masked only around VDP address/data sequences, so
+; the VBlank glide keeps running (range listed in td_vwl).
+;=======================================================================
+ti_cstart:
+td_iso_commit:
+	movem.l	d2-d7/a2-a4,-(a7)
+	move.w	TD_IROW,d7		; bitmap row
+.row:	cmpi.w	#23,d7
+	bcc.w	.done
+	bsr.w	ti_late
+	bne.w	.done
+	lea	ti_crow(pc),a0		; only the columns that can show
+	move.w	d7,d0			; through the hole (ti_crow)
+	add.w	d0,d0
+	moveq	#0,d4
+	move.b	(a0,d0.w),d4		; first column
+	moveq	#0,d5
+	move.b	1(a0,d0.w),d5
+	sub.w	d4,d5
+	addq.w	#1,d5			; count (0: none)
+	ble.w	.vrow
+	move.w	d7,d0			; a3 = tile (row, first column)
+	mulu.w	#36,d0
+	add.w	d4,d0
+	lsl.l	#5,d0
+	lea	DECBUF,a3
+	adda.l	d0,a3
+	lea	TD_NBUF,a4
+	move.w	d5,d6
+	subq.w	#1,d6
+.til:	movea.l	a3,a0
+	moveq	#0,d0			; hash
+	moveq	#0,d1			; any pixel
+	moveq	#8-1,d2
+.h:	move.l	(a0)+,d3
+	or.l	d3,d1
+	rol.l	#5,d0
+	eor.l	d3,d0
+	dbra	d2,.h
+	tst.l	d1
+	bne.s	.nb
+	move.w	TD_BASE,d0		; blank: void (parchment)
+	add.w	#256+$2000,d0
+	bra.s	.put
+.nb:	move.l	d0,d1			; fold to 16 bits
+	swap	d1
+	eor.w	d1,d0
+	bsr.s	ti_pool
+.put:	move.w	d0,(a4)+
+	lea	32(a3),a3
+	dbra	d6,.til
+.vrow:	bsr.w	ti_rowput
+	addq.w	#1,d7
+	cmpi.w	#23,d7			; picture done: the 9 plane rows below it
+	bcs.w	.row			; void too (under the HUD's text)
+	moveq	#0,d5
+.vr:	bsr.w	ti_rowput
+	addq.w	#1,d7
+	cmpi.w	#32,d7
+	bcs.s	.vr
+	moveq	#23,d7
+.done:	move.w	d7,TD_IROW
+	movem.l	(a7)+,d2-d7/a2-a4
+	rts
+
+ti_pool:	; d0.w = hash, a3 = tile -> d0.w = name word. 24-slot window
+	; from hash mod (N - 24) (no wrap): a hash match is checked against
+	; the slot's tile in VRAM; a miss takes the window's oldest slot
+	; not used by this render (age 1 = the previous render: last resort).
+	movem.l	d1-d6/a0-a2,-(a7)
+	move.w	d0,d4
+	moveq	#0,d1
+	move.w	d4,d1
+	divu.w	#TI_NSLOT-24,d1
+	swap	d1			; first slot
+	lea	TI_PHASH,a1
+	move.w	d1,d0
+	add.w	d0,d0
+	lea	(a1,d0.w),a0
+	moveq	#24-1,d2
+.f:	cmp.w	(a0)+,d4
+	dbeq	d2,.f
+	bne.s	.miss
+	move.l	a0,d1			; slot = (a0 - 2 - a1) / 2
+	sub.l	a1,d1
+	subq.l	#2,d1
+	lsr.l	#1,d1
+	bsr.s	ti_same
+	beq.s	.hit
+	subq.w	#1,d2			; another tile with this hash: go on
+	bpl.s	.f
+.miss:	lea	TI_PGEN,a2		; oldest slot in the window
+	move.w	TD_IGEN,d3
+	moveq	#-1,d5			; best slot
+	moveq	#0,d0			; its age
+	moveq	#24-1,d2
+	moveq	#0,d1
+	move.w	d4,d1
+	divu.w	#TI_NSLOT-24,d1
+	swap	d1
+.a:	move.b	d3,d6
+	sub.b	(a2,d1.w),d6
+	cmp.b	d0,d6
+	bls.s	.an
+	move.b	d6,d0
+	move.w	d1,d5
+.an:	addq.w	#1,d1
+	dbra	d2,.a
+	tst.w	d5
+	bmi.s	.full
+	move.w	d5,d1
+	move.w	d1,d2
+	add.w	d2,d2
+	move.w	d4,(a1,d2.w)
+	bsr.w	ti_upload
+.hit:	lea	TI_PGEN,a2
+	move.b	TD_IGEN+1,(a2,d1.w)	; in use by this render
+	bsr.w	ti_stile
+	bra.s	.out
+.full:	move.w	TD_BASE,d0		; pool full: parchment
+	add.w	#256+$2000,d0
+.out:	movem.l	(a7)+,d1-d6/a0-a2
+	rts
+
+ti_same:	; slot d1's VRAM tile == 32 bytes at a3 -> Z
+	movem.l	d0/a0,-(a7)
+	bsr.w	ti_stile
+	lsl.w	#5,d0
+	bsr.w	td_vcmd
+	movea.l	a3,a0
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	move.l	d0,VDP_CTRL
+	rept	8
+	move.l	VDP_DATA,d0
+	cmp.l	(a0)+,d0
+	bne.w	.x
+	endr
+.x:	sne	d0			; $FF: different
+	move.w	(a7)+,sr
+	tst.b	d0			; Z: the same tile
+	movem.l	(a7)+,d0/a0
+	rts
+
+ti_stile:	; d1 = slot -> d0 = tile index
+	move.w	d1,d0
+	cmpi.w	#256,d0
+	bcs.s	.a
+	add.w	#TI_POOLB-256,d0
+.a:	add.w	TD_BASE,d0
+	rts
+
+ti_upload:	; slot d1 <- 32 bytes at a3
+	bsr.s	ti_stile
+	lsl.w	#5,d0
+	bsr.w	td_vcmd
+	ori.l	#$40000000,d0
+	movea.l	a3,a0
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	move.l	d0,VDP_CTRL
+	rept	8
+	move.l	(a0)+,VDP_DATA
+	endr
+	move.w	(a7)+,sr
+	rts
+
+ti_rowput:	; plane row (INY + d7) & 31: void, with the d5 words built at
+	; TD_NBUF placed at columns (INX + d4 + k) & 63; one 64-word write
+	movem.l	d2-d3/a1,-(a7)
+	lea	TD_NBUF,a1		; the names (TD_NBUF)
+	lea	TD_NAMES,a0		; row: void, then the names at their
+	move.w	TD_BASE,d2		; columns (wrapping at 64)
+	add.w	#256+$2000,d2
+	move.w	TD_INX,d1
+	add.w	d4,d1
+	andi.w	#63,d1
+	moveq	#64-1,d0
+	sub.w	d5,d0
+	bmi.s	.nv
+	move.w	d1,d3			; void the columns not written below
+	add.w	d5,d3
+.v:	andi.w	#63,d3
+	add.w	d3,d3
+	move.w	d2,(a0,d3.w)
+	lsr.w	#1,d3
+	addq.w	#1,d3
+	dbra	d0,.v
+.nv:	move.w	d5,d0
+	bra.s	.nc
+.n:	move.w	(a1)+,d3
+	add.w	d1,d1
+	move.w	d3,(a0,d1.w)
+	lsr.w	#1,d1
+	addq.w	#1,d1
+	andi.w	#63,d1
+.nc:	dbra	d0,.n
+	move.w	TD_INY,d0
+	add.w	d7,d0
+	andi.w	#31,d0
+	lsl.w	#7,d0
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	bsr.w	td_vwrite
+	moveq	#32-1,d0
+.w:	move.l	(a0)+,VDP_DATA
+	dbra	d0,.w
+	move.w	(a7)+,sr
+	movem.l	(a7)+,d2-d3/a1
+	rts
+ti_cend:
+
+;=======================================================================
+; Iso tiles: pool reset, void + blobs, frame edge tiles, figure cache.
+;=======================================================================
+td_iso_load:
+	lea	TI_PHASH,a0		; pool: every slot dead (age 0 vs
+	move.w	#(TI_NSLOT*3+1)/2-1,d0	; render 2 on)
+.h:	clr.w	(a0)+
+	dbra	d0,.h
+	move.w	#1,TD_IGEN
+	move.w	TD_BASE,d0		; void + blob tiles
+	add.w	#256,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	td_gfx(pc),a0
+	move.w	#(td_gfx_end-td_gfx)/4-1,d1
+.c:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.c
+	move.w	TD_BASE,d0		; edge tiles: bit 1 -> colour 12
+	add.w	#TI_EDGE,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	ti_etil(pc),a0
+	move.w	#TI_NEDGE*8-1,d1
+.e:	move.b	(a0)+,d2
+	moveq	#0,d0
+	moveq	#8-1,d3
+.b:	lsl.l	#4,d0
+	add.b	d2,d2
+	bcc.s	.z
+	ori.b	#$C,d0
+.z:	dbra	d3,.b
+	move.l	d0,VDP_DATA
+	dbra	d1,.e
+	lea	TD_FC,a0
+	moveq	#TD_NFC-1,d0
+.f:	move.l	#$FFFF0000,(a0)+
+	dbra	d0,.f
+	move.w	#TI_NFC,TD_NFCV
+	moveq	#0,d0			; plane: all void (no priority bits
+	bsr.w	td_vwrite		; left over from the top-down's tint)
+	move.w	TD_BASE,d0
+	add.w	#256+$2000,d0
+	move.w	#64*32-1,d1
+.v:	move.w	d0,VDP_DATA
+	dbra	d1,.v
+	move.w	#1,TD_TILES
+	clr.w	TD_VALID
+	move.w	#$8000,TD_ICX
+	rts
+
+td_iso_check:				; clears TD_TILES if overwritten
+	tst.w	TD_TILES
+	beq.s	.out
+	move.w	TD_BASE,d0		; row 4 of blob tile 0
+	add.w	#257,d0
+	lsl.w	#5,d0
+	add.w	#16,d0
+	bsr.w	td_vread
+	lea	td_gfx+32+16(pc),a0
+	cmp.w	(a0),d0
+	beq.s	.out
+	clr.w	TD_TILES
+.out:	rts
+
+;=======================================================================
+; td_iso_winfix — once per tick: every window cell that is blank, a
+; room-bitmap word or a frame word gets the frame word of its place
+; (TD_UNFR: the blank, to take the frame off).
+;=======================================================================
+td_iso_winfix:
+	movem.l	d2-d6/a2,-(a7)
+	move.w	#1,TD_INWF
+	moveq	#0,d6			; row
+.row:	tst.w	TD_UNFR
+	bne.s	.r0
+	bsr.w	td_poll_vb
+.r0:	move.w	d6,d0
+	lsl.w	#7,d0
+	add.w	#$1000,d0
+	move.w	d0,d5
+	bsr.w	td_vcmd
+	lea	TD_WROW,a2
+	moveq	#40-1,d1
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	move.l	d0,VDP_CTRL
+.rd:	move.w	VDP_DATA,(a2)+
+	dbra	d1,.rd
+	move.w	(a7)+,sr
+	lea	TD_WROW,a2
+	moveq	#0,d4
+.col:	move.w	(a2)+,d0
+	bsr.w	ti_blankish
+	bne.s	.nx
+	move.w	FONTBLK,d0
+	tst.w	TD_UNFR
+	bne.s	.w
+	move.w	d4,d1
+	move.w	d6,d2
+	bsr.w	ti_frameword
+.w:	cmp.w	-2(a2),d0
+	beq.s	.nx
+	move.w	d0,d1
+	move.w	d4,d0
+	add.w	d0,d0
+	add.w	d5,d0
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	bsr.w	td_vwrite
+	move.w	d1,VDP_DATA
+	move.w	(a7)+,sr
+.nx:	addq.w	#1,d4
+	cmpi.w	#40,d4
+	bcs.s	.col
+	addq.w	#1,d6
+	cmpi.w	#28,d6
+	bcs.w	.row
+	clr.w	TD_INWF
+	movem.l	(a7)+,d2-d6/a2
+	rts
+ti_wend:
+
+ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
+	movem.l	d0-d1,-(a7)
+	move.w	d0,d1
+	sub.w	FONTBLK,d1
+	andi.w	#$7FF,d1
+	beq.s	.y
+	move.w	d0,d1
+	andi.w	#$F800,d1
+	beq.s	.room
+	cmpi.w	#$2000,d1		; palette 1, no flags: a frame word?
+	bne.s	.n
+	andi.w	#$7FF,d0
+	sub.w	TD_BASE,d0
+	cmpi.w	#256,d0
+	beq.s	.y
+	sub.w	#TI_EDGE,d0
+	cmpi.w	#TI_NEDGE,d0
+	bcs.s	.y
+	bra.s	.n
+.room:	sub.w	BANKBASE,d0
+	cmpi.w	#828,d0
+	bcs.s	.y
+.n:	moveq	#1,d1
+	bra.s	.o
+.y:	moveq	#0,d1
+.o:	movem.l	(a7)+,d0-d1
+	rts
+
+ti_frameword:	; d1 = column, d2 = row -> d0 = frame word (keeps d1-d2)
+	movem.l	d1-d3/a0,-(a7)
+	lea	ti_rows(pc),a0
+	move.w	d2,d0
+	add.w	d0,d0
+	cmp.b	(a0,d0.w),d1		; first fully inside column
+	bcs.s	.e
+	cmp.b	1(a0,d0.w),d1		; last
+	bhi.s	.e
+	move.w	FONTBLK,d0		; inside the hole: transparent
+	bra.s	.o
+.e:	lea	ti_eoff(pc),a0
+	moveq	#0,d3
+	move.b	(a0,d2.w),d3
+	moveq	#0,d0
+	move.b	1(a0,d2.w),d0
+	sub.w	d3,d0			; edge cells in this row
+	lea	ti_ecel(pc),a0
+	add.w	d3,d3
+	adda.w	d3,a0
+	bra.s	.lc
+.l:	cmp.b	(a0),d1
+	beq.s	.edge
+	addq.w	#2,a0
+.lc:	dbra	d0,.l
+	move.w	TD_BASE,d0		; outside: parchment
+	add.w	#256+$2000,d0
+	bra.s	.o
+.edge:	moveq	#0,d0
+	move.b	1(a0),d0
+	add.w	#TI_EDGE+$2000,d0
+	add.w	TD_BASE,d0
+.o:	movem.l	(a7)+,d1-d3/a0
+	rts
+
+; ti_frame data (tools/td_iso_frame.py)
+TI_NEDGE	equ 44
+ti_crow:	; per bitmap row: first, last column the commit writes
+	dc.b	1,0, 18,18, 16,20, 14,21, 12,23, 11,25, 9,27, 7,28
+	dc.b	5,30, 4,32, 2,34, 0,35, 0,35, 1,34, 3,33, 5,31
+	dc.b	6,29, 8,27, 10,26, 12,24, 1,0, 1,0, 1,0
+ti_rows:	; per window row: first, last fully inside column
+	dc.b	1,0, 1,0, 1,0, 1,0, 1,0, 19,20, 18,22
+	dc.b	16,24, 14,25, 12,27, 11,29, 9,31, 8,32, 10,30
+	dc.b	11,28, 13,26, 15,25, 17,23, 18,21, 1,0, 1,0
+	dc.b	1,0, 1,0, 1,0, 1,0, 1,0, 1,0, 1,0
+ti_eoff:	; per window row: offset of its edge cells in ti_ecel (+ end)
+	dc.b	0, 0, 0, 0, 0, 3, 8, 13, 18, 23
+	dc.b	28, 33, 38, 42, 47, 52, 57, 62, 67, 72
+	dc.b	72, 72, 72, 72, 72, 72, 72, 72, 72
+ti_ecel:	; edge cells: column, tile id
+	dc.b	19, 0, 20, 1, 21, 2, 17, 3, 18, 4, 21, 5, 22, 6, 23, 7
+	dc.b	15, 8, 16, 9, 17, 10, 23, 11, 24, 12, 13, 13, 14, 14, 15, 15
+	dc.b	25, 16, 26, 17, 12, 0, 13, 18, 26, 19, 27, 20, 28, 2, 10, 3
+	dc.b	11, 4, 28, 5, 29, 6, 30, 7, 8, 8, 9, 9, 10, 10, 30, 11
+	dc.b	31, 12, 6, 13, 7, 14, 8, 15, 32, 16, 33, 17, 6, 21, 7, 22
+	dc.b	33, 23, 34, 24, 7, 25, 8, 26, 9, 27, 31, 28, 32, 29, 9, 30
+	dc.b	10, 31, 29, 32, 30, 33, 31, 34, 11, 35, 12, 36, 27, 37, 28, 38
+	dc.b	29, 39, 12, 40, 13, 41, 14, 22, 26, 42, 27, 43, 14, 25, 15, 26
+	dc.b	16, 27, 24, 28, 25, 29, 16, 30, 17, 31, 22, 32, 23, 33, 24, 34
+ti_etil:	; edge tiles, 1 bit per pixel (1 = parchment), 8 rows each
+	dc.b	$FF, $FF, $FF, $FE, $FC, $F0, $C0, $00
+	dc.b	$FF, $FF, $9F, $07, $03, $00, $00, $00
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, $3F, $0F
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FC, $F0, $C0
+	dc.b	$FE, $F8, $E0, $80, $00, $00, $00, $00
+	dc.b	$07, $01, $00, $00, $00, $00, $00, $00
+	dc.b	$FF, $FF, $7F, $1F, $0F, $03, $00, $00
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $3F
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, $FC, $F0
+	dc.b	$FF, $FE, $F8, $E0, $C0, $00, $00, $00
+	dc.b	$80, $00, $00, $00, $00, $00, $00, $00
+	dc.b	$1F, $07, $01, $00, $00, $00, $00, $00
+	dc.b	$FF, $FF, $FF, $7F, $3F, $0F, $03, $00
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FC
+	dc.b	$FF, $FF, $FE, $F8, $F0, $C0, $00, $00
+	dc.b	$E0, $80, $00, $00, $00, $00, $00, $00
+	dc.b	$7F, $1F, $07, $01, $00, $00, $00, $00
+	dc.b	$FF, $FF, $FF, $FF, $FF, $3F, $0F, $03
+	dc.b	$F8, $E0, $80, $00, $00, $00, $00, $00
+	dc.b	$01, $00, $00, $00, $00, $00, $00, $00
+	dc.b	$FF, $7F, $1F, $07, $03, $00, $00, $00
+	dc.b	$F8, $E0, $E0, $F8, $FC, $FF, $FF, $FF
+	dc.b	$00, $00, $00, $00, $00, $00, $C0, $F0
+	dc.b	$01, $00, $00, $01, $03, $0F, $3F, $FF
+	dc.b	$FF, $7F, $7F, $FF, $FF, $FF, $FF, $FF
+	dc.b	$F8, $FE, $FF, $FF, $FF, $FF, $FF, $FF
+	dc.b	$00, $00, $80, $E0, $F0, $FC, $FF, $FF
+	dc.b	$00, $00, $00, $00, $00, $00, $00, $C0
+	dc.b	$00, $00, $00, $00, $00, $03, $0F, $3F
+	dc.b	$01, $07, $1F, $7F, $FF, $FF, $FF, $FF
+	dc.b	$E0, $F8, $FE, $FF, $FF, $FF, $FF, $FF
+	dc.b	$00, $00, $00, $80, $C0, $F0, $FC, $FF
+	dc.b	$00, $00, $00, $00, $00, $00, $03, $0F
+	dc.b	$00, $01, $07, $1F, $3F, $FF, $FF, $FF
+	dc.b	$7F, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	dc.b	$80, $E0, $F8, $FE, $FF, $FF, $FF, $FF
+	dc.b	$00, $00, $00, $00, $00, $C0, $F0, $FC
+	dc.b	$00, $00, $00, $00, $00, $00, $00, $03
+	dc.b	$00, $00, $01, $07, $0F, $3F, $FF, $FF
+	dc.b	$1F, $7F, $FF, $FF, $FF, $FF, $FF, $FF
+	dc.b	$FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	dc.b	$00, $80, $E0, $F8, $FC, $FF, $FF, $FF
+	dc.b	$00, $00, $00, $01, $03, $0F, $3F, $FF
+	dc.b	$07, $1F, $7F, $FF, $FF, $FF, $FF, $FF
+	even
+; ti_frame data end
 
 ;=======================================================================
 ; Data (generated: pixel-double table, blank + blob tiles).
