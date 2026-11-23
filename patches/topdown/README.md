@@ -1,9 +1,11 @@
-# topdown — smooth top-down test view on the original engine (#249)
+# topdown — smooth top-down test view on the original engine (#249, #251)
 
 A test build that keeps the whole game (logic, input, menus, messages,
 map data, RAM) and replaces only the world picture with a cheap
-top-down one: the world as 16×16 blocks, characters as 16×16 blobs,
-scrolled and moved every frame.
+top-down one: the world as 16×16 blocks, characters as the game's own
+animated figures, scrolled and moved every frame. **A+B+C** switches
+between this view and the original isometric one at any time (same
+1 MB ROM, same save, same game state).
 
 ```
 make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
@@ -17,9 +19,17 @@ make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
   tileset (record 10, the tiles the map screen uses) through the
   descriptor table `$1AE98`, pixel-doubled at load time. Day/night
   works (palette slot 0 is the world palette, as in the original).
-- **Blobs:** every character with a map-draw record. Yellow = the party
-  leader's figure (the leader, or the type-4 avatar that redirects to
-  it in rooms), white = everyone else. Up to 12 on screen.
+- **Figures:** every character with a map-draw record, drawn as a 32×32
+  sprite cut from the game's own figure image (template = record+2 +
+  record+4 into `$197B0`, drawn once by `$E358` into a spare corner of
+  the decode buffer and cached in VRAM, 34 images, LRU, at most one new
+  image per frame). Walking cycles the game's four walk poses over each
+  cell-to-cell slide. A 16×16 blob is the fallback when an image is not
+  cached yet.
+- **Water shimmer:** every 16 frames colours 2 and 4 (mid and light
+  blue) swap inside the 20 water map tiles, in VRAM, 20 tiles a frame —
+  every water cell animates with no name-table writes (the game's own
+  `±1` tile flip changes almost nothing in the map tileset).
 - **Camera:** follows the leader's blob, centred on screen line 84 (the
   HUD covers the bottom), clamped to the map; maps smaller than the
   screen (11×11 rooms) are centred.
@@ -104,17 +114,18 @@ after it re-links.
 | `$01B958` | `jsr clear_decode_buffer` | `jsr td_tick` |
 | `$01B95E` | `move.w $FF0E90,-(a7)` … `jsr map_chunk_pos` | `bra $01B970` |
 | `$01B97E` | `jsr menu_format` | `jsr td_menufmt` |
-| `$01B9D0` | `move.w #$33C0,-(a7)` (room DMA) | `bra $01B9F2` |
+| `$01B9E8` | `jsr dma_upload` (room DMA) | `jsr td_dma` (original view only) |
+| `$001352` | joypad queue pop | `jsr td_pad` (A+B+C = switch view) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
-RAM `$FFDC00–$FFDF17` (free in play: the attract buffer ends at
+RAM `$FFDC00–$FFDFAF` (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
-the boot RAM clear resets it). Blob ~4 KB in the `$FD0CC` padding.
+the boot RAM clear resets it). Blob 5,328 bytes at `$FD0CC–$FE59B` (padding).
 
 ## Limits (test build)
 
-- Blobs only: no facing, no walk frames; projectiles and spell effects
-  (drawn by the removed renderer) are not shown.
+- Projectiles and spell effects (drawn by the removed renderer) are not
+  shown in the top-down view; switch to the original view for them.
 - `map_chunk_pos` is skipped entirely, so its record promotion between
   the two figure grids (`$2343A`, draw order only) no longer happens.
 - One tick period per mode: rooms whose original render was slower

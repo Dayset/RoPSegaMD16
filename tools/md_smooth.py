@@ -42,6 +42,9 @@ def main():
     ap.add_argument("--to", dest="hi", type=int, required=True)
     ap.add_argument("--radius", type=int, default=4)
     ap.add_argument("--json")
+    ap.add_argument("--fold", action="append", default=[],
+                    help="R,G,B=R,G,B: count the first colour as the second "
+                         "(ignore a deliberate colour animation, e.g. water)")
     a = ap.parse_args()
     seq = []
     for n, pad in md_run.parse_route(a.route):
@@ -72,6 +75,9 @@ def main():
             blobs.append((i, (vr[o + 6] << 8 | vr[o + 7]) & 0x1FF, (vr[o] << 8 | vr[o + 1]) & 0x1FF))
         s = md.screen()[8:150, 8:300].astype(np.int32)
         s[0:60, 160:292] = 0          # pad icon (sprites)
+        for f in a.fold:
+            src, dst = (np.array([int(v) for v in c.split(",")]) for c in f.split("="))
+            s[(s == src).all(2)] = dst
         luma = s[:, :, 0] * 3 + s[:, :, 1] * 5 + s[:, :, 2] * 2
         if prev is not None:
             chg = int((luma != prev).sum())
