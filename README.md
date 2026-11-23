@@ -5,17 +5,17 @@ USA/Europe, 1992, Naughty Dog — GM T-50176).
 
 ## Demos
 
-Top-down view — the big world rendered flat from above instead of the original isometric diamond (`make rom FEATURES=topdown`). Click a still to play the clip — GitHub plays the video on the file page (README pages can't embed a video player).
+Top-down view — the big world rendered flat from above instead of the original isometric diamond (`make rom FEATURES=topdown`).
 
-[![Dragon flight, original isometric (left) vs top-down (right)](docs/demos/topdown-dragon-flight-side-by-side.png)](docs/demos/topdown-dragon-flight-side-by-side.mp4)
+https://github.com/user-attachments/assets/0e6cd230-5f4d-49f0-827a-ea66a068913a
 
 *Dragon flight, original isometric (left) vs top-down (right) — desert, forest, ocean, snow, 60 s*
 
-[![Top-down walk, green overworld](docs/demos/topdown-walk-overworld.png)](docs/demos/topdown-walk-overworld.mp4)
+https://github.com/user-attachments/assets/c058afae-c12a-4d16-862c-2e835217af0d
 
 *Top-down walk, green overworld, 20 s*
 
-[![Top-down walk, dark terrain to river bridge](docs/demos/topdown-walk-dark-to-bridge.png)](docs/demos/topdown-walk-dark-to-bridge.mp4)
+https://github.com/user-attachments/assets/3f67e769-b9f9-4046-8bfe-4742a22ff362
 
 *Top-down walk, dark terrain to river bridge, 50 s*
 
