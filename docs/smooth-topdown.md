@@ -147,7 +147,8 @@ Until step 2 exists, topdown is the playable smooth build.
   the tile grid stays 8-px aligned, so it still scrolls in hardware.
   Figures on a raised cell move up with it. A building's floors are
   separate locations (one height per cell), so a lighthouse is shown
-  floor by floor, as in the original. Whether to build it is Q14.
+  floor by floor, as in the original. Q14 answered: **tinted** —
+  built (#264), see below.
 - **Better textures while standing still?** Possible as the "detail on
   idle" pass of #252: when the leader has not moved for a few ticks,
   redraw the visible cells with richer tiles (the isometric top
@@ -177,6 +178,13 @@ Until step 2 exists, topdown is the playable smooth build.
   boat and ship, 22 for the dragon (its flight average over land and
   sea), 26 on foot. Dino could not be measured (from the start it barely
   moves: 28 frames per tick over 7 moves) and stays at the foot pace.
+
+![](img/topdown-tint.png)
+
+*Same frame, before and after #264: height-0 cells shadowed (VDP
+shadow mode), raised cells normal; the HUD band at the bottom is not
+tinted (the HUD's low-priority sprites need priority-free plane rows
+there).*
 
 ![](img/topdown-height-mock.png)
 

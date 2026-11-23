@@ -40,7 +40,7 @@
 ;            head) -> jsr td_poll (one picture update per new frame
 ;            while the per-character logic runs)
 ;
-; RAM: $FFDC00-$FFDF17 (free in play: the attract buffer ends at
+; RAM: $FFDC00-$FFE14F (free in play: the attract buffer ends at
 ; $FFDBEA, the stack low-water mark seen on the playtest routes is
 ; $FFE972; the boot RAM clear resets it).
 
@@ -126,7 +126,19 @@ TD_MSG		equ TD_UPTXT+6	; other text in the HUD rows (a message)
 TD_HASBOX	equ TD_UPTXT+8	; the HUD box holds moved HUD words
 TD_BOX		equ TD_UPTXT+10	; draw the HUD box backdrop sprites
 TD_BUSY		equ TD_UPTXT+12	; main thread is inside our code
-TD_END		equ TD_UPTXT+14
+TD_TMP		equ TD_UPTXT+14	; cell being drawn is raised (height > 0)
+TD_BTOP		equ TD_UPTXT+16	; first plane tile row of the HUD band
+TD_GSPON	equ TD_UPTXT+18	; game sprites above the band get priority
+TD_RAISED	equ TD_UPTXT+20	; 64 B: ring cell (cy&15, cx&31) is raised
+TD_GSP		equ TD_RAISED+64	; 80 words: tile word we gave priority to
+TD_WROW		equ TD_GSP+160	; 40-word window row buffer
+TD_ROWB		equ TD_WROW+80	; 64-word plane row buffer
+TD_END		equ TD_ROWB+128
+
+TD_BANDL	equ 152		; first screen line of the HUD band (untinted)
+TD_NBAND	equ 13		; plane tile rows treated as band (lines 145..255)
+TD_WBROW	equ 18		; window rows from here: blanks with priority
+				; (line 144: covers the band row's top part)
 
 NOPOS		equ $8000
 
@@ -460,6 +472,7 @@ td_restore:
 	addq.w	#2,d0
 	bsr.w	td_vwrite
 	move.w	d1,VDP_DATA
+	bsr.w	td_gsp			; (GSPON is off): give back priorities
 .scr:	clr.l	-(a7)			; vdp_set_scroll(0,0,0,0)
 	clr.l	-(a7)
 	jsr	($00DC16).l
@@ -543,6 +556,8 @@ td_sync:
 	asr.w	#4,d1
 	move.w	d0,TD_CX0
 	move.w	d1,TD_CY0
+	bsr.w	td_bandtop
+	move.w	d0,TD_BTOP
 	bsr.w	td_draw_all
 	bsr.w	td_layers
 	bsr.w	td_scroll
@@ -628,6 +643,7 @@ td_frame_go:
 	bsr.w	td_layers
 	bsr.w	td_scroll		; vblank-critical first
 	bsr.w	td_sprites
+	bsr.w	td_band
 	bsr.w	td_anim
 	tst.w	d2
 	beq.s	.out
@@ -692,6 +708,14 @@ td_scroll:	; per-line H-scroll: world row wy is shifted by floor(wy/2)
 td_layers:
 	move.w	#1,TD_LAY
 	move.w	#$8B03,VDP_CTRL		; H-scroll per line
+	move.w	#$8C89,VDP_CTRL		; H40 + shadow/highlight (height tint)
+	moveq	#0,d0			; game sprites get priority only
+	tst.w	$FF00AC			; with no menu and no upper text
+	bne.s	.g
+	tst.w	TD_UPTXT
+	bne.s	.g
+	moveq	#1,d0
+.g:	move.w	d0,TD_GSPON
 	tst.w	$FF00AC
 	bne.s	.full
 	tst.w	TD_UPTXT
@@ -721,8 +745,10 @@ td_unlay:
 	beq.s	.out
 	clr.w	TD_LAY
 	clr.w	TD_BAND
+	clr.w	TD_GSPON
 	move.w	#$8400,VDP_CTRL
 	move.w	#$8B00,VDP_CTRL
+	move.w	#$8C81,VDP_CTRL		; shadow/highlight off
 	move.w	#$9180,VDP_CTRL
 	move.w	#$9200,VDP_CTRL
 .out:	rts
@@ -741,6 +767,88 @@ td_vctl:
 	bsr.s	td_unlay
 .no:	move.w	(a7)+,d1
 .go:	move.w	d0,VDP_CTRL
+	rts
+
+;=======================================================================
+; td_band — keep the HUD band untinted while the camera scrolls: plane
+; tile rows under screen lines TD_BANDL.. (and the off-screen rows below)
+; carry no priority bit, so the low-priority HUD sprites (portrait frame,
+; HUD box, message scroll) stay on top and the window's high blanks keep
+; them unshadowed. Rows that enter the band lose the bit; rows that leave
+; it get it back from the raised bitmap.
+;=======================================================================
+td_bandtop:				; -> d0 = first band tile row (0-31)
+	move.w	TD_CAMY,d0
+	add.w	#TD_BANDL,d0
+	asr.w	#3,d0
+	andi.w	#31,d0
+	rts
+
+td_band:
+	movem.l	d2-d6/a2,-(a7)
+	bsr.s	td_bandtop
+	move.w	TD_BTOP,d5		; old band
+	cmp.w	d5,d0
+	beq.s	.out
+	move.w	d0,TD_BTOP
+	move.w	d0,d6			; new band
+	moveq	#31,d4			; tile row
+.r:	move.w	d4,d0
+	sub.w	d5,d0
+	andi.w	#31,d0
+	cmpi.w	#TD_NBAND,d0
+	scs	d1			; in the old band
+	move.w	d4,d0
+	sub.w	d6,d0
+	andi.w	#31,d0
+	cmpi.w	#TD_NBAND,d0
+	scs	d2			; in the new band
+	cmp.b	d1,d2
+	beq.s	.n
+	bsr.s	td_rowfix
+.n:	dbra	d4,.r
+.out:	movem.l	(a7)+,d2-d6/a2
+	rts
+
+td_rowfix:				; d4 = tile row, d2.b = $FF: clear, 0: restore
+	move.w	d4,d0
+	lsl.w	#7,d0
+	move.w	d0,d3			; row address
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	lea	TD_ROWB,a0
+	moveq	#64-1,d1
+.rd:	move.w	VDP_DATA,(a0)+
+	dbra	d1,.rd
+	lea	TD_ROWB,a0
+	moveq	#64-1,d1
+.cl:	andi.w	#$7FFF,(a0)+
+	dbra	d1,.cl
+	tst.b	d2
+	bne.s	.wr
+	move.w	d4,d0			; raised bits of cell row (r>>1)&15
+	lsr.w	#1,d0
+	lsl.w	#2,d0
+	lea	TD_RAISED,a2
+	adda.w	d0,a2
+	lea	TD_ROWB,a0
+	moveq	#0,d1			; cell column 0..31
+.st:	move.w	d1,d0
+	lsr.w	#3,d0
+	btst	d1,(a2,d0.w)
+	beq.s	.sn
+	ori.w	#$8000,(a0)
+	ori.w	#$8000,2(a0)
+.sn:	addq.w	#4,a0
+	addq.w	#1,d1
+	cmpi.w	#32,d1
+	bcs.s	.st
+.wr:	move.w	d3,d0
+	bsr.w	td_vwrite
+	lea	TD_ROWB,a0
+	moveq	#32-1,d1
+.w:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.w
 	rts
 
 ;=======================================================================
@@ -1243,6 +1351,15 @@ td_sprites:
 	ble.s	.cond
 	cmpi.w	#224,d3
 	bge.s	.cond
+	move.w	d3,d0			; above the HUD band: priority, so raised
+	add.w	#16,d0			; (priority) cells never hide it; in the
+	cmpa.w	#$0500,a3		; band: low, under the HUD
+	beq.s	.pb
+	add.w	#16,d0
+.pb:	cmpi.w	#TD_BANDL+8,d0
+	bgt.s	.pw
+	ori.w	#$8000,d4
+.pw:
 	moveq	#TD_SLOT0,d0		; VRAM address of slot TD_SLOT0+d6
 	add.w	d6,d0
 	lsl.w	#3,d0
@@ -1279,7 +1396,82 @@ td_sprites:
 	addq.w	#2,d0
 	bsr.w	td_vwrite
 	move.w	d5,VDP_DATA
+	bsr.s	td_gsp
 	movem.l	(a7)+,d2-d7/a2-a3
+	rts
+
+;=======================================================================
+; td_gsp — the game's own sprites above the HUD band (pad icon) are low
+; priority: give them the priority bit while no menu / upper text is up
+; (raised map cells would hide them, height-0 cells would shadow them);
+; otherwise put back the words we changed (only if still ours).
+;=======================================================================
+td_gsp:
+	movem.l	d2-d5/a2,-(a7)
+	lea	TD_GSP,a2
+	tst.w	TD_GSPON
+	bne.s	.on
+	moveq	#80-1,d5
+	moveq	#0,d4
+.rv:	move.w	(a2),d3
+	beq.s	.rn
+	clr.w	(a2)
+	move.w	d4,d0
+	lsl.w	#3,d0
+	add.w	SPRBASE,d0
+	addq.w	#4,d0
+	move.w	d0,d2
+	bsr.w	td_vread
+	cmp.w	d3,d0
+	bne.s	.rn
+	move.w	d2,d0
+	bsr.w	td_vwrite
+	andi.w	#$7FFF,d3
+	move.w	d3,VDP_DATA
+.rn:	addq.l	#2,a2
+	addq.w	#1,d4
+	dbra	d5,.rv
+	bra.s	.out
+.on:	move.w	TD_GHEAD,d4		; walk the game's chain
+	moveq	#80-1,d5
+.w:	andi.w	#$7F,d4
+	beq.s	.out
+	cmpi.w	#TD_SLOT0,d4
+	bcc.s	.out
+	move.w	d4,d0
+	lsl.w	#3,d0
+	add.w	SPRBASE,d0
+	move.w	d0,d2			; entry address
+	bsr.w	td_vread		; y + 128
+	move.w	d0,d3
+	move.w	d2,d0
+	addq.w	#2,d0
+	bsr.w	td_vread		; size | link
+	move.w	d0,-(a7)
+	lsr.w	#8,d0			; height in cells - 1
+	andi.w	#3,d0
+	addq.w	#1,d0
+	lsl.w	#3,d0
+	add.w	d0,d3			; bottom + 128
+	cmpi.w	#TD_BANDL+128,d3
+	bgt.s	.nx
+	move.w	d2,d0
+	addq.w	#4,d0
+	bsr.w	td_vread		; tile word
+	tst.w	d0
+	bmi.s	.nx
+	ori.w	#$8000,d0
+	move.w	d0,d3
+	move.w	d4,d1
+	add.w	d1,d1
+	move.w	d3,(a2,d1.w)
+	move.w	d2,d0
+	addq.w	#4,d0
+	bsr.w	td_vwrite
+	move.w	d3,VDP_DATA
+.nx:	move.w	(a7)+,d4
+	dbra	d5,.w
+.out:	movem.l	(a7)+,d2-d5/a2
 	rts
 
 ;=======================================================================
@@ -1486,6 +1678,9 @@ td_draw_cell:
 	addq.w	#4,a7
 	movea.l	d0,a0
 	move.w	(a0),d2			; cell word
+	move.w	d2,d0			; height (bits 13-15) -> raised flag
+	andi.w	#$E000,d0
+	move.w	d0,TD_TMP
 	move.w	d2,d0
 	andi.w	#$1FF,d0
 	add.w	d0,d0
@@ -1529,13 +1724,45 @@ td_draw_cell:
 	move.w	d2,d1			; BR
 	bra.s	td_cell_put
 td_cell_blank:				; outside the map: parchment void
+	move.w	#1,TD_TMP		; (never shadowed)
 	move.w	TD_BASE,d0
 	add.w	#256+$2000,d0		; palette 1
 	move.w	d0,d1
 	swap	d0
 	move.w	d1,d0
 	move.l	d0,d1
-td_cell_put:	; VRAM address: ((2cy & 31) * 64 + (2cx & 63)) * 2
+td_cell_put:	; d0 = TL:TR, d1 = BL:BR, TD_TMP = raised.
+	; Height tint: a raised cell's tiles get the priority bit (not
+	; shadowed), except in plane rows inside the HUD band. The raised
+	; bitmap lets td_band restore the bit when a row leaves the band.
+	move.w	d7,d2			; bit (cy&15)*32 + (cx&31)
+	andi.w	#15,d2
+	lsl.w	#5,d2
+	move.w	d6,d3
+	andi.w	#31,d3
+	add.w	d3,d2
+	move.w	d2,d3
+	lsr.w	#3,d3
+	lea	TD_RAISED,a0
+	adda.w	d3,a0
+	tst.w	TD_TMP
+	beq.s	.lo
+	bset	d2,(a0)
+	move.w	d7,d2			; top tile row in the band?
+	add.w	d2,d2
+	sub.w	TD_BTOP,d2
+	andi.w	#31,d2
+	cmpi.w	#TD_NBAND,d2
+	bcs.s	.t1
+	ori.l	#$80008000,d0
+.t1:	addq.w	#1,d2			; bottom tile row
+	andi.w	#31,d2
+	cmpi.w	#TD_NBAND,d2
+	bcs.s	.ad
+	ori.l	#$80008000,d1
+	bra.s	.ad
+.lo:	bclr	d2,(a0)
+.ad:	; VRAM address: ((2cy & 31) * 64 + (2cx & 63)) * 2
 	move.w	d7,d2
 	add.w	d2,d2
 	andi.w	#31,d2
@@ -1603,47 +1830,59 @@ td_plane_check:
 ;=======================================================================
 td_winfix:
 	movem.l	d2-d6/a2,-(a7)
-	clr.w	TD_UPTXT
-	clr.w	TD_MSG
-	clr.w	TD_HASBOX
-	moveq	#0,d6			; row
+	moveq	#0,d2			; found: bit 0 upper text, 1 message,
+	moveq	#0,d6			; 2 HUD box (committed at the end, so
+					; updates during the scan see the last
+					; tick's state); d6 = row
 .row:	bsr.w	td_poll_vb		; a scan takes ~1 frame: keep updating
-	move.w	d6,d0			; read 36 words of row d6, cols 2..37
+	move.w	d6,d0			; read the 40 visible words of row d6
 	lsl.w	#7,d0
-	add.w	#$1000+4,d0
+	add.w	#$1000,d0
 	move.w	d0,d5			; row address
 	andi.l	#$3FFF,d0
 	swap	d0
 	move.l	d0,VDP_CTRL
-	lea	TD_ROW,a2
-	moveq	#36-1,d1
+	lea	TD_WROW,a2
+	moveq	#40-1,d1
 .rd:	move.w	VDP_DATA,(a2)+
 	dbra	d1,.rd
-	lea	TD_ROW,a2
-	moveq	#0,d4			; column 0..35
+	lea	TD_WROW,a2
+	moveq	#0,d4			; column 0..39
 .col:	move.w	(a2)+,d0
 	move.w	d0,d1
 	sub.w	FONTBLK,d1
 	andi.w	#$7FF,d1		; a blank, any attributes
-	beq.w	.nx
-	move.w	d0,d1
+	bne.s	.nb
+	cmpi.w	#TD_WBROW,d6		; HUD band: blanks with priority, so
+	bcs.w	.nx			; the map under them is not shadowed
+	tst.w	d0
+	bmi.w	.nx
+	move.w	FONTBLK,d1
+	ori.w	#$8000,d1
+	bra.s	.fix
+.nb:	move.w	d0,d1
 	andi.w	#$F800,d1		; no palette / priority / flips
 	bne.s	.txt
 	sub.w	BANKBASE,d0
 	cmpi.w	#828,d0
 	bcc.s	.txt
-	move.w	d4,d0			; fix this cell
+	move.w	FONTBLK,d1		; a room-bitmap word: blank it
+	cmpi.w	#TD_WBROW,d6
+	bcs.s	.fix
+	ori.w	#$8000,d1
+.fix:	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d5,d0
 	bsr.w	td_vwrite
-	move.w	FONTBLK,VDP_DATA
+	move.w	d1,VDP_DATA
 	bra.s	.nx
 .txt:	cmpi.w	#TD_BROW,d6		; text above the HUD rows
 	bcc.s	.band
-	move.w	#1,TD_UPTXT
+	bset	#0,d2
 	bra.s	.nx
-.band:	move.w	d4,d0			; screen column
-	addq.w	#2,d0
+.band:	cmpi.w	#26,d6			; below the HUD rows: a message
+	bcc.s	.msg
+	move.w	d4,d0			; screen column
 	cmpi.w	#32,d0			; portrait
 	bcs.s	.b1
 	cmpi.w	#37,d0
@@ -1654,7 +1893,7 @@ td_winfix:
 	bcs.s	.b2
 	cmpi.w	#29,d0
 	bhi.s	.b2
-	move.w	#1,TD_HASBOX
+	bset	#2,d2
 	bra.s	.nx
 .b2:	move.w	d6,d1			; the game's own HUD place for this row
 	sub.w	#TD_BROW,d1
@@ -1665,13 +1904,23 @@ td_winfix:
 	bcs.s	.msg
 	cmp.b	(a0),d0
 	bls.s	.nx
-.msg:	move.w	#1,TD_MSG
+.msg:	bset	#1,d2
 .nx:	addq.w	#1,d4
-	cmpi.w	#36,d4
+	cmpi.w	#40,d4
 	bcs.w	.col
 	addq.w	#1,d6
-	cmpi.w	#26,d6
+	cmpi.w	#28,d6
 	bcs.w	.row
+	moveq	#0,d0
+	btst	#0,d2
+	sne	d0
+	move.w	d0,TD_UPTXT
+	btst	#1,d2
+	sne	d0
+	move.w	d0,TD_MSG
+	btst	#2,d2
+	sne	d0
+	move.w	d0,TD_HASBOX
 	movem.l	(a7)+,d2-d6/a2
 	rts
 
@@ -1731,11 +1980,13 @@ td_hud:
 .wr:	move.w	(a2)+,VDP_DATA
 	dbra	d0,.wr
 	move.w	#1,TD_HASBOX
-.blank:	move.w	d7,d0			; blank the source
-	bsr.w	td_vwrite
+.blank:	move.w	d7,d0			; blank the source (band blank:
+	bsr.w	td_vwrite		; priority, not shadowed)
+	move.w	FONTBLK,d1
+	ori.w	#$8000,d1
 	move.w	d4,d0
 	subq.w	#1,d0
-.bl:	move.w	FONTBLK,VDP_DATA
+.bl:	move.w	d1,VDP_DATA
 	dbra	d0,.bl
 	bra.w	.seg
 .done:	movem.l	(a7)+,d2-d7/a2-a3

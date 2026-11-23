@@ -61,4 +61,5 @@ Work continues on the default.
 ## Q14 — topdown (#255): show cell height in the oblique view?
 - Question: draw cell height (0–7 levels) as raised tiles with shadowed south faces (mock-up `docs/img/topdown-height-mock.png`), keep the view flat, or tint by height only?
 - Default taken: flat (no change); the mock-up and `tools/td_height_mock.py` are in.
+- **Answered (Dayset, 2026-11-23): tinted.** Built in #264: height-0 cells shadowed, raised cells normal; the HUD band (screen lines ≥ 144) stays untinted.
 - If the answer is different: raised tiles needs shadow/highlight mode, a painter-order cell draw (a cell's top can cover up to 3.5 cells to its north), streaming lookahead of 4 rows, and figures lifted by their cell's height — about one card.
