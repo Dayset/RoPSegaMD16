@@ -13,4 +13,4 @@ addr,name,tier,note
 0x0EB7C8,sound_stop,2,sf.b $FF021E (sound-off flag); docs/overview.md: stop-sound; zero callers
 0x0EB806,sound_upload,2,docs/architecture.md: $EB806 sound-driver upload
 0x0EB88A,sound_start_song,2,sound_upload; then song pointer into $FF022C/$FF0230; docs/architecture.md: start-song
-0x0EB92A,z80_bus_request,1,sr=$2700; $A11100=$0100 (bus request); a0=$A00000
+0x0EB92A,z80_bus_request,2,sr=$2700; $A11100=$0100 (bus request); a0=$A00000; tier2: docs/architecture.md:589 cites 0x0EB92A

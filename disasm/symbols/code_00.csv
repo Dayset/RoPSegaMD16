@@ -6,10 +6,10 @@ addr,name,tier,note
 0x001350,joypad_queue_pop,2,docs/architecture.md: $1350 joypad-queue pop
 0x00D25C,game_dispatch,2,docs/architecture.md: $D25C game-code dispatcher (not the main loop itself)
 0x00D28E,main_loop,2,docs/architecture.md: $D28E eternal main loop (#020)
-0x00D9E2,vdp_ctrl_write,1,move.w arg;$C00004: one word to the VDP control port
-0x00D9EE,vdp_data_write,1,move.w arg;$C00000: one word to the VDP data port
-0x00D9FA,vdp_data_read,1,move.w $C00000;d0: one word from the VDP data port
+0x00D9E2,vdp_ctrl_write,2,move.w arg;$C00004: one word to the VDP control port; tier2: docs/architecture.md:181 cites 0x00D9E2
+0x00D9EE,vdp_data_write,2,move.w arg;$C00000: one word to the VDP data port; tier2: docs/graphics.md:35 cites 0x00D9EE
+0x00D9FA,vdp_data_read,2,move.w $C00000;d0: one word from the VDP data port; tier2: docs/graphics.md:36 cites 0x00D9FA
 0x00DA04,dma_upload,2,docs/graphics.md:366;687: DMA copy to VRAM
-0x00DC60,vdp_set_write_addr,1,VDP control port: $4000|addr low word; then the 2-bit high part
-0x00DC82,pad1_read,1,bus request $A11100; TH select on $A10003; reads $A10003
-0x00DCE2,pad2_read,1,bus request $A11100; TH select on $A10005; reads $A10005
+0x00DC60,vdp_set_write_addr,2,VDP control port: $4000|addr low word; then the 2-bit high part; tier2: docs/graphics.md:37 cites 0x00DC60
+0x00DC82,pad1_read,2,bus request $A11100; TH select on $A10003; reads $A10003; tier2: docs/save.md:251 cites in-body $0DCB8
+0x00DCE2,pad2_read,2,bus request $A11100; TH select on $A10005; reads $A10005; tier2: docs/architecture.md:604 cites 0x00DCE2

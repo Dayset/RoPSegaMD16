@@ -28,7 +28,7 @@ addr,name,tier,note
 0x00DEDA,math_rem32_signed,1,"static: takes absolute values, calls math_udiv32, returns remainder in d0"
 0x00DEF4,math_mod32,2,logic.md: $DEF4(arg) = modulo by arg
 0x00DF0A,math_udiv32,2,logic.md: unsigned divide; remainder in d0; core divide
-0x00e358,map_terrain_tile_lookup,1,code: reads 32-bit offset table L05F524 indexed by id*4; cmp #ffeb bound
+0x00e358,map_terrain_tile_lookup,2,code: reads 32-bit offset table L05F524 indexed by id*4; cmp #ffeb bound; tier2: docs/graphics.md:286 cites 0x00E358
 0x01107A,sys_stub_01107a,1,static: empty routine (link/unlk/rts only)
 0x011082,pal_load_set,2,architecture.md: loads palettes $CCC38/$CCB18/$CCCB8 via $11082
 0x0110d0,pal_set_entry,2,writes one CRAM entry (slot index value); graphics.md:486; doc-pinned but no callers in ROM
@@ -39,13 +39,13 @@ addr,name,tier,note
 0x011514,text_draw_number,1,converts a number to a string via num_to_str and draws it at a VDP name-table position; called from stats and number display code
 0x011588,text_draw_at,1,static: calls helper 0x11FAE then text_glyph_draw with the caller's coordinates
 0x0115C2,text_draw_centred,1,static: strlen then x = centre - len*8/2 before drawing
-0x011820,gfx_tilemap_draw,1,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes
+0x011820,gfx_tilemap_draw,2,code: 64-cell map writer with flip flags 0x800/0x1000 (draw order); VDP writes; tier2: docs/logic-audit.md:315 cites 0x011820
 0x0118c8,gfx_tilemap_fill_seq,1,fills a VRAM tilemap rect with incrementing tile numbers starting at a computed value; sibling of gfx_tilemap_fill which writes one constant tile; called from gfx_draw_screen at three sites
-0x01194A,gfx_set_tile_vram_addr,1,static: computes tile VRAM address from args at 0xc and 0x12; calls vdp_set_write_addr
-0x011a1a,gfx_tilemap_fill,1,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16
-0x011A7C,gfx_dma_tile_upload,1,code: dma_upload of arg size at VRAM counter FF0076 (asl 5); advances FF0076 by arg
+0x01194A,gfx_set_tile_vram_addr,2,static: computes tile VRAM address from args at 0xc and 0x12; calls vdp_set_write_addr; tier2: docs/graphics.md:17 cites 0x01194A
+0x011a1a,gfx_tilemap_fill,2,code: 64-cell map address via vdp_set_write_addr then repeated vdp_data_write of word arg16; tier2: docs/graphics.md:395 cites 0x011A1A
+0x011A7C,gfx_dma_tile_upload,2,code: dma_upload of arg size at VRAM counter FF0076 (asl 5); advances FF0076 by arg; tier2: docs/graphics.md:17 cites 0x011A7C
 0x011B58,sys_counter_add,1,static: returns old value of $FF0076; adds its argument to it
-0x011BB8,pad_latch_11bb8,1,static: pad1_read into ff0e14 and pad2_read into ff8646
+0x011BB8,pad_latch_11bb8,2,static: pad1_read into ff0e14 and pad2_read into ff8646; tier2: docs/toolchain.md:55 cites 0x011BB8
 0x011C4A,sprite_set_link,2,graphics.md: $11C4A rewrites word 1 (size/link) of a sprite
 0x011C9A,sprite_grid_write,2,graphics.md: $11C9A writes a rows x cols grid of sprites
 0x011E06,gfx_layout_game,2,graphics.md:262 Layout G installed by $11E06
@@ -54,22 +54,22 @@ addr,name,tier,note
 0x012072,text_blit,2,logic.md: $12072 VDP/text drawing routine; blits $11820/$11A1A/$11AE4
 0x01225C,pal_crossfade,2,architecture.md: cross-fades palettes via $1225C; depending on $FF0126
 0x0123B0,window_down,2,architecture.md: $123B0 window down
-0x012bfc,sys_rng_seed_frame,1,seeds RNG seed $FF0072 from frame counter $FF0010 mod 0xFFFF via math_mod32; callers world_map_draw and $015012; logic.md:199 pins $FF0072 as the LCG seed
-0x012F48,pad_poll_queued_12f48,1,static: joypad_queue_pop then pad2_read with fallback pop when ff0e14 zero
+0x012bfc,sys_rng_seed_frame,2,seeds RNG seed $FF0072 from frame counter $FF0010 mod 0xFFFF via math_mod32; callers world_map_draw and $015012; logic.md:199 pins $FF0072 as the LCG seed; tier2: docs/logic.md:199 cites 0x012BFC
+0x012F48,pad_poll_queued_12f48,2,static: joypad_queue_pop then pad2_read with fallback pop when ff0e14 zero; tier2: docs/architecture.md:348 cites 0x012F48
 0x012F80,pad_any_held_12f80,1,static: returns nonzero if either pad byte ff0e14 or ff8646 is set
-0x012fb4,sys_wait_button_press,1,busy-waits to 0x9C40 then polls joypad queue until a button press (high nibble nonzero); called from text_blit before soft_reset
-0x013654,text_record_dispatch,2,disasm/text/inventory.json: decoder_routine 0x13654 record dispatcher
-0x0136FC,text_word_expand,2,disasm/text/inventory.json: decoder_routine 0x136FC word expander
+0x012fb4,sys_wait_button_press,2,busy-waits to 0x9C40 then polls joypad queue until a button press (high nibble nonzero); called from text_blit before soft_reset; tier2: docs/architecture.md:349 cites 0x012FB4
+0x013654,text_record_dispatch,2,disasm/text/inventory.json: decoder_routine 0x13654 record dispatcher; tier2: docs/graphics.md:425 cites 0x013654
+0x0136FC,text_word_expand,2,disasm/text/inventory.json: decoder_routine 0x136FC word expander; tier2: docs/maps.md:103 cites 0x0136FC
 0x013882,text_to_upper,1,ASCII lowercase to uppercase: subtracts 0x20 for codes 0x61-0x7a else returns input unchanged; called from cmd10_handler the D28E case-10 handler
 0x013d84,world_sprites_setup,1,clears sprite attributes then writes the fixed map-screen sprite set via 51 sprite_write calls plus one sprite_grid_write; called from world_map_draw sys_direct_apply and the map scroll path
 0x0147D0,gfx_plane_write,2,graphics.md: $147D0 R16=$11 plane writer
 0x014FB6,intro_story_driver,2,architecture.md: $14FB6 intro/story driver
 0x015012,intro_helper,2,architecture.md: helper $15012 plays music $173BC(1) + $15C08
-0x015C08,snd_music_start,1,architecture.md:186 helper plays music with 173BC(1) and 15C08
-0x0162fe,world_map_redraw,1,redraws the world map tilemaps after wait_vblank and menu_format; decodes map 9 Ushka Bau and uploads tiles then requests full redraw; called from the map scroll path
-0x0163ee,row_write,1,row counterpart of column_write 0x016512 graphics.md:465; writes 64 map tiles along a VRAM row from the 0x1AE98 descriptor table with flip bits and tile base 0xFF8678
-0x01664e,map_view,1,interactive scrollable map screen centered on leader X and Y; draws map chunks glyphs and sprites; D-pad scrolls via column_write; exits on button and restores scene; called from verb handler 02dcce in map mode
-0x0171d6,vdp_write_hscroll_wave,1,writes 224-line H-scroll table to VRAM 4000 with zigzag plus decaying envelope; graphics.md:333 lists 4000 as an H-scroll table address; callers intro_helper and scene_draw
+0x015C08,snd_music_start,2,architecture.md:186 helper plays music with 173BC(1) and 15C08; tier2: docs/architecture.md:186 cites 0x015C08
+0x0162fe,world_map_redraw,2,redraws the world map tilemaps after wait_vblank and menu_format; decodes map 9 Ushka Bau and uploads tiles then requests full redraw; called from the map scroll path; tier2: docs/graphics.md:689 cites 0x0162FE
+0x0163ee,row_write,2,row counterpart of column_write 0x016512 graphics.md:465; writes 64 map tiles along a VRAM row from the 0x1AE98 descriptor table with flip bits and tile base 0xFF8678; tier2: docs/maps.md:333 cites 0x0163EE
+0x01664e,map_view,2,interactive scrollable map screen centered on leader X and Y; draws map chunks glyphs and sprites; D-pad scrolls via column_write; exits on button and restores scene; called from verb handler 02dcce in map mode; tier2: docs/architecture.md:351 cites 0x01664E
+0x0171d6,vdp_write_hscroll_wave,2,writes 224-line H-scroll table to VRAM 4000 with zigzag plus decaying envelope; graphics.md:333 lists 4000 as an H-scroll table address; callers intro_helper and scene_draw; tier2: docs/subcell.md:13 cites 0x0171D6
 0x0173EC,song_play_direct,2,sound.md: $173EC called directly by the Music menu and jingle path
 0x017586,sfx_request,2,sound.md: $17586 calls public SFX entry points $EBAF4/$EBAFA
 0x0176A0,save_parity,2,architecture.md: $176A0 parity over packed $FFA800
@@ -79,10 +79,10 @@ addr,name,tier,note
 0x0179CA,vdp_scaled_table_write,1,static: table L01B4D2 scaled by arg/32; written to VDP data after set_write_addr $4000
 0x017a40,sprite_write_block,1,writes 2x2 block of 4 sprite entries via sprite_write for one composite large sprite; called from scene_draw at 3 sites
 0x01960A,map_set_flag_ffff,1,static: writes $FFFF to ram_sys_ff0078 and returns ($FF0078 is never read anywhere in the ROM)
-0x01961a,map_chunk_cache_init,1,initializes the 4-slot map-chunk cache struct at $FFA880 with slot count 4; clears slot-index table and 377-entry pointer table; called once from new_game_init; maps.md:348 architecture.md:204
+0x01961a,map_chunk_cache_init,2,initializes the 4-slot map-chunk cache struct at $FFA880 with slot count 4; clears slot-index table and 377-entry pointer table; called once from new_game_init; maps.md:348 architecture.md:204; tier2: docs/architecture.md:204 cites 0x01961A
 0x019692,map_chunk_load,2,logic.md: loads the real chunk via $19692
 0x0197b0,tbl_map_figure_template,1,56x36-byte figure template table: 4 phase groups x 8 bytes + 4-byte tail (stepcode +0x20; stepphase +0x22); indexed by record slot+4 + slot+2 in hero_track $0231D8 and map_promote_record $02343A; 16-19 cast (sc 5); 20-23 resist; 24-27 hit; 36-55 walk; docs/maps.md $197B0 layout and docs/spells.md §6.9
-0x01BA16,redraw_flag_set,1,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26
+0x01BA16,redraw_flag_set,2,static: writes $FF0098 flag; docs: $FF0098 written only by $1BA16/$1BA26; tier2: docs/graphics.md:366 cites 0x01BA16
 0x01BA4E,map_chunk_pos,2,graphics.md:366 $1BA4E map-chunk position math
 0x01C176,map_chunk_cache_read,2,logic.md: destination tile read via $1C176 chunk cache
 0x01C21A,leader_spawn,2,architecture.md: leader spawn via $1C21A(6; 0x6F; 0x7D)
@@ -91,157 +91,157 @@ addr,name,tier,note
 0x01C892,move_cost_calc,2,logic.md 3.7 base(mode)+terrain; live harness 46/46
 0x01D9BC,table_init_a,2,architecture.md: $1D9BC($FF0E8E) table init
 0x01DA10,table_init_b,2,architecture.md: $1DA10 table inits
-0x01da6c,world_location_transition,1,4-mode location entry dispatcher (0 scan 1 map 2 combat 3 victory); releases chars sets songs and state then calls world_enter_location; called from map and combat code
+0x01da6c,world_location_transition,2,4-mode location entry dispatcher (0 scan 1 map 2 combat 3 victory); releases chars sets songs and state then calls world_enter_location; called from map and combat code; tier2: docs/cutscene-darius-endgame.md:154 cites 0x01DA6C
 0x01E02E,sys_unk_01e02e,0,static: dispatch case 0 of world_get_step_delta ($01E022); direction 0=N; sets (dx dy)=(0 -1); table $01E086
 0x01E158,sign_quadrant,1,"code: returns 0-3 from signs of word args (arg1>0->1, arg1<0->3, arg2>0->2, arg2<0->0); meaning not documented"
-0x01E18A,world_decompose_direction,1,decomposes dx/dy into direction-component codes via two output pointers; called from world_get_direction $036DE8
-0x01e29c,world_decompose_direction_axis,1,decomposes dx/dy into direction-component codes via two output pointers with axis-order flag; sibling of world_decompose_direction; called from world_move_toward and world_check_toward
-0x01E390,queue_init,1,architecture.md:198 and spells.md:653 queue init (capacity byte[2]=8)
-0x01E426,queue_pop,1,logic.md:259 pop/dequeue; tail==head returns -1
+0x01E18A,world_decompose_direction,2,decomposes dx/dy into direction-component codes via two output pointers; called from world_get_direction $036DE8; tier2: docs/spells.md:392 cites 0x01E18A
+0x01e29c,world_decompose_direction_axis,2,"decomposes dx/dy into direction-component codes via two output pointers with axis-order flag; sibling of world_decompose_direction; called from world_move_toward and world_check_toward; tier2 live: room scene, 1 VBlank sample (buc run f4990-f4990)"
+0x01E390,queue_init,2,architecture.md:198 and spells.md:653 queue init (capacity byte[2]=8); tier2: docs/architecture.md:198 cites 0x01E390
+0x01E426,queue_pop,2,logic.md:259 pop/dequeue; tail==head returns -1; tier2: docs/architecture.md:501 cites 0x01E426
 0x01e4e6,menu_cursor_draw,1,draws the two-tile menu cursor (font tiles 95 and 99 V-flipped) at the selected row; called from menu_record_reload when row equals cursor row $FFBB72 and from gfx_draw_screen
-0x01e562,sys_state_clear,1,code: clears bytes FFA7F8; FFBB72; FFBB80
+0x01e562,sys_state_clear,2,code: clears bytes FFA7F8; FFBB72; FFBB80; tier2: docs/save.md:550 cites 0x01E562
 0x01E5A0,menu_record_reload,2,logic-audit.md:526-536 command 23 handler; reloads current menu record
-0x01EEEE,cmd10_handler,1,architecture.md:289 dispatch command 10 handler
-0x0207D8,cmd22_handler,1,architecture.md:291 dispatch command 22 handler
-0x020884,cmd24_handler,1,architecture.md:291 dispatch command 24 handler
-0x020A36,cmd25_handler,1,architecture.md:291 dispatch command 25 handler; spell-sequencer step
-0x020a88,menu_set_mode,1,sets UI mode $FF00AC and runs the mode transition (cmd24_handler for mode 3; combat_select_unit and npc_attitude_result on mode 0 entry; menu state reset; menu_format; panel redraw; SFX); 11 call sites
-0x020C5E,map_prepare,1,maps.md:461 must run before 0x20E7E
+0x01EEEE,cmd10_handler,2,architecture.md:289 dispatch command 10 handler; tier2: docs/architecture.md:289 cites 0x01EEEE
+0x0207D8,cmd22_handler,2,architecture.md:291 dispatch command 22 handler; tier2: docs/architecture.md:291 cites 0x0207D8
+0x020884,cmd24_handler,2,architecture.md:291 dispatch command 24 handler; tier2: docs/architecture.md:291 cites 0x020884
+0x020A36,cmd25_handler,2,architecture.md:291 dispatch command 25 handler; spell-sequencer step; tier2: docs/architecture.md:291 cites 0x020A36
+0x020a88,menu_set_mode,2,sets UI mode $FF00AC and runs the mode transition (cmd24_handler for mode 3; combat_select_unit and npc_attitude_result on mode 0 entry; menu state reset; menu_format; panel redraw; SFX); 11 call sites; tier2: docs/logic.md:1770 cites in-body $20BBE
+0x020C5E,map_prepare,2,maps.md:461 must run before 0x20E7E; tier2: docs/architecture.md:207 cites 0x020C5E
 0x020C6A,table_fill_ff,2,maps.md: $FFB36C+1024 initialised to $FF (empty) by $20C6A
-0x020cca,sys_record12_scan_20cca,1,code: loop over 12-byte records at FFB0CC (muls #12); sibling of 20D0A
+0x020cca,sys_record12_scan_20cca,2,code: loop over 12-byte records at FFB0CC (muls #12); sibling of 20D0A; tier2: docs/maps.md:721 cites 0x020CCA
 0x020CF6,shop_merchant_clear_all,2,save.md:441 zeroes 6 merchant structs at FF0E82
-0x020d0a,sys_record12_scan,1,code: loop over 12-byte records at FFB0CC (muls #12)
+0x020d0a,sys_record12_scan,2,code: loop over 12-byte records at FFB0CC (muls #12); tier2: docs/maps.md:721 cites 0x020D0A
 0x020d58,map_scroll_offset,2,maps.md:458 sets scroll offsets from player pos $FF0E8E $FF0E90; writes X-6 Y-6 or 0 0
-0x020d9e,map_scroll_adjust,1,base scroll offset plus clamp and step adjustment; adds args to position; called from $02440A $025852 $0261EC
+0x020d9e,map_scroll_adjust,2,base scroll offset plus clamp and step adjustment; adds args to position; called from $02440A $025852 $0261EC; tier2: docs/logic-audit.md:626 cites 0x020D9E
 0x020E7E,map_grid_create,2,maps.md:468-485 grid creation: type>=0 grid 0; type<0 grid 1
 0x02103E,map_grid_clear,2,maps.md:499 clears a record grid cell (frees record; FF0096 decremented)
 0x0210D8,map_record_remove,2,maps.md:498 removes a record; frees it; clears grid cell via 2103E
-0x021194,map_place_record_step,1,places 12-byte record on grid after step in direction 100-103; marks $FFB36C cell $FF; called from 4 direction sites
+0x021194,map_place_record_step,2,"places 12-byte record on grid after step in direction 100-103; marks $FFB36C cell $FF; called from 4 direction sites; tier2 live: room scene, 2 VBlank samples (buc run f6436-f6514)"
 0x0212fc,map_place_record,1,places 12-byte record on grid and marks $FFB36C cell $FF; bounds check then release on fail
-0x02140A,combat_effect_apply,1,logic.md:1159 effect 0x18 applied after 25DE4 check
+0x02140A,combat_effect_apply,2,logic.md:1159 effect 0x18 applied after 25DE4 check; tier2: docs/logic-audit.md:410 cites 0x02140A
 0x0214e8,sys_condition_test,1,4-case predicate dispatch on code 0-3 returns $FF or 0; tests value against code sets
-0x021fe6,npc_merchant_attitude_tick,1,processes merchant $FF02A2 flag bits and raises attitude via npc_attitude_raise; called per-tick from main loop
-0x0222d4,combat_apply_turn_effects,1,loops over 56 chars; clears bit 14 and applies combat_effect_apply for matching chars; called from combat_turn_run in map mode
-0x02241c,combat_char_action,1,processes turn char $FF0130 and $FF0EAA; spell damage via spell_damage_calc and movement via combat_move_unit; called from combat_turn_run
-0x0226bc,combat_turn_run,1,code: if FF012A set calls combat_action_main with FF0094
+0x021fe6,npc_merchant_attitude_tick,2,processes merchant $FF02A2 flag bits and raises attitude via npc_attitude_raise; called per-tick from main loop; tier2: docs/cutscene-darius-endgame.md:69 cites in-body $220AA
+0x0222d4,combat_apply_turn_effects,2,loops over 56 chars; clears bit 14 and applies combat_effect_apply for matching chars; called from combat_turn_run in map mode; tier2: docs/spells.md:568 cites 0x0222D4
+0x02241c,combat_char_action,2,processes turn char $FF0130 and $FF0EAA; spell damage via spell_damage_calc and movement via combat_move_unit; called from combat_turn_run; tier2: docs/spells.md:539 cites 0x02241C
+0x0226bc,combat_turn_run,2,code: if FF012A set calls combat_action_main with FF0094; tier2: docs/architecture.md:171 cites 0x0226BC
 0x0232ac,map_tile_at_offset,2,maps.md:495 dispatch-2 tile handler; thin wrapper around map_terrain_tile_lookup at offset coords; called from $1BA4E driver
 0x0232d2,map_animated_tile,2,maps.md:495 dispatch-3 tile handler; animated tile from $197B0 records with frame counters; called from $1BA4E driver
 0x02343A,map_promote_record,2,maps.md:503 dispatch-1 case of 1BA4E promotes record (live)
-0x023628,map_grid_set_cell,1,sets record index into first free cell of grid 0 $FFB36C then grid 1 $FFB76C else error $19; maps.md:463; called from map_grid_create
-0x023770,map_grid_set_cell_1,1,sets record index into first free cell of grid 1 $FFB76C then grid 0 $FFB36C else error $19; maps.md:463; mirror of $023628
-0x0238B8,sys_each_entry_238b8,1,static: loops 56 records stride 12 pushes 4 fields and calls sys_stub_01107a
+0x023628,map_grid_set_cell,2,"sets record index into first free cell of grid 0 $FFB36C then grid 1 $FFB76C else error $19; maps.md:463; called from map_grid_create; tier2 live: room scene, 4 VBlank samples (buc run f4479-f6014)"
+0x023770,map_grid_set_cell_1,2,"sets record index into first free cell of grid 1 $FFB76C then grid 0 $FFB36C else error $19; maps.md:463; mirror of $023628; tier2 live: room scene, 1 VBlank sample (buc run f6592-f6592)"
+0x0238B8,sys_each_entry_238b8,2,static: loops 56 records stride 12 pushes 4 fields and calls sys_stub_01107a; tier2: docs/logic-audit.md:269 cites 0x0238B8
 0x023958,map_grid_dump,1,static: dumps both 32x32 RAM cell grids ($FFB36C grid 0 then $FFB76C grid 1) as %02i with $FF->99; wraparound via geom width/height divisors; uncalled debug code; calls sys_stub_01107a
-0x023A9E,shop_merchant_init,1,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441)
-0x023AE0,combat_attacker_check,1,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0
-0x0243D6,npc_struct_setup,1,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence
+0x023A9E,shop_merchant_init,2,architecture.md:207 init sequence; merchant zeroing via 20CF6 (save.md:441); tier2: docs/architecture.md:207 cites 0x023A9E
+0x023AE0,combat_attacker_check,2,logic.md:1158 pre-check: attacker bit15 clear and +0x20>=0; tier2: docs/cutscenes.md:70 cites 0x023AE0
+0x0243D6,npc_struct_setup,2,code: index*52 into FF02C2; called with leader per architecture.md:223 init sequence; tier2: docs/architecture.md:223 cites 0x0243D6
 0x024676,map_grid_place_chars,1,places chars of type 1-3 on the map grid via map_grid_create; called from movement and combat code
 0x024916,npc_struct_release,1,code: reads FF02B8 map record; calls map_record_remove; sets FF02B8 to 0xFF
-0x024984,combat_move_unit,1,static: unit slot arg at 8 and a(a6); 0x34-byte unit records at $FF02B4; calls npc_leader_init; combat_target_check; sfx_request
-0x02513e,world_reposition_leader,1,clears char grid cell via map_grid_clear (error 24 if 0) then respawns leader at computed position via leader_spawn with 5-entry direction jump table; replaces map_grid_setup from PR #59 which names only the preamble
+0x024984,combat_move_unit,2,static: unit slot arg at 8 and a(a6); 0x34-byte unit records at $FF02B4; calls npc_leader_init; combat_target_check; sfx_request; tier2: docs/cutscene-tutu.md:83 cites 0x024984
+0x02513e,world_reposition_leader,2,clears char grid cell via map_grid_clear (error 24 if 0) then respawns leader at computed position via leader_spawn with 5-entry direction jump table; replaces map_grid_setup from PR #59 which names only the preamble; tier2: docs/cutscene-buc.md:363 cites 0x02513E
 0x0253FE,map_walk_check,2,maps.md:415-416;591 returns step-blocked flag (mode 0x17 walkability)
-0x025456,npc_leader_init,1,architecture.md:223 called with leader after load; role from callers
-0x02570A,sys_struct52_assign,1,code: sets FF02C0 field for index; error_show 0x1C if FF02B4 nibble empty
+0x025456,npc_leader_init,2,architecture.md:223 called with leader after load; role from callers; tier2: docs/architecture.md:223 cites 0x025456
+0x02570A,sys_struct52_assign,2,code: sets FF02C0 field for index; error_show 0x1C if FF02B4 nibble empty; tier2: docs/cutscene-buc.md:102 cites 0x02570A
 0x025884,world_find_char_by_grid,1,finds the char whose +0x04 equals a placement record index; returns $FF if not found; error 230 if record is $270F
-0x0258EE,sys_struct52_find,1,code: scans 52-byte table FF02B4/FF02C0 for matching key arg; returns index
-0x02595a,sys_struct52_scan,1,code: loop over 52-byte table entries (muls #52)
-0x025b4e,sys_struct52_nibble_read,1,code: low nibble of 52-byte table FF02B4 indexed by arg*52
+0x0258EE,sys_struct52_find,2,code: scans 52-byte table FF02B4/FF02C0 for matching key arg; returns index; tier2: docs/cutscene-buc.md:206 cites 0x0258EE
+0x02595a,sys_struct52_scan,2,code: loop over 52-byte table entries (muls #52); tier2: docs/cutscene-buc.md:169 cites 0x02595A
+0x025b4e,sys_struct52_nibble_read,2,code: low nibble of 52-byte table FF02B4 indexed by arg*52; tier2: docs/cutscene-buc.md:111 cites 0x025B4E
 0x025c44,world_release_chars_by_type,1,releases all chars of a given type via npc_struct_release then runs combat_attacker_check; called from map code
-0x025cb4,world_vessel_grid_value,1,decodes vessel mount +0x06 into a numeric value stored in the map grid; used by npc_struct_setup for map placement and combat effects
-0x025d2e,world_vessel_class,1,decodes vessel mount +0x06 into a 0-3 class index; used by npc_struct_setup for map placement
+0x025cb4,world_vessel_grid_value,2,decodes vessel mount +0x06 into a numeric value stored in the map grid; used by npc_struct_setup for map placement and combat effects; tier2: docs/logic.md:956 cites 0x025CB4
+0x025d2e,world_vessel_class,2,decodes vessel mount +0x06 into a 0-3 class index; used by npc_struct_setup for map placement; tier2: docs/logic.md:959 cites 0x025D2E
 0x025d8e,world_vessel_mode,2,decodes vessel mount +0x06 into the movement mode; logic.md:703 Mode section
-0x025DE4,combat_target_check,1,logic.md:1159 checks target struct; nonzero -> 2140A effect
-0x025E12,sys_struct52_read_pair,1,code: index*52 into FF02B6 and FF02CB; reads two fields
-0x026076,npc_location_greet,1,greeting message enqueued in both map and combat modes; attitude raise only in combat branch; replaces npc_attitude_result from PR #59
-0x02619C,sys_struct52_read_field,1,code: index*52 into FF02BA; reads one word field
-0x0265BE,sys_struct52_flag_test,1,code: index*52 into FF02BA; tests word and branches
-0x0269F2,world_step_apply,1,code: calls world_get_step_delta; reads FFA7FC pointer
-0x026a8c,npc_show_greeting,1,displays merchant portrait and enqueues greeting message; sets $FF011C=4; called from main_loop
-0x026b08,world_location_lookup,1,searches the $D1D00 location table of 455 entries x 10 B for a record matching two key words; returns index or 0
+0x025DE4,combat_target_check,2,logic.md:1159 checks target struct; nonzero -> 2140A effect; tier2: docs/logic-audit.md:409 cites 0x025DE4
+0x025E12,sys_struct52_read_pair,2,"code: index*52 into FF02B6 and FF02CB; reads two fields; tier2 live: room scene, 2 VBlank samples (buc run f3938-f6015)"
+0x026076,npc_location_greet,2,"greeting message enqueued in both map and combat modes; attitude raise only in combat branch; replaces npc_attitude_result from PR #59; tier2 live: room scene, 1 VBlank sample (buc run f5201-f5201)"
+0x02619C,sys_struct52_read_field,2,code: index*52 into FF02BA; reads one word field; tier2: docs/architecture.md:294 cites 0x02619C
+0x0265BE,sys_struct52_flag_test,2,code: index*52 into FF02BA; tests word and branches; tier2: docs/architecture.md:292 cites 0x0265BE
+0x0269F2,world_step_apply,2,code: calls world_get_step_delta; reads FFA7FC pointer; tier2: docs/logic-audit.md:587 cites 0x0269F2
+0x026a8c,npc_show_greeting,2,displays merchant portrait and enqueues greeting message; sets $FF011C=4; called from main_loop; tier2: docs/architecture.md:143 cites 0x026A8C
+0x026b08,world_location_lookup,2,"searches the $D1D00 location table of 455 entries x 10 B for a record matching two key words; returns index or 0; tier2 live: overworld scene, 1 VBlank sample (explore run f6825-f6825)"
 0x026CCA,msg_queue_consume,2,logic.md:277 queue consumer calls 1E426 (pop)
-0x026DD2,gfx_fill_panel_plain,1,static: wait_vblank then gfx_tilemap_fill 64 tiles at plane base; then sys_unk_0118c8 tile-rect write and sys_unk_01e4e6
-0x026E44,gfx_fill_panel_flagged,1,static: as gfx_fill_panel_plain but skips the fill when $FF00AC is set
+0x026DD2,gfx_fill_panel_plain,2,static: wait_vblank then gfx_tilemap_fill 64 tiles at plane base; then sys_unk_0118c8 tile-rect write and sys_unk_01e4e6; tier2: docs/cutscene-buc.md:45 cites 0x026DD2
+0x026E44,gfx_fill_panel_flagged,2,static: as gfx_fill_panel_plain but skips the fill when $FF00AC is set; tier2: docs/cutscene-buc.md:45 cites 0x026E44
 0x0275B0,text_event_message,2,logic.md:213 message routine 275B0 (giant event-message)
 0x02979a,world_party_member_at,1,returns party list word at index arg2 from $FF0E82 if group arg1 is 0x43 else -1
 0x0297ce,world_party_size,1,returns 6 if group arg is 0x43 else 0; party group size
 0x0297f0,world_party_count,1,counts nonzero party members via world_party_member_at; called from menu and map code
 0x029834,world_party_nth_index,1,returns index of Nth nonzero party member or -1; called from menu and map code
-0x02988E,world_count_members_2988e,1,static: loops arg10 slots calling world_party_member_at and returns the match count
-0x0298D2,npc_attitude_positive,1,logic.md:541 positive delta path 298D2 -> 2CE74
-0x02A22A,npc_attitude_raise,1,logic.md:540 raises attitude via 2A22A then 2CE74
-0x02A2CA,combat_select_unit,1,static: compares unit side at $FF02DB with current unit $FF02B2; sets $FF009A and $FF0120
-0x02a454,shop_merchant_setup,1,sets current merchant $FF02A0 and shop globals $FF02A8 $FF02AA $FF02AC; calls npc_attitude_raise; called from new-game init save load and shop code; logic.md:389 merchant is $FF02A0
-0x02a562,world_step_tile,1,moves a char one step via world_step_apply then dispatches on the tile stepped on; command 35 in d28e_switch.txt; called from main loop and event handlers
-0x02ad64,world_scan_ahead_for_char,1,scans up to 10 cells ahead of a char in a direction for another char and engages it via $02A2CA; called from main_loop
+0x02988E,world_count_members_2988e,2,static: loops arg10 slots calling world_party_member_at and returns the match count; tier2: docs/architecture.md:699 cites 0x02988E
+0x0298D2,npc_attitude_positive,2,logic.md:541 positive delta path 298D2 -> 2CE74; tier2: docs/cutscene-buc.md:36 cites 0x0298D2
+0x02A22A,npc_attitude_raise,2,logic.md:540 raises attitude via 2A22A then 2CE74; tier2: docs/logic-audit.md:474 cites 0x02A22A
+0x02A2CA,combat_select_unit,2,static: compares unit side at $FF02DB with current unit $FF02B2; sets $FF009A and $FF0120; tier2: docs/architecture.md:143 cites 0x02A2CA
+0x02a454,shop_merchant_setup,2,sets current merchant $FF02A0 and shop globals $FF02A8 $FF02AA $FF02AC; calls npc_attitude_raise; called from new-game init save load and shop code; logic.md:389 merchant is $FF02A0; tier2: docs/architecture.md:206 cites 0x02A454
+0x02a562,world_step_tile,2,moves a char one step via world_step_apply then dispatches on the tile stepped on; command 35 in d28e_switch.txt; called from main loop and event handlers; tier2: docs/architecture.md:292 cites 0x02A562
+0x02ad64,world_scan_ahead_for_char,2,scans up to 10 cells ahead of a char in a direction for another char and engages it via $02A2CA; called from main_loop; tier2: docs/architecture.md:295 cites 0x02AD64
 0x02af72,text_item_grant_message,1,shows grant message for an item value; 100-plus checks item_category_of and enqueues message else shows message 25 or 26; called from $02A562
-0x02aff2,npc_spawn_from_char,1,spawns entity from a char type word with parameter triples then sets fields and plays SFX; called from main_loop and combat_turn_run
-0x02b190,npc_spawn_at_step,1,spawns char at a position stepped from a source char in a direction with caller-supplied struct fields; returns new index or 0
-0x02B2B2,npc_pick_target_2b2b2,1,static: clamps arg14 to 7..15 then picks header or ff02c2 pair by mode word; record stride $34
-0x02b402,spell_spawn_entity,1,spawns entity at a stepped grid position for spell multihit and group effects; callers spell_multihit_scatter and spell_group_flash; replaces npc_spawn_at_step from PR #59 which would duplicate 0x02b190
-0x02B502,npc_step_2b502,1,static: clamps arg14 calls world_get_step_delta then sys_struct52_find
-0x02B5F4,shop_merchant_scan,1,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init
-0x02b656,sys_bitmap_test,1,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1
-0x02b68c,sys_bitmap_write,1,code: clears bit (arg&7) in bitmap then ORs in value arg e
-0x02b6e0,npc_attitude_event_apply,1,applies record-driven location events from the $0D601E table when NPC attitude turns positive; called from npc_attitude_positive
+0x02aff2,npc_spawn_from_char,2,spawns entity from a char type word with parameter triples then sets fields and plays SFX; called from main_loop and combat_turn_run; tier2: docs/architecture.md:293 cites 0x02AFF2
+0x02b190,npc_spawn_at_step,2,spawns char at a position stepped from a source char in a direction with caller-supplied struct fields; returns new index or 0; tier2: docs/cutscene-buc.md:204 cites 0x02B190
+0x02B2B2,npc_pick_target_2b2b2,2,static: clamps arg14 to 7..15 then picks header or ff02c2 pair by mode word; record stride $34; tier2: docs/architecture.md:699 cites 0x02B2B2
+0x02b402,spell_spawn_entity,2,spawns entity at a stepped grid position for spell multihit and group effects; callers spell_multihit_scatter and spell_group_flash; replaces npc_spawn_at_step from PR #59 which would duplicate 0x02b190; tier2: docs/logic-audit.md:438 cites 0x02B402
+0x02B502,npc_step_2b502,2,static: clamps arg14 calls world_get_step_delta then sys_struct52_find; tier2: docs/architecture.md:699 cites 0x02B502
+0x02B5F4,shop_merchant_scan,2,code: loops with mulu #6 over 6 merchant structs; arch.md:208 call in init; tier2: docs/architecture.md:208 cites 0x02B5F4
+0x02b656,sys_bitmap_test,2,code: tests bit (arg&7) of bitmap at arg1 byte arg>>3; returns 0/1; tier2: docs/logic.md:192 cites 0x02B656
+0x02b68c,sys_bitmap_write,2,code: clears bit (arg&7) in bitmap then ORs in value arg e; tier2: docs/cutscene-final-animation.md:63 cites 0x02B68C
+0x02b6e0,npc_attitude_event_apply,2,applies record-driven location events from the $0D601E table when NPC attitude turns positive; called from npc_attitude_positive; tier2: docs/cutscene-buc.md:114 cites 0x02B6E0
 0x02C0A6,sys_set_key_flag,1,static: $2BBD2 quotient-12 handler; sets/clears bit (code%64) in the 2-byte keys bitmap $FFC33E via sys_bitmap_write; read counterpart item_category_of Q12
 0x02C0BE,sys_set_item_flag,1,static: $2BBD2 quotient-13 handler; sets/clears bit (code%64) in the 5-byte items bitmap $FFC340 via sys_bitmap_write; read counterpart item_category_of Q13; called at location 188 (codes 0x34C/0x34F)
 0x02C0D6,sys_set_paper_flag,1,static: $2BBD2 quotient-17 handler; sets/clears bit (code%64) in the 5-byte papers bitmap $FFC345 via sys_bitmap_write; read counterpart item_category_of Q17
 0x02C0EE,sys_adjust_goods_qty,1,static: $2BBD2 quotient-14 handler; minor 0 food $FFC364 / minor 1 water $FFC366 (value*100 clamped [1..30000]); minor>=2 goods byte $FFC34A[minor] += value capped at 99 (word $D6730); negative result clamps to 99 (unsigned bls) and the floor-at-0 (bcc after tst) is unreachable
 0x02C212,world_ensure_location_entity,1,static: $2BBD2 quotient-15 handler; finds the current location ($FF0E92 & 0x3FF) entity in the 56 struct slots by $D1D00 key pair or spawns it via entity_spawn (mode = code%64) then npc_leader_init; returns at once if already present
-0x02c8f2,item_category_of,1,code: divs.w #64 of arg; matches logic.md code/64 category switch
+0x02c8f2,item_category_of,2,code: divs.w #64 of arg; matches logic.md code/64 category switch; tier2: docs/architecture.md:438 cites 0x02C8F2
 0x02CBA4,sys_struct52_set_field,1,code: index*52 into FF02CA; stores a field of a 52-byte struct
 0x02cbea,shop_category_count,1,returns item count for a category from the category table; logic.md 3.3
 0x02cc14,shop_count_category_items,1,counts items in a category matching the test; loops over the category count
-0x02cc62,shop_find_nth_category_item,1,returns index of the Nth matching item in a category or -1
+0x02cc62,shop_find_nth_category_item,2,returns index of the Nth matching item in a category or -1; tier2: docs/logic.md:693 cites 0x02CC62
 0x02ccc4,shop_count_category_prefix,1,counts matching items among the first N in a category
 0x02cd10,text_event_draw_glyph,1,draws one or two glyphs at tile positions for the event message display
-0x02cdd4,world_reset_supplies,1,resets food and water to 2000 and clears state buffers; called from new_game_init and save_deserialise
+0x02cdd4,world_reset_supplies,2,resets food and water to 2000 and clears state buffers; called from new_game_init and save_deserialise; tier2: docs/architecture.md:223 cites 0x02CDD4
 0x02CE74,npc_attitude_apply,2,logic.md:544 applies attitude delta to char; persistent FF00C0
-0x02d004,npc_place_group,1,places up to 6 characters around a position using direction offsets; calls npc_leader_init and npc_struct_setup
-0x02D284,sys_copy_stride6_2d284,1,static: copies 6-byte records from table L0D6020 into stack locals
-0x02d38c,shop_category_max,1,returns max quantity for an item category; 1 most 99 goods 9999 healing 30000 special case
-0x02d3dc,menu_select_screen,1,selects one of 10 menu screens by setting the screen pointer and initializes menu state
-0x02d50c,npc_attitude_raise_by_id,1,finds char by +0x02 identity word and calls npc_attitude_raise with 0; returns -1 if not found after 56 entries
-0x02d56a,sys_event_run,1,runs 8-byte event records from $FFC384; first byte is opcode 0-15 via jump table; advances pointer by 8 per record; called from combat_turn_run
+0x02d004,npc_place_group,2,places up to 6 characters around a position using direction offsets; calls npc_leader_init and npc_struct_setup; tier2: docs/cutscene-buc.md:169 cites 0x02D004
+0x02D284,sys_copy_stride6_2d284,2,static: copies 6-byte records from table L0D6020 into stack locals; tier2: docs/cutscene-final-animation.md:107 cites 0x02D284
+0x02d38c,shop_category_max,2,returns max quantity for an item category; 1 most 99 goods 9999 healing 30000 special case; tier2: docs/logic.md:681 cites 0x02D38C
+0x02d3dc,menu_select_screen,2,selects one of 10 menu screens by setting the screen pointer and initializes menu state; tier2: docs/cutscene-buc.md:18 cites 0x02D3DC
+0x02d50c,npc_attitude_raise_by_id,2,finds char by +0x02 identity word and calls npc_attitude_raise with 0; returns -1 if not found after 56 entries; tier2: docs/cutscene-buc.md:125 cites 0x02D50C
+0x02d56a,sys_event_run,2,runs 8-byte event records from $FFC384; first byte is opcode 0-15 via jump table; advances pointer by 8 per record; called from combat_turn_run; tier2: docs/cutscene-buc.md:14 cites 0x02D56A
 0x02DC0C,map_walkable_test,2,logic.md:721 walkability gate 02DC0C tests struct fields
-0x02DCCE,sys_dispatch_action_2dcce,1,static: dispatches on arg8 codes d and e and calls map_view text_show_message shop and item helpers
+0x02DCCE,sys_dispatch_action_2dcce,2,static: dispatches on arg8 codes d and e and calls map_view text_show_message shop and item helpers; tier2: docs/cutscene-final-animation.md:30 cites 0x02DCCE
 0x02E8C8,npc_find_state1_2e8c8,1,static: loops records until byte at ram_sys_ff02db equals one
-0x02e9a6,world_seen_reset,1,clears seen-at-location ring buffer; sets 32 entries of $FFC388 and $FFC3C8 to $FFFF and clears cursor $FF0122
+0x02e9a6,world_seen_reset,2,clears seen-at-location ring buffer; sets 32 entries of $FFC388 and $FFC3C8 to $FFFF and clears cursor $FF0122; tier2: docs/save.md:442 cites 0x02E9A6
 0x02e9ec,world_seen_record,1,appends value and current location $FF0E92 and $3FF to 32-entry ring buffer $FFC388 $FFC3C8; advances cursor $FF0122 mod 32
 0x02ea40,world_seen_check,1,searches ring buffer for value at current location $FF0E92 and $3FF; returns -1 if found else 0
 0x02EA92,shop_price_calc,2,logic.md:377 section 3.4 price function (verified)
-0x02EC64,sys_struct24_read,1,code: index*24 into table at L0CF1BA; reads a 24-byte record
+0x02EC64,sys_struct24_read,2,code: index*24 into table at L0CF1BA; reads a 24-byte record; tier2: docs/cutscene-case8.md:187 cites 0x02EC64
 0x02ecca,world_draw_link_icons,1,draws glyphs for the 6 linked chars in char +0x14 array at screen coords from args; highlights arg char
 0x02ee2a,sys_direct_apply,2,sets display params $FF0118 $FF011A from Direct flag $FF0116 then refreshes via wait_vblank sprite write and menu_format; logic-audit.md:254 and :476
 0x02ee6c,npc_spawn_party_member,1,spawns entity via entity_spawn and links it into party list $FF0E82 and char +0x14 array then calls npc_leader_init
 0x02ef4e,npc_face_each_other,1,makes two chars face each other via world_decompose_direction and npc_leader_init; called from npc_attitude_positive
-0x02f05a,math_mul_pow2,1,returns arg2 times 2 to the power arg1 by recursion; XP threshold helper for xp_to_level
-0x02F082,save_record_fill,1,save.md:337 fills save record at LOAD (2F082)
+0x02f05a,math_mul_pow2,2,returns arg2 times 2 to the power arg1 by recursion; XP threshold helper for xp_to_level; tier2: docs/logic.md:122 cites 0x02F05A
+0x02F082,save_record_fill,2,save.md:337 fills save record at LOAD (2F082); tier2: docs/logic-audit.md:257 cites 0x02F082
 0x02F0D0,save_bits_unpack,2,save.md:344 bit unpacker 2F0D0 (packer/unpacker pair with 2F082)
 0x030110,combat_kill_announce,1,marks char at $FF0E82 dead with HP 0 and dead bit then announces victory; called from combat_target_select
 0x03019a,world_camp,2,logic.md:930 CAMP handler C=28; food and water minus 100 and clock set 0 or 540 and attitude plus 3
-0x030628,npc_attitude_step,1,logic.md:531 attitude adjustment 30628
+0x030628,npc_attitude_step,2,logic.md:531 attitude adjustment 30628; tier2: docs/logic-audit.md:783 cites 0x030628
 0x03081a,world_refresh_chars,1,iterates all char slots and runs attacker check for type 1 and release for type 2 then assigns struct; called from combat_battle_start
-0x0308c6,world_count_char_fields,1,counts nonzero words in char struct plus 0x14 to plus 0x1E; used by npc_attitude_raise and combat_set_mode
-0x03090a,world_enter_location,1,places party and NPCs at a location from $FF0E92 and $FF0E98 via placement calls; called when mode set to 2
+0x0308c6,world_count_char_fields,2,counts nonzero words in char struct plus 0x14 to plus 0x1E; used by npc_attitude_raise and combat_set_mode; tier2: docs/save.md:508 cites 0x0308C6
+0x03090a,world_enter_location,2,places party and NPCs at a location from $FF0E92 and $FF0E98 via placement calls; called when mode set to 2; tier2: docs/cutscene-final-animation.md:223 cites 0x03090A
 0x030da4,text_char_summary,1,counts chars by type and draws a text summary of the counts; called from text_event_message
 0x0318c6,combat_damage_party,1,subtracts arg HP from every party member and selects targets; called from ambient and step events and attack_dispatch
 0x031998,world_find_char_template,2,finds direct char in 56-char table whose +0x02 template equals arg1; returns index or 0; logic.md:83 type 1 is direct char; callers $02D680 $02E07A
-0x0319EC,world_pos_add_x,1,code: leader pointer FFA7FC + arg a; adds to position word (x)
-0x031A9C,world_pos_add_y,1,code: leader pointer FFA7FC + arg c; adds to position word (y)
-0x031f66,map_cell_set_field,1,sets a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; via $FFA7FC leader location_divide map_chunk_load_buf
-0x03213c,map_cell_get_field,1,reads a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; returns -1 for index 5+; read counterpart of $031F66
-0x032284,world_ambient_event,1,dispatch on location code $FF013E 0-6; random scatter NPC move palette flash plus SFX and table effects; called when $FF013E nonzero
+0x0319EC,world_pos_add_x,2,code: leader pointer FFA7FC + arg a; adds to position word (x); tier2: docs/cutscene-final-animation.md:172 cites 0x0319EC
+0x031A9C,world_pos_add_y,2,code: leader pointer FFA7FC + arg c; adds to position word (y); tier2: docs/maps.md:990 cites in-body $31AF4
+0x031f66,map_cell_set_field,2,sets a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; via $FFA7FC leader location_divide map_chunk_load_buf; tier2: docs/maps.md:991 cites in-body $31FBE
+0x03213c,map_cell_get_field,2,reads a field of a map cell at x/y; arg0 selects bits 9 10 11 12 or 13-15; returns -1 for index 5+; read counterpart of $031F66; tier2: docs/maps.md:992 cites in-body $32194
+0x032284,world_ambient_event,2,dispatch on location code $FF013E 0-6; random scatter NPC move palette flash plus SFX and table effects; called when $FF013E nonzero; tier2: docs/cutscene-final-animation.md:196 cites 0x032284
 0x03268e,world_step_move,1,steps a char one cell in a direction via world_get_step_delta; moves via $024984 if in 10x10 region and not at target; returns -1 if moved else 0
-0x032730,world_step_event,1,dispatch on $FF013E minus 2 after a movement step; position-based location effects for the leader; called from $024F32
-0x032922,world_terrain_direction,1,computes a move direction 0-7 from terrain type under a char plus its facing; queues it via queue_push; called from $00D490
+0x032730,world_step_event,2,dispatch on $FF013E minus 2 after a movement step; position-based location effects for the leader; called from $024F32; tier2: docs/cutscene-final-animation.md:199 cites 0x032730
+0x032922,world_terrain_direction,2,computes a move direction 0-7 from terrain type under a char plus its facing; queues it via queue_push; called from $00D490; tier2: docs/logic.md:1039 cites 0x032922
 0x032c18,world_check_other_char,2,checks for another direct char besides $FF02B2; returns 0 if found else -1; logic.md:83 type 1 is direct char; callers $00D70A $013A3E
-0x032c56,npc_spawn_adjacent,1,tries directions 0-3 for a walkable adjacent cell via world_step_apply and map_walk_check; spawns entity via entity_spawn and npc_leader_init
+0x032c56,npc_spawn_adjacent,2,tries directions 0-3 for a walkable adjacent cell via world_step_apply and map_walk_check; spawns entity via entity_spawn and npc_leader_init; tier2: docs/architecture.md:419 cites 0x032C56
 0x032D0E,snd_location_song_pick,2,sound.md:355 default/location song picker (32D0E)
-0x032d4c,text_event_resolve,1,resolves an event to a text record via $032F5E $033136 shop_record_score or $0337D0; fetches via text_record_dispatch and expands 0x26 substitutions
+0x032d4c,text_event_resolve,2,resolves an event to a text record via $032F5E $033136 shop_record_score or $0337D0; fetches via text_record_dispatch and expands 0x26 substitutions; tier2: docs/cutscene-buc.md:38 cites 0x032D4C
 0x032f5e,text_pick_record,1,scans 58x6 table at $0D2EC2 for records matching arg1 and arg2; returns one picked by arg2 mod count or 0 if none; called only from $032D4C
-0x032ffa,npc_find_best_char,1,scans 396-entry table $0CD430; best score via math_rem32_signed mod 2000; caller $023F7E stores result in group slot
+0x032ffa,npc_find_best_char,2,"scans 396-entry table $0CD430; best score via math_rem32_signed mod 2000; caller $023F7E stores result in group slot; tier2 live: room scene, 4 VBlank samples (explore run f6832-f6835)"
 0x033136,text_record_lookup,1,searches 6-byte table $0D301E 35 entries for key pair; returns index+0x3A or hash fallback; called from $032E28
-0x0331A4,shop_record_score,1,logic.md:576 scores each record for template match
+0x0331A4,shop_record_score,2,logic.md:576 scores each record for template match; tier2: docs/cutscene-darius-endgame.md:59 cites 0x0331A4
 0x033396,sys_unk_033396,0,static: dispatch case 0 of shop_record_score ($0331A4); sets flag -$a(a6)=1 when goods-record byte +4 is NOT in $FFC326 bitmap; table $0334CA
 0x0337D0,sys_set_flag_bit3_add44d,1,static: sets bit 3 of ram_sys_ff02a2 and returns arg + $44D
 0x0337ee,npc_place_char,1,places char with HP and type guards; move via $024984 plus npc_leader_init; sets bit 14; called from $022958
@@ -253,32 +253,32 @@ addr,name,tier,note
 0x034ED0,npc_calc_delta_34ed0,1,static: record-relative dx dy from ram_header_leader and ff02c2 stride $34
 0x034FC4,npc_get_attr_34fc4,1,static: reads record byte ff02dc masked 7f and word ff02c8 plus table ff02da ff02be
 0x0352c4,map_area_walkable,1,checks 6x6 area around char at +0x26 link walkable via map_walk_check; returns 1 if all walkable else 0
-0x03536c,map_same_block,1,returns 1 if two points are in same 4x4 block; args shifted right 2
-0x03539a,world_steps_to_char,1,steps char1 toward char2 along direction via world_get_step_delta; returns steps 0-7 or 7 if unreachable or target dead
-0x0354a4,world_find_char_dir,1,scans along direction for char with +0x27 gate equal arg2 and HP above 0; writes found char via pointer arg4; returns steps
-0x035612,text_show_message,1,composes message via $032D4C into $FFBB86 then enqueues via text_enqueue_message; called from menu code
-0x035656,npc_attitude_adjust,1,logic.md:532 attitude adjustment 35656 (see save.md)
+0x03536c,map_same_block,2,returns 1 if two points are in same 4x4 block; args shifted right 2; tier2: docs/architecture.md:700 cites 0x03536C
+0x03539a,world_steps_to_char,2,steps char1 toward char2 along direction via world_get_step_delta; returns steps 0-7 or 7 if unreachable or target dead; tier2: docs/architecture.md:700 cites 0x03539A
+0x0354a4,world_find_char_dir,2,scans along direction for char with +0x27 gate equal arg2 and HP above 0; writes found char via pointer arg4; returns steps; tier2: docs/logic.md:181 cites 0x0354A4
+0x035612,text_show_message,2,composes message via $032D4C into $FFBB86 then enqueues via text_enqueue_message; called from menu code; tier2: docs/architecture.md:416 cites 0x035612
+0x035656,npc_attitude_adjust,2,logic.md:532 attitude adjustment 35656 (see save.md); tier2: docs/cutscene-final-animation.md:107 cites 0x035656
 0x03599c,combat_battle_end,2,battle-end routine; plays Victory song 20; adjusts attitudes; clears combat statuses; sound.md:493
 0x03620a,world_place_char_near,1,spiral-searches for walkable cell near x y via map_walk_check then moves char there via $02570A; called from battle-end
-0x0362d6,combat_battle_start,1,battle-start routine; fills combat grid; sets up leader and party; plays Battle song 16; sound.md:489
-0x0368e4,combat_set_mode,1,sets $FF010E bits 6-8 to group_size/2+1; gated by L0CF1BA table via leader +0x29 char +0x02; skips if table byte $FD; called from spell dispatch $037850
+0x0362d6,combat_battle_start,2,battle-start routine; fills combat grid; sets up leader and party; plays Battle song 16; sound.md:489; tier2: docs/cutscene-case8.md:20 cites 0x0362D6
+0x0368e4,combat_set_mode,2,sets $FF010E bits 6-8 to group_size/2+1; gated by L0CF1BA table via leader +0x29 char +0x02; skips if table byte $FD; called from spell dispatch $037850; tier2: docs/spells.md:501 cites 0x0368E4
 0x036954,combat_set_member_score,1,at battle-end per live member; value (HP/4+level+7)*4+rand into +0x2A low byte; sets +0x18 bit 9; read by $036A94
-0x036a00,combat_group_alive,1,returns 1 if char index 0-55 and type low nibble 1 and all 6 members in +0x14 list alive; else 0
-0x036a94,combat_find_best_member,1,finds alive member with highest +0x2A low byte across two groups with +0x18 bit 9 clear; clears bit 9 and retries if none
-0x036cfc,combat_calc_range_effect,1,picks effect value from displacement to target; axis-aligned vs diagonal plus $03AF10 check; caller $037124
-0x036de8,world_get_direction,1,computes direction from char to target point via world_decompose_direction; returns direction code
-0x036E2E,spell_damage_calc,1,spells.md:124 reads w0 damage base; damage path
+0x036a00,combat_group_alive,2,returns 1 if char index 0-55 and type low nibble 1 and all 6 members in +0x14 list alive; else 0; tier2: docs/architecture.md:299 cites 0x036A00
+0x036a94,combat_find_best_member,2,finds alive member with highest +0x2A low byte across two groups with +0x18 bit 9 clear; clears bit 9 and retries if none; tier2: docs/spells.md:407 cites 0x036A94
+0x036cfc,combat_calc_range_effect,2,picks effect value from displacement to target; axis-aligned vs diagonal plus $03AF10 check; caller $037124; tier2: docs/spells.md:391 cites 0x036CFC
+0x036de8,world_get_direction,2,computes direction from char to target point via world_decompose_direction; returns direction code; tier2: docs/spells.md:402 cites 0x036DE8
+0x036E2E,spell_damage_calc,2,spells.md:124 reads w0 damage base; damage path; tier2: docs/logic-audit.md:648 cites 0x036E2E
 0x03778E,world_distance,2,logic.md:87;1228 distance 3778E (proven)
 0x0377FE,math_isqrt,2,logic.md:1228 integer sqrt 377FE verified
-0x037840,math_calc_square,1,returns arg squared; called by world_distance and $0264DE
-0x037850,spell_dispatch_effect,1,jump-table dispatch on spell index 0-11; routes to status setters $0378BA $037918; called from menu $020326
-0x0378ba,spell_set_status_lo,1,sets bits 8-9 of status word for up to 6 chars in group table $FF02C8
-0x037918,spell_set_status_hi,1,sets bits 10-12 of status word for up to 6 chars in group table $FF02C8
+0x037840,math_calc_square,2,returns arg squared; called by world_distance and $0264DE; tier2: docs/spells.md:400 cites 0x037840
+0x037850,spell_dispatch_effect,2,jump-table dispatch on spell index 0-11; routes to status setters $0378BA $037918; called from menu $020326; tier2: docs/spells.md:469 cites 0x037850
+0x0378ba,spell_set_status_lo,2,sets bits 8-9 of status word for up to 6 chars in group table $FF02C8; tier2: docs/spells.md:475 cites 0x0378BA
+0x037918,spell_set_status_hi,2,sets bits 10-12 of status word for up to 6 chars in group table $FF02C8; tier2: docs/spells.md:478 cites 0x037918
 0x037976,world_move_random,1,picks random direction from table $01AE38; retries via $0253FE up to 4 times; moves via $024984
 0x037a26,world_find_char_at,1,searches 6-char group for one at given x y; returns char index or 0
 0x037a9a,spell_assign_by_rank,1,finds living group member whose rank equals arg1; sets its spell-table index +0x25 to arg2; menu caller $020292
-0x037B82,combat_target_select,1,logic.md:1202 sets FFC37C target index from target struct
-0x037D0E,spell_effect_apply,1,spells.md:125 tail installs w1>>4 action code; role from doc
+0x037B82,combat_target_select,2,logic.md:1202 sets FFC37C target index from target struct; tier2: docs/architecture.md:424 cites 0x037B82
+0x037D0E,spell_effect_apply,2,spells.md:125 tail installs w1>>4 action code; role from doc; tier2: docs/logic-audit.md:166 cites 0x037D0E
 0x037ED6,sys_stub_037ed6,1,static: returns 0 after clearing a local
 0x037ee6,spell_blast_area,1,paints spell effect over 10x10 grid around x y; Chebyshev distance; writes map cells via $0319EC $031A9C
 0x0381ae,spell_set_effect,1,Configures $FFB0CC effect record 3 for a char; effect code 517/519 or passed value; called from spell state machine $03E2D4
@@ -288,64 +288,64 @@ addr,name,tier,note
 0x03846e,combat_paint_ring,1,Paints a ring radius arg2 thickness 2 on 10x10 grid centred at arg0 arg1; called from $03E2D4 with shrinking radius
 0x038512,spell_get_base,1,Spell base value for actor $FF0EAA via rank tables; passed to damage routine $03B152; called from spell state machine $03E2D4
 0x03865c,spell_get_damage,1,Spell damage value for actor $FF0EAA via rank tables; effect-code-150 special case; passed to damage routine $03B152; called from spell-effect routines
-0x0387ae,combat_set_target,1,Sets a char status-word low byte to another char name index following a chain via +0x27 and +0x29; called from spell_damage_calc $036E2E
-0x03888a,spell_apply_group,1,Applies effect 24 via $02140A to each live member of a char 6-entry list; random gate and $025DE4 check; called by five spell-effect routines
-0x038938,map_animate_tiles,1,Animates map chunk tiles in 10x10 grid; toggles tile low bit by $FF012A parity skipping tiles 495 and 213; called from $03E2D4 when $FF012A below 20
+0x0387ae,combat_set_target,2,Sets a char status-word low byte to another char name index following a chain via +0x27 and +0x29; called from spell_damage_calc $036E2E; tier2: docs/spells.md:385 cites 0x0387AE
+0x03888a,spell_apply_group,2,Applies effect 24 via $02140A to each live member of a char 6-entry list; random gate and $025DE4 check; called by five spell-effect routines; tier2: docs/spells.md:557 cites 0x03888A
+0x038938,map_animate_tiles,2,Animates map chunk tiles in 10x10 grid; toggles tile low bit by $FF012A parity skipping tiles 495 and 213; called from $03E2D4 when $FF012A below 20; tier2: docs/maps.md:993 cites in-body $38952
 0x038a22,spell_step_duration,1,Advances a spell duration counter by 6 or 14 and sets a flag 0 or 1 by arg0 mod 4; threshold 448; called after world_decompose_direction
 0x038A40,sys_unk_038a40,0,static: dispatch case 0 of spell_step_duration ($038A22) first dispatch; adds 14 to duration and clears flag; table $038A80
 0x038AB2,sys_unk_038ab2,0,static: dispatch case 0 of spell_step_duration ($038A22) second dispatch; adds 2 to duration and sets flag 1; table $038AE2
 0x038b00,map_load_group_chunks,1,loads map chunks at each group member X/Y via $0319ec $031a9c; called from $03F8FE $03FACA
 0x038b96,npc_wander_move,1,random NPC move via $024984 after $0253fe walkability check; called from $03F600 $03F654 $03F6C0
-0x038c5a,spell_multihit_scatter,1,action code 26 SFX 16; multi-hit random scatter via $03B152 $02B402
-0x038dea,spell_multihit_cross,1,action code 27 SFX 13; multi-hit cross pattern via $03B152 $02B402
-0x038fb8,spell_multihit_grid,1,action code 28 SFX 15; multi-hit 2x2 grid around caster via $03B152 $02B402
-0x039172,spell_multihit_group,1,action code 150 SFX 15; cycles group members as targets with 2x2 grid hits
-0x0393fa,spell_group_flash,1,action code 151 SFX 15; cycles group members; palette flash via pal_load_set
+0x038c5a,spell_multihit_scatter,2,action code 26 SFX 16; multi-hit random scatter via $03B152 $02B402; tier2: docs/logic-audit.md:347 cites 0x038C5A
+0x038dea,spell_multihit_cross,2,action code 27 SFX 13; multi-hit cross pattern via $03B152 $02B402; tier2: docs/logic-audit.md:439 cites in-body $38F6C
+0x038fb8,spell_multihit_grid,2,action code 28 SFX 15; multi-hit 2x2 grid around caster via $03B152 $02B402; tier2: docs/logic-audit.md:439 cites in-body $39104
+0x039172,spell_multihit_group,2,action code 150 SFX 15; cycles group members as targets with 2x2 grid hits; tier2: docs/logic-audit.md:439 cites in-body $39396
+0x0393fa,spell_group_flash,2,action code 151 SFX 15; cycles group members; palette flash via pal_load_set; tier2: docs/cutscene-final-animation.md:182 cites in-body $394F6
 0x039780,spell_modify_stat,1,modifies +0x28 attack defence or duration counter by $FF012C code; calls $03CB66
 0x0398E0,spell_status_apply,2,spells.md:369 status-effect applier 398E0 verified static
 0x0399AC,npc_clear_bit15_399ac,1,static: clears bit 15 of a word in the 0x34-byte record table at ram_sys_ff02e0 with index arg
 0x0399F4,npc_clear_bit15_399f4,1,static: same as npc_clear_bit15_399ac at a second site
-0x039a34,spell_phased_blast,1,action code 142 flat-70 family; phased cinematic build-up flash travel impact fade
-0x039be0,spell_travel_effect,1,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase
-0x039c8a,spell_step_effect_144,1,flat-70 phased spell effect action 144; visual 5 via $03CC4C; applies spell_apply_group while $FF012A below 65; called from combat_action_main dispatch
-0x039d34,spell_step_effect_145,1,flat-70 phased spell effect action 145; visual 6 or 8 if caster template $6E; same phased shape as 144; called from combat_action_main dispatch
-0x039DF4,spell_apply_actor_39df4,1,static: indexes actor record stride 34 then calls spell_effect_start when ff012a is 1 or 41
-0x039e9e,spell_step_effect_146,1,flat-70 phased spell effect action 146; visual 7 via $03CC4C; same phased shape as 144; called from combat_action_main dispatch
-0x039f48,spell_find_target_cell,1,evaluates 13x13 cost grid and writes best cell x y to $FF024C $FF024E; called from spell_damage_calc with range 0-7
+0x039a34,spell_phased_blast,2,action code 142 flat-70 family; phased cinematic build-up flash travel impact fade; tier2: docs/logic-audit.md:378 cites 0x039A34
+0x039be0,spell_travel_effect,2,action code 143 flat-70 family; visual $03CC4c then long $03888a travel phase; tier2: docs/logic-audit.md:378 cites 0x039BE0
+0x039c8a,spell_step_effect_144,2,flat-70 phased spell effect action 144; visual 5 via $03CC4C; applies spell_apply_group while $FF012A below 65; called from combat_action_main dispatch; tier2: docs/logic-audit.md:378 cites 0x039C8A
+0x039d34,spell_step_effect_145,2,flat-70 phased spell effect action 145; visual 6 or 8 if caster template $6E; same phased shape as 144; called from combat_action_main dispatch; tier2: docs/logic-audit.md:378 cites 0x039D34
+0x039DF4,spell_apply_actor_39df4,2,static: indexes actor record stride 34 then calls spell_effect_start when ff012a is 1 or 41; tier2: docs/teamwork-lessons.md:119 cites 0x039DF4
+0x039e9e,spell_step_effect_146,2,flat-70 phased spell effect action 146; visual 7 via $03CC4C; same phased shape as 144; called from combat_action_main dispatch; tier2: docs/logic-audit.md:378 cites 0x039E9E
+0x039f48,spell_find_target_cell,2,evaluates 13x13 cost grid and writes best cell x y to $FF024C $FF024E; called from spell_damage_calc with range 0-7; tier2: docs/spells.md:400 cites 0x039F48
 0x03A062,sys_unk_03a062,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); accumulates actor HP into 13x13 cost grid; table $03A220
 0x03A2E4,sys_unk_03a2e4,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); adds 1000 to cost-grid cell and marks bitmap; table $03A354
 0x03A4A2,sys_unk_03a4a2,0,static: dispatch cases 0-1 of spell_find_target_cell ($039F48); best-cell search (min cost under distance); table $03A5D0
-0x03AAC4,sys_stub_03aac4,1,static: empty routine (link/unlk/rts only)
-0x03aacc,combat_victory_announce,1,shows message 0x20-0x23 by $FF00AE and food; plays Victory song 20 and SFX 91; sets $FF0112 to 1; flushes msg queue 3x; called when group alive
+0x03AAC4,sys_stub_03aac4,2,static: empty routine (link/unlk/rts only); tier2: docs/logic.md:1542 cites 0x03AAC4
+0x03aacc,combat_victory_announce,2,shows message 0x20-0x23 by $FF00AE and food; plays Victory song 20 and SFX 91; sets $FF0112 to 1; flushes msg queue 3x; called when group alive; tier2: docs/spells.md:330 cites 0x03AACC
 0x03ab8c,combat_lock_action,2,sets $FF012C to 7 locked busy and $FF012A to 1; spells.md:262 0x07 locked busy set by $3AB8C; called from spell_effect_apply and $03B51E
 0x03aba6,world_check_char_ahead,1,checks 3x2 fan ahead of a char via +0x0A facing and $0258EE; returns 1 if any char found else 0; called from movement $0224DE
 0x03ae40,world_move_char_chain,1,moves a char via walk check and $024984 or random move; re-inits as leader and marks bit 14; recurses while result is a valid char index; called from $0226B0
-0x03af10,world_check_path_clear,1,checks 1-step and 2-step cells ahead of a char via world_get_step_delta; returns 0 only if both occupied else 1; used by combat_calc_range_effect
-0x03af92,spell_apply_target,1,applies spell to target char type 4; resist roll via $03B152 then damage_calc or effect 0x14; recurses to group for type 1; called from multihit routines
+0x03af10,world_check_path_clear,2,checks 1-step and 2-step cells ahead of a char via world_get_step_delta; returns 0 only if both occupied else 1; used by combat_calc_range_effect; tier2: docs/spells.md:427 cites 0x03AF10
+0x03af92,spell_apply_target,2,applies spell to target char type 4; resist roll via $03B152 then damage_calc or effect 0x14; recurses to group for type 1; called from multihit routines; tier2: docs/logic.md:1624 cites 0x03AF92
 0x03b152,spell_resist_roll,1,two-char contest rand 13 plus level minus 6; defender rank 8+ penalty 4; returns 1 if target avoids damage else 0; called from $03AF92 and multihit spell routines
-0x03b408,math_fold_range,1,folds value into 0-MAX by reflection; value mod 2*MAX then reflect above MAX; called from $0412FC with isqrt distance and frame counter
+0x03b408,math_fold_range,2,folds value into 0-MAX by reflection; value mod 2*MAX then reflect above MAX; called from $0412FC with isqrt distance and frame counter; tier2: docs/logic.md:1579 cites 0x03B408
 0x03b43e,combat_random_empty_cell,1,picks random x y 1-10 until $0258EE finds no char there; max 10 tries; stores coords via pointer args; caller spawns entity there
-0x03B4AC,spell_record_value,1,spells.md:183 record w1>>4 value via 3B4AC; if 0 -> 0x200
-0x03b4c6,spell_effect_queue,1,stores 9 words into $FFC368 block and sets $FF010C flag; consumer plays SFX 3 and runs $02B190 with the block; called from combat dispatch $040EC8
-0x03b51e,combat_ai_turn,1,AI turn for a char; group-alive checks then spell_ai_choose else 4-way dispatch to target pickers $03B6C0 $03B988 $03B748 $03BA4C; writes target into +0x2C low byte
-0x03b6c0,combat_resolve_target,1,resolves target via +0x27 to +0x29 to group to +0x26 chain; falls back to $03B748 if resolved char is 0 or dead; used by $03B51E
-0x03b748,combat_pick_target,1,picks target from linked group by nearest farthest lowest-HP highest-HP chosen by spell-record flags and +0x2C bits 8-9; used by $03B51E and as fallback in $03BA4C
-0x03b988,combat_pick_max_level,1,returns highest-level alive member of linked group via +0x27 to +0x29 chain; used by $03B51E case 1
-0x03ba4c,combat_pick_same_target,1,returns nearest alive member whose +0x2C low byte equals actor +0x26 link; falls back to $03B748 if none; used by $03B51E case 3
+0x03B4AC,spell_record_value,2,spells.md:183 record w1>>4 value via 3B4AC; if 0 -> 0x200; tier2: docs/logic-audit.md:15 cites 0x03B4AC
+0x03b4c6,spell_effect_queue,2,stores 9 words into $FFC368 block and sets $FF010C flag; consumer plays SFX 3 and runs $02B190 with the block; called from combat dispatch $040EC8; tier2: docs/logic-audit.md:144 cites 0x03B4C6
+0x03b51e,combat_ai_turn,2,AI turn for a char; group-alive checks then spell_ai_choose else 4-way dispatch to target pickers $03B6C0 $03B988 $03B748 $03BA4C; writes target into +0x2C low byte; tier2: docs/spells.md:164 cites 0x03B51E
+0x03b6c0,combat_resolve_target,2,resolves target via +0x27 to +0x29 to group to +0x26 chain; falls back to $03B748 if resolved char is 0 or dead; used by $03B51E; tier2: docs/spells.md:322 cites 0x03B6C0
+0x03b748,combat_pick_target,2,picks target from linked group by nearest farthest lowest-HP highest-HP chosen by spell-record flags and +0x2C bits 8-9; used by $03B51E and as fallback in $03BA4C; tier2: docs/spells.md:164 cites 0x03B748
+0x03b988,combat_pick_max_level,2,returns highest-level alive member of linked group via +0x27 to +0x29 chain; used by $03B51E case 1; tier2: docs/spells.md:337 cites 0x03B988
+0x03ba4c,combat_pick_same_target,2,returns nearest alive member whose +0x2C low byte equals actor +0x26 link; falls back to $03B748 if none; used by $03B51E case 3; tier2: docs/spells.md:337 cites 0x03BA4C
 0x03BB4E,spell_ai_choose,2,spells.md:130 AI chooser 3BB4E (section 6.3)
-0x03bd3a,spell_ai_pick,1,AI picks random spell for a char; enumerates candidates via $02CC14 $02CC62 filters by spell-record flags picks rand 5th sets +0x25; called from spell_ai_choose
+0x03bd3a,spell_ai_pick,2,AI picks random spell for a char; enumerates candidates via $02CC14 $02CC62 filters by spell-record flags picks rand 5th sets +0x25; called from spell_ai_choose; tier2: docs/spells.md:370 cites 0x03BD3A
 0x03be8e,spell_pick_target,1,picks a valid target for caster spell by action code; records it in caster +0x2C low byte; returns 1 if found; called from $03BC5E $03C346
 0x03c248,spell_can_cast,1,checks char can cast spell: cost <= Power and record level <= char level; returns 1 or 0; called from $03C2F4 $03C362 $03C520 $03BE8E
 0x03C2C0,spell_cost_calc,2,spells.md:152 cost formula 3C2C0 verified (asm + harness)
 0x03c2f4,spell_menu_cast,1,casts menu-selected spell: if record w0 bit 15 set assigns +0x25 and picks target via $03BE8E else checks can-cast via $03C248; called from $01F360
-0x03c362,spell_ai_pick_best,1,AI spell picker: scores each castable spell ((w1 and 0xF)*100 + rand - 0x96) and returns best index; called from spell_ai_choose $03BBB4
-0x03c520,spell_ai_pick_first,1,AI spell picker: returns first castable spell in scan order; called from spell_ai_choose $03BBFE $03BC8A $03BCB0 $03BD26
+0x03c362,spell_ai_pick_best,2,AI spell picker: scores each castable spell ((w1 and 0xF)*100 + rand - 0x96) and returns best index; called from spell_ai_choose $03BBB4; tier2: docs/spells.md:370 cites 0x03C362
+0x03c520,spell_ai_pick_first,2,AI spell picker: returns first castable spell in scan order; called from spell_ai_choose $03BBFE $03BC8A $03BCB0 $03BD26; tier2: docs/spells.md:370 cites 0x03C520
 0x03c608,spell_is_ai_usable,1,tests w0 bit 7 of a spell record; gate in AI spell pickers $03C362 $03C520
 0x03c636,spell_grant_for_level,1,raises char level to arg2 and grants level-appropriate spells via inv_apply_resource (+0x40 +0x80 goods); called at battle-end (member 2 0)
 0x03cad2,rng_rand_below,1,returns random in [0 arg); 0 if arg <= 1; chance gate in spell grants $03C362 $03C636
 0x03caf2,combat_any_low_hp,1,returns 0 if any living group member has HP below arg2 else 1; called from $03BD18
-0x03CB66,combat_flag_clear,1,logic.md:1260 clears +0x2C bit 13 (3CB66)
-0x03cc4c,spell_effect_start,1,sets $FF013C effect mode and clears $FFC41C frame counter; called from $02D764 $0328F2 and spell multihit routines
+0x03CB66,combat_flag_clear,2,logic.md:1260 clears +0x2C bit 13 (3CB66); tier2: docs/logic.md:1658 cites 0x03CB66
+0x03cc4c,spell_effect_start,2,sets $FF013C effect mode and clears $FFC41C frame counter; called from $02D764 $0328F2 and spell multihit routines; tier2: docs/cutscene-final-animation.md:202 cites 0x03CC4C
 0x03cc62,gfx_paint_stream_column,1,paints terrain streams $330-$33D via $E358 in a vertical pattern around x y; called from spell-effect driver $03D9F8
 0x03ce30,gfx_paint_stream_spread,1,paints terrain streams $340+ via $E358 in a spreading pattern with repeated tail; called from $03DC32
 0x03d13e,gfx_paint_stream_burst,1,paints terrain stream $350-$359 in a 4x3 grid around x y plus $35B/$35C tail; 1-in-4 rand branch plays SFX $5F and loads palette $CCC98 and sets $FF0124; called from spell-effect driver $03D9F8
@@ -354,13 +354,13 @@ addr,name,tier,note
 0x03d528,gfx_paint_stream_grid,1,paints terrain stream $370-$37B in a complete 4x3 grid around x y plus $37C/$37D variant pair tail selected by $C arg; called from spell-effect driver $03D9F8
 0x03d75a,spell_effect_scatter,1,places 13 tiles 380-38A at scattered offsets around a point with orientation flipped by FF0092 parity; called from spell effect mode 7 case with random x
 0x03d990,spell_effect_block,1,places a 4x4 block of tiles 390-39F (row*4+col+390) at a random position; called from spell effect mode 8 case
-0x03d9f8,spell_effect_step,1,spell effect sequencer: dispatches on FF013C mode set by spell_effect_start and advances FFC41C frame counter per call; plays SFX paints effect tiles and calls scene_draw; called from map redraw path 01C0DE
+0x03d9f8,spell_effect_step,2,spell effect sequencer: dispatches on FF013C mode set by spell_effect_start and advances FFC41C frame counter per call; plays SFX paints effect tiles and calls scene_draw; called from map redraw path 01C0DE; tier2: docs/cutscene-final-animation.md:203 cites 0x03D9F8
 0x03e198,spell_effect_line,1,places 8 identical tiles 212+arg along a diagonal line stepping 14 1C per tile at a moving position; called from spell effect mode 64 case via bsr
-0x03E2D4,combat_action_main,1,sound.md:739 and issue 12: large combat routine 3E2D4
+0x03E2D4,combat_action_main,2,sound.md:739 and issue 12: large combat routine 3E2D4; tier2: docs/architecture.md:498 cites 0x03E2D4
 0x042f26,eeprom_between_bytes,2,write $00 NOPs write $40 NOPs write $00 to $200000; called between bytes in the eeprom_read_block loop; save.md:159 and save.md:189
 0x042f5e,eeprom_read_tail,2,write $80 NOPs write $C0 NOPs write $80 to $200000; tail of eeprom_read_block before eeprom_stop; save.md:160 and save.md:189
 0x043006,eeprom_read,2,stack-arg wrapper for eeprom_read_block; loads d0 d1 a0 from stack and falls into $43012; called from save_validate_magic at $177E0 $17806 $1782C; save.md:194
-0x0430EC,sys_wrap_stack_arg,1,save.md:223 stack-arg wrapper 430EC
+0x0430EC,sys_wrap_stack_arg,2,save.md:223 stack-arg wrapper 430EC; tier2: docs/logic-audit.md:221 cites 0x0430EC
 0x0eb8e0,z80_write_val24_nobus,2,no-bus twin of z80_write_val24; writes 24-bit d0 to Z80 016E-0170 without bus request or 17C clear; sound.md:151; doc-pinned but no callers in ROM
 0x0EB8F2,z80_write_val24,2,sound.md:151 writes 24-bit d0 to Z80 016E-0170
 0x0eb920,snd_copy_bytes,2,byte-copy loop bra entry copies d0 bytes from (a1)+ to (a2)+; sound.md:159; called from sound_upload and SFX deliver
