@@ -10,6 +10,7 @@ Usage: python3 tools/status.py
 """
 import csv
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -102,7 +103,32 @@ def measure():
         'named': tier1, 'tier0': tier0, 'funcs': funcs,
         'code': code, 'incbin': incbin, 'raw': raw, 'size': size,
         'regions': regions, 'ptr_incbin': ptr_incbin,
+        'roundtrip': roundtrip_count(),
     }
+
+
+def roundtrip_count():
+    """Asset round-trip (M10): run tools/roundtrip.py and count its
+    PASS lines (one per class: lzss, text, assets, song).
+
+    Measured live, never typed by hand — a fail, unknown or skipped
+    class never aggregates to a pass. Returns (pass count 0-4,
+    driver output) or (None, '') when rop-original.gen is absent
+    (the check cannot run without the ROM; the row then reads
+    "no ROM").
+    """
+    if not Path('rop-original.gen').exists():
+        return None, ''
+    try:
+        proc = subprocess.run(
+            [sys.executable, 'tools/roundtrip.py'],
+            capture_output=True, text=True, timeout=600)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return 0, f'roundtrip driver did not run: {e}'
+    out = proc.stdout + proc.stderr
+    n = sum(1 for line in proc.stdout.splitlines()
+            if line.startswith('PASS '))
+    return n, out
 
 
 def tables(m):
@@ -124,6 +150,12 @@ def tables(m):
             f"| Bytes high-entropy (opaque, counted in M8) | {r['high_entropy']:,} | 0 | {pct(r['high_entropy'], m['size'])} |",
             f"| Pointer-bearing bytes still incbin | {m['ptr_incbin']:,} | 0 | {pct(m['ptr_incbin'], m['size'])} |",
         ]
+    # Asset round-trip (M10, issue #285): classes passing of 4.
+    n, _out = m['roundtrip']
+    if n is None:
+        rows.append('| Asset round-trip | no ROM | 4 of 4 | — |')
+    else:
+        rows.append(f"| Asset round-trip | {n} of 4 | 4 of 4 | {100 * n // 4}% |")
     return rows
 
 
@@ -146,7 +178,15 @@ def main():
         extra = (f"; M8 accounted {r['accounted']:,} "
                  f"({100.0 * r['accounted'] / m['size']:.2f}%), "
                  f"unknown {r['unknown']:,}, high-entropy {r['high_entropy']:,}")
-    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}; ptr-incbin {m['ptr_incbin']:,}{extra}")
+    rt, rt_out = m['roundtrip']
+    rt_extra = ('; round-trip no ROM' if rt is None
+                else f'; round-trip {rt}/4')
+    print(f"status: {m['named']} of {m['funcs']} named (tier>=1), {m['tier0']} tier 0; code {m['code']:,}; incbin {m['incbin']:,}; raw {m['raw']}; ptr-incbin {m['ptr_incbin']:,}{extra}{rt_extra}")
+    if rt is not None and rt != 4:
+        # STATUS.md / README already carry the failing count above;
+        # surface the driver's output, then fail the gate.
+        print(rt_out, file=sys.stderr)
+        sys.exit(f'status: asset round-trip {rt}/4 (see above)')
 
 
 if __name__ == '__main__':

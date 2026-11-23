@@ -13,3 +13,4 @@ Measured from the repo. Issue counts are on GitHub, not here.
 | Bytes unknown | 0 | 0 | 0.00% |
 | Bytes high-entropy (opaque, counted in M8) | 0 | 0 | 0.00% |
 | Pointer-bearing bytes still incbin | 0 | 0 | 0.00% |
+| Asset round-trip | 4 of 4 | 4 of 4 | 100% |

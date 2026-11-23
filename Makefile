@@ -5,7 +5,7 @@ REBUILT  := build/rop-rebuilt.gen
 PY       := python3
 SIZE     ?= 1m
 
-.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test playtest
+.PHONY: help vasm build verify coverage regions gate rom-free lint check status clean assets shift-test playtest roundtrip
 
 help:
 	@echo "make vasm      install pinned assembler into tools/vasm"
@@ -14,6 +14,7 @@ help:
 	@echo "make coverage  coverage meter for disasm/src/rop.s"
 	@echo "make regions   ROM data-region inventory"
 	@echo "make assets    rebuild the DD5C asset records from assets/gfx/ -> build/assets.gen"
+	@echo "make roundtrip extract -> re-pack -> byte-identical, per class (lzss, text, assets, song)"
 	@echo "make gate      build + verify + coverage (run before every push touching disasm/src or tools/)"
 	@echo "make rom      build a feature ROM: make rom FEATURES=music-off"
 	@echo "              (FEATURES= empty builds the byte-identical base)"
@@ -40,6 +41,9 @@ regions:
 
 assets:
 	$(PY) tools/build_assets.py
+
+roundtrip:
+	$(PY) tools/roundtrip.py
 
 gate: verify coverage
 

@@ -67,7 +67,7 @@ All produced by `tools/status.py`. No hand counts.
 | RAM named | named ÷ distinct `$FFxxxx` operands | measure on first run | top 200 by reference count |
 | Typed data | bytes emitted as `dc.*`/labels instead of `incbin`, for regions that hold pointers | 0 | every pointer-bearing region |
 | Shift test | build with 2 pad bytes inserted after the header boots identically in the harness | fail (not attempted) | pass |
-| Asset round-trip | extract → re-pack → byte-identical, per asset class | 0 of 4 (text, gfx, maps, sound) | 4 of 4 |
+| Asset round-trip | extract → re-pack → byte-identical, per asset class | 4 of 4 | 4 of 4 |
 
 ### Flow (these show stalls early)
 | Metric | Now | Target |
