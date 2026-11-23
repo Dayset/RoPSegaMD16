@@ -36,6 +36,7 @@ def main():
             md.step(p)
     last_fc, fc_gap, fc_max = None, 0, 0
     last_crc, sc_gap, sc_max = None, 0, 0
+    iso_frames = 0
     i = 0
     while i < a.frames:
         pad, n = rng.choice(pads), rng.randint(4, 60)
@@ -48,11 +49,13 @@ def main():
             crc = zlib.crc32(md.screen().tobytes())
             sc_gap = sc_gap + 1 if crc == last_crc else 0
             sc_max, last_crc = max(sc_max, sc_gap), crc
+            iso_frames += md_run.w(md.ram(), 0xFFDC00 + 0x550) != 0
     r = md.ram()
     print(json.dumps({"frames": a.frames, "seed": a.seed, "vblank_gap_max": fc_max,
                       "vblank_gap_end": fc_gap, "screen_still_max": sc_max,
                       "mode": md_run.w(r, 0xFF00AE), "loc": md_run.w(r, 0xFF0E98),
-                      "iso": md_run.w(r, 0xFFDC00 + 0x550)}))
+                      "iso": md_run.w(r, 0xFFDC00 + 0x550),
+                      "iso_frames": iso_frames}))
 
 
 if __name__ == "__main__":

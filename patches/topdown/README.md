@@ -8,8 +8,17 @@ original → top-down → **smooth iso** (#252, below) → original at any
 time (same 1 MB ROM, same save, same game state).
 
 ```
-make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
+make rom FEATURES=topdown          # -> build/rop-topdown.rom (+ .ips)
+make rom FEATURES=topdown SIZE=2m  # -> build/rop-topdown-2m.rom: the same
+                                   # plus the fast iso terrain (#266)
 ```
+
+The 2 MB build is the one to play the smooth iso view on: its second
+megabyte holds the terrain streams in a form drawn ~3x faster (628 KB,
+generated from the ROM at build time by `patches/topdown/data2m.py`), so
+the iso picture keeps up with walking. Real hardware or a flash cart
+maps it by address lines; BlastEm needs the one-line `rom.db` fix in
+`docs/smooth-topdown.md`.
 
 ![](../../docs/img/topdown-vs-original.png)
 
@@ -148,7 +157,65 @@ render rarely, scroll the result by hardware, figures as sprites.
   game; there the top-down picture stands in and the iso view comes
   back after the fight.
 
-| Measure (smooth iso) | value |
+### v2 (#266, #270): a picture per tick
+
+Measured with `tools/md_iso_cadence.py` (camera trail = the shown
+camera at most one cell behind the game camera, walking frames only)
+and `tools/md_smooth.py --hole`, 2 MB build:
+
+| Measure | v1 | v2 (2 MB) |
+|---|---|---|
+| CPU per picture, overworld (render / commit, frames) | 26 / 11 | 10–11 / 7–8 |
+| Camera trail <= 1 cell, overworld walk (explore route) | 53 % | 99.8 % |
+| ... overworld + room 156 (`playtest_route_iso2m_buc.txt`) | — | 99.5 % / 99.2 % |
+| Steps <= 2 px, overworld / Buc route incl. room 156 | 100 % / 99.3 % | 100 % / 99.3 % (831 of 837) |
+| Figure lookups showing an old pose, room 156 | 7.8 % (2.2 extractions/s) | 0.8 % |
+| Buc cutscene end | (6,25) | (6,25), loc 156 |
+
+The 1 MB build keeps the game's decoder (render ~31 frames) but gets
+the rest: overworld trail 78 %, rooms 70 %.
+
+What v2 changed, in order of gain:
+
+- **Fast terrain streams (2 MB).** Each of the 944 x 2 terrain streams
+  is converted offline (`tools/iso_fast_streams.py`, exact against the
+  `$E358` port for every stream and checked on 102 live renders) into
+  records: one run of a line = h bytes with a transparent nibble, m
+  opaque bytes, t masked bytes. `ti_fast` (hooked at `$E358`'s entry,
+  only while our render runs) draws a record with one long read and a
+  jump into a 24-byte stub that copies the opaque bytes with
+  `move.b (a0)+,(a5)+`. To make runs contiguous the iso render goes
+  into a **linear** bitmap (144 bytes per line) instead of 8x8 tiles;
+  the commit gathers tiles with a 144-byte stride. Decode: ~21 → ~6.5
+  frames per overworld render.
+- **Commit.** Each tile is first compared (hash, RAM only) with the
+  pool slot already at its plane place (`ti_reuse`: most tiles of a step
+  stay); plane rows are written word by word only where they differ
+  from VRAM (read once per row), void rows known void are skipped
+  (VDP access stalls in active display); the pool window start is a
+  multiply, a miss takes the first slot not used by the last two
+  renders. 11 → 7 frames.
+- **Render.** `map_chunk_cache_read` replaced for our render
+  (`ti_ccr`: 2 `divu` instead of 6 `divs` + 3 C calls); a 0.5-frame
+  buffer clear; the render stops per cell, not per row, with a 1-frame
+  margin (was 3).
+- **Picture one step ahead.** While the camera keeps stepping, the next
+  picture is drawn for the cell it will reach (`ti_target`: last step
+  repeated; two steps when a picture takes longer than a tick); a
+  render that leaves the camera's path (turn, stop) gives way.
+- **32x32 rooms at the original's pace** (22 frames per tick, measured
+  in room 156; was 17), which also gives the render room there.
+- **Terrain animation (#266 item 3).** Standing still, a new picture is
+  drawn when the terrain phase (`$FF0092`, toggled every tick) changes,
+  so water animates as in the original; such a render gives way to a
+  camera step.
+- **Figures (#270 items 2-3).** In rooms the pool lends its last 128
+  tiles to 8 more figure images (16; pool 511 slots, `ti_cfg`), and
+  images are extracted while a render is paused: `td_extract` swaps its
+  640-byte corner with bitmap lines 160+ (never drawn in a linear
+  render, never committed) before and after.
+
+| Measure (smooth iso, v1) | value |
 |---|---|
 | Overworld walk: moving frames in ≤ 2 px steps | 226 / 226 (Buc route), 260 / 260 (explore route) |
 | Room 156 (Buc cutscene): moving frames in ≤ 2 px steps | 271 / 273 (99.3 %) |
@@ -247,21 +314,22 @@ after it re-links.
 | `$01BA5A` (+`$01BA60` 2 nops) | `jsr map_scroll_offset; addq #4,a7; moveq #0,d4` | `jsr ti_mso` (iso: start at a saved row) |
 | `$01C0CC` | `addq.w #1,d4; cmp.w #$a,d4` (row step) | `jsr ti_row` (iso: stop when the tick's time is up) |
 | `$0246C0` | place-chars loop head | `jsr td_poll_pgc` |
+| `$00E358` | `moveq #0,d2; move.w 4(a7),d2` (entry) | `jmp ti_e358` (iso render, 2 MB: `ti_fast`) |
+| `$01BA84` | `jsr map_chunk_cache_read; addq #4,a7` | `jsr ti_ccr` (iso render: fast lookup) |
+| `$01BA66` | `move.w d4,d0; add.w 8(a6),d0` (cell head) | `jsr ti_cell` (iso: resume column, stop per cell) |
 | `$00D9E6` | `move.w d0,vdp_ctrl` (vdp_ctrl_write) | `jmp td_vctl` (drop our registers on a layout install) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
-RAM `$FFDC00–$FFE41D` (+ the iso pool tables at `$FFD2EA–$FFDA07`, the attract buffer) (free in play: the attract buffer ends at
+RAM `$FFDC00–$FFE55F` (+ the iso pool tables at `$FFD2EA–$FFDA07`, the attract buffer) (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
-the boot RAM clear resets it). Blob 6,358 bytes at `$FD0CC–$FE9A1` (padding). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
+the boot RAM clear resets it). Blob 11,682 bytes at `$FD0CC` (padding) in the 1 MB build; the 2 MB build assembles with `SIZE2M` (the fast-terrain code) and places its 12,132-byte blob at `$1F0000`, the second megabyte's code room, with the fast streams at `$100000` (`ISOFAST`). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
 
 ## Limits (test build)
 
-- Smooth iso: full detail on every render (no simplified first pass
-  yet), so a picture lands about every 2 ticks while walking and the
-  camera trails the leader by up to a cell; terrain animation (water)
-  changes only when a new picture lands; tall terrain does not hide
-  figures behind it; the hole is the camera's ±4 cells (the original
-  shows ±5). Follow-up card: #266.
+- Smooth iso: tall terrain does not hide figures behind it (figures are
+  sprites above Plane B); the hole is the camera's ±4 cells (the
+  original shows ±5). Both are open cards (see `docs/smooth-topdown.md`,
+  v2). The 1 MB build renders with the game's decoder and trails more.
 
 - The bottom 80 lines (HUD band) show the map untinted; height is
   visible in the play area above it. While a menu is open, raised cells

@@ -125,6 +125,10 @@ def main():
         "frames": len(rows),
         "scroll_frames": len(moves),
         "scroll_step_px": sorted({abs(r[2]) + abs(r[3]) for r in moves}),
+        "scroll_step_hist": {str(k): sum(1 for r in moves
+                                         if abs(r[2]) + abs(r[3]) == k)
+                             for k in sorted({abs(r[2]) + abs(r[3])
+                                              for r in moves})},
         "redraw_frames": len(redraws),
         "unchanged_frames": len(still),
         "palette_frames": sum(1 for r in rows if r[5]),
