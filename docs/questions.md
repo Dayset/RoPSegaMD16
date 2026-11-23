@@ -63,3 +63,8 @@ Work continues on the default.
 - Default taken: flat (no change); the mock-up and `tools/td_height_mock.py` are in.
 - **Answered (Dayset, 2026-11-23): tinted.** Built in #264: height-0 cells shadowed, raised cells normal; the HUD band (screen lines ≥ 144) stays untinted.
 - If the answer is different: raised tiles needs shadow/highlight mode, a painter-order cell draw (a cell's top can cover up to 3.5 cells to its north), streaming lookahead of 4 rows, and figures lifted by their cell's height — about one card.
+
+## Q15 — smooth iso (#252): floating island in a fixed frame, or terrain edge to edge?
+- Question: keep the original's look (a diamond of terrain on parchment) or fill the screen with terrain?
+- Default taken: floating island. A fixed parchment frame in the window with a diamond hole (the camera's ±4 cells; the original shows ±5) hides the render's edges, so the picture inside only scrolls. In combat arenas (zoomed by the game) the top-down picture stands in.
+- If the answer is different: edge to edge needs the plane to keep earlier renders (a world cache in VRAM with eviction by distance) and corners that are empty until visited, or a render ~2× larger than the decode buffer allows — about two cards.

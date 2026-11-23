@@ -3,9 +3,9 @@
 A test build that keeps the whole game (logic, input, menus, messages,
 map data, RAM) and replaces only the world picture with a cheap
 top-down one: the world as 16×16 blocks, characters as the game's own
-animated figures, scrolled and moved every frame. **A+B+C** switches
-between this view and the original isometric one at any time (same
-1 MB ROM, same save, same game state).
+animated figures, scrolled and moved every frame. **A+B+C** cycles
+original → top-down → **smooth iso** (#252, below) → original at any
+time (same 1 MB ROM, same save, same game state).
 
 ```
 make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
@@ -80,6 +80,85 @@ make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
   screen (11×11 rooms) are centred.
 - HUD, messages and menus are the game's own window-plane drawing,
   unchanged. While a menu is open the blobs are taken off.
+
+## Smooth iso view (#252)
+
+![](../../docs/img/iso-view.png)
+
+*Overworld and the Buc room (156) in the smooth iso view.*
+
+The game's own isometric picture, made smooth the way Landstalker is:
+render rarely, scroll the result by hardware, figures as sprites.
+
+- **Render on camera step, terrain only.** The game's composite
+  (`map_chunk_pos`, the 10×10 window, `$E358` decoder) runs only when
+  the game camera cell differs from the picture on the plane, with its
+  figure draws (`hero_track`, `map_promote_record`) and its spell-effect
+  step skipped (`ti_fig_ht`, `ti_fig_pr`, `ti_spell`). Measured: at most
+  one render per camera-cell change (Buc route: 25 renders for 56
+  camera/scene changes — renders skip cells the camera has already
+  left).
+- **Global 8-px grid.** A cell's bitmap x is `14(X−Y) − Ox`; before each
+  render the X table `$FFAE7A` is shifted by `e = Ox mod 8` (taken in
+  −4..2 so images stay inside the 288-px bitmap), so every render's
+  tiles sit on global tile columns; y needs nothing (`8(X+Y) − Oy`,
+  `Oy ≡ 6 mod 8`). Consecutive renders give the same tile at the same
+  global position (checked: the interior of two renders a cell apart
+  matches tile for tile; only the edges and animated water differ).
+- **Tile pool.** Each bitmap tile that can show through the hole
+  (`ti_crow`, ~408 of 828) is hashed (16-bit, checked against VRAM on a
+  match) into a 639-slot pool in the room bank (bank offsets 0–255 and
+  401–783), 24-slot window, ages by render: a miss takes the window's
+  oldest slot not used by this render (the previous render's only as a
+  last resort). Tables in the attract buffer `$FFD2EA` (unused in play).
+  One render has up to ~460 distinct tiles.
+- **Plane B at global positions.** Bitmap tile (k, r) goes to plane
+  column `(Ox'/8 + k) & 63`, row `(cx + cy − 13 + r) & 31`; the rest of
+  each row and the 9 rows below the picture are void (parchment), so
+  the HUD's text never shows old tiles. `hscroll = −camGX`,
+  `vscroll = camGY − 6`, full-screen scroll (R11 = 0), backdrop =
+  parchment (R7 = `$1C`), no shadow mode.
+- **Resumable render, game pace kept.** The render and the commit work
+  only in the tick's spare time: `map_chunk_pos` starts at a saved row
+  (`ti_mso`) and stops between rows when the tick has < 3 frames left
+  (`ti_row`); the commit goes row by row the same way. The game keeps
+  its pace (overworld 25–29 frames per cell, rooms 16–21, as the
+  top-down view); a new picture lands about every 2 ticks while walking.
+  VBlank updates run inside the composite, the commit and the window
+  scan (`td_vwl`), and the tick's own wait gets the full update from the
+  VBlank handler (it is idle there), so the glide never waits for them.
+- **Camera.** Chases the game camera cell by 1/16 cell per frame per
+  axis (1.6× the walking pace, one move per frame, no catch-up), but
+  never more than one cell from the picture on the plane.
+- **Fixed parchment frame.** The window (which never scrolls) holds
+  parchment everywhere except a diamond hole: the camera's cells within
+  ±4 (`|x−162|·64 + |y−98|·112 ≤ 7168`, cut at line 152), 44 edge tiles
+  for its slanted sides (`tools/td_iso_frame.py` generates the data
+  block). The picture covers the camera's cell −5..+4, so the hole
+  stays inside it with the camera up to a cell away: render edges never
+  show. The game's HUD sits in its own place on the parchment, as in
+  the original (no compact box in this view).
+- **Figures.** The top-down's sprite figures, placed at
+  `(14(x−y), 8(x+y) − 8 − lift)` with the lift `map_chunk_pos` gives
+  `hero_track` (`(h + desc bit 7)·7 + desc bit 8·4`, cached per char),
+  depth-sorted by `x + y`, culled outside the hole. 8 cached images
+  (bank 273–400); a figure whose new pose is not cached yet keeps its
+  last image (no blob).
+- **Combat arena.** The arena grid (`$FFB0BC`) is drawn zoomed by the
+  game; there the top-down picture stands in and the iso view comes
+  back after the fight.
+
+| Measure (smooth iso) | value |
+|---|---|
+| Overworld walk: moving frames in ≤ 2 px steps | 226 / 226 (Buc route), 260 / 260 (explore route) |
+| Room 156 (Buc cutscene): moving frames in ≤ 2 px steps | 271 / 273 (99.3 %) |
+| Renders per camera-cell / scene change | ≤ 1 (25 for 56) |
+| Frames per cell walking: overworld / rooms | 25–29 / 16–21 (top-down: 26 / 17) |
+| Buc cutscene end | (6,25), loc 156 (`tools/playtest_route_iso_buc.txt`) |
+| 3 × 30,000 random frames (view cycling) + 3 × 30,000 in iso | no crash, no hang |
+
+Measured with `tools/md_smooth.py --hole` (only the pixels inside the
+hole count: the frame never moves).
 
 ## Measured (tools/md_smooth.py, frame-stepped GPGX, no human eye)
 
@@ -162,15 +241,27 @@ after it re-links.
 | `$01B9E8` | `jsr dma_upload` (room DMA) | `jsr td_dma` (original view only) |
 | `$001352` | joypad queue pop | `jsr td_pad` (A+B+C = switch view) |
 | `$00127A` | `addq.l #1,frame` (VBlank handler) | `jsr td_vint` |
+| `$01BD98`, `$01BF14` | `jsr hero_track` (in `map_chunk_pos`) | `jsr ti_fig_ht` (skipped while iso renders) |
+| `$01BDE4`, `$01C006` | `jsr map_promote_record` | `jsr ti_fig_pr` (likewise) |
+| `$01C0DE` | `jsr spell_effect_step` | `jsr ti_spell` (likewise) |
+| `$01BA5A` (+`$01BA60` 2 nops) | `jsr map_scroll_offset; addq #4,a7; moveq #0,d4` | `jsr ti_mso` (iso: start at a saved row) |
+| `$01C0CC` | `addq.w #1,d4; cmp.w #$a,d4` (row step) | `jsr ti_row` (iso: stop when the tick's time is up) |
 | `$0246C0` | place-chars loop head | `jsr td_poll_pgc` |
 | `$00D9E6` | `move.w d0,vdp_ctrl` (vdp_ctrl_write) | `jmp td_vctl` (drop our registers on a layout install) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
-RAM `$FFDC00–$FFE14F` (free in play: the attract buffer ends at
+RAM `$FFDC00–$FFE41D` (+ the iso pool tables at `$FFD2EA–$FFDA07`, the attract buffer) (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
 the boot RAM clear resets it). Blob 6,358 bytes at `$FD0CC–$FE9A1` (padding). The figure cache is 25 images (slots skip the Plane B table); up to 10 figure sprites plus the 2 HUD-box sprites.
 
 ## Limits (test build)
+
+- Smooth iso: full detail on every render (no simplified first pass
+  yet), so a picture lands about every 2 ticks while walking and the
+  camera trails the leader by up to a cell; terrain animation (water)
+  changes only when a new picture lands; tall terrain does not hide
+  figures behind it; the hole is the camera's ±4 cells (the original
+  shows ±5). Follow-up card: #266.
 
 - The bottom 80 lines (HUD band) show the map untinted; height is
   visible in the play area above it. While a menu is open, raised cells

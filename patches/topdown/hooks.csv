@@ -13,3 +13,11 @@ addr,len,kind,target
 0x00D9E6,6,jmp,td_vctl
 0x0246C0,6,jsr,td_poll_pgc
 0x00127A,6,jsr,td_vint
+0x01BD98,6,jsr,ti_fig_ht
+0x01BF14,6,jsr,ti_fig_ht
+0x01BDE4,6,jsr,ti_fig_pr
+0x01C006,6,jsr,ti_fig_pr
+0x01C0DE,6,jsr,ti_spell
+0x01BA5A,6,jsr,ti_mso
+0x01BA60,4,bytes,4E714E71
+0x01C0CC,6,jsr,ti_row

@@ -5,7 +5,10 @@ stretch with no VBlank (frame counter $FF0012 unchanged) and the longest
 stretch with an unchanged screen; a crash shows as a VBlank gap that
 never ends.
 
-  md_stress.py ROM [--frames 30000] [--seed 1]
+  md_stress.py ROM [--frames 30000] [--seed 1] [--prefix ROUTE:N] [--no-abc]
+
+--prefix ROUTE:N plays the first N frames of a route first (e.g. into
+the smooth iso view); --no-abc keeps A+B+C out (stay in that view).
 """
 import argparse, json, os, random, sys, warnings, zlib
 warnings.filterwarnings("ignore")
@@ -20,14 +23,22 @@ def main():
     ap.add_argument("rom")
     ap.add_argument("--frames", type=int, default=30000)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--prefix")
+    ap.add_argument("--no-abc", action="store_true")
     a = ap.parse_args()
     rng = random.Random(a.seed)
     md = md_run.MD(a.rom)
+    pads = [p for p in PADS if p != "ABC"] if a.no_abc else PADS
+    if a.prefix:
+        route, n = a.prefix.rsplit(":", 1)
+        seq = [p for k, p in md_run.parse_route(route) for _ in range(k)]
+        for p in seq[:int(n)]:
+            md.step(p)
     last_fc, fc_gap, fc_max = None, 0, 0
     last_crc, sc_gap, sc_max = None, 0, 0
     i = 0
     while i < a.frames:
-        pad, n = rng.choice(PADS), rng.randint(4, 60)
+        pad, n = rng.choice(pads), rng.randint(4, 60)
         for _ in range(min(n, a.frames - i)):
             md.step(pad)
             i += 1
@@ -40,7 +51,8 @@ def main():
     r = md.ram()
     print(json.dumps({"frames": a.frames, "seed": a.seed, "vblank_gap_max": fc_max,
                       "vblank_gap_end": fc_gap, "screen_still_max": sc_max,
-                      "mode": md_run.w(r, 0xFF00AE), "loc": md_run.w(r, 0xFF0E98)}))
+                      "mode": md_run.w(r, 0xFF00AE), "loc": md_run.w(r, 0xFF0E98),
+                      "iso": md_run.w(r, 0xFFDC00 + 0x550)}))
 
 
 if __name__ == "__main__":

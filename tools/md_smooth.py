@@ -9,7 +9,11 @@ A frame whose best translation still leaves many pixels changed is a
 "redraw" (the picture was replaced, not moved) — the original game's
 world update — and its changed-pixel count is reported.
 
-  md_smooth.py --rom R --route F --from A --to B [--radius 4]
+  md_smooth.py --rom R --route F --from A --to B [--radius 4] [--hole]
+
+--hole: smooth iso view (#252): judge only the pixels inside the fixed
+parchment frame's hole (the frame never moves, the picture under it
+does), shrunk by 8 px so figures crossing the edge do not count.
 """
 import argparse, json, os, sys, warnings
 warnings.filterwarnings("ignore")
@@ -34,6 +38,27 @@ def best_shift(a, b, R):
     return best
 
 
+def hole_mask(R):
+    # screen pixels of the play crop (rows 8..150, cols 8..300) inside the
+    # iso hole |x-162|*64 + |y-98|*112 <= 7168, shrunk by ~8 px
+    ys, xs = np.mgrid[8:150, 8:300]
+    m = 64 * np.abs(xs + 0.5 - 162) + 112 * np.abs(ys + 0.5 - 98) <= 7168 - 8 * 128
+    return m[R:-R, R:-R]
+
+
+def best_shift_masked(a, b, R, m):
+    H, W = a.shape
+    B = b[R:H - R, R:W - R]
+    best = None
+    for dy in range(-R, R + 1):
+        for dx in range(-R, R + 1):
+            A = a[R - dy:H - R - dy, R - dx:W - R - dx]
+            n = int(((A != B) & m).sum())
+            if best is None or n < best[0]:
+                best = (n, dx, dy)
+    return best
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rom", required=True)
@@ -42,6 +67,7 @@ def main():
     ap.add_argument("--to", dest="hi", type=int, required=True)
     ap.add_argument("--radius", type=int, default=4)
     ap.add_argument("--json")
+    ap.add_argument("--hole", action="store_true")
     ap.add_argument("--fold", action="append", default=[],
                     help="R,G,B=R,G,B: count the first colour as the second "
                          "(ignore a deliberate colour animation, e.g. water)")
@@ -51,6 +77,7 @@ def main():
         seq += [pad] * n
     md = md_run.MD(a.rom)
     prev = None
+    hmask = hole_mask(a.radius) if a.hole else None
     prev_cram = None
     rows = []
     blobs = []
@@ -80,14 +107,17 @@ def main():
             s[(s == src).all(2)] = dst
         luma = s[:, :, 0] * 3 + s[:, :, 1] * 5 + s[:, :, 2] * 2
         if prev is not None:
-            chg = int((luma != prev).sum())
+            d = luma != prev
+            R = a.radius
+            chg = int((d[R:-R, R:-R] & hmask).sum()) if a.hole else int(d.sum())
             if chg == 0:
                 rows.append((i, 0, 0, 0, 0, palchg))
             else:
-                n, dx, dy = best_shift(prev, luma, a.radius)
+                n, dx, dy = (best_shift_masked(prev, luma, a.radius, hmask) if a.hole
+                             else best_shift(prev, luma, a.radius))
                 rows.append((i, chg, dx, dy, n, palchg))
         prev = luma
-    area = rows and (142 - 2 * a.radius) * (292 - 2 * a.radius)
+    area = rows and (int(hmask.sum()) if a.hole else (142 - 2 * a.radius) * (292 - 2 * a.radius))
     moves = [r for r in rows if (r[2] or r[3]) and r[4] < 0.05 * area]
     redraws = [r for r in rows if r[1] > 0.10 * area and r[4] >= 0.05 * area and not r[5]]
     still = [r for r in rows if r[1] == 0]

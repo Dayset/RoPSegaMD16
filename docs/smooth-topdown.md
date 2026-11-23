@@ -96,7 +96,9 @@ cache (#231). The fix is to move the composition offline:
    figures as sprites (their `$197B0` template images), tall objects
    in front via Plane A priority tiles.
 
-Until step 2 exists, topdown is the playable smooth build.
+Until step 2 exists, topdown is the playable smooth build. (The
+smooth iso view of #252, below, gets smoothness without the offline
+port: the game's own render, run rarely and tiled at run time.)
 
 ## Follow-up answers (v2, #251)
 
@@ -197,13 +199,44 @@ shadow mode gives plane tiles).*
 *Line-scroll effects applied to the live top-down plane (VRAM capture,
 same arithmetic as the VDP).*
 
+## Smooth iso view (v1, #252)
+
+Built: A+B+C now cycles original → top-down → smooth iso. Design and
+numbers: `patches/topdown/README.md` § Smooth iso view.
+
+![](img/iso-view.png)
+
+- **Does decode-once + scroll work for the iso picture?** Yes. With the
+  X table shifted so every render lands on the same 8-px grid,
+  consecutive renders produce the same tiles at the same global
+  positions (interior identical tile for tile; only the window's edges
+  and animated water differ). So a render can be cut into tiles once,
+  deduplicated (≤ ~460 distinct per render), put on Plane B and
+  scrolled by hardware between renders.
+- **Measured:** overworld walk 100 % of moving frames in ≤ 2 px steps,
+  room 156 99.3 %; at most one render per camera-cell change; the game
+  keeps its pace (25–29 frames per cell overworld, 16–21 rooms).
+- **The render is the budget.** The game's composite costs ~25 frames
+  for the overworld window — a whole tick. Rendering inside the tick
+  halved the game's speed, so the render and its commit now run only
+  in each tick's spare time, resuming where they stopped; a new picture
+  lands about every 2 ticks while walking. The camera chases the game
+  camera but stays within a cell of the picture on the plane, so the
+  fixed parchment frame (hole = the camera's ±4 cells) never shows an
+  edge. Next: the cheap first pass with detail on idle (card #266),
+  which would bring a picture per tick.
+- **Combat arenas** (grid `$FFB0BC`) are drawn zoomed by the game; the
+  top-down picture stands in there.
+- **Decision recorded (Q15):** floating island in a fixed frame, not
+  edge to edge.
+
 ## Tools
 
 - `tools/md_run.py` — frame-stepped runner (stable-retro / Genesis Plus
   GX): route files as for the input-replay overlay, per-frame RAM words
   and screen CRC, screenshots. ~500 frames/s, no X display.
 - `tools/md_smooth.py` — per-frame background shift (best translation
-  in ±4 px), redraws, palette changes, and the slot-68 blob position,
+  in ±4 px; `--hole`: iso view, pixels inside the frame's hole only), redraws, palette changes, and the slot-68 blob position,
   from the rendered frames.
 - `tools/md_vram.py` — VRAM/CRAM/VSRAM/registers from a GPGX state.
 - `tools/md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
