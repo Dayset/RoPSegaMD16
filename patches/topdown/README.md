@@ -223,7 +223,7 @@ position against its own 15-frame moving average, per axis) and with
 (`tools/md_buc_route.py ... iso`, each ROM its own route: fixed input
 routes drift whenever tick timing changes):
 
-| Measure | #290 | + tick race, held lookahead |
+| Measure | #290 | + tick race, held lookahead (#291) |
 |---|---|---|
 | Wobble mean / p95 (px) | 0.45 / 1.33 | 0.37 / 1.00 (Ring of Perfection 0.33 / 0.87) |
 | Tick interval = period, overworld / rooms | 8 of 23 / 65 of 205 (up to 35 / 56 frames) | 23 of 23 / 222 of 224 |
@@ -247,6 +247,14 @@ routes drift whenever tick timing changes):
   which stays within a cell of the picture, was pulled a cell forward
   and back. A held picture whose camera stopped stepping (2 periods)
   is dropped; hold time does not count as render latency.
+- **Window scan** (`td_iso_winfix`, every 4th tick) cost 6–7 frames
+  in the overworld and 8–9 in rooms (two table walks per cell, 1,120
+  cells), a third of those ticks' render time. Each row's frame words
+  are now built once (`ti_erow`) and a cell costs one compare unless it
+  differs (window byte-identical at 7 sampled frames: overworld, room
+  156, cutscene with text box). Buc route: trail rooms 97.8 → 98.9 %,
+  picture within a cell 97.0 → 98.3 %, pictures 146 → 225; 1 MB build
+  rooms 72.3 → 91.7 %, overworld 93.2 → 95.1 %.
 - Room: the remaining 10–14-frame stops are a slow picture (up to 35
   frames when many new tiles enter) committing while the camera is at
   the ±1 clamp of the old one: #279 (asymmetric range + edge checker).

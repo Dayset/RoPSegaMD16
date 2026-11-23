@@ -204,7 +204,8 @@ TD_CT0		equ TD_CFY+2	; frame of that step
 TD_IHLD		equ TD_CT0+2	; finished render held back (ti_hold)
 TD_IHF		equ TD_IHLD+2	; frame the hold began
 TD_MSEEN	equ TD_IHF+2	; frame td_tick's wait saw last
-TD_END2		equ TD_MSEEN+2
+TD_EROW		equ TD_MSEEN+2	; 40 words: frame words of a window row
+TD_END2		equ TD_EROW+80
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -3747,7 +3748,7 @@ td_iso_check:				; clears TD_TILES if overwritten
 ; (TD_UNFR: the blank, to take the frame off).
 ;=======================================================================
 td_iso_winfix:
-	movem.l	d2-d6/a2,-(a7)
+	movem.l	d2-d6/a2-a3,-(a7)
 	move.w	#1,TD_INWF
 	moveq	#0,d6			; row
 .row:	tst.w	TD_UNFR
@@ -3766,27 +3767,23 @@ td_iso_winfix:
 .rd:	move.w	VDP_DATA,(a2)+
 	dbra	d1,.rd
 	move.w	(a7)+,sr
+	bsr.w	ti_erow			; the row's frame words (TD_EROW)
 	lea	TD_WROW,a2
+	lea	TD_EROW,a3
 	moveq	#0,d4
-.col:	move.w	(a2)+,d0
+.col:	move.w	(a2)+,d0		; as it should be: next (most cells,
+	move.w	(a3)+,d3		; one compare; per-cell table walks
+	cmp.w	d3,d0			; made the scan 6-9 frames, #289)
+	beq.s	.nx
 	bsr.w	ti_blankish
 	bne.s	.nx
-	move.w	FONTBLK,d0
-	tst.w	TD_UNFR
-	bne.s	.w
-	move.w	d4,d1
-	move.w	d6,d2
-	bsr.w	ti_frameword
-.w:	cmp.w	-2(a2),d0
-	beq.s	.nx
-	move.w	d0,d1
 	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d5,d0
 	move.w	sr,-(a7)
 	ori.w	#$0700,sr
 	bsr.w	td_vwrite
-	move.w	d1,VDP_DATA
+	move.w	d3,VDP_DATA
 	move.w	(a7)+,sr
 .nx:	addq.w	#1,d4
 	cmpi.w	#40,d4
@@ -3795,7 +3792,7 @@ td_iso_winfix:
 	cmpi.w	#28,d6
 	bcs.w	.row
 	clr.w	TD_INWF
-	movem.l	(a7)+,d2-d6/a2
+	movem.l	(a7)+,d2-d6/a2-a3
 	rts
 ti_wend:
 
@@ -3825,6 +3822,59 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	bra.s	.o
 .y:	moveq	#0,d1
 .o:	movem.l	(a7)+,d0-d1
+	rts
+
+ti_erow:	; d6 = window row -> TD_EROW = its 40 frame words (ti_frameword's
+	; for every column; all transparent while the frame comes off)
+	movem.l	d1-d3/a0-a1,-(a7)
+	lea	TD_EROW,a1
+	move.w	TD_BASE,d0		; parchment
+	add.w	#256+$2000,d0
+	tst.w	TD_UNFR
+	beq.s	.f
+	move.w	FONTBLK,d0
+.f:	moveq	#40-1,d1
+.p:	move.w	d0,(a1)+
+	dbra	d1,.p
+	tst.w	TD_UNFR
+	bne.s	.o
+	lea	-80(a1),a1
+	lea	ti_rows(pc),a0		; the hole's fully inside columns
+	move.w	d6,d0
+	add.w	d0,d0
+	moveq	#0,d1
+	move.b	(a0,d0.w),d1
+	moveq	#0,d2
+	move.b	1(a0,d0.w),d2
+	move.w	FONTBLK,d3
+	bra.s	.hc
+.h:	move.w	d1,d0
+	add.w	d0,d0
+	move.w	d3,(a1,d0.w)
+	addq.w	#1,d1
+.hc:	cmp.w	d2,d1
+	bls.s	.h
+	lea	ti_eoff(pc),a0		; its edge cells
+	moveq	#0,d1
+	move.b	(a0,d6.w),d1
+	moveq	#0,d2
+	move.b	1(a0,d6.w),d2
+	sub.w	d1,d2
+	lea	ti_ecel(pc),a0
+	add.w	d1,d1
+	adda.w	d1,a0
+	move.w	TD_BASE,d3
+	add.w	#TI_EDGE+$2000,d3
+	bra.s	.ec
+.e:	moveq	#0,d0
+	move.b	(a0)+,d0
+	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d3,d1
+	add.w	d0,d0
+	move.w	d1,(a1,d0.w)
+.ec:	dbra	d2,.e
+.o:	movem.l	(a7)+,d1-d3/a0-a1
 	rts
 
 ti_frameword:	; d1 = column, d2 = row -> d0 = frame word (keeps d1-d2)
