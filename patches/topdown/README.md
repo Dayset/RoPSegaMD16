@@ -49,8 +49,17 @@ make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
   row 20, parchment from row 20). Any layout install (an R2 write
   through `vdp_ctrl_write`) first drops these registers, so no other
   screen inherits them.
-- **Water shimmer:** every 16 frames colours 2 and 4 (mid and light
-  blue) swap inside the 20 water map tiles, in VRAM, 20 tiles a frame —
+- **No held frames (#260):** long game routines that never touch the
+  VDP (`td_vwl`: chunk decompress, leader moves, grid scans, world tick,
+  combat turn) get the per-frame update from the VBlank handler itself
+  (`td_vint`, no streaming, no image extraction). `TD_BUSY` keeps it out
+  while our own code runs, and the streamed cell writes are interrupt-
+  masked. The plane holds the whole ring (32×16 cells: 3 extra columns
+  left, 8 right for the shear), so the camera can glide up to 60 px
+  sideways and 32 px down between streaming points: no clamp jitter.
+- **Water shimmer:** every 32 frames colours 2 and 4 (mid and light
+  blue) swap inside the 20 water map tiles: read and remapped 20 tiles a
+  frame into a RAM buffer, then all 80 written in one frame —
   every water cell animates with no name-table writes (the game's own
   `±1` tile flip changes almost nothing in the map tileset).
 - **Camera:** follows the leader's blob, centred on screen line 84 (the
@@ -139,6 +148,8 @@ after it re-links.
 | `$01B97E` | `jsr menu_format` | `jsr td_menufmt` |
 | `$01B9E8` | `jsr dma_upload` (room DMA) | `jsr td_dma` (original view only) |
 | `$001352` | joypad queue pop | `jsr td_pad` (A+B+C = switch view) |
+| `$00127A` | `addq.l #1,frame` (VBlank handler) | `jsr td_vint` |
+| `$0246C0` | place-chars loop head | `jsr td_poll_pgc` |
 | `$00D9E6` | `move.w d0,vdp_ctrl` (vdp_ctrl_write) | `jmp td_vctl` (drop our registers on a layout install) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
