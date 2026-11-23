@@ -55,7 +55,7 @@ immediately", a non-negative `byte0` pauses until the next engine tick.
 
 | addr | bytes | op | meaning |
 |---|---|---|---|
-| `$1A228` | `FF 06 11 00 00 00 00 00` | -1 | Buc teleport to (6,17). Handler `$02D67C`. |
+| `$1A228` | `FF 06 11 00 00 00 00 00` | -1 | Buc teleport to (6,17). Handler `$02D802`. |
 | `$1A230` | `FD 09 11 00 00 01 00 00` | -3 | Place id 1 (Thalmus) at (9,17). Handler `$02D852`. |
 | `$1A238` | `F9 00 00 00 00 02 00 00` | -7 | Attacker check, id 2. Handler `$02DA0A` → `combat_attacker_check(4)`. |
 | `$1A240` | `FD 0A 18 00 00 03 00 00` | -3 | Place id 3 (Roakus) at (10,24). |
