@@ -131,12 +131,11 @@ Until step 2 exists, topdown is the playable smooth build.
   game writing the VDP from the main thread. Useful for water/heat
   effects; not a renderer.
   Dayset picked the shear: the top-down view now uses it (oblique
-  view, rigid under scrolling), with the HUD moved to its own
-  parchment strip at the bottom (window rows 20–27 over a static
-  Plane B).
+  view, rigid under scrolling). The HUD is compacted into a box next
+  to the portrait (#255), so the map reaches the bottom edge; a
+  parchment strip appears only while a message is shown.
 - **Small texture animation in top-down:** done as a VRAM pattern
   swap (water shimmer, see the patch README).
-
 - **Is the top-down view final — can it show height (tall buildings,
   multi-level places)?** Not final. Every map cell carries a height of
   0–7 levels (cell bits 13–15, `docs/maps.md`); the top-down view
