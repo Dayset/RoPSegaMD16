@@ -52,7 +52,10 @@ TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 TD_SLOT0	equ 68		; first sprite slot for blobs (game uses <= 67)
 TD_NSLOT	equ 12		; blob sprites max
 TD_VC		equ 84		; screen line the leader is centred on
-TD_NFC		equ 34		; figure images cached in VRAM (4x4 tiles each)
+TD_NFC		equ 26		; figure images cached in VRAM (4x4 tiles each)
+TD_SH		equ 3		; extra cell columns each side (shear margin)
+TD_BTAB		equ $C000	; static Plane B table (HUD band), bank tiles $600-$67F
+TD_BROW		equ 20		; first window row of the HUD band
 TD_FCB		equ 273		; first cache tile, relative to TD_BASE
 
 ; ---- game addresses --------------------------------------------------
@@ -105,11 +108,15 @@ TD_REQ		equ TD+$34	; view switch requested by td_pad
 TD_PADC		equ TD+$36	; A+B+C held (switch latched until release)
 TD_ANIMFR	equ TD+$38	; frame the last water toggle started
 TD_ANIMI	equ TD+$3A	; water quadrant tiles still to toggle
+TD_LAY		equ TD+$3C	; our VDP registers (R4/R11/R17/R18) are installed
 TD_LIST		equ TD+$40	; TD_NSLOT x (px.w, py.w, tile.w, kind.w) = 96 B
 TD_CHR		equ TD+$A0	; 56 x 10: lx, ly (target cell), fpx, fpy (from px), t0
 TD_ROW		equ TD+$2E0	; 36-word window row buffer
 TD_FC		equ TD+$328	; TD_NFC x (key.w, stamp.w): figure image cache
-TD_END		equ TD+$328+4*TD_NFC
+TD_UPTXT	equ TD+$328+4*TD_NFC	; window rows above the band hold text
+TD_BAND		equ TD_UPTXT+2	; HUD band mode active
+TD_YMAX		equ TD_UPTXT+4	; sprites below this cell top are culled
+TD_END		equ TD_UPTXT+6
 
 NOPOS		equ $8000
 
@@ -356,6 +363,7 @@ td_pad:
 td_restore:
 	clr.w	TD_VALID
 	clr.w	TD_TILES
+	bsr.w	td_unlay
 	cmpi.w	#$2400,SPRBASE
 	bne.s	.scr
 	move.w	SPRBASE,d0		; sprite 0 -> the game's first sprite
@@ -450,6 +458,7 @@ td_sync:
 	move.w	d0,TD_CX0
 	move.w	d1,TD_CY0
 	bsr.w	td_draw_all
+	bsr.w	td_layers
 	bsr.w	td_scroll
 	move.w	#1,TD_VALID
 .out:
@@ -469,23 +478,23 @@ td_frame_ns:
 td_frame_go:
 	move.w	FRAME,TD_LASTFR
 	tst.w	TD_VALID
-	beq.w	.out
+	beq.w	.bad
 	cmpi.w	#$2400,SPRBASE
-	bne.w	.out
+	bne.w	.bad
 	movea.l	GRIDPTR,a0
 	cmpa.l	TD_GRID,a0
-	bne.w	.out
+	bne.w	.bad
 	move.w	MODE,d0
 	cmp.w	TD_MODE,d0
-	bne.w	.out
+	bne.w	.bad
 	move.w	LOC,d0
 	cmp.w	TD_LOC,d0
-	bne.w	.out
+	bne.w	.bad
 	move.w	d1,-(a7)
 	bsr.w	td_plane_check		; another screen owns the plane?
 	move.w	(a7)+,d1
 	tst.w	d0
-	bne.w	.out
+	bne.w	.bad
 	move.w	#$8F02,VDP_CTRL
 	; menu open ($FF00AC): the world pauses under the game's own panels;
 	; blobs are taken off so they never sit on top of a panel
@@ -493,7 +502,10 @@ td_frame_go:
 	beq.s	.world
 	clr.w	TD_NB
 	bsr.w	td_sprites
+	bsr.w	td_layers
+	bsr.w	td_scroll
 	rts
+.bad:	bra.w	td_unlay
 .world:
 	move.w	d1,TD_CANX		; image extraction: game calls allowed?
 	move.w	d1,-(a7)
@@ -521,6 +533,7 @@ td_frame_go:
 	move.w	d3,d1
 .cam:	move.w	d0,TD_CAMX
 	move.w	d1,TD_CAMY
+	bsr.w	td_layers
 	bsr.w	td_scroll		; vblank-critical first
 	bsr.w	td_sprites
 	bsr.w	td_anim
@@ -533,22 +546,103 @@ td_frame_go:
 ;=======================================================================
 ; td_scroll — full-screen scroll of planes A and B to the camera.
 ;=======================================================================
-td_scroll:
-	move.w	TD_CAMX,d0
+td_scroll:	; per-line H-scroll: world row wy is shifted by floor(wy/2)
+	; - floor((camY+TD_VC)/2) px (shear, rigid under scrolling);
+	; Plane B static in band mode. V-scroll first: it must land before
+	; the first visible line.
+	movem.l	d2-d3,-(a7)
+	lea	VDP_DATA,a0
+	move.w	TD_CAMY,d0
+	swap	d0
+	move.w	TD_CAMY,d0
+	tst.w	TD_BAND
+	beq.s	.v
+	clr.w	d0
+.v:	move.l	#$40000010,VDP_CTRL	; VSRAM write 0
+	move.l	d0,(a0)
+	move.w	TD_CAMX,d0		; d0 = A.hi : B.lo, d1 = step per pair
+	sub.w	#TD_VC/2,d0
 	neg.w	d0
 	andi.w	#$3FF,d0
-	move.w	d0,d1
+	move.l	#$10000,d1
+	tst.w	TD_BAND
+	bne.s	.b
+	move.w	d0,d2			; full window: Plane B is the map too
+	add.w	#$400,d2		; (no borrow into A over 112 steps)
 	swap	d0
-	move.w	d1,d0
-	move.l	#$60000000,VDP_CTRL	; VRAM write $2000 (H-scroll table)
-	move.l	d0,VDP_DATA
-	move.w	TD_CAMY,d0
-	andi.w	#$3FF,d0
+	move.w	d2,d0
+	moveq	#1,d2
+	add.l	d2,d1
+	bra.s	.go
+.b:	swap	d0
+	clr.w	d0
+.go:	move.l	#$60000000,VDP_CTRL	; VRAM write $2000 (H-scroll table)
+	btst	#0,TD_CAMY+1		; odd row at line 0: it ends a pair
+	beq.s	.p
+	move.l	d0,(a0)
+	sub.l	d1,d0
+.p:	moveq	#224/2-1,d2
+.l:	move.l	d0,(a0)
+	move.l	d0,(a0)
+	sub.l	d1,d0
+	dbra	d2,.l
+	movem.l	(a7)+,d2-d3
+	rts
+
+;=======================================================================
+; td_layers — band mode: window only on rows TD_BROW.. (the HUD), map on
+; Plane A above it, Plane B = static parchment table behind the HUD.
+; Full mode (menu open, or text above the band): the game's own window
+; over the whole screen, map on Plane B. Per-line H-scroll in both.
+;=======================================================================
+td_layers:
+	move.w	#1,TD_LAY
+	move.w	#$8B03,VDP_CTRL		; H-scroll per line
+	tst.w	$FF00AC
+	bne.s	.full
+	tst.w	TD_UPTXT
+	bne.s	.full
+	cmpi.w	#$38E,TD_BASE		; table position assumes this bank
+	bne.s	.full
+	move.w	#$8400+TD_BTAB/$2000,VDP_CTRL
+	move.w	#$9100,VDP_CTRL
+	move.w	#$9280+TD_BROW,VDP_CTRL
+	move.w	#1,TD_BAND
+	move.w	#TD_BROW*8-16,TD_YMAX
+	rts
+.full:	move.w	#$8400,VDP_CTRL
+	move.w	#$9180,VDP_CTRL
+	move.w	#$9200,VDP_CTRL
+	clr.w	TD_BAND
+	move.w	#224,TD_YMAX
+	rts
+
+; td_unlay — back to the game's layout G registers (view invalid).
+td_unlay:
+	tst.w	TD_LAY
+	beq.s	.out
+	clr.w	TD_LAY
+	clr.w	TD_BAND
+	move.w	#$8400,VDP_CTRL
+	move.w	#$8B00,VDP_CTRL
+	move.w	#$9180,VDP_CTRL
+	move.w	#$9200,VDP_CTRL
+.out:	rts
+
+; td_vctl — replaces the port write of vdp_ctrl_write ($D9E6, d0 = word;
+; returns to its caller). A layout install (an R2 write) first drops our
+; registers, so no other screen inherits them.
+td_vctl:
+	tst.w	TD_LAY
+	beq.s	.go
+	move.w	d1,-(a7)
 	move.w	d0,d1
-	swap	d0
-	move.w	d1,d0
-	move.l	#$40000010,VDP_CTRL	; VSRAM write 0
-	move.l	d0,VDP_DATA
+	andi.w	#$FF00,d1
+	cmpi.w	#$8200,d1
+	bne.s	.no
+	bsr.s	td_unlay
+.no:	move.w	(a7)+,d1
+.go:	move.w	d0,VDP_CTRL
 	rts
 
 ;=======================================================================
@@ -802,11 +896,8 @@ td_img:
 	adda.w	d1,a0
 	move.w	d0,(a0)
 .hit:	move.w	TD_STAMP,2(a0)
-	move.w	d2,d0			; tile word: base + FCB + slot*16
-	lsl.w	#4,d0
-	add.w	TD_BASE,d0
-	add.w	#TD_FCB,d0
-	rts
+	move.w	d2,d0			; tile word
+	bra.w	td_slot
 .no:	moveq	#-1,d0
 	rts
 
@@ -816,6 +907,17 @@ td_img:
 ; image fits) and copy those 16 tiles, column by column (sprite tile
 ; order), to cache slot d2. d0 = key. Preserves d0, d2.
 ;=======================================================================
+; td_slot: d0 = cache slot -> d0 = first tile. Slots 0-21 sit before the
+; static Plane B table (bank tiles $600-$67F), 22-25 after it.
+td_slot:
+	lsl.w	#4,d0
+	cmpi.w	#22*16,d0
+	bcs.s	.a
+	add.w	#754-TD_FCB-22*16,d0
+.a:	add.w	TD_BASE,d0
+	add.w	#TD_FCB,d0
+	rts
+
 td_extract:
 	movem.l	d0-d7/a0-a6,-(a7)
 	move.w	d0,d7
@@ -840,9 +942,7 @@ td_extract:
 	jsr	($00E358).l
 	addq.w	#8,a7
 	move.w	10(a7),d0		; saved d2 = slot -> VRAM address
-	lsl.w	#4,d0
-	add.w	TD_BASE,d0
-	add.w	#TD_FCB,d0
+	bsr.w	td_slot
 	lsl.w	#5,d0
 	bsr.w	td_vwrite
 	lea	DECBUF+(2*36+16)*32,a0
@@ -986,6 +1086,10 @@ td_sprites:
 .sn:	addq.w	#1,d6
 	bra.s	.so
 .sorted:
+	move.w	TD_CAMY,d0		; shear reference: the leader's line
+	add.w	#TD_VC,d0
+	asr.w	#1,d0
+	movea.w	d0,a1
 	lea	TD_LIST,a2
 	moveq	#0,d6			; sprites written
 	bra.w	.cond
@@ -995,6 +1099,14 @@ td_sprites:
 	move.w	(a2)+,d1		; kind
 	sub.w	TD_CAMX,d2
 	sub.w	TD_CAMY,d3
+	cmp.w	TD_YMAX,d3		; below the HUD band
+	bge.w	.cond
+	move.w	d3,d0			; shear of the cell's centre row
+	add.w	TD_CAMY,d0
+	addq.w	#8,d0
+	asr.w	#1,d0
+	sub.w	a1,d0
+	sub.w	d0,d2
 	move.w	#$0500,a3		; 16x16
 	tst.w	d1
 	beq.s	.k0
@@ -1154,13 +1266,14 @@ td_stream:
 	ble.s	.xl
 	addq.w	#1,TD_CX0
 	move.w	TD_CX0,d6
-	add.w	#20,d6
+	add.w	#20+TD_SH,d6
 	bsr.w	td_draw_col
 	bra.s	.xr
 .xl:	cmp.w	TD_CX0,d4
 	bge.s	.yd
 	subq.w	#1,TD_CX0
 	move.w	TD_CX0,d6
+	subq.w	#TD_SH,d6
 	bsr.w	td_draw_col
 	bra.s	.xl
 .yd:	cmp.w	TD_CY0,d5
@@ -1196,10 +1309,11 @@ td_draw_all:
 	movem.l	(a7)+,d4-d7
 	rts
 
-td_draw_row:				; row d7, columns cx0..cx0+20
+td_draw_row:				; row d7, columns cx0-TD_SH..cx0+20+TD_SH
 	movem.l	d5-d6,-(a7)
 	move.w	TD_CX0,d6
-	moveq	#21-1,d5
+	subq.w	#TD_SH,d6
+	moveq	#21+2*TD_SH-1,d5
 .c:	bsr.s	td_draw_cell
 	addq.w	#1,d6
 	dbra	d5,.c
@@ -1346,6 +1460,7 @@ td_plane_check:
 ;=======================================================================
 td_winfix:
 	movem.l	d2-d6/a2,-(a7)
+	clr.w	TD_UPTXT
 	moveq	#0,d6			; row
 .row:	move.w	d6,d0			; read 36 words of row d6, cols 2..37
 	lsl.w	#7,d0
@@ -1361,23 +1476,29 @@ td_winfix:
 	lea	TD_ROW,a2
 	moveq	#0,d4			; column 0..35
 .col:	move.w	(a2)+,d0
+	cmp.w	FONTBLK,d0
+	beq.s	.nx
 	move.w	d0,d1
 	andi.w	#$F800,d1		; no palette / priority / flips
-	bne.s	.nx
+	bne.s	.txt
 	sub.w	BANKBASE,d0
 	cmpi.w	#828,d0
-	bcc.s	.nx
+	bcc.s	.txt
 	move.w	d4,d0			; fix this cell
 	add.w	d0,d0
 	add.w	d5,d0
 	bsr.w	td_vwrite
 	move.w	FONTBLK,VDP_DATA
+	bra.s	.nx
+.txt:	cmpi.w	#TD_BROW,d6		; text above the HUD band
+	bcc.s	.nx
+	move.w	#1,TD_UPTXT
 .nx:	addq.w	#1,d4
 	cmpi.w	#36,d4
 	bcs.s	.col
 	addq.w	#1,d6
 	cmpi.w	#23,d6
-	bcs.s	.row
+	bcs.w	.row
 	movem.l	(a7)+,d2-d6/a2
 	rts
 
@@ -1402,6 +1523,14 @@ td_tiles_check:				; clears TD_TILES if overwritten
 	addq.w	#6,d0
 	bsr.w	td_vread
 	cmp.w	TD_MAPSENT,d0
+	bne.s	.bad
+	cmpi.w	#$38E,TD_BASE
+	bne.s	.out
+	move.w	#TD_BTAB+TD_BROW*128,d0	; band table, first band cell
+	bsr.w	td_vread
+	move.w	TD_BASE,d1
+	add.w	#256+$2000,d1
+	cmp.w	d1,d0
 	beq.s	.out
 .bad:	clr.w	TD_TILES
 .out:	rts
@@ -1460,7 +1589,19 @@ td_tiles_load:
 	; sentinel: word 3 of map tile 128 as uploaded
 	lea	DECBUF+$800+128*32+6,a0
 	move.w	(a0),TD_MAPSENT
-	move.w	#1,TD_TILES
+	cmpi.w	#$38E,TD_BASE		; static Plane B table: transparent
+	bne.s	.nob			; above the band, parchment in it
+	move.w	#TD_BTAB,d0
+	bsr.w	td_vwrite
+	move.w	#64*TD_BROW-1,d0
+.bt:	move.w	FONTBLK,VDP_DATA
+	dbra	d0,.bt
+	move.w	TD_BASE,d1
+	add.w	#256+$2000,d1
+	move.w	#64*(32-TD_BROW)-1,d0
+.bb:	move.w	d1,VDP_DATA
+	dbra	d0,.bb
+.nob:	move.w	#1,TD_TILES
 	lea	TD_FC,a0		; figure cache empty (key $FFFF)
 	moveq	#TD_NFC-1,d0
 .fc:	move.l	#$FFFF0000,(a0)+

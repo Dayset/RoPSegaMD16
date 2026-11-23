@@ -26,6 +26,21 @@ make rom FEATURES=topdown        # -> build/rop-topdown.rom (+ .ips)
   image per frame). Walking cycles the game's four walk poses over each
   cell-to-cell slide. A 16×16 blob is the fallback when an image is not
   cached yet.
+- **Oblique view (per-line H-scroll):** each screen line's H-scroll is
+  offset by half a pixel per world row (`floor(wy/2)`, pivot on the
+  leader's line), so the map is sheared into an oblique view. The shear
+  follows world rows, so scrolling stays a rigid 1-px translation;
+  figures get the same offset at their cell's centre row. The streamed
+  band is 27 cells wide (3 extra each side) to cover the slant.
+- **HUD strip:** the window is cut to rows 20–27 (`R18=$94`), the map
+  is on Plane A above it, and Plane B is a static table at `$C000`
+  (bank tiles `$600–$67F`): transparent above row 20, solid parchment
+  from row 20 down, so gold, time, food/water and the portrait sit on
+  their own background. While a menu is open, or the game has text in
+  the window above row 20, the game's full-screen window comes back
+  with the map on Plane B (same shear). Any layout install (an R2
+  write through `vdp_ctrl_write`) first drops these registers, so no
+  other screen inherits them.
 - **Water shimmer:** every 16 frames colours 2 and 4 (mid and light
   blue) swap inside the 20 water map tiles, in VRAM, 20 tiles a frame —
   every water cell animates with no name-table writes (the game's own
@@ -116,11 +131,12 @@ after it re-links.
 | `$01B97E` | `jsr menu_format` | `jsr td_menufmt` |
 | `$01B9E8` | `jsr dma_upload` (room DMA) | `jsr td_dma` (original view only) |
 | `$001352` | joypad queue pop | `jsr td_pad` (A+B+C = switch view) |
+| `$00D9E6` | `move.w d0,vdp_ctrl` (vdp_ctrl_write) | `jmp td_vctl` (drop our registers on a layout install) |
 | `$0227FC` | `move.w d4,d0; muls.w #$34,d0` (char loop head) | `jsr td_poll` |
 
 RAM `$FFDC00–$FFDFAF` (free in play: the attract buffer ends at
 `$FFDBEA`, the stack low-water mark on the test routes is `$FFE972`;
-the boot RAM clear resets it). Blob 5,328 bytes at `$FD0CC–$FE59B` (padding).
+the boot RAM clear resets it). Blob 5,808 bytes at `$FD0CC–$FE77B` (padding). The figure cache is 26 images (slots skip the Plane B table).
 
 ## Limits (test build)
 

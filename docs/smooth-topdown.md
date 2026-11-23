@@ -130,6 +130,10 @@ Until step 2 exists, topdown is the playable smooth build.
   map into an isometric one. Per-line interrupts also clash with the
   game writing the VDP from the main thread. Useful for water/heat
   effects; not a renderer.
+  Dayset picked the shear: the top-down view now uses it (oblique
+  view, rigid under scrolling), with the HUD moved to its own
+  parchment strip at the bottom (window rows 20–27 over a static
+  Plane B).
 - **Small texture animation in top-down:** done as a VRAM pattern
   swap (water shimmer, see the patch README).
 
