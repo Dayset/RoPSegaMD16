@@ -56,7 +56,9 @@ TD_NFIG		equ 10		; figure sprites max
 TD_BOXT		equ 802		; HUD box: 12 solid parchment tiles (bank offset)
 TD_VC		equ 84		; screen line the leader is centred on
 TD_NFC		equ 25		; figure images cached in VRAM (4x4 tiles each)
-TD_SH		equ 3		; extra cell columns each side (shear margin)
+TD_SHL		equ 3		; extra cell columns left (shear: 42 px at line 0)
+TD_SHR		equ 8		; extra cell columns right (shear: 69 px at line 223)
+TD_NROW		equ 16		; cell rows drawn (the whole ring)
 TD_BTAB		equ $C000	; static Plane B table (HUD band), bank tiles $600-$67F
 TD_BROW		equ 20		; first window row of the HUD band
 TD_FCB		equ 273		; first cache tile, relative to TD_BASE
@@ -122,7 +124,8 @@ TD_YMAX		equ TD_UPTXT+4	; sprites below this cell top are culled
 TD_MSG		equ TD_UPTXT+6	; other text in the HUD rows (a message)
 TD_HASBOX	equ TD_UPTXT+8	; the HUD box holds moved HUD words
 TD_BOX		equ TD_UPTXT+10	; draw the HUD box backdrop sprites
-TD_END		equ TD_UPTXT+12
+TD_BUSY		equ TD_UPTXT+12	; main thread is inside our code
+TD_END		equ TD_UPTXT+14
 
 NOPOS		equ $8000
 
@@ -140,7 +143,9 @@ td_tick:
 	clr.w	TD_REQ
 	eori.w	#1,TD_OFF
 	beq.s	.toon
+	addq.w	#1,TD_BUSY
 	bsr.w	td_restore
+	subq.w	#1,TD_BUSY
 	bra.s	.noreq
 .toon:	clr.w	TD_VALID		; reinstall from scratch
 	clr.w	TD_TILES
@@ -178,7 +183,9 @@ td_tick:
 .late:	move.w	d0,TD_LASTFR		; past VBlank: skip (no tearing)
 .upd:	tst.w	d7
 	bne.s	.chk
+	addq.w	#1,TD_BUSY
 	bsr.w	td_sync			; right after an update, so the
+	subq.w	#1,TD_BUSY
 	moveq	#1,d7			; sync work never straddles a VBlank
 .chk:	move.w	FRAME,d0
 	move.w	d0,d1
@@ -243,13 +250,59 @@ td_menufmt:
 ; td_poll_turn — main loop `jsr combat_turn_run`: poll, then the call.
 ;=======================================================================
 td_poll_head:
-	bsr.s	td_poll_vb
+	bsr.w	td_poll_vb
 	tst.w	$FF00AC
 	rts
 
 td_poll_turn:
-	bsr.s	td_poll_vb
+	bsr.w	td_poll_vb
 	jmp	($0226BC).l		; combat_turn_run (returns to the caller)
+
+; td_poll_pgc — map_grid_place_chars per-character loop head
+; ($0246C0: move.w d7,d0 / muls.w #$34,d0): update the picture if a new
+; frame started, then the displaced instructions.
+td_poll_pgc:
+	bsr.w	td_poll_vb
+	move.w	d7,d0
+	muls.w	#$34,d0
+	rts
+
+; td_vint — VBlank handler ($00127A: addq.l #1,frame counter). When the
+; main thread was interrupted inside one of the long game routines that
+; never touch the VDP (and not inside our own code), update the picture
+; right here (no streaming, no image extraction), so long ticks do not
+; hold the picture. Elsewhere the main-thread polls do it.
+td_vint:
+	addq.l	#1,$FF0010
+	cmpi.w	#$7D7D,TD_MAGIC		; cheap exits first (game timing)
+	bne.s	.q
+	tst.w	TD_BUSY
+	bne.s	.q
+	tst.w	TD_VALID
+	beq.s	.q
+	movem.l	d0-d7/a0-a6,-(a7)
+	move.l	66(a7),d0		; interrupted PC (regs 60, return 4, SR 2)
+	lea	td_vwl(pc),a0
+.l:	move.l	(a0)+,d1
+	beq.s	.out
+	move.l	(a0)+,d2
+	cmp.l	d1,d0
+	bcs.s	.l
+	cmp.l	d2,d0
+	bcc.s	.l
+	bsr.w	td_frame_ns
+.out:	movem.l	(a7)+,d0-d7/a0-a6
+.q:	rts
+td_vwl:	; [start, end) of game routines with no VDP access of their own
+	dc.l	$00DD5C,$00DE02		; sys_lzss_decompress
+	dc.l	$01C176,$01C802		; map_chunk_cache_read, leader_spawn
+	dc.l	$01C802,$01C83E		; map_chunk_load_buf
+	dc.l	$01C83E,$01D9BA		; location_divide, move_cost_calc
+	dc.l	$02103E,$0210D8		; map_grid_clear
+	dc.l	$02155E,$021FE6		; world_tick
+	dc.l	$0226BC,$0231D8		; combat_turn_run
+	dc.l	$024676,$024916		; map_grid_place_chars
+	dc.l	0
 
 td_poll_vb:
 	movem.l	d0-d7/a0-a6,-(a7)
@@ -428,6 +481,7 @@ td_sync:
 	move.w	#(TD_END-TD)/2-1,d1
 .clr:	clr.w	(a0)+
 	dbra	d1,.clr
+	move.w	#1,TD_BUSY		; we are inside td_sync
 	move.w	#$7D7D,TD_MAGIC
 	move.w	FRAME,TD_TICKFR
 	move.w	#TD_T2,TD_PERIOD
@@ -498,9 +552,14 @@ td_sync:
 ;=======================================================================
 td_frame:
 	moveq	#1,d1
-	bra.s	td_frame_go
+	bra.s	td_fwrap
 td_frame_ns:
 	moveq	#0,d1
+td_fwrap:
+	addq.w	#1,TD_BUSY
+	bsr.s	td_frame_go
+	subq.w	#1,TD_BUSY
+	rts
 td_frame_go:
 	move.w	FRAME,TD_LASTFR
 	tst.w	TD_VALID
@@ -539,12 +598,13 @@ td_frame_go:
 	bsr.w	td_camera
 	move.w	(a7)+,d2
 	bne.s	.cam
-	move.w	TD_CX0,d3		; no streaming: stay inside the plane
-	lsl.w	#4,d3
+	move.w	TD_CX0,d3		; no streaming: stay inside what is drawn
+	lsl.w	#4,d3			; (x: CX0*16-6 .. +60, y: CY0*16 .. +32)
+	subq.w	#6,d3
 	cmp.w	d3,d0
 	bge.s	.c1
 	move.w	d3,d0
-.c1:	add.w	#16,d3
+.c1:	add.w	#66,d3
 	cmp.w	d3,d0
 	ble.s	.c2
 	move.w	d3,d0
@@ -553,7 +613,7 @@ td_frame_go:
 	cmp.w	d3,d1
 	bge.s	.c3
 	move.w	d3,d1
-.c3:	add.w	#16,d3
+.c3:	add.w	#32,d3
 	cmp.w	d3,d1
 	ble.s	.cam
 	move.w	d3,d1
@@ -565,7 +625,9 @@ td_frame_go:
 	bsr.w	td_anim
 	tst.w	d2
 	beq.s	.out
-	bsr.w	td_stream
+	subq.w	#1,TD_BUSY		; streaming may load a chunk (~1 frame):
+	bsr.w	td_stream		; VBlank may update meanwhile (cell
+	addq.w	#1,TD_BUSY		; writes are masked)
 .out:
 	rts
 
@@ -1238,18 +1300,22 @@ td_vcmd:
 	rts
 
 ;=======================================================================
-; td_anim — water shimmer: every 16 frames swap colours 2 and 4 (mid and
-; light blue) inside the water map tiles, in VRAM, 20 quadrant tiles per
-; frame. Every cell showing water animates; no name-table writes.
+; td_anim — water shimmer: every 32 frames swap colours 2 and 4 (mid and
+; light blue) inside the water map tiles: read and remap 20 quadrant tiles
+; per frame into a RAM buffer, then write all 80 in one frame (no
+; half-swapped water). Every cell showing water animates; no name-table writes.
 ;=======================================================================
 TD_NWT		equ 20
+TD_WPER		equ 32		; frames per shimmer step
+TD_WBUF		equ $FF4BC0	; 2,560 B: unused rows 10-12 of the room bitmap
 td_anim:
 	movem.l	d2-d5/a2-a3,-(a7)
 	move.w	TD_ANIMI,d2
+	bmi.w	.flip			; all read: write them in one frame
 	bne.s	.run
 	move.w	FRAME,d0
 	sub.w	TD_ANIMFR,d0
-	cmpi.w	#16,d0
+	cmpi.w	#TD_WPER,d0
 	bcs.w	.out
 	move.w	FRAME,TD_ANIMFR
 	moveq	#TD_NWT*4,d2
@@ -1257,6 +1323,10 @@ td_anim:
 	moveq	#20-1,d4
 .t:	moveq	#TD_NWT*4,d3
 	sub.w	d2,d3			; quadrant index
+	move.w	d3,d0
+	lsl.w	#5,d0
+	lea	TD_WBUF,a2
+	adda.w	d0,a2			; its slot in the buffer
 	move.w	d3,d0
 	lsr.w	#2,d0
 	lea	td_wtl(pc),a0
@@ -1267,11 +1337,9 @@ td_anim:
 	add.w	d3,d1
 	add.w	TD_BASE,d1
 	lsl.w	#5,d1
-	move.w	d1,d3			; tile's VRAM address
-	move.w	d1,d0
+	move.w	d1,d0			; tile's VRAM address
 	bsr.w	td_vcmd
 	move.l	d0,VDP_CTRL
-	lea	TD_ROW,a2
 	moveq	#16-1,d1
 .rd:	move.w	VDP_DATA,d0
 	moveq	#0,d5
@@ -1283,14 +1351,26 @@ td_anim:
 	ror.w	#8,d0
 	move.w	d0,(a2)+
 	dbra	d1,.rd
-	move.w	d3,d0
-	bsr.w	td_vwrite
-	lea	TD_ROW,a2
-	moveq	#8-1,d1
-.wr:	move.l	(a2)+,VDP_DATA
-	dbra	d1,.wr
 	subq.w	#1,d2
 	dbeq	d4,.t
+	tst.w	d2
+	bne.s	.out
+	moveq	#-1,d2			; next frame: write
+	bra.s	.out
+.flip:	lea	TD_WBUF,a2		; 20 map tiles x 4 quadrants, 128 bytes each
+	lea	td_wtl(pc),a3
+	moveq	#TD_NWT-1,d4
+.mt:	moveq	#0,d0
+	move.b	(a3)+,d0
+	lsl.w	#2,d0
+	add.w	TD_BASE,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	moveq	#32-1,d1
+.w:	move.l	(a2)+,VDP_DATA
+	dbra	d1,.w
+	dbra	d4,.mt
+	moveq	#0,d2
 .out:	move.w	d2,TD_ANIMI
 	movem.l	(a7)+,d2-d5/a2-a3
 	rts
@@ -1320,21 +1400,21 @@ td_stream:
 	ble.s	.xl
 	addq.w	#1,TD_CX0
 	move.w	TD_CX0,d6
-	add.w	#20+TD_SH,d6
+	add.w	#20+TD_SHR,d6
 	bsr.w	td_draw_col
 	bra.s	.xr
 .xl:	cmp.w	TD_CX0,d4
 	bge.s	.yd
 	subq.w	#1,TD_CX0
 	move.w	TD_CX0,d6
-	subq.w	#TD_SH,d6
+	subq.w	#TD_SHL,d6
 	bsr.w	td_draw_col
 	bra.s	.xl
 .yd:	cmp.w	TD_CY0,d5
 	ble.s	.yu
 	addq.w	#1,TD_CY0
 	move.w	TD_CY0,d7
-	add.w	#14,d7
+	add.w	#TD_NROW-1,d7
 	bsr.w	td_draw_row
 	bra.s	.yd
 .yu:	cmp.w	TD_CY0,d5
@@ -1356,28 +1436,28 @@ td_stream:
 td_draw_all:
 	movem.l	d4-d7,-(a7)
 	move.w	TD_CY0,d7
-	moveq	#15-1,d4
+	moveq	#TD_NROW-1,d4
 .r:	bsr.s	td_draw_row
 	addq.w	#1,d7
 	dbra	d4,.r
 	movem.l	(a7)+,d4-d7
 	rts
 
-td_draw_row:				; row d7, columns cx0-TD_SH..cx0+20+TD_SH
+td_draw_row:				; row d7, columns cx0-TD_SHL..cx0+20+TD_SHR
 	movem.l	d5-d6,-(a7)
 	move.w	TD_CX0,d6
-	subq.w	#TD_SH,d6
-	moveq	#21+2*TD_SH-1,d5
+	subq.w	#TD_SHL,d6
+	moveq	#21+TD_SHL+TD_SHR-1,d5
 .c:	bsr.s	td_draw_cell
 	addq.w	#1,d6
 	dbra	d5,.c
 	movem.l	(a7)+,d5-d6
 	rts
 
-td_draw_col:				; column d6, rows cy0..cy0+14
+td_draw_col:				; column d6, rows cy0..cy0+TD_NROW-1
 	movem.l	d5/d7,-(a7)
 	move.w	TD_CY0,d7
-	moveq	#15-1,d5
+	moveq	#TD_NROW-1,d5
 .c:	bsr.s	td_draw_cell
 	addq.w	#1,d7
 	dbra	d5,.c
@@ -1463,11 +1543,14 @@ td_cell_put:	; VRAM address: ((2cy & 31) * 64 + (2cx & 63)) * 2
 	move.w	d2,d3
 	swap	d3
 	ori.l	#$40000000,d3
+	move.w	sr,-(a7)		; no VBlank update between address
+	ori.w	#$0700,sr		; and data
 	move.l	d3,VDP_CTRL
 	move.l	d0,VDP_DATA
 	addi.l	#$00800000,d3		; next tile row (+128 bytes)
 	move.l	d3,VDP_CTRL
 	move.l	d1,VDP_DATA
+	move.w	(a7)+,sr
 	rts
 
 ;=======================================================================
@@ -1518,7 +1601,8 @@ td_winfix:
 	clr.w	TD_MSG
 	clr.w	TD_HASBOX
 	moveq	#0,d6			; row
-.row:	move.w	d6,d0			; read 36 words of row d6, cols 2..37
+.row:	bsr.w	td_poll_vb		; a scan takes ~1 frame: keep updating
+	move.w	d6,d0			; read 36 words of row d6, cols 2..37
 	lsl.w	#7,d0
 	add.w	#$1000+4,d0
 	move.w	d0,d5			; row address

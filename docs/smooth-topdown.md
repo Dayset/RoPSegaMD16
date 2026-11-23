@@ -172,8 +172,9 @@ Until step 2 exists, topdown is the playable smooth build.
 
 ![](img/topdown-height-mock.png)
 
-*Overworld from ROM data: left as drawn now (flat), right with cell
-height as raised tiles and shadowed south faces.*
+*Overworld from ROM data: flat (as drawn now), raised tiles with
+shadowed south faces, and tint only (height 0 shadowed, the two levels
+shadow mode gives plane tiles).*
 
 ![](img/linescroll-sim.png)
 

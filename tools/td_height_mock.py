@@ -7,7 +7,10 @@ the way the top-down patch draws it, then the same piece with cell
 height (cell bits 13-15) as raised blocks: the top drawn 8 px (one
 tile row) higher per level, the south face below it as the same tiles
 at half brightness (what the VDP's shadow mode gives a priority-0
-tile). Both sheared like the patch (floor(row/2) px per pixel row).
+tile). Third panel: tint only, flat cells with height 0 drawn shadowed
+(half brightness) and raised cells normal -- the two levels the VDP gives
+plane tiles in shadow mode. All sheared like the patch (floor(row/2) px
+per pixel row).
 
   td_height_mock.py ROM OUT.png [CX CY W H]
 """
@@ -55,7 +58,7 @@ def cell_tiles(rom):
     return img
 
 
-def render(grid, img, x0, y0, w, h, raised):
+def render(grid, img, x0, y0, w, h, raised, tint=False):
     pad = 8 if raised else 0                 # rows of cells below for tall tops
     out = np.zeros((h * 16, w * 16, 3), np.uint8)
     for cy in range(y0, y0 + h + pad):       # north to south: painter order
@@ -63,6 +66,8 @@ def render(grid, img, x0, y0, w, h, raised):
             word = int(grid[cy % 224, cx % 352])
             lift = ((word >> 13) & 7) * 8 if raised else 0
             top = img(word)
+            if tint and not (word >> 13) & 7:
+                top = top // 2
             sy = (cy - y0) * 16 - lift
             sx = (cx - x0) * 16
             for y in range(16 + lift):       # top, then the south face
@@ -91,9 +96,12 @@ def main():
     img = cell_tiles(rom)
     a = render(grid, img, cx, cy, w, h, False)
     b = render(grid, img, cx, cy, w, h, True)
-    pic = Image.fromarray(np.concatenate([a, np.zeros((a.shape[0], 8, 3), np.uint8), b], 1))
+    c = render(grid, img, cx, cy, w, h, False, True)
+    gap = np.zeros((a.shape[0], 8, 3), np.uint8)
+    pic = Image.fromarray(np.concatenate([a, gap, b, gap, c], 1))
     d = ImageDraw.Draw(pic)
-    for x, t in ((4, "now: flat"), (a.shape[1] + 12, "height: +8 px per level, shadowed south face")):
+    for x, t in ((4, "flat (now)"), (a.shape[1] + 12, "raised: +8 px/level, shadowed faces"),
+                 (2 * a.shape[1] + 20, "tinted: height 0 shadowed")):
         d.rectangle([x - 2, 2, x + 6 * len(t) + 2, 14], fill=(0, 0, 0))
         d.text((x, 3), t, fill=(255, 255, 255))
     pic.save(out)
