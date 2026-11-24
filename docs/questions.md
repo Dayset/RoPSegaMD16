@@ -80,3 +80,8 @@ Work continues on the default.
 - **Answered (Dayset, 2026-11-23):** play on BlastEm and other emulators, with the option of original hardware. Fitting the original 1 MB stays a goal of its own (fixing the 1992 bugs); spilling to 4 MB is acceptable.
 - Taken: every ROM larger than 1 MB saves to header SRAM under its own product ID (`patches/sram-save`, #284), so no emulator database entry is needed and SRAM repro boards / flash carts work; the 1 MB builds keep the original EEPROM. A 4 MB build needs no further save work (`$A130F1` is already toggled), only `SIZES` in `tools/build_rom.py`.
 - If the answer is different: `--eeprom` keeps the original save in a 2 MB build.
+
+## Q18 — combat arena (#287): smooth iso arena, or keep the top-down picture there?
+- Measured (2026-11-23, 1 MB top-down build, explore route frames 6100–9100, arena grid `$FFB0BC`): the arena fits the screen, so the picture never scrolls or redraws (0 of 2,999 frames); figures slide as sprites in 1–3 px steps (148 × 1, 37 × 2, 32 × 3 px; 2 snaps). Movement there is already smooth; only the look differs from the original zoomed arena.
+- Default taken: keep the top-down picture in arenas (also in the iso view).
+- If the answer is different: an iso arena needs the game's zoomed arena draw rendered once (terrain only) onto the plane and zoomed figure images for the sprite cache (the 32×32 cache holds unzoomed figures) — about one card.
