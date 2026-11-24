@@ -34,8 +34,10 @@ this scene's dialog.
   `sys_event_run` (`$02D56A`).
 - **Location:** Kaos (from the dialog; exact location number open,
   §8).
-- **Entry:** TALK to Darius, pick the menu option that yields case 7
-  in `menu_select_screen` (`$02D3DC`).
+- **Entry:** TALK to Darius (menu option 10 = kind 10, per the `$0220AA`
+  menu dispatch) → rec570's `w8` arms case 7 in `menu_select_screen`
+  (`$02D3DC`) via the second dispatch — see §1. No player menu pick
+  selects case 7; the case is the record's `w8` low bits.
 - **The scene:** Darius's monologue. He recounts what each of the
   five students did with their Ring quest — Imino, Yoppa, Fezzik,
   Roakus, and Buc himself — thanks Buc for bringing him all eleven
@@ -47,11 +49,20 @@ this scene's dialog.
 
 `menu_select_screen` (`$02D3DC`) sets `$FFC384` to one of ten script
 pointers; case 7 is `$1A520` (dispatch table `$02D480`, base `$02D4A4`).
-The only in-game caller is `$02A188`, inside `npc_attitude_positive`
-(`$0298D2`): it pushes a local `-$6(a6) & 0xFFF` as the case — the local
-is the out-param of a `$32D4C` text/menu call, i.e. the player's
-TALK-dialog menu choice. So the entry is: **TALK to Darius, pick the
-menu option that yields case 7**.
+The in-dialog caller is the second dispatch's arm 4 (`$02A17C`, inside
+`npc_attitude_positive` (`$0298D2`)): it reads `-$6(a6)` — the out
+struct's first word, i.e. the winning record's `w8` — masks `& 0xFFF`,
+and calls `menu_select_screen` (`jsr` at `$02A188`). For rec570,
+`w8=0x4007` → case 7. **Correction (2026-11-24):** an earlier version
+of this section said the case was "the player's TALK-dialog menu
+choice" (the out-param of a `$32D4C` text/menu call). That is wrong:
+`-$6(a6)` is the record's `w8`, and the case comes from the record, not
+from a player pick. The player's only choice is the TALK-menu option —
+option 10 yields kind 10 (the `$022xxx` menu dispatch, `$0220AA`:
+option 10 yields kind 10 when bit 0 of `$FF02A2` is clear, kind 12 when
+set) — and kind 10 is what scores rec570. So the entry is: **TALK to
+Darius, option 10 → rec570 wins scoring → second dispatch arms case 7
+→ script runs**.
 
 The entry record is `$D3102` index 570 (12 bytes, verbatim
 `00 0A 09 A8 00 00 91 6F 40 07 F0 00`): kind 10, identity 2472
@@ -312,13 +323,21 @@ only state change the script itself makes is the op-0 exit (§6).
 
 Op-0 (`$1A588`, handler `$02D5D4`): 0 XP to each party member
 (`w6=0`), clears `$FF0110` (dialog unlock), and because `w4=1` calls
-`combat_battle_end` (`$03599C`). What `combat_battle_end` does in this
-context — which branch it takes in the Kaos setup, and what
-`char[leader]+0x29` is there — is open (§10). The closing line (VOID,
-"the spells he has crafted for your destruction") reads as the
+`combat_battle_end` (`$03599C`). `combat_battle_end` semantics are
+pinned (2026-11-24, §10): it plays song 20, then runs the battle body
+only when both groups have someone alive — so op-0 STARTS the battle
+iff the leader has a live combat opponent linked in char `+0x29`. That
+link is now **live-proven**: probe_o4d (direct `combat_select_unit(53,
+leader)`, `$FF02A0`=53) → leader+`0x29` = 53, Darius 53's +`0x29` = 0;
+probe_o4e (`world_scan_ahead_for_char(leader, dir 0)`,
+`$FF02A0`=53) → the scan found the type-4 Darius at the adjacent north
+cell and paired him, same link values (§9). What `char[leader]+0x29`
+is in the real Kaos setup — i.e. whether the scan pairs Darius there
+during a real TALK — is still open (probe C, §10). The closing line
+(VOID, "the spells he has crafted for your destruction") reads as the
 lead-in to the endgame fight; whether the battle-end call transitions
-into one or merely cleans up the TALK encounter state is not
-established.
+into one or merely cleans up the TALK encounter state is now decided by
+that link: linked + alive → fight; unlinked → kind-54 fallback dialog.
 
 ## 7. Camera
 
@@ -380,16 +399,65 @@ does not resolve in `slot_0`, so no live portrait/speaker byte was
 observed); the op-0 `combat_battle_end` call and what it does in the
 Kaos setup; the location number.
 
+**Live-proven, added 2026-11-24 (probes `probe_o4d`/`probe_o4e`,
+BlastEm, `slot_0` state, same VBlank-hook harness):** the
+combat-opponent link itself. Probe_o4d (ROM MD5 `98458cbc…`): fabricate
+type-4 Darius chars 50–53 at the four cells adjacent to the leader
+(slot_0 leader at (117,113)), set leader+`0x27` = leader index,
+`$FF02A0`=53, call `combat_select_unit(53, leader)` directly
+(`-$6` pre-zeroed to skip the `cmd24_handler` tail) → leader+`0x29`
+`$FF`→`0x35` (53), Darius 53's +`0x29` `$FF`→`0x00`; spin hit in 2.0 s.
+Probe_o4e (ROM MD5 `8cfe74b4…`): same fabrication, call
+`world_scan_ahead_for_char(leader, dir 0)` → the scan found the type-4
+Darius at the adjacent north cell and paired him — leader+`0x29` = 53,
+Darius 53's +`0x29` = 0; spin hit in 2.1 s. Logs
+`/tmp/rop275/probe/cut_log_o4d.txt`, `cut_log_o4e.txt` (scratch, not
+committed). Two honest negatives on the way: probe_o4 run 2 (type-1
+Darii) paired nothing in any direction — the scan pairs only type-4
+(redirect) chars, each phase skipping non-4 chars at the cell; and
+probe_o4c (`$FF02A0`=50, all four dirs) hung twice (spin never hit in
+180 s) in the merchant-setup branch — with `$FF02A0` (50) ≠ the found
+Darius's +`0x27` (53), `combat_select_unit` takes the
+`shop_merchant_setup` path (`$02A3DC`), which wedges with a fabricated
+non-merchant Darius (which of `shop_merchant_setup` / SFX /
+`cmd24_handler` is unpinned). Confined to that branch with a
+fabricated char; the direct path and the scan-with-matching-`$FF02A0`
+both complete cleanly.
+
 ## 10. Open items
 
 - Exact Kaos location number, and Darius's char-slot setup there
   (which slot carries `+0x02` = 424).
-- What `combat_battle_end` does after the op-0 with `w4=1` in this
-  context — fight transition or encounter cleanup — and the value of
-  `char[leader]+0x29` in the Kaos setup.
-- Which TALK-verb call site yields kind 10 (the menu option text for
-  option 10 for Darius needs the `$32D4C` menu-table trace).
+- `combat_battle_end` after the op-0 with `w4=1`: **semantics pinned
+  (2026-11-24)** — it plays song 20; if either arg is `$FF` or ≥
+  `0x38` → fallback `L0359E8` (`npc_attitude_positive` kind 54); else
+  `combat_group_alive` on both groups (returns 1 iff ALL group members
+  via char+`0x14` links have the dead flag, tested via `rol #3 & 1` at
+  `$036A74–$036A7A`); the battle body `L035A34` runs only when both
+  groups have someone alive — it does `npc_find_state1` → kind-53
+  dialog, else aura text 1122 if `$FF0140` set, else
+  `world_location_transition(2, 0x50, opp)` (room 80, combat plane) +
+  sets `$42` flags and `$02DD` links. So op-0 STARTS the battle iff the
+  leader has a live combat opponent linked in char `+0x29`. **The link
+  itself is live-proven (§9, probes o4d/o4e):** the scan pairs a facing
+  type-4 Darius and the direct pairing tail writes the link. What is
+  still open is the **value of `char[leader]+0x29` in the real Kaos
+  setup** (live, probe C) — whether the scan pairs Darius there during
+  a real TALK, with the verb-menu options and the Kaos char setup.
+- Which TALK-verb call site yields kind 10: **pinned** — the
+  `$0220AA` menu dispatch, option 10 → kind 10 when bit 0 of `$FF02A2`
+  is clear, kind 12 when set. Residual: the menu option *text* for
+  option 10 for Darius (needs the `$32D4C` menu-table trace). The TALK
+  verb menu (`$01F45E` region, verb table `$FFBB74`) arms: verb `$17`
+  (23) — if leader+`0x29` == `$FF` shows text 1132; verb `$05` (5) — if
+  `$FF02A8 == 0x7530` and +`0x29` == `$FF` →
+  `npc_attitude_positive(leader, kind 13)`, else kind 52; verb `$0A`
+  (10) — similar, kinds 13 vs 55; verb `$01` (1) — if not in combat →
+  `combat_battle_end(0, leader+0x29)` (the ATTACK verb). Which verb the
+  player picks after the monologue, and whether +`0x29` is set by then,
+  is the remaining O4 gap.
 - Record 680's trigger: which char's kind-10 TALK selects `$D3102`
   index 584 (needs the +4/+5/+6 match-key decode — +4 byte `0x25`,
   +5 `0x00`, +6 `0x00` — against per-char state). Mechanism pinned
-  (§4); speaker open.
+  (§4); speaker open — and 680 is a VOID-cultist family bark (recs
+  584–588, texts 680–684, all b4=37, ident 0), not Darius-specific.
