@@ -139,3 +139,9 @@ python3 patches/<name>/build.py
   Not copied.
 - `patches/smooth-move`, `music-off`, `debug-overlay` were already on
   main before #238; untouched by it.
+
+## 5. Music patches (not rendering)
+
+| Patch | Base | MD5 of the ROM it builds | Dayset's verdict | State |
+|---|---|---|---|---|
+| academy-song13 | original | `97e12dccbbec650a0067190a5aa7cf0c` | **APPROVED 2026-11-24** — v4 (bass + ch5 octave down + FB 7→2 + modulator MULTs to 1); p90 2,355 → 1,048 Hz. | approved |
