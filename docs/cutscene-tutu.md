@@ -141,7 +141,7 @@ scene.
 ### Tutu — id 389
 
 - Template 389 (`$CF1AC` + 24×389): word0 = 186, words all 0,
-  `+12 = 19`, `+16 = 0x46` (70, home location record), `+18 = 90`,
+  `+12 = 19`, `+16 = 0x46` (70, home attitude, signed word), `+18 = 90`,
   `+19 = 2`.
 - The template's spawn list starts with spawn 186 (`$CECF0` + 6×186):
   name index 88 = **'Tutu'**, portrait byte 44. The dialog names him
@@ -153,7 +153,7 @@ scene.
 ### Fiver — id 218
 
 - Template 218 (`$CF1AC` + 24×218): word0 = 155, words all 0,
-  `+12 = 32`, `+14 = 250`, `+16 = 0x32` (50, home location record),
+  `+12 = 32`, `+14 = 250`, `+16 = 0x32` (50, home attitude, signed word),
   `+18 = 90`, `+19 = 2`.
 - The template's spawn list starts with spawn 155: name index 94 =
   **'Fiver'**, portrait byte 75. Text 504's speaker portrait is b3=75
@@ -266,38 +266,49 @@ in the script; Fiver's spawn at (6,1) puts him on the leader's cell.
 
 The `$D1D00` table is 455 records × 10 B: +0 word = overworld key X,
 +2 word = key Y, +4 byte = destination location number, +5 byte =
-message index. The scene's location record is **not pinned**. The
-candidates from the op-11 gates:
+message index. **The tower is anchor 391 (resolved 2026-11-24,
+issue #273).** Both Tutu templates spawn there — template 389 at
+nibble 6, (5,3), and template 390 at nibble 5, (5,4) (see
+`docs/npc-by-location.md`). The first-meeting swap is the scan-set
+bits: ev79 init SET gates template 389 (cleared by the Tutu script's
+op-11 `$1A418`, b3=0); ev80 init CLEAR gates template 390 (set by
+op-11 `$1A420`, b3=1). Live probe entering 391 nibble 5 spawns Tutu
+(template 390) plus ev85 as a mode-5 ground item at (3,6)
+(`scratch-273/probe_273_t391.log.txt`).
 
 | record | key (X,Y) | +4 dest | +5 msg | note |
 |---|---|---|---|---|
-| 389 | (274,97) | 163 | 83 | Candidate for the tower. |
+| 389 | (274,97) | 163 | 83 | **Not the tower** — an op-11 tile-event location (ev79's gate record). The script's "id 389" is template 389 (Tutu), which spawns at anchor 391, not at record 389. |
 | 390 | (312,82) | 171 | 83 | **Lunatic Asylum** (per `docs/maps.md`) — not the tower. |
-| 391 | (331,91) | 122 | 83 | Candidate for the tower. |
+| 391 | (331,91) | 122 | 83 | **Tutu's tower.** |
 | 392 | (12,184) | 170 | 83 | Scripted-encounter room (spell effect 9); not the tower — but op-15's else branch tests for it. |
 
-Template 389's home location (`+16`) is record 70: key (173,116),
-dest 56, msg 26. Whether the scene runs at the template's home record
-or at one of the op-11 gate records is open. No chunk number is known
-for the tower room.
+Template 389's `+16` = 70 is the home **attitude** (signed word), not
+a location — the earlier "home location (`+16`) is record 70" was the
+same error as in the Fezzik doc. No chunk number is known for the tower
+room beyond dest 122 (chunk 199).
 
 ## 9. Live-proven vs static-only
 
-**Static-only.** No live verification was attempted, and none is safe
-with the save on hand: the only save state is `slot_0` (location 156,
-Thalmus room setup), whose char setup resolves only small ids (0, 1, 2,
-3, 5) and spawn ids 94–96, 101, 102. This scene needs ids 389 (Tutu)
-and 218 (Fiver); `npc_attitude_raise_by_id` returns $FF for both in
-`slot_0`, and `combat_move_unit($FF)` can corrupt RAM/crash, so the
-scene's pointers must not be injected into `slot_0`. Every claim above
-is from ROM bytes and `disasm/src/rop.s` unless marked open.
+**Live-proven (2026-11-24, issue #273).** The 391 spawn is verified
+by emulator probe, not by injecting into `slot_0`: the probe forges
+`$FF0E92`/`$FF0E98`/`$FF0E16`, clears the seen ring, sets the event
+bitmap, and calls `world_enter_location` directly
+(`scratch-273/build_probe_273.py`, `run_probe_273.py`,
+`probe_273_t391.log.txt` + screenshot). Entering anchor 391 nibble 5
+spawns Tutu (template 390, mode 1, +0x20 = 19, +0x22 = −70) and ev85
+(mode 5, code 339, +0x06 = $207) at (3,6), visible in the room view as
+a small red tablet on the ground. The earlier "none is safe with the
+save on hand" caveat is superseded by this method. Everything else
+above is from ROM bytes and `disasm/src/rop.s` unless marked open.
 
 ## 10. Open items
 
-1. **Which `$D1D00` record is Tutu's tower** — 389 or 391 (390 is the
-   Asylum). Decides which op-11 tile write takes effect. Needs the
-   location-setup NPC list for the tower, or a live check from a save
-   parked at the tower.
+1. **Which `$D1D00` record is Tutu's tower — ANSWERED 2026-11-24
+   (issue #273): 391** (390 is the Asylum). Both Tutu templates spawn
+   at 391 — 389 at nibble 6, 390 at nibble 5 — and the live probe
+   entering 391 nibble 5 spawns Tutu (template 390) plus ev85. Record
+   389 is only an op-11 tile-event location, not the tower.
 2. **What tiles 274/275 and 263/264 depict** — needs the tile/terrain
    lookup (tile 263 is also the bit-10 maze-wall tile; whether the
    tower's tile change is a door, cell bars, or something else is

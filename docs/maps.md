@@ -318,6 +318,26 @@ distances in "klicks". This is a separate system from the 40x28
 tilemap — the tilemap is a picture of the world, not the grid the
 player walks on.
 
+**Walkthrough coordinates → anchor keys (pinned 2026-11-24,
+issue #273).** The anchor key is degrees×10: key = (deg·10 + min)
+per axis, i.e. degrees = key//10, minutes = key%10. Calibrated by
+exact matches against the `$D1D00` table: City of the Mind 11'9''
+11'4'' → key (119,114) → anchor 42; City of Speed 1'1'' 8'1'' →
+(11,81) → anchor 91; Magic B Us 24'3'' 2'5'' → (243,25) → anchor
+367; Lunatic Asylum 31°8′ → (312,82) → anchor 390; dialogue loc
+392 key (12,184) = 1°2′/18°4′. **Kaos 10'6'' 8'0'' → key (106,80)
+→ anchor 125** (dest 88, msg 25, chunk 165) — Kaos town is anchor
+125, **not anchor 34**: anchor 34's key (118,108) = 11°8′/10°8′,
+in the City of the Mind cluster (anchors 34–47 share keys
+~(107–123, 107–123); anchor 42 IS City of the Mind), and its
+msg-19 text is `$DDBD8` rec 19, "A secret temple hidden in the
+jungle." The Tower of Kaos is anchor 213 (key (77,106) =
+7°7′/10°6′, msg 26 "This impressive structure is the Tower of
+Kaos.") — a different place from Kaos town (125). Two near-misses
+to note: Cathedral (50,82) and Dragon Tower (303,119) have no
+exact anchor; the Temple of Variation fan (331,60) is approximate
+against loc 393's key (330,62).
+
 ## The chunk tilemaps — `$43850` table (verified 2026-11-10)
 
 Block 1 (`0x044000–0x05FFFF`) holds a second map system, distinct
@@ -440,28 +460,43 @@ tool `tools/decode_chunks.py`).
       (7 `$D1D00` locs, all +5 = 71, "Keep out, Belmont Residence:
       Private!"), chunk 87 is loc 397 (262,6). Set on 1,350/119,889
       cells overall (1,065 in the 15 rooms + 285 elsewhere).
-    - **PINNED (ev1025): the speaker is 'Annulka' (template 189,
-      Conjurors' Guild / Library of Perfection, loc 195) or 'Ayzz'
-      (template 200, Tower of Kaos, loc 213) — NOT the asylum
-      lunatic and NOT the hermit.** Event 25 = TALK→Quest (verb
-      C=53, `$0205B0`); event 10 = the merchant-select greeting
-      (`npc_merchant_attitude_tick`, `$0220DC`, seeded by
-      `combat_select_unit` setting `$FF02A5` = 10). Both reach
-      `shop_record_score` via `npc_attitude_positive` →
-      `text_event_resolve` (`$0299F6`), where the double match
-      (event id + char +0x02) wins deterministically for recs
-      403–405. `+0x02` is `entity_spawn`'s `$c` arg = the template
-      index (mode 1); `world_enter_location` spawns template 189
-      only at loc 195 and template 200 only at loc 213 (template
-      w10 & 0x3FF == location number). Rec 499 ('Hello friend. I
-      am just reading up on the Ring of Variation.') and rec 500
-      (Book of Variation quote) are 'Annulka'; rec 501 (the "Key
-      to Variation" / third-square quote) is 'Ayzz'. The old
-      'Sunder'/'Arrow' reading was WRONG: those are NAME indices
-      189/200, not template indices (template 189's name is
-      'Annulka', template 200's is 'Ayzz'). The Asylum (loc 390)
-      holds templates 288–291, all named 'Cleave' (+0x02 288–291),
-      so its lunatic cannot match. **Open sub-item:** how recs
+    - **PINNED (ev1025): the speakers are identified by template
+      index only — template 189 (Conjurors' Guild / Library of
+      Perfection, loc 195) and template 200 (Tower of Kaos, loc
+      213) — NOT the asylum lunatic and NOT the hermit.** Event 25
+      = TALK→Quest (verb C=53, `$0205B0`); event 10 = the
+      merchant-select greeting (`npc_merchant_attitude_tick`,
+      `$0220DC`, seeded by `combat_select_unit` setting `$FF02A5`
+      = 10). Both reach `shop_record_score` via
+      `npc_attitude_positive` → `text_event_resolve` (`$0299F6`),
+      where the double match (event id + char +0x02) wins
+      deterministically for recs 403–405. `+0x02` is
+      `entity_spawn`'s `$c` arg = the template index (mode 1);
+      `world_enter_location` spawns template 189 only at loc 195
+      and template 200 only at loc 213 (template w10 & 0x3FF ==
+      location number). Rec 499 ('Hello friend. I am just reading
+      up on the Ring of Variation.') and rec 500 (Book of
+      Variation quote) are spoken by the template-189 character;
+      rec 501 (the "Key to Variation" / third-square quote) by the
+      template-200 character. **Name correction (2026-11-24,
+      issue #273): neither character is named 'Annulka' or
+      'Ayzz'.** Names resolve template → spawn word → spawn
+      record → name_idx → name table (see `docs/architecture.md`):
+      template 189's spawn word is 40, template 200's is 20, and
+      spawn records 40 and 20 both have name_idx 1 = **"Man"** —
+      as do the Asylum templates 288–291 (spawn word 185 →
+      name_idx 1 = "Man"). 'Annulka' is name index 40, 'Ayzz'
+      name 20, 'Cleave' name 185, 'Sunder' name 189, 'Arrow'
+      name 200 — but **no spawn record in the ROM carries
+      name_idx 40, 20, 185, 189, or 200** (all 202 checked), so
+      those five names can never be produced by the spawn system.
+      The earlier text here made the same misreading twice: first
+      'Sunder'/'Arrow' (= `names[template index]`), then
+      'Annulka'/'Ayzz'/'Cleave' (= `names[spawn word]`). The
+      template-index speaker identification and the rec
+      499/500/501 attribution stand; only the name gloss was
+      wrong. The Asylum (loc 390) holds templates 288–291
+      (+0x02 288–291), so its lunatic still cannot match. **Open sub-item:** how recs
       1148–1152 are delivered is still untraced — no literal id
       1148–1152 appears in the code, and the +96/+1093 paths from
       the 13 `text_event_resolve` sites cannot produce them.

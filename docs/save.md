@@ -784,7 +784,12 @@ Supporting traces (all verified by disassembly):
   == major).
 - **Template 0** (verified from ROM bytes): `+0x14` = 1, `+0x16` =
   0, `+0x18` = `0x0000`, `+0x1A` = 0, `+0x1C` = 0, `+0x1E` = 0 —
-  the only nonzero `+0x14` word is the name index 1.
+  the only nonzero `+0x14` word is 1. **Correction (2026-11-24,
+  issue #273): that 1 is NOT a name index.** This is a mode-1 char
+  (the leader), so `+0x14` is the combat-twin index (char 1); the
+  char's name is Buc (template 0 → spawn record 1 → name_idx 57).
+  The "name index 1 = Man" reading was the old `names[+0x14]`
+  misreading (see `docs/logic.md` §1).
 
 ### 8.5 The `$FFA800[125]` / `$FF00C0[35]` detail (open)
 

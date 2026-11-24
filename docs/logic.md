@@ -80,22 +80,23 @@ before the table). `$FF0E82` = array of 6 party member indices (words).
 
 | Offset | Size | Meaning |
 |--------|------|---------|
-| +0x00 | word | type (low nibble: 1 = direct char, 4 = redirect via +0x27 byte) |
-| +0x02 | word | compared to `0x4D` for immunity, to `0xFE` in a `$3A62E` caller |
+| +0x00 | word | type (low nibble: 1 = direct char, 4 = redirect via +0x27 byte). **Bits 4–9 = level**: from spawn arg `$A << 4` (`$023C36`), overridden for mode-1 by template+19 `<< 4` (`$023C88`), or 9 for mode-6 (`$023CC8`); default 2 when arg `$A == −1` (`$023C74`). Bit 12 = 1 iff mode 4 (`$023CEC`); bits 10–11 cleared; bit 15 cleared. |
+| +0x02 | word | template index (mode 1) / event code (mode 5, `$c` arg) — stored at `$023D2E` from arg `$C`. Also compared to `0x4D` for immunity, to `0xFE` in a `$3A62E` caller |
 | +0x04 | word | ×12 → `$FFB0D0` enemy table |
 | +0x0A | word | arg to `$1E0A4` |
 | +0x0C | word | X position (proven via `$3778E` distance) |
 | +0x0E | word | Y position |
-| +0x14 | word | name index (into `$CD431`, 16-byte entries) |
-| +0x16 | byte | arg to level-up `$26B58` call |
-| +0x18 | word | "order": **high nibble = level, low nibble = rank**. Spawn-table values (measured, all 202 records at `$CECF0`): level 0–12 (no 9), rank 0–10 — the old "level 0–8, rank 1–9" was the XP-derived level range, not the table's. XP-derived level caps at 8 (XP cap 13000). Downstream the level is used raw, no clamp at spawn: max HP = min(20+15·level, 140), max Power = (level+1)·1000 (uncapped), damage rank 7/8 = (level+1)·2, rank 9 = level+1, rank 0/10 fall to the weak branch. Order-name table `$1AA60`, index = `((low&0xF)−1)*90 + ((high>>4)&0xF)*10` — out-of-range rank/level aliases onto other entries or reads past the 810-byte table (rank 10 → NPC class-name table; rank 0 → bytes just before it). |
+| +0x14 | word | **mode-dependent, NOT a name index in general** (names resolve template → spawn record → name_idx → `$CD430`). Mode-1: index of the char's mode-4 (combat) twin — live, always own slot+1 in the probes (Fezzik slot 13 → 14, Thalmus slot 2 → 3, Rashiid-28 slot 17 → 18); corroborated by event-8's use as a char index below. Mode-4: the spawn record's name_idx word (`$023F4E`–`$023F5C`: d5 = spawn record word 0; if it is 0/1/2 it is replaced by `npc_find_best_char`'s result at `$023F70`–`$023F92`, else stored directly at `$023F98`–`$023FA4`) — so for mode-4 chars only, `+0x14` IS the name index. Mode-5: event index, written by the caller (`world_enter_location` `$030D40`). Mode-6: `0x19`. (At spawn, mode-1 briefly receives the template's 6 spawn words at +0x14…+0x1E (`$023D5C`); they are overwritten during placement — live mode-1 values are NOT spawn words, do not read them as such. The exact placement writer is unpinned.) |
+| +0x16 | byte | **mode-dependent.** Mode-4: portrait byte, from spawn record +2 (word with +0x17 = `(portrait<<8)\|spawn+3`; live: Fezzik twin `0x3208`). Mode-5: low byte of the word 1 (`$0241CC`). Mode-1: **not written by `entity_spawn`** (code search over `$023B84`–`$0243D4`) — live values are placement leftovers (e.g. 15/0), do not read as a portrait. Mode-6: `0x19`. |
+| +0x18 | word | "order": **high nibble = level, low nibble = rank** — **mode-4 only** (built from the spawn record at `$023FA8`–`$024044`: `(spawn+5 & 0xF)<<4 \| (spawn+4 & 0xF)`). Mode-1: **not written by `entity_spawn`** — live values are placement leftovers (e.g. Fezzik `0x10`, Fiver `0`), do not read as level/order. Mode-5: 0. Mode-6: `0xFFFF`. Spawn-table values (measured, all 202 records at `$CECF0`): level 0–12 (no 9), rank 0–10 — the old "level 0–8, rank 1–9" was the XP-derived level range, not the table's. XP-derived level caps at 8 (XP cap 13000). Downstream the level is used raw, no clamp at spawn: max HP = min(20+15·level, 140), max Power = (level+1)·1000 (uncapped), damage rank 7/8 = (level+1)·2, rank 9 = level+1, rank 0/10 fall to the weak branch. Order-name table `$1AA60`, index = `((low&0xF)−1)*90 + ((high>>4)&0xF)*10` — out-of-range rank/level aliases onto other entries or reads past the 810-byte table (rank 10 → NPC class-name table; rank 0 → bytes just before it). |
 | +0x1A | word | XP (cap 13000) |
-| +0x1C | word | current HP |
-| +0x1E | word | current Power |
-| +0x20 | word | max HP |
-| +0x22 | word | max Power |
-| +0x24 | word | spell/attack selector (`0x50` = special) |
+| +0x1C | word | current HP (mode-4: copied from max HP at spawn, `$02405C`; mode-1/mode-5: not written by `entity_spawn` — live mode-1 values are placement leftovers) |
+| +0x1E | word | current Power (mode-4: copied from max Power at spawn; mode-1/mode-5: not written by `entity_spawn`) |
+| +0x20 | word | **mode-dependent.** Mode-1: merchant id = template+12 (w12), or `$FFC408` when w12==36 (`$023D94`). Mode-4/6: max HP (20+15·level, cap 140). Mode-5: 0. |
+| +0x22 | word | **mode-dependent.** Mode-1: live attitude = clamp(home + b18% × `$FF00C0`[w12], −100, +100) (`$023DE0`–`$023E7A`). Mode-4/6: max Power ((level+1)·1000). Mode-5: 0. |
+| +0x24 | word | spell/attack selector (`0x50` = special). Mode-1: bytes are template+14 / template+15 (`$023E86`–`$023EB8`; +0x24 byte = time-gate byte). |
 | +0x25 | byte | spell-table index (used in the `0x40880` path) |
+| +0x26 | byte | **mode-1: template+18 = influence %** (`$023EC6`): the weight in the live-attitude formula above, and the per-point rate in the `$02CE74` attitude adjustment (`$FF00C0` entry moves by `(char.+0x26 × delta)/100`). Mode-4: low byte of a reverse link to the mode-1 original (live: twin's +0x26 = original's +0x14, +0x27 = original's slot) — writer unpinned. |
 | +0x27 | byte | char index — redirect target for type 4, immunity lookup, death-path leader check |
 | +0x28 | word | stat word: **bits 6–10 = attack 0–31, bits 11–15 = defence 0–31** |
 | +0x2A | word | gold (cap 15000) |
@@ -1314,8 +1315,9 @@ here.
 
 #### Related [static]
 
-* **`$FF0E16` is a clock, not a step counter** (increments every frame
-  in `$2155E`, wraps at 2400; the palette routine `$170DA` reads it to
+* **`$FF0E16` is a clock, not a step counter** (increments 1 per
+  `world_tick` call in `$2155E` — once per main-loop iteration, not once
+  per VBlank frame — wraps at 2400; the palette routine `$170DA` reads it to
   pick the day/night palette — see the CAMP clock entry above). The
   consumption is not driven by it; it is driven by the movement
   dispatcher `FUN_024984`.
@@ -1462,7 +1464,25 @@ here.
     NIGHT and 540 leads into DAY. The clock itself increments by 1 per
     `$2155E` tick and wraps at 2400 (`divs.w #$960`), so a full
     day/night cycle is 2400 ticks (DAY 1842, NIGHT 522, transitions
-    18+18). `$170DA` is called from the per-frame tick `$2155E`
+    18+18). **Measured rate — live (2026-11-24, issue #273,
+    `scratch-273/probe_273_tclock.log.txt`):** in-room, 1 unit per
+    ≈21 VBlank frames (≈0.35 s/unit), so a full cycle is ≈14.0 min
+    (DAY ≈10.7 min, NIGHT ≈3.0 min, each 18-unit transition ≈6 s);
+    the rate is per main-loop iteration and render-bound, so it may
+    differ overworld (unmeasured). **HUD TIME display**
+    (`$029222`–`$029296`): hour24 = (`$FF0E16` / 100 + 10) mod 24;
+    displayed number = (hour24 mod 12) + 1; suffix " PM " if hour24
+    < 11 or == 23, else " AM " — dusk (0) = 11 PM, dawn (540) = 4 AM.
+    The HUD text is drawn at load and not refreshed in-room. **CAMP
+    messages:** setting 540 shows `$DDBD8` rec 1113 ("You make camp
+    until dawn."); setting 0 shows rec 1114 ("You make camp until
+    dusk.") — via `text_show_message(base 0x10, rec 12/13)` →
+    `text_event_resolve` case 4 → record n + 0x44D. **0xFF / 0xFE
+    spawn gates** (template +14 hi byte): 0xFF = **night-side** gate
+    (`$FF0E16` ≤ 557 — night 0–539 plus the 18-unit dawn transition),
+    0xFE = **day-side** gate (`$FF0E16` ≥ 558); the 557/558 boundary
+    is exactly the palette DAY start. The blind-spot REPORT's "0xFF
+    day-side / 0xFE night-side" labeling is inverted. `$170DA` is called from the per-frame tick `$2155E`
     (`$0215F6`: when `$FF0124` is dirty, or when mode 2 and `q` is 0
     or 30, so the blend updates every frame during a transition) and
     on location load (`$017976`). Other modes: 0 (99 locations) and 3

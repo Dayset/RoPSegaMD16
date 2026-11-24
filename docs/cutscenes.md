@@ -173,13 +173,18 @@ verbatim, but never run. Nothing here claims live proof it does not have.
 - **Case 3:** confirm item-flag bit 20 is the false mustache (find the read
   site testing bit 20 of `$FFC340`); Lucius's location and which spell text
   494 grants; needs a theatre save state to probe.
-- **Case 4:** tower record 389 vs 391; tile 274/275/263/264 visuals; op-15
+- **Case 4:** tower record is **391** (answered 2026-11-24, issue #273:
+  both Tutu templates spawn at 391; record 389 is only an op-11
+  tile-event location); tile 274/275/263/264 visuals; op-15
   fallback message; bit-174 setter.
 - **Case 5:** confrontation site (unknown); optional case-5 probe for its
   own live log.
-- **Case 6:** whose portrait 13 is; where the Ring of Perfection goes (no
-  grant of 650 exists anywhere; no reader of bit 100 found); the gem-check
-  contradiction (637 then 638 unconditionally).
+- **Case 6:** whose portrait 13 is (answered 2026-11-24, issue #273:
+  the unattributed narration face, `$B86AE` rec 13); where the Ring of
+  Perfection goes (no grant of 650 exists anywhere; a reader of bit 100
+  HAS been found — `world_enter_location`'s kind-3 loop spawns ev100 as
+  a mode-5 ground item at (2,5) in anchor 405; pickup still open); the
+  gem-check contradiction (637 then 638 unconditionally).
 - **Case 7:** Darius's char-slot setup in Kaos; the fight trigger after the
   monologue; who says text 680.
 - **Case 8:** ever reachable in an earlier build? What the `+14` == 251

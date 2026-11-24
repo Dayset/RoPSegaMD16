@@ -233,35 +233,60 @@ papered over.
   `$23B84` is the general entity spawner, not a party-only
   routine.
 - Sets `+0x00` low nibble = arg `$8 & $F`; clears `+0x00`
-  bit 15; if arg `$A != -1` sets `+0x18` bits 4–9 =
-  arg `$A << 4` (level), else sets `+0x18` bits 4–9 = `0x20`;
+  bit 15; if arg `$A != -1` sets `+0x00` bits 4–9 =
+  arg `$A << 4` (level), else sets `+0x00` bits 4–9 = `0x20`;
   if arg `$8 == 1` and arg `$C != -1`, template byte
-  `+0x13` (`$CF1BF + $C*0x18`) → `+0x18` bits 4–9 (level);
-  if arg `$8 == 6` sets `+0x18` bits 4–9 = `0x90`; clears
-  `+0x18` bits 10–11; if arg `$8 == 4` sets `+0x18` bit 12,
+  `+19` (`$CF1BF + $C*0x18`) → `+0x00` bits 4–9 (level);
+  if arg `$8 == 6` sets `+0x00` bits 4–9 = `0x90`; clears
+  `+0x00` bits 10–11; if arg `$8 == 4` sets `+0x00` bit 12,
   else clears it; stores arg `$C` at
   `struct[$FF02B6 + idx*0x34]` and `0xFF` at
   `struct[$FF02B8 + idx*0x34]`; if arg `$C != -1` and arg
   `$8 == 1`, copies template words from `$CF1AC + $C*0x18`
-  (24-byte templates).
+  (24-byte templates). (An earlier version of this paragraph
+  mislabeled every `+0x00` field here as `+0x18` — corrected
+  2026-11-24, issue #273: the prologue at `$023B84`–`$023D08`
+  writes `+0x00` throughout; `+0x18` is written only in the
+  mode-4 block at `$023FA8`–`$024044`, from the spawn record,
+  as `(spawn+5 & 0xF)<<4 | (spawn+4 & 0xF)`.)
 - Template copy (0x23D5C–0x23D92): 6 words from
-  `$CF1AC + template*0x18` → struct `+0x14`…`+0x1E`. So
-  **template word 0 is the name index (`+0x14`)**.
+  `$CF1AC + template*0x18` → struct `+0x14`…`+0x1E`. These are
+  the template's six **spawn words**, not name indices — template
+  word 0 is the first spawn word, not a name. (And `+0x14` as a
+  char-struct field is mode-dependent — see `docs/logic.md` §1:
+  mode-1 combat-twin index, mode-4 the spawn record's name_idx
+  word, mode-5 event index, mode-6 `0x19` — so it is a name index
+  for mode-4 chars only, never for the mode-1 leader.) Names resolve
+  **template → first spawn word → spawn record (`$CECF0`,
+  6 bytes: name_idx word, portrait byte, +3/+4/+5 bytes) →
+  name_idx word → name table (`$CD430`, 16-byte entries)** —
+  verified by `tools/render_npc_by_location.py` (self-check:
+  spawn 1 → name_idx 57 = "Buc") and by the live probe
+  (`scratch-273/probe_273_recon.log.txt`: slot 0 is Buc, mode 1,
+  template 0). **NOT `names[spawn index]`** — that misreading
+  produced every wrong name in this section.
 - Templates (24 bytes each at `$CF1AC`;
-  `disasm/main-loop/entity_templates.txt`): template 0 = name
-  1 "Man", t1 "Fiver", t2 "Hideous", t3 "NEXUS", t4
-  "Abattoir", t5 "VOID", t6 "Bob", t7 "Eddie", t10/t11
-  "Alexi" (62), t35/t52–54 "Buc" (57).
-- **The new-game leader is created with template 0 in both
-  `$FF0128` branches — so its name index is 1 ("Man") at
-  creation.** That is not Buc (57). And the other party
-  members' templates (Slash 58, Mortimer 59, Obliky 60,
-  Feather 61) do not appear in templates 0–199 at all.
-  Conclusion: the party is **not** built from this template
-  table at new-game init — the leader's name must be set
-  after `$23B84` (by `$25456`/`$243D6`/`$2CDD4` or by the
-  intro/story flow), or the party joins later. **Open for
-  #021:** find where `+0x14` is written with 57–62.
+  `disasm/main-loop/entity_templates.txt`), correctly resolved:
+  template 0 = Buc (spawn 1), t1 = Thalmus (spawn 94), t27/t28
+  = Rashiid (spawns 71/72/72), t342 = Fezzik (spawn 108),
+  t390 = Tutu (spawn 186). The earlier list ("t0 'Man', t1
+  'Fiver', t2 'Hideous', t3 'NEXUS', t4 'Abattoir', t5 'VOID',
+  t6 'Bob', t7 'Eddie', t10/t11 'Alexi' (62), t35/t52–54 'Buc'
+  (57)") was the `names[spawn index]` artifact and is deleted.
+- **The new-game leader IS Buc, via the template table.** The
+  leader is created with template 0; template 0's first spawn
+  word is 1, and spawn record 1 has name_idx 57 = "Buc" — so
+  the leader's name is Buc at creation, no later fix-up needed.
+  The earlier "puzzle" (name index 1 = "Man") came from reading
+  template word 0 (the spawn word 1) as a name index. The
+  numbers 57–62 (Buc, Slash, Mortimer, Obliky, Feather) are
+  **name indices**, not template indices — looking for them
+  among template indices was the same misreading. **The #021
+  open item ("find where `+0x14` is written with 57–62") is a
+  phantom: the leader is a mode-1 char, whose `+0x14` is the
+  combat-twin index (1 = char 1), never a name index — mode-4
+  chars are the only ones whose `+0x14` carries a name_idx —
+  and nothing needs to be found.**
 - What **is** settled: the six **disciplines are named in
   ROM** (PARTY menu: Sorc, Knight, Archer, Necro, Enchnt,
   Conjur — see the verb table below). "Archer" exists as a

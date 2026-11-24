@@ -8,10 +8,18 @@ Implements world_enter_location ($03090A) placement matching EXACTLY as coded:
     branch 2: (key & 0x3FF) == byte at $D1CFC + 10*d4   [literal lea $D1CFC,
               verified from raw ROM bytes 41 F9 00 0D 1C FC at $030A96/$030B30/$02BA58;
               = previous anchor record's +6 byte; see REPORT.md for intent discussion]
+              LIVE-VERIFIED 2026-11-24 (issue #273, probes scratch-273/probe_273_t170/
+              t249/t123.log.txt): entering anchor 170 spawns BOTH Rashiid-27 (branch 2)
+              and Rashiid-28 (branch 1) — the literal read is the shipped behavior, not
+              an off-by-one to fix. Anchor 249 spawns Man-438/439 (literal), not 437;
+              anchor 123 adds nothing via branch 2. No re-render needed.
     AND (key >> 12) == ($FF0E92 >> 12)   [variant/floor nibble]
   then gates: kind-0 event-bit gate (sys_copy_stride6_2d284) OR seen-ring
   (world_seen_check), then sys_struct24_read gate (template +14 hi byte:
   0xFF -> spawn iff $FF0E16 <= 557; 0xFE -> iff $FF0E16 >= 558; else always).
+  0xFF is the NIGHT-side gate (clock 0-557 = 11 PM-4:18 AM display) and 0xFE the
+  DAY-side gate (558-2399); the 557/558 boundary is the palette DAY start
+  (docs/logic.md). The blind-spot REPORT had this backwards.
 
 Name resolution (verified): template spawn word -> spawn record ($CECF0) ->
 name_idx word -> name table ($CD430).  NOT names[spawn index]: that misreading
@@ -189,6 +197,27 @@ md.append('Method: `world_enter_location` ($03090A) placement matching, implemen
 md.append('Anchor A below is the $D1D00 record index. `dest` is the record\'s +4 byte '
           '($FF0E98, the room/song-table index); `chunk` = 77+dest; the song record gives the '
           'party\'s entry position. "loc 156" in cutscene docs = dest 156 = anchor 30, NOT anchor 156.\n')
+md.append('Live-verified findings, issue #273 (2026-11-24; probe logs in `scratch-273/`):\n'
+          '- **Branch 2 is literal, as rendered.** Entering anchor 170 spawns Rashiid-27 (branch 2) '
+          'AND Rashiid-28 (branch 1) — two Rashiids at (5,3); anchor 249 spawns Man-438/439, not 437; '
+          'anchor 123 adds nothing via branch 2. `$FFC408` after entering 170 is 32 = the previous '
+          'record\'s +7 byte, confirming the same literal read. (The double Rashiid at 170 is also '
+          'issue #275 O3.)\n'
+          '- **Mode-5 (kind-3) entities are ground items, not people.** ev9/ev10 at anchor 30 '
+          '(codes 768/66, +0x06 = $203/$207) render as a gold key at (4,3) and a red tablet at (11,4); '
+          'ev100 (Ring 650, +0x06 = $202) renders as a gold key at (2,5) in anchor 405; ev85 (code 339, '
+          '+0x06 = $207) renders as a red tablet at (3,6) in anchor 391. The kind-3 loop (`L030CCC`) '
+          'checks only the event bit — no seen-ring check — so every entry re-spawns them: re-entering '
+          'anchor 30 duplicates ev9/ev10 in the char table (slots 22/23 alongside 11/12).\n'
+          '- **Day/night clock.** `$FF0E16` advances 1 per `world_tick` (`$02155E`); measured live '
+          '≈1 unit per 20 VBlank frames in-room (≈0.35 s), so a full 2400-unit cycle is ≈14 min '
+          '(DAY 558–2399 ≈10.7 min, NIGHT 18–539 ≈3.0 min). HUD TIME hour = '
+          '(`$FF0E16`//100 + 10) mod 24, 12-hour: dusk (0) = 11 PM, dawn (540) = 4 AM.\n'
+          '- **Attitude / template bytes.** Template +16 is a SIGNED word (0xFFBA = −70); live attitude '
+          '= clamp(home + b18% × `$FF00C0`[w12], −100, +100) stored at char +0x22. Char +0x20 is '
+          'mode-dependent: mode-1 = w12, or `$FFC408` when w12==36 (live: Man-438/439 at anchor 249 show '
+          '+0x20 = 32 = `$FFC408`). Template +19 feeds char **+0x00** bits 4–9 (level), not +0x18; '
+          '+18 is the per-merchant influence % (char +0x26). See `docs/logic.md` §1.\n')
 
 covered_b1 = collections.Counter(t['anchor'] for t in tmpls)
 b2pairs = collections.defaultdict(list)

@@ -109,7 +109,7 @@ scene.
 
 - Template 342 (`$CF1AC` + 24×342): word0 = 108, words
   (108, 113, 121, 130, 137, 145), `+12 = 34`, `+16 = 0x3C` (60, home
-  location record), `+18 = 90`, `+19 = 2`.
+  attitude, signed word), `+18 = 90`, `+19 = 2`.
 - The template's spawn list starts with spawn 108 (`$CECF0` + 6×108):
   name index 144 = **'Fezzik'**, portrait byte 50. The remaining list
   entries (113, 121, 130, 137, 145) are all name index 0 = 'Nobody' —
@@ -213,10 +213,24 @@ jump table `$02BBB4`).
   match the current location (405), so the location gate fails and the
   path bails to the tail (which runs `combat_attacker_check` only if a
   char was found — none was). The same out-of-ROM index holds for all
-  16 kind-3 records, so kind 3's spawn path is effectively dead in the
-  shipped ROM; its only reliable effect is the bitmap write.
-- **Net effect of the op-11: event-bit 100 is set. Nothing else.** No
-  NPC spawns, no item is granted, no tile changes.
+  16 kind-3 records, so kind 3's spawn path **inside
+  `npc_attitude_event_apply`** is effectively dead in the shipped ROM;
+  its only reliable effect is the bitmap write. **Scoping note
+  (2026-11-24, issue #273): the bit IS read elsewhere — by
+  `world_enter_location`'s kind-3 loop (`L030CCC`, `$030CCC`), which
+  checks only the event bit (`sys_bitmap_test($FFC326, d6)`) and
+  spawns the event as a mode-5 entity on entry to the anchor. Live
+  probe (`scratch-273/probe_273_t405.log.txt`): entering anchor 405
+  with bit 100 set spawns ev100 as a mode-5 char (code 650, +0x06 =
+  $202) at (2,5) — a gold-key ground item, visible in the room-view
+  screenshot. So the op-11's effect is: set bit 100; the Ring then
+  appears as a ground item in anchor 405 on entry. Whether the item
+  is pickable / granted on pickup is still open (no `inv_apply_resource`
+  for 650 exists) — see open item 2.**
+- **Net effect of the op-11 call itself: event-bit 100 is set. Nothing
+  else happens at call time.** No NPC spawns, no item is granted, no
+  tile changes. (The bit's effect lands later, on entry to anchor 405
+  — see the scoping note above.)
 
 ### The Ring is not granted here
 
@@ -235,9 +249,12 @@ jump table `$02BBB4`).
   dialog and not part of case 6; its speaker/context is not pinned.
   Do not conflate it with this scene.
 - In-fiction, the Ring of Perfection materializes (text 640) and
-  Fezzik takes it (text 641). Whether event-bit 100 is read anywhere
-  as "Perfection obtained / attempted" is open — no reader of bit 100
-  has been found yet.
+  Fezzik takes it (text 641). A reader of event-bit 100 **has** been
+  found (2026-11-24, issue #273): `world_enter_location`'s kind-3 loop
+  (`L030CCC`) spawns ev100 as a mode-5 ground item at (2,5) in anchor
+  405 on entry with bit 100 set. Whether bit 100 is also read as
+  "Perfection obtained / attempted" elsewhere, and whether the ground
+  item is pickable, is still open.
 
 ## 6. Exit
 
@@ -259,37 +276,52 @@ message index. Two records matter here:
 
 | record | key (X,Y) | +4 dest | +5 msg | note |
 |---|---|---|---|---|
-| 60 | (164,113) | 49 | 19 | Fezzik's home (template 342 `+16` = 60). |
-| 405 | (329,184) | 131 | 16 | Event 100's location gate — the trap room (per text 640's room with slots at opposite ends). |
+| 60 | (164,113) | 49 | 19 | NOT a location for this scene — template 342's `+16` = 60 is the home **attitude** (signed word), not an anchor. Anchor 60's own msg is 19 ("A secret temple hidden in the jungle."). |
+| 405 | (329,184) | 131 | 16 | **The scene runs here.** Event 100's location gate — the trap room (per text 640's room with slots at opposite ends). |
 
-Which record the scene runs at is open: the op-11 gate says 405, and
-Fezzik's template home says 60. The room itself (chunk, dimensions) is
-unpinned. Note that record 405's key (329,184) is close in X to the
+**Resolved 2026-11-24 (issue #273, live probe
+`scratch-273/probe_273_t405.log.txt`): the scene runs at anchor 405.**
+Entering 405 (nibble 2) spawns Fezzik (template 342, mode 1) and ev100
+(the Ring, mode 5) at (2,5). Record 60 is ruled out: it is only the
+`+16` home-attitude value, and anchor 60 is a jungle temple (msg 19),
+not the trap room. Note that record 405's key (329,184) is close in X to the
 Temple of Variation's record 393 (key (330,62)) but far in Y — they are
 different rooms.
 
 ## 9. Live-proven vs static-only
 
-**Static-only.** No live verification was attempted, and none is safe
-with the save on hand: the only save state is `slot_0` (location 156,
-Thalmus room setup), whose char setup resolves only small ids (0, 1, 2,
-3, 5) and spawn ids 94–96, 101, 102. This scene needs id 342 (Fezzik);
-`npc_attitude_raise_by_id(342)` returns $FF in `slot_0`, and the op-6
-speaker resolution would read char[255]'s portrait (out of bounds), so
-the scene's pointers must not be injected into `slot_0`. Every claim
-above is from ROM bytes and `disasm/src/rop.s` unless marked open.
+**Live-proven (2026-11-24, issue #273).** The 405 spawn is verified
+by emulator probe, not by injecting into `slot_0`: the probe forges
+`$FF0E92`/`$FF0E98`/`$FF0E16`, clears the seen ring, sets the event
+bitmap, and calls `world_enter_location` directly
+(`scratch-273/build_probe_273.py`, `run_probe_273.py`,
+`probe_273_t405.log.txt` + screenshot). Entering anchor 405 nibble 2
+spawns Fezzik (template 342, mode 1, +0x20 = 34, +0x22 = 15) and ev100
+(mode 5, code 650, +0x06 = $202) at (2,5), visible in the room view as
+a gold key on the ground. The earlier "none is safe with the save on
+hand" caveat is superseded by this method. Everything else above is
+from ROM bytes and `disasm/src/rop.s` unless marked open.
 
 ## 10. Open items
 
-1. **Who is portrait 13?** Text 640's speaker is portrait b3=13. No
-   spawn-table record has portrait byte 13 — it is a direct `$B86AE`
-   portrait index, and whose face it is (a narrator? one of Fezzik's
-   gang?) is open.
-2. **Where does the Ring of Perfection go?** No grant of item 650
-   exists in any dialog event or cutscene script, and no reader of
-   event-bit 100 has been found. Is bit 100 the "Perfection" flag, and
-   does anything check it — or is the Ring simply unobtainable (Fezzik
-   keeps it)?
+1. **Who is portrait 13? — ANSWERED 2026-11-24 (issue #273, item 1).**
+   Portrait 13 is the **unattributed narration face**, not a named NPC:
+   `$B86AE` record 13 is a distinct face (unique palette, zero shared
+   tiles with any other record), and its only three uses in the ROM are
+   op-6 records with w6 = `0x00FF` (b3 override) for narration lines —
+   texts 218, 219 (Thalmus-death dispersal) and 640 (this scene). No
+   spawn record has portrait byte 13. Rendered at
+   `scratch-273/portraits/rec13_6x6.png` (also
+   `~/workspace/rop-work/blind-spots/cutscenes/portrait13.png`).
+2. **Where does the Ring of Perfection go? — PARTLY ANSWERED
+   2026-11-24 (issue #273).** A reader of event-bit 100 **has** been
+   found: `world_enter_location`'s kind-3 loop (`L030CCC`) spawns ev100
+   as a mode-5 ground item at (2,5) in anchor 405 on entry with bit 100
+   set (live probe `scratch-273/probe_273_t405.log.txt`; the item renders
+   as a gold key). No grant of item 650 exists in any dialog event or
+   cutscene script, so how the Ring is picked up / whether it ever
+   enters the inventory is still open. Is bit 100 the "Perfection" flag
+   — it is the spawn gate for the Ring's ground item, at least.
 3. **The gem-check contradiction.** Op-15 shows text 637 when Buc
    lacks a gem, then the script continues unconditionally to text 638
    (*"I have both of the gems Fezzik."*). Is the scene gated before
@@ -303,8 +335,10 @@ above is from ROM bytes and `disasm/src/rop.s` unless marked open.
    Observatory (text 902: *"Hello sir, welcome to the Observatory..."*,
    west of Richi per text 441) may be the seer's location, but the
    seer's identity and location are not pinned.
-5. **Which record the scene runs at** — 405 (the op-11 gate) or 60
-   (Fezzik's home). Needs the location-setup NPC list or a live check.
+5. **Which record the scene runs at — ANSWERED 2026-11-24 (issue
+   #273): 405.** Live probe entering anchor 405 spawns Fezzik and the
+   Ring (see §8). Record 60 was never a candidate: template 342's
+   `+16` = 60 is the home attitude, not a location.
 6. **The menu-option text that yields event 540** — the menu-choice →
    `$02A6` mapping is untraced.
 7. **Op-0's w4=1** — the grant handler's use of w4 (if any) is open;

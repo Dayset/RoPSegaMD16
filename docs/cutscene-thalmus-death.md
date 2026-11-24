@@ -107,7 +107,7 @@ the table shows both the record `w4` and the displayed text number.
 | `$1A1B0` | `F8 00 00 00 00 01 00 00` | -8 | KILL id 1 (Thalmus): HP 140 → 0, status bit 13 set. Handler `$02DA3E`. |
 | `$1A1B8` | `06 00 00 00 00 7C 00 08` | +6 | Enqueue text w4=124 → displays **220** (Darius). Pauses. |
 | `$1A1C0` | `F9 00 00 00 00 08 00 00` | -7 | Attacker check, id 8 (Darius). Releases Darius (char 15) and his template (slot 14). |
-| `$1A1C8` | `06 00 00 0D 00 7A 00 FF` | +6 | Enqueue text w4=122 → displays **218**, speaker = b3=13 (Fezzik). Pauses. |
+| `$1A1C8` | `06 00 00 0D 00 7A 00 FF` | +6 | Enqueue text w4=122 → displays **218**, speaker = portrait 13 (unattributed narration face — `w6=0x00FF`, so `b3` is a direct `$B86AE` portrait index, not a char id; Fezzik's portrait is 50). Pauses. |
 | `$1A1D0` | `F7 00 00 00 00 A4 00 7A` | -9 | Stage (164,122) into `$FF0E9A`/`$FF0E9C`. Handler `$02DAB4`. |
 | `$1A1D8` | `F5 00 00 00 00 00 00 00` | -11 | Event flag bit 0 clear. Handler `$02DB06` → `npc_attitude_event_apply`. |
 | `$1A1E0` | `F5 00 00 00 00 01 00 00` | -11 | Event flag bit 1 clear. |
@@ -117,7 +117,7 @@ the table shows both the record `w4` and the displayed text number.
 | `$1A200` | `F5 00 00 00 00 04 00 00` | -11 | Event flag bit 4 clear. |
 | `$1A208` | `F5 00 00 00 00 05 00 00` | -11 | Event flag bit 5 clear. |
 | `$1A210` | `F6 00 00 00 00 00 00 00` | -10 | Flush message queue + SFX 12. Handler `$02DAD4`. |
-| `$1A218` | `06 01 00 0D 00 7B 00 FF` | +6 | Enqueue text w4=123 → displays **219**, speaker = b3=13 (Fezzik); b1=1 also consumes one message immediately. Pauses. |
+| `$1A218` | `06 01 00 0D 00 7B 00 FF` | +6 | Enqueue text w4=123 → displays **219**, speaker = portrait 13 (narration face, as above); b1=1 also consumes one message immediately. Pauses. |
 | `$1A220` | `00 00 00 00 00 00 00 41` | 0 | Grant 65 XP to each party member; clear `$FF0110`. Handler `$02D5D4`. |
 
 `$1A228` begins the next script (`menu_select_screen` case 1, the Buc
@@ -204,25 +204,34 @@ construction equals the linked char's index. Live-proven mapping:
 ## 3. Actors
 
 At load (`slot_0`), chars 0-12; slots 13-15 empty until the scene spawns
-into them. `+0x02` is the char's identity word, `+0x14` the name index
-(for placed chars) or the linked-char index (for type-1 scaffolds).
+into them. `+0x02` is the char's identity word (template index for
+mode 1, spawn-record index for mode 4, event code for mode 5).
+`+0x14` is mode-dependent (see `docs/logic.md` §1): for the mode-4
+chars below it is the spawn record's name_idx word, so those names are
+genuine; for the mode-1 chars it is the combat-twin index (slot+1),
+**not** a name — the mode-1 "names" in an earlier version of this
+table (Man/Davin/Maldavin/Dunn/Opul) were `names[+0x14]`, the old
+misreading; the mode-1 chars' names come from their template →
+spawn record (char 0 is Buc, chars 2/4/7/9 are scaffolds of the
+template named in the role column). For the mode-5 chars 11/12,
+`+0x14` is the event index (ev9/ev10 — ground items, not people).
 
 | char | name (idx) | +0x02 | type | start | role in the scene |
 |---|---|---|---|---|---|
-| 0 | leader "Man" (1) | 0 | 1 | (117,113) | Party leader; stands on the overworld, never enters the room. |
+| 0 | leader Buc (twin 1) | 0 | 1 | (117,113) | Party leader; stands on the overworld, never enters the room. Name Buc via template 0 → spawn 1 → name_idx 57; `+0x14` = 1 is the twin index (char 1), not a name. |
 | 1 | Buc (57) | 1 | 4 | (8,7) head S | Teleports to (6,17); walks south 8 cells to (6,25); faces east at the end. |
-| 2 | Davin (3) | 1 | 1 | (0,0) | Inactive scaffold; Thalmus's `+0x27` link (Thalmus `+0x27` = 2). Released by the op-11 w4=0 tail. |
+| 2 | Thalmus-template scaffold (twin 3) | 1 | 1 | (0,0) | Inactive scaffold; Thalmus's `+0x27` link (Thalmus `+0x27` = 2). Released by the op-11 w4=0 tail. |
 | 3 | Thalmus (75) | 94 | 4 | (9,17) head W | Walks to (8,27); speaks lines 210–217; is killed by op-8 at `$1A1B0`. |
-| 4 | Maldavin (5) | 2 | 1 | (0,0) | Inactive scaffold; El Gripa's `+0x27` link, then Yoppa's template slot. Released by the opening op-7 id 2. |
+| 4 | El Gripa-template scaffold (twin 5) | 2 | 1 | (0,0) | Inactive scaffold; El Gripa's `+0x27` link, then Yoppa's template slot. Released by the opening op-7 id 2. |
 | 5 | El Gripa (76) | 95 | 4 | (16,13) head E | Present at load; released by the opening op-7 id 2 (frees slot 5). Replaced in slot 5 by Yoppa. |
 | 6 | Beenie (77) | 96 | 4 | (15,14) head E | Present at load; not moved by the script. His slot is reused by Fezzik's template, then by the second projectile — the exact freeing record is open. |
-| 7 | Dunn (8) | 3 | 1 | (0,0) | Inactive scaffold; Roakus's `+0x27` link. Released by op-7 id 3. |
+| 7 | Roakus-template scaffold (twin 8) | 3 | 1 | (0,0) | Inactive scaffold; Roakus's `+0x27` link. Released by op-7 id 3. |
 | 8 | Roakus (141) | 101 | 4 | (18,5) head S | Placed (10,24); faces west. Student. Released by op-7 id 3. |
-| 9 | Opul (10) | 5 | 1 | (0,0) | Inactive scaffold; Imino's `+0x27` link. Released by op-7 id 5. |
+| 9 | Imino-template scaffold (twin 10) | 5 | 1 | (0,0) | Inactive scaffold; Imino's `+0x27` link. Released by op-7 id 5. |
 | 10 | Imino (142) | 102 | 4 | (18,7) head N | Placed (10,26); faces west. Student. Released by op-7 id 5. |
-| 11 | Levin (9) | 0x300 | 0x1025 | (4,3) | Bystander; not moved. |
-| 12 | Opul (10) | 0x42 | 0x1025 | (11,4) | Bystander; not moved. |
-| 13 | Fezzik (144) | 104 | 4 | — | Spawned by op-2 `$1A0B8` at (6,18); walks to (6,22). Student. Speaks the dispersal narration (218, 219). Released by op-7 id 7. |
+| 11 | ev9 ground item (event 9) | 0x300 | 0x1025 | (4,3) | Mode-5 entity; renders as a gold key on the ground (live: `scratch-273/probe_273_recon.log.txt` slots 11/12). Not a person. |
+| 12 | ev10 ground item (event 10) | 0x42 | 0x1025 | (11,4) | Mode-5 entity; renders as a red tablet on the ground. Not a person. |
+| 13 | Fezzik (144) | 104 | 4 | — | Spawned by op-2 `$1A0B8` at (6,18); walks to (6,22). Student. Does NOT speak the dispersal narration (218, 219) — those are unattributed narration with portrait 13 (see §5); the `b3=13` / char-13 coincidence misled the earlier reading. Released by op-7 id 7. |
 | 14 | (template 8) | 8 | 1 | (0,0) | Invisible scaffold for Darius's spawn. Released by op-7 id 8. |
 | 15 | Darius (145) | 105 | 4 | — | Spawned by op-2 `$1A0C0` at (8,18); walks to (8,22). Fires both shots south at Thalmus; speaks 220 ("Die, Thalmus!"). Released by op-7 id 8. |
 | 5 | Yoppa (143) | 103 | 4 | — | Spawned by op-2 `$1A078` at (6,18); walks to (6,24); faces east. Student. (Slot 5 is freed when El Gripa is released by the opening op-7 id 2.) Released by op-7 id 6. |
@@ -356,7 +365,11 @@ static-only).
 ## 5. Dialog (verbatim)
 
 All spoken by Thalmus (`w6=1` → speaker id 1 → Thalmus), except 220
-(Darius, `w6=8`) and 218/219 (speaker = `b3=13`, char 13 = Fezzik).
+(Darius, `w6=8`) and 218/219 (**narration**: `w6=0x00FF`, so the
+speaker portrait is `b3=13` directly — portrait 13, the unattributed
+narration face; **not** Fezzik. Fezzik's portrait is 50, and the
+op-6 handler `$02D964` reads `b3` as a portrait index only when
+`w6 == 0xFF` — see issue #273 item 1).
 From `disasm/text/records_ddbd8.txt`. **Op-6 displays record w4 + 96**
 — the numbers below are the displayed records; the script's `w4`
 values are in the §2 table.
@@ -370,8 +383,8 @@ values are in the §2 table.
 - **216:** "Void and his minions seek the Rings even as we speak. You must each form parties and find them before Void can reassemble the Rod. The locations are..."
 - **217:** "DARIUS YOU ATTACK ME! I feared that Void's influence reached this far... Students DISPERSE!"
 - **220:** "Die, Thalmus!" (Darius.)
-- **218:** "Your master's dying word forces itself into the mind of all present, scattering them across the globe." (Speaker mechanically Fezzik; the line is narration, not Fezzik speaking.)
-- **219:** "You find yourself outside a strange city. \"Seek my friend Hack...\" was Thalmus' last request. Might you find him here?" (Speaker mechanically Fezzik; narration.)
+- **218:** "Your master's dying word forces itself into the mind of all present, scattering them across the globe." (Speaker: portrait 13, the unattributed narration face. An earlier version of this doc read `b3=13` as char 13 = Fezzik — wrong: with `w6=0x00FF`, `b3` is a direct `$B86AE` portrait index.)
+- **219:** "You find yourself outside a strange city. \"Seek my friend Hack...\" was Thalmus' last request. Might you find him here?" (Speaker: portrait 13, narration face, as above.)
 
 This is the game's opening: the Rings lecture (210–216), the attack
 (217, spoken after the first shot lands on Thalmus), the killer's line
@@ -502,9 +515,11 @@ mismatch); the exact `+0x14` rewrite source (`$CF1AC` table copy in
   the Buc doc's "when Maldavin/El Gripa/Beenie were freed").
 - The scene-end camera position (not logged).
 - How the narration lines 218/219 render their speaker — the records
-  name char 13 (Fezzik) as speaker, but the lines are third-person
-  narration ("Your master's dying word…", "You find yourself…").
-  Whether the dialog box shows a name, and whose, is open.
+  carry `w6=0x00FF` with `b3=13`, i.e. portrait 13 (the unattributed
+  narration face; see §5) — not char 13 (Fezzik), as an earlier version
+  of this doc read it. The lines are third-person narration ("Your
+  master's dying word…", "You find yourself…"). Whether the dialog box
+  shows a name, and whose, is open.
 - The per-tick **mode-6 stepper** (movement/collision/damage on
   impact) is unlocated. It is the routine that decides what happens
   when a projectile reaches an occupied cell — the collision-level
