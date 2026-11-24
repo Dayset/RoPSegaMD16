@@ -2796,12 +2796,12 @@ td_iso_cam:
 	muls.w	d4,d0
 	divs.w	TD_PERIOD,d0
 	add.w	d5,d0
-	move.w	d1,d2			; ... within one cell of the picture
-	sub.w	#TI_CU,d2
-	cmp.w	d2,d0
-	bge.s	.c1
+	move.w	d1,d2			; ... within 1.5 cells of the picture
+	sub.w	#TI_CU*3/2,d2		; (#305: wobble 0.49/1.33 -> 0.33/0.80
+	cmp.w	d2,d0			; px; a few more frames with a
+	bge.s	.c1			; parchment sliver at the hole edge)
 	move.w	d2,d0
-.c1:	add.w	#2*TI_CU,d2
+.c1:	add.w	#3*TI_CU,d2
 	cmp.w	d2,d0
 	ble.s	.c2
 	move.w	d2,d0
