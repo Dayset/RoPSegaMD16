@@ -108,6 +108,13 @@ Rendering and the first mod:
 
 Exploratory branches, not on main: the `$E358` terrain-decoder port is byte-exact, but its offline atlas doesn't fit (6,524,372 B vs 1,048,576 usable in the second MB); the 2 MB container boots with EEPROM save verified. Both wait on the #268 decision.
 
+## Related projects
+
+Two other Rings of Power projects, found while researching the 2026 remaster — neither is part of this repo:
+
+- **The Ring of Perfection** — an in-ROM remaster by u/thealx_EECH (r/romhacking, Nov 2, 2026): the original engine in a 4 MB ROM, with dirty-cell smooth scrolling, a full-screen map, and a re-arranged soundtrack including the Academy (song 13). [Reddit post](https://www.reddit.com/r/romhacking/comments/1xlrtmw/rings_of_power_remaster_sega_mega_drive/)
+- **RROP** — a native PC static recompilation by kruzeman (MIT): widescreen rendering, smooth scrolling, external fonts, mouse controls, and saves; needs the user's own 1 MB ROM. [GitHub](https://github.com/kruzeman/RROP)
+
 Project overview — epics, rebuild contract, hardware limits, structure,
 graphics pipeline: [docs/overview.md](docs/overview.md).
 
