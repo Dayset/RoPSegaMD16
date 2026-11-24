@@ -428,3 +428,12 @@ Built: `make rom FEATURES=topdown SIZE=2m`. Design and numbers:
 - `tools/md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
 
 One emulator per process (stable-retro limit); `md_video.py` forks.
+
+## Music on the 68000: worth moving to the Z80? (#304)
+
+Measured 2026-11-24: the VBlank handler's `jsr sound_tick` (`$12F2`)
+replaced by `nop`s on a NOLIMIT 2 MB build, iso explore route. Render
+CPU per overworld picture 8.07 → 7.98 frames (about 1 %), walking
+frames without a picture update 50 / 1,539 vs 53 / 1,303 (no change).
+The music tick costs the 68000 about 1 % of its time: moving it to the
+Z80 would not make the picture measurably smoother. Not pursued.

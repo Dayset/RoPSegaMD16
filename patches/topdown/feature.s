@@ -76,11 +76,11 @@ MODE		equ $FF00AE	; 1 overworld, 2 room
 LOC		equ $FF0E98	; location ($FFFF = overworld)
 LEADER		equ $FF02B2	; party leader char index
 CHARS		equ $FF02B4	; 56 x $34 char structs
-RECS		equ $FFB0CC	; 56 x 12 map-draw records
-GRIDPTR		equ $FFA7FC	; -> geometry struct (+0 W, +2 H)
-BANKBASE	equ $FF8674	; room bitmap tile base ($38E)
-FONTBLK		equ $FF8640	; transparent font blank tile
-SPRBASE		equ $FF8644	; sprite table base ($2400 in layout G)
+RECS		equ $FFFFB0CC	; 56 x 12 map-draw records
+GRIDPTR		equ $FFFFA7FC	; -> geometry struct (+0 W, +2 H)
+BANKBASE	equ $FFFF8674	; room bitmap tile base ($38E)
+FONTBLK		equ $FFFF8640	; transparent font blank tile
+SPRBASE		equ $FFFF8644	; sprite table base ($2400 in layout G)
 VDP_DATA	equ $C00000
 VDP_CTRL	equ $C00004
 CELLREAD	equ $01C176	; map_chunk_cache_read(x, y) -> d0 = ptr to word
@@ -90,7 +90,8 @@ DESC		equ $01AE98	; 512-word map tile descriptors
 DECBUF		equ $FF1EC0	; decode buffer (free while top-down runs)
 
 ; ---- state -----------------------------------------------------------
-TD		equ $FFDC00
+TD		equ $FFFFDC00	; (RAM at $FF8000+ written sign-extended:
+				; abs.w addressing, see patches/topdown/vasm-opt)
 TD_MAGIC	equ TD+$00	; $7D7D when initialised
 TD_VALID	equ TD+$02	; plane content valid
 TD_TILES	equ TD+$04	; tiles uploaded
@@ -227,7 +228,7 @@ TD_END2		equ TD_VDIF+8
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
-TI_PHASH	equ $FFD2EA	; pool hashes (words) + ages (bytes): in the
+TI_PHASH	equ $FFFFD2EA	; pool hashes (words) + ages (bytes): in the
 TI_PGEN		equ TI_PHASH+2*TI_NSLOT	; attract buffer, unused in play
 TI_POOLB	equ 401		; bank offset of pool slots 256-638 (401-783)
 TI_EDGE		equ 784		; bank offset of the frame edge tiles (44)
@@ -238,7 +239,7 @@ TI_CX		equ 162		; hole centre and half sizes (screen px)
 TI_CY		equ 98
 TI_HW		equ 112
 TI_HH		equ 64
-XTAB		equ $FFAE7A	; map_chunk_pos X table (10 x 10 words)
+XTAB		equ $FFFFAE7A	; map_chunk_pos X table (10 x 10 words)
 CLEARBUF	equ $011DE8	; clear_decode_buffer
 CHUNKPOS	equ $01BA4E	; map_chunk_pos(cx, cy): the 10 x 10 iso render
 DESC2		equ $05EDC4	; iso cell descriptors (word per tile)

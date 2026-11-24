@@ -1,0 +1,1 @@
+vasm optimisations on for this feature (tools/build_rom.py): RAM equs at $FF8000+ are written $FFFFxxxx so they assemble as abs.w (2 bytes shorter each), plus vasm's safe default optimisations; saves ~1.1 KB of the 1 MB padding.
