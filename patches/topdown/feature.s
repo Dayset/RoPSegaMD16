@@ -210,6 +210,19 @@ TD_VOK		equ TD_VSUM+4	; renders equal / different
 TD_VBAD		equ TD_VOK+2
 TD_VROW		equ TD_VBAD+2	; 23 longs: per-row sums, own loop
 TD_VDIF		equ TD_VROW+92	; last mismatch: row mask (long), IRX, IRY
+TI_WIN		equ TI_XSAVE+640	; 200 B: last picture's cell words [row*10+col]
+				; (#278; decode buffer lines 164+: never drawn
+				; by the linear render, the stack reaches
+				; below TD_END while $E358 draws an overlay)
+TI_WREC		equ TI_WIN+200	; 200 B: its record bytes (second grid, first)
+TD_OVK		equ TI_WREC+200	; 56 words: char's occlusion decision, 0 = none yet
+				; ($8000 | cell key, $4000 = needs an overlay)
+TD_OVPX		equ TD_OVK+112	; overlay to build: cell x, y, figure lift, key
+TD_OVPY		equ TD_OVPX+2
+TD_OVPL		equ TD_OVPY+2
+TD_OVPK		equ TD_OVPL+2	; (0 = none)
+TD_OLOC		equ TD_OVPK+2	; location the cached overlays belong to
+TD_OVDN		equ TD_OLOC+2	; an occlusion decided this update (one per)
 TD_END2		equ TD_VDIF+8
 TD_END		equ TD_END2
 
@@ -1033,6 +1046,9 @@ td_chars:
 	clr.w	TD_NB
 	clr.w	TD_XF
 	clr.w	TD_LEADOK
+	ifd	SIZE2M
+	clr.w	TD_OVDN
+	endif
 	lea	CHARS,a3
 	lea	TD_CHR,a4
 	lea	TD_LIST,a2
@@ -1112,6 +1128,11 @@ td_chars:
 	addq.w	#1,d0
 	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
+	ifd	SIZE2M
+	tst.w	TD_ISO
+	beq.s	.lchk
+	bsr.w	ti_occl			; iso: terrain in front of it
+	endif
 	bra.s	.lchk
 .blob:	; no image yet: a 16x16 blob (yellow = the leader's figure)
 	moveq	#1,d1			; variant 1 (white)
@@ -1624,7 +1645,15 @@ td_sprites:
 	addq.w	#8,d2			; blob: 16x16 in the middle
 	addq.w	#8,d3
 	movea.w	#$0500,a3
-.ik:	cmpi.w	#-32,d2
+.ik:
+	ifd	SIZE2M
+	cmpi.b	#2,d1			; occlusion overlay: only wholly inside
+	bne.s	.ik2			; the hole (it is terrain)
+	bsr.w	ti_ohole
+	bne.s	.icond
+.ik2:
+	endif
+	cmpi.w	#-32,d2
 	ble.s	.icond
 	cmpi.w	#320,d2
 	bge.s	.icond
@@ -2917,6 +2946,12 @@ td_iso_render:
 	move.w	#1,TD_INOB
 .go:	tst.w	TD_IRS
 	bne.w	.cont
+	ifd	SIZE2M
+	tst.w	TD_IREQ			; idle, no picture waiting: an
+	bne.s	.ob			; occlusion overlay (#278; built also
+	bsr.w	ti_obuild		; with one waiting: twice the cases
+.ob:					; covered, trail 98.1 -> 97.6 %, Q19)
+	endif
 	tst.w	TD_IREQ
 	beq.w	.out
 	clr.w	TD_IREQ
@@ -3024,6 +3059,13 @@ td_iso_render:
 	cmpi.w	#23,TD_IROW
 	bcs.w	.out
 	clr.w	TD_IRS			; done: the plane shows the new picture
+	ifd	SIZE2M
+	lea	TD_OVK,a0		; occlusion decided again on it
+	moveq	#56/2-1,d0
+.ok:	clr.l	(a0)+
+	dbra	d0,.ok
+	clr.w	TD_OVPK
+	endif
 	move.w	TD_INX,TD_IOX
 	move.w	TD_INY,TD_IOY
 	move.w	TD_IRX,TD_ICX
@@ -3382,6 +3424,12 @@ ti_loop:
 .hv:	movea.l	d0,a0
 	move.w	(a0,d3.w),d0
 	move.w	d0,($FF0248).l		; (as map_chunk_cache_read leaves it)
+	move.w	d4,d1			; the window's words for the occlusion
+	mulu.w	#20,d1			; overlays (TI_WIN)
+	add.w	d5,d1
+	add.w	d5,d1
+	lea	TI_WIN,a0
+	move.w	d0,(a0,d1.w)
 	move.w	d0,-4(a6)
 	andi.w	#$1FF,d0
 	move.w	d0,-2(a6)
@@ -3507,6 +3555,13 @@ ti_loop:
 	lea	($FFB76C).l,a0
 	moveq	#0,d6
 	move.b	(a0,d0.l),d6		; rec2 (second grid), drawn first
+	move.w	d4,d1			; (both kept for the overlays, TI_WREC)
+	mulu.w	#20,d1
+	add.w	d5,d1
+	add.w	d5,d1
+	lea	TI_WREC,a0
+	move.b	d6,(a0,d1.w)
+	move.b	-19(a6),1(a0,d1.w)
 	cmpi.w	#$FF,d6
 	beq.s	.r1
 	move.w	d6,d0
@@ -3558,6 +3613,505 @@ ti_loop:
 	ext.l	d2
 	asl.l	#5,d2
 	move.l	d2,TL_FX(a6)
+	rts
+
+;=======================================================================
+; Occlusion overlays (#278). A figure is a sprite above the iso plane,
+; but in the game's painter order the cells drawn after it (x > Fx, or
+; x = Fx and y > Fy) cover it where they paint. For a figure whose
+; target cell has such a cell close by that rises above its feet
+; (ti_oneed, from the last picture's words, TI_WIN), those cells are
+; drawn alone with the game's $E358 into the cleared figure corner of
+; the decode buffer, positioned as the picture has them relative to the
+; figure's image, and the 4x4 tiles go to a figure-cache slot (key
+; $4000 | cell). The overlay is a sprite at the figure's resting place,
+; just in front of it (depth + 4, lift + 4: same pixels). Drawn in the
+; main loop's spare time while no render owns the buffer (ti_obuild).
+; Candidates: every later cell of the picture with |dx - dy| <= 2 whose
+; top is not wholly below the box (dx, dy up to 9; a tall cell far south
+; still rises into it). All of them, so the overlay holds exactly what
+; the picture shows of later cells there.
+;=======================================================================
+ti_occl:	; td_chars: d7 = char, a4 = its slide (target cell), a2 = list
+	movem.l	d0-d6/a0-a1,-(a7)
+	cmpi.w	#TD_NFIG,TD_NB
+	bcc.w	.out
+	move.w	(a4),d4
+	move.w	2(a4),d5
+	move.w	d4,d6			; cell key: $8000 | (x & 63) << 6 | y & 63
+	andi.w	#63,d6
+	lsl.w	#6,d6
+	move.w	d5,d0
+	andi.w	#63,d0
+	or.w	d0,d6
+	ori.w	#$8000,d6
+	lea	TD_OVK,a1
+	adda.w	d7,a1
+	adda.w	d7,a1
+	move.w	(a1),d2
+	move.w	d2,d0
+	andi.w	#$BFFF,d0
+	cmp.w	d6,d0
+	beq.s	.known
+	tst.w	TD_IRS			; decide on a finished picture only,
+	bne.w	.out			; one figure per update
+	tst.w	TD_VALID
+	beq.w	.out
+	tst.w	TD_OVDN
+	bne.w	.out
+	move.w	#1,TD_OVDN
+	bsr.w	ti_oneed
+	move.w	d6,d2
+	tst.w	d0
+	beq.s	.st
+	ori.w	#$4000,d2
+.st:	move.w	d2,(a1)
+.known:	btst	#14,d2
+	beq.w	.out
+	move.w	d6,d0			; overlay key: + terrain phase (its
+	andi.w	#$0FFF,d0		; water animates; both phases stay
+	ori.w	#$4000,d0		; cached while standing)
+	tst.w	TD_IPH
+	beq.s	.k0
+	ori.w	#$1000,d0
+.k0:
+	move.w	d0,d3
+	move.w	TD_CANX,-(a7)		; cached? (lookup only)
+	clr.w	TD_CANX
+	bsr.w	td_img
+	move.w	(a7)+,TD_CANX
+	move.w	d0,-(a7)		; the figure's lift at rest, from its
+	move.w	d4,d0			; cell in the picture (TD_CLK's may
+	move.w	d5,d1			; still be the last cell's)
+	bsr.w	ti_wword
+	move.w	d0,-(a7)
+	bsr.w	ti_olift
+	move.w	(a7)+,d1		; + 7 as td_ilift; props bit 8 moves the
+					; figure 4 px but not the ground it is
+					; placed by (measured against the original)
+	andi.w	#$1FF,d1
+	add.w	d1,d1
+	lea	DESC2,a0
+	btst	#0,(a0,d1.w)
+	beq.s	.n8
+	subq.w	#4,d0
+.n8:	addq.w	#7,d0
+	move.w	d0,d1
+	move.w	(a7)+,d0
+	tst.w	d0
+	bpl.s	.add
+	tst.w	TD_OVPK			; not yet: ask the main loop
+	bne.s	.out
+	move.w	d4,TD_OVPX
+	move.w	d5,TD_OVPY
+	move.w	d1,TD_OVPL
+	move.w	d3,TD_OVPK
+	bra.s	.out
+.add:	lsl.w	#4,d4
+	addq.w	#4,d4
+	move.w	d4,(a2)+		; resting place, depth + 4
+	lsl.w	#4,d5
+	addq.w	#4,d5
+	move.w	d5,(a2)+
+	move.w	d0,(a2)+
+	addq.w	#4,d1			; lift + 4: the same pixels
+	lsl.w	#8,d1
+	addq.w	#2,d1			; kind 2: overlay, 32x32
+	move.w	d1,(a2)+
+	addq.w	#1,TD_NB
+.out:	movem.l	(a7)+,d0-d6/a0-a1
+	rts
+
+ti_ohole:	; d2/d3 = sprite top-left on screen -> Z set if its 32x32 box
+	; lies inside the hole: |x - CX| HH + |y - CY| HW <= HW HH
+	movem.l	d0-d1/d4-d5,-(a7)
+	moveq	#3,d5			; corners
+.c:	move.w	d2,d0
+	btst	#0,d5
+	beq.s	.x
+	add.w	#31,d0
+.x:	move.w	d3,d1
+	btst	#1,d5
+	beq.s	.y
+	add.w	#31,d1
+.y:	sub.w	#TI_CX,d0
+	bpl.s	.a
+	neg.w	d0
+.a:	mulu.w	#TI_HH,d0
+	sub.w	#TI_CY,d1
+	bpl.s	.b
+	neg.w	d1
+.b:	mulu.w	#TI_HW,d1
+	add.l	d1,d0
+	cmpi.l	#TI_HW*TI_HH,d0
+	bhi.s	.no
+	dbra	d5,.c
+	cmp.w	d0,d0
+	bra.s	.o
+.no:	andi	#$FB,ccr
+.o:	movem.l	(a7)+,d0-d1/d4-d5
+	rts
+
+ti_wword:	; d0 = cell x, d1 = y -> d0 = its word in the last picture,
+	; d1 = row*20 + col*2; carry set outside the window
+	sub.w	TD_IRX,d0
+	addq.w	#5,d0
+	cmpi.w	#10,d0
+	bcc.s	.no
+	sub.w	TD_IRY,d1
+	addq.w	#5,d1
+	cmpi.w	#10,d1
+	bcc.s	.no
+	mulu.w	#20,d0
+	add.w	d1,d1
+	add.w	d0,d1
+	lea	TI_WIN,a0
+	move.w	(a0,d1.w),d0		; (move clears carry)
+	rts
+.no:	ori	#1,ccr
+	rts
+
+ti_oneed:	; d4/d5 = figure cell -> d0 = 1 if a later cell close by
+	; rises above its feet: lift - lift f > 8 (dx + dy - 1), lift =
+	; 7 (h + props bit 7) + 4 props bit 8 (ti_olift)
+	movem.l	d1-d3/d6-d7/a0,-(a7)
+	move.w	d4,d0
+	move.w	d5,d1
+	bsr.s	ti_wword
+	bcs.s	.no
+	bsr.s	ti_olift
+	move.w	d0,d3			; lift f
+	moveq	#0,d6			; dx
+.dx:	moveq	#-2,d7			; dy
+.dy:	bsr.s	ti_ocand
+	bne.s	.nx
+	move.w	d4,d0
+	add.w	d6,d0
+	move.w	d5,d1
+	add.w	d7,d1
+	bsr.s	ti_wword
+	bcs.s	.nx
+	bsr.s	ti_olift
+	sub.w	d3,d0
+	ble.s	.nx
+	move.w	d6,d2
+	add.w	d7,d2
+	subq.w	#1,d2
+	asl.w	#3,d2
+	cmp.w	d2,d0
+	bgt.s	.yes
+.nx:	addq.w	#1,d7
+	cmpi.w	#10,d7
+	blt.s	.dy
+	addq.w	#1,d6
+	cmpi.w	#10,d6
+	blt.s	.dx
+.no:	moveq	#0,d0
+	bra.s	.out
+.yes:	moveq	#1,d0
+.out:	movem.l	(a7)+,d1-d3/d6-d7/a0
+	rts
+
+ti_olift:	; d0 = cell word -> d0 = its lift (uses d1, a0)
+	move.w	d0,d1
+	andi.w	#$1FF,d1
+	add.w	d1,d1
+	lea	DESC2,a0
+	move.w	(a0,d1.w),d1		; props
+	rol.w	#3,d0
+	andi.w	#7,d0
+	btst	#7,d1
+	beq.s	.a
+	addq.w	#1,d0
+.a:	mulu.w	#7,d0
+	btst	#8,d1
+	beq.s	.b
+	addq.w	#4,d0
+.b:	rts
+
+ti_ocand:	; d6 = dx, d7 = dy: Z set if a candidate (drawn later, close)
+	tst.w	d6
+	bne.s	.a
+	tst.w	d7
+	ble.s	.n			; same x: only y > Fy is later
+.a:	move.w	d6,d0
+	sub.w	d7,d0
+	bpl.s	.b
+	neg.w	d0
+.b:	cmpi.w	#2,d0
+	bgt.s	.n
+	cmp.w	d0,d0
+	rts
+.n:	andi	#$FB,ccr
+	rts
+
+ti_obuild:	; main loop, spare time: draw the requested overlay
+	tst.w	TD_OVPK
+	beq.w	.r
+	tst.w	TD_IRS			; the buffer belongs to a render
+	bne.w	.r
+	tst.w	TD_VALID
+	beq.w	.r
+	movem.l	d0-d7/a0-a6,-(a7)
+	move.w	LOC,d0			; new location: drop old overlays
+	cmp.w	TD_OLOC,d0
+	beq.s	.lru
+	move.w	d0,TD_OLOC
+	lea	TD_FC,a0
+	moveq	#TD_NFC-1,d1
+.fl:	move.w	(a0),d0
+	andi.w	#$C000,d0
+	cmpi.w	#$4000,d0
+	bne.s	.fn
+	move.w	#$FFFF,(a0)
+.fn:	addq.l	#4,a0
+	dbra	d1,.fl
+.lru:	lea	TD_FC,a0		; overlays in the cache: at most 4,
+	move.w	TD_NFCV,d1		; so figures keep their slots
+	subq.w	#1,d1
+	moveq	#0,d5
+.n:	move.w	(a0),d0
+	andi.w	#$C000,d0
+	cmpi.w	#$4000,d0
+	bne.s	.n1
+	addq.w	#1,d5
+.n1:	addq.l	#4,a0
+	dbra	d1,.n
+	lea	TD_FC,a0		; least recently used slot (td_img),
+	move.w	TD_NFCV,d1		; an overlay's if 4 are there
+	subq.w	#1,d1
+	moveq	#0,d3
+	moveq	#-1,d2
+	moveq	#0,d4
+.l:	cmpi.w	#4,d5
+	bcs.s	.l0
+	move.w	(a0),d0
+	andi.w	#$C000,d0
+	cmpi.w	#$4000,d0
+	bne.s	.l1
+.l0:	cmp.w	2(a0),d2
+	bls.s	.l1
+	move.w	2(a0),d2
+	move.w	d3,d4
+.l1:	addq.l	#4,a0
+	addq.w	#1,d3
+	dbra	d1,.l
+	move.w	d4,-(a7)		; slot
+	moveq	#5-1,d1			; clear the corner (td_extract)
+	lea	DECBUF+(2*36+16)*32,a0
+.cr:	moveq	#32-1,d0
+	movea.l	a0,a1
+.cl:	clr.l	(a1)+
+	dbra	d0,.cl
+	lea	36*32(a0),a0
+	dbra	d1,.cr
+	moveq	#0,d6			; candidates in painter order
+.dx:	moveq	#-2,d7
+.dy:	bsr.w	ti_ocand
+	bne.s	.nx
+	bsr.s	ti_odraw
+.nx:	addq.w	#1,d7
+	cmpi.w	#10,d7
+	blt.s	.dy
+	addq.w	#1,d6
+	cmpi.w	#10,d6
+	blt.s	.dx
+	move.w	(a7)+,d2		; upload, as td_extract (no VBlank
+	move.w	sr,-(a7)		; VDP writes in between)
+	ori.w	#$0700,sr
+	move.w	d2,d0
+	bsr.w	td_slot
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	DECBUF+(2*36+16)*32,a0
+	moveq	#4-1,d1
+.cc:	movea.l	a0,a1
+	moveq	#4-1,d3
+.cr2:	moveq	#8-1,d4
+	movea.l	a1,a3
+.cw:	move.l	(a3)+,VDP_DATA
+	dbra	d4,.cw
+	lea	36*32(a1),a1
+	dbra	d3,.cr2
+	lea	32(a0),a0
+	dbra	d1,.cc
+	move.w	(a7)+,sr
+	lsl.w	#2,d2
+	lea	TD_FC,a0
+	adda.w	d2,a0
+	move.w	TD_OVPK,(a0)
+	move.w	TD_STAMP,2(a0)
+	clr.w	TD_OVPK
+	movem.l	(a7)+,d0-d7/a0-a6
+.r:	rts
+
+ti_odraw:	; d6/d7 = dx/dy from TD_OVPX/Y: its stack and top as ti_loop
+	; draws them, at x = 192 + 14 (dx - dy), y = 24 + 8 (dx + dy) +
+	; lift - 7 k (the figure's image is at 192, 16)
+	movem.l	d6-d7,-(a7)
+	move.w	TD_OVPX,d0
+	add.w	d6,d0
+	move.w	TD_OVPY,d1
+	add.w	d7,d1
+	bsr.w	ti_wword
+	bcs.w	.out
+	move.w	d1,d5			; window offset row*20 + col*2
+	movea.w	d1,a2
+	move.w	d0,d4			; word
+	move.w	d6,d0
+	sub.w	d7,d0
+	mulu.w	#14,d0
+	add.w	#192,d0
+	movea.w	d0,a5			; X
+	move.w	d6,d0
+	add.w	d7,d0
+	asl.w	#3,d0
+	add.w	TD_OVPL,d0
+	add.w	#24,d0
+	movea.w	d0,a6			; Y of layer 0
+	move.w	d4,d2
+	andi.w	#$1FF,d2
+	move.w	d2,d0
+	add.w	d0,d0
+	lea	DESC2,a0
+	move.w	(a0,d0.w),d3		; props
+	tst.w	TD_IPH			; terrain phase of the picture
+	beq.s	.ph
+	btst	#9,d3
+	beq.s	.p1
+	addq.w	#1,d2
+.p1:	btst	#6,d3
+	beq.s	.ph
+	subq.w	#1,d2
+.ph:	movea.w	d2,a4			; stream
+	move.w	d4,d6
+	rol.w	#3,d6
+	andi.w	#7,d6			; h
+	move.w	d6,d0			; top wholly below the box: nothing
+	mulu.w	#7,d0
+	move.w	a6,d1
+	sub.w	d0,d1
+	cmpi.w	#48,d1			; (its records may still rise into it)
+	bge.w	.recs
+	tst.w	d6
+	beq.w	.top
+	move.w	d5,d0			; stack: window edge row / column, or
+	cmpi.w	#9*20,d0		; tile bit 9 (as ti_loop)
+	bcc.s	.stk
+	andi.l	#$FFFF,d0
+	divu.w	#20,d0
+	swap	d0
+	cmpi.w	#18,d0
+	beq.s	.stk
+	btst	#9,d4
+	beq.w	.top
+.stk:	btst	#5,d3
+	bne.s	.own
+	andi.w	#$1F,d3			; filler $22F + props & $1F
+	add.w	#$22F,d3
+	movea.w	d3,a3
+	add.w	d3,d3
+	lea	DESC2,a0
+	move.w	(a0,d3.w),d1
+	move.w	d1,d2
+	andi.w	#$1F,d2
+	move.w	d6,d7
+	sub.w	d2,d7			; e
+	moveq	#0,d5
+	btst	#5,d1
+	beq.s	.lp
+	move.w	d4,d5
+	rol.w	#4,d5
+	andi.w	#1,d5
+	bra.s	.lp
+.own:	movea.w	a4,a3
+	andi.w	#$1F,d3
+	move.w	d6,d7
+	sub.w	d3,d7
+	move.w	d4,d5
+	rol.w	#4,d5
+	andi.w	#1,d5
+.lp:	moveq	#0,d3			; layer k
+	bra.s	.lc
+.l:	move.w	d3,d0
+	mulu.w	#7,d0
+	move.w	a6,d2
+	sub.w	d0,d2			; y
+	move.w	a5,d1			; x
+	move.w	a3,d0
+	movea.w	d5,a0
+	cmp.w	d7,d3
+	bge.s	.cf
+	move.w	#$230,d0		; below the top layers: filler $230
+	suba.l	a0,a0
+.cf:	bsr.w	ti_e3
+	addq.w	#1,d3
+.lc:	cmp.w	d6,d3
+	bcs.s	.l
+.top:	move.w	d6,d0			; top: stream, y - 7 h, tile bit 12
+	mulu.w	#7,d0
+	move.w	a6,d2
+	sub.w	d0,d2
+	move.w	a5,d1
+	rol.w	#4,d4
+	andi.w	#1,d4
+	movea.w	d4,a0
+	move.w	a4,d0
+	bsr.w	ti_e3
+.recs:	move.w	TD_OVPX,d0		; its records (kinds 2 / 3: buildings,
+	add.w	2(a7),d0		; objects), as ti_frec: L = -lift
+	move.w	TD_OVPY,d1
+	add.w	6(a7),d1
+	bsr.w	ti_wword
+	bsr.w	ti_olift
+	neg.w	d0
+	move.w	d0,d3
+	lea	TI_WREC,a0
+	moveq	#0,d0
+	move.b	(a0,a2.w),d0		; second grid first
+	bsr.s	ti_orec
+	moveq	#0,d0
+	move.b	1(a0,a2.w),d0
+	bsr.s	ti_orec
+.out:	movem.l	(a7)+,d6-d7
+	rts
+
+ti_orec:	; d0 = record ($FF none), a5 = X, a6 = Y, d3 = L; all kept
+	cmpi.w	#$FF,d0
+	beq.s	.r
+	movem.l	d0-d7/a0-a6,-(a7)
+	mulu.w	#12,d0
+	add.l	#$FFB0CC,d0
+	movea.l	d0,a0
+	move.w	10(a0),d1
+	cmpi.w	#2,d1
+	beq.s	.k
+	cmpi.w	#3,d1
+	bne.s	.o
+.k:	move.w	d1,-(a7)
+	move.w	d3,-(a7)
+	move.w	a6,-(a7)
+	move.w	a5,-(a7)
+	move.l	a0,-(a7)
+	cmpi.w	#2,d1
+	bne.s	.an
+	jsr	($0232AC).l		; map_tile_at_offset
+	bra.s	.p
+.an:	jsr	($0232D2).l		; map_animated_tile
+.p:	lea	12(a7),a7
+.o:	movem.l	(a7)+,d0-d7/a0-a6
+.r:	rts
+
+ti_e3:	; $E358(stream d0, x d1, y d2, flag a0), all registers kept (the
+	; game's code keeps only d4-d7/a3-a4 that it uses)
+	movem.l	d0-d7/a0-a6,-(a7)
+	move.w	a0,-(a7)
+	move.w	d2,-(a7)
+	move.w	d1,-(a7)
+	move.w	d0,-(a7)
+	jsr	($00E358).l
+	addq.w	#8,a7
+	movem.l	(a7)+,d0-d7/a0-a6
 	rts
 
 ti_frec:	; d0 = record number, a6 = ti_loop's frame -> d1 = its kind;

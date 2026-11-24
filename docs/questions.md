@@ -85,3 +85,8 @@ Work continues on the default.
 - Measured (2026-11-23, 1 MB top-down build, explore route frames 6100–9100, arena grid `$FFB0BC`): the arena fits the screen, so the picture never scrolls or redraws (0 of 2,999 frames); figures slide as sprites in 1–3 px steps (148 × 1, 37 × 2, 32 × 3 px; 2 snaps). Movement there is already smooth; only the look differs from the original zoomed arena.
 - Default taken: keep the top-down picture in arenas (also in the iso view).
 - If the answer is different: an iso arena needs the game's zoomed arena draw rendered once (terrain only) onto the plane and zoomed figure images for the sprite cache (the 32×32 cache holds unzoomed figures) — about one card.
+
+## Q19 — iso occlusion (#278): cover more cases at some smoothness?
+- Question: occlusion overlays are built only while no new picture is waiting. Building them also with one waiting covers twice the cases (figure boxes vs the original: 1,801 → 1,116 px off on the explore route) but the Buc route's camera trail ≤ 1 cell drops 98.1 → 97.6 %.
+- Default taken: only while idle (jitter-free first).
+- If the answer is different: drop the `TD_IREQ` test before `ti_obuild` in `td_iso_render`.
