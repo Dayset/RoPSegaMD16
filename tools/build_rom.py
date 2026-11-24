@@ -278,8 +278,10 @@ def assemble(vasm: Path, src: Path, org: int, workdir: Path,
     workdir.mkdir(parents=True, exist_ok=True)
     binp = workdir / "feature.bin"
     lstp = workdir / "feature.lst"
+    # patches/<name>/vasm-opt: the feature takes vasm's optimisations
+    opt = [] if (src.parent / "vasm-opt").is_file() else ["-no-opt"]
     r = subprocess.run(
-        [str(vasm), "-Fbin", "-m68000", "-no-opt",
+        [str(vasm), "-Fbin", "-m68000", *opt,
          f"-DORGVAL=${org:X}", *[f"-D{d}" for d in defines],
          "-L", str(lstp), "-o", str(binp), str(src)],
         capture_output=True, text=True)

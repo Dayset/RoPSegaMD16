@@ -22,7 +22,11 @@ A patch ships as a feature, never as a hand-assembled ROM: a directory
 `patches/<name>/` holding `feature.s` (the new code) and `hooks.csv`
 (one hook per line: `addr,len,kind,target`, kind ∈ `jsr|jmp|bytes`).
 A `jsr`/`jmp` hook longer than 6 bytes is padded with `nop`s, so it
-can replace an 8-byte first instruction. `feature.s` must start with `org ORGVAL`; the build supplies ORGVAL as
+can replace an 8-byte first instruction.
+A feature with a `vasm-opt` file in its folder is assembled with
+vasm's default (safe) optimisations instead of `-no-opt`; topdown uses
+it and writes its RAM equates at `$FF8000+` sign-extended (`$FFFFDC00`)
+so they assemble as absolute short (#304: 1 MB blob 12,068 → 10,920 B). `feature.s` must start with `org ORGVAL`; the build supplies ORGVAL as
 the allocator-chosen address, so no source hardcodes where it lands.
 In-blob branches must be PC-relative (labels); absolute-long references
 to fixed game addresses are fine. For `jsr`/`jmp`, `target` is a label

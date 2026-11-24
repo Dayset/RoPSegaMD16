@@ -34,7 +34,9 @@ def equs(path=FEAT):
             env[m.group(1)] = eval(expr, {}, dict(env))
         except Exception:
             pass
-    return env
+    # RAM equs are written sign-extended ($FFFFDC00, abs.w): 24-bit bus
+    return {k: v & 0xFFFFFF if isinstance(v, int) and v > 0xFFFFFF else v
+            for k, v in env.items()}
 
 
 def s16(v):
