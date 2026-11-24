@@ -450,14 +450,21 @@ td_poll_pgc:
 ; hold the picture. Elsewhere the main-thread polls do it.
 td_vint:
 	addq.l	#1,$FF0010
+	ifd	HELDPC			; debug: where VBlank found the main
+	move.l	6(a7),($FF7E00).l	; thread (tools/md_held.py)
+	move.w	$FF0012,($FF7E04).l
+	move.w	TD_BUSY,($FF7E06).l
+	move.w	TD_VALID,($FF7E08).l
+	endif
 	cmpi.w	#$7D7D,TD_MAGIC		; cheap exits first (game timing)
-	bne.s	.q
+	bne.w	.q
 	tst.w	TD_BUSY
 	bne.s	.q
 	tst.w	TD_VALID
 	beq.s	.q
 	movem.l	d0-d7/a0-a6,-(a7)
 	move.l	66(a7),d0		; interrupted PC (regs 60, return 4, SR 2)
+
 	cmpi.l	#ti_tw0,d0		; td_tick's wait (main thread idle, no
 	bcs.s	.lst			; VDP sequence open): the full update
 	cmpi.l	#ti_tw1,d0		; here, in VBlank, not late
@@ -470,17 +477,54 @@ td_vint:
 	bcs.s	.l0
 	cmpi.l	#ti_rows,d0
 	bcs.s	.ns
-.l0:	lea	td_vwl(pc),a0
+.l0:	bsr.s	td_vin
+	beq.s	.ns
+	ifd	SIZE2M
+	lea	td_vhl(pc),a0		; a small VDP-free helper (C frame)
+.h:	move.l	(a0)+,d1		; called from one of those routines:
+	beq.s	.out			; its return address, 4(a6), decides
+	move.l	(a0)+,d2		; (#289; not on its first instruction,
+	cmp.l	d1,d0			; before its link)
+	bls.s	.h
+	cmp.l	d2,d0
+	bcc.s	.h
+	move.l	56(a7),d0		; interrupted a6 (even, in RAM)
+	btst	#0,d0
+	bne.s	.out
+	cmpi.l	#$FF0000,d0
+	bcs.s	.out
+	movea.l	d0,a0
+	move.l	4(a0),d0
+	bsr.s	td_vin
+	bne.s	.out
+	bra.s	.ns
+	endif
+	bra.s	.out
+.ns:	bsr.w	td_frame_ns
+.out:	movem.l	(a7)+,d0-d7/a0-a6
+.q:	rts
+td_vin:	; d0 = PC -> Z set if inside a td_vwl range (uses d1-d2, a0)
+	lea	td_vwl(pc),a0
 .l:	move.l	(a0)+,d1
-	beq.s	.out
+	beq.s	.no
 	move.l	(a0)+,d2
 	cmp.l	d1,d0
 	bcs.s	.l
 	cmp.l	d2,d0
 	bcc.s	.l
-.ns:	bsr.w	td_frame_ns
-.out:	movem.l	(a7)+,d0-d7/a0-a6
-.q:	rts
+	cmp.l	d0,d0
+	rts
+.no:	andi	#$FB,ccr
+	rts
+	ifd	SIZE2M
+td_vhl:	; VDP-free helpers with a link frame (callers checked)
+	dc.l	$012B82,$012BFC		; rand_next
+	dc.l	$032FFA,$033136		; npc_find_best_char
+	dc.l	$026076,$02619C		; npc_location_greet
+	dc.l	$026B08,$026B58		; world_location_lookup
+	dc.l	$020D9E,$020E7E		; map_scroll_adjust
+	dc.l	0
+	endif
 td_vwl:	; [start, end) of game routines with no VDP access of their own
 	dc.l	$00DD5C,$00DE02		; sys_lzss_decompress
 	dc.l	$01C176,$01C802		; map_chunk_cache_read, leader_spawn
@@ -494,6 +538,7 @@ td_vwl:	; [start, end) of game routines with no VDP access of their own
 	dc.l	ti_clear,ti_fend	; its fast form (ti_fast) + our clear
 	dc.l	ISOFAST,ISOFAST+$100000	; the fast form's stubs (2 MB ROM)
 	dc.l	$011DE8,$011E06		; clear_decode_buffer
+	dc.l	$00D98A,$00D996		; main_loop's 10,000-count delay loop
 	dc.l	$01BA4E,$01C0EC		; map_chunk_pos
 	dc.l	$0232AC,$02343A		; map_tile_at_offset, map_animated_tile
 	dc.l	ti_cstart,ti_cend	; td_iso_commit (VDP writes masked)
