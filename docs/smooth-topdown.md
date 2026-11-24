@@ -437,3 +437,24 @@ CPU per overworld picture 8.07 → 7.98 frames (about 1 %), walking
 frames without a picture update 50 / 1,539 vs 53 / 1,303 (no change).
 The music tick costs the 68000 about 1 % of its time: moving it to the
 Z80 would not make the picture measurably smoother. Not pursued.
+
+## Against The Ring of Perfection, same inputs (2026-11-24)
+
+Both ROMs from the overworld start (ours: explore route to frame 3700,
+iso view; Ring of Perfection: to 5600), then four zig-zag walks (150
+frames per direction, 1,740 frames each), `md_smooth.py` (ours
+`--hole`). Totals over the four:
+
+| | ours (2 MB, #304) | Ring of Perfection |
+|---|---|---|
+| Frames with the picture moving | 703 | 1,117 |
+| 1-px / 2-px steps | 436 / 267 | 849 / 266 (+2 × 3 px) |
+| Hitch frames (one-frame stops while moving) | 249 (35 %) | 312 (28 %) |
+| Wobble mean / p95, px | 0.45 / 1.17 | 0.35 / 1.02 |
+
+The routes do not walk identical paths (different code, different
+timing), so the gap is approximate: about 25 % on mean wobble, 15 %
+on p95, 7 points on hitches per moving frame. Our camera may not pass
+the picture on the plane by more than a cell, so it waits while a
+picture renders and then catches up; the Ring of Perfection redraws
+changed cells in place on a full screen and has no such wait.
