@@ -58,6 +58,7 @@ def main():
     walk = n0 = n1 = ntr = trs = 0
     bym = {}
     renders = 0
+    rbm = {}
     rframes = 0
     st = {1: [], 2: []}
     run = {1: 0, 2: 0}
@@ -99,6 +100,7 @@ def main():
         if prev_irs == 2 and irs != 2:
             renders += 1
             st[1].append(run[1])
+            rbm.setdefault(w(ram, 0xFF00AE), []).append(run[1])
             st[2].append(run[2])
             run = {1: 0, 2: 0}
         prev_irs = irs
@@ -122,9 +124,13 @@ def main():
     med = lambda v: sorted(v)[len(v) // 2] if v else 0
     print("walking frames %d  picture lag 0: %s, <=1 cell: %s  camera trail "
           "<=1 cell: %s (mean %.1f/16)  pictures %d  frames per picture: "
-          "render %s commit %s (median)"
+          "render %s commit %s (median), render mean %.2f"
           % (walk, pr(n0), pr(n1), pr(ntr), trs / walk if walk else 0,
-             renders, med(st[1]), med(st[2])))
+             renders, med(st[1]), med(st[2]),
+             sum(st[1]) / len(st[1]) if st[1] else 0))
+    for k, v in sorted(rbm.items()):
+        print("  %s: %d pictures, render mean %.2f frames"
+              % ({1: "overworld", 2: "rooms"}.get(k, k), len(v), sum(v) / len(v)))
     for k, (n, g) in sorted(bym.items()):
         print("  %s: %d walking frames, camera trail <=1 cell %.1f%%"
               % ({1: "overworld", 2: "rooms"}.get(k, k), n, 100.0 * g / n))
