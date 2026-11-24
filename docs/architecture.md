@@ -184,8 +184,9 @@ papered over.
   1 → `$147D0(0,0x20)`, 2 → `$147D0(0,0x3D)`, 3 →
   `$147D0(0,0x3B)`, 0 → `$12C20` (world-map draw), then `rts`.
   Helper `$15012` plays music `$173BC(1)` + `$15C08`. Sets
-  `$FF0128=-1` at `0x15512` (the "intro ran" flag — see `$1B5D6`
-  below).
+  `$FF0128=-1` at `0x15512` (the **demo-mode flag** — see
+  `docs/title-menu.md`, #272 O1; the `$D28E` `$D328` branch then
+  auto-walks the leader until a button press or the clock exit).
 - `$1B5D6` — new-game init (next section).
 - `$32D0E` — song picker: returns `0x11` (17) if the leader
   struct `+0x06` == 2 or 3, else 2; d0 is passed to `$173BC`.
@@ -217,9 +218,10 @@ papered over.
   `$FF0128` is written at exactly one site, `0x15512` (in the
   `$14FB6` intro flow) — so the fixed spawn is the no-intro path
   and the random spawn is the normal post-intro path.
-  **`$FF0128` is likely a "loaded/continued game" flag** — still
-  to confirm (medium confidence: it is the only write, and it
-  sits in the intro driver).
+  **`$FF0128` is the demo/attract-mode flag** — confirmed live
+  (#272 O1, `docs/title-menu.md`): set only by the crawl-timeout
+  path, it selects `$D28E`'s `$D328` auto-walk branch, which exits
+  on any A/B/C/Start press or when the clock `$FF0E16/10 == 3`.
 - Then `$25456(leader, …)` + `$2CDD4` + `$243D6(leader)`.
 
 ### Character creation $23B84 — the Arrow/Feather answer, and a puzzle
@@ -340,10 +342,12 @@ papered over.
 
 ### Input: where the VBlank joypad queue is consumed
 
-- The queue is the 16-entry ring `$FF001C` (head `$FF001A`,
-  tail `$FF001B`), filled by the VBlank handler `0x1272`,
-  popped by `$1350` (returns the next byte in d0 and
-  `$FF002C`; empty → returns the last value).
+- The queue is the 16-entry ring `$FF001C` (producer/write index
+  `$FF001A`, consumer/read index `$FF001B`), filled by the VBlank
+  handler `0x1272`, popped by `$1350` (returns the next byte in d0
+  and `$FF002C`; empty → returns the last value). See
+  `docs/title-menu.md` for the corrected roles and the ISR push
+  rules (#272).
 - `$1350` has **16 call sites**: 2 in `$D28E` itself
   (`0xD366`, `0xD398`); the menu-input block `$12F48`
   (`0x12F4C`, `0x12F6C`), `$12FB4` (`0x12FCA`), `$12FE8`
@@ -524,14 +528,20 @@ Called every frame (BlastEm log: `1272` hit; `EB772` hit). Full trace
    - If unchanged: `$FF0019--`; while it is non-zero, restore and
      `rte` (`0x134E`) — the same held byte is **not** re-queued.
    - When `$FF0019` reaches 0: push the byte into the 16-entry ring
-     buffer `$FF001C` at head `$FF001A`, unless full (head+1 & `$F`
-     == tail `$FF001B`); advance head; restore, `rte` (`0x1340`).
-   So a held button re-queues once every 3 frames — this is the
-   game's key-repeat. Three `rte` exits: `0x1312`, `0x1340`, `0x134E`.
+     buffer `$FF001C` at the producer index `$FF001A`, unless full
+     ((producer+1) & `$F` == consumer `$FF001B`); advance the
+     producer index; restore, `rte` (`0x1340`).
+   So a byte is pushed **~3 frames after it stabilises**; a held
+   button then re-pushes only once per **256 frames** (after the
+   push `$FF0019` is 0, so the next decrement wraps it to `$FF`,
+   which must count all the way down again) — **not** every 3
+   frames as previously written here. Three `rte` exits: `0x1312`,
+   `0x1340`, `0x134E`. (#272; corrected 2026-11-24.)
 5. `$1350` is a separate **polled pop** routine (`rts`, not `rte`,
    called from `$D28E`): returns the next queued byte into d0 and
-   `$FF002C`, advancing tail `$FF001B`; if the queue is empty it
-   returns the last value `$FF002C`. SR masked `$2700` during the
+   `$FF002C`, advancing the consumer index `$FF001B`; if the queue
+   is empty (`$FF001B == $FF001A`) it returns the last value
+   `$FF002C` (the echo defect). SR masked `$2700` during the
    pop, restored `$2000`.
 
 ### HBlank — 0x1270 (level 4), empty

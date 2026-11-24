@@ -75,9 +75,9 @@ The table above is byte counts — it can't track the work that matters now. Wha
 
 ### Still to figure out
 
-Start screen:
-- Write the player-visible flow: attract → title menu (?) → story screens → new game; pin the New Game / Continue choice and its routine (none documented yet).
-- Map the intro story steps: what `$123B0` returns 1/2/3 show, in order (`$14FB6` / `$147D0`).
+Start screen — resolved (#272, `docs/title-menu.md`):
+- Player-visible flow documented: attract → Naughty Dog logo (`$123B0`) → crawl → title menu (Continue/Start/Intro/Citizens/Credits, `$15012`, words at ROM `0x15BB8`) → story screens (`$147D0`) / new game / demo mode. New Game / Continue pinned: Continue → LOAD `$2F896`; Start → `$1B5D6`; confirm → fade loop → "The Adventure Begins" card (tileset rec 38, not a text string).
+- Intro story steps mapped: `$123B0` returns 1/2/3 → `$147D0` recs 32 (Intro) / 61 (Citizens) / 59 (Credits); 0 → world. `$123B0` itself is the Naughty Dog logo screen.
 
 NPC locations:
 - Build the list: which NPCs spawn in each of the 455 locations (`$CF1C0` placement table rendered per location; no list exists yet).
