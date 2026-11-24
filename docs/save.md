@@ -916,6 +916,15 @@ for the one-line `rom.db` fix. That gap affects tile-data reads,
 not the save: the EEPROM device at `$200000` is a separate map
 entry and works either way.
 
+**Superseded for builds (#284, 2026-11-23):** `make rom SIZE=2m`
+now adds `patches/sram-save` — the save moves to 128 odd bytes of
+header-declared SRAM at `$200001` under the product ID `ROPMD16`, so
+BlastEm no longer applies its `T-50176` entry (1 MB ROM + EEPROM)
+and needs no `rom.db` edit. Same 21 harness words in stock BlastEm
+and GPGX (`tools/md_save_check.py`). `--eeprom` builds the EEPROM
+variant above. For 4 MB, the same SRAM is switched over ROM through
+`$A130F1` (Sega mapper), which `sram-save` already writes.
+
 The 4 MB case is different and stays as step 3 says: a 4 MB ROM
 would occupy `$000000–$3FFFFF` and swallow `$200000`, so the
 EEPROM window would collide with ROM and 4 MB needs a different

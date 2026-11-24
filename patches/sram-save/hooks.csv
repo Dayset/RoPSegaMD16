@@ -1,0 +1,4 @@
+addr,len,kind,target
+0x042FD8,6,jmp,sr_none
+0x043012,8,jmp,sr_read
+0x0430F4,8,jmp,sr_write

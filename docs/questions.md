@@ -74,3 +74,8 @@ Work continues on the default.
 - Default taken: keep the ±4 hole (no change). Holding the camera to the measured range instead removes the edges but makes it trail ~2 cells (tested, #279 comment).
 - **Answered (Dayset, 2026-11-23): keep ±4 as the default;** the 6 % smaller hole would be acceptable. Not built.
 - If the answer is different: regenerate the frame data (`td_iso_frame.py`, its HW/HH/CY), re-run the edge checker; no other code changes.
+
+## Q17 — target platforms and ROM size
+- **Answered (Dayset, 2026-11-23):** play on BlastEm and other emulators, with the option of original hardware. Fitting the original 1 MB stays a goal of its own (fixing the 1992 bugs); spilling to 4 MB is acceptable.
+- Taken: every ROM larger than 1 MB saves to header SRAM under its own product ID (`patches/sram-save`, #284), so no emulator database entry is needed and SRAM repro boards / flash carts work; the 1 MB builds keep the original EEPROM. A 4 MB build needs no further save work (`$A130F1` is already toggled), only `SIZES` in `tools/build_rom.py`.
+- If the answer is different: `--eeprom` keeps the original save in a 2 MB build.
