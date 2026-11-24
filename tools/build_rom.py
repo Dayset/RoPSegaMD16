@@ -80,6 +80,7 @@ import csv
 import hashlib
 import json
 import re
+import os
 import shutil
 import subprocess
 import sys
@@ -492,6 +493,9 @@ def build(features, repo: Path, base_override: Path | None = None,
                               "fill": SECOND_MB_FILL,
                               "cls": "second-mb-code"}]
         alloc_base = base + bytes([SECOND_MB_FILL]) * (SIZES["2m"] - BASE_SIZE)
+    # debug builds: ROP_DEFINES="NAME=1 ..." adds assembler symbols
+    # (e.g. VERIFY283, patches/topdown). Never set for a release ROM.
+    defines += tuple(os.environ.get("ROP_DEFINES", "").split())
     allocator = Allocator(regions, alloc_base)
 
     rom = bytearray(base)

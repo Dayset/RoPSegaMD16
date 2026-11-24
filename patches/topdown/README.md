@@ -255,6 +255,23 @@ routes drift whenever tick timing changes):
   156, cutscene with text box). Buc route: trail rooms 97.8 → 98.9 %,
   picture within a cell 97.0 → 98.3 %, pictures 146 → 225; 1 MB build
   rooms 72.3 → 91.7 %, overworld 93.2 → 95.1 %.
+- **Own cell loop (#283, 2 MB).** `ti_loop` replaces `map_chunk_pos`'s
+  10x10 loop for the linear render: same tile word, props, phase step,
+  height stack, top call and figure records (kinds 2/3 drawn by the
+  game's routines, kind 1's grid move kept), no compiled-C frame
+  reloads, and no divides per cell (the y side of the chunk lookup and
+  of the figure-grid index is tabled per render, the x side per row).
+  CPU per overworld picture (no-time-limit debug build, explore route,
+  98 renders): 10.81 → 9.12 frames. Bitmap checked with the
+  `VERIFY283` debug build (`ROP_DEFINES="VERIFY283=1" make rom
+  FEATURES=topdown SIZE=2m`: each render drawn both ways, sums
+  compared): 150 of 150 on the scripted routes, 4 of ~390 different on
+  random walks, and those differ the same way when our loop draws twice
+  (the first pass changes state: `map_animated_tile` records, and room
+  scenes with kind-1 figures), so they are not loop differences. Buc
+  route: trail 98.9 → 99.4 %, picture within a cell 98.3 → 99.1 %.
+  Debug switches: `NOLIMIT` (no tick budget), `GAMELOOP` (the game's
+  loop), `VERIFYOWN` (ours twice).
 - Room: the remaining 10–14-frame stops are a slow picture (up to 35
   frames when many new tiles enter) committing while the camera is at
   the ±1 clamp of the old one: #279 (asymmetric range + edge checker).

@@ -205,7 +205,12 @@ TD_IHLD		equ TD_CT0+2	; finished render held back (ti_hold)
 TD_IHF		equ TD_IHLD+2	; frame the hold began
 TD_MSEEN	equ TD_IHF+2	; frame td_tick's wait saw last
 TD_EROW		equ TD_MSEEN+2	; 40 words: frame words of a window row
-TD_END2		equ TD_EROW+80
+TD_VSUM		equ TD_EROW+80	; VERIFY283: bitmap sum, own loop
+TD_VOK		equ TD_VSUM+4	; renders equal / different
+TD_VBAD		equ TD_VOK+2
+TD_VROW		equ TD_VBAD+2	; 23 longs: per-row sums, own loop
+TD_VDIF		equ TD_VROW+92	; last mismatch: row mask (long), IRX, IRY
+TD_END2		equ TD_VDIF+8
 TD_END		equ TD_END2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
@@ -2883,16 +2888,58 @@ td_iso_render:
 	endif
 .cl:	bsr.w	ti_clear
 .cont:	cmpi.w	#1,TD_IRS
-	bne.s	.com
+	bne.w	.com
 	bsr.w	ti_late			; no time left in this tick?
 	bne.w	.out
 	move.w	#1,TD_REND		; render rows TD_IROW.. (map_chunk_pos
 	clr.w	TD_IBAIL		; stops between rows when the tick's
-	move.w	TD_IRY,-(a7)		; time is up: ti_row)
+	ifd	SIZE2M			; time is up: ti_row)
+	tst.w	TD_ILIN			; 2 MB: our own cell loop (#283)
+	beq.w	.cpos
+	ifd	GAMELOOP		; (debug: the game's loop instead)
+	bra.w	.cpos
+	endif
+	ifd	VERIFY283
+	move.w	TD_INOB,-(a7)		; debug: whole render both ways,
+	move.w	#1,TD_INOB		; compare the bitmaps' sums
+	clr.w	TD_IROW
+	clr.w	TD_ICOLR
+	endif
+	bsr.w	ti_loop
+	ifd	VERIFY283
+	lea	TD_VROW,a1
+	bsr.w	ti_vsum
+	move.l	d0,TD_VSUM
+	bsr.w	ti_clear
+	clr.w	TD_IROW
+	clr.w	TD_ICOLR
+	ifd	VERIFYOWN		; (debug of the debug: ours twice)
+	bsr.w	ti_loop
+	else
+	move.w	TD_IRY,-(a7)
 	move.w	TD_IRX,-(a7)
 	jsr	(CHUNKPOS).l
 	addq.w	#4,a7
-	clr.w	TD_REND
+	endif
+	lea	TD_VROW+92,a1		; (scratch: overwritten next)
+	bsr.w	ti_vsum
+	addq.w	#1,TD_VOK
+	cmp.l	TD_VSUM,d0
+	beq.s	.veq
+	subq.w	#1,TD_VOK
+	addq.w	#1,TD_VBAD
+	bsr.w	ti_vdif
+.veq:	move.w	(a7)+,TD_INOB
+	clr.w	TD_IBAIL
+	endif
+	bra.s	.rdn
+.cpos:
+	endif
+	move.w	TD_IRY,-(a7)
+	move.w	TD_IRX,-(a7)
+	jsr	(CHUNKPOS).l
+	addq.w	#4,a7
+.rdn:	clr.w	TD_REND
 	tst.w	TD_IBAIL
 	bne.w	.out			; resume next tick
 	move.w	TD_ISH,d5
@@ -3157,6 +3204,362 @@ ti_fast:
 ; x'%E of its buffer, loaded by map_chunk_load if not cached), copied
 ; to $FF0248 as the game does. Otherwise the game's routine.
 ;=======================================================================
+	ifd	SIZE2M
+;=======================================================================
+; ti_loop — map_chunk_pos's 10 x 10 cell loop ($01BA4E) for our linear
+; render, without its compiled-C overhead (#283): the same tile word
+; (ti_tword = ti_ccr's lookup), props, phase step, height stack, top
+; call and figure records (kinds 2/3 drawn by the game's routines,
+; 0/1 skipped as ti_fig_ht / ti_fig_pr skip them, kind 1's grid move
+; kept); no spell step. Starts at TD_IROW (TD_ICOL if TD_ICOLR), stops
+; before a cell when the tick's time is up (TD_IBAIL). Terrain calls
+; go straight to ti_fast.
+;=======================================================================
+TL_YCH		equ -48			; 10 words: chunk row * chunks per row
+TL_YIN		equ -68			; 10 words: 2 E (y' mod E)
+TL_FY		equ -88			; 10 words: figure grid (H + y + sy) mod H
+TL_XCH		equ -90			; row: chunk column
+TL_XIN		equ -92			; row: 2 (x' mod E)
+TL_FX		equ -96			; row: figure grid 32 ((W + x + sx) mod W)
+TL_CB		equ -98			; chunk number base (rooms: LOC + $4D)
+ti_loop:
+	link	a6,#-100		; -2 stream, -4 tile, -6 props, -8 x,
+	movem.l	d4-d7/a3-a4,-(a7)	; -10 y, -12 L, -14 e, -16 d3, -18 h,
+	pea	-24(a6)			; -20 rec1, -24/-22 scroll offset,
+	jsr	($020D58).l		; -28 grid index (long)
+	addq.w	#4,a7			; map_scroll_offset
+	movea.l	GRIDPTR,a1		; per render: the 10 y values
+	clr.w	TL_CB(a6)		; (ti_ccr's arithmetic, divu once per
+	cmpi.w	#$FFFF,LOC		; column, not per cell)
+	beq.s	.cb
+	move.w	LOC,d0
+	add.w	#$4D,d0
+	move.w	d0,TL_CB(a6)
+.cb:	moveq	#0,d5
+.yt:	move.w	TD_IRY,d1
+	add.w	d5,d1
+	subq.w	#5,d1
+	move.w	d1,d2
+	add.w	2(a1),d1		; y' = y mod H (ti_ccr: + H, - H ...)
+.ym:	cmp.w	2(a1),d1
+	blt.s	.yd
+	sub.w	2(a1),d1
+	bra.s	.ym
+.yd:	andi.l	#$FFFF,d1
+	divu.w	4(a1),d1
+	move.w	d5,d0
+	add.w	d0,d0
+	lea	TL_YCH(a6),a0
+	move.w	d1,d3
+	mulu.w	6(a1),d3
+	move.w	d3,(a0,d0.w)
+	swap	d1
+	mulu.w	4(a1),d1
+	add.w	d1,d1
+	lea	TL_YIN(a6),a0
+	move.w	d1,(a0,d0.w)
+	add.w	2(a1),d2		; figure grid: (H + y + sy) mod H, divs
+	add.w	-22(a6),d2		; as map_chunk_pos
+	ext.l	d2
+	divs.w	2(a1),d2
+	swap	d2
+	lea	TL_FY(a6),a0
+	move.w	d2,(a0,d0.w)
+	addq.w	#1,d5
+	cmpi.w	#10,d5
+	bcs.s	.yt
+	move.w	TD_IROW,d4
+.row:	bsr.w	.xr
+	moveq	#0,d5
+	tst.w	TD_ICOLR
+	beq.s	.cell
+	move.w	TD_ICOL,d5
+	clr.w	TD_ICOLR
+.cell:	bsr.w	ti_late
+	beq.s	.go
+	move.w	d4,TD_IROW
+	move.w	d5,TD_ICOL
+	move.w	#1,TD_ICOLR
+	move.w	#1,TD_IBAIL
+	bra.w	.x
+.go:	move.w	TD_IRX,d7		; world cell x = cx + row - 5,
+	add.w	d4,d7			; y = cy + col - 5
+	subq.w	#5,d7
+	move.w	TD_IRY,d0
+	add.w	d5,d0
+	subq.w	#5,d0
+	movea.w	d0,a3
+	move.w	d5,d0		; tile word: chunk YCH + XCH + base, at
+	add.w	d0,d0		; YIN + XIN in it (ti_ccr's lookup)
+	lea	TL_YCH(a6),a0
+	move.w	(a0,d0.w),d1
+	add.w	TL_XCH(a6),d1
+	add.w	TL_CB(a6),d1
+	lea	TL_YIN(a6),a0
+	move.w	(a0,d0.w),d3
+	add.w	TL_XIN(a6),d3
+	moveq	#0,d2
+	move.w	d1,d2
+	lsl.l	#2,d2
+	lea	($FFA896).l,a0		; chunk buffer pointers
+	move.l	(a0,d2.l),d0
+	bne.s	.hv
+	movem.l	d1-d3,-(a7)
+	move.w	d1,-(a7)
+	jsr	($019692).l		; map_chunk_load
+	addq.w	#2,a7
+	movem.l	(a7)+,d1-d3
+	lea	($FFA896).l,a0
+	move.l	(a0,d2.l),d0
+.hv:	movea.l	d0,a0
+	move.w	(a0,d3.w),d0
+	move.w	d0,($FF0248).l		; (as map_chunk_cache_read leaves it)
+	move.w	d0,-4(a6)
+	andi.w	#$1FF,d0
+	move.w	d0,-2(a6)
+	add.w	d0,d0
+	lea	($05EDC4).l,a0		; props
+	move.w	(a0,d0.w),d2
+	move.w	d2,-6(a6)
+	move.w	d4,d0			; X / Y tables
+	mulu.w	#20,d0
+	add.w	d5,d0
+	add.w	d5,d0
+	lea	XTAB,a0
+	move.w	(a0,d0.w),-8(a6)
+	lea	XTAB+200,a0		; (the Y table follows it)
+	move.w	(a0,d0.w),-10(a6)
+	tst.w	$FF0092			; terrain phase: props bit 9 -> +1,
+	beq.s	.ph			; bit 6 -> -1
+	btst	#9,d2
+	beq.s	.p1
+	addq.w	#1,-2(a6)
+.p1:	btst	#6,d2
+	beq.s	.ph
+	subq.w	#1,-2(a6)
+.ph:	move.w	-4(a6),d0		; height (tile bits 13-15)
+	rol.w	#3,d0
+	andi.w	#7,d0
+	move.w	d0,-18(a6)
+	moveq	#0,d1			; L = -(7 (h + props bit 7) + 4 bit 8)
+	btst	#7,d2
+	beq.s	.l7
+	moveq	#1,d1
+.l7:	add.w	d0,d1
+	mulu.w	#7,d1
+	btst	#8,d2
+	beq.s	.l8
+	addq.w	#4,d1
+.l8:	neg.w	d1
+	move.w	d1,-12(a6)
+	tst.w	d0
+	beq.w	.top
+	cmpi.w	#9,d4			; height stack: edge row / column, or
+	beq.s	.stk			; tile bit 9
+	cmpi.w	#9,d5
+	beq.s	.stk
+	move.w	-4(a6),d1
+	btst	#9,d1
+	beq.w	.top
+.stk:	btst	#5,d2
+	bne.s	.own
+	andi.w	#$1F,d2			; filler stream $22F + props & $1F
+	add.w	#$22F,d2
+	movea.w	d2,a4
+	add.w	d2,d2
+	lea	($05EDC4).l,a0
+	move.w	(a0,d2.w),d1		; its props
+	move.w	d1,d2
+	andi.w	#$1F,d2
+	sub.w	d2,d0
+	move.w	d0,-14(a6)
+	moveq	#0,d2
+	btst	#5,d1
+	beq.s	.d0
+	move.w	-4(a6),d2
+	rol.w	#4,d2
+	andi.w	#1,d2
+.d0:	move.w	d2,-16(a6)
+	bra.s	.lp
+.own:	movea.w	-2(a6),a4		; the stream itself
+	andi.w	#$1F,d2
+	sub.w	d2,d0
+	move.w	d0,-14(a6)
+	move.w	-4(a6),d2
+	rol.w	#4,d2
+	andi.w	#1,d2
+	move.w	d2,-16(a6)
+.lp:	moveq	#0,d6
+	bra.s	.lc
+.l:	move.w	d6,d0
+	muls.w	#7,d0
+	move.w	-10(a6),d1
+	sub.w	d0,d1
+	cmp.w	-14(a6),d6
+	blt.s	.f
+	move.w	-16(a6),-(a7)
+	move.w	d1,-(a7)
+	move.w	-8(a6),-(a7)
+	move.w	a4,-(a7)
+	bra.s	.cf
+.f:	clr.w	-(a7)			; below the top layers: filler $230
+	move.w	d1,-(a7)
+	move.w	-8(a6),-(a7)
+	move.w	#$230,-(a7)
+.cf:	bsr.w	ti_fast
+	addq.w	#8,a7
+	addq.w	#1,d6
+.lc:	cmp.w	-18(a6),d6
+	bcs.s	.l
+.top:	move.w	-4(a6),d0		; top: stream, y - 7 h, tile bit 12
+	rol.w	#4,d0
+	andi.w	#1,d0
+	move.w	d0,-(a7)
+	move.w	-18(a6),d0
+	mulu.w	#7,d0
+	move.w	-10(a6),d1
+	sub.w	d0,d1
+	move.w	d1,-(a7)
+	move.w	-8(a6),-(a7)
+	move.w	-2(a6),-(a7)
+	bsr.w	ti_fast
+	addq.w	#8,a7
+	move.w	d5,d0		; figure grids: index FX + FY
+	add.w	d0,d0
+	lea	TL_FY(a6),a0
+	move.w	(a0,d0.w),d1
+	ext.l	d1
+	move.l	TL_FX(a6),d0
+	add.l	d1,d0
+	move.l	d0,-28(a6)
+	lea	($FFB36C).l,a0
+	moveq	#0,d1
+	move.b	(a0,d0.l),d1
+	move.w	d1,-20(a6)		; rec1 (first grid)
+	lea	($FFB76C).l,a0
+	moveq	#0,d6
+	move.b	(a0,d0.l),d6		; rec2 (second grid), drawn first
+	cmpi.w	#$FF,d6
+	beq.s	.r1
+	move.w	d6,d0
+	bsr.w	ti_frec
+.r1:	move.w	-20(a6),d0
+	cmpi.w	#$FF,d0
+	beq.s	.nx
+	bsr.w	ti_frec
+	cmpi.w	#1,d1			; kind 1 in the first grid, nothing in
+	bne.s	.nx			; the second: the record moves there
+	cmpi.w	#$FF,d6
+	bne.s	.nx
+	move.l	-28(a6),d0
+	lea	($FFB36C).l,a0
+	move.b	#$FF,(a0,d0.l)
+	lea	($FFB76C).l,a0
+	move.b	-19(a6),(a0,d0.l)
+.nx:	addq.w	#1,d5
+	cmpi.w	#10,d5
+	blt.w	.cell
+	addq.w	#1,d4
+	move.w	d4,TD_IROW
+	cmpi.w	#10,d4
+	blt.w	.row
+.x:	movem.l	(a7)+,d4-d7/a3-a4
+	unlk	a6
+	rts
+.xr:	movea.l	GRIDPTR,a1		; per row: x' = x mod W, its chunk
+	move.w	TD_IRX,d1		; column and offset; figure grid
+	add.w	d4,d1			; 32 ((W + x + sx) mod W)
+	subq.w	#5,d1
+	move.w	d1,d2
+	add.w	(a1),d1
+.xm:	cmp.w	(a1),d1
+	blt.s	.xd
+	sub.w	(a1),d1
+	bra.s	.xm
+.xd:	andi.l	#$FFFF,d1
+	divu.w	4(a1),d1
+	move.w	d1,TL_XCH(a6)
+	swap	d1
+	add.w	d1,d1
+	move.w	d1,TL_XIN(a6)
+	add.w	(a1),d2
+	add.w	-24(a6),d2
+	ext.l	d2
+	divs.w	(a1),d2
+	swap	d2
+	ext.l	d2
+	asl.l	#5,d2
+	move.l	d2,TL_FX(a6)
+	rts
+
+ti_frec:	; d0 = record number, a6 = ti_loop's frame -> d1 = its kind;
+	; kinds 2 / 3 drawn (map_tile_at_offset / map_animated_tile)
+	mulu.w	#12,d0
+	add.l	#$FFB0CC,d0
+	movea.l	d0,a0
+	move.w	10(a0),d1
+	cmpi.w	#2,d1
+	beq.s	.k
+	cmpi.w	#3,d1
+	bne.s	.o
+.k:	move.w	d1,-(a7)
+	move.w	-12(a6),-(a7)		; (record, x, y, L) as the game
+	move.w	-10(a6),-(a7)
+	move.w	-8(a6),-(a7)
+	move.l	a0,-(a7)
+	cmpi.w	#2,d1
+	bne.s	.an
+	jsr	($0232AC).l		; map_tile_at_offset
+	bra.s	.p
+.an:	jsr	($0232D2).l		; map_animated_tile
+.p:	lea	10(a7),a7
+	move.w	(a7)+,d1
+.o:	rts
+
+	ifd	VERIFY283
+ti_vsum:	; -> d0 = sum of the decode buffer's longs; per 8-line row
+	; sums to (a1) (23 longs)
+	movem.l	d2-d3,-(a7)
+	lea	DECBUF,a0
+	moveq	#0,d0
+	moveq	#23-1,d3
+.r:	moveq	#0,d2
+	move.w	#8*144/4-1,d1
+.s:	add.l	(a0)+,d2
+	rol.l	#1,d2
+	dbra	d1,.s
+	move.l	d2,(a1)+
+	add.l	d2,d0
+	rol.l	#3,d0
+	dbra	d3,.r
+	movem.l	(a7)+,d2-d3
+	rts
+ti_vdif:	; rows whose sums differ (map_chunk_pos's just written after
+	; ours: sums again) -> TD_VDIF mask, TD_VDIF+4/6 = IRX/IRY
+	movem.l	d2-d3,-(a7)
+	lea	DECBUF,a0
+	lea	TD_VROW,a1
+	moveq	#0,d3
+	moveq	#0,d1
+.r:	moveq	#0,d2
+	move.w	#8*144/4-1,d0
+.s:	add.l	(a0)+,d2
+	rol.l	#1,d2
+	dbra	d0,.s
+	cmp.l	(a1)+,d2
+	beq.s	.e
+	bset	d1,d3
+.e:	addq.w	#1,d1
+	cmpi.w	#23,d1
+	bcs.s	.r
+	move.l	d3,TD_VDIF
+	move.w	TD_IRX,TD_VDIF+4
+	move.w	TD_IRY,TD_VDIF+6
+	movem.l	(a7)+,d2-d3
+	rts
+	endif
+	endif
+
 ti_ccr:
 	ifd	SIZE2M
 	tst.w	TD_REND
@@ -3224,6 +3627,9 @@ ti_fend:
 
 ti_late:	; -> Z clear if this tick has < 1 frame left (and limits apply);
 	; the render checks it per cell, the commit per row (< 0.5 frame)
+	ifd	NOLIMIT			; (debug: CPU per picture)
+	bra.s	.no
+	endif
 	tst.w	TD_INOB
 	bne.s	.no
 	move.w	FRAME,d0
