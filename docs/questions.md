@@ -62,6 +62,7 @@ Work continues on the default.
 - Question: draw cell height (0–7 levels) as raised tiles with shadowed south faces (mock-up `docs/img/topdown-height-mock.png`), keep the view flat, or tint by height only?
 - Default taken: flat (no change); the mock-up and `tools/td_height_mock.py` are in.
 - **Answered (Dayset, 2026-11-23): tinted.** Built in #264: height-0 cells shadowed, raised cells normal; the HUD band (screen lines ≥ 144) stays untinted.
+- **Revised (Dayset, 2026-11-23): raised.** "No height visible, no structures standing — all flat and shaded a bit." Built in #297: tops lifted 8 px per level, shadowed south faces, painter order, figures lifted; replaces the tint.
 - If the answer is different: raised tiles needs shadow/highlight mode, a painter-order cell draw (a cell's top can cover up to 3.5 cells to its north), streaming lookahead of 4 rows, and figures lifted by their cell's height — about one card.
 
 ## Q15 — smooth iso (#252): floating island in a fixed frame, or terrain edge to edge?
