@@ -65,3 +65,30 @@ byte changes the builder makes. `song_check_rs.py` (the RS-aware song
 parser the builder verifies with) and `tools/checksum.py` are vendored
 in this dir so the builder is self-contained — `checksum.py` is
 identical to the repo's `tools/checksum.py`.
+
+## Feature build
+
+The fix is also a `FEATURES=` feature, so it composes with the other
+builds instead of needing a manual combine step:
+
+```sh
+make rom FEATURES=academy-song13            # v4 ROM, MD5 97e12dcc…
+make rom FEATURES=topdown,academy-song13    # smooth ROM + v4, MD5 beb98c05…
+```
+
+`data.csv` is the feature's data: one row per changed byte run from
+the v4 ROM vs the original (428 rows, 9,488 bytes), applied by
+`tools/build_rom.py` after the hooks and before the checksums. The
+two checksum fields (header `0x18E` and the runtime immediate
+`0xFD098`) are left out on purpose — the build recomputes both. The
+committed `rings-of-power-academy-song13.ips` is the feature build's
+IPS; `tools/tests/test_build_rom.py` checks the build against it and
+against both MD5s above, and that the combined build is the same in
+either feature order.
+
+To regenerate `data.csv` after any future fix version: rebuild the
+fixed ROM with `fix_song13_v4.py`, diff it against the original ROM,
+and keep every changed run except the two checksum fields. The
+change sets are disjoint from the topdown feature (Academy: song
+`0xF6844–0xF9044` + voices `~0xECE82`; topdown: hooks `0x127A–0x246C0`
++ blob `0xFD0CC–0xFFB73`), so the two compose in either order.

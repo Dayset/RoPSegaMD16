@@ -21,6 +21,11 @@ GNU as rewrites some encodings (`cmp.w #imm,Dn` becomes `cmpi.w`, and other "opt
 A patch ships as a feature, never as a hand-assembled ROM: a directory
 `patches/<name>/` holding `feature.s` (the new code) and `hooks.csv`
 (one hook per line: `addr,len,kind,target`, kind ∈ `jsr|jmp|bytes`).
+A data-only feature instead holds `data.csv` (`addr,hex` rows, applied
+after the hooks); a feature may also hold both forms. Data rows are
+validated like hooks: in bounds (first megabyte), no overlap with a
+blob, a hook, or another row, and never on the checksum fields (the
+build recomputes both checksums).
 A `jsr`/`jmp` hook longer than 6 bytes is padded with `nop`s, so it
 can replace an 8-byte first instruction.
 A feature with a `vasm-opt` file in its folder is assembled with

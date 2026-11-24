@@ -19,7 +19,8 @@
 - `md_video.py` — side-by-side 60 fps MP4 of ROMs on routes.
 - `build_rom.py` — feature build: `make rom FEATURES=a,b,c` (issue #239).
   Assembles each `patches/<name>/feature.s` into a free-space allocator
-  (regions from `disasm/regions.csv`), applies `patches/<name>/hooks.csv`,
-  fails on hook/blob collisions or split instructions, fixes both
-  checksums, writes `build/rop-<features>.rom` + `.ips` + `.manifest.json`.
+  (regions from `disasm/regions.csv`), applies `patches/<name>/hooks.csv`
+  (and `patches/<name>/data.csv` for data-only features), fails on
+  hook/blob/data collisions or split instructions, fixes both checksums,
+  writes `build/rop-<features>.rom` + `.ips` + `.manifest.json`.
   See `docs/toolchain.md` for the feature format.

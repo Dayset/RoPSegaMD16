@@ -13,6 +13,9 @@ vasm is absent:
     with both hook addresses named;
   - `music-off` builds byte-identical to applying the existing
     patches/music-off IPS;
+  - `academy-song13` (data-only feature, data.csv) builds
+    byte-identical to the v4 ROM and to its committed IPS, and
+    `topdown,academy-song13` builds the combined ROM in either order;
   - an empty feature list builds the byte-identical original ROM.
   - `--size 2m` builds the 2 MB container (issue #252): first MB
     byte-identical, second MB 0xFF-filled, header ROM end
@@ -32,7 +35,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from build_rom import (Allocator, BuildError, ORIGINAL_MD5, apply_ips,  # noqa: E402
-                       build, check_hooks, find_vasm, md5_hex, write_ips)
+                       build, check_data_rows, check_hooks, find_vasm,
+                       md5_hex, parse_data_csv, write_ips)
 from checksum import (compute_checksum, compute_runtime_checksum,  # noqa: E402
                       stored_checksum, stored_runtime_checksum)
 
@@ -45,6 +49,8 @@ STARTS = {0x173C0, 0x173C6, 0x173CA, 0x173CC, 0x173D2, 0x173D4, 0x173D6,
           0x173D8, 0x173DA}
 
 MUSIC_OFF_MD5 = "513228feab8e82ea17422695c11d5504"  # existing IPS applied
+ACADEMY_V4_MD5 = "97e12dccbbec650a0067190a5aa7cf0c"  # fix_song13_v4.py output
+ACADEMY_TOPDOWN_MD5 = "beb98c0567443829180cb0004e489f37"  # topdown + v4
 
 TEST_FEATURE_S = """\torg ORGVAL\ntest_target:\n\trts\n"""
 
@@ -142,6 +148,80 @@ def test_non_overlapping_hooks_pass():
              "g": {"start": 0xFD0D0, "end": 0xFD0D4, "size": 4,
                     "labels": {"test_target": 0xFD0D0}}}
     check_hooks(hooks, STARTS, blobs)  # must not raise
+
+
+def _data(addr, length, feature="f"):
+    return {"addr": addr, "len": length, "bytes": bytes(length),
+            "feature": feature, "source": "<test>"}
+
+
+def test_data_overlap_fails():
+    rows = [_data(0x100, 16), _data(0x10C, 16)]
+    try:
+        check_data_rows(rows, {}, [])
+    except BuildError as e:
+        assert "data collision" in str(e), str(e)
+    else:
+        raise AssertionError("overlapping data rows did not fail")
+
+
+def test_data_blob_overlap_fails():
+    try:
+        check_data_rows([_data(0xFD0CC, 8)], _blobs(), [])
+    except BuildError as e:
+        assert "data collision" in str(e), str(e)
+    else:
+        raise AssertionError("data/blob overlap did not fail")
+
+
+def test_data_hook_overlap_fails():
+    try:
+        check_data_rows([_data(0x173C0, 4)], {}, [_hook(0x173C0, 6)])
+    except BuildError as e:
+        assert "data collision" in str(e), str(e)
+    else:
+        raise AssertionError("data/hook overlap did not fail")
+
+
+def test_data_checksum_field_fails():
+    # Header checksum (0x18E-0x18F) and runtime immediate (0xFD098-0xFD09B)
+    # are recomputed by the build; a data row there would be overwritten.
+    for addr, length in ((0x18E, 2), (0x18D, 4), (0xFD098, 4),
+                         (0xFD09A, 2)):
+        try:
+            check_data_rows([_data(addr, length)], {}, [])
+        except BuildError as e:
+            assert "checksum field" in str(e), str(e)
+        else:
+            raise AssertionError(
+                f"data on checksum field ${addr:X} did not fail")
+
+
+def test_data_out_of_bounds_fails():
+    for addr, length in ((0x100000, 2), (0xFFFF0, 0x20), (-2, 4)):
+        try:
+            check_data_rows([_data(addr, length)], {}, [])
+        except BuildError as e:
+            assert "outside the 1 MB base" in str(e), str(e)
+        else:
+            raise AssertionError(
+                f"out-of-bounds data ${addr:X}+{length} did not fail")
+
+
+def test_data_clean_passes():
+    rows = [_data(0x100, 16), _data(0x200, 16, feature="g")]
+    check_data_rows(rows, _blobs(), [_hook(0x173C0, 6)])  # must not raise
+
+
+def test_parse_data_csv_round_trip():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "data.csv"
+        p.write_text("addr,hex\n0x100,01020304\n# a comment\n\n0x200,ff00\n")
+        rows = parse_data_csv(p)
+        assert [(r["addr"], r["bytes"]) for r in rows] == [
+            (0x100, bytes.fromhex("01020304")),
+            (0x200, bytes.fromhex("ff00"))]
 
 
 def test_allocator_first_fit_no_collision():
@@ -253,6 +333,69 @@ def test_music_off_build_matches_existing_ips():
                          base_override=find_rom(),
                          out_dir=Path(td) / "build")
         assert manifest["md5"] == MUSIC_OFF_MD5, manifest["md5"]
+
+
+def test_academy_song13_build_matches_v4():
+    """Data-only feature: the academy-song13 data.csv build must be
+    byte-identical to fix_song13_v4.py's output ROM."""
+    if _skip_if_no_toolchain():
+        return
+    with tempfile.TemporaryDirectory() as td:
+        manifest = build(["academy-song13"], REPO,
+                         base_override=find_rom(),
+                         out_dir=Path(td) / "build")
+        assert manifest["md5"] == ACADEMY_V4_MD5, manifest["md5"]
+        assert len(manifest["data"]) == 428, len(manifest["data"])
+        assert manifest["hooks"] == [] and manifest["blobs"] == []
+
+
+def test_academy_song13_build_matches_existing_ips():
+    if _skip_if_no_toolchain():
+        return
+    orig = find_rom().read_bytes()
+    expect = md5_hex(apply_ips(
+        orig, REPO / "patches" / "academy-song13"
+        / "rings-of-power-academy-song13.ips"))
+    assert expect == ACADEMY_V4_MD5, expect
+    with tempfile.TemporaryDirectory() as td:
+        manifest = build(["academy-song13"], REPO,
+                         base_override=find_rom(),
+                         out_dir=Path(td) / "build")
+        assert manifest["md5"] == ACADEMY_V4_MD5, manifest["md5"]
+
+
+def test_topdown_academy_combined_build():
+    """topdown + academy-song13 in either order builds the same
+    combined ROM (the two change sets are disjoint)."""
+    if _skip_if_no_toolchain():
+        return
+    with tempfile.TemporaryDirectory() as td:
+        m1 = build(["topdown", "academy-song13"], REPO,
+                   base_override=find_rom(), out_dir=Path(td) / "build1")
+        m2 = build(["academy-song13", "topdown"], REPO,
+                   base_override=find_rom(), out_dir=Path(td) / "build2")
+        assert m1["md5"] == ACADEMY_TOPDOWN_MD5, m1["md5"]
+        assert m2["md5"] == ACADEMY_TOPDOWN_MD5, m2["md5"]
+
+
+def test_feature_with_no_files_fails():
+    if _skip_if_no_toolchain():
+        return
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        (tmp / "patches" / "empty-feature").mkdir(parents=True)
+        d = tmp / "disasm" / "src"
+        d.mkdir(parents=True)
+        (tmp / "disasm" / "regions.csv").symlink_to(
+            REPO / "disasm" / "regions.csv")
+        (d / "rop.s").symlink_to(REPO / "disasm" / "src" / "rop.s")
+        try:
+            build(["empty-feature"], tmp,
+                  base_override=find_rom(), out_dir=tmp / "build")
+        except BuildError as e:
+            assert "no " in str(e) and " or " in str(e), str(e)
+        else:
+            raise AssertionError("feature with no files did not fail")
 
 
 def test_ips_round_trip_longer_patched():
@@ -422,7 +565,18 @@ def main():
              test_ips_apply_extends_short_input,
              test_overlapping_hook_feature_fails_end_to_end,
              test_long_jmp_hook_pads_with_nops,
+             test_data_overlap_fails,
+             test_data_blob_overlap_fails,
+             test_data_hook_overlap_fails,
+             test_data_checksum_field_fails,
+             test_data_out_of_bounds_fails,
+             test_data_clean_passes,
+             test_parse_data_csv_round_trip,
              test_music_off_build_matches_existing_ips,
+             test_academy_song13_build_matches_v4,
+             test_academy_song13_build_matches_existing_ips,
+             test_topdown_academy_combined_build,
+             test_feature_with_no_files_fails,
              test_empty_build_is_original,
              test_two_mb_build_layout,
              test_two_mb_build_sram_save,

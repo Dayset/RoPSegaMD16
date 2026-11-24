@@ -17,6 +17,15 @@ A feature is a directory `patches/<name>/` holding:
                 `bytes` (writes the hex byte string in target verbatim,
                 len must equal its byte count). For jsr/jmp, target is a
                 label defined in feature.s.
+  data.csv   — one data write per line: `addr,hex` (header row).
+                addr is hex (0x prefix or bare hex); hex is the bytes
+                to write at that address, as a hex string. A feature
+                may be data-only (data.csv, no feature.s/hooks.csv),
+                code-only (feature.s + hooks.csv), or both. Data writes
+                are validated like hooks: in bounds (first megabyte),
+                no overlap with another data write, a blob or a hook,
+                and never on the checksum fields (the build recomputes
+                both checksums after applying them).
 
 The build:
   1. Builds the byte-identical base (`make build`) and refuses to
@@ -31,7 +40,10 @@ The build:
      splits an instruction (checked against the `; $ADDR` instruction
      boundaries in `disasm/src/rop.s`), a hook target label is not
      inside its feature's blob, or a blob collides with a hook or
-     another blob.
+     another blob. Data rows (data.csv) are applied right after the
+     hooks, under the same collision discipline (no overlap with a
+     blob, a hook, or another data row, and never on the checksum
+     fields, which step 4 recomputes).
   4. Fixes both checksums (`tools/checksum.py fix-all` order: runtime
      immediate first, header last) and writes
      `build/rop-<features>.rom`, `build/rop-<features>.ips` and
@@ -90,7 +102,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from checksum import fix_checksum, fix_runtime_checksum  # noqa: E402
+from checksum import RT_IMM_ADDR, fix_checksum, fix_runtime_checksum  # noqa: E402
 
 ORIGINAL_MD5 = "30c18fdbe2183f64702ae9f1a45d63f9"
 BASE_SIZE = 0x100000
@@ -100,6 +112,11 @@ SECOND_MB_START = 0x100000
 SECOND_MB_FILL = 0xFF
 HEADER_CHECKSUM_ADDR = 0x18E
 HEADER_ROM_END_ADDR = 0x1A4  # ROM end address (last byte), big-endian
+# Checksum fields a data.csv row must never touch: the build
+# recomputes both checksums after applying data, so a row there
+# would be silently overwritten. (start, end) with end exclusive.
+CHECKSUM_FIELDS = ((HEADER_CHECKSUM_ADDR, HEADER_CHECKSUM_ADDR + 2),
+                   (RT_IMM_ADDR, RT_IMM_ADDR + 4))
 
 
 class BuildError(Exception):
@@ -270,6 +287,33 @@ def parse_hooks(path: Path):
     return hooks
 
 
+def parse_data_csv(path: Path):
+    """data.csv rows: addr,hex (header row; blank lines and `#`
+    comments skipped). addr is hex (0x prefix or bare hex); hex is
+    the bytes to write at that address, as a hex string."""
+    rows = []
+    with open(path, newline="") as f:
+        reader = csv.DictReader(
+            (ln for ln in f if ln.strip() and not ln.lstrip().startswith("#")))
+        for row in reader:
+            try:
+                addr = int(row["addr"].strip(), 0)
+            except ValueError:
+                addr = int(row["addr"].strip(), 16)
+            try:
+                raw = bytes.fromhex(row["hex"].strip())
+            except ValueError:
+                raise BuildError(
+                    f"data at ${addr:05X} ({path}): hex is not a hex "
+                    f"byte string, got '{row['hex'].strip()}'")
+            if not raw:
+                raise BuildError(
+                    f"data at ${addr:05X} ({path}): empty hex string")
+            rows.append({"addr": addr, "len": len(raw), "bytes": raw,
+                         "source": str(path)})
+    return rows
+
+
 def assemble(vasm: Path, src: Path, org: int, workdir: Path,
              defines: tuple = ()):
     """Assemble feature.s at org (via -DORGVAL; the source must start
@@ -379,6 +423,51 @@ def check_hooks(hooks, instr_starts, blobs):
                 f"${b1['start']:05X}-${b1['end'] - 1:05X} overlaps "
                 f"feature {n2} blob "
                 f"${b2['start']:05X}-${b2['end'] - 1:05X}")
+
+
+def check_data_rows(rows, blobs, hooks):
+    """Fail on: a data write outside the first megabyte, overlapping
+    another data write, a blob or a hook, or touching a checksum
+    field (the build recomputes both checksums after applying data,
+    so a row there would be silently overwritten)."""
+    for r in rows:
+        addr, length = r["addr"], r["len"]
+        if addr < 0 or addr + length > BASE_SIZE:
+            raise BuildError(
+                f"data at ${addr:05X} ({r['source']}): {length} bytes "
+                f"reach ${addr + length:05X}, outside the 1 MB base "
+                "(data.csv writes target the first megabyte only)")
+        for (s, e) in CHECKSUM_FIELDS:
+            if addr < e and s < addr + length:
+                raise BuildError(
+                    f"data at ${addr:05X} ({r['source']}): overlaps the "
+                    f"checksum field ${s:05X}-${e - 1:05X} (the build "
+                    "recomputes both checksums; leave it out)")
+    ordered = sorted(rows, key=lambda r: r["addr"])
+    for a, b in zip(ordered, ordered[1:]):
+        if b["addr"] < a["addr"] + a["len"]:
+            raise BuildError(
+                f"data collision: ${a['addr']:05X} "
+                f"(feature {a['feature']}, len {a['len']}) overlaps "
+                f"${b['addr']:05X} (feature {b['feature']}, "
+                f"len {b['len']})")
+    for r in rows:
+        for name, blob in blobs.items():
+            if (r["addr"] < blob["end"]
+                    and blob["start"] < r["addr"] + r["len"]):
+                raise BuildError(
+                    f"data collision: feature {r['feature']} data "
+                    f"${r['addr']:05X}-${r['addr'] + r['len'] - 1:05X} "
+                    f"overlaps feature {name} blob "
+                    f"${blob['start']:05X}-${blob['end'] - 1:05X}")
+        for h in hooks:
+            if (r["addr"] < h["addr"] + h["len"]
+                    and h["addr"] < r["addr"] + r["len"]):
+                raise BuildError(
+                    f"data collision: feature {r['feature']} data "
+                    f"${r['addr']:05X}-${r['addr'] + r['len'] - 1:05X} "
+                    f"overlaps hook at ${h['addr']:05X} "
+                    f"(feature {h['feature']})")
 
 
 def hook_bytes(h) -> bytes:
@@ -511,50 +600,60 @@ def build(features, repo: Path, base_override: Path | None = None,
     rom = bytearray(base)
     blobs = {}
     hooks = []
+    data_rows = []
     workroot = out_dir / ".build-rom"
     for name in features:
         fdir = repo / "patches" / name
         src = fdir / "feature.s"
         hcsv = fdir / "hooks.csv"
-        if not src.is_file():
-            raise BuildError(f"feature {name}: no {src}")
-        if not hcsv.is_file():
-            raise BuildError(f"feature {name}: no {hcsv}")
-        workdir = workroot / name
-        # Pass 1 at the current free pointer gives the size; allocate;
-        # pass 2 at the final address must be identical (guards
-        # against origin-dependent code).
-        cand = allocator.peek()
-        if cand is None:
-            raise BuildError(f"feature {name}: no free space left")
-        blob1, labels1 = assemble(vasm, src, cand, workdir, defines)
-        addr = allocator.alloc(len(blob1), name)
-        if addr != cand:
-            blob1, labels1 = assemble(vasm, src, addr, workdir, defines)
-        blob, labels = assemble(vasm, src, addr, workdir, defines)
-        if blob != blob1 or labels != labels1:
-            raise BuildError(
-                f"feature {name}: assembly is origin-dependent "
-                "(second pass at the allocated address differs)")
-        blobs[name] = {"start": addr, "end": addr + len(blob),
-                       "size": len(blob), "labels": labels}
-        if addr + len(blob) > len(rom):
-            rom += bytes([SECOND_MB_FILL]) * (addr + len(blob) - len(rom))
-        rom[addr:addr + len(blob)] = blob
-        for h in parse_hooks(hcsv):
-            h["feature"] = name
-            if h["kind"] in ("jsr", "jmp"):
-                if h["target"] not in labels:
-                    raise BuildError(
-                        f"feature {name}: hook at ${h['addr']:05X} "
-                        f"targets label '{h['target']}' which is not "
-                        "defined in feature.s")
-                h["target_addr"] = labels[h["target"]]
-            hooks.append(h)
+        dcsv = fdir / "data.csv"
+        if not src.is_file() and not dcsv.is_file():
+            raise BuildError(f"feature {name}: no {src} or {dcsv}")
+        if src.is_file():
+            if not hcsv.is_file():
+                raise BuildError(f"feature {name}: no {hcsv}")
+            workdir = workroot / name
+            # Pass 1 at the current free pointer gives the size;
+            # allocate; pass 2 at the final address must be identical
+            # (guards against origin-dependent code).
+            cand = allocator.peek()
+            if cand is None:
+                raise BuildError(f"feature {name}: no free space left")
+            blob1, labels1 = assemble(vasm, src, cand, workdir, defines)
+            addr = allocator.alloc(len(blob1), name)
+            if addr != cand:
+                blob1, labels1 = assemble(vasm, src, addr, workdir, defines)
+            blob, labels = assemble(vasm, src, addr, workdir, defines)
+            if blob != blob1 or labels != labels1:
+                raise BuildError(
+                    f"feature {name}: assembly is origin-dependent "
+                    "(second pass at the allocated address differs)")
+            blobs[name] = {"start": addr, "end": addr + len(blob),
+                           "size": len(blob), "labels": labels}
+            if addr + len(blob) > len(rom):
+                rom += bytes([SECOND_MB_FILL]) * (addr + len(blob) - len(rom))
+            rom[addr:addr + len(blob)] = blob
+            for h in parse_hooks(hcsv):
+                h["feature"] = name
+                if h["kind"] in ("jsr", "jmp"):
+                    if h["target"] not in labels:
+                        raise BuildError(
+                            f"feature {name}: hook at ${h['addr']:05X} "
+                            f"targets label '{h['target']}' which is not "
+                            "defined in feature.s")
+                    h["target_addr"] = labels[h["target"]]
+                hooks.append(h)
+        if dcsv.is_file():
+            for r in parse_data_csv(dcsv):
+                r["feature"] = name
+                data_rows.append(r)
 
     check_hooks(hooks, instr_starts, blobs)
     for h in hooks:
         rom[h["addr"]:h["addr"] + h["len"]] = hook_bytes(h)
+    check_data_rows(data_rows, blobs, hooks)
+    for r in data_rows:
+        rom[r["addr"]:r["addr"] + r["len"]] = r["bytes"]
 
     # Second megabyte (size "2m" only): the 1 MB base above is
     # untouched; append 0xFF-filled space at $100000-$1FFFFF and set
@@ -659,6 +758,11 @@ def build(features, repo: Path, base_override: Path | None = None,
             for name, b in sorted(blobs.items(),
                                   key=lambda kv: kv[1]["start"])],
     }
+    if data_rows:
+        manifest["data"] = [
+            {"feature": r["feature"], "addr": f"0x{r['addr']:05X}",
+             "len": r["len"]}
+            for r in sorted(data_rows, key=lambda x: x["addr"])]
     if size == "2m":
         manifest["second_mb"] = {
             "start": f"0x{SECOND_MB_START:05X}",
@@ -732,6 +836,14 @@ def main(argv=None) -> int:
     for h in manifest["hooks"]:
         print(f"  hook ${h['addr'][2:]}: {h['kind']} "
               f"{h['target']} ({h['target_addr']}) [{h['feature']}]")
+    if "data" in manifest:
+        by_feature = {}
+        for d in manifest["data"]:
+            total = by_feature.setdefault(d["feature"], [0, 0])
+            total[0] += 1
+            total[1] += d["len"]
+        for f, (n, total) in sorted(by_feature.items()):
+            print(f"  data {f}: {n} writes, {total} bytes")
     return 0
 
 
