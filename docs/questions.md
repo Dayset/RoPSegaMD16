@@ -68,3 +68,9 @@ Work continues on the default.
 - Question: keep the original's look (a diamond of terrain on parchment) or fill the screen with terrain?
 - Default taken: floating island. A fixed parchment frame in the window with a diamond hole (the camera's ±4 cells; the original shows ±5) hides the render's edges, so the picture inside only scrolls. In combat arenas (zoomed by the game) the top-down picture stands in.
 - If the answer is different: edge to edge needs the plane to keep earlier renders (a world cache in VRAM with eviction by distance) and corners that are empty until visited, or a render ~2× larger than the decode buffer allows — about two cards.
+
+## Q16 — smooth iso (#279): a quarter cell off the hole to remove render-edge slivers?
+- Question: `tools/md_iso_edges.py` (#292) measured the camera's safe range as [−0.5, +1] cell per axis from the picture, while the code allows ±1, so parchment slivers show at the hole's edge in ~1/3 of overworld frames for a few frames after a picture lands. Shrink the hole by a quarter cell per side (±3.75 cells: `tools/td_iso_frame.py` HW 112 → 105, HH 64 → 60) and move it 4 px down so the range becomes ±1? About 6 % less terrain visible.
+- Default taken: keep the ±4 hole (no change). Holding the camera to the measured range instead removes the edges but makes it trail ~2 cells (tested, #279 comment).
+- **Answered (Dayset, 2026-11-23): keep ±4 as the default;** the 6 % smaller hole would be acceptable. Not built.
+- If the answer is different: regenerate the frame data (`td_iso_frame.py`, its HW/HH/CY), re-run the edge checker; no other code changes.
