@@ -356,6 +356,9 @@ numbers: `patches/topdown/README.md` § Smooth iso view.
   which would bring a picture per tick.
 - **Combat arenas** (grid `$FFB0BC`) are drawn zoomed by the game; the
   top-down picture stands in there.
+  Measured for #287 (1 MB build, explore route 6100–9100): no scroll
+  and no redraw in 2,999 arena frames, figures sliding in 1–3 px steps
+  — smooth already; whether arenas should look isometric is Q18.
 - **Decision recorded (Q15):** floating island in a fixed frame, not
   edge to edge.
 - **Partial render on a one-cell step (#266, measured, not kept).**
