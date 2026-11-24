@@ -309,6 +309,14 @@ shadow mode), raised cells normal; the HUD band at the bottom is not
 tinted (the HUD's low-priority sprites need priority-free plane rows
 there).*
 
+![](img/topdown-raised.png)
+
+*#297 (Q14 revised to raised): overworld in the top-down view, cells
+standing at their height with shadowed south faces, figures on top.
+`tools/td_plane_check.py` matches the plane tile for tile (992 of 992
+pairs per frame on the explore route) against the ROM's map drawn with
+the same painter rule.*
+
 ![](img/topdown-height-mock.png)
 
 *Overworld from ROM data: flat (as drawn now), raised tiles with

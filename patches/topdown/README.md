@@ -66,19 +66,26 @@ Genesis Plus GX, flash carts and SRAM repro boards run it as is.
   masked. The plane holds the whole ring (32×16 cells: 3 extra columns
   left, 8 right for the shear), so the camera can glide up to 60 px
   sideways and 32 px down between streaming points: no clamp jitter.
-- **Height tint (#264, Q14):** the VDP runs in shadow/highlight mode
-  while the view is up. A pixel is shadowed when neither plane tile
-  under it has the priority bit, so map cells of height 0 are drawn at
-  half brightness and raised cells (height 1–7, cell bits 13–15) plus
-  the void get the priority bit. A priority tile also hides
+- **Raised cells (#297, Q14 revised):** every cell stands at its
+  height (0–7 levels, cell bits 13–15): its top is drawn one tile row
+  (8 px) higher per level and the rows below it, down to its own place,
+  are its south face — the top's rows upside down, shadowed. A tile row
+  shows the southmost cell whose top or face covers it (painter order),
+  so tall ground hides the cells behind it. Each plane tile is resolved
+  from a 2 KB cell cache in the decode buffer (`TD_CC`: the ring's 16
+  rows plus the 4 south of it, the most a top can reach up); a new ring
+  row or column draws only its own tiles. Figures stand on their cell's
+  top: lifted 8 px per level, gliding with their step (`td_ilift`).
+  Shading uses shadow/highlight mode: tops carry the priority bit (full
+  brightness), faces do not (half). A priority tile also hides
   low-priority sprites, so the HUD band (screen lines 144–223: frame,
-  HUD box, message scroll) is left untinted: plane tile rows from the
-  one holding line 152 down carry no priority bit (`td_band` clears /
-  restores rows as the camera scrolls, from a 64-byte raised bitmap of
-  the ring) and window blanks from row 18 get the priority bit (not
-  shadowed, still transparent). Figures above the band and the game's
-  own sprites above it (the pad icon) get the priority bit; the game's
-  are put back while a menu or upper text is open (`td_gsp`).
+  HUD box, message scroll) is drawn without priority bits (`td_band`
+  redraws the rows that enter or leave it) and window blanks from row
+  18 get the priority bit (not shadowed, still transparent). Figures
+  above the band and the game's own sprites above it (the pad icon) get
+  the priority bit; the game's are put back while a menu or upper text
+  is open (`td_gsp`). `tools/td_plane_check.py` rebuilds the ring from
+  the ROM's map with the same rule and compares it with VRAM.
 - **Water shimmer:** every 32 frames colours 2 and 4 (mid and light
   blue) swap inside the 20 water map tiles: read and remapped 20 tiles a
   frame into a RAM buffer, then all 80 written in one frame —
@@ -407,10 +414,10 @@ the boot RAM clear resets it). Blob 11,870 bytes at `$FD0CC` (padding, 12,084) i
   original shows ±5). Both are open cards (see `docs/smooth-topdown.md`,
   v2). The 1 MB build renders with the game's decoder and trails more.
 
-- The bottom 80 lines (HUD band) show the map untinted; height is
-  visible in the play area above it. While a menu is open, raised cells
-  can cover parts of the pad icon (it goes back to low priority so it
-  does not cover the menu).
+- The bottom 80 lines (HUD band) show faces unshaded. While a menu is
+  open, map tiles can cover parts of the pad icon (it goes back to low
+  priority so it does not cover the menu). Figures are never hidden by
+  tall cells in front of them (they are sprites above the plane).
 
 - Projectiles and spell effects (drawn by the removed renderer) are not
   shown in the top-down view; switch to the original view for them.

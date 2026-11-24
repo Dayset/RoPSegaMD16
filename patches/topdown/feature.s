@@ -132,10 +132,10 @@ TD_MSG		equ TD_UPTXT+6	; other text in the HUD rows (a message)
 TD_HASBOX	equ TD_UPTXT+8	; the HUD box holds moved HUD words
 TD_BOX		equ TD_UPTXT+10	; draw the HUD box backdrop sprites
 TD_BUSY		equ TD_UPTXT+12	; main thread is inside our code
-TD_TMP		equ TD_UPTXT+14	; cell being drawn is raised (height > 0)
+TD_TMP		equ TD_UPTXT+14	; (unused since #297)
 TD_BTOP		equ TD_UPTXT+16	; first plane tile row of the HUD band
 TD_GSPON	equ TD_UPTXT+18	; game sprites above the band get priority
-TD_RAISED	equ TD_UPTXT+20	; 64 B: ring cell (cy&15, cx&31) is raised
+TD_RAISED	equ TD_UPTXT+20	; 64 B (unused since #297)
 TD_GSP		equ TD_RAISED+64	; 80 words: tile word we gave priority to
 TD_WROW		equ TD_GSP+160	; 40-word window row buffer
 TD_ROWB		equ TD_WROW+80	; 64-word plane row buffer
@@ -763,23 +763,23 @@ td_frame_go:
 	move.w	d1,TD_MAIN
 	move.w	FRAME,TD_LASTFR
 	tst.w	TD_VALID
-	beq.w	.bad
+	beq.s	.bad
 	cmpi.w	#$2400,SPRBASE
-	bne.w	.bad
+	bne.s	.bad
 	movea.l	GRIDPTR,a0
 	cmpa.l	TD_GRID,a0
-	bne.w	.bad
+	bne.s	.bad
 	move.w	MODE,d0
 	cmp.w	TD_MODE,d0
-	bne.w	.bad
+	bne.s	.bad
 	move.w	LOC,d0
 	cmp.w	TD_LOC,d0
-	bne.w	.bad
+	bne.s	.bad
 	move.w	d1,-(a7)
 	bsr.w	td_plane_check		; another screen owns the plane?
 	move.w	(a7)+,d1
 	tst.w	d0
-	bne.w	.bad
+	bne.s	.bad
 	move.w	#$8F02,VDP_CTRL
 	; menu open ($FF00AC): the world pauses under the game's own panels;
 	; blobs are taken off so they never sit on top of a panel
@@ -828,7 +828,7 @@ td_frame_go:
 .cam:	move.w	d0,TD_CAMX
 	move.w	d1,TD_CAMY
 	bsr.w	td_layers
-	bsr.w	td_scroll		; vblank-critical first
+	bsr.s	td_scroll		; vblank-critical first
 	bsr.w	td_sprites
 	bsr.w	td_band
 	bsr.w	td_anim
@@ -977,71 +977,33 @@ td_bandtop:				; -> d0 = first band tile row (0-31)
 	andi.w	#31,d0
 	rts
 
-td_band:
-	movem.l	d2-d6/a2,-(a7)
+td_band:	; the band moved: redraw the rows that enter or leave it
+	movem.l	d2-d7,-(a7)		; (td_tput sets the priority bit by TD_BTOP)
 	bsr.s	td_bandtop
-	move.w	TD_BTOP,d5		; old band
-	cmp.w	d5,d0
+	move.w	TD_BTOP,d3		; old band
+	cmp.w	d3,d0
 	beq.s	.out
 	move.w	d0,TD_BTOP
-	move.w	d0,d6			; new band
-	moveq	#31,d4			; tile row
+	move.w	d0,d7			; new band
+	move.w	TD_CY0,d4
+	add.w	d4,d4			; the ring's world tile rows
+	moveq	#31,d2
 .r:	move.w	d4,d0
-	sub.w	d5,d0
+	sub.w	d3,d0
 	andi.w	#31,d0
 	cmpi.w	#TD_NBAND,d0
 	scs	d1			; in the old band
 	move.w	d4,d0
-	sub.w	d6,d0
+	sub.w	d7,d0
 	andi.w	#31,d0
 	cmpi.w	#TD_NBAND,d0
-	scs	d2			; in the new band
-	cmp.b	d1,d2
+	scs	d0			; in the new band
+	cmp.b	d1,d0
 	beq.s	.n
-	bsr.s	td_rowfix
-.n:	dbra	d4,.r
-.out:	movem.l	(a7)+,d2-d6/a2
-	rts
-
-td_rowfix:				; d4 = tile row, d2.b = $FF: clear, 0: restore
-	move.w	d4,d0
-	lsl.w	#7,d0
-	move.w	d0,d3			; row address
-	bsr.w	td_vcmd
-	move.l	d0,VDP_CTRL
-	lea	TD_ROWB,a0
-	moveq	#64-1,d1
-.rd:	move.w	VDP_DATA,(a0)+
-	dbra	d1,.rd
-	lea	TD_ROWB,a0
-	moveq	#64-1,d1
-.cl:	andi.w	#$7FFF,(a0)+
-	dbra	d1,.cl
-	tst.b	d2
-	bne.s	.wr
-	move.w	d4,d0			; raised bits of cell row (r>>1)&15
-	lsr.w	#1,d0
-	lsl.w	#2,d0
-	lea	TD_RAISED,a2
-	adda.w	d0,a2
-	lea	TD_ROWB,a0
-	moveq	#0,d1			; cell column 0..31
-.st:	move.w	d1,d0
-	lsr.w	#3,d0
-	btst	d1,(a2,d0.w)
-	beq.s	.sn
-	ori.w	#$8000,(a0)
-	ori.w	#$8000,2(a0)
-.sn:	addq.w	#4,a0
-	addq.w	#1,d1
-	cmpi.w	#32,d1
-	bcs.s	.st
-.wr:	move.w	d3,d0
-	bsr.w	td_vwrite
-	lea	TD_ROWB,a0
-	moveq	#32-1,d1
-.w:	move.l	(a0)+,VDP_DATA
-	dbra	d1,.w
+	bsr.w	td_trow
+.n:	addq.w	#1,d4
+	dbra	d2,.r
+.out:	movem.l	(a7)+,d2-d7
 	rts
 
 ;=======================================================================
@@ -1136,15 +1098,12 @@ td_chars:
 	move.w	d3,2(a4)
 	move.w	FRAME,8(a4)
 .pos:	bsr.w	td_slidepos		; d5/d6 = position, d4 = elapsed
-	clr.w	TD_TLIFT
-	tst.w	TD_ISO
-	beq.s	.fig
-	bsr.w	td_ilift		; iso: lift of its target cell
+	bsr.w	td_ilift		; lift of its target cell
 .fig:	bsr.w	td_figure		; d0 = figure tile word, or -1
 	tst.w	d0
 	bmi.s	.blob
 	cmpi.w	#TD_NFIG,TD_NB
-	bcc.w	.lchk
+	bcc.s	.lchk
 	move.w	d5,(a2)+
 	move.w	d6,(a2)+
 	move.w	d0,(a2)+
@@ -1319,7 +1278,7 @@ td_img:
 	addq.w	#1,d3
 	dbra	d1,.l
 	move.w	d4,d2
-	bsr.w	td_extract		; d0 = key, d2 = slot
+	bsr.s	td_extract		; d0 = key, d2 = slot
 	move.w	d2,d1
 	lsl.w	#2,d1
 	lea	TD_FC,a0
@@ -1327,7 +1286,7 @@ td_img:
 	move.w	d0,(a0)
 .hit:	move.w	TD_STAMP,2(a0)
 	move.w	d2,d0			; tile word
-	bra.w	td_slot
+	bra.s	td_slot
 .no:	moveq	#-1,d0
 	rts
 
@@ -1357,7 +1316,7 @@ td_slot:
 
 td_extract:
 	movem.l	d0-d7/a0-a6,-(a7)
-	bsr.w	ti_xswap		; a render in progress: save its corner
+	bsr.s	ti_xswap		; a render in progress: save its corner
 	move.w	d0,d7
 	moveq	#5-1,d1			; clear rows 2..6, cols 16..19
 	lea	DECBUF+(2*36+16)*32,a0
@@ -1380,7 +1339,7 @@ td_extract:
 	jsr	($00E358).l
 	addq.w	#8,a7
 	move.w	10(a7),d0		; saved d2 = slot -> VRAM address
-	bsr.w	td_slot
+	bsr.s	td_slot
 	lsl.w	#5,d0
 	bsr.w	td_vwrite
 	lea	DECBUF+(2*36+16)*32,a0
@@ -1591,6 +1550,9 @@ td_sprites:
 	move.w	(a2)+,d3		; py
 	move.w	(a2)+,d4		; tile word
 	move.w	(a2)+,d1		; kind
+	move.w	d1,d0			; lifted with its cell (#297)
+	lsr.w	#8,d0
+	sub.w	d0,d3
 	andi.w	#$FF,d1
 	sub.w	TD_CAMX,d2
 	sub.w	TD_CAMY,d3
@@ -1736,11 +1698,11 @@ td_gsp:
 	lsl.w	#3,d0
 	add.w	SPRBASE,d0
 	move.w	d0,d2			; entry address
-	bsr.w	td_vread		; y + 128
+	bsr.s	td_vread		; y + 128
 	move.w	d0,d3
 	move.w	d2,d0
 	addq.w	#2,d0
-	bsr.w	td_vread		; size | link
+	bsr.s	td_vread		; size | link
 	move.w	d0,-(a7)
 	lsr.w	#8,d0			; height in cells - 1
 	andi.w	#3,d0
@@ -1751,7 +1713,7 @@ td_gsp:
 	bgt.s	.nx
 	move.w	d2,d0
 	addq.w	#4,d0
-	bsr.w	td_vread		; tile word
+	bsr.s	td_vread		; tile word
 	tst.w	d0
 	bmi.s	.nx
 	ori.w	#$8000,d0
@@ -1761,7 +1723,7 @@ td_gsp:
 	move.w	d3,(a2,d1.w)
 	move.w	d2,d0
 	addq.w	#4,d0
-	bsr.w	td_vwrite
+	bsr.s	td_vwrite
 	move.w	d3,VDP_DATA
 .nx:	move.w	(a7)+,d4
 	dbra	d5,.w
@@ -1803,6 +1765,7 @@ TD_WBUF		equ $FF4BC0	; 2,560 B: unused rows 10-12 of the room bitmap
 TD_SWAPT	equ DECBUF+13*1152	; 256 B shimmer swap table (built at load;
 TD_DBLT		equ TD_SWAPT+256	; free rows of the decode buffer in
 					; top-down) + 512 B pixel-double table
+TD_CC		equ DECBUF+16*1152	; 2 KB cell cache: (y&31)*64 + (x&31)*2
 td_anim:
 	movem.l	d2-d5/a2-a3,-(a7)
 	move.w	TD_ANIMI,d2
@@ -1833,7 +1796,7 @@ td_anim:
 	add.w	TD_BASE,d1
 	lsl.w	#5,d1
 	move.w	d1,d0			; tile's VRAM address
-	bsr.w	td_vcmd
+	bsr.s	td_vcmd
 	move.l	d0,VDP_CTRL
 	moveq	#16-1,d1
 .rd:	move.w	VDP_DATA,d0
@@ -1890,7 +1853,7 @@ td_stream:
 	bpl.s	.a2
 	neg.w	d0
 .a2:	cmpi.w	#3,d0
-	bgt.w	.all
+	bgt.s	.all
 .xr:	cmp.w	TD_CX0,d4
 	ble.s	.xl
 	addq.w	#1,TD_CX0
@@ -1909,27 +1872,44 @@ td_stream:
 	ble.s	.yu
 	addq.w	#1,TD_CY0
 	move.w	TD_CY0,d7
-	add.w	#TD_NROW-1,d7
-	bsr.w	td_draw_row
+	add.w	#TD_NROW+3,d7		; the cell cache's new south row
+	bsr.w	td_ccrow
+	subq.w	#4,d7			; the ring's new south row
+	bsr.s	td_draw_row
 	bra.s	.yd
 .yu:	cmp.w	TD_CY0,d5
 	bge.s	.out
 	subq.w	#1,TD_CY0
 	move.w	TD_CY0,d7
-	bsr.w	td_draw_row
+	bsr.w	td_ccrow
+	bsr.s	td_draw_row
 	bra.s	.yu
 .all:	move.w	d4,TD_CX0
 	move.w	d5,TD_CY0
-	bsr.w	td_draw_all
+	bsr.s	td_draw_all
 .out:	movem.l	(a7)+,d2-d7
 	rts
 
 ;=======================================================================
-; Cell drawing. d6 = cell x, d7 = cell y (kept across game calls: the
-; game's C code saves d4-d7/a3-a4 when it uses them).
+; Cell drawing with height (#297, Q14 revised: raised). Cell y of height
+; h (cell bits 13-15) covers world tile rows 2y-h .. 2y+1: its top (the
+; cell's 16x16 block) lifted h tile rows, then h rows of south face (the
+; block's rows upside down, shadowed: no priority bit). A tile row shows
+; the southmost cell covering it (painter order), so each plane tile is
+; resolved from the cell cache TD_CC: the ring's rows cy0..cy0+15 plus
+; the 4 rows south of it whose tops can reach up into the ring. A new
+; ring row or column redraws only its own tiles; the rest stays valid.
+; d6 = cell x, d7 = cell y, d4 = world tile row (kept across game calls:
+; the game's C code saves d4-d7/a3-a4 when it uses them).
 ;=======================================================================
 td_draw_all:
 	movem.l	d4-d7,-(a7)
+	move.w	TD_CX0,d6
+	subq.w	#TD_SHL,d6
+	moveq	#21+TD_SHL+TD_SHR-1,d4
+.c:	bsr.w	td_cccol
+	addq.w	#1,d6
+	dbra	d4,.c
 	move.w	TD_CY0,d7
 	moveq	#TD_NROW-1,d4
 .r:	bsr.s	td_draw_row
@@ -1938,46 +1918,181 @@ td_draw_all:
 	movem.l	(a7)+,d4-d7
 	rts
 
-td_draw_row:				; row d7, columns cx0-TD_SHL..cx0+20+TD_SHR
+td_draw_row:				; tile rows 2y, 2y+1 of cell row d7
+	movem.l	d4-d6,-(a7)
+	move.w	d7,d4
+	add.w	d4,d4
+	bsr.s	td_trow
+	addq.w	#1,d4
+	bsr.s	td_trow
+	movem.l	(a7)+,d4-d6
+	rts
+td_trow:	; tile row d4, columns cx0-TD_SHL..cx0+20+TD_SHR (uses d5-d6)
+	move.w	TD_CX0,d6
+	subq.w	#TD_SHL,d6
+	moveq	#21+TD_SHL+TD_SHR-1,d5
+.c:	bsr.w	td_tput
+	addq.w	#1,d6
+	dbra	d5,.c
+	rts
+
+td_draw_col:				; column d6: cache, then its 32 tile rows
+	movem.l	d4-d5,-(a7)
+	bsr.s	td_cccol
+	move.w	TD_CY0,d4
+	add.w	d4,d4
+	moveq	#2*TD_NROW-1,d5
+.c:	bsr.w	td_tput
+	addq.w	#1,d4
+	dbra	d5,.c
+	movem.l	(a7)+,d4-d5
+	rts
+
+td_ccrow:				; cache cell row d7 (the ring's columns)
 	movem.l	d5-d6,-(a7)
 	move.w	TD_CX0,d6
 	subq.w	#TD_SHL,d6
 	moveq	#21+TD_SHL+TD_SHR-1,d5
-.c:	bsr.s	td_draw_cell
+.c:	bsr.s	td_ccget
 	addq.w	#1,d6
 	dbra	d5,.c
 	movem.l	(a7)+,d5-d6
 	rts
 
-td_draw_col:				; column d6, rows cy0..cy0+TD_NROW-1
+td_cccol:				; cache column d6, rows cy0..cy0+TD_NROW+3
 	movem.l	d5/d7,-(a7)
 	move.w	TD_CY0,d7
-	moveq	#TD_NROW-1,d5
-.c:	bsr.s	td_draw_cell
+	moveq	#TD_NROW+4-1,d5
+.c:	bsr.s	td_ccget
 	addq.w	#1,d7
 	dbra	d5,.c
 	movem.l	(a7)+,d5/d7
 	rts
 
-td_draw_cell:
-	; cell word or blank
-	tst.w	d6
-	bmi.w	td_cell_blank
-	cmp.w	TD_W,d6
-	bge.w	td_cell_blank
-	tst.w	d7
-	bmi.w	td_cell_blank
-	cmp.w	TD_H,d7
-	bge.w	td_cell_blank
+td_ccget:				; cache (d6, d7) <- cell word, 0 off the map
+	moveq	#0,d0
+	bsr.s	td_inmap
+	bne.s	.put
 	move.w	d7,-(a7)
 	move.w	d6,-(a7)
 	jsr	(CELLREAD).l
 	addq.w	#4,a7
 	movea.l	d0,a0
+	move.w	(a0),d0
+.put:	bsr.s	td_ccadr
+	move.w	d0,(a0)
+	rts
+
+td_inmap:				; Z set if (d6, d7) is on the map
+	tst.w	d6
+	bmi.s	.no
+	cmp.w	TD_W,d6
+	bge.s	.no
+	tst.w	d7
+	bmi.s	.no
+	cmp.w	TD_H,d7
+	bge.s	.no
+	cmp.w	d6,d6
+	rts
+.no:	andi	#$FB,ccr
+	rts
+
+td_ccadr:				; (d6, d7) -> a0 = its cache word (uses d1)
+	move.w	d7,d1
+	andi.w	#31,d1
+	lsl.w	#6,d1
+	lea	TD_CC,a0
+	adda.w	d1,a0
+	move.w	d6,d1
+	andi.w	#31,d1
+	add.w	d1,d1
+	adda.w	d1,a0
+	rts
+
+td_tput:				; plane tiles of cell column d6, tile row d4
+	movem.l	d2-d3/d7,-(a7)
+	move.w	d4,d7
+	addq.w	#7,d7
+	asr.w	#1,d7			; southmost cell that can reach row t
+	move.w	d4,d3
+	asr.w	#1,d3			; the row's own cell (always covers it)
+.c:	cmp.w	d3,d7
+	beq.s	.hit
+	bsr.s	td_ccadr
+	move.w	(a0),d2
+	rol.w	#3,d2
+	andi.w	#7,d2			; h
+	move.w	d7,d0
+	add.w	d0,d0
+	sub.w	d4,d0			; 2y - t
+	cmp.w	d2,d0
+	ble.s	.hit			; h >= 2y - t: its top or face is here
+	subq.w	#1,d7
+	bra.s	.c
+.hit:	bsr.s	td_inmap
+	bne.s	.void
+	bsr.s	td_ccadr
 	move.w	(a0),d2			; cell word
-	move.w	d2,d0			; height (bits 13-15) -> raised flag
-	andi.w	#$E000,d0
-	move.w	d0,TD_TMP
+	move.w	d2,d3
+	rol.w	#3,d3
+	andi.w	#7,d3
+	add.w	d4,d3
+	sub.w	d7,d3
+	sub.w	d7,d3			; p = t - 2y + h: 0, 1 top, then face
+	move.w	d3,-(a7)
+	bsr.w	td_cellq		; d0 = TL:TR, d1 = BL:BR
+	move.w	(a7)+,d3
+	subq.w	#1,d3
+	bmi.s	.top
+	beq.s	.bot
+	subq.w	#1,d3			; face row f = p - 2: even BL:BR,
+	btst	#0,d3			; odd TL:TR, upside down
+	bne.s	.f1
+	move.l	d1,d0
+.f1:	eori.l	#$10001000,d0
+	moveq	#0,d2			; face: shadowed
+	bra.s	.put
+.void:	move.w	TD_BASE,d0		; off the map: parchment void
+	add.w	#256+$2000,d0		; (palette 1, never shadowed)
+	move.w	d0,d1
+	swap	d0
+	move.w	d1,d0
+	moveq	#1,d2
+	bra.s	.put
+.bot:	move.l	d1,d0
+.top:	moveq	#1,d2			; top: not shadowed
+.put:	; plane row r = t & 31. A top gets the priority bit (not
+	; shadowed) except in rows inside the HUD band (td_band redraws a
+	; row that enters or leaves it).
+	move.w	d4,d3
+	andi.w	#31,d3			; r
+	tst.w	d2
+	beq.s	.ad
+	move.w	d3,d1
+	sub.w	TD_BTOP,d1
+	andi.w	#31,d1
+	cmpi.w	#TD_NBAND,d1
+	bcs.s	.ad
+	ori.l	#$80008000,d0
+.ad:	lsl.w	#7,d3			; VRAM (r * 64 + (2x & 63)) * 2
+	move.w	d6,d2
+	add.w	d2,d2
+	andi.w	#63,d2
+	add.w	d2,d2
+	add.w	d2,d3
+	moveq	#0,d2
+	move.w	d3,d2
+	swap	d2
+	ori.l	#$40000000,d2
+	move.w	sr,-(a7)		; no VBlank update between address
+	ori.w	#$0700,sr		; and data
+	move.l	d2,VDP_CTRL
+	move.l	d0,VDP_DATA
+	move.w	(a7)+,sr
+	movem.l	(a7)+,d2-d3/d7
+	rts
+
+td_cellq:	; d2 = cell word -> d0 = TL:TR, d1 = BL:BR (uses d2-d3, a0)
 	move.w	d2,d0
 	andi.w	#$1FF,d0
 	add.w	d0,d0
@@ -2019,68 +2134,6 @@ td_draw_cell:
 	eori.w	#3,d2
 	add.w	d3,d2
 	move.w	d2,d1			; BR
-	bra.s	td_cell_put
-td_cell_blank:				; outside the map: parchment void
-	move.w	#1,TD_TMP		; (never shadowed)
-	move.w	TD_BASE,d0
-	add.w	#256+$2000,d0		; palette 1
-	move.w	d0,d1
-	swap	d0
-	move.w	d1,d0
-	move.l	d0,d1
-td_cell_put:	; d0 = TL:TR, d1 = BL:BR, TD_TMP = raised.
-	; Height tint: a raised cell's tiles get the priority bit (not
-	; shadowed), except in plane rows inside the HUD band. The raised
-	; bitmap lets td_band restore the bit when a row leaves the band.
-	move.w	d7,d2			; bit (cy&15)*32 + (cx&31)
-	andi.w	#15,d2
-	lsl.w	#5,d2
-	move.w	d6,d3
-	andi.w	#31,d3
-	add.w	d3,d2
-	move.w	d2,d3
-	lsr.w	#3,d3
-	lea	TD_RAISED,a0
-	adda.w	d3,a0
-	tst.w	TD_TMP
-	beq.s	.lo
-	bset	d2,(a0)
-	move.w	d7,d2			; top tile row in the band?
-	add.w	d2,d2
-	sub.w	TD_BTOP,d2
-	andi.w	#31,d2
-	cmpi.w	#TD_NBAND,d2
-	bcs.s	.t1
-	ori.l	#$80008000,d0
-.t1:	addq.w	#1,d2			; bottom tile row
-	andi.w	#31,d2
-	cmpi.w	#TD_NBAND,d2
-	bcs.s	.ad
-	ori.l	#$80008000,d1
-	bra.s	.ad
-.lo:	bclr	d2,(a0)
-.ad:	; VRAM address: ((2cy & 31) * 64 + (2cx & 63)) * 2
-	move.w	d7,d2
-	add.w	d2,d2
-	andi.w	#31,d2
-	lsl.w	#7,d2
-	move.w	d6,d3
-	add.w	d3,d3
-	andi.w	#63,d3
-	add.w	d3,d3
-	add.w	d3,d2
-	moveq	#0,d3
-	move.w	d2,d3
-	swap	d3
-	ori.l	#$40000000,d3
-	move.w	sr,-(a7)		; no VBlank update between address
-	ori.w	#$0700,sr		; and data
-	move.l	d3,VDP_CTRL
-	move.l	d0,VDP_DATA
-	addi.l	#$00800000,d3		; next tile row (+128 bytes)
-	move.l	d3,VDP_CTRL
-	move.l	d1,VDP_DATA
-	move.w	(a7)+,sr
 	rts
 
 ;=======================================================================
@@ -2538,7 +2591,7 @@ td_iframe:
 	bsr.w	td_chars
 	bsr.w	td_iso_cam
 	bsr.w	td_layers
-	bsr.w	td_iso_scroll		; vblank-critical first
+	bsr.s	td_iso_scroll		; vblank-critical first
 	bra.w	td_sprites
 
 td_ilayers:
@@ -2700,22 +2753,36 @@ td_iso_snap:				; camera on the picture's cell now
 	move.w	FRAME,TD_ICFR
 	rts
 
-; td_ilift — iso lift (px) of the target cell of char d7 (slide record
-; a4) -> TD_TLIFT: (height + desc bit 7) * 7 + desc bit 8 * 4, as
-; map_chunk_pos passes it to hero_track. Cached per char; read from the
-; map only when game calls are allowed (TD_MAIN).
+; td_ilift — lift (px) of the target cell of char d7 (slide record a4)
+; -> TD_TLIFT, gliding over the slide. Iso: (height + desc bit 7) * 7 +
+; desc bit 8 * 4, as map_chunk_pos passes it to hero_track; cached per
+; char, read from the map only when game calls are allowed (TD_MAIN).
+; Top-down (#297): 8 px per height level, from the cell cache.
 td_ilift:
 	movem.l	d0-d3/a0-a2,-(a7)
 	move.w	d7,d1
 	add.w	d1,d1
 	lea	TD_CLK,a1
 	adda.w	d1,a1			; +0 cell x, +112 cell y, +224 lift
-	move.w	(a4),d2
+	tst.w	TD_ISO
+	bne.s	.iso
+	movem.l	d6-d7,-(a7)		; (a figure on screen is in the cache)
+	move.w	(a4),d6
+	move.w	2(a4),d7
+	bsr.w	td_ccadr
+	move.w	(a0),d2
+	rol.w	#6,d2
+	andi.w	#$38,d2			; height * 8
+	movem.l	(a7)+,d6-d7
+	move.w	d2,224(a1)
+	move.w	#$8000,(a1)		; iso reads its own lift again
+	bra.s	.have
+.iso:	move.w	(a4),d2
 	move.w	2(a4),d3
 	cmp.w	(a1),d2
 	bne.s	.new
 	cmp.w	112(a1),d3
-	beq.w	.have
+	beq.s	.have
 .new:	tst.w	TD_MAIN
 	beq.s	.have
 	move.w	d2,(a1)
@@ -2897,7 +2964,7 @@ td_iso_render:
 	tst.w	TD_ILIN			; 2 MB: our own cell loop (#283)
 	beq.w	.cpos
 	ifd	GAMELOOP		; (debug: the game's loop instead)
-	bra.w	.cpos
+	bra.s	.cpos
 	endif
 	ifd	VERIFY283
 	move.w	TD_INOB,-(a7)		; debug: whole render both ways,
@@ -3122,7 +3189,7 @@ ti_fast:
 	movem.l	d4-d7/a2-a6,-(a7)	; args at 40(a7): stream, x, line, d3
 	move.w	44(a7),d1		; line (d1)
 	cmpi.w	#-21,d1			; as $E358: far above the top = nothing
-	blt.w	.out
+	blt.s	.out
 	lea	ISOFAST,a6
 	move.w	40(a7),d2		; entry = stream * 2 + (d3 != 0)
 	add.w	d2,d2
@@ -4181,7 +4248,7 @@ td_iso_winfix:
 	move.w	(a3)+,d3		; one compare; per-cell table walks
 	cmp.w	d3,d0			; made the scan 6-9 frames, #289)
 	beq.s	.nx
-	bsr.w	ti_blankish
+	bsr.s	ti_blankish
 	bne.s	.nx
 	move.w	d4,d0
 	add.w	d0,d0
@@ -4196,7 +4263,7 @@ td_iso_winfix:
 	bcs.s	.col
 	addq.w	#1,d6
 	cmpi.w	#28,d6
-	bcs.w	.row
+	bcs.s	.row
 	clr.w	TD_INWF
 	movem.l	(a7)+,d2-d6/a2-a3
 	rts
