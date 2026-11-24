@@ -16,9 +16,9 @@ make rom FEATURES=topdown SIZE=2m  # -> build/rop-topdown-2m.rom: the same
 The 2 MB build is the one to play the smooth iso view on: its second
 megabyte holds the terrain streams in a form drawn ~3x faster (628 KB,
 generated from the ROM at build time by `patches/topdown/data2m.py`), so
-the iso picture keeps up with walking. Real hardware or a flash cart
-maps it by address lines; BlastEm needs the one-line `rom.db` fix in
-`docs/smooth-topdown.md`.
+the iso picture keeps up with walking. It saves to header SRAM
+(`patches/sram-save`, added to every 2 MB build), so stock BlastEm,
+Genesis Plus GX, flash carts and SRAM repro boards run it as is.
 
 ![](../../docs/img/topdown-vs-original.png)
 

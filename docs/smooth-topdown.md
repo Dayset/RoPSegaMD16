@@ -187,6 +187,11 @@ cache (#231). The fix is to move the composition offline:
    marker bytes then read back correctly). That is an
    emulator-database limit, not a container defect — real hardware
    and flash carts decode the second megabyte by address lines.
+   **Fixed for stock BlastEm (#284):** 2 MB builds now save to
+   header-declared SRAM under their own product ID
+   (`patches/sram-save`), so no database entry applies and every
+   emulator maps the ROM and the save from the header; verified in
+   stock BlastEm and GPGX with `tools/md_save_check.py`.
    A 2 MB ROM boots in BlastEm with event logs byte-identical to the
    1 MB original over 600 attract frames, and reaches the game world
    on the frozen original input-replay route (5300 frames,

@@ -51,8 +51,10 @@ the first megabyte's padding goes to the code room `$1F0000-$1FFFFF`
 (payloads must end below it). A feature may bring its own payload:
 `patches/<name>/data2m.py` with `OFFSET` and `build(base_rom)`
 (generated from the ROM's own data, so nothing extra is committed).
-The EEPROM save mapping is untouched — the EEPROM
-window at `$200000` sits immediately after the 2 MB ROM's end.
+The save moves to header-declared SRAM at `$200001-$2000FF`
+(feature `sram-save`, added automatically, #284) so any emulator or
+board maps it from the header; `--eeprom` keeps the original serial
+EEPROM, which BlastEm maps for a 2 MB ROM only with its rom.db edited.
 `--data FILE[@0xOFFSET]` (repeatable) places a payload binary in
 the second megabyte (default offset `$100000`); offsets must lie
 inside the second megabyte. Checksums: the runtime self-check
@@ -314,10 +316,10 @@ def check_hooks(hooks, instr_starts, blobs):
                 f"hook at ${addr:05X} len {length} ({h['source']}): "
                 f"splits an instruction (end ${addr + length:05X} is "
                 "not an instruction boundary in disasm/src/rop.s)")
-        if kind in ("jsr", "jmp") and length != 6:
+        if kind in ("jsr", "jmp") and (length < 6 or length % 2):
             raise BuildError(
                 f"hook at ${addr:05X} ({h['source']}): kind {kind} "
-                f"needs len 6 (jsr.l/jmp.l), got {length}")
+                f"needs an even len >= 6 (jsr.l/jmp.l + nops), got {length}")
         if kind == "bytes":
             try:
                 raw = bytes.fromhex(h["target"])
@@ -379,10 +381,11 @@ def check_hooks(hooks, instr_starts, blobs):
 
 def hook_bytes(h) -> bytes:
     """The bytes a hook writes into the ROM."""
+    pad = b"\x4e\x71" * ((h["len"] - 6) // 2)  # nops after a long hook
     if h["kind"] == "jsr":
-        return b"\x4e\xb9" + h["target_addr"].to_bytes(4, "big")
+        return b"\x4e\xb9" + h["target_addr"].to_bytes(4, "big") + pad
     if h["kind"] == "jmp":
-        return b"\x4e\xf9" + h["target_addr"].to_bytes(4, "big")
+        return b"\x4e\xf9" + h["target_addr"].to_bytes(4, "big") + pad
     return h["bytes"]
 
 
@@ -463,14 +466,19 @@ def parse_data_spec(spec: str) -> tuple:
 
 def build(features, repo: Path, base_override: Path | None = None,
           out_dir: Path | None = None, size: str = "1m",
-          data: tuple = ()) -> dict:
+          data: tuple = (), eeprom: bool = False) -> dict:
     """Build the feature ROM. Returns the manifest dict. Raises
     BuildError on any failure (including all collision checks).
 
     size is "1m" (the original 1 MB container) or "2m" (the 1 MB
     base + a second, 0xFF-filled megabyte at $100000-$1FFFFF for
     tile data). data is a tuple of (Path, offset) payloads to place
-    in the second megabyte; it requires size "2m"."""
+    in the second megabyte; it requires size "2m". A ROM larger than
+    1 MB gets the sram-save feature first (save in header SRAM, own
+    product ID, #284) unless eeprom is set."""
+    requested = list(features)
+    if size != "1m" and not eeprom and "sram-save" not in features:
+        features = ["sram-save"] + requested
     if size not in SIZES:
         raise BuildError(f"unknown size '{size}' (want 1m or 2m)")
     target_size = SIZES[size]
@@ -601,6 +609,16 @@ def build(features, repo: Path, base_override: Path | None = None,
         raise BuildError("--data needs --size 2m (no second megabyte "
                          "in a 1 MB build)")
 
+    # Header bytes a feature brings (patches/<name>/header.py, HEADER =
+    # {addr: bytes}), before the checksums.
+    for name in features:
+        hpy = repo / "patches" / name / "header.py"
+        if hpy.is_file():
+            ns = {}
+            exec(hpy.read_text(), ns)
+            for addr, raw in ns["HEADER"].items():
+                rom[addr:addr + len(raw)] = raw
+
     # Checksums: runtime immediate first (it is inside the header
     # checksum's range), header last — same order as checksum.py fix-all.
     # The runtime sum covers only 0x000000-0xFD07B, so the second
@@ -610,7 +628,7 @@ def build(features, repo: Path, base_override: Path | None = None,
     fix_checksum(rom)
     rom = bytes(rom)
 
-    tag = "-".join(features) if features else "base"
+    tag = "-".join(requested) if requested else "base"
     if size == "2m":
         tag += "-2m"
     rom_path = out_dir / f"rop-{tag}.rom"
@@ -667,6 +685,10 @@ def main(argv=None) -> int:
                     help="payload binary to place in the second megabyte: "
                     "FILE[@0xOFFSET] (default offset $100000; "
                     "repeatable; needs --size 2m)")
+    ap.add_argument("--eeprom", action="store_true",
+                    help="keep the original EEPROM save in a ROM larger "
+                    "than 1 MB (no sram-save; BlastEm then needs its "
+                    "rom.db edited)")
     ap.add_argument("--repo", default=None,
                     help="repo root (default: parent of tools/)")
     ap.add_argument("--out-dir", default=None,
@@ -684,7 +706,7 @@ def main(argv=None) -> int:
         manifest = build(features, repo,
                          base_override=Path(args.base) if args.base else None,
                          out_dir=Path(args.out_dir) if args.out_dir else None,
-                         size=args.size,
+                         size=args.size, eeprom=args.eeprom,
                          data=tuple(parse_data_spec(s)
                                     for s in args.data))
     except BuildError as e:

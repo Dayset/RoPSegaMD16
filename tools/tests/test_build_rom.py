@@ -67,8 +67,7 @@ def test_hook_overlap_names_both_addresses():
     # A is a 12-byte `bytes` hook covering $173C0-$173CC (three whole
     # instructions); B is a jsr hook inside it at $173C6. Both are
     # individually boundary-valid, so only the overlap check can
-    # catch this. (A jsr/jmp hook is always len 6, so a long hook
-    # must be kind=bytes.)
+    # catch this. 
     hooks = [_hook(0x173C0, 12, kind="bytes",
                    target="4E71" * 6, target_addr=None),
              _hook(0x173C6, 6, feature="g", target_addr=0xFD0D0)]
@@ -107,6 +106,13 @@ def test_bytes_hook_length_mismatch():
         assert "2 bytes but len is 6" in str(e), str(e)
     else:
         raise AssertionError("bytes/len mismatch did not fail")
+
+
+def test_long_jmp_hook_pads_with_nops():
+    from build_rom import hook_bytes
+    h = _hook(0x173C0, 10, kind="jmp", target_addr=0xFD0CC)
+    check_hooks([h], STARTS, _blobs())
+    assert hook_bytes(h) == bytes.fromhex("4EF9000FD0CC4E714E71")
 
 
 def test_unknown_kind_fails():
@@ -295,7 +301,8 @@ def test_two_mb_build_layout():
     orig = find_rom().read_bytes()
     with tempfile.TemporaryDirectory() as td:
         manifest = build([], REPO, base_override=find_rom(),
-                         out_dir=Path(td) / "build", size="2m")
+                         out_dir=Path(td) / "build", size="2m",
+                         eeprom=True)
         assert manifest["size"] == 0x200000, manifest["size"]
         assert manifest["rom_size"] == "2m"
         assert manifest["rom_end"] == "0x001FFFFF"
@@ -319,6 +326,24 @@ def test_two_mb_build_layout():
         assert stored_runtime_checksum(rom) == compute_runtime_checksum(rom)
         # The IPS for the 2 MB build rebuilds it from the 1 MB base.
         assert apply_ips(orig, Path(td) / "build" / "rop-base-2m.ips") == rom
+
+
+def test_two_mb_build_sram_save():
+    """A 2 MB build gets sram-save by default (#284): own product ID,
+    SRAM header at $1B0, the three EEPROM entry points hooked."""
+    if _skip_if_no_toolchain():
+        return
+    with tempfile.TemporaryDirectory() as td:
+        manifest = build([], REPO, base_override=find_rom(),
+                         out_dir=Path(td) / "build", size="2m")
+        rom = (Path(td) / "build" / "rop-base-2m.rom").read_bytes()
+        assert manifest["features"] == ["sram-save"]
+        assert b"T-50176" not in rom[0x180:0x190]
+        assert rom[0x1B0:0x1BC] == bytes.fromhex("5241F82000200001002000FF")
+        assert {h["addr"] for h in manifest["hooks"]} == {
+            "0x42FD8", "0x43012", "0x430F4"}
+        assert stored_checksum(rom) == compute_checksum(rom)
+        assert stored_runtime_checksum(rom) == compute_runtime_checksum(rom)
 
 
 def test_two_mb_build_with_data():
@@ -396,9 +421,11 @@ def main():
              test_ips_round_trip_longer_patched,
              test_ips_apply_extends_short_input,
              test_overlapping_hook_feature_fails_end_to_end,
+             test_long_jmp_hook_pads_with_nops,
              test_music_off_build_matches_existing_ips,
              test_empty_build_is_original,
              test_two_mb_build_layout,
+             test_two_mb_build_sram_save,
              test_two_mb_build_with_data,
              test_two_mb_data_rejected]
     failed = 0

@@ -21,7 +21,8 @@ GNU as rewrites some encodings (`cmp.w #imm,Dn` becomes `cmpi.w`, and other "opt
 A patch ships as a feature, never as a hand-assembled ROM: a directory
 `patches/<name>/` holding `feature.s` (the new code) and `hooks.csv`
 (one hook per line: `addr,len,kind,target`, kind ∈ `jsr|jmp|bytes`).
-`feature.s` must start with `org ORGVAL`; the build supplies ORGVAL as
+A `jsr`/`jmp` hook longer than 6 bytes is padded with `nop`s, so it
+can replace an 8-byte first instruction. `feature.s` must start with `org ORGVAL`; the build supplies ORGVAL as
 the allocator-chosen address, so no source hardcodes where it lands.
 In-blob branches must be PC-relative (labels); absolute-long references
 to fixed game addresses are fine. For `jsr`/`jmp`, `target` is a label
