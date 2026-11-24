@@ -2806,7 +2806,8 @@ td_ilift:
 	lsr.w	#7,d0
 	andi.w	#1,d0
 	add.w	d0,d2
-	mulu.w	#7,d2
+	addq.w	#1,d2			; the game draws its figures 7 px higher
+	mulu.w	#7,d2			; than this formula gave (#300)
 	lsr.w	#8,d1
 	andi.w	#1,d1
 	lsl.w	#2,d1
