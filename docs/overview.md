@@ -197,9 +197,14 @@ a trace, and (where claimed) a harness reproduction:
    No other divide-by-zero found in the combat/spell paths traced.
 5. The Void death message ("a cruel twist of fate… exterminated
    you in a mere N seconds") — what triggers it, and is the timer
-   reachable in normal play or only by a bug? — **Text located
-   (0x1215A); trigger and timer NOT located** (no pointer to 0x1215A
-   in ROM; reference mechanism unknown). Open.
+   reachable in normal play or only by a bug? — **SOLVED (#276):
+   there is no timer.** The text is at ROM `0x1215E` (not `0x1215A`),
+   referenced by `pea.l L01215E` at `$120F2` in `text_blit`
+   (`$12072`), called only from `error_show` (`$12FA0`). All 36
+   call sites push an immediate error-code constant; "N seconds" is
+   the error code as a decimal. The codes are mapped in
+   `docs/error-codes.md`; the closest to a timer, `$C8` (save-size
+   cap), is provably unreachable (997 ≤ 1008 bits, live-verified).
 6. Any unreachable code / dead routines left from development
    (the debug format string at `0x023934` and `Diags On/Off`
    at `0x02752A` suggest a debug mode — is it still reachable?). —
@@ -218,8 +223,11 @@ marked unknown are the #015–#017 work.
    `$C00004` at boot; a second register set written by `$A14`
    (`$8004, $8134, $8228, $8330, …`); display enabled with `$8134`
    after the first VBlank wait.
-2. **Tile data (provisional):** `0x060000–0x093FFF` (208 KB) reads
-   as 4-bpp tile patterns. Not yet decoded to images (#016).
+2. **Tile data (verified #276):** `0x060000–0x093FFF` (208 KB) is
+   family-2 terrain streams (944-entry `$5F524` offset table;
+   768/768 terminate at `0x00`), decoded by the threaded `$E358`
+   decoder — see `docs/terrain-stream-decoding.md` for the nibble
+   semantics. Not 4-bpp tile patterns, and not unknown.
 3. **Compressed assets (unknown):** `0x044000–0x05FFFF` and
    `0x094000–0x0CBFFF` (336 KB total), entropy 7.0–7.6 — the usual
    Genesis codecs to test are Nemesis, Kosinski, and Enigma (#017).

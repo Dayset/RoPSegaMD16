@@ -284,25 +284,21 @@ this was wrong and was corrected before the #008 push.
 
 ---
 
-## 7. Void death message — text located, trigger NOT located (audit Q5)
+## 7. Void death message — SOLVED, no timer (audit Q5, #276)
 
-**Finding (OPEN).** The spaced string at ROM `0x1215A`
-(`disasm/text/spaced_strings.txt`, confirmed in
-`disasm/text/README.md`): "By a cruel twist of fate, Void has found
-your party and exterminated you in a mere \x00 seconds. There was
-nothing you could do. Please try again with a saved game." (The
-Russian patch note also cites the Void message at `0x1215E`.)
-
-**What was searched.** No longword pointer to `0x1215A` in ROM and
-no `lea $1215a` in `disasm/rop.s` — the reference mechanism is
-unknown (likely a 16-bit offset table or a computed address). The
-trigger routine and the timer were **not located**. No routine was
-found that writes a countdown, compares it to a Void threshold, or
-branches to a party-wipe on a timer expiry. **This is an honest open
-item, not a finding.** Leads: the `$FF0E16` step-counter readers are
-save-serialisation code, not a Void timer (§14); the verb/encounter
-tables in the `0x23000` area (which call the terrain decoder,
-§13) are the next place to look for a random-encounter timer.
+**Finding (CODE-VERIFIED).** The spaced string is at ROM `0x1215E`,
+not `0x1215A` (the Russian patch note's `0x1215E` was right).
+It is referenced by `pea.l L01215E` at `$120F2` inside `text_blit`
+(`$12072`), whose only caller is `error_show` (`$12FA0`, call at
+`$12FA8`). The earlier search missed the reference because it looked
+for a longword pointer or `lea` — the reference is a `pea.l`.
+There is **no timer**: all 36 `error_show` call sites push an
+immediate error-code constant, and "N seconds" is the error code
+printed as a decimal. The full code table — guard condition and
+normal-play verdict per code — is in `docs/error-codes.md`. The
+closest to a timer, `$C8` (save bit-offset cap), is provably
+unreachable: the save total is a data-independent 997 bits against
+the 1008-bit cap, confirmed live in BlastEm.
 
 ---
 
@@ -327,8 +323,10 @@ VBlank interrupts are masked and `$FF0016` never clears → the
 interrupts **are** enabled (SR=`$2000` sites at `0x1266`, `0x1382`,
 `0x138E`; the VBlank handler fills the joypad queue gameplay depends
 on), so the empty-slot branch is benign. **This was a harness-context
-artifact, not a game bug.** `$12072`'s only 2 callers: `0x1224C`
-and `0x12FA8` (via `$12FA0`).
+artifact, not a game bug.** `text_blit` (`$12072`) has exactly one
+caller: the call at `$12FA8` inside `error_show` (`$12FA0`).
+The alleged second caller at `0x1224C` does not exist — `$1224C`
+is inside data, not code (corrected #276).
 
 ---
 
@@ -970,10 +968,10 @@ disassembly line; registers must be read explicitly.
 
 | item | status | narrowed lead |
 |---|---|---|
-| Void message trigger + timer | OPEN | No pointer to `0x1215A`; search the `0x23000`-area encounter tables and any timer that wipes the party (§7) |
+| Void message trigger + timer | SOLVED (#276) | Text at `0x1215E`, `pea.l L01215E` at `$120F2` in `text_blit`, called only from `error_show` (`$12FA0`); 36 codes mapped, no timer (§7, `docs/error-codes.md`) |
 | Command-23 writer | OPEN | No literal `move.b #$17` into the command slot in `disasm/rop.s` (§11) |
 | +0x14 chain passing 57–62 | OPEN | `$2BBD2` major/minor dispatch + party-join call sites (§14) |
-| Food/water consumption routine | OPEN | `$FF0E16` step-counter consumers in the `$2155E` tick path other than save code; `$32C56` callers (§13) |
+| Food/water consumption routine | LOCATED (#276) | `$024F38–$024FB2` in `combat_move_unit` (`$024984`), gated on `$FF00AE == 1`; food `$FFC364`, water `$FFC366`, clamped [1, 30000] (`docs/architecture.md`) |
 | Bribe 10-gold code path | LOCATED + delta mechanism confirmed [live 6/6] (2026-11-10) | Verb "Bribe" (ROM `0xCD38C`, C 25) → handler `$020466`: gold ≥ 10, deduct 10 via `$2BBD2`, raise attitude via `$02A22A` → `$02CE74` (§16). `$02CE74`: live +0x22 += full delta, persistent `$FF00C0` += (pct × delta)/100, both clamped [−100,+100]. 11 event-8 records in `$0D3102`; type-1 deltas 50/99/15, type 11 is the attitude-down path, rec 44 (type 3, delta 1) ends combat. Type 0xF has no case in either dispatch table — a +0x02==1 merchant's Bribe changes attitude by exactly zero (corrected 2026-11-11, PR #138). Which record matches is the merchant's +0x02 (RNG tie-break) — not a single universal number. `$0331A4` record-match RESOLVED [live] (2026-11-10, `.scratch025/` batch mode: +0x02=1 → rec 19 $F000; +0x02=0 → rec 20 $1032). |
 | Doggonia 1,000-gold fee | OPEN | Player-observed only; no routine found (§16) |
 | Gems sell 428 | RESOLVED (2026-11-10) [live] | Guide was right; `$2EA92` slot-doubling table `$1B299` was missed. `$2EA92(14,2)` = 856 @ Commerce att 40, sell 428 (§16) |

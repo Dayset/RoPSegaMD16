@@ -69,8 +69,8 @@ elapsed time**. Confirmed codes:
 | 26 / `0x1a` | No free entry in the 56-slot actor table |
 | 24 / `0x18` | Object absent from the placement cache |
 
-This answers the open Void-death item (text at ROM 0x1215A; trigger/timer
-NOT located). The trigger is a **full 56-slot table** (codes 22/26) or a
+This answers the open Void-death item (text at ROM 0x1215E; no timer —
+error_show codes, #276). The trigger is a **full 56-slot table** (codes 22/26) or a
 **missing placement-cache object** (code 24). The error handler is at
 `$012FA0`; RROP writes a report + emergency checkpoint on entry to it.
 

@@ -458,18 +458,30 @@ papered over.
   (predicates: `$FF0E16`/18 > 30 → `0xFF`/0, else 0/`0xFF`),
   `0x2F1F0`/`0x2FA2A`/`0x302F0`.
 
-### Food/water consumption — NOT located (honest gap, narrowed)
+### Food/water consumption — LOCATED (`$024F38`, #276)
 
-- `$170DA` is a palette routine, **not** the consumption
-  routine (the `$FF0E16`/18 triggers in `$2155E` drive
-  palette fades, not food/water).
-- The `$2BBD2` codes `0x380`/`0x381` (food/water goods slots
-  0/1) are inventory-count codes (`$2C8F2`), not consumption.
-  No `$2BBD2` call site with a per-step decrement was found.
-  The consumption routine is still open for #021; the
-  strongest remaining leads are the `$FF0E16` step
-  counter's readers (`$2F1F0`, `$2FA2A`, `$302F0`, `$2EC80`)
-  and the `$32C56` position-based call in `$2155E`.
+- Consumption lives in `combat_move_unit` (`$024984`): at
+  `$024F38–$024FB2`, gated on `$FF00AE == 1` (overworld stepping
+  only). Food `$FFC364` (leader struct +0x1A) and water `$FFC366`
+  (+0x1C) each drop by the per-step costs computed by `$01C892`,
+  clamped to [1, 30000] — the floor is 1, so there is no starvation
+  death.
+- The only consequence at ≤1 is the Dino forage branch
+  `$021712–$02175E` (message rec_1105).
+- Live check (#276, BlastEm probe2): with the `$FF00AE` gate forced
+  and the vessel mode forced to 3 (Ship), 57 steps dropped food and
+  water by 57 (1/step here) and fired 7 × −4 gold drains (drain
+  `jsr inv_apply_resource` at `$024FE2`, args leader 0, `$400`, −4,
+  1; 7/57 ≈ 12%, consistent with the 1-in-10 roll at `$024FB8–
+  $024FEA`). Caveat: Ship is unobtainable in normal play (vessel
+  spawner is dead code), so this proves the code executes as written
+  when its preconditions hold, not a real Ship voyage. Probe logs:
+  `scratch/probe2_log.txt` in the #276 worktree.
+- Earlier dead ends, kept for the record: `$170DA` is a palette
+  routine, **not** the consumption routine (the `$FF0E16`/18
+  triggers in `$2155E` drive palette fades, not food/water). The
+  `$2BBD2` codes `0x380`/`0x381` (food/water goods slots 0/1) are
+  inventory-count codes (`$2C8F2`), not consumption.
 
 ### Terrain grid — NOT located, but the decoder is now understood (partial close of the #006 gap)
 

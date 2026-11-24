@@ -156,6 +156,11 @@ def tables(m):
         rows.append('| Asset round-trip | no ROM | 4 of 4 | — |')
     else:
         rows.append(f"| Asset round-trip | {n} of 4 | 4 of 4 | {100 * n // 4}% |")
+    # "Bytes unknown" is classification coverage (every byte sits in a
+    # code or incbin region), not "purpose understood" (#276: the 400
+    # words at $5EDC4+512 have no consumer yet the row reads 0).
+    rows.append('')
+    rows.append('Note: "Bytes unknown" is classification coverage, not "purpose understood" — e.g. the 400 words at `$5EDC4`+512 (`$05F1C4–$05F523`) have no consumer (#276).')
     return rows
 
 

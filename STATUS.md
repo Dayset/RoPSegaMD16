@@ -14,3 +14,5 @@ Measured from the repo. Issue counts are on GitHub, not here.
 | Bytes high-entropy (opaque, counted in M8) | 0 | 0 | 0.00% |
 | Pointer-bearing bytes still incbin | 0 | 0 | 0.00% |
 | Asset round-trip | 4 of 4 | 4 of 4 | 100% |
+
+Note: "Bytes unknown" is classification coverage, not "purpose understood" — e.g. the 400 words at `$5EDC4`+512 (`$05F1C4–$05F523`) have no consumer (#276).
