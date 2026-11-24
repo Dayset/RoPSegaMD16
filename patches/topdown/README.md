@@ -409,10 +409,21 @@ the boot RAM clear resets it). Blob 11,870 bytes at `$FD0CC` (padding, 12,084) i
 
 ## Limits (test build)
 
-- Smooth iso: tall terrain does not hide figures behind it (figures are
-  sprites above Plane B); the hole is the camera's ±4 cells (the
-  original shows ±5). Both are open cards (see `docs/smooth-topdown.md`,
-  v2). The 1 MB build renders with the game's decoder and trails more.
+- Smooth iso, 2 MB: terrain in front of a figure covers it through an
+  occlusion overlay (#278): the cells (and their building records)
+  drawn after the figure in the game's painter order, drawn alone with
+  `$E358` from the last picture's cell words into the figure corner,
+  cached in the figure cache (key: cell + terrain phase, at most 4
+  overlays), shown as a sprite just in front of the figure at its
+  resting place, dropped when not wholly inside the hole. Built in the
+  render's idle time with no picture waiting, so while walking some
+  steps go without one. `tools/md_figure_check.py` (figure boxes vs the
+  original view, explore route 3740–5800, 52 frames): 1,817 → 1,801 px
+  off, 8 frames better, none worse; built also with a picture waiting
+  it is 1,116 px and 17 frames better, but the Buc trail drops 98.1 →
+  97.6 % (Q19). 1 MB: no overlays. While sliding between cells the
+  overlay stays at the target cell. The hole is the camera's ±4 cells
+  (the original shows ±5).
 
 - The bottom 80 lines (HUD band) show faces unshaded. While a menu is
   open, map tiles can cover parts of the pad icon (it goes back to low
