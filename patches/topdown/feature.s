@@ -246,6 +246,20 @@ TA_SFL		equ TA_SXY+4	; side being tried, its direction
 TA_TRY		equ TA_SFL+2
 TA_PD		equ TA_TRY+2
 TA_LS		equ TA_PD+2	; the side that worked last (1 or 3) first
+TA_CTL		equ TA_LS+2	; leader controller on (#307 follow-up)
+TA_OX		equ TA_CTL+2	; figure offset from the game's cell, 1/256 cell
+TA_OY		equ TA_OX+2
+TA_G0X		equ TA_OY+2	; the game's leader cell seen last
+TA_G0Y		equ TA_G0X+2
+TA_FACE		equ TA_G0Y+2	; facing 0-3 (N E S W)
+TA_LH		equ TA_FACE+2	; direction held last (-1 none)
+TA_CMT		equ TA_LH+2	; pad nibble to hand the game (a step), 0 none
+TA_CF		equ TA_CMT+2	; frame the game took it (0: none pending)
+TA_BLK		equ TA_CF+2	; the step was refused: back to the cell
+TA_WPH		equ TA_BLK+2	; walk phase (1/256 cell travelled)
+TA_MOV		equ TA_WPH+2	; moved this frame
+TA_CFR		equ TA_MOV+2	; frame the controller last ran
+TA_MISS		equ TA_CFR+2	; leader images shown late (count, a measure)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
@@ -706,6 +720,9 @@ td_pad:
 	bra.s	.got
 .empty:	move.b	$FF002C,d0
 .got:	move.w	#$2000,sr
+	ifd	SIZE8M
+	bsr.w	ta_padf			; the controller hands out the steps
+	endif
 	move.b	d0,d1
 	andi.b	#$70,d1
 	cmpi.b	#$70,d1
@@ -1209,6 +1226,21 @@ td_chars:
 	move.w	d3,2(a4)
 	move.w	FRAME,8(a4)
 .pos:	bsr.w	td_slidepos		; d5/d6 = position, d4 = elapsed
+	ifd	SIZE8M
+	bsr.w	ta_isldr		; the leader: where the controller has
+	bne.s	.np			; him (cell + offset)
+	move.w	d2,d5
+	lsl.w	#4,d5
+	move.w	TA_OX,d0
+	asr.w	#4,d0
+	add.w	d0,d5
+	move.w	d3,d6
+	lsl.w	#4,d6
+	move.w	TA_OY,d0
+	asr.w	#4,d0
+	add.w	d0,d6
+.np:
+	endif
 	bsr.w	td_ilift		; lift of its target cell
 .fig:	bsr.w	td_figure		; d0 = figure tile word, or -1
 	tst.w	d0
@@ -1298,6 +1330,12 @@ td_figure:
 	lea	RECS,a1
 	adda.w	d0,a1
 	move.w	2(a1),d0		; template
+	ifd	SIZE8M
+	bsr.w	ta_isldr		; (the leader: the controller's facing)
+	bne.s	.nf
+	move.w	TA_FACE,d0
+.nf:
+	endif
 	add.w	4(a1),d0
 	cmpi.w	#56,d0
 	bcc.w	.none
@@ -1311,6 +1349,21 @@ td_figure:
 	adda.w	d0,a0
 	move.w	(a0),d2			; image offset
 	move.w	2(a0),d3		; mirror param
+	ifd	SIZE8M
+	bsr.w	ta_isldr		; the leader walks while he moves
+	bne.s	.nw
+	tst.w	TA_MOV
+	beq.s	.key
+	move.w	d2,d0
+	andi.w	#6,d0
+	beq.s	.lw
+	cmpi.w	#6,d0
+	bne.s	.key
+.lw:	move.w	TA_WPH,d0		; 4 frames a cell
+	lsr.w	#6,d0
+	bra.s	.wf
+.nw:
+	endif
 	cmp.w	TD_PERIOD,d4		; sliding?
 	bcc.s	.key
 	move.w	(a4),d0
@@ -1330,7 +1383,7 @@ td_figure:
 	move.w	d4,d0
 	lsl.w	#2,d0
 	divu.w	TD_PERIOD,d0
-	andi.w	#3,d0
+.wf:	andi.w	#3,d0
 	andi.w	#8,d2
 	lea	td_walk(pc),a0
 	add.b	(a0,d0.w),d2
@@ -1349,7 +1402,14 @@ td_figure:
 	bmi.s	.old
 	move.w	d6,(a0)			; cached: remember it
 	bra.s	.out
-.old:	move.w	(a0),d0			; not cached yet: its last image if it
+.old:
+	ifd	SIZE8M
+	bsr.w	ta_isldr
+	bne.s	.nm
+	addq.w	#1,TA_MISS
+.nm:
+	endif
+	move.w	(a0),d0			; not cached yet: its last image if it
 	cmpi.w	#NOPOS,d0		; is still in the cache (no blob)
 	beq.s	.none
 	bsr.s	td_img
@@ -2723,6 +2783,9 @@ td_isync:
 
 ; td_iframe — td_frame_go's world update in iso.
 td_iframe:
+	ifd	SIZE8M
+	bsr.w	ta_ctl
+	endif
 	bsr.w	td_chars
 	bsr.w	td_iso_cam
 	bsr.w	td_layers
@@ -5456,6 +5519,7 @@ ta_sprw:
 ; slots 78-79 first in the chain (on top), half the camera's parallax,
 ; one pixel every 4 frames to the right. VBlank, after td_sprites.
 ;=======================================================================
+	ifd	SIZE8M
 ta_clouds:
 	movem.l	d2-d4,-(a7)
 	move.w	SPRBASE,d0		; sprite 0's link -> the chain's head
@@ -5562,6 +5626,340 @@ ta_cloud1:
 	dc.l	$00000000,$00000000,$00000000,$00000000,$B0B00000,$FFFB0B00,$FFFFF0B0,$FFFFFB00
 	dc.l	$FFFFFFB0,$FFFFFF0B,$FFFFFFB0,$FFFFFB00,$FFFFF0B0,$FFFB0B00,$B0B00000,$00000000
 	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+
+	endif
+
+;=======================================================================
+; ta_ctl — the leader controller (pre-drawn view, outside menus and
+; combat; once per frame from td_iframe). The figure leaves the game's
+; cell as soon as a direction is held, at the walking pace (a cell per
+; tick period), facing that way at once; at half a cell the step goes
+; to the game (its pad pop gets the direction, its tick starts now); a
+; refused step, or a release before half way, slides back; a release
+; past half way finishes the step. A tap turns and nudges.
+;=======================================================================
+	ifd	SIZE8M
+ta_ctl:
+	cmpi.w	#$5A71,TA_ON
+	bne.w	.off
+	tst.w	$FF00AC			; a menu
+	bne.w	.off
+	cmpi.l	#$FFB0BC,GRIDPTR	; combat
+	beq.w	.off
+	move.w	FRAME,d0
+	cmp.w	TA_CFR,d0
+	beq.w	.o
+	move.w	d0,TA_CFR
+	movem.l	d2-d6/a0,-(a7)
+	move.w	LEADER,d0
+	mulu.w	#$34,d0
+	lea	CHARS,a0
+	adda.l	d0,a0
+	move.w	$C(a0),d2		; the game's cell
+	move.w	$E(a0),d3
+	tst.w	TA_CTL
+	bne.s	.on
+	move.w	d2,TA_G0X		; switching on: on the cell
+	move.w	d3,TA_G0Y
+	clr.w	TA_OX
+	clr.w	TA_OY
+	clr.w	TA_CMT
+	clr.w	TA_CF
+	clr.w	TA_BLK
+	move.w	#-1,TA_LH
+	move.w	#1,TA_CTL
+.on:	move.w	d2,d0			; the cell changed: the offset follows
+	sub.w	TA_G0X,d0
+	move.w	d3,d1
+	sub.w	TA_G0Y,d1
+	move.w	d2,TA_G0X
+	move.w	d3,TA_G0Y
+	move.w	d0,d4
+	or.w	d1,d4
+	beq.s	.same
+	clr.w	TA_CF			; a step (not refused)
+	clr.w	TA_BLK
+	move.w	d0,d4			; more than a cell: a jump
+	bpl.s	.a1
+	neg.w	d4
+.a1:	cmpi.w	#1,d4
+	bhi.s	.jump
+	move.w	d1,d4
+	bpl.s	.a2
+	neg.w	d4
+.a2:	cmpi.w	#1,d4
+	bhi.s	.jump
+	lsl.w	#8,d0
+	sub.w	d0,TA_OX
+	lsl.w	#8,d1
+	sub.w	d1,TA_OY
+	bra.s	.same
+.jump:	clr.w	TA_OX
+	clr.w	TA_OY
+.same:	move.w	TA_CF,d0		; handed out > 3 frames ago, no step:
+	beq.s	.nb			; refused
+	move.w	FRAME,d1
+	sub.w	d0,d1
+	cmpi.w	#3,d1
+	bcs.s	.nb
+	clr.w	TA_CF
+	move.w	#1,TA_BLK
+.nb:	moveq	#0,d5			; the direction held now
+	move.b	$FF0018,d5
+	andi.w	#$F,d5
+	bsr.w	ta_hdir			; -> d4 = 0-3 or -1
+	tst.w	d4
+	bmi.s	.nh
+	move.w	d4,TA_FACE		; facing: at once (the game's draw
+	move.w	LEADER,d0		; record too, so it stays when the
+	mulu.w	#$34,d0			; controller pauses)
+	lea	CHARS,a0
+	adda.l	d0,a0
+	move.w	4(a0),d0
+	cmpi.w	#56,d0
+	bcc.s	.nr
+	mulu.w	#12,d0
+	lea	RECS,a0
+	move.w	d4,2(a0,d0.w)
+.nr:	cmp.w	TA_LH,d4
+	beq.s	.nh
+	clr.w	TA_BLK			; another direction: try again
+.nh:	move.w	d4,TA_LH
+	moveq	#0,d2			; target offset: a cell that way, or 0
+	moveq	#0,d3
+	tst.w	d4
+	bmi.s	.t
+	tst.w	TA_BLK
+	bne.s	.t
+	move.w	d4,d0
+	add.w	d0,d0
+	add.w	d0,d0
+	lea	ta_dxy(pc),a0
+	move.w	(a0,d0.w),d2
+	move.w	2(a0,d0.w),d3
+	lsl.w	#8,d2
+	lsl.w	#8,d3
+.t:	move.w	#256,d6			; speed: a cell per tick period
+	ext.l	d6
+	divu.w	TD_PERIOD,d6
+	addq.w	#1,d6
+	clr.w	TA_MOV
+	tst.w	d2			; moving along x: y back to 0 first
+	beq.s	.ny
+	tst.w	TA_OY
+	beq.s	.ny
+	moveq	#0,d0
+	lea	TA_OY,a0
+	bsr.w	ta_toward
+	bra.s	.cm
+.ny:	tst.w	d3			; along y: x back to 0 first
+	beq.s	.both
+	tst.w	TA_OX
+	beq.s	.both
+	moveq	#0,d0
+	lea	TA_OX,a0
+	bsr.w	ta_toward
+	bra.s	.cm
+.both:	move.w	d2,d0
+	lea	TA_OX,a0
+	bsr.w	ta_toward
+	move.w	d3,d0
+	lea	TA_OY,a0
+	bsr.w	ta_toward
+.cm:	tst.w	d4			; half way: the step to the game
+	bmi.s	.x
+	tst.w	TA_BLK
+	bne.s	.x
+	tst.w	TA_CMT
+	bne.s	.x
+	tst.w	TA_CF
+	bne.s	.x
+	move.w	d4,d0			; progress = offset . direction
+	add.w	d0,d0
+	add.w	d0,d0
+	lea	ta_dxy(pc),a0
+	move.w	TA_OX,d1
+	muls.w	(a0,d0.w),d1
+	move.w	TA_OY,d2
+	muls.w	2(a0,d0.w),d2
+	add.l	d2,d1
+	cmpi.l	#128,d1
+	blt.s	.x
+	move.w	d5,TA_CMT
+	move.w	FRAME,d0		; and the game's tick now
+	sub.w	TD_PERIOD,d0
+	move.w	d0,TD_TICKFR
+.x:	movem.l	(a7)+,d2-d6/a0
+.o:	rts
+.off:	clr.w	TA_CTL
+	clr.w	TA_MOV
+	rts
+
+ta_toward:	; (a0) toward d0 by at most d6; TA_WPH, TA_MOV count it
+	move.w	d0,d1
+	sub.w	(a0),d1
+	beq.s	.o
+	bpl.s	.p
+	neg.w	d1
+	cmp.w	d6,d1
+	bls.s	.n
+	move.w	d6,d1
+.n:	sub.w	d1,(a0)
+	bra.s	.c
+.p:	cmp.w	d6,d1
+	bls.s	.q
+	move.w	d6,d1
+.q:	add.w	d1,(a0)
+.c:	add.w	d1,TA_WPH
+	move.w	#1,TA_MOV
+.o:	rts
+
+ta_dxy:	dc.w	0,-1, 1,0, 0,1, -1,0
+
+ta_hdir:	; d5 = pad nibble (U D L R) -> d4 = direction 0-3, -1 none, as
+	; menu_verb_input maps it ($0116: turned layout, $0134: diagonals)
+	moveq	#-1,d4
+	lea	ta_pad0(pc),a0
+	tst.w	$FF0116
+	beq.s	.t
+	lea	ta_pad1(pc),a0
+.t:	move.b	(a0,d5.w),d4
+	ext.w	d4
+	cmpi.w	#4,d4			; a diagonal: only with $0134
+	blt.s	.o
+	moveq	#-1,d4
+	tst.w	$FF0134
+	beq.s	.o
+	move.b	(a0,d5.w),d4
+	ext.w	d4
+	subq.w	#4,d4
+	cmpi.w	#4,d4
+	blt.s	.o
+	moveq	#-1,d4
+.o:	rts
+ta_pad0:	; nibble 0-15 -> 0-3, 4 + d for a diagonal, 8 none
+	dc.b	8,0,2,8, 3,7,6,8, 1,4,5,8, 8,8,8,8
+ta_pad1:
+	dc.b	8,3,1,8, 2,7,6,8, 0,4,5,8, 8,8,8,8
+
+ta_padf:	; td_pad: d0 = the popped pad byte. With the controller on, the
+	; game sees no direction but the step it is handed (once)
+	tst.w	TA_CTL
+	beq.s	.o
+	andi.b	#$F0,d0
+	tst.w	TA_CMT
+	beq.s	.o
+	or.b	TA_CMT+1,d0
+	clr.w	TA_CMT
+	move.w	FRAME,TA_CF
+	bne.s	.o
+	move.w	#1,TA_CF		; (frame 0)
+.o:	rts
+
+ta_pref:	; main loop (ta_stream): the leader's images for his facing
+	; (standing + 4 walk frames) kept in the figure cache: missing ones
+	; drawn now (2 a frame), all of them touched so the cache keeps them
+	; (the turn shows at once, no other direction's pose while walking)
+	tst.w	TA_CTL
+	beq.s	.o
+	movem.l	d2-d7/a2-a3,-(a7)
+	move.w	LEADER,d0
+	mulu.w	#$34,d0
+	lea	CHARS,a3
+	adda.l	d0,a3
+	move.w	4(a3),d0		; its record
+	cmpi.w	#56,d0
+	bcc.s	.x
+	mulu.w	#12,d0
+	lea	RECS,a2
+	adda.w	d0,a2
+	moveq	#5,d7			; drawings left this frame
+	moveq	#-1,d6			; the image shown now first:
+	tst.w	TA_MOV			; walk frame or standing
+	beq.s	.f
+	move.w	TA_WPH,d6
+	lsr.w	#6,d6
+	andi.w	#3,d6
+.f:	bsr.s	.one
+	moveq	#-1,d6			; then all five
+.k:	bsr.s	.one
+	addq.w	#1,d6
+	cmpi.w	#4,d6
+	blt.s	.k
+.x:	clr.w	TD_CANX
+	movem.l	(a7)+,d2-d7/a2-a3
+.o:	rts
+.one:	bsr.s	ta_lkey
+	tst.w	d1
+	bne.s	.n
+	move.w	d7,TD_CANX
+	bsr.w	td_img			; (a hit only touches it)
+	tst.w	TD_CANX
+	bne.s	.n
+	tst.w	d7
+	beq.s	.n
+	subq.w	#1,d7
+.n:	rts
+
+ta_lkey:	; a2 = record, d6 = walk frame (-1 standing) -> d0 = the image
+	; key td_figure would use for the controller's facing, d1 = 0
+	; (d1 != 0: none). Uses d2-d3/a0.
+	move.w	TA_FACE,d0
+	add.w	4(a2),d0
+	cmpi.w	#56,d0
+	bcc.s	.none
+	mulu.w	#36,d0
+	movea.l	GRIDPTR,a0
+	move.w	$A(a0),d1
+	andi.w	#3,d1
+	lsl.w	#3,d1
+	add.w	d1,d0
+	lea	($0197B0).l,a0
+	adda.w	d0,a0
+	move.w	(a0),d2
+	move.w	2(a0),d3
+	tst.w	d6
+	bmi.s	.key
+	move.w	d2,d0
+	andi.w	#6,d0
+	beq.s	.w
+	cmpi.w	#6,d0
+	bne.s	.key
+.w:	andi.w	#8,d2
+	lea	td_walk(pc),a0
+	add.b	(a0,d6.w),d2
+.key:	add.w	(a2),d2
+	tst.w	d3
+	beq.s	.k1
+	ori.w	#$8000,d2
+.k1:	move.w	d2,d0
+	moveq	#0,d1
+	rts
+.none:	moveq	#-1,d1
+	rts
+
+ta_isldr:	; d7 = char index, a3 = char -> Z if it is the leader's figure
+	; and the controller is on (keeps all registers)
+	movem.l	d0,-(a7)
+	tst.w	TA_CTL
+	beq.s	.n
+	cmp.w	LEADER,d7
+	beq.s	.y
+	move.w	(a3),d0
+	andi.w	#$F,d0
+	cmpi.w	#4,d0
+	bne.s	.n
+	moveq	#0,d0
+	move.b	$27(a3),d0
+	cmp.w	LEADER,d0
+	beq.s	.y
+.n:	movem.l	(a7)+,d0
+	andi	#$FB,ccr
+	rts
+.y:	movem.l	(a7)+,d0
+	ori	#4,ccr
+	rts
+	endif
 
 ;=======================================================================
 ; ta_pathc — combat_move_unit's step test ($024B6A, 14 bytes: pea,
@@ -5835,14 +6233,27 @@ ta_rub:	; rubber-band camera (td_iso_cam): still while the leader's cell
 	bcc.s	.nl
 	moveq	#1,d4
 .nl:	move.w	TD_CGX,d0
-	move.w	TA_LX,d1
+	mulu.w	#TI_CU,d0
+	tst.w	TA_CTL			; (the controller: the leader's figure)
+	beq.s	.gx
+	tst.w	TD_LEADOK
+	beq.s	.gx
+	move.w	TD_LEADX,d0		; 1/16 cell -> 112/16
+	mulu.w	#TI_CU/16,d0
+.gx:	move.w	TA_LX,d1
 	lea	TD_CMX,a0
 	bsr.s	.ax
 	move.w	TD_CGY,d0
-	move.w	TA_LY,d1
+	mulu.w	#TI_CU,d0
+	tst.w	TA_CTL
+	beq.s	.gy
+	tst.w	TD_LEADOK
+	beq.s	.gy
+	move.w	TD_LEADY,d0
+	mulu.w	#TI_CU/16,d0
+.gy:	move.w	TA_LY,d1
 	lea	TD_CMY,a0
-.ax:	mulu.w	#TI_CU,d0
-	tst.w	d4
+.ax:	tst.w	d4
 	beq.s	.w
 	muls.w	#TA_LEAD,d1
 	add.w	d1,d0
@@ -6075,7 +6486,8 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	#-1,TA_PR
 	bra.s	.end
 .sn:	dbra	d3,.sr
-.end:	movem.l	(a7)+,d2-d7/a2-a6
+.end:	bsr.w	ta_pref			; the leader's images ready
+	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
 
 ta_phnow:	; -> d0 = the game's terrain phase (0/1)
