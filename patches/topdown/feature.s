@@ -241,6 +241,11 @@ TA_LX		equ TA_BAD+2	; the leader's last step (-1..1 per axis)
 TA_LY		equ TA_LX+2
 TA_PH		equ TA_LY+2	; terrain phase drawn (0/1)
 TA_PR		equ TA_PH+2	; phase sweep: next window row, -1 none
+TA_SXY		equ TA_PR+2	; path correction: record x/y, blocked flag,
+TA_SFL		equ TA_SXY+4	; side being tried, its direction
+TA_TRY		equ TA_SFL+2
+TA_PD		equ TA_TRY+2
+TA_LS		equ TA_PD+2	; the side that worked last (1 or 3) first
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
@@ -5436,6 +5441,100 @@ ta_sprw:
 	endif
 .w:	move.w	d0,VDP_DATA
 	rts
+
+;=======================================================================
+; ta_pathc — combat_move_unit's step test ($024B6A, 14 bytes: pea,
+; jsr move_cost_calc, addq, move d0,d4). In the pre-drawn view, the
+; party leader stepping into a wall slides around it: a side step that
+; is free and from where the wanted step is free too is taken instead
+; (the remaster's path correction, rebuilt, #307). Outside combat.
+;=======================================================================
+ta_pathc:
+	pea	-$22(a6)
+	jsr	($01C892).l		; move_cost_calc
+	addq.w	#4,a7
+	move.w	d0,d4
+	ifd	SIZE8M
+	bne.w	.o
+	cmpi.w	#$5A71,TA_ON
+	bne.w	.o
+	cmpi.w	#1,d7			; a plain step
+	bgt.w	.o
+	cmpi.w	#4,d6
+	bcc.w	.o
+	tst.w	$8(a6)
+	bmi.w	.o
+	move.w	-$34(a6),d0		; the party leader
+	cmp.w	($FF02B2).l,d0
+	bne.w	.o
+	cmpi.l	#$FFB0BC,GRIDPTR	; not in a combat arena
+	beq.w	.o
+	move.l	-$22(a6),TA_SXY
+	move.w	-$A(a6),TA_SFL
+	move.w	TA_LS,d0		; (no ping-pong along a wall)
+	cmpi.w	#3,d0
+	beq.s	.ls
+	moveq	#1,d0
+.ls:	move.w	d0,TA_TRY
+	move.w	d0,TA_LS
+.t:	move.w	d6,d1			; side: direction + 1, then + 3
+	add.w	TA_TRY,d1
+	andi.w	#3,d1
+	move.w	d1,TA_PD
+	bsr.w	.free			; the side step free?
+	beq.s	.no
+	move.w	TA_PD,d1		; from there, the wanted step?
+	bsr.w	.dxy
+	add.w	d0,-$22(a6)
+	add.w	d1,-$20(a6)
+	move.w	d6,d1
+	bsr.w	.free
+	move.l	TA_SXY,-$22(a6)
+	beq.s	.no
+	move.w	TA_TRY,TA_LS
+	move.w	TA_PD,d6		; yes: the side step it is
+	move.w	d6,d1
+	bsr.w	.dxy
+	move.w	d0,-$26(a6)
+	move.w	d1,-$24(a6)
+	move.w	d6,d1
+	bsr.w	.free
+	move.w	d0,d4
+	bra.s	.o
+.no:	move.l	TA_SXY,-$22(a6)
+	move.w	TA_TRY,d0
+	cmp.w	TA_LS,d0		; tried both?
+	bne.s	.fail
+	move.w	#4,d0
+	sub.w	TA_TRY,d0
+	move.w	d0,TA_TRY
+	bra.w	.t
+.fail:	move.w	d6,d1			; neither: the record as the game left it
+	bsr.w	.free
+	moveq	#0,d4
+	endif
+.o:	rts
+	ifd	SIZE8M
+.free:	; d1 = direction: record deltas and blocked flag, then the test
+	; -> d0 = steps (Z if none)
+	bsr.s	.dxy
+	move.w	d0,-$18(a6)
+	move.w	d1,-$16(a6)
+	move.w	TA_SFL,-$A(a6)
+	pea	-$22(a6)
+	jsr	($01C892).l
+	addq.w	#4,a7
+	tst.w	d0
+	rts
+.dxy:	; d1 = direction -> d0 = dx, d1 = dy (as world_get_step_delta)
+	add.w	d1,d1
+	add.w	d1,d1
+	lea	.tab(pc),a0
+	move.w	(a0,d1.w),d0
+	move.w	2(a0,d1.w),d1
+	rts
+.tab:	dc.w	0,-1, 1,0, 0,1, -1,0
+	endif
 
 ;=======================================================================
 ; Pre-drawn overworld (#307, 8 MB): the overworld's tiles come from the

@@ -25,3 +25,4 @@ addr,len,kind,target
 0x01BA84,6,jsr,ti_ccr
 0x01BA66,6,jsr,ti_cell
 0x011BF6,12,jsr,ta_sprw
+0x024B6A,14,jsr,ta_pathc
