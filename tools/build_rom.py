@@ -94,7 +94,7 @@ from checksum import fix_checksum, fix_runtime_checksum  # noqa: E402
 
 ORIGINAL_MD5 = "30c18fdbe2183f64702ae9f1a45d63f9"
 BASE_SIZE = 0x100000
-SIZES = {"1m": 0x100000, "2m": 0x200000}
+SIZES = {"1m": 0x100000, "2m": 0x200000, "8m": 0x800000}
 CODE2M_START = 0x1F0000   # 2 MB builds: blobs may go here (last 64 KB)
 SECOND_MB_START = 0x100000
 SECOND_MB_FILL = 0xFF
@@ -482,7 +482,7 @@ def build(features, repo: Path, base_override: Path | None = None,
     if size != "1m" and not eeprom and "sram-save" not in features:
         features = ["sram-save"] + requested
     if size not in SIZES:
-        raise BuildError(f"unknown size '{size}' (want 1m or 2m)")
+        raise BuildError(f"unknown size '{size}' (want 1m, 2m or 8m)")
     target_size = SIZES[size]
     repo = Path(repo)
     out_dir = Path(out_dir) if out_dir else repo / "build"
@@ -493,12 +493,12 @@ def build(features, repo: Path, base_override: Path | None = None,
     instr_starts = parse_instruction_starts(repo)
     defines = ()
     alloc_base = base
-    if size == "2m":
+    if size != "1m":
         # 2 MB builds assemble with SIZE2M=1 (code that needs the second
         # megabyte's data) and may place blobs in its last 64 KB when
         # the first megabyte's padding is full; payloads start at
         # $100000 and must end below CODE2M_START.
-        defines = ("SIZE2M=1",)
+        defines = ("SIZE2M=1",) + (("SIZE8M=1",) if size == "8m" else ())
         regions = regions + [{"start": CODE2M_START, "end": SIZES["2m"],
                               "fill": SECOND_MB_FILL,
                               "cls": "second-mb-code"}]
@@ -564,7 +564,7 @@ def build(features, repo: Path, base_override: Path | None = None,
     # first-fit allocation. The EEPROM window at $200000 follows
     # immediately after it, so the save mapping is unchanged.
     data_placed = []
-    if size == "2m":
+    if size != "1m":
         if len(rom) < BASE_SIZE:
             raise BuildError("internal error: 1 MB base is not 1 MB")
         rom += bytes([SECOND_MB_FILL]) * (target_size - len(rom))
@@ -585,6 +585,22 @@ def build(features, repo: Path, base_override: Path | None = None,
                 gpath = out_dir / f"{name}-data2m.bin"
                 gpath.write_bytes(mod.build(bytes(base)))
                 gen.append((gpath, mod.OFFSET))
+            # 8 MB builds (#307): patches/<name>/data8m.py, above 2 MB
+            dpy = repo / "patches" / name / "data8m.py"
+            if size == "8m" and dpy.is_file():
+                import importlib.util
+                spec = importlib.util.spec_from_file_location(
+                    f"data8m_{name}", dpy)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                gpath = out_dir / f"{name}-data8m.bin"
+                gpath.write_bytes(mod.build(bytes(base)))
+                rom[mod.OFFSET:mod.OFFSET + gpath.stat().st_size] = \
+                    gpath.read_bytes()
+                data_placed.append({"file": str(gpath),
+                                    "offset": f"0x{mod.OFFSET:06X}",
+                                    "size": gpath.stat().st_size,
+                                    "md5": md5_hex(gpath.read_bytes())})
         for dpath, offset in list(gen) + list(data):
             payload = dpath.read_bytes() if dpath.is_file() else None
             if payload is None:
@@ -607,6 +623,10 @@ def build(features, repo: Path, base_override: Path | None = None,
             data_placed.append(
                 {"file": str(dpath), "offset": f"0x{offset:05X}",
                  "size": len(payload), "md5": md5_hex(payload)})
+        if size == "8m":
+            # Sega mapper (512 KB banks at $A130F3-$A130FF): emulators
+            # and flash carts enable it from the console name
+            rom[0x100:0x110] = b"SEGA SSF        "
     elif data:
         raise BuildError("--data needs --size 2m (no second megabyte "
                          "in a 1 MB build)")
@@ -631,8 +651,8 @@ def build(features, repo: Path, base_override: Path | None = None,
     rom = bytes(rom)
 
     tag = "-".join(requested) if requested else "base"
-    if size == "2m":
-        tag += "-2m"
+    if size != "1m":
+        tag += "-" + size
     rom_path = out_dir / f"rop-{tag}.rom"
     ips_path = out_dir / f"rop-{tag}.ips"
     manifest_path = out_dir / f"rop-{tag}.manifest.json"
@@ -659,7 +679,7 @@ def build(features, repo: Path, base_override: Path | None = None,
             for name, b in sorted(blobs.items(),
                                   key=lambda kv: kv[1]["start"])],
     }
-    if size == "2m":
+    if size != "1m":
         manifest["second_mb"] = {
             "start": f"0x{SECOND_MB_START:05X}",
             "end": f"0x{target_size - 1:05X}",
@@ -679,7 +699,7 @@ def main(argv=None) -> int:
                     help="comma-separated feature list")
     ap.add_argument("--base", default=None,
                     help="use this ROM as the base instead of `make build`")
-    ap.add_argument("--size", default="1m", choices=["1m", "2m"],
+    ap.add_argument("--size", default="1m", choices=["1m", "2m", "8m"],
                     help="ROM container size: 1m (default) or 2m "
                     "(1 MB base + a second, 0xFF-filled megabyte "
                     "at $100000-$1FFFFF for tile data)")
