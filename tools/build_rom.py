@@ -94,7 +94,8 @@ from checksum import fix_checksum, fix_runtime_checksum  # noqa: E402
 
 ORIGINAL_MD5 = "30c18fdbe2183f64702ae9f1a45d63f9"
 BASE_SIZE = 0x100000
-SIZES = {"1m": 0x100000, "2m": 0x200000, "8m": 0x800000}
+SIZES = {"1m": 0x100000, "2m": 0x200000, "8m": 0x800000, "10m": 0xA00000, "12m": 0xC00000}
+BIG = ("8m", "10m", "12m")   # Sega mapper builds (#307)
 CODE2M_START = 0x1F0000   # 2 MB builds: blobs may go here (last 64 KB)
 SECOND_MB_START = 0x100000
 SECOND_MB_FILL = 0xFF
@@ -482,7 +483,7 @@ def build(features, repo: Path, base_override: Path | None = None,
     if size != "1m" and not eeprom and "sram-save" not in features:
         features = ["sram-save"] + requested
     if size not in SIZES:
-        raise BuildError(f"unknown size '{size}' (want 1m, 2m or 8m)")
+        raise BuildError(f"unknown size '{size}' (want 1m, 2m, 8m, 10m or 12m)")
     target_size = SIZES[size]
     repo = Path(repo)
     out_dir = Path(out_dir) if out_dir else repo / "build"
@@ -498,7 +499,7 @@ def build(features, repo: Path, base_override: Path | None = None,
         # megabyte's data) and may place blobs in its last 64 KB when
         # the first megabyte's padding is full; payloads start at
         # $100000 and must end below CODE2M_START.
-        defines = ("SIZE2M=1",) + (("SIZE8M=1",) if size == "8m" else ())
+        defines = ("SIZE2M=1",) + (("SIZE8M=1",) if size in BIG else ())
         regions = regions + [{"start": CODE2M_START, "end": SIZES["2m"],
                               "fill": SECOND_MB_FILL,
                               "cls": "second-mb-code"}]
@@ -587,7 +588,7 @@ def build(features, repo: Path, base_override: Path | None = None,
                 gen.append((gpath, mod.OFFSET))
             # 8 MB builds (#307): patches/<name>/data8m.py, above 2 MB
             dpy = repo / "patches" / name / "data8m.py"
-            if size == "8m" and dpy.is_file():
+            if size in BIG and dpy.is_file():
                 import importlib.util
                 spec = importlib.util.spec_from_file_location(
                     f"data8m_{name}", dpy)
@@ -623,7 +624,7 @@ def build(features, repo: Path, base_override: Path | None = None,
             data_placed.append(
                 {"file": str(dpath), "offset": f"0x{offset:05X}",
                  "size": len(payload), "md5": md5_hex(payload)})
-        if size == "8m":
+        if size in BIG:
             # Sega mapper (512 KB banks at $A130F3-$A130FF): emulators
             # and flash carts enable it from the console name
             rom[0x100:0x110] = b"SEGA SSF        "
@@ -699,7 +700,7 @@ def main(argv=None) -> int:
                     help="comma-separated feature list")
     ap.add_argument("--base", default=None,
                     help="use this ROM as the base instead of `make build`")
-    ap.add_argument("--size", default="1m", choices=["1m", "2m", "8m"],
+    ap.add_argument("--size", default="1m", choices=["1m", "2m", "8m", "10m", "12m"],
                     help="ROM container size: 1m (default) or 2m "
                     "(1 MB base + a second, 0xFF-filled megabyte "
                     "at $100000-$1FFFFF for tile data)")
