@@ -91,12 +91,25 @@ def layout(allu, g0, g1, origin):
     return bytes(out)
 
 
+HUD = 0x7F0000              # records 16-17 (pad picture, gauges): VRAM
+                            # 1834-2037, lent to the tile slots (#307)
+
+
+def hud_copy(rom):
+    import decode_map
+    b = decode_map.record_bytes(rom, 16) + decode_map.record_bytes(rom, 17)
+    assert len(b) == 204 * 32, len(b)
+    return b
+
+
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas2-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
     data = layout(*tiles_and_maps(rom))
+    assert OFFSET + len(data) <= HUD
+    data += bytes(HUD - OFFSET - len(data)) + hud_copy(rom)
     cache.parent.mkdir(exist_ok=True)
     cache.write_bytes(data)
     return data

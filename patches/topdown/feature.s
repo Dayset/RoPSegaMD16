@@ -234,7 +234,9 @@ TA_B6		equ TA_HAND+2	; banks in mapper slots 6 / 7 (-1 unknown)
 TA_B7		equ TA_B6+2
 TA_GX		equ TA_B7+2	; camera before the window clamp
 TA_GY		equ TA_GX+2
-TA_N		equ 1074	; tile slots: bank 64-272, 401-827, rec 6's 436-873
+TA_N		equ 1278	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
+				; records 16-17's 1834-2037 (pad, gauges)
+TA_HUD		equ $7F0000	; their copy (restored on leaving)
 TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
 TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
 TA_ID		equ TA_SH+4096	; TA_N longs: slot -> tile id, -1 free
@@ -2701,7 +2703,14 @@ td_iframe:
 	bsr.w	td_iso_cam
 	bsr.w	td_layers
 	bsr.s	td_iso_scroll		; vblank-critical first
+	ifd	SIZE8M
+	bsr.w	td_sprites
+	cmpi.w	#$5A71,TA_ON		; (the game rewrites its pad sprites)
+	beq.w	ta_spr
+	rts
+	else
 	bra.w	td_sprites
+	endif
 
 td_ilayers:
 	move.w	#1,TD_LAY
@@ -5373,6 +5382,27 @@ td_blob:	; TL quadrant (body E, highlight F)
 	dc.l $0000000D,$0000DDDD,$000DDEEE,$00DDEEEE,$0DDEEFFE,$0DEEFFEE,$0DEEEEEE,$DDEEEEEE
 
 ;=======================================================================
+; ta_sprw — sprite_write's y word ($011BF6, with its push and pop): in
+; the pre-drawn overworld a sprite showing records 16-17 (pad picture,
+; gauges) goes off screen, their tiles hold terrain there (#307).
+;=======================================================================
+ta_sprw:
+	move.w	$C(a6),d0
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.w
+	move.w	$14(a6),d1
+	andi.w	#$7FF,d1
+	cmpi.w	#1834,d1
+	bcs.s	.w
+	cmpi.w	#2038,d1
+	bcc.s	.w
+	moveq	#0,d0
+	endif
+.w:	move.w	d0,VDP_DATA
+	rts
+
+;=======================================================================
 ; Pre-drawn overworld (#307, 8 MB): the overworld's tiles come from the
 ; atlas at ATL (tools/ow_atlas.py) instead of the game's render. A
 ; 42x30-tile window around the camera is kept on Plane B at its global
@@ -5403,27 +5433,107 @@ ta_sync:	; td_isync, once per tick: enter or leave it
 	tst.w	d0
 	beq.s	.leave
 	bsr.w	td_iso_cancel
-	bsr.s	.unfr
-	bsr.s	ta_reset
+	bsr.w	.unfr
+	bsr.w	ta_reset
 	move.w	#$5A71,TA_ON
 	move.w	#1,TD_VALID
 	rts
 .leave:	clr.w	TA_ON			; the iso picture's tiles, pool and
 	clr.w	TD_VALID		; plane come back (td_iso_load)
 	clr.w	TD_TILES
+	move.w	#TA_HUD>>19,d0		; records 16-17 back from their copy
+	move.w	d0,TA_B7
+	move.b	d0,$A130FF
+	lea	$380000+(TA_HUD&$7FFFF),a0
+	move.w	#1834*32,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	move.w	#204*8-1,d1
+.hr:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.hr
+	move.w	(a7)+,sr
 	rts
-.same:	tst.w	d0			; on: every 4th tick, room-bitmap
-	beq.s	.o			; words the game put in the window
-	addq.w	#1,TD_WFC		; go blank (they would show our tiles)
+.same:	tst.w	d0			; on: room-bitmap and frame words the
+	beq.s	.o			; game put in the window go blank (they
+	bsr.w	ta_hud			; would show our tiles), every 4th tick
+	addq.w	#1,TD_WFC		; each; the HUD words every tick
 	move.w	TD_WFC,d0
 	andi.w	#3,d0
+	beq.s	.unfr
+	cmpi.w	#2,d0
 	bne.s	.o
+	subq.w	#1,TD_BUSY
+	bsr.w	td_winfix		; (also: is a message showing)
+	addq.w	#1,TD_BUSY
+	rts
 .unfr:	move.w	#1,TD_UNFR		; the frame off the window
 	subq.w	#1,TD_BUSY
 	bsr.w	td_iso_winfix
 	addq.w	#1,TD_BUSY
 	clr.w	TD_UNFR
 .o:	rts
+
+ta_hud:	; no gold, time, food / water words: td_hsrc's cells blank
+	tst.w	TD_MSG			; (unless a message is in those rows)
+	bne.s	.o
+	movem.l	d2-d3/a2,-(a7)
+	lea	td_hsrc(pc),a2
+	moveq	#20,d2			; row
+.r:	moveq	#0,d3
+	move.b	(a2)+,d3		; first column
+	move.w	d2,d0
+	lsl.w	#7,d0
+	add.w	d3,d0
+	add.w	d3,d0
+	add.w	#$1000,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	moveq	#0,d1
+	move.b	(a2)+,d1
+	sub.w	d3,d1
+.c:	move.w	FONTBLK,VDP_DATA
+	dbra	d1,.c
+	move.w	(a7)+,sr
+	addq.w	#1,d2
+	cmpi.w	#26,d2
+	bcs.s	.r
+	movem.l	(a7)+,d2-d3/a2
+.o:	rts
+
+ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
+	; screen (their tiles are ours here)
+	movem.l	d2-d4,-(a7)
+	move.w	TD_GHEAD,d2
+	moveq	#80-1,d3
+.l:	tst.w	d2
+	beq.s	.o
+	move.w	d2,d4
+	lsl.w	#3,d4
+	add.w	SPRBASE,d4
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d4,d0
+	addq.w	#4,d0
+	bsr.w	td_vread
+	andi.w	#$7FF,d0
+	cmpi.w	#1834,d0
+	bcs.s	.k
+	cmpi.w	#2038,d0
+	bcc.s	.k
+	move.w	d4,d0
+	bsr.w	td_vwrite
+	move.w	#0,VDP_DATA
+.k:	move.w	d4,d0
+	addq.w	#2,d0
+	bsr.w	td_vread
+	move.w	(a7)+,sr
+	andi.w	#$7F,d0
+	move.w	d0,d2
+	dbra	d3,.l
+.o:	movem.l	(a7)+,d2-d4
+	rts
 
 ta_reset:
 	lea	TA_HEAD,a0
@@ -5486,6 +5596,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bne.w	.x
 	movem.l	d2-d7/a2-a6,-(a7)
 	move.w	$FF0E8E,TD_ICX		; the glide: no picture to stay near
+	bsr.w	ta_spr
 	move.w	$FF0E90,TD_ICY
 	move.w	TA_GX,d6
 	asr.w	#3,d6			; d6/d7 = wanted left column, top row
@@ -5659,7 +5770,11 @@ ta_vt:	; d0 = slot -> d0 = its VRAM tile: bank 64-272 (0-63: the game
 	bcs.s	.b
 	cmpi.w	#636,d0
 	bcs.s	.c
-	add.w	#436-636,d0
+	cmpi.w	#1074,d0
+	bcs.s	.r6
+	add.w	#1834-1074,d0
+	rts
+.r6:	add.w	#436-636,d0
 	rts
 .c:	add.w	#401-209-64,d0
 .b:	add.w	#64,d0
