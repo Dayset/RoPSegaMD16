@@ -401,7 +401,10 @@ ti_tw0:
 	move.w	VDP_CTRL,d1
 	btst	#3,d1
 	beq.s	.late
-	bsr.w	td_frame		; in VBlank: update the picture
+	move.w	sr,-(a7)		; in VBlank: update the picture (no
+	move.w	#$2700,sr		; VBlank handler between its VDP
+	bsr.w	td_frame		; address and data words)
+	move.w	(a7)+,sr
 	bra.s	.upd
 .late:	move.w	d0,TD_LASTFR		; past VBlank: skip (no tearing)
 .upd:
@@ -1492,7 +1495,7 @@ td_slot:
 
 td_extract:
 	movem.l	d0-d7/a0-a6,-(a7)
-	bsr.s	ti_xswap		; a render in progress: save its corner
+	bsr.w	ti_xswap		; a render in progress: save its corner
 	move.w	d0,d7
 	moveq	#5-1,d1			; clear rows 2..6, cols 16..19
 	lea	DECBUF+(2*36+16)*32,a0
@@ -1517,6 +1520,8 @@ td_extract:
 	move.w	10(a7),d0		; saved d2 = slot -> VRAM address
 	bsr.s	td_slot
 	lsl.w	#5,d0
+	move.w	sr,-(a7)		; (a VBlank between address and data
+	move.w	#$2700,sr		; put the image after the sprite table)
 	bsr.w	td_vwrite
 	lea	DECBUF+(2*36+16)*32,a0
 	moveq	#4-1,d1			; columns
@@ -1530,6 +1535,7 @@ td_extract:
 	dbra	d2,.cr2
 	lea	32(a0),a0
 	dbra	d1,.cc
+	move.w	(a7)+,sr
 	bsr.s	ti_xswap		; ... and put it back
 	movem.l	(a7)+,d0-d7/a0-a6
 	rts
@@ -6132,6 +6138,8 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	move.w	(a7)+,sr
 	rts
 .same:	move.w	#1,TD_VALID
+	bsr.w	ta_fblk			; (writes that miss the sprite table
+	tst.w	d0			; land on it: keep it blank)
 	tst.w	d0			; on: room-bitmap and frame words the
 	beq.s	.o			; game put in the window go blank (they
 	bsr.w	ta_hud			; would show our tiles), every 4th tick
@@ -6308,6 +6316,33 @@ ta_pcheck:	; td_frame_go: one cell of the window still ours? (-> d0 = 0;
 	beq.s	.o
 	move.w	#1,TA_BAD
 .o:	moveq	#0,d0
+	rts
+
+ta_fblk:	; the font blank tile (every blank window cell) blank again, if
+	; anything wrote over it; keeps d0
+	movem.l	d0-d1,-(a7)
+	move.w	FONTBLK,d0
+	lsl.w	#5,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d0,-(a7)
+	bsr.w	td_vread
+	move.w	d0,d1
+	move.w	(a7)+,d0
+	addq.w	#2,d0
+	move.w	d0,-(a7)
+	bsr.w	td_vread
+	or.w	d0,d1
+	move.w	(a7)+,d0
+	subq.w	#2,d0
+	tst.w	d1
+	beq.s	.ok
+	bsr.w	td_vwrite
+	moveq	#8-1,d1
+.c:	clr.l	VDP_DATA
+	dbra	d1,.c
+.ok:	move.w	(a7)+,sr
+	movem.l	(a7)+,d0-d1
 	rts
 
 ta_reset:
