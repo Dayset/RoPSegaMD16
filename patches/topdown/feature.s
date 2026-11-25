@@ -267,8 +267,9 @@ TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
-TA_N		equ 1278	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
-				; records 16-17's 1834-2037 (pad, gauges)
+TA_N		equ 1214	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
+				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
+				; figure images 8-11 (the leader's other facings)
 TA_HUD		equ $9F0000	; their copy (restored on leaving)
 TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
 TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
@@ -5879,6 +5880,7 @@ ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	lea	RECS,a2
 	adda.w	d0,a2
 	moveq	#5,d7			; drawings left this frame
+	move.w	TA_FACE,d5		; (d5: the facing ta_lkey uses)
 	moveq	#-1,d6			; the image shown now first:
 	tst.w	TA_MOV			; walk frame or standing
 	beq.s	.f
@@ -5891,6 +5893,10 @@ ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	addq.w	#1,d6
 	cmpi.w	#4,d6
 	blt.s	.k
+	moveq	#3,d5			; and every facing's standing image
+.fl:	moveq	#-1,d6			; (a turn shows at once)
+	bsr.s	.one
+	dbra	d5,.fl
 .x:	clr.w	TD_CANX
 	movem.l	(a7)+,d2-d7/a2-a3
 .o:	rts
@@ -5906,10 +5912,10 @@ ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	subq.w	#1,d7
 .n:	rts
 
-ta_lkey:	; a2 = record, d6 = walk frame (-1 standing) -> d0 = the image
-	; key td_figure would use for the controller's facing, d1 = 0
-	; (d1 != 0: none). Uses d2-d3/a0.
-	move.w	TA_FACE,d0
+ta_lkey:	; a2 = record, d5 = facing, d6 = walk frame (-1 standing) -> d0 =
+	; the image key td_figure would use, d1 = 0 (d1 != 0: none). Uses
+	; d2-d3/a0.
+	move.w	d5,d0
 	add.w	4(a2),d0
 	cmpi.w	#56,d0
 	bcc.s	.none
@@ -6209,7 +6215,10 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	move.l	a0,TA_A
 	move.w	d0,TA_AR
 	bsr.w	td_iso_cancel
-	move.w	#TI_NFC,TD_NFCV		; 8 figure images (no pool to lend)
+	move.w	#TI_NFC+4,TD_NFCV	; 12 figure images: 8 + 4 in
+	move.w	#1974,d1		; VRAM 1974-2037
+	sub.w	TD_BASE,d1
+	move.w	d1,TD_PEND
 	bsr.w	.unfr
 	bsr.w	ta_reset
 	move.w	#$5A71,TA_ON
