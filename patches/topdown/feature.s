@@ -225,6 +225,23 @@ TD_OVPK		equ TD_OVPL+2	; (0 = none)
 TD_OLOC		equ TD_OVPK+2	; location the cached overlays belong to
 TD_OVDN		equ TD_OLOC+2	; an occlusion decided this update (one per)
 TD_ARTOK	equ TD_OVDN+2	; rec 6's tiles are in VRAM: frame art on (#306)
+	ifd	SIZE8M
+TA_ON		equ TD_ARTOK+2	; $5A71: pre-drawn overworld in effect (#307)
+TA_L		equ TA_ON+2	; loaded window: left column (global px / 8), $8000 none
+TA_T		equ TA_L+2	; its top row (plane line / 8)
+TA_HAND		equ TA_T+2	; next slot the allocator looks at
+TA_B6		equ TA_HAND+2	; banks in mapper slots 6 / 7 (-1 unknown)
+TA_B7		equ TA_B6+2
+TA_GX		equ TA_B7+2	; camera before the window clamp
+TA_GY		equ TA_GX+2
+TA_N		equ 1074	; tile slots: bank 64-272, 401-827, rec 6's 436-873
+TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
+TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
+TA_ID		equ TA_SH+4096	; TA_N longs: slot -> tile id, -1 free
+TA_NX		equ TA_ID+4*TA_N	; next slot + 1 in the bucket
+TA_RC		equ TA_NX+2*TA_N	; cells of the loaded window using the slot
+ATL		equ $280000	; tools/ow_atlas.py
+	endif
 TD_END2		equ TD_VDIF+8
 TD_END		equ TD_END2
 
@@ -355,7 +372,11 @@ ti_tw0:
 	bsr.w	td_frame		; in VBlank: update the picture
 	bra.s	.upd
 .late:	move.w	d0,TD_LASTFR		; past VBlank: skip (no tearing)
-.upd:	tst.w	d7
+.upd:
+	ifd	SIZE8M
+	bsr.w	ta_stream		; pre-drawn overworld: every frame
+	endif
+	tst.w	d7
 	bne.s	.chk
 	addq.w	#1,TD_BUSY
 	bsr.w	td_sync			; right after an update, so the
@@ -545,6 +566,9 @@ td_vwl:	; [start, end) of game routines with no VDP access of their own
 	dc.l	$0232AC,$02343A		; map_tile_at_offset, map_animated_tile
 	dc.l	ti_cstart,ti_cend	; td_iso_commit (VDP writes masked)
 	dc.l	td_iso_winfix,ti_wend	; its window scan (likewise)
+	ifd	SIZE8M
+	dc.l	ta_start,ta_end		; pre-drawn overworld (likewise)
+	endif
 	dc.l	$03A062,$03A4A2		; spell target / effect arithmetic
 	dc.l	0
 
@@ -618,6 +642,10 @@ td_filt:				; d0 = word -> d0 = word to write
 	move.w	FONTBLK,d0
 	tst.w	TD_ISO			; iso: the frame word of that window
 	beq.s	.k1			; cell (identity map: col 2 + t mod 36,
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; (pre-drawn overworld: no frame)
+	beq.s	.k1
+	endif
 	movem.l	d2/a0,-(a7)		; row t / 36)
 	andi.l	#$FFFF,d1
 	divu.w	#36,d1
@@ -2598,6 +2626,11 @@ td_iso_off:
 
 ; td_isync — td_sync's tail in iso (td_sync branches here).
 td_isync:
+	ifd	SIZE8M
+	bsr.w	ta_sync
+	cmpi.w	#$5A71,TA_ON
+	beq.w	ti_rts
+	endif
 	bsr.w	td_iso_check
 	tst.w	TD_TILES
 	bne.s	.tok
@@ -2676,6 +2709,12 @@ td_ilayers:
 	clr.w	TD_BAND
 	clr.w	TD_BOX
 	move.w	#TI_CY+TI_HH,TD_YMAX
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn overworld: whole screen
+	bne.s	.nl
+	move.w	#224,TD_YMAX
+.nl:
+	endif
 	move.w	#$8B00,VDP_CTRL		; full-screen scroll
 	move.w	#$8C81,VDP_CTRL		; no shadow/highlight
 	move.w	#$871C,VDP_CTRL		; backdrop: parchment (pal 1 colour 12)
@@ -2781,6 +2820,9 @@ td_iso_cam:
 	divu.w	#14,d0			; 8 (x + y) / 112
 	sub.w	#98,d0
 	move.w	d0,TD_IGY
+	ifd	SIZE8M
+	bsr.w	ta_clamp
+	endif
 	movem.l	(a7)+,d2-d5
 	rts
 .ax:	mulu.w	#TI_CU,d0		; d0 = game cell, d1 = picture cell,
@@ -2986,6 +3028,10 @@ ti_rts:	rts
 ; game's composite runs (td_vwl).
 ;=======================================================================
 td_iso_render:
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn overworld: no render
+	beq.w	ti_rts
+	endif
 	movem.l	d2-d7/a2-a6,-(a7)
 	clr.w	TD_INOB
 	tst.w	TD_VALID		; first picture: all at once
@@ -3680,6 +3726,10 @@ ti_loop:
 ; the picture shows of later cells there.
 ;=======================================================================
 ti_occl:	; td_chars: d7 = char, a4 = its slide (target cell), a2 = list
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; (no picture of ours to cut)
+	beq.w	ti_rts
+	endif
 	movem.l	d0-d6/a0-a1,-(a7)
 	cmpi.w	#TD_NFIG,TD_NB
 	bcc.w	.out
@@ -5321,3 +5371,473 @@ td_bcol:	; per variant: body, highlight colour
 	dc.b	$E,$F, $F,$B, $C,$F, $4,$F
 td_blob:	; TL quadrant (body E, highlight F)
 	dc.l $0000000D,$0000DDDD,$000DDEEE,$00DDEEEE,$0DDEEFFE,$0DEEFFEE,$0DEEEEEE,$DDEEEEEE
+
+;=======================================================================
+; Pre-drawn overworld (#307, 8 MB): the overworld's tiles come from the
+; atlas at ATL (tools/ow_atlas.py) instead of the game's render. A
+; 42x30-tile window around the camera is kept on Plane B at its global
+; place; a column or row is streamed as the camera crosses a tile, tiles
+; go to VRAM through a slot cache (hash by tile id, a slot is free when
+; no cell of the window uses it). The atlas is read through the Sega
+; mapper: records in slot 6 ($300000), tiles in slot 7 ($380000).
+;=======================================================================
+	ifd	SIZE8M
+	even
+ta_want:	; -> d0 = 1 if the pre-drawn overworld applies
+	moveq	#0,d0
+	cmpi.w	#$FFFF,LOC
+	bne.s	.n
+	cmpi.l	#$4F574154,ATL		; 'OWAT'
+	bne.s	.n
+	moveq	#1,d0
+.n:	rts
+
+ta_sync:	; td_isync, once per tick: enter or leave it
+	bsr.s	ta_want
+	moveq	#0,d1
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.c
+	moveq	#1,d1
+.c:	cmp.w	d1,d0
+	beq.s	.same
+	tst.w	d0
+	beq.s	.leave
+	bsr.w	td_iso_cancel
+	bsr.s	.unfr
+	bsr.s	ta_reset
+	move.w	#$5A71,TA_ON
+	move.w	#1,TD_VALID
+	rts
+.leave:	clr.w	TA_ON			; the iso picture's tiles, pool and
+	clr.w	TD_VALID		; plane come back (td_iso_load)
+	clr.w	TD_TILES
+	rts
+.same:	tst.w	d0			; on: every 4th tick, room-bitmap
+	beq.s	.o			; words the game put in the window
+	addq.w	#1,TD_WFC		; go blank (they would show our tiles)
+	move.w	TD_WFC,d0
+	andi.w	#3,d0
+	bne.s	.o
+.unfr:	move.w	#1,TD_UNFR		; the frame off the window
+	subq.w	#1,TD_BUSY
+	bsr.w	td_iso_winfix
+	addq.w	#1,TD_BUSY
+	clr.w	TD_UNFR
+.o:	rts
+
+ta_reset:
+	lea	TA_HEAD,a0
+	move.w	#512/2-1,d0
+.h:	clr.l	(a0)+
+	dbra	d0,.h
+	lea	TA_SH,a0
+	move.w	#2048/2-1,d0
+.s:	clr.l	(a0)+
+	dbra	d0,.s
+	lea	TA_ID,a0
+	move.w	#TA_N-1,d0
+.i:	move.l	#-1,(a0)+
+	dbra	d0,.i
+	bsr.s	ta_norc
+	clr.w	TA_HAND
+	move.w	#$8000,TA_L
+	move.w	#-1,TA_B6
+	move.w	#-1,TA_B7
+	rts
+
+ta_norc:	; no cell uses any slot
+	lea	TA_RC,a0
+	move.w	#TA_N-1,d0
+.r:	clr.w	(a0)+
+	dbra	d0,.r
+	rts
+
+ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.o
+	move.w	TD_IGX,TA_GX
+	move.w	TD_IGY,TA_GY
+	move.w	TA_L,d0
+	cmpi.w	#$8000,d0
+	beq.s	.o
+	lsl.w	#3,d0			; columns L .. L+41 hold x 8L .. 8L+16
+	cmp.w	TD_IGX,d0
+	ble.s	.k1
+	move.w	d0,TD_IGX
+.k1:	add.w	#16,d0
+	cmp.w	TD_IGX,d0
+	bge.s	.k2
+	move.w	d0,TD_IGX
+.k2:	move.w	TA_T,d0			; rows T .. T+29: plane line IGY - 6
+	lsl.w	#3,d0
+	addq.w	#6,d0
+	cmp.w	TD_IGY,d0
+	ble.s	.k3
+	move.w	d0,TD_IGY
+.k3:	add.w	#16,d0
+	cmp.w	TD_IGY,d0
+	bge.s	.o
+	move.w	d0,TD_IGY
+.o:	rts
+
+ta_start:
+ta_stream:	; main loop, every frame: the window follows the camera
+	cmpi.w	#$5A71,TA_ON
+	bne.w	.x
+	movem.l	d2-d7/a2-a6,-(a7)
+	move.w	$FF0E8E,TD_ICX		; the glide: no picture to stay near
+	move.w	$FF0E90,TD_ICY
+	move.w	TA_GX,d6
+	asr.w	#3,d6			; d6/d7 = wanted left column, top row
+	move.w	TA_GY,d7
+	subq.w	#6,d7
+	asr.w	#3,d7
+	cmpi.w	#$8000,TA_L
+	beq.w	.full
+	move.w	d6,d0
+	sub.w	TA_L,d0
+	bpl.s	.a
+	neg.w	d0
+.a:	cmpi.w	#8,d0			; a jump: all of it again
+	bhi.w	.full
+	move.w	d7,d0
+	sub.w	TA_T,d0
+	bpl.s	.b
+	neg.w	d0
+.b:	cmpi.w	#8,d0
+	bhi.w	.full
+.lp:	move.w	TA_L,d0
+	cmp.w	d6,d0
+	blt.s	.right
+	bgt.s	.left
+	move.w	TA_T,d0
+	cmp.w	d7,d0
+	blt.s	.down
+	bgt.s	.up
+	bra.w	.done
+.right:	move.w	TA_L,d4
+	bsr.w	ta_dcol
+	add.w	#42,d4
+	bsr.w	ta_fcol
+	addq.w	#1,TA_L
+	bra.s	.lp
+.left:	move.w	TA_L,d4
+	add.w	#41,d4
+	bsr.w	ta_dcol
+	sub.w	#42,d4
+	bsr.w	ta_fcol
+	subq.w	#1,TA_L
+	bra.s	.lp
+.down:	move.w	TA_T,d5
+	bsr.w	ta_drow
+	add.w	#30,d5
+	bsr.w	ta_frow
+	addq.w	#1,TA_T
+	bra.s	.lp
+.up:	move.w	TA_T,d5
+	add.w	#29,d5
+	bsr.w	ta_drow
+	sub.w	#30,d5
+	bsr.w	ta_frow
+	subq.w	#1,TA_T
+	bra.w	.lp
+.full:	bsr.w	ta_norc
+	move.w	d6,TA_L
+	move.w	d7,TA_T
+	move.w	d7,d5
+	moveq	#30-1,d3
+.fr:	bsr.w	ta_frow
+	addq.w	#1,d5
+	dbra	d3,.fr
+.done:	movem.l	(a7)+,d2-d7/a2-a6
+.x:	rts
+
+ta_frow:	; d5 = row: its 42 cells from TA_L
+	movem.l	d3-d4,-(a7)
+	move.w	TA_L,d4
+	moveq	#42-1,d3
+.l:	bsr.w	ta_fill
+	addq.w	#1,d4
+	dbra	d3,.l
+	movem.l	(a7)+,d3-d4
+	rts
+
+ta_fcol:	; d4 = column: its 30 cells from TA_T
+	movem.l	d3/d5,-(a7)
+	move.w	TA_T,d5
+	moveq	#30-1,d3
+.l:	bsr.w	ta_fill
+	addq.w	#1,d5
+	dbra	d3,.l
+	movem.l	(a7)+,d3/d5
+	rts
+
+ta_drow:	; d5 = row leaves the window
+	movem.l	d3-d4,-(a7)
+	move.w	TA_L,d4
+	moveq	#42-1,d3
+.l:	bsr.s	ta_drop
+	addq.w	#1,d4
+	dbra	d3,.l
+	movem.l	(a7)+,d3-d4
+	rts
+
+ta_dcol:	; d4 = column leaves the window
+	movem.l	d3/d5,-(a7)
+	move.w	TA_T,d5
+	moveq	#30-1,d3
+.l:	bsr.s	ta_drop
+	addq.w	#1,d5
+	dbra	d3,.l
+	movem.l	(a7)+,d3/d5
+	rts
+
+ta_cell:	; d5 = row, d4 = column -> d0 = plane cell * 2
+	move.w	d5,d0
+	andi.w	#31,d0
+	lsl.w	#6,d0
+	move.w	d4,d1
+	andi.w	#63,d1
+	or.w	d1,d0
+	add.w	d0,d0
+	rts
+
+ta_drop:	; the cell (d5, d4) stops using its slot
+	bsr.s	ta_cell
+	lea	TA_SH,a0
+	move.w	(a0,d0.w),d0
+	beq.s	.o
+	cmpi.w	#$FFFF,d0
+	beq.s	.o
+	subq.w	#1,d0
+	add.w	d0,d0
+	lea	TA_RC,a0
+	subq.w	#1,(a0,d0.w)
+.o:	rts
+
+ta_fill:	; the cell (d5, d4) <- its atlas tile (keeps d2-d7)
+	movem.l	d2-d3/a2,-(a7)
+	bsr.w	ta_look
+	tst.l	d0
+	bmi.s	.blank
+	bsr.w	ta_get
+	tst.w	d0
+	bmi.s	.blank
+	lea	TA_RC,a0
+	add.w	d0,d0
+	addq.w	#1,(a0,d0.w)
+	lsr.w	#1,d0
+	addq.w	#1,d0
+	bra.s	.put
+.blank:	move.w	#$FFFF,d0
+.put:	move.w	d0,d3
+	bsr.s	ta_cell
+	lea	TA_SH,a2
+	cmp.w	(a2,d0.w),d3
+	beq.s	.o
+	move.w	d3,(a2,d0.w)
+	move.w	d0,d2			; plane B address (table $0000)
+	move.w	FONTBLK,d1
+	cmpi.w	#$FFFF,d3
+	beq.s	.w
+	move.w	d3,d0
+	subq.w	#1,d0
+	bsr.w	ta_vt
+	move.w	d0,d1
+.w:	move.w	d2,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	move.w	d1,VDP_DATA
+	move.w	(a7)+,sr
+.o:	movem.l	(a7)+,d2-d3/a2
+	rts
+
+ta_vt:	; d0 = slot -> d0 = its VRAM tile: bank 64-272 (0-63: the game
+	; writes its message there), 401-827, rec 6's 436-873
+	cmpi.w	#209,d0
+	bcs.s	.b
+	cmpi.w	#636,d0
+	bcs.s	.c
+	add.w	#436-636,d0
+	rts
+.c:	add.w	#401-209-64,d0
+.b:	add.w	#64,d0
+	add.w	TD_BASE,d0
+	rts
+
+ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank (d1-d2/a0)
+	move.w	d5,d1			; atlas row = row (dy = 0)
+	bmi.s	.bl
+	cmp.w	ATL+4,d1
+	bcc.s	.bl
+	move.w	d4,d2
+	add.w	ATL+12,d2		; atlas column
+	bmi.s	.bl
+	cmp.w	ATL+6,d2
+	bcc.s	.bl
+	lsr.w	#5,d1			; block (row / 32) * BC + column / 32
+	mulu.w	ATL+10,d1
+	move.w	d2,d0
+	lsr.w	#5,d0
+	add.w	d0,d1
+	lsl.w	#2,d1
+	lea	ATL+24,a0
+	move.l	(a0,d1.w),d0
+	beq.s	.bl
+	bsr.s	ta_map6
+	move.w	d5,d1			; its pair: u16 at ((r & 31) 32 + c & 31)
+	andi.w	#31,d1
+	lsl.w	#5,d1
+	andi.w	#31,d2
+	or.w	d2,d1
+	add.w	d1,d1
+	move.w	(a0,d1.w),d1
+	lsl.w	#3,d1
+	lea	2048(a0),a0
+	move.l	(a0,d1.w),d0		; phase 0
+	cmp.l	ATL+20,d0
+	bne.s	.o
+.bl:	moveq	#-1,d0
+.o:	rts
+
+ta_map6:	; d0 = ROM address -> a0 = where the CPU sees it (slot 6)
+	cmpi.l	#$300000,d0
+	bcs.s	.d
+	move.l	d0,d1
+	swap	d1
+	lsr.w	#3,d1			; 512 KB bank
+	cmp.w	TA_B6,d1
+	beq.s	.s
+	move.w	d1,TA_B6
+	move.b	d1,$A130FD
+.s:	andi.l	#$7FFFF,d0
+	addi.l	#$300000,d0
+.d:	movea.l	d0,a0
+	rts
+
+ta_get:	; d0.l = tile id -> d0.w = its slot (uploaded), -1 none free
+	movem.l	d2-d4/a2,-(a7)
+	move.l	d0,d4
+	bsr.w	ta_hash			; d2 = bucket * 2
+	lea	TA_HEAD,a0
+	move.w	(a0,d2.w),d0
+	lea	TA_ID,a1
+	lea	TA_NX,a2
+.f:	tst.w	d0
+	beq.s	.miss
+	subq.w	#1,d0
+	move.w	d0,d1
+	lsl.w	#2,d1
+	cmp.l	(a1,d1.w),d4
+	beq.w	.o
+	add.w	d0,d0
+	move.w	(a2,d0.w),d0
+	bra.s	.f
+.miss:	lea	TA_RC,a2		; a free slot from the hand on
+	move.w	TA_HAND,d0
+	move.w	#TA_N-1,d3
+.s:	move.w	d0,d1
+	add.w	d1,d1
+	tst.w	(a2,d1.w)
+	beq.s	.got
+	addq.w	#1,d0
+	cmpi.w	#TA_N,d0
+	bcs.s	.s1
+	moveq	#0,d0
+.s1:	dbra	d3,.s
+	moveq	#-1,d0
+	bra.s	.o
+.got:	move.w	d0,d1
+	addq.w	#1,d1
+	cmpi.w	#TA_N,d1
+	bcs.s	.g1
+	moveq	#0,d1
+.g1:	move.w	d1,TA_HAND
+	bsr.s	ta_unlink
+	lea	TA_ID,a1		; the slot: id, first in its bucket
+	move.w	d0,d1
+	lsl.w	#2,d1
+	move.l	d4,(a1,d1.w)
+	lea	TA_HEAD,a0
+	lea	TA_NX,a2
+	move.w	d0,d1
+	add.w	d1,d1
+	move.w	(a0,d2.w),(a2,d1.w)
+	move.w	d0,d1
+	addq.w	#1,d1
+	move.w	d1,(a0,d2.w)
+	bsr.w	ta_up
+.o:	movem.l	(a7)+,d2-d4/a2
+	rts
+
+ta_hash:	; d4.l = id -> d2 = bucket * 2 (uses d1)
+	move.l	d4,d1
+	lsr.l	#8,d1
+	lsr.l	#1,d1
+	move.w	d4,d2
+	eor.w	d1,d2
+	andi.w	#511,d2
+	add.w	d2,d2
+	rts
+
+ta_unlink:	; d0 = slot: out of its bucket (keeps d0, d2, d4)
+	movem.l	d0/d2/d4,-(a7)
+	move.w	d0,d3
+	lsl.w	#2,d0
+	lea	TA_ID,a1
+	move.l	(a1,d0.w),d4
+	bmi.s	.o			; free
+	bsr.s	ta_hash
+	lea	TA_HEAD,a0
+	adda.w	d2,a0			; a0 -> the link holding slot + 1
+	lea	TA_NX,a2
+	move.w	d3,d1
+	addq.w	#1,d1
+.w:	move.w	(a0),d0
+	beq.s	.o
+	cmp.w	d1,d0
+	beq.s	.cut
+	subq.w	#1,d0
+	add.w	d0,d0
+	lea	(a2,d0.w),a0
+	bra.s	.w
+.cut:	add.w	d3,d3
+	move.w	(a2,d3.w),(a0)
+.o:	movem.l	(a7)+,d0/d2/d4
+	rts
+
+ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
+	movem.l	d0/d2,-(a7)
+	move.l	d4,d1
+	lsl.l	#5,d1
+	add.l	ATL+16,d1		; ROM address, in slot 7's window
+	move.l	d1,d2
+	swap	d2
+	lsr.w	#3,d2
+	cmp.w	TA_B7,d2
+	beq.s	.s
+	move.w	d2,TA_B7
+	move.b	d2,$A130FF
+.s:	andi.l	#$7FFFF,d1
+	addi.l	#$380000,d1
+	movea.l	d1,a0
+	bsr.w	ta_vt
+	lsl.w	#5,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	lea	VDP_DATA,a1
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.l	(a0)+,(a1)
+	move.w	(a7)+,sr
+	movem.l	(a7)+,d0/d2
+	rts
+ta_end:
+	endif
