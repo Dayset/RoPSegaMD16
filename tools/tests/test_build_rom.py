@@ -50,7 +50,8 @@ STARTS = {0x173C0, 0x173C6, 0x173CA, 0x173CC, 0x173D2, 0x173D4, 0x173D6,
 
 MUSIC_OFF_MD5 = "513228feab8e82ea17422695c11d5504"  # existing IPS applied
 ACADEMY_V4_MD5 = "97e12dccbbec650a0067190a5aa7cf0c"  # fix_song13_v4.py output
-ACADEMY_TOPDOWN_MD5 = "beb98c0567443829180cb0004e489f37"  # topdown + v4
+ACADEMY_TOPDOWN_MD5 = "3c13fbf24622071c8bfe99c6e9928377"  # topdown + v4 (1 MB)
+ACADEMY_TOPDOWN_10M_MD5 = "457f5176834cb67d29fdaa2ee15812ea"  # topdown + v4 (10 MB)
 
 TEST_FEATURE_S = """\torg ORGVAL\ntest_target:\n\trts\n"""
 
@@ -366,7 +367,8 @@ def test_academy_song13_build_matches_existing_ips():
 
 def test_topdown_academy_combined_build():
     """topdown + academy-song13 in either order builds the same
-    combined ROM (the two change sets are disjoint)."""
+    combined ROM (the two change sets are disjoint), at 1 MB and at
+    10 MB (#307: the topdown feature is now 10 MB-capable)."""
     if _skip_if_no_toolchain():
         return
     with tempfile.TemporaryDirectory() as td:
@@ -376,6 +378,11 @@ def test_topdown_academy_combined_build():
                    base_override=find_rom(), out_dir=Path(td) / "build2")
         assert m1["md5"] == ACADEMY_TOPDOWN_MD5, m1["md5"]
         assert m2["md5"] == ACADEMY_TOPDOWN_MD5, m2["md5"]
+        m10 = build(["topdown", "academy-song13"], REPO,
+                    base_override=find_rom(), out_dir=Path(td) / "build10",
+                    size="10m")
+        assert m10["md5"] == ACADEMY_TOPDOWN_10M_MD5, m10["md5"]
+        assert m10["size"] == 0xA00000, m10["size"]
 
 
 def test_feature_with_no_files_fails():
