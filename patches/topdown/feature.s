@@ -249,8 +249,9 @@ TA_LS		equ TA_PD+2	; the side that worked last (1 or 3) first
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
-TA_N		equ 1278	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
-				; records 16-17's 1834-2037 (pad, gauges)
+TA_N		equ 1246	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
+				; records 16-17's 1834-2005 (pad, gauges)
+TA_CLT		equ 2006	; 32 tiles: two cloud sprites (slots 78, 79)
 TA_HUD		equ $9F0000	; their copy (restored on leaving)
 TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
 TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
@@ -2723,8 +2724,10 @@ td_iframe:
 	ifd	SIZE8M
 	bsr.w	td_sprites
 	cmpi.w	#$5A71,TA_ON		; (the game rewrites its pad sprites)
-	beq.w	ta_spr
-	rts
+	bne.s	.ni
+	bsr.w	ta_spr
+	bra.w	ta_clouds
+.ni:	rts
 	else
 	bra.w	td_sprites
 	endif
@@ -5443,6 +5446,118 @@ ta_sprw:
 	rts
 
 ;=======================================================================
+; ta_clouds — two clouds drifting over the pre-drawn view (#307): sprite
+; slots 78-79 first in the chain (on top), half the camera's parallax,
+; one pixel every 4 frames to the right. VBlank, after td_sprites.
+;=======================================================================
+ta_clouds:
+	movem.l	d2-d4,-(a7)
+	move.w	SPRBASE,d0		; sprite 0's link -> the chain's head
+	addq.w	#2,d0
+	bsr.w	td_vread
+	move.w	d0,d4
+	andi.w	#$7F,d4
+	cmpi.w	#78,d4			; (already ours)
+	beq.s	.k
+	andi.w	#$FF00,d0
+	ori.w	#78,d0
+	move.w	d0,-(a7)
+	move.w	SPRBASE,d0
+	addq.w	#2,d0
+	bsr.w	td_vwrite
+	move.w	(a7)+,VDP_DATA
+	bra.s	.w
+.k:	moveq	#0,d4			; keep cloud 79's link as it is
+	move.w	SPRBASE,d0
+	add.w	#79*8+2,d0
+	bsr.w	td_vread
+	andi.w	#$7F,d0
+	move.w	d0,d4
+.w:	moveq	#0,d3			; cloud 0 -> slot 78, links 79
+.c:	move.w	d3,d0
+	lsl.w	#2,d0			; slot 78 + d3 / 2
+	add.w	SPRBASE,d0
+	add.w	#78*8,d0
+	bsr.w	td_vwrite
+	move.w	TD_IGY,d1		; y = by - IGY / 2 (mod 288) - 32
+	asr.w	#1,d1
+	neg.w	d1
+	add.w	.by(pc,d3.w),d1
+	ext.l	d1
+	divs.w	#288,d1
+	swap	d1
+	tst.w	d1
+	bpl.s	.y
+	add.w	#288,d1
+.y:	add.w	#128-32,d1
+	move.w	d1,VDP_DATA
+	move.w	#$0F00+79,d0		; 32x32, link
+	tst.w	d3
+	beq.s	.l
+	move.w	#$0F00,d0
+	or.w	d4,d0
+.l:	move.w	d0,VDP_DATA
+	move.w	d3,d0			; tile: TA_CLT + 16 per cloud, palette 0
+	lsl.w	#3,d0
+	add.w	#TA_CLT,d0
+	move.w	d0,VDP_DATA
+	move.w	FRAME,d1		; x = bx + frame / 4 - IGX / 2 (mod 448) - 64
+	lsr.w	#2,d1
+	move.w	TD_IGX,d0
+	asr.w	#1,d0
+	sub.w	d0,d1
+	add.w	.bx(pc,d3.w),d1
+	andi.l	#$FFFF,d1
+	divu.w	#448,d1
+	swap	d1
+	add.w	#128-64,d1
+	move.w	d1,VDP_DATA
+	addq.w	#2,d3
+	cmpi.w	#4,d3
+	bcs.w	.c
+	movem.l	(a7)+,d2-d4
+	rts
+.by:	dc.w	60,150
+.bx:	dc.w	40,260
+
+; two 32x32 cloud sprites (sprite tile order: columns), palette 0:
+; 15 white, 11 grey rim, every other rim pixel clear. Generated, #307.
+ta_cloud0:
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$0000000B,$0000B0BF,$000B0FFF
+	dc.l	$00B0FFFF,$000BFFFF,$00B0FFFF,$000BFFFF,$00B0FFFF,$000B0FFF,$0000B0BF,$0000000B
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$000000B0,$00000B0B,$0000B0FF,$000B0FFF,$00B0FFFF,$0B0BFFFF,$FFFFFFFF,$FFFFFFFF
+	dc.l	$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFB0,$0B0B0B00
+	dc.l	$00B00000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$B0B0B0B0,$FFFFFB0B,$FFFFFFF0,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF
+	dc.l	$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$F0B0BFFF,$0B000BFF,$B00000BF,$0000000B
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$B0000000,$0B000000,$F0B00000,$FB000000,$F0B00000,$FB0B0000
+	dc.l	$FFFFB000,$FFFFFB00,$FFFFFFB0,$FFFFFF0B,$FFFFFFB0,$FFFFFB00,$FFFFB000,$0B0B0000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+ta_cloud1:
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000B0B,$0000B0FF,$000B0FFF
+	dc.l	$0000FFFF,$000BFFFF,$0000FFFF,$000B0FFF,$0000B0FF,$00000B0B,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$000B0B0B,$00B0B0FF,$0B0FFFFF,$B0FFFFFF,$0FFFFFFF,$FFFFFFFF,$FFFFFFFF
+	dc.l	$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFF0FF,$0B0B0B0B,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$B0000000,$0B0B0B00,$FFF0B0B0,$FFFFFF0B,$FFFFFFF0,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF
+	dc.l	$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFFFFFFF,$FFF0FFFF,$0B0B0BFF,$B00000B0,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$B0B00000,$FFFB0B00,$FFFFF0B0,$FFFFFB00
+	dc.l	$FFFFFFB0,$FFFFFF0B,$FFFFFFB0,$FFFFFB00,$FFFFF0B0,$FFFB0B00,$B0B00000,$00000000
+	dc.l	$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000,$00000000
+
+;=======================================================================
 ; ta_pathc — combat_move_unit's step test ($024B6A, 14 bytes: pea,
 ; jsr move_cost_calc, addq, move d0,d4). In the pre-drawn view, the
 ; party leader stepping into a wall slides around it: a side step that
@@ -5794,6 +5909,15 @@ ta_reset:
 	bsr.s	ta_norc
 	clr.w	TA_HAND
 	clr.w	TA_BAD
+	lea	ta_cloud0(pc),a0	; the cloud images
+	move.w	#TA_CLT*32,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	move.w	#32*8-1,d1
+.cl:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.cl
+	move.w	(a7)+,sr
 	move.w	#-1,TA_PR
 	bsr.w	ta_phnow
 	move.w	d0,TA_PH
