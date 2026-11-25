@@ -236,6 +236,7 @@ TA_GX		equ TA_B7+2	; camera before the window clamp
 TA_GY		equ TA_GX+2
 TA_A		equ TA_GY+2	; long: header of the area shown
 TA_AR		equ TA_A+4	; 1 + its area number
+TA_BAD		equ TA_AR+2	; the plane lost our tiles: fill it again
 TA_N		equ 1278	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-2037 (pad, gauges)
 TA_HUD		equ $9F0000	; their copy (restored on leaving)
@@ -880,6 +881,8 @@ td_frame_go:
 	clr.w	TD_NB
 	bsr.w	td_sprites
 	bsr.w	td_layers
+	tst.w	TD_ISO			; (iso: its own scroll)
+	bne.w	td_iso_scroll
 	bsr.w	td_scroll
 	rts
 .bad:	bra.w	td_unlay
@@ -2750,6 +2753,10 @@ td_iso_scroll:
 ; td_iso_pcheck -> d0 != 0 if the plane no longer holds our picture
 ; (two cells of the last render: pool, void or edge tiles only).
 td_iso_pcheck:
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON
+	beq.w	ta_pcheck
+	endif
 	movem.l	d2-d3,-(a7)
 	moveq	#18,d2
 	moveq	#11,d3
@@ -5562,6 +5569,38 @@ ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
 .o:	movem.l	(a7)+,d2-d4
 	rts
 
+ta_pcheck:	; td_frame_go: one cell of the window still ours? (-> d0 = 0;
+	; if not, the window is filled again)
+	cmpi.w	#$8000,TA_L
+	beq.s	.o
+	movem.l	d4-d5,-(a7)
+	move.w	TA_T,d5
+	add.w	#14,d5
+	move.w	TA_L,d4
+	add.w	#20,d4
+	bsr.w	ta_cell
+	lea	TA_SH,a0
+	move.w	(a0,d0.w),d1
+	movem.l	(a7)+,d4-d5
+	beq.s	.o			; (not written yet)
+	move.w	d1,-(a7)
+	bsr.w	td_vread		; d0 = the plane word there
+	andi.w	#$7FF,d0
+	move.w	(a7)+,d1
+	move.w	d0,-(a7)
+	move.w	FONTBLK,d0
+	cmpi.w	#$FFFF,d1
+	beq.s	.c
+	move.w	d1,d0
+	subq.w	#1,d0
+	bsr.w	ta_vt
+.c:	andi.w	#$7FF,d0
+	cmp.w	(a7)+,d0
+	beq.s	.o
+	move.w	#1,TA_BAD
+.o:	moveq	#0,d0
+	rts
+
 ta_reset:
 	lea	TA_HEAD,a0
 	move.w	#512/2-1,d0
@@ -5577,6 +5616,7 @@ ta_reset:
 	dbra	d0,.i
 	bsr.s	ta_norc
 	clr.w	TA_HAND
+	clr.w	TA_BAD
 	move.w	#$8000,TA_L
 	move.w	#-1,TA_B6
 	move.w	#-1,TA_B7
@@ -5622,6 +5662,15 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	cmpi.w	#$5A71,TA_ON
 	bne.w	.x
 	movem.l	d2-d7/a2-a6,-(a7)
+	tst.w	TA_BAD
+	beq.s	.g
+	clr.w	TA_BAD
+	move.w	#$8000,TA_L
+	lea	TA_SH,a0		; (nothing on the plane is known)
+	move.w	#2048/2-1,d0
+.z:	clr.l	(a0)+
+	dbra	d0,.z
+.g:
 	move.w	$FF0E8E,TD_ICX		; the glide: no picture to stay near
 	bsr.w	ta_spr
 	move.w	$FF0E90,TD_ICY
