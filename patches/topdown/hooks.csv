@@ -26,3 +26,11 @@ addr,len,kind,target
 0x01BA66,6,jsr,ti_cell
 0x011BF6,12,jsr,ta_sprw
 0x024B6A,14,jsr,ta_pathc
+0x029190,6,jsr,td_hud_glyph
+0x0291B2,6,jsr,td_hud_glyph
+0x0291F6,6,jsr,td_hud_glyph
+0x029218,6,jsr,td_hud_glyph
+0x0292AE,6,jsr,td_hud_glyph
+0x0292D0,6,jsr,td_hud_glyph
+0x0292F2,6,jsr,td_hud_glyph
+0x029326,6,jsr,td_hud_gauge

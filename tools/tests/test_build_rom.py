@@ -50,8 +50,8 @@ STARTS = {0x173C0, 0x173C6, 0x173CA, 0x173CC, 0x173D2, 0x173D4, 0x173D6,
 
 MUSIC_OFF_MD5 = "513228feab8e82ea17422695c11d5504"  # existing IPS applied
 ACADEMY_V4_MD5 = "97e12dccbbec650a0067190a5aa7cf0c"  # fix_song13_v4.py output
-ACADEMY_TOPDOWN_MD5 = "f6b4eb9773ba2ee19c805eaaa0db681b"  # topdown + v4 (1 MB)
-ACADEMY_TOPDOWN_10M_MD5 = "21892786bd4aeca8b90a3a7eca69fdbd"  # topdown + v4 (10 MB)
+ACADEMY_TOPDOWN_MD5 = "f4515606050aa886fe869abdb228dc1e"  # topdown + v4 (1 MB)
+ACADEMY_TOPDOWN_10M_MD5 = "7dc3eca777ce2149cb6519caf620ef59"  # topdown + v4 (10 MB)
 
 TEST_FEATURE_S = """\torg ORGVAL\ntest_target:\n\trts\n"""
 

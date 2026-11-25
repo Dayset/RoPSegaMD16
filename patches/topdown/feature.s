@@ -260,6 +260,8 @@ TA_WPH		equ TA_BLK+2	; walk phase (1/256 cell travelled)
 TA_MOV		equ TA_WPH+2	; moved this frame
 TA_CFR		equ TA_MOV+2	; frame the controller last ran
 TA_MISS		equ TA_CFR+2	; leader images shown late (count, a measure)
+TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
+				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
@@ -2797,8 +2799,9 @@ td_iframe:
 	bsr.s	td_iso_scroll		; vblank-critical first
 	ifd	SIZE8M
 	bsr.w	td_sprites
-	cmpi.w	#$5A71,TA_ON		; (the game rewrites its pad sprites)
-	bne.s	.ni
+	cmpi.w	#$5A71,TA_ON		; (the game rewrites its pad sprites
+	bne.s	.ni			; and its HUD words: off again in
+	bsr.w	ta_hud			; this VBlank)
 	bra.w	ta_spr
 .ni:	rts
 	else
@@ -3003,6 +3006,31 @@ td_iso_snap:				; camera on the picture's cell now
 ; Top-down (#297): 8 px per height level, from the cell cache.
 td_ilift:
 	movem.l	d0-d3/a0-a2,-(a7)
+	ifd	SIZE8M
+	bsr.w	ta_isldr		; the leader (controller): his cell's
+	bne.s	.nl			; lift at once, read ahead by ta_lifts
+	move.w	(a4),d2
+	move.w	2(a4),d3
+	bsr.w	ta_ltget
+	bmi.s	.nl
+	move.w	d0,TD_TLIFT
+	move.w	d7,d1			; (the slide state follows, so the
+	add.w	d1,d1			; lift is right if the controller
+	lea	TD_LFD,a0		; pauses)
+	move.w	d0,(a0,d1.w)
+	lea	TD_LF0,a0
+	move.w	d0,(a0,d1.w)
+	lea	TD_LFT,a0
+	move.w	8(a4),(a0,d1.w)
+	lea	TD_CLK,a1
+	adda.w	d1,a1
+	move.w	d2,(a1)
+	move.w	d3,112(a1)
+	move.w	d0,224(a1)
+	movem.l	(a7)+,d0-d3/a0-a2
+	rts
+.nl:
+	endif
 	move.w	d7,d1
 	add.w	d1,d1
 	lea	TD_CLK,a1
@@ -5745,6 +5773,83 @@ ta_padf:	; td_pad: d0 = the popped pad byte. With the controller on, the
 	move.w	#1,TA_CF		; (frame 0)
 .o:	rts
 
+ta_ltget:	; d2/d3 = cell -> d0 = its lift from TA_LT (N set: not there)
+	lea	TA_LT,a0
+	moveq	#5-1,d0
+.l:	cmp.w	(a0),d2
+	bne.s	.n
+	cmp.w	2(a0),d3
+	bne.s	.n
+	move.w	4(a0),d0
+	rts
+.n:	addq.l	#6,a0
+	dbra	d0,.l
+	moveq	#-1,d0
+	rts
+
+ta_lifts:	; main loop: TA_LT <- the leader's cell and its 4 neighbours
+	; (only cells not there yet are read: CELLREAD is a game call)
+	movem.l	d2-d6/a2,-(a7)
+	move.w	LEADER,d0
+	mulu.w	#$34,d0
+	lea	CHARS,a2
+	adda.l	d0,a2
+	move.w	$C(a2),d4
+	move.w	$E(a2),d5
+	moveq	#5-1,d6
+.c:	move.w	d6,d0			; cell k: 4 = here, 0-3 = ta_dxy
+	move.w	d4,d2
+	move.w	d5,d3
+	cmpi.w	#4,d0
+	beq.s	.h
+	add.w	d0,d0
+	add.w	d0,d0
+	lea	ta_dxy(pc),a0
+	add.w	(a0,d0.w),d2
+	add.w	2(a0,d0.w),d3
+.h:	bsr.s	ta_ltget
+	bpl.s	.k
+	bsr.s	ta_cellift
+.k:	move.w	d0,-(a7)
+	move.w	d3,-(a7)
+	move.w	d2,-(a7)
+	dbra	d6,.c
+	lea	TA_LT,a0		; (all 5 read first, then stored)
+	moveq	#15-1,d0
+.s:	move.w	(a7)+,(a0)+
+	dbra	d0,.s
+	movem.l	(a7)+,d2-d6/a2
+	rts
+
+ta_cellift:	; d2/d3 = cell -> d0 = the figure lift there (as td_ilift)
+	movem.l	d1-d3/a0-a1,-(a7)
+	move.w	d3,-(a7)
+	move.w	d2,-(a7)
+	jsr	(CELLREAD).l
+	addq.w	#4,a7
+	movea.l	d0,a0
+	move.w	(a0),d2			; cell word
+	move.w	d2,d0
+	andi.w	#$1FF,d0
+	add.w	d0,d0
+	lea	(DESC2).l,a0
+	move.w	(a0,d0.w),d1		; descriptor
+	rol.w	#3,d2
+	andi.w	#7,d2			; height
+	move.w	d1,d0
+	lsr.w	#7,d0
+	andi.w	#1,d0
+	add.w	d0,d2
+	addq.w	#1,d2
+	mulu.w	#7,d2
+	lsr.w	#8,d1
+	andi.w	#1,d1
+	lsl.w	#2,d1
+	add.w	d1,d2
+	move.w	d2,d0
+	movem.l	(a7)+,d1-d3/a0-a1
+	rts
+
 ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	; (standing + 4 walk frames) kept in the figure cache: missing ones
 	; drawn now (2 a frame), all of them touched so the cache keeps them
@@ -5943,6 +6048,104 @@ ta_pathc:
 	rts
 .tab:	dc.w	0,-1, 1,0, 0,1, -1,0
 	endif
+
+;=======================================================================
+; td_hud_glyph / td_hud_gauge — the game's HUD draw (case 7, $29128)
+; writes its words with text_glyph_draw / text_draw_gauge at the
+; original cells (rows 20-25). LITERAL DISABLE (Dayset's named method
+; for #307 task #3): in the pre-drawn view td_hud_map drops EVERY
+; call, so gold / time / food-water are never drawn anywhere — not
+; at the original cells, and not in the HUD box either. That also
+; starves td_hud: it copies from the source cells, finds them blank
+; and moves nothing, so the box stays empty (TD_HASBOX never set by
+; it). Not the pre-drawn view: the calls go through unchanged. The
+; row/col are the caller's stack args (12(a7) / 10(a7) at entry: ret,
+; plane, $40, col, row, str, attr).
+;
+; These must resolve in every build (hooks.csv), so they live outside
+; the SIZE8M block and gate on TA_ON's address directly: TA_ON is
+; defined only under SIZE8M (line 229) as TD_ARTOK+2 ($FF7D4E). In
+; the 1m/2m builds that word is never $5A71, so nothing remaps there.
+;=======================================================================
+TD_HUDON	equ	TD_ARTOK+2	; = TA_ON (pre-drawn view on, $5A71)
+
+td_hud_glyph:
+	move.w	12(a7),d2		; row
+	move.w	10(a7),d3		; col
+	bsr.w	td_hud_map
+	tst.w	d0
+	beq.s	.orig			; 0: as-is
+	cmpi.w	#2,d0
+	beq.s	.skip			; 2: a label: drop the draw
+	move.w	d2,12(a7)		; 1: remapped row
+	move.w	d3,10(a7)		;    remapped col
+.orig:
+	; TAIL CALL: jmp so text_glyph_draw returns straight to the arm.
+	; A jsr here would leave a second return address on the stack and
+	; shift every a6-relative arg text_glyph_draw reads (plane/row/col/str).
+	jmp	($01113C).l		; text_glyph_draw
+.skip:
+	rts
+
+td_hud_gauge:
+	move.w	12(a7),d2		; row
+	move.w	10(a7),d3		; col
+	bsr.w	td_hud_map
+	tst.w	d0
+	beq.s	.orig			; 0: as-is
+	cmpi.w	#2,d0
+	beq.s	.skip			; 2: a label: drop the draw
+	move.w	d2,12(a7)		; 1: remapped row
+	move.w	d3,10(a7)		;    remapped col
+.orig:
+	; TAIL CALL: see td_hud_glyph.
+	jmp	($011416).l		; text_draw_gauge
+.skip:
+	rts
+
+td_hud_map:
+	; d2 = row, d3 = col -> d0 = 0 as-is, 1 remapped (d2/d3 new,
+	; unused under the literal disable), 2 skip. Only when the
+	; pre-drawn view is on. td_hseg's rows are all distinct, so the
+	; row alone picks the segment; the column must still fall inside
+	; it. LITERAL DISABLE: any call matching a HUD segment is
+	; dropped outright — no remap to the box, no draw at all.
+	cmpi.w	#$5A71,TD_HUDON
+	bne.s	.asis
+	movem.l	d4-d6,-(a7)
+	lea	td_hseg(pc),a0
+.seg:
+	moveq	#0,d0
+	move.b	(a0)+,d0		; src row (0 = end)
+	beq.s	.done0
+	moveq	#0,d1
+	move.b	(a0)+,d1		; src col
+	moveq	#0,d4
+	move.b	(a0)+,d4		; len
+	moveq	#0,d5
+	move.b	(a0)+,d5		; dest row
+	moveq	#0,d6
+	move.b	(a0)+,d6		; dest col
+	addq.w	#1,a0			; pad
+	cmp.w	d0,d2
+	bne.s	.seg
+	cmp.w	d1,d3
+	bcs.s	.seg
+	add.w	d1,d4			; src col + len
+	cmp.w	d4,d3
+	bcc.s	.seg
+	bra.s	.skip			; disable: drop the draw entirely
+.skip:
+	moveq	#2,d0
+	bra.s	.done
+.done0:
+	moveq	#0,d0
+.done:
+	movem.l	(a7)+,d4-d6
+	rts
+.asis:
+	moveq	#0,d0
+	rts
 
 ;=======================================================================
 ; Pre-drawn overworld (#307, 8 MB): the overworld's tiles come from the
@@ -6396,6 +6599,10 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bra.s	.end
 .sn:	dbra	d3,.sr
 .end:	bsr.w	ta_pref			; the leader's images ready
+	tst.w	TA_CTL			; his neighbours' lifts
+	beq.s	.nl
+	bsr.w	ta_lifts
+.nl:	bsr.w	ta_hud			; no HUD words, every frame
 	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
 
