@@ -237,6 +237,13 @@ TA_GY		equ TA_GX+2
 TA_A		equ TA_GY+2	; long: header of the area shown
 TA_AR		equ TA_A+4	; 1 + its area number
 TA_BAD		equ TA_AR+2	; the plane lost our tiles: fill it again
+TA_LX		equ TA_BAD+2	; the leader's last step (-1..1 per axis)
+TA_LY		equ TA_LX+2
+TA_PH		equ TA_LY+2	; terrain phase drawn (0/1)
+TA_PR		equ TA_PH+2	; phase sweep: next window row, -1 none
+TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
+TA_LEAD		equ 2*TI_CU
+TA_VMAX		equ 8
 TA_N		equ 1278	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-2037 (pad, gauges)
 TA_HUD		equ $9F0000	; their copy (restored on leaving)
@@ -2804,7 +2811,18 @@ td_iso_cam:
 	bne.s	.ns
 	cmp.w	TD_CGY,d1
 	beq.s	.el
-.ns:	move.w	d0,TD_CGX
+.ns:
+	ifd	SIZE8M
+	move.w	d0,d2			; the step's direction (rubber band)
+	sub.w	TD_CGX,d2
+	bsr.w	ta_sgn
+	move.w	d2,TA_LX
+	move.w	d1,d2
+	sub.w	TD_CGY,d2
+	bsr.w	ta_sgn
+	move.w	d2,TA_LY
+	endif
+	move.w	d0,TD_CGX
 	move.w	d1,TD_CGY
 	move.w	TD_CMX,TD_CFX
 	move.w	TD_CMY,TD_CFY
@@ -2815,7 +2833,15 @@ td_iso_cam:
 	cmp.w	TD_PERIOD,d4
 	bls.s	.e1
 .full:	move.w	TD_PERIOD,d4
-.e1:	move.w	TD_CGX,d0
+.e1:
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn view: rubber band
+	bne.s	.nr
+	bsr.w	ta_rub
+	bra.s	.xy
+.nr:
+	endif
+	move.w	TD_CGX,d0
 	move.w	TD_ICX,d1
 	move.w	TD_CFX,d5
 	lea	TD_CMX,a0
@@ -5569,6 +5595,58 @@ ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
 .o:	movem.l	(a7)+,d2-d4
 	rts
 
+ta_sgn:	; d2 = sign(d2), a jump of more than one cell -> 0
+	cmpi.w	#1,d2
+	bgt.s	.z
+	cmpi.w	#-1,d2
+	bge.s	.o
+.z:	moveq	#0,d2
+.o:	rts
+
+ta_rub:	; rubber-band camera (td_iso_cam): still while the leader's cell
+	; is within TA_DZ of it, then a spring toward the cell plus a lead
+	; of TA_LEAD in the walking direction (while walking)
+	moveq	#0,d4
+	move.w	FRAME,d0
+	sub.w	TD_CT0,d0
+	move.w	TD_PERIOD,d1
+	add.w	d1,d1
+	cmp.w	d1,d0
+	bcc.s	.nl
+	moveq	#1,d4
+.nl:	move.w	TD_CGX,d0
+	move.w	TA_LX,d1
+	lea	TD_CMX,a0
+	bsr.s	.ax
+	move.w	TD_CGY,d0
+	move.w	TA_LY,d1
+	lea	TD_CMY,a0
+.ax:	mulu.w	#TI_CU,d0
+	tst.w	d4
+	beq.s	.w
+	muls.w	#TA_LEAD,d1
+	add.w	d1,d0
+.w:	sub.w	(a0),d0			; d0 = want - camera
+	move.w	d0,d2
+	bpl.s	.p
+	neg.w	d2
+.p:	cmpi.w	#4*TI_CU,d2		; far (door, scene): snap
+	bls.s	.s
+	add.w	d0,(a0)
+	rts
+.s:	sub.w	#TA_DZ,d2
+	bls.s	.o
+	lsr.w	#4,d2			; 1/16 of the way out of the zone
+	addq.w	#1,d2
+	cmpi.w	#TA_VMAX,d2
+	bls.s	.v
+	moveq	#TA_VMAX,d2
+.v:	tst.w	d0
+	bpl.s	.a
+	neg.w	d2
+.a:	add.w	d2,(a0)
+.o:	rts
+
 ta_pcheck:	; td_frame_go: one cell of the window still ours? (-> d0 = 0;
 	; if not, the window is filled again)
 	cmpi.w	#$8000,TA_L
@@ -5617,6 +5695,9 @@ ta_reset:
 	bsr.s	ta_norc
 	clr.w	TA_HAND
 	clr.w	TA_BAD
+	move.w	#-1,TA_PR
+	bsr.w	ta_phnow
+	move.w	d0,TA_PH
 	move.w	#$8000,TA_L
 	move.w	#-1,TA_B6
 	move.w	#-1,TA_B7
@@ -5736,8 +5817,46 @@ ta_stream:	; main loop, every frame: the window follows the camera
 .fr:	bsr.w	ta_frow
 	addq.w	#1,d5
 	dbra	d3,.fr
-.done:	movem.l	(a7)+,d2-d7/a2-a6
+.done:	bsr.w	ta_want			; (not while the location changes)
+	cmp.w	TA_AR,d0
+	bne.s	.end
+	tst.w	TA_PR			; terrain phase (water): a changed
+	bpl.s	.sw			; phase is swept in, 3 rows a frame
+	bsr.w	ta_phnow
+	cmp.w	TA_PH,d0
+	beq.s	.end
+	move.w	d0,TA_PH
+	clr.w	TA_PR
+.sw:	moveq	#3-1,d3
+.sr:	move.w	TA_T,d5
+	add.w	TA_PR,d5
+	bsr.w	ta_rerow
+	addq.w	#1,TA_PR
+	cmpi.w	#30,TA_PR
+	bcs.s	.sn
+	move.w	#-1,TA_PR
+	bra.s	.end
+.sn:	dbra	d3,.sr
+.end:	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
+
+ta_phnow:	; -> d0 = the game's terrain phase (0/1)
+	moveq	#0,d0
+	tst.w	$FF0092
+	beq.s	.o
+	moveq	#1,d0
+.o:	rts
+
+ta_rerow:	; d5 = row: its cells again (the phase changed)
+	movem.l	d3-d4,-(a7)
+	move.w	TA_L,d4
+	moveq	#42-1,d3
+.l:	bsr.w	ta_drop
+	bsr.w	ta_fill
+	addq.w	#1,d4
+	dbra	d3,.l
+	movem.l	(a7)+,d3-d4
+	rts
 
 ta_frow:	; d5 = row: its 42 cells from TA_L
 	movem.l	d3-d4,-(a7)
@@ -5895,9 +6014,14 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	add.w	d0,d0
 	add.w	d1,d0
 	lea	256(a0),a0
+	tst.w	TA_PH
+	bne.s	.p1
 	move.l	(a0,d0.w),d0		; phase 0: the first 3 bytes
 	lsr.l	#8,d0
-	cmp.l	16(a1),d0
+	bra.s	.cm
+.p1:	move.l	2(a0,d0.w),d0		; phase 1: the last 3
+	andi.l	#$FFFFFF,d0
+.cm:	cmp.l	16(a1),d0
 	bne.s	.o
 .bl:	moveq	#-1,d0
 .o:	rts
