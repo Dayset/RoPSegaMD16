@@ -2317,11 +2317,14 @@ td_winfix:
 	move.w	d0,d5			; row address
 	andi.l	#$3FFF,d0
 	swap	d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
 	move.l	d0,VDP_CTRL
 	lea	TD_WROW,a2
 	moveq	#40-1,d1
 .rd:	move.w	VDP_DATA,(a2)+
 	dbra	d1,.rd
+	move.w	(a7)+,sr
 	lea	TD_WROW,a2
 	moveq	#0,d4			; column 0..39
 .col:	move.w	(a2)+,d0
@@ -2349,8 +2352,11 @@ td_winfix:
 .fix:	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d5,d0
-	bsr.w	td_vwrite
+	move.w	sr,-(a7)		; (a VBlank update between the address
+	move.w	#$2700,sr		; and the word put it on the font blank's
+	bsr.w	td_vwrite		; first row: the screen-wide dots, #307)
 	move.w	d1,VDP_DATA
+	move.w	(a7)+,sr
 	bra.s	.nx
 .txt:	cmpi.w	#TD_BROW,d6		; text above the HUD rows
 	bcc.s	.band
@@ -5909,6 +5915,15 @@ ta_reset:
 	bsr.s	ta_norc
 	clr.w	TA_HAND
 	clr.w	TA_BAD
+	move.w	FONTBLK,d0		; the font blank blank again
+	lsl.w	#5,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	moveq	#8-1,d1
+.fb:	clr.l	VDP_DATA
+	dbra	d1,.fb
+	move.w	(a7)+,sr
 	lea	ta_cloud0(pc),a0	; the cloud images
 	move.w	#TA_CLT*32,d0
 	move.w	sr,-(a7)
