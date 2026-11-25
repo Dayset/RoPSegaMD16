@@ -260,6 +260,8 @@ TA_WPH		equ TA_BLK+2	; walk phase (1/256 cell travelled)
 TA_MOV		equ TA_WPH+2	; moved this frame
 TA_CFR		equ TA_MOV+2	; frame the controller last ran
 TA_MISS		equ TA_CFR+2	; leader images shown late (count, a measure)
+TA_NMENU	equ TA_MISS+32	; counts (a measure): updates by the menu path,
+TA_NBAD		equ TA_NMENU+2	; by the bad path
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
@@ -586,6 +588,8 @@ td_vhl:	; VDP-free helpers with a link frame (callers checked)
 	endif
 td_vwl:	; [start, end) of game routines with no VDP access of their own
 	dc.l	$00DD5C,$00DE02		; sys_lzss_decompress
+	dc.l	$00DE8E,$00DF58		; mul32 .. math_udiv32 (register-call
+					; arithmetic leaves, no VDP)
 	dc.l	$01C176,$01C802		; map_chunk_cache_read, leader_spawn
 	dc.l	$01C802,$01C83E		; map_chunk_load_buf
 	dc.l	$01C83E,$01D9BA		; location_divide, move_cost_calc
@@ -912,6 +916,9 @@ td_frame_go:
 	; blobs are taken off so they never sit on top of a panel
 	tst.w	$FF00AC
 	beq.s	.world
+	ifd	SIZE8M
+	addq.w	#1,TA_NMENU
+	endif
 	clr.w	TD_NB
 	bsr.w	td_sprites
 	bsr.w	td_layers
@@ -919,7 +926,11 @@ td_frame_go:
 	bne.w	td_iso_scroll
 	bsr.w	td_scroll
 	rts
-.bad:	bra.w	td_unlay
+.bad:
+	ifd	SIZE8M
+	addq.w	#1,TA_NBAD
+	endif
+	bra.w	td_unlay
 .world:
 	move.w	d1,TD_CANX		; image extraction: game calls allowed?
 	tst.w	TD_IRS			; (while the decode buffer holds an iso
