@@ -89,4 +89,5 @@ Work continues on the default.
 ## Q19 — iso occlusion (#278): cover more cases at some smoothness?
 - Question: occlusion overlays are built only while no new picture is waiting. Building them also with one waiting covers twice the cases (figure boxes vs the original: 1,801 → 1,116 px off on the explore route) but the Buc route's camera trail ≤ 1 cell drops 98.1 → 97.6 %.
 - Default taken: only while idle (jitter-free first).
+- **Answered (Dayset, 2026-11-24): smoothness first** — keep overlays idle-only.
 - If the answer is different: drop the `TD_IREQ` test before `ti_obuild` in `td_iso_render`.
