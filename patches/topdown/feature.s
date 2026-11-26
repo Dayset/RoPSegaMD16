@@ -54,6 +54,7 @@
 ; ---- tuning ----------------------------------------------------------
 TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
+TD_TC		equ 2		; combat arena tick period (frames)
 TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
 TD_TS		equ 19		; boat / ship (orig over open sea 17-19)
 TD_TB		equ 22		; big (32x32) rooms (orig room 156: 22)
@@ -390,6 +391,12 @@ td_tick:
 	addq.w	#1,TD_BUSY
 	tst.w	d0
 	bne.s	.ion
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; (combat: the pre-drawn view off; it
+	bne.s	.nc			; comes back from scratch after)
+	bsr.w	ta_out
+.nc:
+	endif
 	bsr.w	td_iso_off		; iso -> top-down
 	bra.s	.ire
 .ion:	bsr.w	td_restore		; top-down -> iso: the game's own scene
@@ -404,7 +411,10 @@ td_tick:
 	addq.w	#4,a7
 	movem.l	(a7)+,d0-d7/a0-a6
 	rts
-.on:	moveq	#TD_T2,d0
+.on:	moveq	#TD_TC,d0		; combat arena: the game's own pace
+	cmpi.l	#$FFB0BC,GRIDPTR	; (its moves are its animation; a
+	beq.s	.per			; walking period made it crawl)
+	moveq	#TD_T2,d0
 	cmpi.w	#1,MODE
 	beq.s	.ow
 	movea.l	GRIDPTR,a0		; rooms: 32x32 ones at the original's
@@ -5168,6 +5178,27 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	sub.w	FONTBLK,d1
 	andi.w	#$7FF,d1
 	beq.w	.y
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn: nothing of the game's own
+	bne.s	.nt			; picture stays in the window, only
+	move.w	d0,d1			; text (the font) and a message's
+	andi.w	#$7FF,d1		; portrait (874-909, while one shows)
+	sub.w	FONTBLK,d1
+	cmpi.w	#100,d1
+	bcs.s	.kn
+	tst.w	TD_MSG
+	beq.w	.y
+	move.w	d0,d1
+	andi.w	#$7FF,d1
+	sub.w	#874,d1
+	cmpi.w	#36,d1
+	bcs.s	.kn
+	bra.w	.y
+.kn:	moveq	#1,d1			; (keep)
+	movem.l	(a7)+,d0-d1
+	rts
+.nt:
+	endif
 	move.w	d0,d1
 	andi.w	#$F800,d1
 	beq.w	.room
@@ -5198,7 +5229,8 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	ifd	SIZE8M
 	cmpi.w	#$5A71,TA_ON		; pre-drawn: a word on one of our
 	bne.s	.rm			; slot tiles is the game's picture
-	andi.w	#$7FF,d0		; (shows our tiles, not its own)
+	andi.w	#$7FF,d0		; (shows our tiles, not its own); on
+	beq.w	.y			; tile 0 too (our plane table there)
 	cmpi.w	#436,d0
 	bcs.s	.rb
 	cmpi.w	#874,d0
@@ -6055,7 +6087,8 @@ ta_occ:
 	move.w	TA_AR,d0
 	cmp.w	8(a2),d0
 	beq.w	.same
-.new:	move.w	d2,(a2)
+.new:	clr.w	TA_OVOK			; (off while its tiles change: never
+	move.w	d2,(a2)			; new place, old pixels)
 	move.w	d3,2(a2)
 	move.w	d4,4(a2)
 	move.w	TA_PH,6(a2)
@@ -6116,15 +6149,8 @@ ta_occ:
 	addq.w	#1,d3
 	cmpi.w	#4,d3
 	bcs.w	.ci
-	move.w	d6,TA_OVOK
+	tst.w	d6
 	beq.s	.done
-	move.w	TA_OVK,d0
-	lsl.w	#3,d0
-	move.w	d0,TA_OVX
-	move.w	TA_OVK+2,d0
-	lsl.w	#3,d0
-	addq.w	#6,d0
-	move.w	d0,TA_OVY
 	lea	OVBUF,a0		; up: 64 bytes at a time, masked
 	move.w	#TA_OVT*32,d2
 	moveq	#8-1,d3
@@ -6139,6 +6165,14 @@ ta_occ:
 	move.w	(a7)+,sr
 	add.w	#64,d2
 	dbra	d3,.u
+	move.w	TA_OVK,d0
+	lsl.w	#3,d0
+	move.w	d0,TA_OVX
+	move.w	TA_OVK+2,d0
+	lsl.w	#3,d0
+	addq.w	#6,d0
+	move.w	d0,TA_OVY
+	move.w	#1,TA_OVOK
 .done:
 .same:	movem.l	(a7)+,d2-d7/a2-a4
 	rts
@@ -6659,6 +6693,8 @@ td_hud_map:
 ta_want:	; -> d0 = 1 + the area to show (0 none), a0 = its header
 	cmpi.l	#$4F574136,ATL		; 'OWA6'
 	bne.s	.n
+	cmpi.l	#$FFB0BC,GRIDPTR	; a combat arena: none (its own art
+	beq.s	.n			; goes where our slots are)
 	moveq	#0,d0			; area 0: the overworld,
 	move.w	LOC,d1			; 1 + n: location n
 	cmpi.w	#$FFFF,d1
@@ -6712,6 +6748,12 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	move.w	d1,TD_PEND
 	bsr.w	.unfr
 	bsr.w	ta_reset
+	bsr.w	ta_pblank		; (the game's arena / view words off)
+	lea	TD_FC,a0		; figure images: the game wrote over
+	moveq	#TD_NFC-1,d1		; them meanwhile (combat): all again
+.fc:	move.l	#$FFFF0000,(a0)+
+	dbra	d1,.fc
+	move.w	#120,TA_WFF		; (and its window words, a while)
 	move.w	#$5A71,TA_ON
 	move.w	#1,TD_VALID
 .snap:	move.w	$FF0E8E,TD_ICX		; camera on the game camera's cell
