@@ -287,7 +287,7 @@ TA_TURN		equ 6		; frames a new facing is held before a step
 TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
-TA_HUD		equ $7F0000	; their copy (restored on leaving)
+TA_HUD		equ $9F0000	; their copy (restored on leaving)
 TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
 TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
 TA_ID		equ TA_SH+4096	; TA_N longs: slot -> tile id, -1 free
@@ -340,6 +340,15 @@ td_tick:
 	tst.w	TD_REQ			; A+B+C: original -> top-down ->
 	beq.s	.noreq			; smooth iso -> original
 	clr.w	TD_REQ
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; leaving the pre-drawn view: its plane
+	bne.s	.na			; words off (they would show the next
+	addq.w	#1,TD_BUSY		; view's tiles), records 16-17 and 6
+	bsr.w	ta_pblank		; back
+	bsr.w	ta_out
+	subq.w	#1,TD_BUSY
+.na:
+	endif
 	tst.w	TD_OFF
 	bne.s	.toon
 	tst.w	TD_ISOU
@@ -3069,11 +3078,18 @@ td_ilift:
 	bsr.w	ta_isldr		; the leader (controller): his cell's
 	bne.s	.nl			; lift at once, read ahead by ta_lifts
 	move.w	d5,d2			; the cell nearest his drawn place
-	addq.w	#8,d2			; (d5/d6): the lift turns at half a
-	asr.w	#4,d2			; step, not when the game takes it
-	move.w	d6,d3
+	addq.w	#8,d2			; (d5/d6), once the game has it (a
+	asr.w	#4,d2			; refused step, into a wall, never
+	move.w	d6,d3			; lifts him onto it)
 	addq.w	#8,d3
 	asr.w	#4,d3
+	cmp.w	(a4),d2
+	bne.s	.gc
+	cmp.w	2(a4),d3
+	beq.s	.gk
+.gc:	move.w	(a4),d2
+	move.w	2(a4),d3
+.gk:
 	bsr.w	ta_ltget
 	bmi.s	.nl
 	move.w	d0,TD_TLIFT
@@ -5812,6 +5828,21 @@ ta_ctl:
 	move.w	2(a0,d0.w),d3
 	lsl.w	#8,d2
 	lsl.w	#8,d3
+	tst.w	TA_CMT			; handed to the game, not taken yet:
+	bne.s	.hw			; no further than half way (a step it
+	tst.w	TA_CF			; refuses never shows him in the wall)
+	beq.s	.t
+.hw:	asr.w	#1,d2			; (past it already: stay there)
+	asr.w	#1,d3
+	move.w	TA_OX,d0
+	muls.w	d2,d0
+	move.w	TA_OY,d1
+	muls.w	d3,d1
+	add.l	d1,d0
+	cmpi.l	#128*128,d0
+	blt.s	.t
+	move.w	TA_OX,d2
+	move.w	TA_OY,d3
 .t:	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
 	divu.w	TD_PERIOD,d6
@@ -6635,22 +6666,7 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	move.w	$FF0E90,TD_ICY
 	bsr.w	td_iso_snap
 	bra.w	td_iso_cam
-.leave:	clr.w	TA_ON			; the iso picture's tiles, pool and
-	clr.w	TD_VALID		; plane come back (td_iso_load)
-	clr.w	TD_TILES
-	move.w	#TA_HUD>>19,d0		; records 16-17 back from their copy
-	move.w	d0,TA_B7
-	move.b	d0,$A130FF
-	lea	$380000+(TA_HUD&$7FFFF),a0
-	move.w	#1834*32,d0
-	move.w	sr,-(a7)
-	move.w	#$2700,sr
-	bsr.w	td_vwrite
-	move.w	#204*8-1,d1
-.hr:	move.l	(a0)+,VDP_DATA
-	dbra	d1,.hr
-	move.w	(a7)+,sr
-	rts
+.leave:	bra.w	ta_out
 .same:	move.w	#1,TD_VALID
 	bsr.w	ta_fblk			; (writes that miss the sprite table
 	tst.w	d0			; land on it: keep it blank)
@@ -6691,6 +6707,69 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	addq.w	#1,TD_BUSY
 	clr.w	TD_UNFR
 .o:	rts
+
+ta_out:	; the pre-drawn view off: records 16-17 and 6 back
+	move.l	d2,-(a7)
+	clr.w	TA_ON			; the iso picture's tiles, pool and
+	clr.w	TD_VALID		; plane come back (td_iso_load)
+	clr.w	TD_TILES
+	move.w	#TA_HUD>>19,d0		; records 16-17 back from their copy
+	move.w	d0,TA_B7
+	move.b	d0,$A130FF
+	lea	$380000+(TA_HUD&$7FFFF),a0
+	move.w	#1834*32,d0
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	move.w	#204*8-1,d1
+.hr:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.hr
+	move.w	(a7)+,sr
+	move.w	#436*32,d0		; record 6 (frame art) right after it,
+	moveq	#7-1,d2			; 64 tiles a go
+.r6:	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d0,-(a7)
+	bsr.w	td_vwrite
+	move.w	#64*8-1,d1
+	tst.w	d2
+	bne.s	.r7
+	move.w	#(438-6*64)*8-1,d1
+.r7:	move.l	(a0)+,VDP_DATA
+	dbra	d1,.r7
+	move.w	(a7)+,d0
+	move.w	(a7)+,sr
+	add.w	#64*32,d0
+	dbra	d2,.r6
+	move.w	TD_BASE,d0		; the room bitmap's tiles we used: clear
+	add.w	#64,d0			; (the game redraws only its window
+	moveq	#209-1,d1		; there; the rest showed our tiles)
+	bsr.s	.clr
+	move.w	TD_BASE,d0
+	add.w	#401,d0
+	move.w	#427-1,d1
+	bsr.s	.clr
+	move.l	(a7)+,d2
+	rts
+.clr:	; tiles d0.. (d1 + 1 of them) <- 0, 16 a go
+	lsl.w	#5,d0
+.c0:	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d0,-(a7)
+	bsr.w	td_vwrite
+	moveq	#16-1,d2
+.c1:	moveq	#8-1,d0
+.c2:	move.l	#0,VDP_DATA
+	dbra	d0,.c2
+	subq.w	#1,d1
+	bmi.s	.c3
+	dbra	d2,.c1
+.c3:	move.w	(a7)+,d0
+	move.w	(a7)+,sr
+	add.w	#16*32,d0
+	tst.w	d1
+	bpl.s	.c0
+	rts
 
 ta_hud:	; no gold, time, food / water words: td_hsrc's cells blank
 	tst.w	TD_MSG			; (unless a message is in those rows)

@@ -21,7 +21,8 @@ past the save RAM window):
   tiles    32 bytes per id at the tile base + 32 * id (one store).
            Near twins (<= 2 pixels apart) are one tile: the one used
            most stands for the rest.
-  HUD      records 16-17 (pad picture, gauges) at the end of the ROM
+  HUD      records 16-17 (pad picture, gauges) and 6 (frame art) at
+           the end of the ROM (put back when the view goes off)
 
 Records and tiles are read at run time through the Sega mapper (slots
 6 and 7). Cached in build/ per ROM md5 (a full render takes minutes).
@@ -303,12 +304,14 @@ def hud_copy(rom):
     import decode_map
     b = decode_map.record_bytes(rom, 16) + decode_map.record_bytes(rom, 17)
     assert len(b) == 204 * 32, len(b)
-    return b
+    r6 = decode_map.record_bytes(rom, 6)  # frame art, VRAM 436-873
+    assert len(r6) == 438 * 32, len(r6)
+    return b + r6
 
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas6-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas7-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas6-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
