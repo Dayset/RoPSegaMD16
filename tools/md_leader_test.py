@@ -45,7 +45,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas8-*.bin")))
+        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas9-*.bin")))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
@@ -54,6 +54,9 @@ class Atlas:
         R, C, BR, BC, dy, dx, TB, PT = struct.unpack_from(">HHHHhhII", d, h)
         r, c = row + dy, col + dx
         p = 0
+        TH, TW = struct.unpack_from(">HH", d, PT - o + 112)
+        if TH and not (0 <= r < R and 0 <= c < C):   # a zone repeating
+            r, c = r % TH, c % TW
         if 0 <= r < R and 0 <= c < C:
             p = struct.unpack_from(">I", d, h + 20 + 4 * ((r // 16) * BC + c // 16))[0]
         if not p:                       # the filler pattern

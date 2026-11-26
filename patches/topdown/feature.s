@@ -7598,15 +7598,15 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	move.w	d5,d1
 	add.w	8(a1),d1		; atlas row
 	move.w	d1,TA_LROW
-	bmi.w	.bl
+	bmi.w	.out
 	cmp.w	(a1),d1
-	bcc.w	.bl
+	bcc.w	.out
 	move.w	d4,d2
 	add.w	10(a1),d2		; atlas column
-	bmi.w	.bl
+	bmi.w	.out
 	cmp.w	2(a1),d2
-	bcc.w	.bl
-	move.w	d1,d0			; block (row / 16) * BC + column / 16
+	bcc.w	.out
+.in:	move.w	d1,d0			; block (row / 16) * BC + column / 16
 	lsr.w	#4,d0
 	mulu.w	6(a1),d0
 	move.w	d2,-(a7)
@@ -7652,6 +7652,28 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	move.b	(a0),d1
 	move.w	d1,d0
 .o:	rts
+.out:	; past the canvas of a zone that repeats (#308): its picture at
+	; atlas row % period rows, column % period columns
+	movea.l	16(a1),a0
+	tst.w	112(a0)
+	beq.s	.bl
+	ext.l	d1
+	divs.w	112(a0),d1
+	swap	d1
+	tst.w	d1
+	bpl.s	.r1
+	add.w	112(a0),d1
+.r1:	move.w	d4,d2
+	add.w	10(a1),d2
+	ext.l	d2
+	divs.w	114(a0),d2
+	swap	d2
+	tst.w	d2
+	bpl.s	.c1
+	add.w	114(a0),d2
+.c1:	bsr.w	.in
+	move.w	#$FF,TA_LDB		; (nothing in front of anyone)
+	rts
 .bl:	; past the canvas, or a block not stored: the filler pattern (no
 	; pink void), tile (row % 2) 7 + column % 7 of the area's 2 x 14
 	move.w	d5,d1

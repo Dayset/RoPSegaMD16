@@ -15,14 +15,15 @@ past the save RAM window):
            (BR x BC, row-major): its record, 0 = all blank
   header   +16: the area's filler pattern, 2 x 14 u32 ids (phase 0, 1;
            index (row % 2) 7 + column % 7): drawn past the canvas and in
-           blocks not stored
+           blocks not stored; then u16 rows, columns of the period an
+           11x11 zone repeats with past its canvas (0 = the pattern)
   record   16x16 u8 pair index (row-major), u16 m, then m u24 phase-1
            ids, then a u24 phase-0 id per pair. Pairs 0..m-1 differ
            between the phases; pair k >= m shows its phase-0 tile in
            both. Even address, never crosses a 512 KB bank; identical
            records are stored once.
   tiles    32 bytes per id at the tile base + 32 * id (one store).
-           Near twins (<= 2 pixels apart) are one tile: the one used
+           Near twins (<= 3 pixels apart) are one tile: the one used
            most stands for the rest.
   HUD      records 16-17 (pad picture, gauges) and 6 (frame art) at
            the end of the ROM (put back when the view goes off)
@@ -67,6 +68,8 @@ def owners(ab, cells, ox0, oy0, w, h):
         oy = wx * EAST[1] + wy * SOUTH[1] - oy0
         k = np.array([(px + ox, py + oy, m) for (px, py), (m, v)
                       in fp.items()], np.int64)
+        k = k[(k[:, 0] >= 0) & (k[:, 0] < w - 1) & (k[:, 1] >= 0)
+              & (k[:, 1] < h)]
         hi = (k[:, 2] & 0xF0) == 0
         lo = (k[:, 2] & 0x0F) == 0
         own[k[hi, 1], k[hi, 0]] = wx + wy
@@ -117,20 +120,60 @@ def lattice(ab, tile, p):
     return px[y0 - oy:y0 - oy + 16, x0 - ox:x0 - ox + 28], x0, y0
 
 
-def render(ab, cells):
+TP = 12                     # torus period (cells): an 11x11 zone + a
+TH, TW = 24, 42             # filler row and column; in tiles (0,192 px
+                            # and 336,0 px: tile-aligned)
+
+
+def torus(ab, cells, fill, p):
+    """the zone repeated on a 12-cell lattice (its 12th row and column
+    the filler cell), rendered and cut to a window around the zone of at
+    least TH x TW tiles: the picture past it repeats with that period"""
+    zone = dict(((x, y), t) for x, y, t in cells)
+    _, (oxa, oya), wa, ha = ab.render_canvas(cells, p)
+    ww, hh = max(wa, TW * 8 - 8), max(ha, TH * 8)
+    xs = oxa - ((ww - wa) // 2) // 8 * 8
+    ys = oya - ((hh - ha) // 2) // 8 * 8
+    tc = []
+    for i in range(-2, 3):
+        for j in range(-2, 3):
+            cx = (i - j) * TP * 14
+            cy = (i + j) * TP * 8
+            if abs(cx) > 600 or abs(cy) > 420:
+                continue
+            for y in range(TP):
+                for x in range(TP):
+                    tc.append((x + TP * i, y + TP * j, zone.get((x, y), fill)))
+    cv, (ox, oy), w, h = ab.render_canvas(tc, p)
+    b = np.frombuffer(bytes(cv), np.uint8).reshape(h, w // 2)
+    x0, y0 = xs - ox, ys - oy
+    assert x0 % 8 == 0 and y0 % 8 == 0 and x0 >= 0 and y0 >= 0
+    b = b[y0:y0 + hh, x0 // 2:(x0 + ww) // 2]
+    assert b.shape == (hh, ww // 2), (b.shape, hh, ww)
+    return bytearray(b.tobytes()), (xs, ys), ww, hh, tc
+
+
+def render(ab, cells, tor=False):
     """-> (u0, t0, u1, t1, (dx, dy) in tiles, (smin, sup, mask),
-    (pattern tiles phase 0, phase 1): 2 x 7 tiles, row r % 2, col c % 7)
+    (pattern tiles phase 0, phase 1): 2 x 7 tiles, row r % 2, col c % 7,
+    (rows, cols) of the picture's period past the canvas, 0 = pattern)
     Pixels no cell paints show the filler cell's lattice, as does all
-    past the canvas (the runtime repeats the pattern tiles there)."""
+    past the canvas (the runtime repeats the pattern tiles there).
+    tor: an 11x11 zone repeated all around instead (#308)"""
     ph = []
     dep = None
     fill = filler(ab, cells)
+    tor = tor and fill is not None
     for p in (0, 1):
-        canvas, (ox, oy), w, h = ab.render_canvas(cells, p)
+        if tor:
+            canvas, (ox, oy), w, h, ocells = torus(ab, cells, fill, p)
+        else:
+            canvas, (ox, oy), w, h = ab.render_canvas(cells, p)
+            ocells = cells
         kx, ky = KX0 - ox, KY0 - oy
         pad = -kx % 8               # left pad: tiles on the global grid
         if p == 0:
-            own = np.pad(owners(ab, cells, ox, oy, w, h),
+            own = np.pad(owners(ab, ocells, ox, oy, w, h),
                          ((0, 0), (pad, 8 - pad)), constant_values=-1)
             dep = depths(own)
         b = np.frombuffer(bytes(canvas), np.uint8).reshape(h, w // 2)
@@ -154,7 +197,7 @@ def render(ab, cells):
         ph.append((uniq, tmap, ((kx + pad) // 8, ky // 8), pat.astype(np.uint8)))
     (u0, t0, k0, p0), (u1, t1, k1, p1) = ph
     assert k0 == k1 and t0.shape == t1.shape
-    return u0, t0, u1, t1, k0, dep, (p0, p1)
+    return u0, t0, u1, t1, k0, dep, (p0, p1), ((TH, TW) if tor else (0, 0))
 
 
 CLAMP = [0, 0]
@@ -216,7 +259,7 @@ def pairs_blocks(g0, g1, blank, dep, pid):
     return R, C, BR, BC, blocks
 
 
-def twins(allu, uses, blank, maxd=2):
+def twins(allu, uses, blank, maxd=3):
     """-> id map: each tile to the most used tile <= maxd pixels from it
     (any two such tiles agree on one of 3 pixel groups: bucket on each)"""
     n = len(allu)
@@ -310,7 +353,7 @@ def areas(rom):
             continue
         edge = {121: 11, 1024: 32}.get(len(words))
         if edge:
-            rooms[n] = render(ab, room_cells(ab, ch, edge))
+            rooms[n] = render(ab, room_cells(ab, ch, edge), edge == 11)
     return ow, rooms
 
 
@@ -337,6 +380,7 @@ def layout(ow, rooms):
             out += bytes(4 * BR * BC)
             out += b"".join(struct.pack(">I", int(v))
                             for v in np.concatenate([pid[0].ravel(), pid[1].ravel()]))
+            out += struct.pack(">HH", *r[7])
             pending.append((hdr, blocks, gi))
     assert len(out) <= BANK - (OFFSET % BANK), "headers past the first bank"
     seen = {}
@@ -379,10 +423,10 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas8-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas9-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
-    acache = cache.with_name("ow-areas8-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
+    acache = cache.with_name("ow-areas9-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
     import pickle
     if acache.is_file():
         ar = pickle.loads(acache.read_bytes())
