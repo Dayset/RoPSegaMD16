@@ -37,6 +37,7 @@ import sys
 from pathlib import Path
 
 import collections
+import os
 
 import numpy as np
 
@@ -259,7 +260,27 @@ def pairs_blocks(g0, g1, blank, dep, pid):
     return R, C, BR, BC, blocks
 
 
-def twins(allu, uses, blank, maxd=3):
+TWIN = int(os.environ.get("ROP_TWIN", "3"))     # near-twin merge (px)
+HALF = int(os.environ.get("ROP_HALF", "-1"))    # half-width tiles: those
+# whose pixel pairs differ in at most HALF places (32 = all, -1 = none)
+
+
+def halfx(t):
+    """32-byte tiles -> as the runtime shows them stored half-width: the
+    left pixel of each pair kept (pixels 0, 2, 4, 6), shown p p q q on
+    even rows and p q p q on odd ones (a dither where they change)"""
+    px = np.stack([t >> 4, t & 15], axis=2).reshape(-1, 8, 8)
+    h = px[:, :, 0::2]                            # p0 q0 p1 q1
+    out = np.repeat(h, 2, axis=2)                 # p p q q per byte
+    odd = out[:, 1::2]
+    odd[:, :, 0::4], odd[:, :, 1::4] = h[:, 1::2, 0::2], h[:, 1::2, 1::2]
+    odd[:, :, 2::4], odd[:, :, 3::4] = h[:, 1::2, 0::2], h[:, 1::2, 1::2]
+    out[:, 1::2] = odd
+    out = out.reshape(-1, 64)
+    return (out[:, 0::2] << 4 | out[:, 1::2]).astype(t.dtype)
+
+
+def twins(allu, uses, blank, maxd=TWIN):
     """-> id map: each tile to the most used tile <= maxd pixels from it
     (any two such tiles agree on one of 3 pixel groups: bucket on each)"""
     n = len(allu)
@@ -313,7 +334,7 @@ def id_masks(n, maps, deps):
     return out.view(np.uint8).reshape(n, 8)
 
 
-def store(tile_sets):
+def store(tile_sets, gen=None):
     """[(u0, t0, u1, t1)] -> (tiles, [(g0, g1)], blank id)"""
     allu, inv = np.unique(np.concatenate(
         [u for s in tile_sets for u in (s[0], s[2])]), axis=0,
@@ -337,8 +358,30 @@ def store(tile_sets):
     new = np.zeros(len(allu), np.int64)
     new[keep] = np.arange(len(keep))
     to = new[to]
-    return (allu[keep], [(to[g0], to[g1]) for g0, g1 in maps],
-            int(to[blank]) if blank >= 0 else -1)
+    allu, maps = allu[keep], [(to[g0], to[g1]) for g0, g1 in maps]
+    blank = int(to[blank]) if blank >= 0 else -1
+    # half-width tiles next (stored as 16 bytes, pixels doubled at load),
+    # material noise last (made at load from the shared field, not stored)
+    err = ((allu >> 4) != (allu & 15)).sum(axis=1)
+    gid = np.array([gen.get(x.tobytes(), -1) if gen else -1 for x in allu],
+                   np.int64)
+    isg = gid >= 0
+    half = (err <= HALF) & ~isg
+    full = ~half & ~isg
+    nf, nh = int(full.sum()), int(half.sum())
+    ng = NVAR * (max(gen.values()) // NVAR + 1) if gen else 0
+    new = np.empty(len(allu), np.int64)
+    new[full] = np.arange(nf)
+    new[half] = nf + np.arange(nh)
+    new[isg] = nf + nh + gid[isg]
+    out = np.zeros((nf + nh + ng, 32), allu.dtype)
+    out[new] = allu
+    if gen:
+        for b, k in gen.items():
+            out[nf + nh + k] = np.frombuffer(b, np.uint8)
+    out[nf:nf + nh] = halfx(out[nf:nf + nh])
+    return (out, [(new[g0], new[g1]) for g0, g1 in maps],
+            int(new[blank]) if blank >= 0 else -1, (nf, nh))
 
 
 def areas(rom):
@@ -400,12 +443,26 @@ def textures(sets):
     return out
 
 
-def variants(key, seed):
-    """NVAR noise tiles of a material: its colours at its shares"""
+NFIELD = np.random.default_rng(308).integers(0, 256, (NVAR, 64)).astype(np.uint8)
+
+
+def thresholds(key):
+    """a material's 3 thresholds on the shared noise (255 = unused)"""
     cols, share = key
-    p = np.array(share, float) / sum(share)
-    rng = np.random.default_rng(hash((key, seed)) & 0xFFFFFFFF)
-    v = rng.choice(np.array(cols, np.uint8), size=(NVAR, 64), p=p)
+    cum = np.cumsum(share)[:-1] / sum(share)
+    t = [min(255, int(round(256 * c))) for c in cum] + [255] * (4 - len(cols))
+    return t[:3]
+
+
+def variants(key, seed):
+    """NVAR noise tiles of a material: ONE noise field shared by every
+    material (#308), cut at its shares into its colours; seed 1 (water's
+    other phase) takes the variants shifted by half"""
+    cols, _ = key
+    c = np.array(list(cols) + [cols[-1]] * (4 - len(cols)), np.uint8)
+    t = np.array(thresholds(key))
+    f = np.roll(NFIELD, NVAR // 2 * seed, axis=0)
+    v = c[(f[..., None] >= t).sum(axis=2)]
     return (v[:, 0::2] << 4 | v[:, 1::2]).astype(np.uint8)
 
 
@@ -451,8 +508,14 @@ def layout(ow, rooms):
     print("textures: %d tiles drawn as noise" % len(tex))
     ow = noise(ow, tex, bank)
     rooms = {n: noise(r, tex, bank) for n, r in rooms.items()}
+    mats = list(bank)                       # (material, seed) -> index
+    gen = {}
+    for m, ks in enumerate(mats):
+        for v, t in enumerate(bank[ks]):
+            gen.setdefault(t.tobytes(), m * NVAR + v)
+    print("materials: %d (noise made at load, one shared field)" % len(mats))
     out = bytearray(b"OWA8" + struct.pack(">H", 1 + NLOC)
-                    + bytes(4 * (1 + NLOC)) + bytes(4))
+                    + bytes(4 * (1 + NLOC)) + bytes(24))
     MBASE = 6 + 4 * (1 + NLOC)  # u32: the tile masks (8 bytes per id)
     groups = [([ow] + list(rooms.values()), [0] + [1 + n for n in rooms])]
     pending = []                # (header offset, area blocks, store index)
@@ -460,9 +523,9 @@ def layout(ow, rooms):
     for gi, (rs, ids) in enumerate(groups):
         k7 = np.arange(14).reshape(2, 7)
         sets = [r[:4] for r in rs] + [(r[6][0], k7, r[6][1], k7) for r in rs]
-        allu, maps, blank = store(sets)
+        allu, maps, blank, nf = store(sets, gen)
         pats, maps = maps[len(rs):], maps[:len(rs)]
-        stores.append((allu, id_masks(len(allu), maps, [r[5] for r in rs])))
+        stores.append((allu, id_masks(len(allu), maps, [r[5] for r in rs]), nf))
         for r, (g0, g1), pid, aid in zip(rs, maps, pats, ids):
             R, C, BR, BC, blocks = pairs_blocks(g0, g1, blank, r[5], pid)
             dx, dy = r[4]
@@ -475,6 +538,13 @@ def layout(ow, rooms):
                             for v in np.concatenate([pid[0].ravel(), pid[1].ravel()]))
             out += struct.pack(">HH", *r[7])
             pending.append((hdr, blocks, gi))
+    out += bytes(-len(out) % 2)     # materials (first bank, read direct):
+    struct.pack_into(">I", out, MBASE + 16, OFFSET + len(out))
+    for (cols, share), seed in mats:    # 4 colours, 3 thresholds, shift
+        c = list(cols) + [cols[-1]] * (4 - len(cols))
+        out += bytes(c + thresholds((cols, share)) + [NVAR // 2 * seed])
+    struct.pack_into(">I", out, MBASE + 20, OFFSET + len(out))
+    out += NFIELD.tobytes()             # the noise field all of them share
     assert len(out) <= BANK - (OFFSET % BANK), "headers past the first bank"
     seen = {}
     for hdr, blocks, gi in pending:
@@ -493,10 +563,15 @@ def layout(ow, rooms):
             seen[rec] = pos
             out += rec
     bases = []
-    for allu, masks in stores:
+    for allu, masks, (nf, nh) in stores:
         out += bytes(-len(out) % 32)
         bases.append(OFFSET + len(out))
-        out += allu.astype(np.uint8).tobytes()
+        out += allu[:nf].astype(np.uint8).tobytes()
+        struct.pack_into(">III", out, MBASE + 4, nf, OFFSET + len(out),
+                         nf + nh)
+        h = allu[nf:nf + nh].reshape(-1, 8, 4)   # 2 bytes a row: pixels
+        h = (h[..., 0::2] & 0xF0) | (h[..., 1::2] >> 4)  # 0, 2, 4, 6
+        out += h.astype(np.uint8).tobytes()
         struct.pack_into(">I", out, MBASE, OFFSET + len(out))
         out += masks.tobytes()
     print("depth clamped: %d of %d" % tuple(CLAMP))
@@ -516,7 +591,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas11-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas14-%s-t%d-h%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas9-%s.npz" % hashlib.md5(rom).hexdigest()[:12])

@@ -310,7 +310,9 @@ TD_END2		equ TD_VDIF+8
 TD_ARN		equ TD_END2	; combat arena shown by the game itself
 TD_RLAST	equ TD_ARN+2	; frame td_tick last handed back to the game
 TD_RPER		equ TD_RLAST+2	; frames its ticks take (peak, slow decay)
-TD_END		equ TD_RPER+2
+TD_HB1		equ TD_RPER+2	; 32 B: a half-width tile doubled (ta_up)
+TD_HB2		equ TD_HB1+32	; 32 B: the same for ta_occ
+TD_END		equ TD_HB2+32
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
 TI_PHASH	equ $FFFFD2EA	; pool hashes (words) + ages (bytes): in the
@@ -6273,20 +6275,11 @@ ta_occ:
 	rts
 
 .copy:	; tile a4 -> a3 (32 bytes, a3 past it)
-	move.l	a4,d0
-	lsl.l	#5,d0
-	movea.l	TA_A,a1
-	add.l	12(a1),d0
-	move.l	d0,d1
-	swap	d1
-	lsr.w	#3,d1
-	cmp.w	TA_B7,d1
-	beq.s	.c1
-	move.w	d1,TA_B7
-	move.b	d1,$A130FF
-.c1:	andi.l	#$7FFFF,d0
-	addi.l	#$380000,d0
-	movea.l	d0,a0
+	movem.l	d2/a2,-(a7)
+	move.l	a4,d1
+	lea	TD_HB2,a2
+	bsr.w	ta_tget
+	movem.l	(a7)+,d2/a2
 	moveq	#8-1,d1
 .cl:	move.l	(a0)+,(a3)+
 	dbra	d1,.cl
@@ -7802,13 +7795,91 @@ ta_unlink:	; d0 = slot: out of its bucket (keeps d0, d2, d4)
 .o:	movem.l	(a7)+,d0/d2/d4
 	rts
 
-ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
-	movem.l	d0/d2,-(a7)
-	move.l	d4,d1
+ta_tget:	; d1.l = tile id, a2 = 32-byte buffer -> a0 = its 32 bytes
+	; (uses d1-d2): ids from ATL+714 on are half-width, 16 bytes at
+	; ATL+718 on, each pixel doubled here; from ATL+722 on: material
+	; noise, made here from the one field all materials share (#308)
+	cmp.l	ATL+722,d1
+	bcc.s	.g
+	cmp.l	ATL+714,d1
+	bcc.s	.h
 	lsl.l	#5,d1
-	movea.l	TA_A,a1
-	add.l	12(a1),d1		; ROM address, in slot 7's window
-	move.l	d1,d2
+	movea.l	TA_A,a0
+	add.l	12(a0),d1		; ROM address, in slot 7's window
+	bra.w	ta_t7
+.h:	sub.l	ATL+714,d1
+	lsl.l	#4,d1
+	add.l	ATL+718,d1
+	bsr.w	ta_t7
+	move.l	a1,-(a7)
+	move.l	a2,-(a7)
+	move.l	a3,-(a7)
+	lea	ta_dbl(pc),a1		; even rows p p q q, odd rows p q p q
+	lea	512(a1),a3		; (a dither where the half pixels
+	moveq	#4-1,d2			; change: detail back, #308)
+.e:	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d1,d1
+	move.w	(a1,d1.w),(a2)+
+	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d1,d1
+	move.w	(a1,d1.w),(a2)+
+	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d1,d1
+	move.w	(a3,d1.w),(a2)+
+	moveq	#0,d1
+	move.b	(a0)+,d1
+	add.w	d1,d1
+	move.w	(a3,d1.w),(a2)+
+	dbra	d2,.e
+	movea.l	(a7)+,a3
+	movea.l	(a7)+,a0
+	movea.l	(a7)+,a1
+	rts
+.g:	sub.l	ATL+722,d1		; material 8 + variant
+	movem.l	d0/d3-d6/a1-a3,-(a7)
+	moveq	#7,d2
+	and.w	d1,d2
+	lsr.l	#3,d1
+	lsl.l	#3,d1
+	movea.l	ATL+726,a1
+	adda.l	d1,a1			; c0 c1 c2 c3 t1 t2 t3 shift
+	sub.b	7(a1),d2		; field row (variant - shift) & 7
+	andi.w	#7,d2
+	lsl.w	#6,d2
+	movea.l	ATL+730,a0
+	adda.w	d2,a0
+	movea.l	a2,a3
+	move.b	4(a1),d3
+	move.b	5(a1),d4
+	move.b	6(a1),d5
+	moveq	#32-1,d6
+.gp:	bsr.s	.px			; left pixel
+	lsl.b	#4,d1
+	move.b	d1,d2
+	bsr.s	.px
+	or.b	d1,d2
+	move.b	d2,(a3)+
+	dbra	d6,.gp
+	movea.l	a2,a0
+	movem.l	(a7)+,d0/d3-d6/a1-a3
+	rts
+.px:	moveq	#0,d1			; colour of the next field byte
+	move.b	(a0)+,d0
+	cmp.b	d3,d0
+	bcs.s	.p
+	addq.w	#1,d1
+	cmp.b	d4,d0
+	bcs.s	.p
+	addq.w	#1,d1
+	cmp.b	d5,d0
+	bcs.s	.p
+	addq.w	#1,d1
+.p:	move.b	(a1,d1.w),d1
+	rts
+ta_t7:	move.l	d1,d2			; d1 = ROM address -> a0 (slot 7)
 	swap	d2
 	lsr.w	#3,d2
 	cmp.w	TA_B7,d2
@@ -7818,6 +7889,13 @@ ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
 .s:	andi.l	#$7FFFF,d1
 	addi.l	#$380000,d1
 	movea.l	d1,a0
+	rts
+
+ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
+	movem.l	d0/d2/a2,-(a7)
+	move.l	d4,d1
+	lea	TD_HB1,a2
+	bsr.w	ta_tget
 	bsr.w	ta_vt
 	lsl.w	#5,d0
 	move.w	sr,-(a7)
@@ -7833,7 +7911,42 @@ ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
 	move.l	(a0)+,(a1)
 	move.l	(a0)+,(a1)
 	move.w	(a7)+,sr
-	movem.l	(a7)+,d0/d2
+	movem.l	(a7)+,d0/d2/a2
 	rts
+
+ta_dbl:	; byte -> word, each pixel doubled
+	dc.w	$0000,$0011,$0022,$0033,$0044,$0055,$0066,$0077,$0088,$0099,$00AA,$00BB,$00CC,$00DD,$00EE,$00FF
+	dc.w	$1100,$1111,$1122,$1133,$1144,$1155,$1166,$1177,$1188,$1199,$11AA,$11BB,$11CC,$11DD,$11EE,$11FF
+	dc.w	$2200,$2211,$2222,$2233,$2244,$2255,$2266,$2277,$2288,$2299,$22AA,$22BB,$22CC,$22DD,$22EE,$22FF
+	dc.w	$3300,$3311,$3322,$3333,$3344,$3355,$3366,$3377,$3388,$3399,$33AA,$33BB,$33CC,$33DD,$33EE,$33FF
+	dc.w	$4400,$4411,$4422,$4433,$4444,$4455,$4466,$4477,$4488,$4499,$44AA,$44BB,$44CC,$44DD,$44EE,$44FF
+	dc.w	$5500,$5511,$5522,$5533,$5544,$5555,$5566,$5577,$5588,$5599,$55AA,$55BB,$55CC,$55DD,$55EE,$55FF
+	dc.w	$6600,$6611,$6622,$6633,$6644,$6655,$6666,$6677,$6688,$6699,$66AA,$66BB,$66CC,$66DD,$66EE,$66FF
+	dc.w	$7700,$7711,$7722,$7733,$7744,$7755,$7766,$7777,$7788,$7799,$77AA,$77BB,$77CC,$77DD,$77EE,$77FF
+	dc.w	$8800,$8811,$8822,$8833,$8844,$8855,$8866,$8877,$8888,$8899,$88AA,$88BB,$88CC,$88DD,$88EE,$88FF
+	dc.w	$9900,$9911,$9922,$9933,$9944,$9955,$9966,$9977,$9988,$9999,$99AA,$99BB,$99CC,$99DD,$99EE,$99FF
+	dc.w	$AA00,$AA11,$AA22,$AA33,$AA44,$AA55,$AA66,$AA77,$AA88,$AA99,$AAAA,$AABB,$AACC,$AADD,$AAEE,$AAFF
+	dc.w	$BB00,$BB11,$BB22,$BB33,$BB44,$BB55,$BB66,$BB77,$BB88,$BB99,$BBAA,$BBBB,$BBCC,$BBDD,$BBEE,$BBFF
+	dc.w	$CC00,$CC11,$CC22,$CC33,$CC44,$CC55,$CC66,$CC77,$CC88,$CC99,$CCAA,$CCBB,$CCCC,$CCDD,$CCEE,$CCFF
+	dc.w	$DD00,$DD11,$DD22,$DD33,$DD44,$DD55,$DD66,$DD77,$DD88,$DD99,$DDAA,$DDBB,$DDCC,$DDDD,$DDEE,$DDFF
+	dc.w	$EE00,$EE11,$EE22,$EE33,$EE44,$EE55,$EE66,$EE77,$EE88,$EE99,$EEAA,$EEBB,$EECC,$EEDD,$EEEE,$EEFF
+	dc.w	$FF00,$FF11,$FF22,$FF33,$FF44,$FF55,$FF66,$FF77,$FF88,$FF99,$FFAA,$FFBB,$FFCC,$FFDD,$FFEE,$FFFF
+ta_dbl2:	; odd rows: p q p q
+	dc.w	$0000,$0101,$0202,$0303,$0404,$0505,$0606,$0707,$0808,$0909,$0A0A,$0B0B,$0C0C,$0D0D,$0E0E,$0F0F
+	dc.w	$1010,$1111,$1212,$1313,$1414,$1515,$1616,$1717,$1818,$1919,$1A1A,$1B1B,$1C1C,$1D1D,$1E1E,$1F1F
+	dc.w	$2020,$2121,$2222,$2323,$2424,$2525,$2626,$2727,$2828,$2929,$2A2A,$2B2B,$2C2C,$2D2D,$2E2E,$2F2F
+	dc.w	$3030,$3131,$3232,$3333,$3434,$3535,$3636,$3737,$3838,$3939,$3A3A,$3B3B,$3C3C,$3D3D,$3E3E,$3F3F
+	dc.w	$4040,$4141,$4242,$4343,$4444,$4545,$4646,$4747,$4848,$4949,$4A4A,$4B4B,$4C4C,$4D4D,$4E4E,$4F4F
+	dc.w	$5050,$5151,$5252,$5353,$5454,$5555,$5656,$5757,$5858,$5959,$5A5A,$5B5B,$5C5C,$5D5D,$5E5E,$5F5F
+	dc.w	$6060,$6161,$6262,$6363,$6464,$6565,$6666,$6767,$6868,$6969,$6A6A,$6B6B,$6C6C,$6D6D,$6E6E,$6F6F
+	dc.w	$7070,$7171,$7272,$7373,$7474,$7575,$7676,$7777,$7878,$7979,$7A7A,$7B7B,$7C7C,$7D7D,$7E7E,$7F7F
+	dc.w	$8080,$8181,$8282,$8383,$8484,$8585,$8686,$8787,$8888,$8989,$8A8A,$8B8B,$8C8C,$8D8D,$8E8E,$8F8F
+	dc.w	$9090,$9191,$9292,$9393,$9494,$9595,$9696,$9797,$9898,$9999,$9A9A,$9B9B,$9C9C,$9D9D,$9E9E,$9F9F
+	dc.w	$A0A0,$A1A1,$A2A2,$A3A3,$A4A4,$A5A5,$A6A6,$A7A7,$A8A8,$A9A9,$AAAA,$ABAB,$ACAC,$ADAD,$AEAE,$AFAF
+	dc.w	$B0B0,$B1B1,$B2B2,$B3B3,$B4B4,$B5B5,$B6B6,$B7B7,$B8B8,$B9B9,$BABA,$BBBB,$BCBC,$BDBD,$BEBE,$BFBF
+	dc.w	$C0C0,$C1C1,$C2C2,$C3C3,$C4C4,$C5C5,$C6C6,$C7C7,$C8C8,$C9C9,$CACA,$CBCB,$CCCC,$CDCD,$CECE,$CFCF
+	dc.w	$D0D0,$D1D1,$D2D2,$D3D3,$D4D4,$D5D5,$D6D6,$D7D7,$D8D8,$D9D9,$DADA,$DBDB,$DCDC,$DDDD,$DEDE,$DFDF
+	dc.w	$E0E0,$E1E1,$E2E2,$E3E3,$E4E4,$E5E5,$E6E6,$E7E7,$E8E8,$E9E9,$EAEA,$EBEB,$ECEC,$EDED,$EEEE,$EFEF
+	dc.w	$F0F0,$F1F1,$F2F2,$F3F3,$F4F4,$F5F5,$F6F6,$F7F7,$F8F8,$F9F9,$FAFA,$FBFB,$FCFC,$FDFD,$FEFE,$FFFF
 ta_end:
 	endif

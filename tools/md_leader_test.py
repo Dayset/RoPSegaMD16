@@ -19,6 +19,7 @@ every frame the pre-drawn view and the leader controller are on:
 
 Exit status 1 if any of the failing checks has a hit.
 """
+import os
 import argparse
 import glob
 import struct
@@ -45,7 +46,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas11-*.bin")))
+        f = sorted(glob.glob(str(REPO / "build" / ("ow-atlas14-*-t%s-h%s.bin" % (os.environ.get("ROP_TWIN", "3"), os.environ.get("ROP_HALF", "-1"))))))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
@@ -61,13 +62,32 @@ class Atlas:
             p = struct.unpack_from(">I", d, h + 20 + 4 * ((r // 16) * BC + c // 16))[0]
         if not p:                       # the filler pattern
             t = struct.unpack_from(">I", d, PT - o + 4 * (14 * ph + 7 * (r % 2) + c % 7))[0]
-            return d[TB - o + 32 * t:TB - o + 32 * t + 32]
+            return self.data(t)
         rec = p - o
         i = d[rec + (r % 16) * 16 + c % 16]
         m = struct.unpack_from(">H", d, rec + 512)[0]
         k = i if (ph and i < m) else m + i
         t = int.from_bytes(d[rec + 514 + 3 * k:rec + 517 + 3 * k], "big")
-        return d[TB - o + 32 * t:TB - o + 32 * t + 32]
+        return self.data(t)
+
+    def data(self, t):
+        d, o = self.d, 0x210000
+        nf, hb, gb, mt, nfld = struct.unpack_from(">IIIII", d, 714)
+        if t >= gb:                     # material noise from the shared field
+            m, v = divmod(t - gb, 8)
+            c = d[mt - o + 8 * m:mt - o + 8 * m + 8]
+            f = d[nfld - o + 64 * ((v - c[7]) & 7):][:64]
+            px = [c[(u >= c[4]) + (u >= c[5]) + (u >= c[6])] for u in f]
+            return bytes(px[i] << 4 | px[i + 1] for i in range(0, 64, 2))
+        if t < nf:
+            TB = struct.unpack_from(">I", d, struct.unpack_from(">I", d, 6)[0] - o + 12)[0]
+            return d[TB - o + 32 * t:TB - o + 32 * t + 32]
+        h = d[hb - o + 16 * (t - nf):hb - o + 16 * (t - nf) + 16]
+        out = []
+        for i, b in enumerate(h):           # even rows p p q q, odd p q p q
+            p, q = b >> 4, b & 15
+            out += [p << 4 | p, q << 4 | q] if (i // 2) % 2 == 0 else [p << 4 | q, p << 4 | q]
+        return bytes(out)
 
 
 def main():
