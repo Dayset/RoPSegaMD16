@@ -12,7 +12,7 @@ every frame the pre-drawn view and the leader controller are on:
              cells) while no message shows
   jump       the leader figure moves <= 1/16 cell a frame (no teleport)
   lift       the figure's lift is the lift of the cell nearest its drawn
-             place once the game has that cell (never a refused one's),
+             place (a refused step stops at 1/8 cell: never a wall's),
              two frames late at most
   plane      every 30th frame: every screen tile matches the atlas
   late       leader images shown late (TA_MISS), reported, not failed
@@ -118,9 +118,7 @@ def main():
             hits["jump"].append((i, pos, prev[0]))
         lt = {(W(TA_LT + 6 * k), W(TA_LT + 6 * k + 2)): W(TA_LT + 6 * k + 4) for k in range(5)}
         lfd = W(E["TD_LFD"] + 2 * ld)
-        near = ((pos[0] + 8) >> 4, (pos[1] + 8) >> 4)  # half a step on, once
-        if near != g:                                   # the game has the cell
-            near = g                                    # (never a wall's)
+        near = ((pos[0] + 8) >> 4, (pos[1] + 8) >> 4)  # half a step on
         bad = near in lt and lt[near] != lfd and prev and prev[2] == area
         lbad = lbad + 1 if bad else 0                   # (2 frames late is fine)
         if lbad == 3:

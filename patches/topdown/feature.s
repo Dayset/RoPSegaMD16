@@ -283,6 +283,7 @@ TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
+TA_CMTP		equ 16		; progress (1/256 cell) the step goes to the game
 TA_TURN		equ 6		; frames a new facing is held before a step
 TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
@@ -3078,18 +3079,11 @@ td_ilift:
 	bsr.w	ta_isldr		; the leader (controller): his cell's
 	bne.s	.nl			; lift at once, read ahead by ta_lifts
 	move.w	d5,d2			; the cell nearest his drawn place
-	addq.w	#8,d2			; (d5/d6), once the game has it (a
-	asr.w	#4,d2			; refused step, into a wall, never
-	move.w	d6,d3			; lifts him onto it)
+	addq.w	#8,d2			; (d5/d6): the lift turns at half a
+	asr.w	#4,d2			; step (a refused one stops at 1/8:
+	move.w	d6,d3			; never a wall's lift)
 	addq.w	#8,d3
 	asr.w	#4,d3
-	cmp.w	(a4),d2
-	bne.s	.gc
-	cmp.w	2(a4),d3
-	beq.s	.gk
-.gc:	move.w	(a4),d2
-	move.w	2(a4),d3
-.gk:
 	bsr.w	ta_ltget
 	bmi.s	.nl
 	move.w	d0,TD_TLIFT
@@ -5829,17 +5823,17 @@ ta_ctl:
 	lsl.w	#8,d2
 	lsl.w	#8,d3
 	tst.w	TA_CMT			; handed to the game, not taken yet:
-	bne.s	.hw			; no further than half way (a step it
-	tst.w	TA_CF			; refuses never shows him in the wall)
+	bne.s	.hw			; no further than 1/8 cell (a step it
+	tst.w	TA_CF			; refuses is a nudge, not a walk in)
 	beq.s	.t
-.hw:	asr.w	#1,d2			; (past it already: stay there)
-	asr.w	#1,d3
+.hw:	asr.w	#3,d2			; (past it already: stay there)
+	asr.w	#3,d3
 	move.w	TA_OX,d0
 	muls.w	d2,d0
 	move.w	TA_OY,d1
 	muls.w	d3,d1
 	add.l	d1,d0
-	cmpi.l	#128*128,d0
+	cmpi.l	#32*32,d0
 	blt.s	.t
 	move.w	TA_OX,d2
 	move.w	TA_OY,d3
@@ -5887,8 +5881,8 @@ ta_ctl:
 	move.w	TA_OY,d2
 	muls.w	2(a0,d0.w),d2
 	add.l	d2,d1
-	cmpi.l	#128,d1
-	blt.s	.x
+	cmpi.l	#TA_CMTP,d1		; (at once: its answer comes before he
+	blt.s	.x			; is far, so a wall stops him short)
 	move.w	d5,TA_CMT
 	move.w	FRAME,d0		; and the game's tick now
 	sub.w	TD_PERIOD,d0
