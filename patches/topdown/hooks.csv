@@ -37,3 +37,4 @@ addr,len,kind,target
 0x01111E,6,jmp,ta_gread
 0x011AE8,6,jsr,ta_dbuf
 0x013840,6,jsr,ta_dbuf2
+0x02103E,8,jmp,mg_find

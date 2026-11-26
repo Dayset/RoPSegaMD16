@@ -57,7 +57,11 @@ TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 TD_TC		equ 2		; combat arena tick period (frames)
 TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
 TD_TS		equ 19		; boat / ship (orig over open sea 17-19)
+	ifd	SIZE8M
+TD_TB		equ 17		; big rooms: no render to wait for in the
+	else			; pre-drawn view (and the grid search is fast)
 TD_TB		equ 22		; big (32x32) rooms (orig room 156: 22)
+	endif
 TD_SLOT0	equ 68		; first sprite slot for blobs (game uses <= 67)
 TD_NSLOT	equ 12		; our sprite slots (2 HUD box + figures)
 TD_NFIG		equ 10		; figure sprites max
@@ -554,6 +558,41 @@ ti_tw0:
 	move.w	d0,TD_TICKFR		; game logic starts near the top of
 ti_tw1:
 	movem.l	(a7)+,d0-d7/a0-a6	; a frame, right after an update
+	rts
+
+;=======================================================================
+; mg_find — the game's grid search ($02103E, "map_grid_clear"): the
+; first cell, row-major, of grid $FFB36C (layer 0) or $FFB76C (layer 1)
+; holding byte (arg) -> (row, col, layer) at (ptr), d0 = -1; 0 if none.
+; The compiled loop took a fifth of a busy room's tick (#308).
+;=======================================================================
+mg_find:
+	move.w	4(a7),d0
+	cmpi.w	#255,d0
+	bhi.s	.no
+	lea	$FFB36C,a0
+	lea	$FFB76C,a1
+	move.w	#1024-1,d1
+.l:	cmp.b	(a0)+,d0
+	beq.s	.f0
+	cmp.b	(a1)+,d0
+	beq.s	.f1
+	dbra	d1,.l
+.no:	moveq	#0,d0
+	rts
+.f1:	moveq	#1,d0
+	bra.s	.f
+.f0:	moveq	#0,d0
+.f:	neg.w	d1			; index 1023 - d1
+	add.w	#1023,d1
+	movea.l	6(a7),a0
+	move.w	d0,4(a0)
+	move.w	d1,d0
+	lsr.w	#5,d0
+	move.w	d0,(a0)
+	andi.w	#31,d1
+	move.w	d1,2(a0)
+	moveq	#-1,d0
 	rts
 
 ;=======================================================================
@@ -5977,7 +6016,10 @@ ta_ctl:
 	move.w	TA_OY,TA_POY
 	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
-	move.w	TD_RPER,d0		; (or per tick, when they run longer)
+	move.w	TD_RPER,d0		; (or per tick, when they run longer,
+	move.w	d0,d1			; with an eighth to spare)
+	lsr.w	#3,d1
+	add.w	d1,d0
 	cmp.w	TD_PERIOD,d0
 	bls.s	.sp
 	divu.w	d0,d6
