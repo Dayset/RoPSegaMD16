@@ -268,13 +268,23 @@ TA_LOST		equ TA_TRN+2	; the game decoded into DECBUF: tables gone
 TA_WHO		equ TA_LOST+2	; the char the pad moves (ta_who)
 TA_WFQ		equ TA_WHO+2	; ticks the window is cleaned every tick
 TA_MSG0		equ TA_WFQ+2	; TD_MSG last tick
+TA_LDB		equ TA_MSG0+2	; ta_look: the cell's depth byte, atlas row
+TA_LROW		equ TA_LDB+2
+TA_BLIFT	equ TA_LROW+2	; the leader's lift (td_chars)
+TA_OVK		equ TA_BLIFT+2	; overlay key: column, row, depth, phase, area
+TA_OVOK		equ TA_OVK+10	; overlay drawn (TA_OVT), at global TA_OVX/Y
+TA_OVX		equ TA_OVOK+2
+TA_OVY		equ TA_OVX+2
+TA_WFF		equ TA_OVY+2	; frames the window is cleaned every 4th
+TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
+OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
 TA_TURN		equ 6		; frames a new facing is held before a step
-TA_N		equ 1214	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
+TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
 TA_HUD		equ $7F0000	; their copy (restored on leaving)
@@ -1339,6 +1349,9 @@ td_chars:
 .isl:	move.w	d5,TD_LEADX
 	move.w	d6,TD_LEADY
 	move.w	#1,TD_LEADOK
+	ifd	SIZE8M
+	move.w	TD_TLIFT,TA_BLIFT
+	endif
 	bra.s	.next
 .gone:
 	move.w	#NOPOS,(a4)
@@ -1348,6 +1361,9 @@ td_chars:
 	addq.w	#1,d7
 	cmpi.w	#56,d7
 	bcs.w	.loop
+	ifd	SIZE8M
+	bsr.w	ta_ovl			; the terrain in front of the leader
+	endif
 	movem.l	(a7)+,d2-d7/a2-a4
 	rts
 
@@ -3177,7 +3193,12 @@ ti_spr_xform:
 	bra.s	.c
 .t:	move.w	(a2),d0
 	move.w	2(a2),d1
-	move.w	d0,d2
+	cmpi.b	#3,7(a2)		; kind 3 (overlay): global x already
+	bne.s	.t3
+	sub.w	TD_IGX,d0
+	move.w	d0,(a2)
+	bra.w	.n
+.t3:	move.w	d0,d2
 	sub.w	d1,d2
 	muls.w	#7,d2
 	asr.l	#3,d2			; global x = 14 (x - y)
@@ -5129,10 +5150,10 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	move.w	d0,d1
 	sub.w	FONTBLK,d1
 	andi.w	#$7FF,d1
-	beq.s	.y
+	beq.w	.y
 	move.w	d0,d1
 	andi.w	#$F800,d1
-	beq.s	.room
+	beq.w	.room
 	ifd	SIZE2M
 	cmpi.w	#$2000,d1		; frame art: palette 1, rec 6's tiles
 	bcs.s	.na			; (any flips)
@@ -5142,7 +5163,7 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	andi.w	#$7FF,d1
 	sub.w	#TI_ARTB&$7FF,d1
 	cmpi.w	#438,d1
-	bcs.s	.y
+	bcs.w	.y
 .na:	move.w	d0,d1
 	andi.w	#$F800,d1
 	endif
@@ -5151,14 +5172,39 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	andi.w	#$7FF,d0
 	sub.w	TD_BASE,d0
 	cmpi.w	#256,d0
-	beq.s	.y
+	beq.w	.y
 	sub.w	#TI_EDGE,d0
 	cmpi.w	#TI_NEDGE,d0
-	bcs.s	.y
+	bcs.w	.y
 	bra.s	.n
-.room:	sub.w	BANKBASE,d0
+.room:
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn: a word on one of our
+	bne.s	.rm			; slot tiles is the game's picture
+	andi.w	#$7FF,d0		; (shows our tiles, not its own)
+	cmpi.w	#436,d0
+	bcs.s	.rb
+	cmpi.w	#874,d0
+	bcs.w	.y
+	cmpi.w	#1834,d0
+	bcs.s	.rb
+	cmpi.w	#1974,d0
+	bcs.w	.y
+.rb:	sub.w	TD_BASE,d0
+	cmpi.w	#64,d0
+	bcs.s	.rm0
+	cmpi.w	#273,d0
+	bcs.w	.y
+	cmpi.w	#401,d0
+	bcs.s	.rm0
 	cmpi.w	#828,d0
-	bcs.s	.y
+	bcs.w	.y
+.rm0:	move.l	(a7),d0
+.rm:
+	endif
+	sub.w	BANKBASE,d0
+	cmpi.w	#828,d0
+	bcs.w	.y
 .n:	moveq	#1,d1
 	bra.s	.o
 .y:	moveq	#0,d1
@@ -5583,8 +5629,14 @@ td_blob:	; TL quadrant (body E, highlight F)
 ; (a portrait with a message does it). Its `pea DECBUF`, and the tables
 ; are built again on the next frame.
 ;=======================================================================
-ta_dbuf:
+ta_dbuf:				; tile_record_load: 36 tiles (1.2 KB)
+	tst.w	TA_LOST			; reach the hash heads only
+	bne.s	ta_dbuf0
 	move.w	#1,TA_LOST
+	bra.s	ta_dbuf0
+ta_dbuf2:				; map_decode: all of them
+	move.w	#2,TA_LOST
+ta_dbuf0:
 	movea.l	(a7)+,a0
 	pea	($FF1EC0).l
 	jmp	(a0)
@@ -5836,6 +5888,234 @@ ta_toward:	; (a0) toward d0 by at most d6; TA_WPH, TA_MOV count it
 .o:	rts
 
 ta_dxy:	dc.w	0,-1, 1,0, 0,1, -1,0
+
+;=======================================================================
+; ta_ovl — td_chars: the overlay (ta_occ) as a list entry, kind 3: a
+; 32x32 sprite of the terrain painted after the leader's cell, sorted
+; just in front of him (depth + 4).
+;=======================================================================
+ta_ovl:
+	tst.w	TA_OVOK
+	beq.s	.o
+	tst.w	TD_LEADOK
+	beq.s	.o
+	cmpi.w	#TD_NFIG,TD_NB
+	bcc.s	.o
+	movem.l	d0-d1/a0,-(a7)
+	move.w	TD_NB,d0
+	lsl.w	#3,d0
+	lea	TD_LIST,a0
+	adda.w	d0,a0
+	move.w	TA_OVX,(a0)+		; global x
+	move.w	TD_LEADX,d0		; depth y: the leader's + 4
+	add.w	TD_LEADY,d0
+	asr.w	#1,d0
+	addq.w	#4,d0
+	move.w	d0,(a0)+
+	move.w	#TA_OVT,(a0)+
+	subq.w	#8,d0			; "lift": top = depth - 8 - lift
+	sub.w	TA_OVY,d0
+	cmpi.w	#255,d0
+	bhi.s	.x
+	lsl.w	#8,d0
+	addq.w	#3,d0
+	move.w	d0,(a0)+
+	addq.w	#1,TD_NB
+.x:	movem.l	(a7)+,d0-d1/a0
+.o:	rts
+
+;=======================================================================
+; ta_occ — main loop: the 4x4 plane tiles over the leader's figure, cut
+; to what is painted after his cell (the game's order: deeper cells
+; later). Per tile: its cell depth smin and the next one up (depth
+; byte), and the pixels at that next depth (the tile's mask): wholly
+; in front if S < smin, those pixels if smin <= S < sup. Redone when
+; the tiles, his cell, the water phase or the area change.
+;=======================================================================
+ta_occ:
+	tst.w	TA_CTL
+	beq.w	.off
+	tst.w	TD_LEADOK
+	beq.w	.off
+	movem.l	d2-d7/a2-a4,-(a7)
+	move.w	TD_LEADX,d0
+	move.w	TD_LEADY,d1
+	move.w	d0,d2			; c0 = (left + 4) / 8
+	sub.w	d1,d2
+	muls.w	#7,d2
+	asr.l	#3,d2
+	addq.w	#4,d2
+	asr.w	#3,d2
+	add.w	d1,d0			; r0 = (top - 2) / 8 (rows from y 6)
+	asr.w	#1,d0
+	sub.w	TA_BLIFT,d0
+	sub.w	#10,d0
+	asr.w	#3,d0
+	move.w	d0,d3
+	move.w	TD_LEADX,d4		; S: his nearest cell's depth
+	addq.w	#8,d4
+	asr.w	#4,d4
+	move.w	TD_LEADY,d0
+	addq.w	#8,d0
+	asr.w	#4,d0
+	add.w	d0,d4
+	lea	TA_OVK,a2
+	cmp.w	(a2),d2
+	bne.s	.new
+	cmp.w	2(a2),d3
+	bne.s	.new
+	cmp.w	4(a2),d4
+	bne.s	.new
+	move.w	TA_PH,d0
+	cmp.w	6(a2),d0
+	bne.s	.new
+	move.w	TA_AR,d0
+	cmp.w	8(a2),d0
+	beq.w	.same
+.new:	move.w	d2,(a2)
+	move.w	d3,2(a2)
+	move.w	d4,4(a2)
+	move.w	TA_PH,6(a2)
+	move.w	TA_AR,8(a2)
+	move.w	d4,d7			; S
+	lea	OVBUF,a3
+	moveq	#0,d6			; anything in front
+	moveq	#0,d3			; i (column)
+.ci:	moveq	#0,d2			; j (row)
+.rj:	move.w	TA_OVK,d4
+	add.w	d3,d4
+	move.w	TA_OVK+2,d5
+	add.w	d2,d5
+	move.w	d2,-(a7)
+	bsr.w	ta_look
+	move.w	(a7)+,d2
+	tst.l	d0
+	bmi.s	.zero
+	move.l	d0,a4			; tile id
+	move.w	TA_LDB,d1
+	move.w	d1,d0
+	lsr.w	#3,d1
+	sub.w	#16,d1
+	add.w	TA_LROW,d1		; smin
+	cmp.w	d1,d7
+	blt.s	.all
+	andi.w	#7,d0
+	beq.s	.zero
+	add.w	d0,d1			; sup
+	cmp.w	d1,d7
+	bge.s	.zero
+	bsr.w	.copy			; the pixels at sup only
+	move.l	a4,d0
+	lsl.l	#3,d0
+	add.l	ATL+6+4*(1+175),d0	; the mask (via slot 6)
+	bsr.w	ta_map6
+	lea	ta_nib(pc),a1
+	moveq	#8-1,d1
+.m:	moveq	#0,d0
+	move.b	(a0)+,d0
+	lsl.w	#2,d0
+	move.l	(a1,d0.w),d0
+	and.l	d0,-32(a3)
+	addq.l	#4,a3
+	dbra	d1,.m
+	lea	-32(a3),a3
+	moveq	#1,d6
+	bra.s	.nx
+.all:	bsr.w	.copy
+	moveq	#1,d6
+	bra.s	.nx
+.zero:	moveq	#8-1,d1
+.z:	clr.l	(a3)+
+	dbra	d1,.z
+.nx:	addq.w	#1,d2
+	cmpi.w	#4,d2
+	bcs.w	.rj
+	addq.w	#1,d3
+	cmpi.w	#4,d3
+	bcs.w	.ci
+	move.w	d6,TA_OVOK
+	beq.s	.done
+	move.w	TA_OVK,d0
+	lsl.w	#3,d0
+	move.w	d0,TA_OVX
+	move.w	TA_OVK+2,d0
+	lsl.w	#3,d0
+	addq.w	#6,d0
+	move.w	d0,TA_OVY
+	lea	OVBUF,a0		; up: 64 bytes at a time, masked
+	move.w	#TA_OVT*32,d2
+	moveq	#8-1,d3
+.u:	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d2,d0
+	bsr.w	td_vwrite
+	lea	VDP_DATA,a1
+	moveq	#16-1,d1
+.uw:	move.l	(a0)+,(a1)
+	dbra	d1,.uw
+	move.w	(a7)+,sr
+	add.w	#64,d2
+	dbra	d3,.u
+.done:
+.same:	movem.l	(a7)+,d2-d7/a2-a4
+	rts
+.off:	clr.w	TA_OVOK
+	move.w	#$8000,TA_OVK
+	rts
+
+.copy:	; tile a4 -> a3 (32 bytes, a3 past it)
+	move.l	a4,d0
+	lsl.l	#5,d0
+	movea.l	TA_A,a1
+	add.l	12(a1),d0
+	move.l	d0,d1
+	swap	d1
+	lsr.w	#3,d1
+	cmp.w	TA_B7,d1
+	beq.s	.c1
+	move.w	d1,TA_B7
+	move.b	d1,$A130FF
+.c1:	andi.l	#$7FFFF,d0
+	addi.l	#$380000,d0
+	movea.l	d0,a0
+	moveq	#8-1,d1
+.cl:	move.l	(a0)+,(a3)+
+	dbra	d1,.cl
+	rts
+
+ta_nib:	; mask byte -> 8 nibbles ($F where the bit is set)
+	dc.l	$00000000,$0000000F,$000000F0,$000000FF,$00000F00,$00000F0F,$00000FF0,$00000FFF
+	dc.l	$0000F000,$0000F00F,$0000F0F0,$0000F0FF,$0000FF00,$0000FF0F,$0000FFF0,$0000FFFF
+	dc.l	$000F0000,$000F000F,$000F00F0,$000F00FF,$000F0F00,$000F0F0F,$000F0FF0,$000F0FFF
+	dc.l	$000FF000,$000FF00F,$000FF0F0,$000FF0FF,$000FFF00,$000FFF0F,$000FFFF0,$000FFFFF
+	dc.l	$00F00000,$00F0000F,$00F000F0,$00F000FF,$00F00F00,$00F00F0F,$00F00FF0,$00F00FFF
+	dc.l	$00F0F000,$00F0F00F,$00F0F0F0,$00F0F0FF,$00F0FF00,$00F0FF0F,$00F0FFF0,$00F0FFFF
+	dc.l	$00FF0000,$00FF000F,$00FF00F0,$00FF00FF,$00FF0F00,$00FF0F0F,$00FF0FF0,$00FF0FFF
+	dc.l	$00FFF000,$00FFF00F,$00FFF0F0,$00FFF0FF,$00FFFF00,$00FFFF0F,$00FFFFF0,$00FFFFFF
+	dc.l	$0F000000,$0F00000F,$0F0000F0,$0F0000FF,$0F000F00,$0F000F0F,$0F000FF0,$0F000FFF
+	dc.l	$0F00F000,$0F00F00F,$0F00F0F0,$0F00F0FF,$0F00FF00,$0F00FF0F,$0F00FFF0,$0F00FFFF
+	dc.l	$0F0F0000,$0F0F000F,$0F0F00F0,$0F0F00FF,$0F0F0F00,$0F0F0F0F,$0F0F0FF0,$0F0F0FFF
+	dc.l	$0F0FF000,$0F0FF00F,$0F0FF0F0,$0F0FF0FF,$0F0FFF00,$0F0FFF0F,$0F0FFFF0,$0F0FFFFF
+	dc.l	$0FF00000,$0FF0000F,$0FF000F0,$0FF000FF,$0FF00F00,$0FF00F0F,$0FF00FF0,$0FF00FFF
+	dc.l	$0FF0F000,$0FF0F00F,$0FF0F0F0,$0FF0F0FF,$0FF0FF00,$0FF0FF0F,$0FF0FFF0,$0FF0FFFF
+	dc.l	$0FFF0000,$0FFF000F,$0FFF00F0,$0FFF00FF,$0FFF0F00,$0FFF0F0F,$0FFF0FF0,$0FFF0FFF
+	dc.l	$0FFFF000,$0FFFF00F,$0FFFF0F0,$0FFFF0FF,$0FFFFF00,$0FFFFF0F,$0FFFFFF0,$0FFFFFFF
+	dc.l	$F0000000,$F000000F,$F00000F0,$F00000FF,$F0000F00,$F0000F0F,$F0000FF0,$F0000FFF
+	dc.l	$F000F000,$F000F00F,$F000F0F0,$F000F0FF,$F000FF00,$F000FF0F,$F000FFF0,$F000FFFF
+	dc.l	$F00F0000,$F00F000F,$F00F00F0,$F00F00FF,$F00F0F00,$F00F0F0F,$F00F0FF0,$F00F0FFF
+	dc.l	$F00FF000,$F00FF00F,$F00FF0F0,$F00FF0FF,$F00FFF00,$F00FFF0F,$F00FFFF0,$F00FFFFF
+	dc.l	$F0F00000,$F0F0000F,$F0F000F0,$F0F000FF,$F0F00F00,$F0F00F0F,$F0F00FF0,$F0F00FFF
+	dc.l	$F0F0F000,$F0F0F00F,$F0F0F0F0,$F0F0F0FF,$F0F0FF00,$F0F0FF0F,$F0F0FFF0,$F0F0FFFF
+	dc.l	$F0FF0000,$F0FF000F,$F0FF00F0,$F0FF00FF,$F0FF0F00,$F0FF0F0F,$F0FF0FF0,$F0FF0FFF
+	dc.l	$F0FFF000,$F0FFF00F,$F0FFF0F0,$F0FFF0FF,$F0FFFF00,$F0FFFF0F,$F0FFFFF0,$F0FFFFFF
+	dc.l	$FF000000,$FF00000F,$FF0000F0,$FF0000FF,$FF000F00,$FF000F0F,$FF000FF0,$FF000FFF
+	dc.l	$FF00F000,$FF00F00F,$FF00F0F0,$FF00F0FF,$FF00FF00,$FF00FF0F,$FF00FFF0,$FF00FFFF
+	dc.l	$FF0F0000,$FF0F000F,$FF0F00F0,$FF0F00FF,$FF0F0F00,$FF0F0F0F,$FF0F0FF0,$FF0F0FFF
+	dc.l	$FF0FF000,$FF0FF00F,$FF0FF0F0,$FF0FF0FF,$FF0FFF00,$FF0FFF0F,$FF0FFFF0,$FF0FFFFF
+	dc.l	$FFF00000,$FFF0000F,$FFF000F0,$FFF000FF,$FFF00F00,$FFF00F0F,$FFF00FF0,$FFF00FFF
+	dc.l	$FFF0F000,$FFF0F00F,$FFF0F0F0,$FFF0F0FF,$FFF0FF00,$FFF0FF0F,$FFF0FFF0,$FFF0FFFF
+	dc.l	$FFFF0000,$FFFF000F,$FFFF00F0,$FFFF00FF,$FFFF0F00,$FFFF0F0F,$FFFF0FF0,$FFFF0FFF
+	dc.l	$FFFFF000,$FFFFF00F,$FFFFF0F0,$FFFFF0FF,$FFFFFF00,$FFFFFF0F,$FFFFFFF0,$FFFFFFFF
 
 ta_who:	; -> d0 = the char the pad moves: the party leader, or in a room
 	; (his cell off this map: the party splits) the first party member
@@ -6294,7 +6574,7 @@ td_hud_map:
 	ifd	SIZE8M
 	even
 ta_want:	; -> d0 = 1 + the area to show (0 none), a0 = its header
-	cmpi.l	#$4F574135,ATL		; 'OWA5'
+	cmpi.l	#$4F574136,ATL		; 'OWA6'
 	bne.s	.n
 	moveq	#0,d0			; area 0: the overworld,
 	move.w	LOC,d1			; 1 + n: location n
@@ -6327,7 +6607,9 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	move.w	d0,TA_AR
 	move.w	#1,TD_VALID		; (a new map cleared it)
 	bsr.w	ta_reset
-	move.w	#4,TA_WFQ		; (the game's old picture in the window:
+	bsr.w	ta_pblank		; (no old area at the new scroll)
+	move.w	#120,TA_WFF		; (the game draws its room into the
+	move.w	#4,TA_WFQ		; window for a while; its old picture:
 	bsr.s	.snap			; off it now, and the next 4 ticks)
 	subq.w	#1,TD_BUSY
 	bsr.w	td_winfix
@@ -6382,6 +6664,7 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	tst.w	d0
 	bne.s	.mq
 	move.w	#3,TA_WFQ
+	move.w	#60,TA_WFF
 .mq:	tst.w	TA_WFQ
 	beq.s	.nq
 	subq.w	#1,TA_WFQ
@@ -6616,6 +6899,51 @@ ta_fblk:	; the font blank tile (every blank window cell) blank again, if
 	movem.l	(a7)+,d0-d1
 	rts
 
+ta_pblank:	; the plane all blank at once (256 cells a go)
+	movem.l	d2-d4,-(a7)
+	moveq	#0,d4			; once (all blank, 256 cells a go):
+	moveq	#8-1,d2			; no old area at the new scroll
+.pb:	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d4,d0
+	bsr.w	td_vwrite
+	move.w	FONTBLK,d1
+	swap	d1
+	move.w	FONTBLK,d1
+	moveq	#128-1,d3
+.pw:	move.l	d1,VDP_DATA
+	dbra	d3,.pw
+	move.w	(a7)+,sr
+	add.w	#512,d4
+	dbra	d2,.pb
+	movem.l	(a7)+,d2-d4
+	rts
+
+ta_rehash:	; TA_HEAD / TA_NX again from TA_ID
+	movem.l	d2-d4/a2,-(a7)
+	lea	TA_HEAD,a0
+	move.w	#512/2-1,d0
+.h:	clr.l	(a0)+
+	dbra	d0,.h
+	lea	TA_HEAD,a0
+	lea	TA_ID,a1
+	lea	TA_NX,a2
+	moveq	#0,d3			; slot
+.s:	move.l	(a1)+,d4
+	bmi.s	.n
+	bsr.w	ta_hash			; d2 = bucket * 2
+	move.w	d3,d0
+	add.w	d0,d0
+	move.w	(a0,d2.w),(a2,d0.w)
+	move.w	d3,d0
+	addq.w	#1,d0
+	move.w	d0,(a0,d2.w)
+.n:	addq.w	#1,d3
+	cmpi.w	#TA_N,d3
+	bcs.s	.s
+	movem.l	(a7)+,d2-d4/a2
+	rts
+
 ta_reset:
 	lea	TA_HEAD,a0
 	move.w	#512/2-1,d0
@@ -6641,23 +6969,6 @@ ta_reset:
 .fb:	move.l	#0,VDP_DATA		; (not clr: it reads the port first)
 	dbra	d1,.fb
 	move.w	(a7)+,sr
-	movem.l	d2-d4,-(a7)		; the old picture off the plane at
-	moveq	#0,d4			; once (all blank, 256 cells a go):
-	moveq	#8-1,d2			; no old area at the new scroll
-.pb:	move.w	sr,-(a7)
-	move.w	#$2700,sr
-	move.w	d4,d0
-	bsr.w	td_vwrite
-	move.w	FONTBLK,d1
-	swap	d1
-	move.w	FONTBLK,d1
-	moveq	#128-1,d3
-.pw:	move.l	d1,VDP_DATA
-	dbra	d3,.pw
-	move.w	(a7)+,sr
-	add.w	#512,d4
-	dbra	d2,.pb
-	movem.l	(a7)+,d2-d4
 	move.w	#-1,TA_PR
 	bsr.w	ta_phnow
 	move.w	d0,TA_PH
@@ -6706,9 +7017,14 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	cmpi.w	#$5A71,TA_ON
 	bne.w	.x
 	movem.l	d2-d7/a2-a6,-(a7)
-	tst.w	TA_LOST			; the tables overwritten: from scratch
-	beq.s	.nlo
+	tst.w	TA_LOST			; the game decoded into DECBUF: a short
+	beq.s	.nlo			; decode (a portrait) only hit the hash
+	cmpi.w	#1,TA_LOST		; heads (TA_LOST 1): them again from the
+	bne.s	.lo			; slots; else all from scratch
 	clr.w	TA_LOST
+	bsr.w	ta_rehash
+	bra.s	.g
+.lo:	clr.w	TA_LOST
 	bsr.w	ta_reset
 	move.w	#$8000,TA_L
 	bra.s	.g
@@ -6778,14 +7094,30 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bsr.w	ta_frow
 	subq.w	#1,TA_T
 	bra.w	.lp
-.full:	bsr.w	ta_norc
+.full:
+	ifd	HELDPC
+	move.w	FRAME,($FF7E30).l
+	endif
+	bsr.w	ta_norc
 	move.w	d6,TA_L
 	move.w	d7,TA_T
 	move.w	d7,d5
-	moveq	#30-1,d3
+	addq.w	#1,TD_BUSY		; (no picture updates meanwhile: all
+	moveq	#30-1,d3		; of it at once is quicker)
 .fr:	bsr.w	ta_frow
 	addq.w	#1,d5
-	dbra	d3,.fr
+	cmpi.w	#10,d3			; the game's picture in the window
+	beq.s	.fw			; (drawn meanwhile): off, twice
+	cmpi.w	#20,d3
+	bne.s	.fn
+.fw:	move.w	#1,TD_UNFR
+	bsr.w	td_iso_winfix
+	clr.w	TD_UNFR
+.fn:	dbra	d3,.fr
+	subq.w	#1,TD_BUSY
+	ifd	HELDPC
+	move.w	FRAME,($FF7E32).l
+	endif
 .done:	bsr.w	ta_want			; (not while the location changes)
 	cmp.w	TA_AR,d0
 	bne.s	.end
@@ -6811,7 +7143,18 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	beq.s	.nl
 	bsr.w	ta_lifts
 .nl:	bsr.w	ta_hud			; no HUD words, every frame
-	movem.l	(a7)+,d2-d7/a2-a6
+	bsr.w	ta_occ			; terrain in front of the leader
+	tst.w	TA_WFF			; the window, often after a change
+	beq.s	.nw
+	subq.w	#1,TA_WFF
+	move.w	TA_WFF,d0
+	andi.w	#3,d0
+	bne.s	.nw
+	bsr.w	td_winfix
+	move.w	#1,TD_UNFR
+	bsr.w	td_iso_winfix
+	clr.w	TD_UNFR
+.nw:	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
 
 ta_phnow:	; -> d0 = the game's terrain phase (0/1)
@@ -6951,18 +7294,19 @@ ta_vt:	; d0 = slot -> d0 = its VRAM tile: bank 64-272 (0-63: the game
 	rts
 
 ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
-	; (uses d1-d2/a0-a1)
+	; (uses d1-d2/a0-a1; TA_LDB = depth byte, TA_LROW = atlas row)
 	movea.l	TA_A,a1
 	move.w	d5,d1
 	add.w	8(a1),d1		; atlas row
-	bmi.s	.bl
+	move.w	d1,TA_LROW
+	bmi.w	.bl
 	cmp.w	(a1),d1
-	bcc.s	.bl
+	bcc.w	.bl
 	move.w	d4,d2
 	add.w	10(a1),d2		; atlas column
-	bmi.s	.bl
+	bmi.w	.bl
 	cmp.w	2(a1),d2
-	bcc.s	.bl
+	bcc.w	.bl
 	move.w	d1,d0			; block (row / 16) * BC + column / 16
 	lsr.w	#4,d0
 	mulu.w	6(a1),d0
@@ -6973,9 +7317,9 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	lsl.w	#2,d0
 	lea	20(a1),a0
 	move.l	(a0,d0.w),d0
-	beq.s	.bl
+	beq.w	.bl
 	move.w	d1,-(a7)
-	bsr.s	ta_map6
+	bsr.w	ta_map6
 	move.w	(a7)+,d1		; its pair: u8 at (r & 15) 16 + c & 15
 	andi.w	#15,d1
 	lsl.w	#4,d1
@@ -6983,6 +7327,11 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	or.w	d2,d1
 	moveq	#0,d0
 	move.b	(a0,d1.w),d0		; pair k
+	move.w	d0,-(a7)
+	lea	256(a0),a0
+	move.b	(a0,d1.w),d0		; its depth byte
+	move.w	d0,TA_LDB
+	move.w	(a7)+,d0
 	lea	256(a0),a0
 	move.w	(a0)+,d2		; m: pairs 0..m-1 differ by phase
 	move.w	d0,d1			; 3 k

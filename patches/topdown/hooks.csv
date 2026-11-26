@@ -36,4 +36,4 @@ addr,len,kind,target
 0x029326,6,jsr,td_hud_gauge
 0x01111E,6,jmp,ta_gread
 0x011AE8,6,jsr,ta_dbuf
-0x013840,6,jsr,ta_dbuf
+0x013840,6,jsr,ta_dbuf2
