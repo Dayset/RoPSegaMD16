@@ -307,7 +307,10 @@ TA_RC		equ TA_NX+2*TA_N	; cells of the loaded window using the slot
 ATL		equ $210000	; tools/ow_atlas.py
 	endif
 TD_END2		equ TD_VDIF+8
-TD_END		equ TD_END2
+TD_ARN		equ TD_END2	; combat arena shown by the game itself
+TD_RLAST	equ TD_ARN+2	; frame td_tick last handed back to the game
+TD_RPER		equ TD_RLAST+2	; frames its ticks take (peak, slow decay)
+TD_END		equ TD_RPER+2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
 TI_PHASH	equ $FFFFD2EA	; pool hashes (words) + ages (bytes): in the
@@ -349,8 +352,10 @@ td_tick:
 	cmpi.w	#$7D7D,TD_MAGIC
 	bne.w	.on
 	tst.w	TD_REQ			; A+B+C: original -> top-down ->
-	beq.s	.noreq			; smooth iso -> original
+	beq.w	.noreq			; smooth iso -> original
 	clr.w	TD_REQ
+	tst.w	TD_ARN			; (not in the arena)
+	bne.w	.noreq
 	ifd	SIZE8M
 	cmpi.w	#$5A71,TA_ON		; leaving the pre-drawn view: its plane
 	bne.s	.na			; words off (they would show the next
@@ -380,7 +385,34 @@ td_tick:
 	clr.w	TD_ISO
 	clr.w	TD_VALID		; reinstall from scratch
 	clr.w	TD_TILES
-.noreq:	tst.w	TD_OFF			; iso in effect = chosen, and not the
+.noreq:	cmpi.l	#$FFB0BC,GRIDPTR	; combat arena: the game's own
+	bne.s	.narn			; (classic) arena and menus, any view
+	tst.w	TD_OFF
+	bne.s	.arn1
+	addq.w	#1,TD_BUSY
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.a1
+	bsr.w	ta_pblank
+	bsr.w	ta_out
+.a1:
+	endif
+	tst.w	TD_ISO
+	beq.s	.a2
+	bsr.w	td_iso_off
+.a2:	bsr.w	td_restore
+	move.w	#1,TD_OFF
+	move.w	#1,TD_ARN
+	subq.w	#1,TD_BUSY
+	bra.s	.arn1
+.narn:	tst.w	TD_ARN			; arena over: the chosen view back
+	beq.s	.arn1			; from scratch
+	clr.w	TD_ARN
+	clr.w	TD_OFF
+	clr.w	TD_ISO
+	clr.w	TD_VALID
+	clr.w	TD_TILES
+.arn1:	tst.w	TD_OFF			; iso in effect = chosen, and not the
 	bne.s	.noiso			; combat arena (grid $FFB0BC, drawn
 	moveq	#0,d0			; zoomed by the game: the top-down
 	tst.w	TD_ISOU			; picture stands in there)
@@ -474,7 +506,49 @@ ti_tw0:
 	move.w	d0,d1
 	sub.w	TD_TICKFR,d1		; frames since the last tick ended
 	cmp.w	TD_PERIOD,d1
-	bcs.s	.wait			; < period: keep waiting
+	bcc.s	.tk
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; pre-drawn view: a step handed over
+	bne.w	.wait			; is taken once half the period is
+	tst.w	TA_CMT			; over (a tick the game's own work made
+	beq.w	.wait			; late left the walk standing at the
+	move.w	TD_PERIOD,d2		; cell's end, #308)
+	lsr.w	#1,d2
+	cmp.w	d2,d1
+	bcs.w	.wait
+	else
+	bra.w	.wait
+	endif
+.tk:	move.w	d0,d1			; how long the game's ticks really take
+	sub.w	TD_RLAST,d1		; (its own work in a busy room runs
+	move.w	d0,TD_RLAST		; past the period: the walk is paced
+	move.w	TD_PERIOD,d2		; to that, not left waiting, #308):
+	move.w	d2,d3			; peak, decaying by a quarter of the
+	add.w	d3,d3			; difference; ticks over 2 periods
+	cmp.w	d3,d1			; (loads, menus) not counted, at most
+	bhi.s	.tk1			; 1.5 periods
+	lsr.w	#1,d3
+	add.w	d2,d3
+	cmp.w	d3,d1
+	bls.s	.tkc
+	move.w	d3,d1
+.tkc:	move.w	TD_RPER,d2
+	cmp.w	d2,d1
+	bcs.s	.tkd
+	sub.w	d2,d1
+	addq.w	#1,d1
+	lsr.w	#1,d1
+	add.w	d2,d1
+	bra.s	.tk0
+.tkd:
+	sub.w	d1,d2
+	addq.w	#3,d2
+	lsr.w	#2,d2
+	neg.w	d2
+	add.w	TD_RPER,d2
+	move.w	d2,d1
+.tk0:	move.w	d1,TD_RPER
+.tk1:
 	move.w	d0,TD_TICKFR		; game logic starts near the top of
 ti_tw1:
 	movem.l	(a7)+,d0-d7/a0-a6	; a frame, right after an update
@@ -863,6 +937,7 @@ td_sync:
 	dbra	d1,.clr
 	move.w	#1,TD_BUSY		; we are inside td_sync
 	move.w	#$7D7D,TD_MAGIC
+	move.w	#1,TD_ISOU		; the full-screen pre-drawn view from the start
 	move.w	FRAME,TD_TICKFR
 	move.w	#TD_T2,TD_PERIOD
 	bsr.w	td_chr_reset
@@ -5891,8 +5966,14 @@ ta_ctl:
 	move.w	TA_OY,TA_POY
 	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
-	divu.w	TD_PERIOD,d6
+	move.w	TD_RPER,d0		; (or per tick, when they run longer)
+	cmp.w	TD_PERIOD,d0
+	bls.s	.sp
+	divu.w	d0,d6
+	bra.s	.sp1
+.sp:	divu.w	TD_PERIOD,d6
 	addq.w	#1,d6
+.sp1:
 	clr.w	TA_MOV
 	tst.w	d2			; moving along x: y back to 0 first
 	beq.s	.ny
@@ -5971,7 +6052,7 @@ ta_ctl:
 	sub.w	TA_LMF,d0
 	cmpi.w	#4,d0
 	bls.s	.cp
-	move.w	#128,TA_CAP
+	move.w	#192,TA_CAP
 .cp:	move.w	d4,TA_CDIR
 	move.w	d5,TA_CMT
 	move.w	FRAME,d0		; and the game's tick now

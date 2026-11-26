@@ -10,7 +10,7 @@
 400 .
 10 R
 150 U
-10 ABC
+10 .   # (the pre-drawn view is the default now; A+B+C was the switch)
 150 U
 100 R
 30 .
