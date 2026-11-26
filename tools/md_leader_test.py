@@ -44,7 +44,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas4-*.bin")))
+        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas5-*.bin")))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
@@ -59,13 +59,15 @@ class Atlas:
             return None
         rec = p - o
         i = d[rec + (r % 16) * 16 + c % 16]
-        t = int.from_bytes(d[rec + 256 + 6 * i + 3 * ph:rec + 259 + 6 * i + 3 * ph], "big")
+        m = struct.unpack_from(">H", d, rec + 256)[0]
+        k = i if (ph and i < m) else m + i
+        t = int.from_bytes(d[rec + 258 + 3 * k:rec + 261 + 3 * k], "big")
         return None if t == BL else d[TB - o + 32 * t:TB - o + 32 * t + 32]
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("rom", nargs="?", default=str(REPO / "build" / "rop-topdown-10m.rom"))
+    ap.add_argument("rom", nargs="?", default=str(REPO / "build" / "rop-topdown-8m.rom"))
     ap.add_argument("--route", default=str(REPO / "tools" / "playtest_route_leader.txt"))
     ap.add_argument("--from", dest="lo", type=int, default=3700)
     ap.add_argument("--to", dest="hi", type=int, default=0)

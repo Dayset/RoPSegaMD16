@@ -275,7 +275,7 @@ TA_TURN		equ 6		; frames a new facing is held before a step
 TA_N		equ 1214	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
-TA_HUD		equ $9F0000	; their copy (restored on leaving)
+TA_HUD		equ $7F0000	; their copy (restored on leaving)
 TA_HEAD		equ DECBUF	; 512 words: hash bucket -> slot + 1
 TA_SH		equ DECBUF+7552	; 2048 words: plane cell -> slot + 1, $FFFF blank
 TA_ID		equ TA_SH+4096	; TA_N longs: slot -> tile id, -1 free
@@ -6292,7 +6292,7 @@ td_hud_map:
 	ifd	SIZE8M
 	even
 ta_want:	; -> d0 = 1 + the area to show (0 none), a0 = its header
-	cmpi.l	#$4F574134,ATL		; 'OWA4'
+	cmpi.l	#$4F574135,ATL		; 'OWA5'
 	bne.s	.n
 	moveq	#0,d0			; area 0: the overworld,
 	move.w	LOC,d1			; 1 + n: location n
@@ -6938,19 +6938,27 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	andi.w	#15,d2
 	or.w	d2,d1
 	moveq	#0,d0
-	move.b	(a0,d1.w),d0
-	add.w	d0,d0			; pair: 6 bytes, two u24 ids
-	move.w	d0,d1
+	move.b	(a0,d1.w),d0		; pair k
+	lea	256(a0),a0
+	move.w	(a0)+,d2		; m: pairs 0..m-1 differ by phase
+	move.w	d0,d1			; 3 k
 	add.w	d0,d0
 	add.w	d1,d0
-	lea	256(a0),a0
+	cmp.w	d2,d1
+	bcc.s	.p0			; k >= m: the same in both phases
 	tst.w	TA_PH
-	bne.s	.p1
-	move.l	(a0,d0.w),d0		; phase 0: the first 3 bytes
-	lsr.l	#8,d0
-	bra.s	.cm
-.p1:	move.l	2(a0,d0.w),d0		; phase 1: the last 3
-	andi.l	#$FFFFFF,d0
+	bne.s	.rd			; phase 1: the k-th u24 of m
+.p0:	add.w	d2,d0			; phase 0: past the m phase-1 ids
+	add.w	d2,d0
+	add.w	d2,d0
+.rd:	adda.w	d0,a0			; (u24 at any address: by bytes)
+	moveq	#0,d0
+	move.b	(a0)+,d0
+	swap	d0
+	move.b	(a0)+,d1
+	lsl.w	#8,d1
+	move.b	(a0),d1
+	move.w	d1,d0
 .cm:	cmp.l	16(a1),d0
 	bne.s	.o
 .bl:	moveq	#-1,d0

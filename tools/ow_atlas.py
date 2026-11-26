@@ -6,16 +6,21 @@ terrain phases, tools/e358_atlas.py), cuts them into 8x8 tiles on the
 iso view's global 8-px grid and writes one payload for $210000 (bank 4,
 past the save RAM window):
 
-  $210000  'OWA4', u16 areas (1 + 175)
+  $210000  'OWA5', u16 areas (1 + 175)
   $210006  u32 per area: its header (bank 5), 0 = none. Area 0 is the
            overworld, area 1 + n is location n (chunk 77 + n).
   header   u16 tile rows R, cols C, block rows BR, block cols BC,
            s16 dy, dx (canvas tile = plane row + dy, global column +
            dx), u32 tile base, u32 blank tile id, then u32 per block
            (BR x BC, row-major): its record, 0 = all blank
-  record   16x16 u8 pair index (row-major), then per pair two u24 tile
-           ids (phase 0, phase 1); never crosses a 512 KB bank
-  tiles    32 bytes per id at the tile base + 32 * id (one store)
+  record   16x16 u8 pair index (row-major), u16 m, then m u24 phase-1
+           ids, then a u24 phase-0 id per pair. Pairs 0..m-1 differ
+           between the phases; pair k >= m shows its phase-0 tile in
+           both. Even address, never crosses a 512 KB bank; identical
+           records are stored once.
+  tiles    32 bytes per id at the tile base + 32 * id (one store).
+           Near twins (<= 2 pixels apart) are one tile: the one used
+           most stands for the rest.
   HUD      records 16-17 (pad picture, gauges) at the end of the ROM
 
 Records and tiles are read at run time through the Sega mapper (slots
@@ -35,7 +40,7 @@ OFFSET = 0x210000            # past the save RAM window
 BS = 16                     # block edge, tiles
 BANK = 0x80000
 NLOC = 175                  # locations 0-174: chunks 77-251
-SIZE = 0xA00000             # 10 MB ROM (Genesis Plus GX: 10 MB max)
+SIZE = 0x800000             # fits an 8 MB ROM (the 10 MB build too)
 HUD = SIZE - 0x10000        # records 16-17: VRAM 1834-2037, lent to the
                             # tile slots and restored from here
 # measured on the live iso picture (overworld, origin (-2992, 88)):
@@ -75,12 +80,54 @@ def pairs_blocks(g0, g1, blank):
                 blocks.append(None)
                 continue
             key = a.astype(np.int64) << 20 | b
-            pairs, idx = np.unique(key, return_inverse=True)
+            pairs = np.unique(key)
+            same = (pairs >> 20) == (pairs & 0xFFFFF)
+            pairs = np.concatenate([pairs[~same], pairs[same]])
+            m = int((~same).sum())
             assert len(pairs) <= 256
-            blocks.append(idx.astype(np.uint8).tobytes() + b"".join(
-                struct.pack(">I", int(p >> 20))[1:]
-                + struct.pack(">I", int(p & 0xFFFFF))[1:] for p in pairs))
+            at = {int(k): i for i, k in enumerate(pairs)}
+            idx = np.array([at[int(k)] for k in key])
+            u24 = lambda v: struct.pack(">I", int(v))[1:]
+            blocks.append(idx.astype(np.uint8).tobytes()
+                          + struct.pack(">H", m)
+                          + b"".join(u24(p & 0xFFFFF) for p in pairs[:m])
+                          + b"".join(u24(p >> 20) for p in pairs))
     return R, C, BR, BC, blocks
+
+
+def twins(allu, uses, blank, maxd=2):
+    """-> id map: each tile to the most used tile <= maxd pixels from it
+    (any two such tiles agree on one of 3 pixel groups: bucket on each)"""
+    n = len(allu)
+    pix = np.stack([allu >> 4, allu & 15], axis=2).reshape(n, 64)
+    cand = [[] for _ in range(n)]
+    for g in range(3):
+        cols = pix[:, g::3]
+        key = np.unique(cols, axis=0, return_inverse=True)[1].ravel()
+        order = np.argsort(key, kind="stable")
+        ks = key[order]
+        cut = np.flatnonzero(np.diff(ks)) + 1
+        for grp in np.split(order, cut):
+            if len(grp) < 2 or len(grp) > 4000:
+                continue
+            p = pix[grp]
+            for i in range(len(grp) - 1):
+                d = (p[i + 1:] != p[i]).sum(axis=1)
+                for j in np.flatnonzero(d <= maxd):
+                    a, b = int(grp[i]), int(grp[i + 1 + j])
+                    cand[a].append(b)
+                    cand[b].append(a)
+    to = np.arange(n)
+    done = np.zeros(n, bool)
+    for t in np.argsort(-uses, kind="stable"):
+        if done[t]:
+            continue
+        done[t] = True
+        for o in cand[t]:
+            if not done[o] and o != blank:
+                done[o] = True
+                to[o] = t
+    return to
 
 
 def store(tile_sets):
@@ -96,7 +143,17 @@ def store(tile_sets):
         g1 = inv[off:off + len(u1)][t1]
         off += len(u1)
         maps.append((g0, g1))
-    return allu, maps, int(np.where(~allu.any(axis=1))[0][0])
+    blank = int(np.where(~allu.any(axis=1))[0][0])
+    uses = np.zeros(len(allu), np.int64)
+    for g0, g1 in maps:
+        np.add.at(uses, g0.ravel(), 1)
+        np.add.at(uses, g1.ravel(), 1)
+    to = twins(allu, uses, blank)
+    keep = np.unique(to)
+    new = np.zeros(len(allu), np.int64)
+    new[keep] = np.arange(len(keep))
+    to = new[to]
+    return allu[keep], [(to[g0], to[g1]) for g0, g1 in maps], int(to[blank])
 
 
 def areas(rom):
@@ -116,7 +173,7 @@ def areas(rom):
 
 
 def layout(ow, rooms):
-    out = bytearray(b"OWA4" + struct.pack(">H", 1 + NLOC)
+    out = bytearray(b"OWA5" + struct.pack(">H", 1 + NLOC)
                     + bytes(4 * (1 + NLOC)))
     groups = [([ow] + list(rooms.values()), [0] + [1 + n for n in rooms])]
     pending = []                # (header offset, area blocks, store index)
@@ -133,15 +190,21 @@ def layout(ow, rooms):
             out += bytes(4 * BR * BC)
             pending.append((hdr, blocks, gi))
     assert len(out) <= BANK - (OFFSET % BANK), "headers past the first bank"
+    seen = {}
     for hdr, blocks, gi in pending:
         for i, rec in enumerate(blocks):
             if rec is None:
                 continue
+            if rec in seen:
+                struct.pack_into(">I", out, hdr + 20 + 4 * i, seen[rec])
+                continue
+            out += bytes(len(out) & 1)
             pos = OFFSET + len(out)
             if pos // BANK != (pos + len(rec) - 1) // BANK:
                 out += bytes(BANK - pos % BANK)
                 pos = OFFSET + len(out)
             struct.pack_into(">I", out, hdr + 20 + 4 * i, pos)
+            seen[rec] = pos
             out += rec
     bases = []
     for allu in stores:
@@ -162,10 +225,17 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas4-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas5-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
-    data = layout(*areas(rom))
+    acache = cache.with_name("ow-areas-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
+    import pickle
+    if acache.is_file():
+        ar = pickle.loads(acache.read_bytes())
+    else:
+        ar = areas(rom)
+        acache.write_bytes(pickle.dumps(ar))
+    data = layout(*ar)
     assert OFFSET + len(data) <= HUD, "%X" % (OFFSET + len(data))
     data += bytes(HUD - OFFSET - len(data)) + hud_copy(rom)
     cache.parent.mkdir(exist_ok=True)
