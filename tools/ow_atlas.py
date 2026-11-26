@@ -357,40 +357,100 @@ def areas(rom):
     return ow, rooms
 
 
-NOISE = {1, 2}              # deep water's colours: its plain tiles are
-NVAR = 8                    # drawn as 8 noise variants instead (#308)
+NVAR = 8                    # noise variants per material and phase
+NMIN = 24                   # uses before a tile counts as a texture
 
 
-def noise(r):
-    """deep water drawn as noise: tiles of only colours NOISE (both used)
-    become one of NVAR random tiles per phase, picked by a hash of the
-    global tile position (an experiment: how the look compares)"""
-    u0, t0, u1, t1, (kx, ky) = r[:5]
-    rng = np.random.default_rng(308)
-    out = []
-    for u, t, ph in ((u0, t0, 0), (u1, t1, 1)):
-        px = np.stack([u >> 4, u & 15], axis=2).reshape(len(u), 64)
-        lo, hi = sorted(NOISE)
-        plain = np.isin(px, list(NOISE)).all(axis=1) & (px == lo).any(axis=1) \
-            & (px == hi).any(axis=1)
-        if not plain.any():
-            out += [u, t]
+def textures(sets):
+    """-> {tile bytes: material key}: tiles that are a material's dither
+    (sand, grass, water, carpet...): used often, 2-4 colours, none 0, the
+    minority colours only in specks (runs <= 2 across and down: brick
+    and plank lines stay), one colour at least 45 %. Key: the colours
+    and the dominant colour's share in eighths."""
+    cnt = collections.Counter()
+    for u0, t0, u1, t1 in sets:
+        for u, t in ((u0, t0), (u1, t1)):
+            n = np.bincount(t.ravel(), minlength=len(u))
+            for k in np.flatnonzero(n):
+                cnt[u[k].tobytes()] += int(n[k])
+    out = {}
+    for b, n in cnt.items():
+        if n < NMIN:
             continue
-        share = (px[plain] == hi).mean()
-        var = np.where(rng.random((NVAR, 64)) < share, hi, lo).astype(np.uint8)
-        var = (var[:, 0::2] << 4 | var[:, 1::2]).astype(u.dtype)
-        R, C = t.shape
-        gr = np.arange(R)[:, None] - ky
-        gc = np.arange(C)[None, :] - kx
-        h = (gr * 73856093 ^ gc * 19349663 ^ ph * 83492791) & 0x7FFFFFFF
-        v = len(u) + (h * 2654435761 >> 13) % NVAR
-        out += [np.concatenate([u, var]), np.where(plain[t], v, t)]
-    return (out[0], out[1], out[2], out[3]) + tuple(r[4:])
+        a = np.frombuffer(b, np.uint8)
+        px = np.stack([a >> 4, a & 15], axis=1).reshape(8, 8)
+        cols, num = np.unique(px, return_counts=True)
+        if not 2 <= len(cols) <= 4 or cols[0] == 0:
+            continue
+        dom = cols[num.argmax()]
+        if num.max() < 29:
+            continue
+        ok = True
+        for c in cols:
+            if c == dom:
+                continue
+            m = px == c
+            if (m[:, :-2] & m[:, 1:-1] & m[:, 2:]).any() or \
+                    (m[:-2] & m[1:-1] & m[2:]).any():
+                ok = False
+                break
+        if ok:
+            share = tuple(int(round(8 * k / 64)) for k in num)
+            out[b] = (tuple(int(c) for c in cols), share)
+    return out
+
+
+def variants(key, seed):
+    """NVAR noise tiles of a material: its colours at its shares"""
+    cols, share = key
+    p = np.array(share, float) / sum(share)
+    rng = np.random.default_rng(hash((key, seed)) & 0xFFFFFFFF)
+    v = rng.choice(np.array(cols, np.uint8), size=(NVAR, 64), p=p)
+    return (v[:, 0::2] << 4 | v[:, 1::2]).astype(np.uint8)
+
+
+def noise(r, tex, bank):
+    """textures drawn as noise (#308): a texture tile becomes one of its
+    material's NVAR variants, picked by a hash of the tile's place in
+    its 16x16 block; the same variant in both phases where the tile does not
+    animate (water's phases get their own)"""
+    u0, t0, u1, t1, (kx, ky) = r[:5]
+    R, C = t0.shape
+    gr = np.arange(R)[:, None] % BS      # by the place in its block:
+    gc = np.arange(C)[None, :] % BS      # alike blocks stay one record
+    h = ((gr * 73856093) ^ (gc * 19349663)) & 0x7FFFFFFF
+    h = (h * 2654435761 >> 13) % NVAR
+    k0 = [tex.get(x.tobytes()) for x in u0]
+    k1 = [tex.get(x.tobytes()) for x in u1]
+    add0, add1 = {}, {}
+    n0, n1 = t0.copy(), t1.copy()
+    nu0, nu1 = [u0], [u1]
+
+    def vid(add, nu, base, key, seed):
+        if (key, seed) not in add:
+            if (key, seed) not in bank:
+                bank[key, seed] = variants(key, seed)
+            add[key, seed] = base + sum(len(x) for x in nu[1:])
+            nu.append(bank[key, seed])
+        return add[key, seed]
+    for y in range(R):
+        for x in range(C):
+            a, b = t0[y, x], t1[y, x]
+            ka, kb = k0[a], k1[b]
+            if ka is None or kb is None:
+                continue
+            same = u0[a].tobytes() == u1[b].tobytes()
+            n0[y, x] = vid(add0, nu0, len(u0), ka, 0) + h[y, x]
+            n1[y, x] = vid(add1, nu1, len(u1), kb, 0 if same else 1) + h[y, x]
+    return (np.concatenate(nu0), n0, np.concatenate(nu1), n1) + tuple(r[4:])
 
 
 def layout(ow, rooms):
-    ow = noise(ow)
-    rooms = {n: noise(r) for n, r in rooms.items()}
+    tex = textures([r[:4] for r in [ow] + list(rooms.values())])
+    bank = {}
+    print("textures: %d tiles drawn as noise" % len(tex))
+    ow = noise(ow, tex, bank)
+    rooms = {n: noise(r, tex, bank) for n, r in rooms.items()}
     out = bytearray(b"OWA8" + struct.pack(">H", 1 + NLOC)
                     + bytes(4 * (1 + NLOC)) + bytes(4))
     MBASE = 6 + 4 * (1 + NLOC)  # u32: the tile masks (8 bytes per id)
@@ -456,7 +516,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas10-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas11-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas9-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
