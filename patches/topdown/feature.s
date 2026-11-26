@@ -276,6 +276,13 @@ TA_OVOK		equ TA_OVK+10	; overlay drawn (TA_OVT), at global TA_OVX/Y
 TA_OVX		equ TA_OVOK+2
 TA_OVY		equ TA_OVX+2
 TA_WFF		equ TA_OVY+2	; frames the window is cleaned every 4th
+TA_DFACE	equ TA_WFF+2	; the facing drawn: the way he moves (a
+TA_POX		equ TA_DFACE+2	; corrected step goes sideways), TA_FACE
+TA_POY		equ TA_POX+2	; standing
+TA_LMF		equ TA_POY+2	; last frame he did not move
+TA_CAP		equ TA_LMF+2
+TA_DCAND	equ TA_CAP+2
+TA_CDIR		equ TA_DCAND+2	; the step handed to the game: its direction	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
@@ -1397,7 +1404,7 @@ td_figure:
 	ifd	SIZE8M
 	bsr.w	ta_isldr		; (the leader: the controller's facing)
 	bne.s	.nf
-	move.w	TA_FACE,d0
+	move.w	TA_DFACE,d0
 .nf:
 	endif
 	add.w	4(a1),d0
@@ -5806,7 +5813,13 @@ ta_ctl:
 .nh:	move.w	d4,TA_LH
 	moveq	#0,d2			; target offset: a cell that way, or 0
 	moveq	#0,d3
-	tst.w	d4
+	tst.w	TA_CMT			; a step handed out goes on whatever
+	bne.s	.pd			; the pad does now (no turn back)
+	tst.w	TA_CF
+	beq.s	.np
+.pd:	move.w	TA_CDIR,d4
+	bra.s	.go
+.np:	tst.w	d4
 	bmi.s	.t
 	tst.w	TA_BLK
 	bne.s	.t
@@ -5814,7 +5827,7 @@ ta_ctl:
 	sub.w	TA_TRN,d0
 	cmpi.w	#TA_TURN,d0
 	bcs.s	.t
-	move.w	d4,d0
+.go:	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d0,d0
 	lea	ta_dxy(pc),a0
@@ -5823,21 +5836,28 @@ ta_ctl:
 	lsl.w	#8,d2
 	lsl.w	#8,d3
 	tst.w	TA_CMT			; handed to the game, not taken yet:
-	bne.s	.hw			; no further than 1/8 cell (a step it
-	tst.w	TA_CF			; refuses is a nudge, not a walk in)
+	bne.s	.hw			; no further than TA_CAP (from rest
+	tst.w	TA_CF			; 1/8: a step it refuses is a nudge;
+					; walking on 1/2: the game is busy)
 	beq.s	.t
-.hw:	asr.w	#3,d2			; (past it already: stay there)
-	asr.w	#3,d3
+.hw:	muls.w	TA_CAP,d2		; (past it already: stay there)
+	asr.l	#8,d2
+	muls.w	TA_CAP,d3
+	asr.l	#8,d3
 	move.w	TA_OX,d0
 	muls.w	d2,d0
 	move.w	TA_OY,d1
 	muls.w	d3,d1
 	add.l	d1,d0
-	cmpi.l	#32*32,d0
+	move.w	TA_CAP,d1
+	mulu.w	d1,d1
+	cmp.l	d1,d0
 	blt.s	.t
 	move.w	TA_OX,d2
 	move.w	TA_OY,d3
-.t:	move.w	#256,d6			; speed: a cell per tick period
+.t:	move.w	TA_OX,TA_POX		; (where he was: the way he moves)
+	move.w	TA_OY,TA_POY
+	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
 	divu.w	TD_PERIOD,d6
 	addq.w	#1,d6
@@ -5864,7 +5884,38 @@ ta_ctl:
 	move.w	d3,d0
 	lea	TA_OY,a0
 	bsr.w	ta_toward
-.cm:	tst.w	d4			; half way: the step to the game
+.cm:	move.w	TA_FACE,d0		; the facing drawn: his motion's
+	tst.w	TA_BLK			; (back from a refused step: facing)
+	bne.s	.vt
+	move.w	TA_OX,d1
+	sub.w	TA_POX,d1
+	beq.s	.vy
+	moveq	#1,d0
+	tst.w	d1
+	bpl.s	.vf
+	moveq	#3,d0
+	bra.s	.vf
+.vy:	move.w	TA_OY,d1
+	sub.w	TA_POY,d1
+	beq.s	.vf
+	moveq	#2,d0
+	tst.w	d1
+	bpl.s	.vf
+	moveq	#0,d0
+.vf:	cmp.w	TA_DFACE,d0		; (a lone frame sideways, as a step
+	beq.s	.vk			; is put right, keeps the facing)
+	cmp.w	TA_DCAND,d0
+	beq.s	.vt
+	move.w	d0,TA_DCAND
+	tst.w	TA_MOV			; (standing: at once)
+	bne.s	.vk
+.vt:	move.w	d0,TA_DFACE
+.vk:	move.w	TA_DFACE,d0
+	tst.w	TA_MOV
+	bne.s	.mv
+	move.w	FRAME,TA_LMF
+.mv:
+	tst.w	d4			; the step to the game
 	bmi.s	.x
 	tst.w	TA_BLK
 	bne.s	.x
@@ -5883,6 +5934,13 @@ ta_ctl:
 	add.l	d2,d1
 	cmpi.l	#TA_CMTP,d1		; (at once: its answer comes before he
 	blt.s	.x			; is far, so a wall stops him short)
+	move.w	#32,TA_CAP
+	move.w	FRAME,d0
+	sub.w	TA_LMF,d0
+	cmpi.w	#4,d0
+	bls.s	.cp
+	move.w	#128,TA_CAP
+.cp:	move.w	d4,TA_CDIR
 	move.w	d5,TA_CMT
 	move.w	FRAME,d0		; and the game's tick now
 	sub.w	TD_PERIOD,d0
@@ -6297,7 +6355,7 @@ ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	lea	RECS,a2
 	adda.w	d0,a2
 	moveq	#5,d7			; drawings left this frame
-	move.w	TA_FACE,d5		; (d5: the facing ta_lkey uses)
+	move.w	TA_DFACE,d5		; (d5: the facing ta_lkey uses)
 	moveq	#-1,d6			; the image shown now first:
 	tst.w	TA_MOV			; walk frame or standing
 	beq.s	.f
