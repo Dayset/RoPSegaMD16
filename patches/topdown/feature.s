@@ -1507,6 +1507,15 @@ td_figure:
 	adda.w	d0,a0
 	move.w	(a0),d2			; image offset
 	move.w	2(a0),d3		; mirror param
+	movea.l	a0,a2			; a template animated by the phase (the
+	suba.w	d1,a2			; dragon's wings, a missile) is drawn as
+	move.w	(a2),d0			; it is: no walk poses (its offsets 6/7
+	cmp.w	8(a2),d0		; are the dragon's shadow, #308)
+	bne.w	.key
+	cmp.w	16(a2),d0
+	bne.w	.key
+	cmp.w	24(a2),d0
+	bne.w	.key
 	ifd	SIZE8M
 	bsr.w	ta_isldr		; the leader walks while he moves
 	bne.s	.nw
