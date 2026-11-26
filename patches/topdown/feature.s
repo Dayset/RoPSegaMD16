@@ -289,7 +289,7 @@ TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
-TA_VMAX		equ 8
+TA_VMAX		equ 16
 TA_CMTP		equ 16		; progress (1/256 cell) the step goes to the game
 TA_TURN		equ 6		; frames a new facing is held before a step
 TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
@@ -5651,8 +5651,8 @@ ta_dbuf:				; tile_record_load: 36 tiles (1.2 KB)
 	bne.s	ta_dbuf0
 	move.w	#1,TA_LOST
 	bra.s	ta_dbuf0
-ta_dbuf2:				; map_decode: all of them
-	move.w	#2,TA_LOST
+ta_dbuf2:				; map_decode: a text record (small:
+	bra.s	ta_dbuf			; the heads too)
 ta_dbuf0:
 	movea.l	(a7)+,a0
 	pea	($FF1EC0).l
@@ -6944,7 +6944,8 @@ ta_rub:	; rubber-band camera (td_iso_cam): still while the leader's cell
 	move.w	d0,d2
 	bpl.s	.p
 	neg.w	d2
-.p:	cmpi.w	#4*TI_CU,d2		; far (door, scene): snap
+.p:	cmpi.w	#8*TI_CU,d2		; far (door, scene): snap (a turned
+					; walk lead is a glide, not a jump)
 	bls.s	.s
 	add.w	d0,(a0)
 	rts
