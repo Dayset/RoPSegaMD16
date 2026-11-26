@@ -262,11 +262,16 @@ TA_CFR		equ TA_MOV+2	; frame the controller last ran
 TA_MISS		equ TA_CFR+2	; leader images shown late (count, a measure)
 TA_NMENU	equ TA_MISS+32	; counts (a measure): updates by the menu path,
 TA_NBAD		equ TA_NMENU+2	; by the bad path
+TA_LP		equ TA_NBAD+2	; pad nibble of the direction held last
+TA_TRN		equ TA_LP+2	; frame of a turn from standing (no step yet)
+TA_LOST		equ TA_TRN+2	; the game decoded into DECBUF: tables gone
+TA_WHO		equ TA_LOST+2	; the char the pad moves (ta_who)
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 8
+TA_TURN		equ 6		; frames a new facing is held before a step
 TA_N		equ 1214	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
@@ -517,6 +522,13 @@ td_vint:
 	move.w	$FF0012,($FF7E04).l
 	move.w	TD_BUSY,($FF7E06).l
 	move.w	TD_VALID,($FF7E08).l
+	movem.l	d0/a0-a1,-(a7)
+	lea	22(a7),a0
+	lea	($FF7E40).l,a1
+	moveq	#24-1,d0
+.hp:	move.l	(a0)+,(a1)+
+	dbra	d0,.hp
+	movem.l	(a7)+,d0/a0-a1
 	endif
 	cmpi.w	#$7D7D,TD_MAGIC		; cheap exits first (game timing)
 	bne.w	.q
@@ -1304,6 +1316,14 @@ td_chars:
 	move.w	d0,(a2)+
 	addq.w	#1,TD_NB
 .lchk:	; the leader's figure: char == leader, or a type-4 redirect to it
+	ifd	SIZE8M
+	tst.w	TA_CTL			; (the controller's figure)
+	beq.s	.lc0
+	bsr.w	ta_isldr
+	beq.s	.isl
+	bra.s	.next
+.lc0:
+	endif
 	cmp.w	LEADER,d7
 	beq.s	.isl
 	move.w	(a3),d0
@@ -3030,10 +3050,10 @@ td_ilift:
 	ifd	SIZE8M
 	bsr.w	ta_isldr		; the leader (controller): his cell's
 	bne.s	.nl			; lift at once, read ahead by ta_lifts
-	move.w	TD_LEADX,d2		; the cell nearest his drawn place:
-	addq.w	#8,d2			; the lift turns at half a step, not
-	asr.w	#4,d2			; when the game takes the cell
-	move.w	TD_LEADY,d3
+	move.w	d5,d2			; the cell nearest his drawn place
+	addq.w	#8,d2			; (d5/d6): the lift turns at half a
+	asr.w	#4,d2			; step, not when the game takes it
+	move.w	d6,d3
 	addq.w	#8,d3
 	asr.w	#4,d3
 	bsr.w	ta_ltget
@@ -5556,6 +5576,18 @@ td_blob:	; TL quadrant (body E, highlight F)
 ; gauges) goes off screen, their tiles hold terrain there (#307).
 ;=======================================================================
 ;=======================================================================
+; ta_dbuf — tile_record_load ($011AE8) and map_decode ($013840): the game
+; decodes into DECBUF, where the pre-drawn view keeps its slot tables
+; (a portrait with a message does it). Its `pea DECBUF`, and the tables
+; are built again on the next frame.
+;=======================================================================
+ta_dbuf:
+	move.w	#1,TA_LOST
+	movea.l	(a7)+,a0
+	pea	($FF1EC0).l
+	jmp	(a0)
+
+;=======================================================================
 ; ta_gread — the game's VRAM word read ($01111E): command and read with
 ; interrupts masked, so a VBlank picture update between them can not
 ; leave the port in write mode (BlastEm freezes the CPU on that read).
@@ -5609,8 +5641,12 @@ ta_ctl:
 	beq.w	.o
 	move.w	d0,TA_CFR
 	movem.l	d2-d6/a0,-(a7)
-	move.w	LEADER,d0
-	mulu.w	#$34,d0
+	bsr.w	ta_who
+	cmp.w	TA_WHO,d0		; another figure (a room): start over
+	beq.s	.ws			; on its cell
+	move.w	d0,TA_WHO
+	clr.w	TA_CTL
+.ws:	mulu.w	#$34,d0
 	lea	CHARS,a0
 	adda.l	d0,a0
 	move.w	$C(a0),d2		; the game's cell
@@ -5667,9 +5703,30 @@ ta_ctl:
 	andi.w	#$F,d5
 	bsr.w	ta_hdir			; -> d4 = 0-3 or -1
 	tst.w	d4
+	bmi.s	.rl
+	move.w	d5,TA_LP
+	cmp.w	TA_FACE,d4		; a new facing: the turn shows at once,
+	beq.s	.hd			; the step if still held TA_TURN frames
+	move.w	FRAME,TA_TRN		; on (its walk images get drawn)
+	bra.s	.hd
+.rl:	tst.w	TA_BLK			; released: a step under way goes on
+	bne.s	.hd			; to the next cell, never back
+	move.w	TA_FACE,d0
+	add.w	d0,d0
+	add.w	d0,d0
+	lea	ta_dxy(pc),a0
+	move.w	TA_OX,d1
+	muls.w	(a0,d0.w),d1
+	move.w	TA_OY,d2
+	muls.w	2(a0,d0.w),d2
+	add.l	d2,d1
+	ble.s	.hd
+	move.w	TA_FACE,d4
+	move.w	TA_LP,d5
+.hd:	tst.w	d4
 	bmi.s	.nh
 	move.w	d4,TA_FACE		; facing: at once (the game's draw
-	move.w	LEADER,d0		; record too, so it stays when the
+	move.w	TA_WHO,d0		; record too, so it stays when the
 	mulu.w	#$34,d0			; controller pauses)
 	lea	CHARS,a0
 	adda.l	d0,a0
@@ -5689,6 +5746,10 @@ ta_ctl:
 	bmi.s	.t
 	tst.w	TA_BLK
 	bne.s	.t
+	move.w	FRAME,d0		; turning: not yet
+	sub.w	TA_TRN,d0
+	cmpi.w	#TA_TURN,d0
+	bcs.s	.t
 	move.w	d4,d0
 	add.w	d0,d0
 	add.w	d0,d0
@@ -5774,6 +5835,26 @@ ta_toward:	; (a0) toward d0 by at most d6; TA_WPH, TA_MOV count it
 
 ta_dxy:	dc.w	0,-1, 1,0, 0,1, -1,0
 
+ta_who:	; -> d0 = the char the pad moves: the party leader, or in a room
+	; (his cell off this map: the party splits) the first party member
+	movem.l	a0-a1,-(a7)
+	move.w	LEADER,d0
+	mulu.w	#$34,d0
+	lea	CHARS,a0
+	adda.l	d0,a0
+	movea.l	GRIDPTR,a1
+	move.w	$C(a0),d0
+	cmp.w	(a1),d0
+	bcc.s	.r
+	move.w	$E(a0),d0
+	cmp.w	2(a1),d0
+	bcc.s	.r
+	move.w	LEADER,d0
+	bra.s	.o
+.r:	move.w	($FF0E82).l,d0
+.o:	movem.l	(a7)+,a0-a1
+	rts
+
 ta_hdir:	; d5 = pad nibble (U D L R) -> d4 = direction 0-3, -1 none, as
 	; menu_verb_input maps it ($0116: turned layout, $0134: diagonals)
 	moveq	#-1,d4
@@ -5831,7 +5912,7 @@ ta_ltget:	; d2/d3 = cell -> d0 = its lift from TA_LT (N set: not there)
 ta_lifts:	; main loop: TA_LT <- the leader's cell and its 4 neighbours
 	; (only cells not there yet are read: CELLREAD is a game call)
 	movem.l	d2-d6/a2,-(a7)
-	move.w	LEADER,d0
+	move.w	TA_WHO,d0
 	mulu.w	#$34,d0
 	lea	CHARS,a2
 	adda.l	d0,a2
@@ -5898,7 +5979,7 @@ ta_pref:	; main loop (ta_stream): the leader's images for his facing
 	tst.w	TA_CTL
 	beq.s	.o
 	movem.l	d2-d7/a2-a3,-(a7)
-	move.w	LEADER,d0
+	move.w	TA_WHO,d0
 	mulu.w	#$34,d0
 	lea	CHARS,a3
 	adda.l	d0,a3
@@ -5983,7 +6064,7 @@ ta_isldr:	; d7 = char index, a3 = char -> Z if it is the leader's figure
 	movem.l	d0,-(a7)
 	tst.w	TA_CTL
 	beq.s	.n
-	cmp.w	LEADER,d7
+	cmp.w	TA_WHO,d7
 	beq.s	.y
 	move.w	(a3),d0
 	andi.w	#$F,d0
@@ -5991,7 +6072,7 @@ ta_isldr:	; d7 = char index, a3 = char -> Z if it is the leader's figure
 	bne.s	.n
 	moveq	#0,d0
 	move.b	$27(a3),d0
-	cmp.w	LEADER,d0
+	cmp.w	TA_WHO,d0
 	beq.s	.y
 .n:	movem.l	(a7)+,d0
 	andi	#$FB,ccr
@@ -6024,10 +6105,16 @@ ta_pathc:
 	tst.w	$8(a6)
 	bmi.w	.o
 	move.w	-$34(a6),d0		; the party leader
-	cmp.w	($FF02B2).l,d0
+	cmp.w	TA_WHO,d0
 	bne.w	.o
 	cmpi.l	#$FFB0BC,GRIDPTR	; not in a combat arena
 	beq.w	.o
+	cmpi.w	#$FF,-$A(a6)		; plain ground only: a building, door or
+	bne.w	.o			; person is bumped (entered, talked to)
+	move.w	($FF0E92).l,d0		; (a location's key: the game names
+	andi.w	#$3FF,d0		; it, then enters)
+	cmpi.w	#$3FF,d0
+	bne.w	.o
 	move.l	-$22(a6),TA_SXY
 	move.w	-$A(a6),TA_SFL
 	move.w	TA_LS,d0		; (no ping-pong along a wall)
@@ -6297,8 +6384,20 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 
 ta_hud:	; no gold, time, food / water words: td_hsrc's cells blank
 	tst.w	TD_MSG			; (unless a message is in those rows)
-	bne.s	.o
+	bne.w	.o
 	movem.l	d2-d3/a2,-(a7)
+	move.w	#$1000+20*128+3*2,d2	; a message shows on row 20 where no
+.m:	move.w	d2,d0			; HUD word goes (portrait cols 3-5,
+	bsr.w	td_vread		; text from col 10): leave it be
+	andi.w	#$7FF,d0
+	cmp.w	FONTBLK,d0
+	bne.s	.x
+	addq.w	#2,d2
+	cmpi.w	#$1000+20*128+6*2,d2
+	bne.s	.m1
+	move.w	#$1000+20*128+10*2,d2
+.m1:	cmpi.w	#$1000+20*128+22*2,d2
+	bcs.s	.m
 	lea	td_hsrc(pc),a2
 	moveq	#20,d2			; row
 .r:	moveq	#0,d3
@@ -6320,7 +6419,7 @@ ta_hud:	; no gold, time, food / water words: td_hsrc's cells blank
 	addq.w	#1,d2
 	cmpi.w	#26,d2
 	bcs.s	.r
-	movem.l	(a7)+,d2-d3/a2
+.x:	movem.l	(a7)+,d2-d3/a2
 .o:	rts
 
 ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
@@ -6410,6 +6509,16 @@ ta_rub:	; rubber-band camera (td_iso_cam): still while the leader's cell
 	rts
 .s:	sub.w	#TA_DZ,d2
 	bls.s	.o
+	tst.w	d4			; stopped: no glide back against the
+	bne.s	.sw			; last walk (the lead stays)
+	move.w	d1,d3
+	eor.w	d0,d3
+	bpl.s	.sw
+	tst.w	d1
+	beq.s	.sw
+	sub.w	#TA_LEAD,d2
+	bls.s	.o
+.sw:
 	lsr.w	#4,d2			; 1/16 of the way out of the zone
 	addq.w	#1,d2
 	cmpi.w	#TA_VMAX,d2
@@ -6553,7 +6662,13 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	cmpi.w	#$5A71,TA_ON
 	bne.w	.x
 	movem.l	d2-d7/a2-a6,-(a7)
-	tst.w	TA_BAD
+	tst.w	TA_LOST			; the tables overwritten: from scratch
+	beq.s	.nlo
+	clr.w	TA_LOST
+	bsr.w	ta_reset
+	move.w	#$8000,TA_L
+	bra.s	.g
+.nlo:	tst.w	TA_BAD
 	beq.s	.g
 	clr.w	TA_BAD
 	move.w	#$8000,TA_L
