@@ -6286,6 +6286,14 @@ ta_padf:	; td_pad: d0 = the popped pad byte. With the controller on, the
 	; game sees no direction but the step it is handed (once)
 	tst.w	TA_CTL
 	beq.s	.o
+	cmpi.w	#$5A71,TA_ON		; only the walk's own pop (main_loop's
+	bne.s	.o			; menu_verb_input, $012FF2), in the
+	tst.w	$FF00AC			; pre-drawn view, no menu, no combat:
+	bne.s	.o			; menus, talk and the arena keep their
+	cmpi.l	#$FFB0BC,GRIDPTR	; arrows
+	beq.s	.o
+	cmpi.l	#$012FF8,4(a7)
+	bne.s	.o
 	andi.b	#$F0,d0
 	tst.w	TA_CMT
 	beq.s	.o
