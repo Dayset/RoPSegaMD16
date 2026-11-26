@@ -283,7 +283,9 @@ TA_POY		equ TA_POX+2	; standing
 TA_LMF		equ TA_POY+2	; last frame he did not move
 TA_CAP		equ TA_LMF+2
 TA_DCAND	equ TA_CAP+2
-TA_CDIR		equ TA_DCAND+2	; the step handed to the game: its direction	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
+TA_CDIR		equ TA_DCAND+2	; the step handed to the game: its direction
+TA_SX		equ TA_CDIR+2	; the camera last shown (ta_clamp)
+TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
@@ -5867,7 +5869,7 @@ ta_ctl:
 	lsl.w	#8,d3
 	tst.w	TA_CMT			; handed to the game, not taken yet:
 	bne.s	.hw			; no further than TA_CAP (from rest
-	tst.w	TA_CF			; 1/8: a step it refuses is a nudge;
+	tst.w	TA_CF			; 1/4: a step it refuses is a nudge;
 					; walking on 1/2: the game is busy)
 	beq.s	.t
 .hw:	muls.w	TA_CAP,d2		; (past it already: stay there)
@@ -5964,7 +5966,7 @@ ta_ctl:
 	add.l	d2,d1
 	cmpi.l	#TA_CMTP,d1		; (at once: its answer comes before he
 	blt.s	.x			; is far, so a wall stops him short)
-	move.w	#32,TA_CAP
+	move.w	#64,TA_CAP
 	move.w	FRAME,d0
 	sub.w	TA_LMF,d0
 	cmpi.w	#4,d0
@@ -7160,12 +7162,12 @@ ta_norc:	; no cell uses any slot
 
 ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmpi.w	#$5A71,TA_ON
-	bne.s	.o
+	bne.w	.o
 	move.w	TD_IGX,TA_GX
 	move.w	TD_IGY,TA_GY
 	move.w	TA_L,d0
 	cmpi.w	#$8000,d0
-	beq.s	.o
+	beq.w	.o
 	lsl.w	#3,d0			; columns L .. L+41 hold x 8L .. 8L+16
 	cmp.w	TD_IGX,d0
 	ble.s	.k1
@@ -7182,8 +7184,33 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	move.w	d0,TD_IGY
 .k3:	add.w	#16,d0
 	cmp.w	TD_IGY,d0
-	bge.s	.o
+	bge.s	.sm
 	move.w	d0,TD_IGY
+.sm:	movem.l	a0-a1,-(a7)
+	lea	TD_IGX,a0		; shown: at most 3 px a frame on from
+	lea	TA_SX,a1		; the last (held back at the window's
+	bsr.s	.lim			; edge, it then glides, not jumps;
+	lea	TD_IGY,a0		; a snap, 64 px or more, at once)
+	lea	TA_SY,a1
+	bsr.s	.lim
+	movem.l	(a7)+,a0-a1
+	rts
+.lim:	move.w	(a0),d0
+	sub.w	(a1),d0
+	move.w	d0,d1
+	bpl.s	.l1
+	neg.w	d1
+.l1:	cmpi.w	#64,d1
+	bcc.s	.l3
+	cmpi.w	#3,d0
+	ble.s	.l2
+	moveq	#3,d0
+.l2:	cmpi.w	#-3,d0
+	bge.s	.l3
+	moveq	#-3,d0
+.l3:	add.w	(a1),d0
+	move.w	d0,(a1)
+	move.w	d0,(a0)
 .o:	rts
 
 ta_start:
@@ -7322,7 +7349,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	beq.s	.nw
 	subq.w	#1,TA_WFF
 	move.w	TA_WFF,d0
-	andi.w	#3,d0
+	andi.w	#7,d0			; (every 8th frame: a scan is ~1 frame)
 	bne.s	.nw
 	bsr.w	td_winfix
 	move.w	#1,TD_UNFR
