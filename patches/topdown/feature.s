@@ -1944,9 +1944,12 @@ td_vwrite:
 	rts
 
 td_vread:				; -> d0.w = VRAM word
-	bsr.s	td_vcmd
+	bsr.s	td_vcmd			; (masked: an interrupt between command
+	move.w	sr,-(a7)		; and read leaves the port in write
+	ori.w	#$0700,sr		; mode; BlastEm freezes on that read)
 	move.l	d0,VDP_CTRL
 	move.w	VDP_DATA,d0
+	move.w	(a7)+,sr
 	rts
 
 td_vcmd:
@@ -2000,6 +2003,8 @@ td_anim:
 	lsl.w	#5,d1
 	move.w	d1,d0			; tile's VRAM address
 	bsr.s	td_vcmd
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
 	move.l	d0,VDP_CTRL
 	moveq	#16-1,d1
 .rd:	move.w	VDP_DATA,d0
@@ -2012,6 +2017,7 @@ td_anim:
 	ror.w	#8,d0
 	move.w	d0,(a2)+
 	dbra	d1,.rd
+	move.w	(a7)+,sr
 	subq.w	#1,d2
 	dbeq	d4,.t
 	tst.w	d2
@@ -2514,12 +2520,15 @@ td_hud:
 	bsr.w	.addr
 	move.w	d0,d7			; source address
 	bsr.w	td_vcmd
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
 	move.l	d0,VDP_CTRL
 	lea	TD_ROW,a2
 	move.w	d4,d0
 	subq.w	#1,d0
 .rd:	move.w	VDP_DATA,(a2)+
 	dbra	d0,.rd
+	move.w	(a7)+,sr
 	lea	TD_ROW,a2		; anything there?
 	move.w	d4,d0
 	subq.w	#1,d0
@@ -3021,8 +3030,12 @@ td_ilift:
 	ifd	SIZE8M
 	bsr.w	ta_isldr		; the leader (controller): his cell's
 	bne.s	.nl			; lift at once, read ahead by ta_lifts
-	move.w	(a4),d2
-	move.w	2(a4),d3
+	move.w	TD_LEADX,d2		; the cell nearest his drawn place:
+	addq.w	#8,d2			; the lift turns at half a step, not
+	asr.w	#4,d2			; when the game takes the cell
+	move.w	TD_LEADY,d3
+	addq.w	#8,d3
+	asr.w	#4,d3
 	bsr.w	ta_ltget
 	bmi.s	.nl
 	move.w	d0,TD_TLIFT
@@ -5542,6 +5555,22 @@ td_blob:	; TL quadrant (body E, highlight F)
 ; the pre-drawn overworld a sprite showing records 16-17 (pad picture,
 ; gauges) goes off screen, their tiles hold terrain there (#307).
 ;=======================================================================
+;=======================================================================
+; ta_gread — the game's VRAM word read ($01111E): command and read with
+; interrupts masked, so a VBlank picture update between them can not
+; leave the port in write mode (BlastEm freezes the CPU on that read).
+;=======================================================================
+ta_gread:
+	move.w	sr,-(a7)
+	ori.w	#$0700,sr
+	move.w	d0,VDP_CTRL
+	move.w	#$20,VDP_CTRL
+	moveq	#0,d0
+	move.w	VDP_DATA,d0
+	move.w	(a7)+,sr
+	unlk	a6
+	rts
+
 ta_sprw:
 	move.w	$C(a6),d0
 	ifd	SIZE8M
@@ -6445,7 +6474,7 @@ ta_fblk:	; the font blank tile (every blank window cell) blank again, if
 	beq.s	.ok
 	bsr.w	td_vwrite
 	moveq	#8-1,d1
-.c:	clr.l	VDP_DATA
+.c:	move.l	#0,VDP_DATA		; (not clr: it reads the port first)
 	dbra	d1,.c
 .ok:	move.w	(a7)+,sr
 	movem.l	(a7)+,d0-d1
@@ -6473,7 +6502,7 @@ ta_reset:
 	move.w	#$2700,sr
 	bsr.w	td_vwrite
 	moveq	#8-1,d1
-.fb:	clr.l	VDP_DATA
+.fb:	move.l	#0,VDP_DATA		; (not clr: it reads the port first)
 	dbra	d1,.fb
 	move.w	(a7)+,sr
 	move.w	#-1,TA_PR

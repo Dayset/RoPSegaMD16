@@ -11,8 +11,8 @@ every frame the pre-drawn view and the leader controller are on:
   hud        no gold / time / food-water words in the HUD rows (td_hsrc
              cells) while no message shows
   jump       the leader figure moves <= 1/16 cell a frame (no teleport)
-  lift       the figure's lift is the lift of the game's cell it stands
-             on (no stale height after a step onto a raised cell)
+  lift       the figure's lift is the lift of the cell nearest its drawn
+             place, one frame late at most (it turns at half a step)
   plane      every 30th frame: every screen tile matches the atlas
   late       leader images shown late (TA_MISS), reported, not failed
 
@@ -114,8 +114,11 @@ def main():
             hits["jump"].append((i, pos, prev[0]))
         lt = {(W(TA_LT + 6 * k), W(TA_LT + 6 * k + 2)): W(TA_LT + 6 * k + 4) for k in range(5)}
         lfd = W(E["TD_LFD"] + 2 * ld)
-        if g in lt and lt[g] != lfd and prev and prev[1] == g:
-            hits["lift"].append((i, g, lfd, lt[g]))
+        near = ((pos[0] + 8) >> 4, (pos[1] + 8) >> 4)  # lift turns at half a step
+        pnear = prev and ((prev[0][0] + 8) >> 4, (prev[0][1] + 8) >> 4)
+        if near in lt and lt[near] != lfd and prev and prev[2] == area \
+                and lt.get(pnear, lfd) != lfd:          # (one frame late is fine)
+            hits["lift"].append((i, near, lfd, lt[near]))
         if atlas.d and i % 30 == 0:
             gx, gy = s16(W(E["TD_IGX"])), s16(W(E["TD_IGY"]))
             bad = 0

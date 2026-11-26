@@ -34,3 +34,4 @@ addr,len,kind,target
 0x0292D0,6,jsr,td_hud_glyph
 0x0292F2,6,jsr,td_hud_glyph
 0x029326,6,jsr,td_hud_gauge
+0x01111E,6,jmp,ta_gread
