@@ -266,6 +266,8 @@ TA_LP		equ TA_NBAD+2	; pad nibble of the direction held last
 TA_TRN		equ TA_LP+2	; frame of a turn from standing (no step yet)
 TA_LOST		equ TA_TRN+2	; the game decoded into DECBUF: tables gone
 TA_WHO		equ TA_LOST+2	; the char the pad moves (ta_who)
+TA_WFQ		equ TA_WHO+2	; ticks the window is cleaned every tick
+TA_MSG0		equ TA_WFQ+2	; TD_MSG last tick
 TA_LT		equ TA_MISS+2	; 5 x (cell x, y, lift): the leader's cell and
 				; its neighbours, read ahead (main loop)
 TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
@@ -6320,12 +6322,20 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	cmp.w	TA_AR,d0
 	beq.w	.same
 	tst.w	d0
-	beq.s	.leave
+	beq.w	.leave
 	move.l	a0,TA_A			; another area: all of it again
 	move.w	d0,TA_AR
 	move.w	#1,TD_VALID		; (a new map cleared it)
 	bsr.w	ta_reset
-	bra.s	.snap
+	move.w	#4,TA_WFQ		; (the game's old picture in the window:
+	bsr.s	.snap			; off it now, and the next 4 ticks)
+	subq.w	#1,TD_BUSY
+	bsr.w	td_winfix
+	move.w	#1,TD_UNFR
+	bsr.w	td_iso_winfix
+	clr.w	TD_UNFR
+	addq.w	#1,TD_BUSY
+	rts
 .off:	tst.w	d0
 	beq.w	.o
 	move.l	a0,TA_A
@@ -6363,9 +6373,26 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	bsr.w	ta_fblk			; (writes that miss the sprite table
 	tst.w	d0			; land on it: keep it blank)
 	tst.w	d0			; on: room-bitmap and frame words the
-	beq.s	.o			; game put in the window go blank (they
+	beq.w	.o			; game put in the window go blank (they
 	bsr.w	ta_hud			; would show our tiles), every 4th tick
-	addq.w	#1,TD_WFC		; each; the HUD words every tick
+	move.w	TD_MSG,d0		; each; the HUD words every tick. A
+	cmp.w	TA_MSG0,d0		; message gone or a new area: both
+	beq.s	.mq			; every tick for a while (the game puts
+	move.w	d0,TA_MSG0		; its old picture back under the box)
+	tst.w	d0
+	bne.s	.mq
+	move.w	#3,TA_WFQ
+.mq:	tst.w	TA_WFQ
+	beq.s	.nq
+	subq.w	#1,TA_WFQ
+	subq.w	#1,TD_BUSY
+	bsr.w	td_winfix
+	move.w	#1,TD_UNFR
+	bsr.w	td_iso_winfix
+	clr.w	TD_UNFR
+	addq.w	#1,TD_BUSY
+	rts
+.nq:	addq.w	#1,TD_WFC
 	move.w	TD_WFC,d0
 	andi.w	#3,d0
 	beq.s	.unfr
@@ -6602,7 +6629,7 @@ ta_reset:
 	move.w	#TA_N-1,d0
 .i:	move.l	#-1,(a0)+
 	dbra	d0,.i
-	bsr.s	ta_norc
+	bsr.w	ta_norc
 	clr.w	TA_HAND
 	clr.w	TA_BAD
 	move.w	FONTBLK,d0		; the font blank blank again
@@ -6614,6 +6641,23 @@ ta_reset:
 .fb:	move.l	#0,VDP_DATA		; (not clr: it reads the port first)
 	dbra	d1,.fb
 	move.w	(a7)+,sr
+	movem.l	d2-d4,-(a7)		; the old picture off the plane at
+	moveq	#0,d4			; once (all blank, 256 cells a go):
+	moveq	#8-1,d2			; no old area at the new scroll
+.pb:	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	d4,d0
+	bsr.w	td_vwrite
+	move.w	FONTBLK,d1
+	swap	d1
+	move.w	FONTBLK,d1
+	moveq	#128-1,d3
+.pw:	move.l	d1,VDP_DATA
+	dbra	d3,.pw
+	move.w	(a7)+,sr
+	add.w	#512,d4
+	dbra	d2,.pb
+	movem.l	(a7)+,d2-d4
 	move.w	#-1,TA_PR
 	bsr.w	ta_phnow
 	move.w	d0,TA_PH
