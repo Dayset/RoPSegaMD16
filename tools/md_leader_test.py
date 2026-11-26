@@ -45,7 +45,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas9-*.bin")))
+        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas10-*.bin")))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):

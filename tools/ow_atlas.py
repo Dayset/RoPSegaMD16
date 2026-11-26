@@ -357,7 +357,40 @@ def areas(rom):
     return ow, rooms
 
 
+NOISE = {1, 2}              # deep water's colours: its plain tiles are
+NVAR = 8                    # drawn as 8 noise variants instead (#308)
+
+
+def noise(r):
+    """deep water drawn as noise: tiles of only colours NOISE (both used)
+    become one of NVAR random tiles per phase, picked by a hash of the
+    global tile position (an experiment: how the look compares)"""
+    u0, t0, u1, t1, (kx, ky) = r[:5]
+    rng = np.random.default_rng(308)
+    out = []
+    for u, t, ph in ((u0, t0, 0), (u1, t1, 1)):
+        px = np.stack([u >> 4, u & 15], axis=2).reshape(len(u), 64)
+        lo, hi = sorted(NOISE)
+        plain = np.isin(px, list(NOISE)).all(axis=1) & (px == lo).any(axis=1) \
+            & (px == hi).any(axis=1)
+        if not plain.any():
+            out += [u, t]
+            continue
+        share = (px[plain] == hi).mean()
+        var = np.where(rng.random((NVAR, 64)) < share, hi, lo).astype(np.uint8)
+        var = (var[:, 0::2] << 4 | var[:, 1::2]).astype(u.dtype)
+        R, C = t.shape
+        gr = np.arange(R)[:, None] - ky
+        gc = np.arange(C)[None, :] - kx
+        h = (gr * 73856093 ^ gc * 19349663 ^ ph * 83492791) & 0x7FFFFFFF
+        v = len(u) + (h * 2654435761 >> 13) % NVAR
+        out += [np.concatenate([u, var]), np.where(plain[t], v, t)]
+    return (out[0], out[1], out[2], out[3]) + tuple(r[4:])
+
+
 def layout(ow, rooms):
+    ow = noise(ow)
+    rooms = {n: noise(r) for n, r in rooms.items()}
     out = bytearray(b"OWA8" + struct.pack(">H", 1 + NLOC)
                     + bytes(4 * (1 + NLOC)) + bytes(4))
     MBASE = 6 + 4 * (1 + NLOC)  # u32: the tile masks (8 bytes per id)
@@ -423,7 +456,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas9-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas10-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas9-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
