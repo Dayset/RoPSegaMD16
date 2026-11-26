@@ -5181,13 +5181,11 @@ ti_blankish:	; d0 = window word -> Z set if it is ours to (re)write
 	ifd	SIZE8M
 	cmpi.w	#$5A71,TA_ON		; pre-drawn: nothing of the game's own
 	bne.s	.nt			; picture stays in the window, only
-	move.w	d0,d1			; text (the font) and a message's
-	andi.w	#$7FF,d1		; portrait (874-909, while one shows)
+	move.w	d0,d1			; text (the font) and the portrait
+	andi.w	#$7FF,d1		; (874-909)
 	sub.w	FONTBLK,d1
 	cmpi.w	#100,d1
 	bcs.s	.kn
-	tst.w	TD_MSG
-	beq.w	.y
 	move.w	d0,d1
 	andi.w	#$7FF,d1
 	sub.w	#874,d1
@@ -6109,6 +6107,8 @@ ta_occ:
 	bmi.s	.zero
 	move.l	d0,a4			; tile id
 	move.w	TA_LDB,d1
+	cmpi.w	#$FF,d1			; (no cell painted it: the filler)
+	beq.s	.zero
 	move.w	d1,d0
 	lsr.w	#3,d1
 	sub.w	#16,d1
@@ -6691,7 +6691,7 @@ td_hud_map:
 	ifd	SIZE8M
 	even
 ta_want:	; -> d0 = 1 + the area to show (0 none), a0 = its header
-	cmpi.l	#$4F574136,ATL		; 'OWA6'
+	cmpi.l	#$4F574138,ATL		; 'OWA8'
 	bne.s	.n
 	cmpi.l	#$FFB0BC,GRIDPTR	; a combat arena: none (its own art
 	beq.s	.n			; goes where our slots are)
@@ -7526,10 +7526,28 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	lsl.w	#8,d1
 	move.b	(a0),d1
 	move.w	d1,d0
-.cm:	cmp.l	16(a1),d0
-	bne.s	.o
-.bl:	moveq	#-1,d0
 .o:	rts
+.bl:	; past the canvas, or a block not stored: the filler pattern (no
+	; pink void), tile (row % 2) 7 + column % 7 of the area's 2 x 14
+	move.w	d5,d1
+	add.w	8(a1),d1		; atlas row, column (either sign)
+	move.w	d4,d2
+	add.w	10(a1),d2
+	add.w	#7*2000,d2
+	andi.l	#$FFFF,d2
+	divu.w	#7,d2
+	swap	d2
+	andi.w	#1,d1
+	mulu.w	#7,d1
+	add.w	d2,d1
+	tst.w	TA_PH
+	beq.s	.b0
+	add.w	#14,d1
+.b0:	lsl.w	#2,d1
+	movea.l	16(a1),a0
+	move.l	(a0,d1.w),d0
+	move.w	#$FF,TA_LDB		; (nothing in front of anyone)
+	rts
 
 ta_map6:	; d0 = ROM address -> a0 = where the CPU sees it (slot 6)
 	cmpi.l	#$300000,d0

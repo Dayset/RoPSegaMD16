@@ -6,13 +6,16 @@ terrain phases, tools/e358_atlas.py), cuts them into 8x8 tiles on the
 iso view's global 8-px grid and writes one payload for $210000 (bank 4,
 past the save RAM window):
 
-  $210000  'OWA5', u16 areas (1 + 175)
+  $210000  'OWA8', u16 areas (1 + 175)
   $210006  u32 per area: its header (bank 5), 0 = none. Area 0 is the
            overworld, area 1 + n is location n (chunk 77 + n).
   header   u16 tile rows R, cols C, block rows BR, block cols BC,
            s16 dy, dx (canvas tile = plane row + dy, global column +
            dx), u32 tile base, u32 blank tile id, then u32 per block
            (BR x BC, row-major): its record, 0 = all blank
+  header   +16: the area's filler pattern, 2 x 14 u32 ids (phase 0, 1;
+           index (row % 2) 7 + column % 7): drawn past the canvas and in
+           blocks not stored
   record   16x16 u8 pair index (row-major), u16 m, then m u24 phase-1
            ids, then a u24 phase-0 id per pair. Pairs 0..m-1 differ
            between the phases; pair k >= m shows its phase-0 tile in
@@ -31,6 +34,8 @@ import hashlib
 import struct
 import sys
 from pathlib import Path
+
+import collections
 
 import numpy as np
 
@@ -86,26 +91,70 @@ def depths(own):
     return smin, sup, msk
 
 
+def filler(ab, cells):
+    """the cell repeated past the area's edge (no pink void): the one
+    most common within 2 cells of the painted area's border"""
+    paint = {(x, y): t for x, y, t in cells if ab.footprint(t, 0)}
+    near = set()
+    for (x, y) in paint:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if (x + dx, y + dy) not in paint:
+                near.update((x + i, y + j) for i in range(-2, 3)
+                            for j in range(-2, 3))
+                break
+    cnt = collections.Counter(paint[p] for p in near if p in paint)
+    return cnt.most_common(1)[0][0] if cnt else None
+
+
+def lattice(ab, tile, p):
+    """-> period image F (16 x 28 px) of the cell repeated everywhere, and
+    its global origin: pixel (gx, gy) = F[(gy - y0) % 16, (gx - x0) % 28]"""
+    cv, (ox, oy), w, h = ab.render_canvas(
+        [(x, y, tile) for x in range(9) for y in range(9)], p)
+    b = np.frombuffer(bytes(cv), np.uint8).reshape(h, w // 2)
+    px = np.stack([b >> 4, b & 15], axis=2).reshape(h, w)
+    x0, y0 = ox + w // 2 - 14, oy + h // 2 - 8   # mid-lattice: covered
+    return px[y0 - oy:y0 - oy + 16, x0 - ox:x0 - ox + 28], x0, y0
+
+
 def render(ab, cells):
-    """-> (u0, t0, u1, t1, (dx, dy) in tiles, (smin, sup, mask))"""
+    """-> (u0, t0, u1, t1, (dx, dy) in tiles, (smin, sup, mask),
+    (pattern tiles phase 0, phase 1): 2 x 7 tiles, row r % 2, col c % 7)
+    Pixels no cell paints show the filler cell's lattice, as does all
+    past the canvas (the runtime repeats the pattern tiles there)."""
     ph = []
     dep = None
+    fill = filler(ab, cells)
     for p in (0, 1):
         canvas, (ox, oy), w, h = ab.render_canvas(cells, p)
         kx, ky = KX0 - ox, KY0 - oy
         pad = -kx % 8               # left pad: tiles on the global grid
-        rows = np.frombuffer(canvas, np.uint8).reshape(h, w // 2)
-        rows = np.pad(rows, ((0, 0), (pad // 2, (8 - pad) // 2)))
-        uniq, tmap, _ = ab.cut_tiles(bytearray(rows.tobytes()), w + 8, h)
-        assert ky % 8 == 0
         if p == 0:
             own = np.pad(owners(ab, cells, ox, oy, w, h),
                          ((0, 0), (pad, 8 - pad)), constant_values=-1)
             dep = depths(own)
-        ph.append((uniq, tmap, ((kx + pad) // 8, ky // 8)))
-    (u0, t0, k0), (u1, t1, k1) = ph
+        b = np.frombuffer(bytes(canvas), np.uint8).reshape(h, w // 2)
+        px = np.stack([b >> 4, b & 15], axis=2).reshape(h, w)
+        px = np.pad(px, ((0, 0), (pad, 8 - pad)))
+        H, Wp = px.shape
+        if fill is not None:
+            F, x0, y0 = lattice(ab, fill, p)
+            gy = (np.arange(H)[:, None] + oy - y0) % 16
+            gx = (np.arange(Wp)[None, :] - pad + ox - x0) % 28
+            px = np.where(own < 0, F[gy, gx], px)
+            ys = (np.arange(16)[:, None] + oy - y0) % 16
+            xs = (np.arange(56)[None, :] - pad + ox - x0) % 28
+            pat = F[ys, xs].reshape(2, 8, 7, 8).transpose(0, 2, 1, 3)
+        else:
+            pat = np.zeros((2, 7, 8, 8), np.uint8)
+        pat = (pat[..., 0::2] << 4 | pat[..., 1::2]).reshape(14, 32)
+        rows = (px[:, 0::2] << 4 | px[:, 1::2]).astype(np.uint8)
+        uniq, tmap, _ = ab.cut_tiles(bytearray(rows.tobytes()), w + 8, h)
+        assert ky % 8 == 0
+        ph.append((uniq, tmap, ((kx + pad) // 8, ky // 8), pat.astype(np.uint8)))
+    (u0, t0, k0, p0), (u1, t1, k1, p1) = ph
     assert k0 == k1 and t0.shape == t1.shape
-    return u0, t0, u1, t1, k0, dep
+    return u0, t0, u1, t1, k0, dep, (p0, p1)
 
 
 CLAMP = [0, 0]
@@ -120,22 +169,33 @@ def depth_bytes(smin, sup):
     CLAMP[0] += int(bad.sum())
     CLAMP[1] += int((smin >= 0).sum())
     rel = np.clip(rel, 0, 31)
-    return np.where(smin >= 0, rel << 3 | up, 0).astype(np.uint8)
+    return np.where(smin >= 0, rel << 3 | up, 0xFF).astype(np.uint8)
 
 
-def pairs_blocks(g0, g1, blank, dep):
+def pairs_blocks(g0, g1, blank, dep, pid):
+    """pid: (2, 2, 7) pattern ids (phase, row % 2, col % 7); a block all
+    pattern is not stored (the runtime draws the pattern there)"""
     R, C = g0.shape
     BR, BC = (R + BS - 1) // BS, (C + BS - 1) // BS
     pad = lambda g: np.pad(g, ((0, BR * BS - R), (0, BC * BS - C)),
                            constant_values=blank)
     g0, g1 = pad(g0), pad(g1)
+    rr = np.arange(BR * BS)[:, None] % 2      # past R / C: the pattern
+    cc = np.arange(BC * BS)[None, :] % 7      # (never read there)
+    out_ = np.ones_like(g0, bool)
+    out_[:R, :C] = False
+    g0 = np.where(out_, pid[0][rr, cc], g0)
+    g1 = np.where(out_, pid[1][rr, cc], g1)
     db = np.pad(depth_bytes(*dep[:2]), ((0, BR * BS - R), (0, BC * BS - C)))
     blocks = []
     for br in range(BR):
         for bc in range(BC):
             a = g0[br * BS:(br + 1) * BS, bc * BS:(bc + 1) * BS].ravel()
             b = g1[br * BS:(br + 1) * BS, bc * BS:(bc + 1) * BS].ravel()
-            if (a == blank).all() and (b == blank).all():
+            rr = (br * BS + np.arange(BS))[:, None] % 2
+            cc = (bc * BS + np.arange(BS))[None, :] % 7
+            if (a == pid[0][rr, cc].ravel()).all() and \
+                    (b == pid[1][rr, cc].ravel()).all():
                 blocks.append(None)
                 continue
             key = a.astype(np.int64) << 20 | b
@@ -223,7 +283,8 @@ def store(tile_sets):
         g1 = inv[off:off + len(u1)][t1]
         off += len(u1)
         maps.append((g0, g1))
-    blank = int(np.where(~allu.any(axis=1))[0][0])
+    z = np.where(~allu.any(axis=1))[0]
+    blank = int(z[0]) if len(z) else -1
     uses = np.zeros(len(allu), np.int64)
     for g0, g1 in maps:
         np.add.at(uses, g0.ravel(), 1)
@@ -233,7 +294,8 @@ def store(tile_sets):
     new = np.zeros(len(allu), np.int64)
     new[keep] = np.arange(len(keep))
     to = new[to]
-    return allu[keep], [(to[g0], to[g1]) for g0, g1 in maps], int(to[blank])
+    return (allu[keep], [(to[g0], to[g1]) for g0, g1 in maps],
+            int(to[blank]) if blank >= 0 else -1)
 
 
 def areas(rom):
@@ -253,22 +315,28 @@ def areas(rom):
 
 
 def layout(ow, rooms):
-    out = bytearray(b"OWA6" + struct.pack(">H", 1 + NLOC)
+    out = bytearray(b"OWA8" + struct.pack(">H", 1 + NLOC)
                     + bytes(4 * (1 + NLOC)) + bytes(4))
     MBASE = 6 + 4 * (1 + NLOC)  # u32: the tile masks (8 bytes per id)
     groups = [([ow] + list(rooms.values()), [0] + [1 + n for n in rooms])]
     pending = []                # (header offset, area blocks, store index)
     stores = []
     for gi, (rs, ids) in enumerate(groups):
-        allu, maps, blank = store([r[:4] for r in rs])
+        k7 = np.arange(14).reshape(2, 7)
+        sets = [r[:4] for r in rs] + [(r[6][0], k7, r[6][1], k7) for r in rs]
+        allu, maps, blank = store(sets)
+        pats, maps = maps[len(rs):], maps[:len(rs)]
         stores.append((allu, id_masks(len(allu), maps, [r[5] for r in rs])))
-        for r, (g0, g1), aid in zip(rs, maps, ids):
-            R, C, BR, BC, blocks = pairs_blocks(g0, g1, blank, r[5])
+        for r, (g0, g1), pid, aid in zip(rs, maps, pats, ids):
+            R, C, BR, BC, blocks = pairs_blocks(g0, g1, blank, r[5], pid)
             dx, dy = r[4]
             hdr = len(out)
             struct.pack_into(">I", out, 6 + 4 * aid, OFFSET + hdr)
-            out += struct.pack(">HHHHhhII", R, C, BR, BC, dy, dx, 0, blank)
+            ptab = OFFSET + hdr + 20 + 4 * BR * BC
+            out += struct.pack(">HHHHhhII", R, C, BR, BC, dy, dx, 0, ptab)
             out += bytes(4 * BR * BC)
+            out += b"".join(struct.pack(">I", int(v))
+                            for v in np.concatenate([pid[0].ravel(), pid[1].ravel()]))
             pending.append((hdr, blocks, gi))
     assert len(out) <= BANK - (OFFSET % BANK), "headers past the first bank"
     seen = {}
@@ -311,10 +379,10 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas7-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+             ("ow-atlas8-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
     if cache.is_file():
         return cache.read_bytes()
-    acache = cache.with_name("ow-areas6-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
+    acache = cache.with_name("ow-areas8-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
     import pickle
     if acache.is_file():
         ar = pickle.loads(acache.read_bytes())

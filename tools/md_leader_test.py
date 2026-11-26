@@ -45,25 +45,26 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas6-*.bin")))
+        f = sorted(glob.glob(str(REPO / "build" / "ow-atlas8-*.bin")))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
         d, o = self.d, 0x210000
         h = struct.unpack_from(">I", d, 6 + 4 * area)[0] - o
-        R, C, BR, BC, dy, dx, TB, BL = struct.unpack_from(">HHHHhhII", d, h)
+        R, C, BR, BC, dy, dx, TB, PT = struct.unpack_from(">HHHHhhII", d, h)
         r, c = row + dy, col + dx
-        if not (0 <= r < R and 0 <= c < C):
-            return None
-        p = struct.unpack_from(">I", d, h + 20 + 4 * ((r // 16) * BC + c // 16))[0]
-        if not p:
-            return None
+        p = 0
+        if 0 <= r < R and 0 <= c < C:
+            p = struct.unpack_from(">I", d, h + 20 + 4 * ((r // 16) * BC + c // 16))[0]
+        if not p:                       # the filler pattern
+            t = struct.unpack_from(">I", d, PT - o + 4 * (14 * ph + 7 * (r % 2) + c % 7))[0]
+            return d[TB - o + 32 * t:TB - o + 32 * t + 32]
         rec = p - o
         i = d[rec + (r % 16) * 16 + c % 16]
         m = struct.unpack_from(">H", d, rec + 512)[0]
         k = i if (ph and i < m) else m + i
         t = int.from_bytes(d[rec + 514 + 3 * k:rec + 517 + 3 * k], "big")
-        return None if t == BL else d[TB - o + 32 * t:TB - o + 32 * t + 32]
+        return d[TB - o + 32 * t:TB - o + 32 * t + 32]
 
 
 def main():
