@@ -316,7 +316,9 @@ TD_RLAST	equ TD_ARN+2	; frame td_tick last handed back to the game
 TD_RPER		equ TD_RLAST+2	; frames its ticks take (peak, slow decay)
 TD_HB1		equ TD_RPER+2	; 32 B: a half-width tile doubled (ta_up)
 TD_HB2		equ TD_HB1+32	; 32 B: the same for ta_occ
-TD_END		equ TD_HB2+32
+TD_DK		equ TD_HB2+32	; display dark (ta_dark): 1
+TD_DKC		equ TD_DK+2	; the backdrop colour it saved
+TD_END		equ TD_DKC+2
 
 TI_NSLOT	equ 639		; iso tile pool slots (hash table, 24-slot probe)
 TI_PHASH	equ $FFFFD2EA	; pool hashes (words) + ages (bytes): in the
@@ -7435,11 +7437,13 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bsr.w	ta_norc
 	move.w	d6,TA_L
 	move.w	d7,TA_T
-	move.w	d7,d5
 	addq.w	#1,TD_BUSY		; (no picture updates meanwhile: all
-	moveq	#30-1,d3		; of it at once is quicker)
-.fr:	bsr.w	ta_frow
-	addq.w	#1,d5
+	moveq	#30-1,d3		; of it at once is quicker), from the
+.fr:	moveq	#0,d5			; middle out: the leader's surroundings
+	lea	ta_mid(pc),a0		; first (#308)
+	move.b	(a0,d3.w),d5
+	add.w	TA_T,d5
+	bsr.w	ta_frow
 	cmpi.w	#10,d3			; the game's picture in the window
 	beq.s	.fw			; (drawn meanwhile): off, twice
 	cmpi.w	#20,d3
@@ -7508,6 +7512,10 @@ ta_rerow:	; d5 = row: its cells again (the phase changed)
 	dbra	d3,.l
 	movem.l	(a7)+,d3-d4
 	rts
+
+ta_mid:	; .full row order (indexed by the count down): the middle out
+	dc.b	0,29,1,28,2,27,3,26,4,25,5,24,6,23,7,22,8,21,9,20,10,19,11,18,12,17,13,16,14,15
+	even
 
 ta_frow:	; d5 = row: its 42 cells from TA_L
 	movem.l	d3-d4,-(a7)
