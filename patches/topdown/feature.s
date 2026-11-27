@@ -3371,7 +3371,7 @@ ti_spr_xform:
 	movem.l	d2-d3/d7/a2,-(a7)
 	lea	TD_LIST,a2
 	move.w	TD_NB,d7
-	bra.s	.c
+	bra.w	.c
 .t:	move.w	(a2),d0
 	move.w	2(a2),d1
 	cmpi.b	#3,7(a2)		; kind 3 (overlay): global x already
@@ -3388,6 +3388,22 @@ ti_spr_xform:
 	move.w	d0,2(a2)
 	sub.w	TD_IGX,d2
 	move.w	d2,(a2)
+	ifd	SIZE8M
+	cmpi.w	#$5A71,TA_ON		; the pre-drawn view: the whole screen
+	bne.w	.hole			; (not the old view's hole: far
+	cmpi.w	#-40,d2			; figures showed only close by, #308)
+	blt.w	.off
+	cmpi.w	#360,d2
+	bgt.w	.off
+	sub.w	TD_IGY,d0
+	cmpi.w	#-64,d0
+	blt.w	.off
+	cmpi.w	#264,d0
+	ble.w	.n
+.off:	move.w	#$8000,(a2)
+	bra.w	.n
+.hole:
+	endif
 	add.w	#14-TI_CX,d2		; face centre in the hole?
 	bpl.s	.a
 	neg.w	d2

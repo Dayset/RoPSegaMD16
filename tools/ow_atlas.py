@@ -425,29 +425,49 @@ def textures(sets):
                 cnt[u[k].tobytes()] += int(n[k])
     out = {}
     for b, n in cnt.items():
-        a = np.frombuffer(b, np.uint8)
-        px = np.stack([a >> 4, a & 15], axis=1).reshape(8, 8)
-        cols, num = np.unique(px, return_counts=True)
-        if not 2 <= len(cols) <= 4:            # (colour 0 too: carpets)
-            continue
-        dom = cols[num.argmax()]
-        if num.max() < 29 or (n < NMIN and num.max() < (36 if SOLID else 56)):
-            # (a tile used seldom counts only when nearly one colour:
-            # the dotted carpets and floors)
-            continue
-        ok = True
-        for c in cols:
-            if c == dom:
-                continue
-            m = px == c
-            if (m[:, :-2] & m[:, 1:-1] & m[:, 2:]).any() or \
-                    (m[:-2] & m[1:-1] & m[2:]).any():
-                ok = False
-                break
-        if ok:
-            share = tuple(int(round(8 * k / 64)) for k in num)
-            out[b] = (tuple(int(c) for c in cols), share)
+        k = tex_key(b, n)
+        if k is not None:
+            out[b] = k
     return out
+
+
+def tex_key(b, n=NMIN):
+    """a tile's material key, or None: 2-4 colours (0 too: carpets),
+    one at least 45 %, the others only in specks (runs <= 2 across and
+    down: brick and plank lines stay); used seldom (< n) it counts only
+    when nearly one colour (the dotted carpets and floors)"""
+    a = np.frombuffer(b, np.uint8)
+    px = np.stack([a >> 4, a & 15], axis=1).reshape(8, 8)
+    cols, num = np.unique(px, return_counts=True)
+    if not 2 <= len(cols) <= 4:
+        return None
+    dom = cols[num.argmax()]
+    if num.max() < 29 or (n < NMIN and num.max() < (36 if SOLID else 56)):
+        return None
+    for c in cols:
+        if c == dom:
+            continue
+        m = px == c
+        if SOLID:                   # runs of 4 or more: a line, keep it
+            if (m[:, :-3] & m[:, 1:-2] & m[:, 2:-1] & m[:, 3:]).any() or \
+                    (m[:-3] & m[1:-2] & m[2:-1] & m[3:]).any():
+                return None
+        elif (m[:, :-2] & m[:, 1:-1] & m[:, 2:]).any() or \
+                (m[:-2] & m[1:-1] & m[2:]).any():
+            return None
+    return (tuple(int(c) for c in cols),
+            tuple(int(round(8 * k / 64)) for k in num))
+
+
+SOLIDC = {}                 # colour set -> the colour all its tiles get
+
+
+def solidc(key):
+    """a solid material's colour: the colour its colour set has most of
+    over all its tiles (one colour for all of a sea's tiles, whichever
+    of its two colours each tile has more of: no patchwork)"""
+    cols, share = key
+    return SOLIDC.get(cols, cols[int(np.argmax(share))])
 
 
 NFIELD = np.random.default_rng(308).integers(0, 256, (NVAR, 64)).astype(np.uint8)
@@ -467,7 +487,7 @@ def variants(key, seed):
     other phase) takes the variants shifted by half"""
     cols, share = key
     if SOLID:                       # one colour: the material's main one
-        c = np.full(4, cols[int(np.argmax(share))], np.uint8)
+        c = np.full(4, solidc(key), np.uint8)
     else:
         c = np.array(list(cols) + [cols[-1]] * (4 - len(cols)), np.uint8)
     t = np.array(thresholds(key))
@@ -509,7 +529,18 @@ def noise(r, tex, bank):
             same = u0[a].tobytes() == u1[b].tobytes()
             n0[y, x] = vid(add0, nu0, len(u0), ka, 0) + h[y, x]
             n1[y, x] = vid(add1, nu1, len(u1), kb, 0 if same else 1) + h[y, x]
-    return (np.concatenate(nu0), n0, np.concatenate(nu1), n1) + tuple(r[4:])
+    pats = []                           # the filler pattern too (#308)
+    for ph, pt in enumerate(r[6]):
+        pt = np.array(pt).copy()
+        for k in range(len(pt)):
+            key = tex.get(pt[k].tobytes()) or tex_key(pt[k].tobytes())
+            if key is not None:
+                if (key, 0) not in bank:
+                    bank[key, 0] = variants(key, 0)
+                pt[k] = bank[key, 0][k % NVAR]
+        pats.append(pt)
+    return ((np.concatenate(nu0), n0, np.concatenate(nu1), n1) + tuple(r[4:6])
+            + (tuple(pats),) + tuple(r[7:]))
 
 
 NCM = 128                   # materials a composite tile can stand on
@@ -575,8 +606,24 @@ def sparse(olist):
     return offs, bytes(out)
 
 
+STATIC = os.environ.get("ROP_STATIC", "1") == "1"   # no tile animation:
+
+
+def still(r):                       # phase 1 drawn as phase 0 (#308)
+    return (r[0], r[1], r[0], r[1]) + tuple(r[4:6]) + ((r[6][0], r[6][0]),) + tuple(r[7:])
+
+
 def layout(ow, rooms):
+    if STATIC:
+        ow = still(ow)
+        rooms = {n: still(r) for n, r in rooms.items()}
     tex = textures([r[:4] for r in [ow] + list(rooms.values())])
+    tot = collections.defaultdict(collections.Counter)
+    for cols, share in tex.values():
+        for c, sh in zip(cols, share):
+            tot[cols][c] += sh
+    SOLIDC.clear()
+    SOLIDC.update({cols: cn.most_common(1)[0][0] for cols, cn in tot.items()})
     bank = {}
     print("textures: %d tiles drawn as noise" % len(tex))
     ow = noise(ow, tex, bank)
@@ -635,7 +682,7 @@ def layout(ow, rooms):
     for (cols, share), seed in mats:    # 4 colours, 3 thresholds, shift
         c = list(cols) + [cols[-1]] * (4 - len(cols))
         if SOLID:                       # solid, not animated
-            c = [cols[int(np.argmax(share))]] * 4
+            c = [solidc((cols, share))] * 4
         out += bytes(c + thresholds((cols, share)) + [NVAR // 2 * seed])
     struct.pack_into(">I", out, MBASE + 20, OFFSET + len(out))
     out += NFIELD.tobytes()             # the noise field all of them share
@@ -706,7 +753,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas21-%s-t%d-h%d-c%d-s%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID)))
+             ("ow-atlas26-%s-t%d-h%d-c%d-s%d-a%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID, STATIC)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
