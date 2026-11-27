@@ -300,6 +300,7 @@ TA_PFL		equ TA_PFD+2	; it was for, the camera seen last
 TA_PFT		equ TA_PFL+2
 TA_PFGX		equ TA_PFT+2
 TA_PFGY		equ TA_PFGX+2
+TA_FPH		equ TA_PFGY+2	; figure animation phase held while he walks
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -1555,6 +1556,14 @@ td_figure:
 	mulu.w	#36,d0
 	movea.l	GRIDPTR,a0
 	move.w	$A(a0),d1		; phase 0..3
+	ifd	SIZE8M
+	tst.w	TA_MOV			; animations paused while the leader
+	beq.s	.ph			; walks (#308)
+	move.w	TA_FPH,d1
+	bra.s	.ph1
+.ph:	move.w	d1,TA_FPH
+.ph1:
+	endif
 	andi.w	#3,d1
 	lsl.w	#3,d1
 	add.w	d1,d0
@@ -7479,6 +7488,8 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bne.s	.end
 	tst.w	TA_PR			; terrain phase (water): a changed
 	bpl.s	.sw			; phase is swept in, 3 rows a frame
+	tst.w	TA_MOV			; (not while the leader walks)
+	bne.s	.end
 	bsr.w	ta_phnow
 	cmp.w	TA_PH,d0
 	beq.s	.end

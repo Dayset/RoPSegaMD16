@@ -407,6 +407,7 @@ def areas(rom):
 
 
 NVAR = 8                    # noise variants per material and phase
+SOLID = os.environ.get("ROP_SOLID", "1") == "1"  # materials one colour
 NMIN = 24                   # uses before a tile counts as a texture
 
 
@@ -464,8 +465,11 @@ def variants(key, seed):
     """NVAR noise tiles of a material: ONE noise field shared by every
     material (#308), cut at its shares into its colours; seed 1 (water's
     other phase) takes the variants shifted by half"""
-    cols, _ = key
-    c = np.array(list(cols) + [cols[-1]] * (4 - len(cols)), np.uint8)
+    cols, share = key
+    if SOLID:                       # one colour: the material's main one
+        c = np.full(4, cols[int(np.argmax(share))], np.uint8)
+    else:
+        c = np.array(list(cols) + [cols[-1]] * (4 - len(cols)), np.uint8)
     t = np.array(thresholds(key))
     f = np.roll(NFIELD, NVAR // 2 * seed, axis=0)
     v = c[(f[..., None] >= t).sum(axis=2)]
@@ -630,6 +634,8 @@ def layout(ow, rooms):
     struct.pack_into(">I", out, MBASE + 16, OFFSET + len(out))
     for (cols, share), seed in mats:    # 4 colours, 3 thresholds, shift
         c = list(cols) + [cols[-1]] * (4 - len(cols))
+        if SOLID:                       # solid, not animated
+            c = [cols[int(np.argmax(share))]] * 4
         out += bytes(c + thresholds((cols, share)) + [NVAR // 2 * seed])
     struct.pack_into(">I", out, MBASE + 20, OFFSET + len(out))
     out += NFIELD.tobytes()             # the noise field all of them share
@@ -700,7 +706,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas17-%s-t%d-h%d-c%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE)))
+             ("ow-atlas18-%s-t%d-h%d-c%d-s%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
