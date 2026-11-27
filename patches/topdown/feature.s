@@ -60,7 +60,7 @@ TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 	endif
 TD_TC		equ 2		; combat arena tick period (frames)
-TD_TF		equ 12		; overworld on the dragon (orig attract flight 22.0)
+TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
 TD_TS		equ 10		; boat / ship (orig over open sea 17-19)
 	ifd	SIZE8M
 TD_TB		equ 8		; big rooms: no render to wait for in the
@@ -3520,9 +3520,12 @@ td_iso_cam:
 	move.w	TD_CFY,d5
 	lea	TD_CMY,a0
 	bsr.s	.ax
-.xy:	move.w	TD_CMX,d0
-	sub.w	TD_CMY,d0
-	asr.w	#3,d0			; 14 (x - y) / 112
+.xy:	moveq	#0,d0			; (unsigned: x past cell 292 is past
+	move.w	TD_CMX,d0		; 32767 units; as a signed word the
+	moveq	#0,d1			; east of the map jumped 585 cells
+	move.w	TD_CMY,d1		; west, into nothing, #308)
+	sub.l	d1,d0
+	asr.l	#3,d0			; 14 (x - y) / 112
 	sub.w	#148,d0
 	move.w	d0,TD_IGX
 	moveq	#0,d0
@@ -7909,6 +7912,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	d6,TA_L
 	move.w	d7,TA_T
 	addq.w	#1,TD_BUSY		; (no picture updates meanwhile: all
+	move.w	#$8134,VDP_CTRL		; (the screen off meanwhile: a jump
 	moveq	#TA_H-1,d3		; of it at once is quicker), from the
 .fr:	moveq	#0,d5			; middle out: the leader's surroundings
 	lea	ta_mid(pc),a0		; first (#308)
@@ -7923,6 +7927,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bsr.w	td_iso_winfix
 	clr.w	TD_UNFR
 .fn:	dbra	d3,.fr
+	move.w	#$8174,VDP_CTRL		; showed old and new mixed, #308)
 	subq.w	#1,TD_BUSY
 	ifd	HELDPC
 	move.w	FRAME,($FF7E32).l
