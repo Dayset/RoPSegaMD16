@@ -304,6 +304,10 @@ TA_FPH		equ TA_PFGY+2	; figure animation phase held while he walks
 TA_WSK		equ TA_FPH+2	; window scans: every other one while he walks
 TA_CX		equ TA_WSK+2	; camera, 1/16 px (long): eased to the target
 TA_CY		equ TA_CX+4
+TA_RGX		equ TA_CY+4	; the camera's target before easing (tests)
+TA_RGY		equ TA_RGX+2
+TA_HELD		equ TA_RGY+2	; the camera held at the window's edge
+TA_FARN		equ TA_HELD+2	; a far camera target seen (once: not yet)
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -559,16 +563,23 @@ ti_tw0:
 .tkc:	move.w	TD_RPER,d2
 	cmp.w	d2,d1
 	bcs.s	.tkd
-	sub.w	d2,d1
+	cmpi.w	#2,MODE			; rooms: the peak at once (a long tick
+	beq.s	.tk0			; there left the walk standing: stop
+	sub.w	d2,d1			; and go, #308)
 	addq.w	#1,d1
 	lsr.w	#1,d1
 	add.w	d2,d1
 	bra.s	.tk0
 .tkd:
 	sub.w	d1,d2
-	addq.w	#3,d2
+	cmpi.w	#2,MODE			; (and in rooms down by a 16th only)
+	bne.s	.tkq
+	add.w	#15,d2
+	lsr.w	#4,d2
+	bra.s	.tkn
+.tkq:	addq.w	#3,d2
 	lsr.w	#2,d2
-	neg.w	d2
+.tkn:	neg.w	d2
 	add.w	TD_RPER,d2
 	move.w	d2,d1
 .tk0:	move.w	d1,TD_RPER
@@ -612,6 +623,7 @@ mg_find:
 	move.w	d1,2(a0)
 	moveq	#-1,d0
 	rts
+mg_fend:
 
 ;=======================================================================
 ; td_poll — combat_turn_run char-loop head: picture update if a new
@@ -749,6 +761,9 @@ td_vint:
 	endif
 	bra.s	.out
 .ns:	bsr.w	td_frame_ns
+	ifd	SIZE8M
+	bsr.w	ta_vstream
+	endif
 .out:	movem.l	(a7)+,d0-d7/a0-a6
 .q:	rts
 td_vin:	; d0 = PC -> Z set if inside a td_vwl range (uses d1-d2, a0)
@@ -1546,7 +1561,12 @@ td_figure:
 	mulu.w	#12,d0
 	lea	RECS,a1
 	adda.w	d0,a1
-	move.w	2(a1),d0		; template
+	cmpi.w	#2,10(a1)		; draw type 2 (an item: map_tile_at_
+	bcs.s	.tp			; offset) or 3 (an animated object,
+	moveq	#0,d2			; its first frame): the record's own
+	moveq	#0,d3			; image, no template (a key, a scroll
+	bra.w	.key			; showed a sack and a knife, #308)
+.tp:	move.w	2(a1),d0		; template
 	ifd	SIZE8M
 	bsr.w	ta_isldr		; (the leader: the controller's facing)
 	bne.s	.nf
@@ -6473,6 +6493,17 @@ ta_padf:	; td_pad: d0 = the popped pad byte. With the controller on, the
 	beq.s	.o
 	or.b	TA_CMT+1,d0
 	clr.w	TA_CMT
+	movem.l	d1-d2,-(a7)		; the frames between the steps the game
+	move.w	FRAME,d1		; takes pace the walk too: one taken
+	sub.w	TA_CF,d1		; later than the walk expected raises it
+	move.w	TD_PERIOD,d2		; at once (no stop and go in a busy
+	add.w	d2,d2			; room, #308); a pause (2 periods or
+	cmp.w	d2,d1			; more) does not count
+	bcc.s	.nr
+	cmp.w	TD_RPER,d1
+	bls.s	.nr
+	move.w	d1,TD_RPER
+.nr:	movem.l	(a7)+,d1-d2
 	move.w	FRAME,TA_CF
 	bne.s	.o
 	move.w	#1,TA_CF		; (frame 0)
@@ -7166,7 +7197,12 @@ ta_rub:	; rubber-band camera (td_iso_cam): still while the leader's cell
 	mulu.w	#TI_CU/16,d0
 .gy:	move.w	TA_LY,d1
 	lea	TD_CMY,a0
-.ax:	tst.w	d4
+.ax:	move.w	d0,(a0)			; the camera is the leader: no dead
+	rts				; zone, lead or spring (a reversed walk
+					; made it hold, then race at 2 px a
+					; frame: the zigzag). The easing in
+					; ta_clamp makes the glide (#308)
+	tst.w	d4
 	beq.s	.w
 	muls.w	#TA_LEAD,d1
 	add.w	d1,d0
@@ -7349,14 +7385,40 @@ ta_norc:	; no cell uses any slot
 ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmpi.w	#$5A71,TA_ON
 	bne.w	.o
+	move.w	TD_IGX,TA_RGX
+	move.w	TD_IGY,TA_RGY
 	movem.l	a0-a1/d2,-(a7)
+	lea	TD_IGX,a0		; a target 64 px or more away: a snap
+	lea	TA_CX,a1		; only when seen twice running (a
+	bsr.w	.far			; single wild one, (0,1) while the game
+	bne.s	.f1			; is busy, shook the scroll, #308)
+	lea	TD_IGY,a0
+	lea	TA_CY,a1
+	bsr.w	.far
+	bne.s	.f1
+	clr.w	TA_FARN
+	bra.s	.f2
+.f1:	tst.w	TA_FARN
+	bne.s	.f3
+	move.w	#1,TA_FARN		; the first: keep the last view
+	move.l	TA_CX,d0
+	addq.l	#8,d0
+	asr.l	#4,d0
+	move.w	d0,TD_IGX
+	move.l	TA_CY,d0
+	addq.l	#8,d0
+	asr.l	#4,d0
+	move.w	d0,TD_IGY
+	bra.s	.f4
+.f3:	clr.w	TA_FARN
+.f2:
 	lea	TD_IGX,a0		; shown: eased toward the target, a
 	lea	TA_CX,a1		; 16th of the way a frame in 1/16 px
 	bsr.w	.lim			; (a zigzag of the leader's diagonal
 	lea	TD_IGY,a0		; steps comes out a straight glide; the
 	lea	TA_CY,a1		; rounding even both ways, #308), at
 	bsr.w	.lim			; most 3 px a frame; 64 px or more: a
-	movem.l	(a7)+,a0-a1/d2		; snap. The window follows it
+.f4:	movem.l	(a7)+,a0-a1/d2		; snap. The window follows it
 	move.w	TD_IGX,TA_GX
 	move.w	TD_IGY,TA_GY
 	move.w	TA_L,d0
@@ -7380,7 +7442,8 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmp.w	TD_IGY,d0
 	bge.s	.sm
 	move.w	d0,TD_IGY
-.sm:	lea	TD_IGX,a0		; held at the window's edge: the
+.sm:	clr.w	TA_HELD
+	lea	TD_IGX,a0		; held at the window's edge: the
 	lea	TA_CX,a1		; easing goes on from there
 	bsr.s	.rs
 	lea	TD_IGY,a0
@@ -7394,7 +7457,18 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	ext.l	d0
 	asl.l	#4,d0
 	move.l	d0,(a1)
+	move.w	#1,TA_HELD
 .rs1:	rts
+.far:	move.w	(a0),d0			; Z clear: (a0) 64 px or more from
+	ext.l	d0			; the eased view (a1)
+	asl.l	#4,d0
+	sub.l	(a1),d0
+	bpl.s	.fa
+	neg.l	d0
+.fa:	cmpi.l	#64*16,d0
+	scc	d0
+	tst.b	d0
+	rts
 .lim:	move.w	(a0),d0
 	ext.l	d0
 	asl.l	#4,d0			; target, 1/16 px
@@ -7568,6 +7642,33 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	clr.w	TD_UNFR
 .nw:	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
+
+ta_vstream:	; VBlank, the main thread busy in game logic (a long tick
+	; in a big room) and the camera held at the window's edge: the
+	; window catches up here, not when the tick ends (the stop and go
+	; of the scroll, #308). Only in routines that leave DECBUF alone.
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.x
+	tst.w	TA_HELD
+	beq.s	.x
+	move.l	66+4(a7),d0		; interrupted PC (our caller's frame)
+	lea	ta_vsl(pc),a0
+.l:	move.l	(a0)+,d1
+	beq.s	.x
+	move.l	(a0)+,d2
+	cmp.l	d1,d0
+	bcs.s	.l
+	cmp.l	d2,d0
+	bcc.s	.l
+	bsr.w	ta_stream
+.x:	rts
+ta_vsl:	dc.l	$02155E,$021FE6		; world_tick
+	dc.l	$0226BC,$0231D8		; combat_turn_run
+	dc.l	$024676,$024916		; map_grid_place_chars
+	dc.l	$01C83E,$01D9BA		; location_divide, move_cost_calc
+	dc.l	$00DE8E,$00DF58		; mul32 .. math_udiv32
+	dc.l	mg_find,mg_fend		; the grid search
+	dc.l	0
 
 ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
 	; the camera into the slot cache (no plane words): a column or row
