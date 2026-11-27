@@ -312,6 +312,7 @@ TA_RGX		equ TA_CY+4	; the camera's target before easing (tests)
 TA_RGY		equ TA_RGX+2
 TA_HELD		equ TA_RGY+2	; the camera held at the window's edge
 TA_FARN		equ TA_HELD+2	; a far camera target seen (once: not yet)
+TA_INV		equ TA_FARN+2	; ta_stream called by ta_vstream (VBlank)
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -7857,17 +7858,21 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	asr.w	#3,d7
 	cmpi.w	#$8000,TA_L
 	beq.w	.full
-	move.w	d6,d0
+	moveq	#8,d1			; (in VBlank: one line at most)
+	tst.w	TA_INV
+	beq.s	.mx
+	moveq	#1,d1
+.mx:	move.w	d6,d0
 	sub.w	TA_L,d0
 	bpl.s	.a
 	neg.w	d0
-.a:	cmpi.w	#8,d0			; a jump: all of it again
+.a:	cmp.w	d1,d0			; a jump: all of it again
 	bhi.w	.full
 	move.w	d7,d0
 	sub.w	TA_T,d0
 	bpl.s	.b
 	neg.w	d0
-.b:	cmpi.w	#8,d0
+.b:	cmp.w	d1,d0
 	bhi.w	.full
 .lp:	move.w	TA_L,d0
 	cmp.w	d6,d0
@@ -7905,6 +7910,8 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	subq.w	#1,TA_T
 	bra.w	.lp
 .full:
+	tst.w	TA_INV			; not from VBlank: the main thread's
+	bne.w	.vx			; job
 	ifd	HELDPC
 	move.w	FRAME,($FF7E30).l
 	endif
@@ -7970,6 +7977,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	#1,TD_UNFR
 	bsr.w	td_iso_winfix
 	clr.w	TD_UNFR
+.vx:
 .nw:	movem.l	(a7)+,d2-d7/a2-a6
 .x:	rts
 
@@ -7990,7 +7998,13 @@ ta_vstream:	; VBlank, the main thread busy in game logic (a long tick
 	bcs.s	.l
 	cmp.l	d2,d0
 	bcc.s	.l
+	tst.w	TA_LOST			; only a line or so here: a refill
+	bne.s	.x			; from VBlank took frames, and the
+	tst.w	TA_BAD			; next VBlank did it again: the game
+	bne.s	.x			; never ran (the freeze in the academy
+	move.w	#1,TA_INV		; cutscene, #308)
 	bsr.w	ta_stream
+	clr.w	TA_INV
 .x:	rts
 ta_vsl:	dc.l	$02155E,$021FE6		; world_tick
 	dc.l	$0226BC,$0231D8		; combat_turn_run
