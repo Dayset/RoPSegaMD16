@@ -40,3 +40,5 @@ addr,len,kind,target
 0x02103E,8,jmp,mg_find
 0x0258EE,8,jmp,s52_find
 0x022F22,6,jmp,s_beh
+0x02736A,6,jsr,hp_gauge
+0x02EDC6,6,jsr,hp_gauge

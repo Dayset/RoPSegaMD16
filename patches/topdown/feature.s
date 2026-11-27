@@ -824,13 +824,58 @@ ta_bar:
 	dbra	d3,.n2
 	rts
 
+; hp_gauge — the combat roster's HP / Power bars ($02736A jsr
+; text_draw_gauge): the HP as a number in the bars' 4 cells instead (#308)
+hp_gauge:
+	tst.w	$16(a7)			; down: the game's own word
+	beq.s	.up
+	jmp	($011416).l
+.up:	movem.l	d2-d4,-(a7)
+	move.w	12+$C(a7),d0		; row * stride + column
+	mulu.w	12+8(a7),d0
+	add.w	12+$A(a7),d0
+	add.w	d0,d0
+	add.w	12+6(a7),d0		; + base
+	move.w	FONTBLK,d4
+	add.w	12+$18(a7),d4		; blank word, the bars' attribute
+	moveq	#0,d1
+	move.w	12+$E(a7),d1		; HP
+	bpl.s	.p
+	moveq	#0,d1
+.p:	moveq	#0,d3			; its digits on the stack
+.d:	divu.w	#10,d1
+	swap	d1
+	move.w	d1,-(a7)
+	addq.w	#1,d3
+	clr.w	d1
+	swap	d1
+	tst.w	d1
+	bne.s	.d
+	move.w	sr,d2
+	move.w	#$2700,sr
+	bsr.w	td_vwrite
+	moveq	#4,d1
+	sub.w	d3,d1
+	subq.w	#1,d3
+.w:	move.w	(a7)+,d0
+	add.w	#16,d0			; '0' - ' '
+	add.w	d4,d0
+	move.w	d0,VDP_DATA
+	dbra	d3,.w
+	bra.s	.b1
+.b:	move.w	d4,VDP_DATA
+.b1:	dbra	d1,.b
+	move.w	d2,sr
+	movem.l	(a7)+,d2-d4
+	rts
+
 ; s_beh — a character's behaviour switch ($022F22): everyone but the
 ; party and scripted moves (0 follow, 9 go/attack) stands still: no
 ; wandering (11, 13) and no chasing or fleeing the leader (5, 6) (#308)
 s_beh:
 	cmpi.l	#14,d0
 	bcc.s	.x
-	move.w	#$2860,d1
+	move.w	#$0800,d1
 	btst	d0,d1
 	bne.s	.x
 	jmp	($022F2A).l
