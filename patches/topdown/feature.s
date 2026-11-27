@@ -6025,10 +6025,9 @@ ta_ctl:
 	move.w	TA_OY,TA_POY
 	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
-	move.w	TD_RPER,d0		; (or per tick, when they run longer,
-	move.w	d0,d1			; with an eighth to spare)
-	lsr.w	#3,d1
-	add.w	d1,d0
+	cmpi.w	#1,MODE			; (or, in rooms, per tick when the
+	beq.s	.sp			; game's ticks run longer)
+	move.w	TD_RPER,d0
 	cmp.w	TD_PERIOD,d0
 	bls.s	.sp
 	divu.w	d0,d6
