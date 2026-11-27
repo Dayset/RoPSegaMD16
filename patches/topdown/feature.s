@@ -301,6 +301,7 @@ TA_PFT		equ TA_PFL+2
 TA_PFGX		equ TA_PFT+2
 TA_PFGY		equ TA_PFGX+2
 TA_FPH		equ TA_PFGY+2	; figure animation phase held while he walks
+TA_WSK		equ TA_FPH+2	; window scans: every other one while he walks
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -1558,7 +1559,9 @@ td_figure:
 	move.w	$A(a0),d1		; phase 0..3
 	ifd	SIZE8M
 	tst.w	TA_MOV			; animations paused while the leader
-	beq.s	.ph			; walks (#308)
+	beq.s	.ph			; walks (#308), not his own
+	bsr.w	ta_isldr
+	beq.s	.ph1
 	move.w	TA_FPH,d1
 	bra.s	.ph1
 .ph:	move.w	d1,TA_FPH
@@ -6949,7 +6952,11 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	clr.w	TD_UNFR
 	addq.w	#1,TD_BUSY
 	rts
-.nq:	addq.w	#1,TD_WFC
+.nq:	tst.w	TA_MOV			; walking: half the routine scans (the
+	beq.s	.nq1			; game's own window words come mostly
+	eori.w	#1,TA_WSK		; when he stands: messages, menus)
+	beq.s	.o
+.nq1:	addq.w	#1,TD_WFC
 	move.w	TD_WFC,d0
 	andi.w	#3,d0
 	beq.s	.unfr
