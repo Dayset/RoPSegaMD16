@@ -302,6 +302,8 @@ TA_PFGX		equ TA_PFT+2
 TA_PFGY		equ TA_PFGX+2
 TA_FPH		equ TA_PFGY+2	; figure animation phase held while he walks
 TA_WSK		equ TA_FPH+2	; window scans: every other one while he walks
+TA_CX		equ TA_WSK+2	; camera, 1/16 px (long): eased to the target
+TA_CY		equ TA_CX+4
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -311,7 +313,7 @@ TA_DZ		equ TI_CU	; camera: dead zone, lead, speed cap (units)
 TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 16
 TA_CMTP		equ 16		; progress (1/256 cell) the step goes to the game
-TA_TURN		equ 6		; frames a new facing is held before a step
+TA_TURN		equ 3		; frames a new facing is held before a step
 TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
@@ -6124,7 +6126,7 @@ ta_ctl:
 	add.l	d2,d1
 	cmpi.l	#TA_CMTP,d1		; (at once: its answer comes before he
 	blt.s	.x			; is far, so a wall stops him short)
-	move.w	#64,TA_CAP
+	move.w	#96,TA_CAP
 	move.w	FRAME,d0
 	sub.w	TA_LMF,d0
 	cmpi.w	#4,d0
@@ -7355,30 +7357,40 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmp.w	TD_IGY,d0
 	bge.s	.sm
 	move.w	d0,TD_IGY
-.sm:	movem.l	a0-a1,-(a7)
-	lea	TD_IGX,a0		; shown: at most 3 px a frame on from
-	lea	TA_SX,a1		; the last (held back at the window's
-	bsr.s	.lim			; edge, it then glides, not jumps;
-	lea	TD_IGY,a0		; a snap, 64 px or more, at once)
-	lea	TA_SY,a1
-	bsr.s	.lim
-	movem.l	(a7)+,a0-a1
+.sm:	movem.l	a0-a1/d2,-(a7)
+	lea	TD_IGX,a0		; shown: eased toward the target, a
+	lea	TA_CX,a1		; 16th of the way a frame in 1/16 px
+	bsr.s	.lim			; (a zigzag of the leader's diagonal
+	lea	TD_IGY,a0		; steps comes out a straight glide; the
+	lea	TA_CY,a1		; rounding even both ways, #308), at
+	bsr.s	.lim			; most 3 px a frame; 64 px or more: a
+	move.w	TD_IGX,TA_SX		; snap
+	move.w	TD_IGY,TA_SY
+	movem.l	(a7)+,a0-a1/d2
 	rts
 .lim:	move.w	(a0),d0
-	sub.w	(a1),d0
-	move.w	d0,d1
+	ext.l	d0
+	asl.l	#4,d0			; target, 1/16 px
+	move.l	d0,d1
+	sub.l	(a1),d1			; how far
+	move.l	d1,d2
 	bpl.s	.l1
-	neg.w	d1
-.l1:	cmpi.w	#64,d1
-	bcc.s	.l3
-	cmpi.w	#3,d0
-	ble.s	.l2
-	moveq	#3,d0
-.l2:	cmpi.w	#-3,d0
-	bge.s	.l3
-	moveq	#-3,d0
-.l3:	add.w	(a1),d0
-	move.w	d0,(a1)
+	neg.l	d2
+.l1:	cmpi.l	#64*16,d2
+	bcc.s	.sn
+	addq.l	#8,d2			; a 16th, rounded, the sign put back
+	lsr.l	#4,d2
+	cmpi.l	#3*16,d2
+	bls.s	.l2
+	moveq	#3*16,d2
+.l2:	tst.l	d1
+	bpl.s	.l3
+	neg.l	d2
+.l3:	add.l	(a1),d2
+	move.l	d2,d0
+.sn:	move.l	d0,(a1)
+	addq.l	#8,d0			; shown: the nearest pixel
+	asr.l	#4,d0
 	move.w	d0,(a0)
 .o:	rts
 
