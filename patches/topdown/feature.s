@@ -53,17 +53,17 @@
 
 ; ---- tuning ----------------------------------------------------------
 	ifd	SIZE8M			; pre-drawn view: a quicker walk (#308)
-TD_T1		equ 18		; frames per world tick, overworld (orig avg 26.5)
-TD_T2		equ 15		; frames per world tick, rooms (orig 17.0)
+TD_T1		equ 10		; frames per world tick, overworld (orig avg 26.5)
+TD_T2		equ 8		; frames per world tick, rooms (orig 17.0)
 	else
 TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
 	endif
 TD_TC		equ 2		; combat arena tick period (frames)
-TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
-TD_TS		equ 19		; boat / ship (orig over open sea 17-19)
+TD_TF		equ 12		; overworld on the dragon (orig attract flight 22.0)
+TD_TS		equ 10		; boat / ship (orig over open sea 17-19)
 	ifd	SIZE8M
-TD_TB		equ 16		; big rooms: no render to wait for in the
+TD_TB		equ 8		; big rooms: no render to wait for in the
 	else			; pre-drawn view (and the grid search is fast)
 TD_TB		equ 22		; big (32x32) rooms (orig room 156: 22)
 	endif
@@ -2772,7 +2772,13 @@ td_winfix:
 	move.w	(a7)+,sr
 	lea	TD_WROW,a2
 	moveq	#0,d4			; column 0..39
+	move.w	FONTBLK,d3		; the word most cells hold: nothing to do
+	cmpi.w	#TD_WBROW,d6
+	bcs.s	.col
+	ori.w	#$8000,d3
 .col:	move.w	(a2)+,d0
+	cmp.w	d3,d0
+	beq.w	.nx
 	move.w	d0,d1
 	sub.w	FONTBLK,d1
 	andi.w	#$7FF,d1		; a blank, any attributes
@@ -7253,9 +7259,12 @@ ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
 	add.w	SPRBASE,d4
 	move.w	sr,-(a7)
 	move.w	#$2700,sr
-	move.w	d4,d0
-	addq.w	#4,d0
-	bsr.w	td_vread
+	move.w	d4,d0			; link and tile in one read
+	addq.w	#2,d0
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	move.w	VDP_DATA,d2
+	move.w	VDP_DATA,d0
 	andi.w	#$7FF,d0
 	cmpi.w	#1834,d0
 	bcs.s	.k
@@ -7264,12 +7273,8 @@ ta_spr:	; the game's sprites showing records 16-17 (pad, gauges): off
 	move.w	d4,d0
 	bsr.w	td_vwrite
 	move.w	#0,VDP_DATA
-.k:	move.w	d4,d0
-	addq.w	#2,d0
-	bsr.w	td_vread
-	move.w	(a7)+,sr
-	andi.w	#$7F,d0
-	move.w	d0,d2
+.k:	move.w	(a7)+,sr
+	andi.w	#$7F,d2
 	dbra	d3,.l
 .o:	movem.l	(a7)+,d2-d4
 	rts

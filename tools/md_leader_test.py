@@ -10,7 +10,8 @@ every frame the pre-drawn view and the leader controller are on:
   fontblank  the font blank tile (every blank window cell) stays blank
   hud        no gold / time / food-water words in the HUD rows (td_hsrc
              cells) while no message shows
-  jump       the leader figure moves <= 1/16 cell a frame (no teleport)
+  jump       the leader figure moves <= 2/16 cell a frame (no teleport; 8-10
+             frame steps go 1.6-2/16 a frame)
   lift       the figure's lift is the lift of the cell nearest its drawn
              place (a refused step stops at 1/8 cell: never a wall's),
              two frames late at most
@@ -154,7 +155,7 @@ def main():
         g = (W(0xFF02B4 + ld * 0x34 + 0xC), W(0xFF02B4 + ld * 0x34 + 0xE))
         pos = (s16(W(E["TD_LEADX"])), s16(W(E["TD_LEADY"])))
         area = W(TA_AR)
-        if prev and prev[2] == area and max(abs(pos[0] - prev[0][0]), abs(pos[1] - prev[0][1])) > 1 \
+        if prev and prev[2] == area and max(abs(pos[0] - prev[0][0]), abs(pos[1] - prev[0][1])) > 2 \
                 and max(abs(g[0] - prev[1][0]), abs(g[1] - prev[1][1])) <= 1:
             hits["jump"].append((i, pos, prev[0]))
         lt = {(W(TA_LT + 6 * k), W(TA_LT + 6 * k + 2)): W(TA_LT + 6 * k + 4) for k in range(5)}
