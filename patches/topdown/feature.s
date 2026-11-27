@@ -73,6 +73,8 @@ TD_NFIG		equ 10		; figure sprites max
 TD_BOXT		equ 802		; HUD box: 12 solid parchment tiles (bank offset)
 TD_VC		equ 84		; screen line the leader is centred on
 TD_NFC		equ 25		; figure images cached in VRAM (4x4 tiles each)
+TA_W		equ 42		; window columns (wider ran out of VRAM slots: pink holes)
+				; camera runs ahead of the loading, #308)
 TD_SHL		equ 3		; extra cell columns left (shear: 42 px at line 0)
 TD_SHR		equ 8		; extra cell columns right (shear: 69 px at line 223)
 TD_NROW		equ 16		; cell rows drawn (the whole ring)
@@ -7000,11 +7002,7 @@ ta_sync:	; td_isync, once per tick: enter, change area or leave
 	clr.w	TD_UNFR
 	addq.w	#1,TD_BUSY
 	rts
-.nq:	tst.w	TA_MOV			; walking: half the routine scans (the
-	beq.s	.nq1			; game's own window words come mostly
-	eori.w	#1,TA_WSK		; when he stands: messages, menus)
-	beq.s	.o
-.nq1:	addq.w	#1,TD_WFC
+.nq:	addq.w	#1,TD_WFC
 	move.w	TD_WFC,d0
 	andi.w	#3,d0
 	beq.s	.unfr
@@ -7428,7 +7426,7 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmp.w	TD_IGX,d0
 	ble.s	.k1
 	move.w	d0,TD_IGX
-.k1:	add.w	#16,d0
+.k1:	add.w	#16+8*(TA_W-42),d0
 	cmp.w	TD_IGX,d0
 	bge.s	.k2
 	move.w	d0,TD_IGX
@@ -7525,6 +7523,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	$FF0E90,TD_ICY
 	move.w	TA_GX,d6
 	asr.w	#3,d6			; d6/d7 = wanted left column, top row
+	sub.w	#(TA_W-42)/2,d6
 	move.w	TA_GY,d7
 	subq.w	#6,d7
 	asr.w	#3,d7
@@ -7553,14 +7552,14 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bra.w	.done
 .right:	move.w	TA_L,d4
 	bsr.w	ta_dcol
-	add.w	#42,d4
+	add.w	#TA_W,d4
 	bsr.w	ta_fcol
 	addq.w	#1,TA_L
 	bra.s	.lp
 .left:	move.w	TA_L,d4
-	add.w	#41,d4
+	add.w	#TA_W-1,d4
 	bsr.w	ta_dcol
-	sub.w	#42,d4
+	sub.w	#TA_W,d4
 	bsr.w	ta_fcol
 	subq.w	#1,TA_L
 	bra.s	.lp
@@ -7725,7 +7724,7 @@ ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
 	moveq	#30,d6			; line length: a column 30, a row 42
 	cmpi.w	#3,d4
 	bcs.w	.ll
-	moveq	#42,d6
+	moveq	#TA_W,d6
 .ll:	moveq	#6-1,d7			; 6 tiles a frame
 .l:	move.w	TA_PFP,d0
 	move.w	d6,d1
@@ -7745,7 +7744,7 @@ ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
 	move.w	TA_L,d4
 	cmpi.w	#1,d2
 	bne.w	.lf
-	add.w	#42,d4			; right: past the last column
+	add.w	#TA_W,d4		; right: past the last column
 	add.w	d0,d4
 	bra.w	.f
 .lf:	subq.w	#1,d4			; left: before the first
@@ -7779,7 +7778,7 @@ ta_phnow:	; -> d0 = the game's terrain phase (0/1)
 ta_rerow:	; d5 = row: its cells again (the phase changed)
 	movem.l	d3-d4,-(a7)
 	move.w	TA_L,d4
-	moveq	#42-1,d3
+	moveq	#TA_W-1,d3
 .l:	bsr.w	ta_drop
 	bsr.w	ta_fill
 	addq.w	#1,d4
@@ -7794,7 +7793,7 @@ ta_mid:	; .full row order (indexed by the count down): the middle out
 ta_frow:	; d5 = row: its 42 cells from TA_L
 	movem.l	d3-d4,-(a7)
 	move.w	TA_L,d4
-	moveq	#42-1,d3
+	moveq	#TA_W-1,d3
 .l:	bsr.w	ta_fill
 	addq.w	#1,d4
 	dbra	d3,.l
@@ -7814,7 +7813,7 @@ ta_fcol:	; d4 = column: its 30 cells from TA_T
 ta_drow:	; d5 = row leaves the window
 	movem.l	d3-d4,-(a7)
 	move.w	TA_L,d4
-	moveq	#42-1,d3
+	moveq	#TA_W-1,d3
 .l:	bsr.s	ta_drop
 	addq.w	#1,d4
 	dbra	d3,.l
