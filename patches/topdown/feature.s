@@ -1710,9 +1710,13 @@ td_chars:
 	sub.w	2(a4),d1
 	bpl.s	.ay
 	neg.w	d1
-.ay:	cmpi.w	#2,d0
+.ay:	moveq	#2,d4			; (the dragon: 6, #308)
+	cmpi.w	#TD_TF,TD_PERIOD
+	bne.s	.az
+	moveq	#6,d4
+.az:	cmp.w	d4,d0
 	bgt.s	.snap
-	cmpi.w	#2,d1
+	cmp.w	d4,d1
 	bgt.s	.snap
 	move.w	d5,4(a4)
 	move.w	d6,6(a4)
@@ -7792,8 +7796,12 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	sub.l	(a1),d0
 	bpl.s	.fa
 	neg.l	d0
-.fa:	cmpi.l	#64*16,d0
-	scc	d0
+.fa:	cmpi.w	#TD_TF,TD_PERIOD	; (the dragon: 4-6 cells a step
+	beq.s	.fd			; glide too, #308)
+	cmpi.l	#64*16,d0
+	bra.s	.fe
+.fd:	cmpi.l	#192*16,d0
+.fe:	scc	d0
 	tst.b	d0
 	rts
 .lim:	move.w	(a0),d0
@@ -7804,18 +7812,29 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	move.l	d1,d2
 	bpl.s	.l1
 	neg.l	d2
-.l1:	cmpi.l	#64*16,d2
-	bcc.s	.sn
-	addq.l	#8,d2			; a 16th, rounded, the sign put back
+.l1:	move.l	d3,-(a7)
+	moveq	#3*16,d3		; at most 3 px a frame, 64 px: a snap
+	cmpi.w	#TD_TF,TD_PERIOD	; (the dragon: 8, 192)
+	bne.s	.ld
+	cmpi.l	#192*16,d2
+	bcc.s	.sx
+	moveq	#8*16,d3
+	bra.s	.le
+.ld:	cmpi.l	#64*16,d2
+	bcc.s	.sx
+.le:	addq.l	#8,d2			; a 16th, rounded, the sign put back
 	lsr.l	#4,d2
-	cmpi.l	#3*16,d2
+	cmp.l	d3,d2
 	bls.s	.l2
-	moveq	#3*16,d2
-.l2:	tst.l	d1
+	move.l	d3,d2
+.l2:	move.l	(a7)+,d3
+	tst.l	d1
 	bpl.s	.l3
 	neg.l	d2
 .l3:	add.l	(a1),d2
 	move.l	d2,d0
+	bra.s	.sn
+.sx:	move.l	(a7)+,d3
 .sn:	move.l	d0,(a1)
 	addq.l	#8,d0			; shown: the nearest pixel
 	asr.l	#4,d0
