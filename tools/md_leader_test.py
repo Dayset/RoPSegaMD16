@@ -168,7 +168,7 @@ def main():
         if atlas.d and i % 30 == 0:
             gx, gy = s16(W(E["TD_IGX"])), s16(W(E["TD_IGY"]))
             bad = 0
-            for sy in range(0, 224, 8):
+            for sy in range(8, 216, 8):   # rows 1-26 (0, 27: bars)
                 for sx in range(0, 320, 8):
                     px, py = gx + sx, gy - 6 + sy
                     pc, pr = (px // 8) & 63, (py // 8) & 31

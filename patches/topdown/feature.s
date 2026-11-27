@@ -74,6 +74,7 @@ TD_BOXT		equ 802		; HUD box: 12 solid parchment tiles (bank offset)
 TD_VC		equ 84		; screen line the leader is centred on
 TD_NFC		equ 25		; figure images cached in VRAM (4x4 tiles each)
 TA_W		equ 42		; window columns (wider ran out of VRAM slots: pink holes)
+TA_H		equ 28		; window rows: 26 shown + 2 (TA_W x TA_H <= TA_N)
 				; camera runs ahead of the loading, #308)
 TD_SHL		equ 3		; extra cell columns left (shear: 42 px at line 0)
 TD_SHR		equ 8		; extra cell columns right (shear: 69 px at line 223)
@@ -321,7 +322,7 @@ TA_LEAD		equ 2*TI_CU
 TA_VMAX		equ 16
 TA_CMTP		equ 16		; progress (1/256 cell) the step goes to the game
 TA_TURN		equ 3		; frames a new facing is held before a step
-TA_N		equ 1198	; tile slots: bank 64-272, 401-827, rec 6's 436-873,
+TA_N		equ 1182	; tile slots (42 x 28 = 1176 cells: never short): bank 64-272, 401-827, rec 6's 436-873,
 				; records 16-17's 1834-1973 (pad, gauges); 1974-2037:
 				; figure images 8-11 (the leader's other facings)
 TA_HUD		equ $9F0000	; their copy (restored on leaving)
@@ -672,6 +673,156 @@ mg_find:
 	moveq	#-1,d0
 	rts
 mg_fend:
+
+
+;=======================================================================
+; ta_bar — the pre-drawn view shows rows 1-26 (42 x 28 loaded cells fit
+; the 1182 slots: no pink holes); window rows 0 and 27 are opaque bars,
+; the bottom one with the time, gold, food and water as numbers
+; (tiles 1942-1957: ta_glyphs, the font on a solid ground). #308
+;=======================================================================
+TA_GLY		equ 1942
+TA_GW		equ $A000+TA_GLY	; priority, palette 1
+TA_GBG		equ 13			; the bars' colour (palette 1)
+
+ta_barrow:	; d6 = window row -> Z set if it is a bar (pre-drawn view)
+	cmpi.w	#$5A71,TA_ON
+	bne.s	.o
+	tst.w	d6
+	beq.s	.o
+	cmpi.w	#27,d6
+.o:	rts
+
+ta_glc:	dc.b	"0123456789:$FW  "
+	even
+
+ta_glyphs:
+	movem.l	d0-d5/a0-a2,-(a7)
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	lea	ta_glc(pc),a2
+	moveq	#0,d5
+.g:	moveq	#0,d0
+	move.b	(a2,d5.w),d0
+	sub.w	#32,d0
+	add.w	FONTBLK,d0
+	lsl.w	#5,d0
+	bsr.w	td_vcmd
+	move.l	d0,VDP_CTRL
+	lea	TD_ROWB,a0
+	moveq	#16-1,d1
+.r:	move.w	VDP_DATA,(a0)+
+	dbra	d1,.r
+	lea	TD_ROWB,a0
+	moveq	#32-1,d1
+.p:	move.b	(a0),d2
+	move.b	d2,d3
+	andi.b	#$F0,d3
+	bne.s	.p1
+	ori.b	#TA_GBG<<4,d2
+.p1:	move.b	d2,d3
+	andi.b	#$0F,d3
+	bne.s	.p2
+	ori.b	#TA_GBG,d2
+.p2:	move.b	d2,(a0)+
+	dbra	d1,.p
+	move.w	d5,d0
+	add.w	#TA_GLY,d0
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	TD_ROWB,a0
+	moveq	#16-1,d1
+.w:	move.w	(a0)+,VDP_DATA
+	dbra	d1,.w
+	addq.w	#1,d5
+	cmpi.w	#16,d5
+	bcs.s	.g
+	move.w	(a7)+,sr
+	movem.l	(a7)+,d0-d5/a0-a2
+	rts
+
+ta_bar:
+	cmpi.w	#$5A71,TA_ON
+	bne.w	.o
+	move.w	FRAME,d0
+	andi.w	#7,d0
+	bne.w	.o
+	movem.l	d2-d4/a2,-(a7)
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	#$1000,d0		; top bar
+	bsr.w	td_vwrite
+	moveq	#40-1,d1
+.t:	move.w	#TA_GW+15,VDP_DATA
+	dbra	d1,.t
+	tst.w	TD_MSG			; a message: the bottom rows are its
+	bne.w	.x
+	lea	TD_ROWB,a2
+	moveq	#40-1,d1
+.c:	move.w	#15,(a2)+
+	dbra	d1,.c
+	lea	TD_ROWB+2*2,a2		; time hh:mm (the game's clock: hour
+	moveq	#0,d0			; (clock / 100 + 11) mod 24)
+	move.w	$FF0E16,d0
+	divu.w	#100,d0
+	move.l	d0,d2
+	swap	d2			; d2 = clock mod 100
+	addi.w	#11,d0
+	ext.l	d0
+	divu.w	#24,d0
+	swap	d0
+	bsr.s	.two
+	move.w	#10,(a2)+		; :
+	move.w	d2,d0
+	mulu.w	#3,d0
+	divu.w	#5,d0
+	bsr.s	.two
+	lea	TD_ROWB+11*2,a2		; $ gold
+	move.w	#11,(a2)+
+	move.w	LEADER,d0
+	mulu.w	#$34,d0
+	lea	$FF02DE,a0
+	move.w	(a0,d0.l),d0
+	bsr.s	.num
+	lea	TD_ROWB+21*2,a2		; F food
+	move.w	#12,(a2)+
+	move.w	$FFC364,d0
+	bsr.s	.num
+	lea	TD_ROWB+30*2,a2		; W water
+	move.w	#13,(a2)+
+	move.w	$FFC366,d0
+	bsr.s	.num
+	move.w	#$1000+27*128,d0
+	bsr.w	td_vwrite
+	lea	TD_ROWB,a2
+	moveq	#40-1,d1
+.wr:	move.w	(a2)+,d0
+	add.w	#TA_GW,d0
+	move.w	d0,VDP_DATA
+	dbra	d1,.wr
+.x:	move.w	(a7)+,sr
+	movem.l	(a7)+,d2-d4/a2
+.o:	rts
+.two:	andi.l	#$FFFF,d0		; d0 < 100 -> two digits at (a2)+
+	divu.w	#10,d0
+	move.w	d0,(a2)+
+	swap	d0
+	move.w	d0,(a2)+
+	rts
+.num:	andi.l	#$FFFF,d0		; d0 -> its digits at (a2)+
+	moveq	#0,d3
+.n1:	divu.w	#10,d0
+	swap	d0
+	move.w	d0,-(a7)
+	addq.w	#1,d3
+	clr.w	d0
+	swap	d0
+	tst.w	d0
+	bne.s	.n1
+	subq.w	#1,d3
+.n2:	move.w	(a7)+,(a2)+
+	dbra	d3,.n2
+	rts
 
 ; s_beh — a character's behaviour switch ($022F22): everyone but the
 ; party and scripted moves (0 follow, 9 go/attack) stands still: no
@@ -2756,6 +2907,8 @@ td_winfix:
 					; updates during the scan see the last
 					; tick's state); d6 = row
 .row:	bsr.w	td_poll_vb		; a scan takes ~1 frame: keep updating
+	bsr.w	ta_barrow		; (the pre-drawn view's bars: ta_bar's)
+	beq.w	.nr
 	move.w	d6,d0			; read the 40 visible words of row d6
 	lsl.w	#7,d0
 	add.w	#$1000,d0
@@ -2841,7 +2994,7 @@ td_winfix:
 .nx:	addq.w	#1,d4
 	cmpi.w	#40,d4
 	bcs.w	.col
-	addq.w	#1,d6
+.nr:	addq.w	#1,d6
 	cmpi.w	#28,d6
 	bcs.w	.row
 	moveq	#0,d0
@@ -5447,7 +5600,9 @@ td_iso_winfix:
 .row:	tst.w	TD_UNFR
 	bne.s	.r0
 	bsr.w	td_poll_vb
-.r0:	move.w	d6,d0
+.r0:	bsr.w	ta_barrow
+	beq.s	.nr
+	move.w	d6,d0
 	lsl.w	#7,d0
 	add.w	#$1000,d0
 	move.w	d0,d5
@@ -5481,7 +5636,7 @@ td_iso_winfix:
 .nx:	addq.w	#1,d4
 	cmpi.w	#40,d4
 	bcs.s	.col
-	addq.w	#1,d6
+.nr:	addq.w	#1,d6
 	cmpi.w	#28,d6
 	bcs.s	.row
 	clr.w	TD_INWF
@@ -7465,6 +7620,7 @@ ta_rehash:	; TA_HEAD / TA_NX again from TA_ID
 	rts
 
 ta_reset:
+	bsr.w	ta_glyphs		; (records 16-17 came back meanwhile)
 	lea	TA_HEAD,a0
 	move.w	#512/2-1,d0
 .h:	clr.l	(a0)+
@@ -7554,9 +7710,9 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmp.w	TD_IGX,d0
 	bge.s	.k2
 	move.w	d0,TD_IGX
-.k2:	move.w	TA_T,d0			; rows T .. T+29: plane line IGY - 6
-	lsl.w	#3,d0
-	addq.w	#6,d0
+.k2:	move.w	TA_T,d0			; rows T .. T+27: screen line 8 at
+	lsl.w	#3,d0			; plane line IGY + 2
+	subq.w	#2,d0
 	cmp.w	TD_IGY,d0
 	ble.s	.k3
 	move.w	d0,TD_IGY
@@ -7648,8 +7804,8 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	TA_GX,d6
 	asr.w	#3,d6			; d6/d7 = wanted left column, top row
 	sub.w	#(TA_W-42)/2,d6
-	move.w	TA_GY,d7
-	subq.w	#6,d7
+	move.w	TA_GY,d7		; (rows 1-26 show the picture, 0 and
+	addq.w	#2,d7			; 27 are the bars: ta_bar)
 	asr.w	#3,d7
 	cmpi.w	#$8000,TA_L
 	beq.w	.full
@@ -7689,14 +7845,14 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bra.s	.lp
 .down:	move.w	TA_T,d5
 	bsr.w	ta_drow
-	add.w	#30,d5
+	add.w	#TA_H,d5
 	bsr.w	ta_frow
 	addq.w	#1,TA_T
 	bra.s	.lp
 .up:	move.w	TA_T,d5
-	add.w	#29,d5
+	add.w	#TA_H-1,d5
 	bsr.w	ta_drow
-	sub.w	#30,d5
+	sub.w	#TA_H,d5
 	bsr.w	ta_frow
 	subq.w	#1,TA_T
 	bra.w	.lp
@@ -7708,7 +7864,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	move.w	d6,TA_L
 	move.w	d7,TA_T
 	addq.w	#1,TD_BUSY		; (no picture updates meanwhile: all
-	moveq	#30-1,d3		; of it at once is quicker), from the
+	moveq	#TA_H-1,d3		; of it at once is quicker), from the
 .fr:	moveq	#0,d5			; middle out: the leader's surroundings
 	lea	ta_mid(pc),a0		; first (#308)
 	move.b	(a0,d3.w),d5
@@ -7742,7 +7898,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	add.w	TA_PR,d5
 	bsr.w	ta_rerow
 	addq.w	#1,TA_PR
-	cmpi.w	#30,TA_PR
+	cmpi.w	#TA_H,TA_PR
 	bcs.s	.sn
 	move.w	#-1,TA_PR
 	bra.s	.end
@@ -7752,6 +7908,7 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	beq.s	.nl
 	bsr.w	ta_lifts
 .nl:	bsr.w	ta_hud			; no HUD words, every frame
+	bsr.w	ta_bar			; the bars and their numbers
 	bsr.w	ta_occ			; terrain in front of the leader
 	tst.w	TA_WFF			; the window, often after a change
 	beq.s	.nw
@@ -7845,7 +8002,7 @@ ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
 	clr.w	TA_PFP
 .go:	tst.w	d4
 	beq.w	.o
-	moveq	#30,d6			; line length: a column 30, a row 42
+	moveq	#TA_H,d6		; line length: a column TA_H, a row TA_W
 	cmpi.w	#3,d4
 	bcs.w	.ll
 	moveq	#TA_W,d6
@@ -7879,7 +8036,7 @@ ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
 	move.w	TA_T,d5
 	cmpi.w	#3,d2
 	bne.w	.up
-	add.w	#30,d5
+	add.w	#TA_H,d5
 	add.w	d0,d5
 	bra.w	.f
 .up:	subq.w	#1,d5
@@ -7911,7 +8068,7 @@ ta_rerow:	; d5 = row: its cells again (the phase changed)
 	rts
 
 ta_mid:	; .full row order (indexed by the count down): the middle out
-	dc.b	0,29,1,28,2,27,3,26,4,25,5,24,6,23,7,22,8,21,9,20,10,19,11,18,12,17,13,16,14,15
+	dc.b	0,27,1,26,2,25,3,24,4,23,5,22,6,21,7,20,8,19,9,18,10,17,11,16,12,15,13,14
 	even
 
 ta_frow:	; d5 = row: its 42 cells from TA_L
@@ -7924,10 +8081,10 @@ ta_frow:	; d5 = row: its 42 cells from TA_L
 	movem.l	(a7)+,d3-d4
 	rts
 
-ta_fcol:	; d4 = column: its 30 cells from TA_T
+ta_fcol:	; d4 = column: its TA_H cells from TA_T
 	movem.l	d3/d5,-(a7)
 	move.w	TA_T,d5
-	moveq	#30-1,d3
+	moveq	#TA_H-1,d3
 .l:	bsr.w	ta_fill
 	addq.w	#1,d5
 	dbra	d3,.l
@@ -7947,7 +8104,7 @@ ta_drow:	; d5 = row leaves the window
 ta_dcol:	; d4 = column leaves the window
 	movem.l	d3/d5,-(a7)
 	move.w	TA_T,d5
-	moveq	#30-1,d3
+	moveq	#TA_H-1,d3
 .l:	bsr.s	ta_drop
 	addq.w	#1,d5
 	dbra	d3,.l
