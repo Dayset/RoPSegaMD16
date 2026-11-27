@@ -390,9 +390,18 @@ def store(tile_sets, gen=None):
             int(new[blank]) if blank >= 0 else -1, (nf, nh))
 
 
+def wrapped(cells, m=3, w=352, h=224):
+    """the world wraps both ways (#308): a margin of m cells from the
+    other sides, so the edge tiles show the neighbours, not the filler
+    (ta_look then reads a tile past an edge a lap back)"""
+    at = dict(((x, y), t) for x, y, t in cells)
+    return [(x, y, at[(x % w, y % h)])
+            for y in range(-m, h + m) for x in range(-m, w + m)]
+
+
 def areas(rom):
     ab = AtlasBuilder(rom)
-    ow = render(ab, overworld_cells(ab))
+    ow = render(ab, wrapped(overworld_cells(ab)))
     rooms = {}
     for n in range(NLOC):
         ch = 77 + n
@@ -755,10 +764,10 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas27-%s-t%d-h%d-c%d-s%d-a%d-n%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID, STATIC, NOISE)))
+             ("ow-atlas28-%s-t%d-h%d-c%d-s%d-a%d-n%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID, STATIC, NOISE)))
     if cache.is_file():
         return cache.read_bytes()
-    acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
+    acache = cache.with_name("ow-areas11-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
     import pickle
     if acache.is_file():
         ar = pickle.loads(acache.read_bytes())

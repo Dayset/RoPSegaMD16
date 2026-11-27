@@ -8296,6 +8296,48 @@ ta_vt:	; d0 = slot -> d0 = its VRAM tile: bank 64-272 (0-63: the game
 
 ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	; (uses d1-d2/a0-a1; TA_LDB = depth byte, TA_LROW = atlas row)
+	cmpi.w	#1,TA_AR		; the world (area 0) wraps both ways,
+	bne.s	ta_look0		; 352 x 224 cells: cell (x, y) is at
+	movem.l	d4-d5,-(a7)		; row x + y, column 14 (x - y) / 8, so
+	move.w	d4,d0			; a lap is (352, 616) or (224, -392)
+	lsl.w	#3,d0			; tiles: a tile past an edge is the
+	addq.w	#4,d0			; one that many laps back (#308)
+	ext.l	d0
+	divs.w	#14,d0			; x - y (the tile's middle)
+	move.w	d5,d1
+	add.w	d0,d1			; 2x
+	ext.l	d1
+	divs.w	#2*352,d1
+	swap	d1
+	tst.w	d1
+	swap	d1
+	bpl.s	.w1
+	subq.w	#1,d1			; laps east (floor)
+.w1:	move.w	d5,d2
+	sub.w	d0,d2			; 2y
+	ext.l	d2
+	divs.w	#2*224,d2
+	swap	d2
+	tst.w	d2
+	swap	d2
+	bpl.s	.w2
+	subq.w	#1,d2			; laps south (floor)
+.w2:	move.w	d1,d0
+	muls.w	#352,d0
+	sub.w	d0,d5
+	move.w	d2,d0
+	muls.w	#224,d0
+	sub.w	d0,d5
+	move.w	d1,d0
+	muls.w	#616,d0
+	sub.w	d0,d4
+	move.w	d2,d0
+	muls.w	#392,d0
+	add.w	d0,d4
+	bsr.s	ta_look0
+	movem.l	(a7)+,d4-d5
+	rts
+ta_look0:
 	movea.l	TA_A,a1
 	move.w	d5,d1
 	add.w	8(a1),d1		; atlas row
@@ -8358,7 +8400,7 @@ ta_look:	; d5 = row, d4 = column -> d0.l = tile id, -1 blank
 	; atlas row % period rows, column % period columns
 	movea.l	16(a1),a0
 	tst.w	112(a0)
-	beq.s	.bl
+	beq.w	.bl
 	ext.l	d1
 	divs.w	112(a0),d1
 	swap	d1
