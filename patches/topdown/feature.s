@@ -289,6 +289,12 @@ TA_CAP		equ TA_LMF+2
 TA_DCAND	equ TA_CAP+2
 TA_CDIR		equ TA_DCAND+2	; the step handed to the game: its direction
 TA_SX		equ TA_CDIR+2	; the camera last shown (ta_clamp)
+TA_PFP		equ TA_SX+4	; prefetch (ta_pfetch): progress, direction
+TA_PFD		equ TA_PFP+2	; (1 right 2 left 3 down 4 up), the window
+TA_PFL		equ TA_PFD+2	; it was for, the camera seen last
+TA_PFT		equ TA_PFL+2
+TA_PFGX		equ TA_PFT+2
+TA_PFGY		equ TA_PFGX+2
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -500,6 +506,7 @@ ti_tw0:
 .upd:
 	ifd	SIZE8M
 	bsr.w	ta_stream		; pre-drawn overworld: every frame
+	bsr.w	ta_pfetch		; (and tiles ahead, while it waits)
 	endif
 	tst.w	d7
 	bne.s	.chk
@@ -7493,6 +7500,105 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bsr.w	td_iso_winfix
 	clr.w	TD_UNFR
 .nw:	movem.l	(a7)+,d2-d7/a2-a6
+.x:	rts
+
+ta_pfetch:	; idle frames: the 3 lines of tiles past the window ahead of
+	; the camera into the slot cache (no plane words): a column or row
+	; the walk brings in then needs no uploads that frame (#308)
+	cmpi.w	#$5A71,TA_ON
+	bne.w	.x
+	cmpi.w	#$8000,TA_L
+	beq.w	.x
+	movem.l	d2-d7,-(a7)
+	move.w	TA_GX,d0		; the camera's way (the larger axis)
+	sub.w	TA_PFGX,d0
+	move.w	TA_GX,TA_PFGX
+	move.w	TA_GY,d1
+	sub.w	TA_PFGY,d1
+	move.w	TA_GY,TA_PFGY
+	move.w	d0,d2
+	bpl.w	.a0
+	neg.w	d2
+.a0:	move.w	d1,d3
+	bpl.w	.a1
+	neg.w	d3
+.a1:	move.w	TA_PFD,d4
+	cmpi.w	#64,d2			; (a jump: not a way)
+	bcc.w	.kd
+	cmpi.w	#64,d3
+	bcc.w	.kd
+	cmp.w	d3,d2
+	bcs.w	.vy
+	tst.w	d0
+	beq.w	.kd
+	moveq	#1,d4
+	tst.w	d0
+	bpl.w	.kd
+	moveq	#2,d4
+	bra.w	.kd
+.vy:	moveq	#3,d4
+	tst.w	d1
+	bpl.w	.kd
+	moveq	#4,d4
+.kd:	cmp.w	TA_PFD,d4		; a new way or window: from the start
+	bne.w	.rs
+	move.w	TA_L,d0
+	cmp.w	TA_PFL,d0
+	bne.w	.rs
+	move.w	TA_T,d0
+	cmp.w	TA_PFT,d0
+	beq.w	.go
+.rs:	move.w	d4,TA_PFD
+	move.w	TA_L,TA_PFL
+	move.w	TA_T,TA_PFT
+	clr.w	TA_PFP
+.go:	tst.w	d4
+	beq.w	.o
+	moveq	#30,d6			; line length: a column 30, a row 42
+	cmpi.w	#3,d4
+	bcs.w	.ll
+	moveq	#42,d6
+.ll:	moveq	#6-1,d7			; 6 tiles a frame
+.l:	move.w	TA_PFP,d0
+	move.w	d6,d1
+	mulu.w	#3,d1
+	cmp.w	d1,d0
+	bcc.w	.o
+	addq.w	#1,TA_PFP
+	ext.l	d0
+	divu.w	d6,d0			; d0 = line, high word = place
+	move.l	d0,d1
+	swap	d1
+	move.w	TA_PFD,d2
+	cmpi.w	#2,d2
+	bhi.w	.row
+	move.w	TA_T,d5			; columns: row = top + place
+	add.w	d1,d5
+	move.w	TA_L,d4
+	cmpi.w	#1,d2
+	bne.w	.lf
+	add.w	#42,d4			; right: past the last column
+	add.w	d0,d4
+	bra.w	.f
+.lf:	subq.w	#1,d4			; left: before the first
+	sub.w	d0,d4
+	bra.w	.f
+.row:	move.w	TA_L,d4			; rows: column = left + place
+	add.w	d1,d4
+	move.w	TA_T,d5
+	cmpi.w	#3,d2
+	bne.w	.up
+	add.w	#30,d5
+	add.w	d0,d5
+	bra.w	.f
+.up:	subq.w	#1,d5
+	sub.w	d0,d5
+.f:	bsr.w	ta_look
+	tst.l	d0
+	bmi.w	.n
+	bsr.w	ta_get
+.n:	dbra	d7,.l
+.o:	movem.l	(a7)+,d2-d7
 .x:	rts
 
 ta_phnow:	; -> d0 = the game's terrain phase (0/1)
