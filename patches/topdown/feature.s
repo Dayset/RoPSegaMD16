@@ -52,13 +52,18 @@
 	org ORGVAL
 
 ; ---- tuning ----------------------------------------------------------
+	ifd	SIZE8M			; pre-drawn view: a quicker walk (#308)
+TD_T1		equ 18		; frames per world tick, overworld (orig avg 26.5)
+TD_T2		equ 15		; frames per world tick, rooms (orig 17.0)
+	else
 TD_T1		equ 26		; frames per world tick, overworld (orig avg 26.5)
 TD_T2		equ 17		; frames per world tick, rooms (orig 17.0)
+	endif
 TD_TC		equ 2		; combat arena tick period (frames)
 TD_TF		equ 22		; overworld on the dragon (orig attract flight 22.0)
 TD_TS		equ 19		; boat / ship (orig over open sea 17-19)
 	ifd	SIZE8M
-TD_TB		equ 17		; big rooms: no render to wait for in the
+TD_TB		equ 16		; big rooms: no render to wait for in the
 	else			; pre-drawn view (and the grid search is fast)
 TD_TB		equ 22		; big (32x32) rooms (orig room 156: 22)
 	endif
@@ -6025,9 +6030,8 @@ ta_ctl:
 	move.w	TA_OY,TA_POY
 	move.w	#256,d6			; speed: a cell per tick period
 	ext.l	d6
-	cmpi.w	#1,MODE			; (or, in rooms, per tick when the
-	beq.s	.sp			; game's ticks run longer)
-	move.w	TD_RPER,d0
+	move.w	TD_RPER,d0		; (or per tick when the game's ticks
+					; run longer)
 	cmp.w	TD_PERIOD,d0
 	bls.s	.sp
 	divu.w	d0,d6
