@@ -6248,7 +6248,7 @@ ta_occ:
 	bsr.w	ta_look
 	move.w	(a7)+,d2
 	tst.l	d0
-	bmi.s	.zero
+	bmi.w	.zero
 	move.l	d0,a4			; tile id
 	move.w	TA_LDB,d1
 	cmpi.w	#$FF,d1			; (no cell painted it: the filler)
@@ -6266,8 +6266,16 @@ ta_occ:
 	bge.s	.zero
 	bsr.w	.copy			; the pixels at sup only
 	move.l	a4,d0
+	cmp.l	ATL+734,d0		; a composite: its overlay's mask
+	bcs.s	.mt
+	sub.l	ATL+734,d0
+	lsr.l	#7,d0
 	lsl.l	#3,d0
+	add.l	ATL+742,d0
+	bra.s	.mo
+.mt:	lsl.l	#3,d0
 	add.l	ATL+6+4*(1+175),d0	; the mask (via slot 6)
+.mo:
 	bsr.w	ta_map6
 	lea	ta_nib(pc),a1
 	moveq	#8-1,d1
@@ -7954,6 +7962,8 @@ ta_tget:	; d1.l = tile id, a2 = 32-byte buffer -> a0 = its 32 bytes
 	; (uses d1-d2): ids from ATL+714 on are half-width, 16 bytes at
 	; ATL+718 on, each pixel doubled here; from ATL+722 on: material
 	; noise, made here from the one field all materials share (#308)
+	cmp.l	ATL+734,d1		; a composite: ground + overlay
+	bcc.w	ta_comp
 	cmp.l	ATL+722,d1
 	bcc.s	.g
 	cmp.l	ATL+714,d1
@@ -7994,6 +8004,7 @@ ta_tget:	; d1.l = tile id, a2 = 32-byte buffer -> a0 = its 32 bytes
 	movea.l	(a7)+,a1
 	rts
 .g:	sub.l	ATL+722,d1		; material 8 + variant
+ta_gen:	; d1 = material 8 + variant, a2 = buffer -> a0 = a2, its noise
 	movem.l	d0/d3-d6/a1-a3,-(a7)
 	moveq	#7,d2
 	and.w	d1,d2
@@ -8034,6 +8045,70 @@ ta_tget:	; d1.l = tile id, a2 = 32-byte buffer -> a0 = its 32 bytes
 	addq.w	#1,d1
 .p:	move.b	(a1,d1.w),d1
 	rts
+ta_comp:	; d1 = composite id: material noise, the object overlay over it
+	sub.l	ATL+734,d1		; overlay 128 + material
+	movem.l	d0/d3-d6/a1/a3,-(a7)
+	move.l	d1,d6
+	lsr.l	#7,d6			; d6 = overlay
+	andi.l	#127,d1
+	lsl.w	#3,d1
+	moveq	#7,d0			; variant: the overlay's low bits
+	and.w	d6,d0
+	or.w	d0,d1
+	bsr.w	ta_gen			; the ground into (a2)
+	move.l	d6,d0			; its group of 8: address
+	lsr.l	#3,d0
+	lsl.l	#2,d0
+	add.l	ATL+738,d0
+	bsr.w	ta_map6
+	move.l	(a0),d1
+	bsr.w	ta_t7			; a0 = the group (one bank)
+	lea	ta_pop(pc),a1
+	moveq	#7,d5
+	and.w	d6,d5
+	bra.s	.sk1
+.sk:	moveq	#0,d3			; skip one: 8 mask bytes + pixels
+	moveq	#8-1,d4
+.sc:	moveq	#0,d0
+	move.b	(a0)+,d0
+	add.b	(a1,d0.w),d3
+	dbra	d4,.sc
+	addq.w	#1,d3
+	lsr.w	#1,d3
+	adda.w	d3,a0
+.sk1:	dbra	d5,.sk
+	lea	8(a0),a1		; a1 = its pixels, 2 a byte
+	movea.l	a2,a3
+	moveq	#0,d5			; nibble: 0 high next
+	moveq	#8-1,d6
+.mb:	move.b	(a0)+,d3
+	moveq	#4-1,d4
+.pb:	add.b	d3,d3
+	bcc.s	.h0
+	bsr.s	.nib
+	lsl.b	#4,d0
+	andi.b	#$0F,(a3)
+	or.b	d0,(a3)
+.h0:	add.b	d3,d3
+	bcc.s	.l0
+	bsr.s	.nib
+	andi.b	#$F0,(a3)
+	or.b	d0,(a3)
+.l0:	addq.l	#1,a3
+	dbra	d4,.pb
+	dbra	d6,.mb
+	movea.l	a2,a0
+	movem.l	(a7)+,d0/d3-d6/a1/a3
+	rts
+.nib:	move.b	(a1),d0
+	not.b	d5
+	beq.s	.lo
+	lsr.b	#4,d0
+	rts
+.lo:	andi.b	#$0F,d0
+	addq.l	#1,a1
+	rts
+
 ta_t7:	move.l	d1,d2			; d1 = ROM address -> a0 (slot 7)
 	swap	d2
 	lsr.w	#3,d2
@@ -8068,6 +8143,24 @@ ta_up:	; slot d0 <- the 32 bytes of tile d4 (keeps d0)
 	move.w	(a7)+,sr
 	movem.l	(a7)+,d0/d2/a2
 	rts
+
+ta_pop:	; bits set per byte
+	dc.b	0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4
+	dc.b	1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
+	dc.b	1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
+	dc.b	1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
+	dc.b	2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6
+	dc.b	3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
+	dc.b	3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7
+	dc.b	4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 
 ta_dbl:	; byte -> word, each pixel doubled
 	dc.w	$0000,$0011,$0022,$0033,$0044,$0055,$0066,$0077,$0088,$0099,$00AA,$00BB,$00CC,$00DD,$00EE,$00FF

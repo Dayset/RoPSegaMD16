@@ -508,6 +508,69 @@ def noise(r, tex, bank):
     return (np.concatenate(nu0), n0, np.concatenate(nu1), n1) + tuple(r[4:])
 
 
+NCM = 128                   # materials a composite tile can stand on
+COMPOSE = os.environ.get("ROP_COMPOSE", "0") == "1"   # off: see claude/tile-composition-plan.md
+
+
+def compose(allu, nf, masks, mats, tex):
+    """whole tiles -> ground material + object overlay (#308): where a
+    tile's pixels equal a material texture tile (the lattice dither it
+    was drawn on), those pixels are that material's ground, made at load
+    from its noise; the other pixels (the object) are the overlay. Only
+    pixels that were the texture itself become noise. Overlays dedupe
+    across grounds and lattice phases and are stored sparse.
+    -> (keep ids, old id -> new id or -(1 + composite), overlays, masks)"""
+    px = np.stack([allu[:nf] >> 4, allu[:nf] & 15], axis=2).reshape(nf, 64)
+    mi = {}
+    for m, (key, seed) in enumerate(mats[:NCM]):
+        if seed == 0:
+            mi.setdefault(key, m)
+    tb = [(np.frombuffer(b, np.uint8), mi[k]) for b, k in tex.items() if k in mi]
+    tp = np.array([np.stack([t >> 4, t & 15], axis=1).reshape(64) for t, _ in tb])
+    tm = np.array([m for _, m in tb])
+    best = np.full(nf, -1)
+    bcnt = np.zeros(nf, np.int64)
+    for a in range(0, nf, 2048):                 # equal pixels per texture
+        eq = (px[a:a + 2048, None, :] == tp[None, :, :]).sum(axis=2)
+        k = eq.argmax(axis=1)
+        best[a:a + 2048] = k
+        bcnt[a:a + 2048] = eq[np.arange(len(k)), k]
+    ok = (bcnt >= 24) & (px == 0).sum(axis=1).__eq__(0)
+    keep = np.flatnonzero(~ok)
+    new = np.empty(nf, np.int64)
+    new[keep] = np.arange(len(keep))
+    ov, omask = {}, []
+    for t in np.flatnonzero(ok):
+        k = best[t]
+        o = np.where(px[t] == tp[k], 0, px[t]).astype(np.uint8)
+        b = o.tobytes()
+        if b not in ov:
+            ov[b] = len(ov)
+            omask.append(masks[t])
+        new[t] = -(1 + (ov[b] * NCM + int(tm[k])))
+    olist = [np.frombuffer(b, np.uint8) for b in ov]
+    return keep, new, olist, np.array(omask, np.uint8).reshape(-1, 8)
+
+
+def sparse(olist):
+    """overlays -> (u32 offset per 8 overlays, bytes): each a 64-bit
+    mask of its pixels (bit 63 = pixel 0), then those pixels, 2 a byte"""
+    offs, out = [], bytearray()
+    for i, o in enumerate(olist):
+        if i % 8 == 0:
+            offs.append(len(out))
+        bits = 0
+        for k in range(64):
+            if o[k]:
+                bits |= 1 << (63 - k)
+        out += bits.to_bytes(8, "big")
+        v = [int(x) for x in o if x]
+        if len(v) % 2:
+            v.append(0)
+        out += bytes(v[i] << 4 | v[i + 1] for i in range(0, len(v), 2))
+    return offs, bytes(out)
+
+
 def layout(ow, rooms):
     tex = textures([r[:4] for r in [ow] + list(rooms.values())])
     bank = {}
@@ -521,7 +584,7 @@ def layout(ow, rooms):
             gen.setdefault(t.tobytes(), m * NVAR + v)
     print("materials: %d (noise made at load, one shared field)" % len(mats))
     out = bytearray(b"OWA8" + struct.pack(">H", 1 + NLOC)
-                    + bytes(4 * (1 + NLOC)) + bytes(24))
+                    + bytes(4 * (1 + NLOC)) + bytes(36))
     MBASE = 6 + 4 * (1 + NLOC)  # u32: the tile masks (8 bytes per id)
     groups = [([ow] + list(rooms.values()), [0] + [1 + n for n in rooms])]
     pending = []                # (header offset, area blocks, store index)
@@ -530,8 +593,27 @@ def layout(ow, rooms):
         k7 = np.arange(14).reshape(2, 7)
         sets = [r[:4] for r in rs] + [(r[6][0], k7, r[6][1], k7) for r in rs]
         allu, maps, blank, nf = store(sets, gen)
+        masks = id_masks(len(allu), maps[:len(rs)], [r[5] for r in rs])
+        cinfo = None
+        if COMPOSE:
+            nfu, nh = nf
+            keep, new, olist, omask = compose(allu, nfu, masks, mats, tex)
+            nk = len(keep)
+            ng = len(allu) - nfu - nh
+            cb = nk + nh + ng
+            to = np.empty(len(allu), np.int64)
+            to[:nfu] = np.where(new >= 0, new, cb + (-new - 1))
+            to[nfu:] = nk + np.arange(nh + ng)
+            maps = [(to[g0], to[g1]) for g0, g1 in maps]
+            blank = int(to[blank]) if blank >= 0 else -1
+            allu = np.concatenate([allu[keep], allu[nfu:]])
+            masks = np.concatenate([masks[keep], masks[nfu:]])
+            nf = (nk, nh)
+            cinfo = (cb, olist, omask)
+            print("composed: %d tiles kept, %d overlays (from %d tiles)"
+                  % (nk, len(olist), nfu - nk))
         pats, maps = maps[len(rs):], maps[:len(rs)]
-        stores.append((allu, id_masks(len(allu), maps, [r[5] for r in rs]), nf))
+        stores.append((allu, masks, nf, cinfo))
         for r, (g0, g1), pid, aid in zip(rs, maps, pats, ids):
             R, C, BR, BC, blocks = pairs_blocks(g0, g1, blank, r[5], pid)
             dx, dy = r[4]
@@ -569,7 +651,7 @@ def layout(ow, rooms):
             seen[rec] = pos
             out += rec
     bases = []
-    for allu, masks, (nf, nh) in stores:
+    for allu, masks, (nf, nh), cinfo in stores:
         out += bytes(-len(out) % 32)
         bases.append(OFFSET + len(out))
         out += allu[:nf].astype(np.uint8).tobytes()
@@ -580,6 +662,27 @@ def layout(ow, rooms):
         out += h.astype(np.uint8).tobytes()
         struct.pack_into(">I", out, MBASE, OFFSET + len(out))
         out += masks.tobytes()
+        if cinfo:                       # composites: their base id, the
+            cb, olist, omask = cinfo    # overlays' masks, offsets, data
+            struct.pack_into(">I", out, MBASE + 24, cb)
+            struct.pack_into(">I", out, MBASE + 32, OFFSET + len(out))
+            out += omask.tobytes()
+            offs, data = sparse(olist)
+            out += bytes(-len(out) % 4)
+            otab = len(out)
+            struct.pack_into(">I", out, MBASE + 28, OFFSET + otab)
+            out += bytes(4 * len(offs))
+            # groups of 8 never cross a 512 KB bank (read via one slot)
+            ends = offs[1:] + [len(data)]
+            for i, (a, b) in enumerate(zip(offs, ends)):
+                pos = OFFSET + len(out)
+                if pos // BANK != (pos + (b - a) - 1) // BANK:
+                    out += bytes(BANK - pos % BANK)
+                    pos = OFFSET + len(out)
+                struct.pack_into(">I", out, otab + 4 * i, pos)
+                out += data[a:b]
+        else:
+            struct.pack_into(">I", out, MBASE + 24, 0xFFFFFF)
     print("depth clamped: %d of %d" % tuple(CLAMP))
     for hdr, _blocks, gi in pending:
         struct.pack_into(">I", out, hdr + 12, bases[gi])
@@ -597,7 +700,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas15-%s-t%d-h%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF)))
+             ("ow-atlas17-%s-t%d-h%d-c%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])

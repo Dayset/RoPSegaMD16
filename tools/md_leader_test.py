@@ -46,7 +46,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / ("ow-atlas15-*-t%s-h%s.bin" % (os.environ.get("ROP_TWIN", "3"), os.environ.get("ROP_HALF", "-1"))))))
+        f = sorted(glob.glob(str(REPO / "build" / ("ow-atlas17-*-t%s-h%s-c%s.bin" % (os.environ.get("ROP_TWIN", "3"), os.environ.get("ROP_HALF", "-1"), os.environ.get("ROP_COMPOSE", "0"))))))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
@@ -72,7 +72,24 @@ class Atlas:
 
     def data(self, t):
         d, o = self.d, 0x210000
-        nf, hb, gb, mt, nfld = struct.unpack_from(">IIIII", d, 714)
+        nf, hb, gb, mt, nfld, cb, otab, omk = struct.unpack_from(">IIIIIIII", d, 714)
+        if t >= cb:                     # composite: ground noise + overlay
+            o, m = divmod(t - cb, 128)
+            g = bytearray(self.data(gb + m * 8 + (o & 7)))
+            p = struct.unpack_from(">I", d, otab - 0x210000 + 4 * (o >> 3))[0] - 0x210000
+            for _ in range(o & 7):
+                n = sum(bin(x).count("1") for x in d[p:p + 8])
+                p += 8 + (n + 1) // 2
+            bits = int.from_bytes(d[p:p + 8], "big")
+            q, hi = p + 8, True
+            for k in range(64):
+                if bits >> (63 - k) & 1:
+                    nb = d[q] >> 4 if hi else d[q] & 15
+                    if not hi:
+                        q += 1
+                    hi = not hi
+                    g[k // 2] = (g[k // 2] & 0x0F) | nb << 4 if k % 2 == 0 else (g[k // 2] & 0xF0) | nb
+            return bytes(g)
         if t >= gb:                     # material noise from the shared field
             m, v = divmod(t - gb, 8)
             c = d[mt - o + 8 * m:mt - o + 8 * m + 8]
