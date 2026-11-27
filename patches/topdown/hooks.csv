@@ -42,3 +42,4 @@ addr,len,kind,target
 0x022F22,6,jmp,s_beh
 0x02736A,6,jsr,hp_gauge
 0x02EDC6,6,jsr,hp_gauge
+0x0275B0,8,jmp,cb_msg

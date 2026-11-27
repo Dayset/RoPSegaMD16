@@ -313,6 +313,7 @@ TA_RGY		equ TA_RGX+2
 TA_HELD		equ TA_RGY+2	; the camera held at the window's edge
 TA_FARN		equ TA_HELD+2	; a far camera target seen (once: not yet)
 TA_INV		equ TA_FARN+2	; ta_stream called by ta_vstream (VBlank)
+TA_MSGT		equ TA_INV+2	; cb_msg: frame of the last combat message
 TA_SY		equ TA_SX+2	; a new drawn facing, seen once (2 frames turn it)	; how far a step goes before the game takes it
 TA_OVT		equ 1958	; its 16 tiles: TA_N's last 16 slots
 OVBUF		equ DECBUF+21376	; 512 B scratch (past the slot tables)
@@ -869,6 +870,24 @@ hp_gauge:
 	move.w	d2,sr
 	movem.l	(a7)+,d2-d4
 	rts
+
+; cb_msg — text_event_message ($0275B0) in a combat arena: the last
+; message stays a second at least (the next cast's came at once and
+; replaced it: a cast with no damage told, #308)
+CB_HOLD		equ 60
+cb_msg:
+	cmpi.l	#$FFB0BC,GRIDPTR
+	bne.s	.go
+.w:	move.w	FRAME,d0
+	sub.w	TA_MSGT,d0
+	cmpi.w	#CB_HOLD,d0
+	bcc.s	.ok
+	jsr	($01386A).l		; wait_vblank
+	bra.s	.w
+.ok:	move.w	FRAME,TA_MSGT
+.go:	link.w	a6,#-$F0
+	movem.l	d4-d7/a3-a4,-(a7)
+	jmp	($0275B8).l
 
 ; s_beh — a character's behaviour switch ($022F22): everyone but the
 ; party and scripted moves (0 follow, 9 go/attack) stands still: no
