@@ -407,7 +407,9 @@ def areas(rom):
 
 
 NVAR = 8                    # noise variants per material and phase
-SOLID = os.environ.get("ROP_SOLID", "1") == "1"  # materials one colour
+SOLID = os.environ.get("ROP_SOLID", "0") == "1"  # materials one colour
+NOISE = os.environ.get("ROP_NOISE", "0") == "1"  # materials as noise (off:
+# the original textures; solid grass looked bad, #308)
 NMIN = 24                   # uses before a tile counts as a texture
 
 
@@ -617,7 +619,7 @@ def layout(ow, rooms):
     if STATIC:
         ow = still(ow)
         rooms = {n: still(r) for n, r in rooms.items()}
-    tex = textures([r[:4] for r in [ow] + list(rooms.values())])
+    tex = textures([r[:4] for r in [ow] + list(rooms.values())]) if NOISE else {}
     tot = collections.defaultdict(collections.Counter)
     for cols, share in tex.values():
         for c, sh in zip(cols, share):
@@ -753,7 +755,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas26-%s-t%d-h%d-c%d-s%d-a%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID, STATIC)))
+             ("ow-atlas27-%s-t%d-h%d-c%d-s%d-a%d-n%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID, STATIC, NOISE)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])

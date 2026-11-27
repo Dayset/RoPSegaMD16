@@ -46,7 +46,7 @@ def s16(v):
 
 class Atlas:
     def __init__(self):
-        f = sorted(glob.glob(str(REPO / "build" / ("ow-atlas26-*-t%s-h%s-c%s-s%s-a%s.bin" % (os.environ.get("ROP_TWIN", "3"), os.environ.get("ROP_HALF", "-1"), os.environ.get("ROP_COMPOSE", "0"), os.environ.get("ROP_SOLID", "1"), os.environ.get("ROP_STATIC", "1"))))))
+        f = sorted(glob.glob(str(REPO / "build" / ("ow-atlas27-*-t%s-h%s-c%s-s%s-a%s-n%s.bin" % (os.environ.get("ROP_TWIN", "3"), os.environ.get("ROP_HALF", "-1"), os.environ.get("ROP_COMPOSE", "0"), os.environ.get("ROP_SOLID", "0"), os.environ.get("ROP_STATIC", "1"), os.environ.get("ROP_NOISE", "0"))))))
         self.d = open(f[-1], "rb").read() if f else None
 
     def tile(self, area, row, col, ph):
