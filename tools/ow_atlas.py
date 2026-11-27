@@ -132,9 +132,11 @@ def torus(ab, cells, fill, p):
     least TH x TW tiles: the picture past it repeats with that period"""
     zone = dict(((x, y), t) for x, y, t in cells)
     _, (oxa, oya), wa, ha = ab.render_canvas(cells, p)
-    ww, hh = max(wa, TW * 8 - 8), max(ha, TH * 8)
-    xs = oxa - ((ww - wa) // 2) // 8 * 8
-    ys = oya - ((hh - ha) // 2) // 8 * 8
+    assert wa <= TW * 8, wa
+    ww, hh = TW * 8, max(ha, TH * 8)        # exactly one period across,
+    xs = oxa - ((ww - wa) // 2) // 8 * 8 - 4  # on the global tile grid
+    ys = oya - ((hh - ha) // 2) // 8 * 8    # (no pad columns: they would
+    #                                         show a seam where it repeats)
     tc = []
     for i in range(-2, 3):
         for j in range(-2, 3):
@@ -148,7 +150,7 @@ def torus(ab, cells, fill, p):
     cv, (ox, oy), w, h = ab.render_canvas(tc, p)
     b = np.frombuffer(bytes(cv), np.uint8).reshape(h, w // 2)
     x0, y0 = xs - ox, ys - oy
-    assert x0 % 8 == 0 and y0 % 8 == 0 and x0 >= 0 and y0 >= 0
+    assert x0 % 2 == 0 and y0 % 8 == 0 and x0 >= 0 and y0 >= 0
     b = b[y0:y0 + hh, x0 // 2:(x0 + ww) // 2]
     assert b.shape == (hh, ww // 2), (b.shape, hh, ww)
     return bytearray(b.tobytes()), (xs, ys), ww, hh, tc
@@ -173,13 +175,17 @@ def render(ab, cells, tor=False):
             ocells = cells
         kx, ky = KX0 - ox, KY0 - oy
         pad = -kx % 8               # left pad: tiles on the global grid
+        rpad = 8 - pad              # (a torus window is cut on the grid)
+        if tor:
+            assert pad == 0, pad
+            rpad = 0
         if p == 0:
             own = np.pad(owners(ab, ocells, ox, oy, w, h),
-                         ((0, 0), (pad, 8 - pad)), constant_values=-1)
+                         ((0, 0), (pad, rpad)), constant_values=-1)
             dep = depths(own)
         b = np.frombuffer(bytes(canvas), np.uint8).reshape(h, w // 2)
         px = np.stack([b >> 4, b & 15], axis=2).reshape(h, w)
-        px = np.pad(px, ((0, 0), (pad, 8 - pad)))
+        px = np.pad(px, ((0, 0), (pad, rpad)))
         H, Wp = px.shape
         if fill is not None:
             F, x0, y0 = lattice(ab, fill, p)
@@ -193,7 +199,7 @@ def render(ab, cells, tor=False):
             pat = np.zeros((2, 7, 8, 8), np.uint8)
         pat = (pat[..., 0::2] << 4 | pat[..., 1::2]).reshape(14, 32)
         rows = (px[:, 0::2] << 4 | px[:, 1::2]).astype(np.uint8)
-        uniq, tmap, _ = ab.cut_tiles(bytearray(rows.tobytes()), w + 8, h)
+        uniq, tmap, _ = ab.cut_tiles(bytearray(rows.tobytes()), w + pad + rpad, h)
         assert ky % 8 == 0
         ph.append((uniq, tmap, ((kx + pad) // 8, ky // 8), pat.astype(np.uint8)))
     (u0, t0, k0, p0), (u1, t1, k1, p1) = ph
@@ -591,10 +597,10 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas14-%s-t%d-h%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF)))
+             ("ow-atlas15-%s-t%d-h%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF)))
     if cache.is_file():
         return cache.read_bytes()
-    acache = cache.with_name("ow-areas9-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
+    acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])
     import pickle
     if acache.is_file():
         ar = pickle.loads(acache.read_bytes())
