@@ -425,15 +425,15 @@ def textures(sets):
                 cnt[u[k].tobytes()] += int(n[k])
     out = {}
     for b, n in cnt.items():
-        if n < NMIN:
-            continue
         a = np.frombuffer(b, np.uint8)
         px = np.stack([a >> 4, a & 15], axis=1).reshape(8, 8)
         cols, num = np.unique(px, return_counts=True)
-        if not 2 <= len(cols) <= 4 or cols[0] == 0:
+        if not 2 <= len(cols) <= 4:            # (colour 0 too: carpets)
             continue
         dom = cols[num.argmax()]
-        if num.max() < 29:
+        if num.max() < 29 or (n < NMIN and num.max() < (36 if SOLID else 56)):
+            # (a tile used seldom counts only when nearly one colour:
+            # the dotted carpets and floors)
             continue
         ok = True
         for c in cols:
@@ -706,7 +706,7 @@ def hud_copy(rom):
 
 def build(rom: bytes) -> bytes:
     cache = (Path(__file__).resolve().parent.parent / "build" /
-             ("ow-atlas18-%s-t%d-h%d-c%d-s%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID)))
+             ("ow-atlas21-%s-t%d-h%d-c%d-s%d.bin" % (hashlib.md5(rom).hexdigest()[:12], TWIN, HALF, COMPOSE, SOLID)))
     if cache.is_file():
         return cache.read_bytes()
     acache = cache.with_name("ow-areas10-%s.npz" % hashlib.md5(rom).hexdigest()[:12])

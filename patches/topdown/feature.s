@@ -1560,13 +1560,11 @@ td_figure:
 	movea.l	GRIDPTR,a0
 	move.w	$A(a0),d1		; phase 0..3
 	ifd	SIZE8M
-	tst.w	TA_MOV			; animations paused while the leader
-	beq.s	.ph			; walks (#308), not his own
-	bsr.w	ta_isldr
-	beq.s	.ph1
-	move.w	TA_FPH,d1
-	bra.s	.ph1
-.ph:	move.w	d1,TA_FPH
+	cmpi.w	#$5A71,TA_ON		; pre-drawn view: only the leader
+	bne.s	.ph1			; animates; everyone else holds the
+	bsr.w	ta_isldr		; first frame of his pose and only
+	beq.s	.ph1			; turns (fountains and fires too, #308)
+	moveq	#0,d1
 .ph1:
 	endif
 	andi.w	#3,d1
@@ -1598,7 +1596,8 @@ td_figure:
 .lw:	move.w	TA_WPH,d0		; 4 frames a cell
 	lsr.w	#6,d0
 	bra.s	.wf
-.nw:
+.nw:	cmpi.w	#$5A71,TA_ON		; (no walk poses for the others)
+	beq.w	.key
 	endif
 	cmp.w	TD_PERIOD,d4		; sliding?
 	bcc.s	.key
@@ -7519,9 +7518,8 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	bne.s	.end
 	tst.w	TA_PR			; terrain phase (water): a changed
 	bpl.s	.sw			; phase is swept in, 3 rows a frame
-	tst.w	TA_MOV			; (not while the leader walks)
-	bne.s	.end
-	bsr.w	ta_phnow
+	bra.s	.end			; no tile animation in the pre-drawn
+	bsr.w	ta_phnow		; view: the row sweep showed (#308)
 	cmp.w	TA_PH,d0
 	beq.s	.end
 	move.w	d0,TA_PH
