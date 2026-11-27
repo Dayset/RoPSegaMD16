@@ -7334,6 +7334,14 @@ ta_norc:	; no cell uses any slot
 ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmpi.w	#$5A71,TA_ON
 	bne.w	.o
+	movem.l	a0-a1/d2,-(a7)
+	lea	TD_IGX,a0		; shown: eased toward the target, a
+	lea	TA_CX,a1		; 16th of the way a frame in 1/16 px
+	bsr.w	.lim			; (a zigzag of the leader's diagonal
+	lea	TD_IGY,a0		; steps comes out a straight glide; the
+	lea	TA_CY,a1		; rounding even both ways, #308), at
+	bsr.w	.lim			; most 3 px a frame; 64 px or more: a
+	movem.l	(a7)+,a0-a1/d2		; snap. The window follows it
 	move.w	TD_IGX,TA_GX
 	move.w	TD_IGY,TA_GY
 	move.w	TA_L,d0
@@ -7357,17 +7365,21 @@ ta_clamp:	; td_iso_cam: the camera stays inside the loaded window
 	cmp.w	TD_IGY,d0
 	bge.s	.sm
 	move.w	d0,TD_IGY
-.sm:	movem.l	a0-a1/d2,-(a7)
-	lea	TD_IGX,a0		; shown: eased toward the target, a
-	lea	TA_CX,a1		; 16th of the way a frame in 1/16 px
-	bsr.s	.lim			; (a zigzag of the leader's diagonal
-	lea	TD_IGY,a0		; steps comes out a straight glide; the
-	lea	TA_CY,a1		; rounding even both ways, #308), at
-	bsr.s	.lim			; most 3 px a frame; 64 px or more: a
-	move.w	TD_IGX,TA_SX		; snap
-	move.w	TD_IGY,TA_SY
-	movem.l	(a7)+,a0-a1/d2
-	rts
+.sm:	lea	TD_IGX,a0		; held at the window's edge: the
+	lea	TA_CX,a1		; easing goes on from there
+	bsr.s	.rs
+	lea	TD_IGY,a0
+	lea	TA_CY,a1
+.rs:	move.l	(a1),d0
+	addq.l	#8,d0
+	asr.l	#4,d0
+	cmp.w	(a0),d0
+	beq.s	.rs1
+	move.w	(a0),d0
+	ext.l	d0
+	asl.l	#4,d0
+	move.l	d0,(a1)
+.rs1:	rts
 .lim:	move.w	(a0),d0
 	ext.l	d0
 	asl.l	#4,d0			; target, 1/16 px
