@@ -4,7 +4,7 @@
   md_held.py ROM ROUTE [--from A] [--to B]
 
 ROM: a topdown build with ROP_DEFINES=HELDPC=1 (td_vint stores the
-interrupted PC at $FF7E00 and the frame at $FF7E04 every VBlank).
+interrupted PC at $FF7E40 and the frame at $FF7E44 every VBlank).
 Per frame in the iso view while walking (game camera moved in the last
 64 frames): if no picture update happened this frame (TD_LASTFR behind
 the frame counter), count the routine the VBlank found the main thread
@@ -80,7 +80,7 @@ def main():
         fr = w(r, 0xFF0012)
         if w(r, E["TD_LASTFR"]) == fr:
             continue
-        pc = (w(r, 0xFF7E00) << 16) | w(r, 0xFF7E02)
+        pc = (w(r, 0xFF7EC0) << 16) | w(r, 0xFF7EC2)
         if pc >= 0xFD0CC and pc < 0x100000 or pc >= 0x1F0000:
             name = "topdown"
             k = bisect.bisect_right([l[0] for l in labs], pc) - 1
@@ -89,7 +89,7 @@ def main():
         else:
             k = bisect.bisect_right(starts, pc) - 1
             name = rs[k][2] if k >= 0 and pc <= rs[k][1] else f"${pc:06X}"
-        if not w(r, 0xFF7E08):
+        if not w(r, 0xFF7EC8):
             continue                    # scene loading: no picture yet
         if a.pc:
             name += f" ${pc:06X}"

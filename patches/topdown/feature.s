@@ -627,6 +627,32 @@ mg_find:
 	rts
 mg_fend:
 
+; s52_find — the game's "n-th character at cell (x, y)" ($0258EE): the
+; same answer with a pointer walk (the compiled one multiplied for each
+; field of each of the 56, #308)
+s52_find:
+	movem.l	d2-d5,-(a7)
+	movem.w	20(a7),d1-d3		; x, y, n
+	lea	$FF02B4,a0
+	moveq	#0,d0
+	moveq	#56-1,d4
+.l:	moveq	#15,d5
+	and.b	1(a0),d5
+	beq.s	.n
+	cmp.w	$C(a0),d1
+	bne.s	.n
+	cmp.w	$E(a0),d2
+	bne.s	.n
+	tst.w	d3
+	beq.s	.o
+	subq.w	#1,d3
+.n:	lea	$34(a0),a0
+	addq.w	#1,d0
+	dbra	d4,.l
+	moveq	#-1,d0
+.o:	movem.l	(a7)+,d2-d5
+	rts
+
 ;=======================================================================
 ; td_poll — combat_turn_run char-loop head: picture update if a new
 ; frame started, then the two displaced instructions.
@@ -706,10 +732,10 @@ td_poll_pgc:
 td_vint:
 	addq.l	#1,$FF0010
 	ifd	HELDPC			; debug: where VBlank found the main
-	move.l	6(a7),($FF7E00).l	; thread (tools/md_held.py)
-	move.w	$FF0012,($FF7E04).l
-	move.w	TD_BUSY,($FF7E06).l
-	move.w	TD_VALID,($FF7E08).l
+	move.l	6(a7),($FF7EC0).l	; thread (tools/md_held.py)
+	move.w	$FF0012,($FF7EC4).l
+	move.w	TD_BUSY,($FF7EC6).l
+	move.w	TD_VALID,($FF7EC8).l
 	movem.l	d0/a0-a1,-(a7)
 	lea	22(a7),a0
 	lea	($FF7E40).l,a1
@@ -8045,20 +8071,29 @@ ta_get:	; d0.l = tile id -> d0.w = its slot (uploaded), -1 none free
 	add.w	d0,d0
 	move.w	(a2,d0.w),d0
 	bra.s	.f
-.miss:	lea	TA_RC,a2		; a free slot from the hand on
-	move.w	TA_HAND,d0
+.miss:	lea	TA_RC,a2		; a free slot from the hand on (a tight
+	move.w	TA_HAND,d0		; scan: with the window full it walked
+	move.w	d0,d1			; most of the slots, a quarter of a big
+	add.w	d1,d1			; room's time, #308)
+	lea	(a2,d1.w),a0
 	move.w	#TA_N-1,d3
-.s:	move.w	d0,d1
-	add.w	d1,d1
-	tst.w	(a2,d1.w)
-	beq.s	.got
-	addq.w	#1,d0
-	cmpi.w	#TA_N,d0
-	bcs.s	.s1
-	moveq	#0,d0
-.s1:	dbra	d3,.s
-	moveq	#-1,d0
+	sub.w	d0,d3
+.s:	tst.w	(a0)+
+	dbeq	d3,.s
+	beq.s	.fnd
+	movea.l	a2,a0			; then from the start to the hand
+	move.w	d0,d3
+	subq.w	#1,d3
+	bmi.s	.none
+.s2:	tst.w	(a0)+
+	dbeq	d3,.s2
+	beq.s	.fnd
+.none:	moveq	#-1,d0
 	bra.s	.o
+.fnd:	move.l	a0,d0
+	sub.l	a2,d0
+	lsr.w	#1,d0
+	subq.w	#1,d0
 .got:	move.w	d0,d1
 	addq.w	#1,d1
 	cmpi.w	#TA_N,d1
