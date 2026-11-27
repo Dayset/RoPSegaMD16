@@ -7958,7 +7958,10 @@ ta_stream:	; main loop, every frame: the window follows the camera
 	ifd	HELDPC
 	move.w	FRAME,($FF7E32).l
 	endif
-.done:	bsr.w	ta_want			; (not while the location changes)
+.done:	tst.w	TA_INV			; from VBlank: the line, nothing else
+	bne.w	.vx			; (ta_want / ta_lifts call the game,
+	bsr.w	ta_want			; which the main thread is inside;
+					; the scans take a frame; #308)
 	cmp.w	TA_AR,d0
 	bne.s	.end
 	tst.w	TA_PR			; terrain phase (water): a changed
