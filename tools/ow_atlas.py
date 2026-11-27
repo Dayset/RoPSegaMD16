@@ -773,6 +773,41 @@ def build(rom: bytes) -> bytes:
     return data
 
 
+FIG = 0x8D0000              # every $E358 image pre-drawn as td_extract
+                            # would (#308): 944 streams x 2 variants x
+                            # 16 tiles, column by column, 512 bytes each
+
+
+def figs(rom):
+    cache = (Path(__file__).resolve().parent.parent / "build" /
+             ("ow-figs1-%s.bin" % hashlib.md5(rom).hexdigest()[:12]))
+    if cache.is_file():
+        return cache.read_bytes()
+    from e358 import E358, N_STREAMS, BUF_BASE, RAM_BASE
+    e = E358(rom)
+    out = bytearray()
+    for st in range(N_STREAMS):
+        for v in (0, 1):
+            ram = bytearray(65536)
+            e.call(st, 192, 16, v, ram)
+            buf = ram[BUF_BASE - RAM_BASE:]
+            for c in range(4):
+                for r in range(4):
+                    o = ((2 + r) * 36 + 16 + c) * 32
+                    out += buf[o:o + 32]
+    cache.write_bytes(bytes(out))
+    return bytes(out)
+
+
+def build_all(rom):
+    data = bytearray(build(rom))
+    f = figs(rom)
+    o = FIG - OFFSET
+    assert not any(data[o:o + len(f)]) and FIG + len(f) <= HUD
+    data[o:o + len(f)] = f
+    return bytes(data)
+
+
 if __name__ == "__main__":
     rom = Path(sys.argv[1] if len(sys.argv) > 1 else "rop-original.gen")
     d = build(rom.read_bytes())

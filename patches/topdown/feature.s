@@ -149,6 +149,7 @@ TD_TMP		equ TD_UPTXT+14	; (unused since #297)
 TD_BTOP		equ TD_UPTXT+16	; first plane tile row of the HUD band
 TD_GSPON	equ TD_UPTXT+18	; game sprites above the band get priority
 TD_RAISED	equ TD_UPTXT+20	; 64 B (unused since #297)
+MG_CACHE	equ TD_RAISED	; mg_find: 16 x (id, layer<<10|cell)
 TD_GSP		equ TD_RAISED+64	; 80 words: tile word we gave priority to
 TD_WROW		equ TD_GSP+160	; 40-word window row buffer
 TD_ROWB		equ TD_WROW+80	; 64-word plane row buffer
@@ -330,6 +331,7 @@ TA_ID		equ TA_SH+4096	; TA_N longs: slot -> tile id, -1 free
 TA_NX		equ TA_ID+4*TA_N	; next slot + 1 in the bucket
 TA_RC		equ TA_NX+2*TA_N	; cells of the loaded window using the slot
 ATL		equ $210000	; tools/ow_atlas.py
+FIGIMG		equ $8D0000	; tools/ow_atlas.py FIG
 	endif
 TD_END2		equ TD_VDIF+8
 TD_ARN		equ TD_END2	; combat arena shown by the game itself
@@ -598,10 +600,38 @@ ti_tw1:
 ; The compiled loop took a fifth of a busy room's tick (#308).
 ;=======================================================================
 mg_find:
+	ifd	HELDPC
+	addq.w	#1,$FF7ECC
+	endif
 	move.w	4(a7),d0
 	cmpi.w	#255,d0
 	bhi.s	.no
-	lea	$FFB36C,a0
+	moveq	#15,d1			; where it was last found (a record
+	and.w	d0,d1			; sits in one cell): checked there first
+	lsl.w	#2,d1
+	lea	MG_CACHE,a0
+	adda.w	d1,a0
+	cmp.w	(a0)+,d0
+	bne.s	.sc
+	move.w	(a0),d1			; layer << 10 | index
+	andi.w	#2047,d1
+	lea	$FFB36C,a1
+	cmp.b	(a1,d1.w),d0
+	bne.s	.sc
+	move.w	d1,d0
+	lsr.w	#8,d0
+	lsr.w	#2,d0
+	andi.w	#1023,d1
+	movea.l	6(a7),a0
+	move.w	d0,4(a0)
+	move.w	d1,d0
+	lsr.w	#5,d0
+	move.w	d0,(a0)
+	andi.w	#31,d1
+	move.w	d1,2(a0)
+	moveq	#-1,d0
+	rts
+.sc:	lea	$FFB36C,a0
 	lea	$FFB76C,a1
 	move.w	#1024-1,d1
 .l:	cmp.b	(a0)+,d0
@@ -610,12 +640,28 @@ mg_find:
 	beq.s	.f1
 	dbra	d1,.l
 .no:	moveq	#0,d0
+	ifd	HELDPC
+	addq.w	#1,$FF7ECE
+	endif
 	rts
 .f1:	moveq	#1,d0
 	bra.s	.f
 .f0:	moveq	#0,d0
 .f:	neg.w	d1			; index 1023 - d1
 	add.w	#1023,d1
+	move.l	d2,-(a7)		; remember it
+	move.w	8(a7),d2
+	andi.w	#15,d2
+	lsl.w	#2,d2
+	lea	MG_CACHE,a0
+	adda.w	d2,a0
+	move.w	8(a7),(a0)+
+	move.w	d0,d2
+	lsl.w	#8,d2
+	lsl.w	#2,d2
+	or.w	d1,d2
+	move.w	d2,(a0)
+	move.l	(a7)+,d2
 	movea.l	6(a7),a0
 	move.w	d0,4(a0)
 	move.w	d1,d0
@@ -626,6 +672,18 @@ mg_find:
 	moveq	#-1,d0
 	rts
 mg_fend:
+
+; s_beh — a character's behaviour switch ($022F22): everyone but the
+; party and scripted moves (0 follow, 9 go/attack) stands still: no
+; wandering (11, 13) and no chasing or fleeing the leader (5, 6) (#308)
+s_beh:
+	cmpi.l	#14,d0
+	bcc.s	.x
+	move.w	#$2860,d1
+	btst	d0,d1
+	bne.s	.x
+	jmp	($022F2A).l
+.x:	jmp	($022F34).l
 
 ; s52_find — the game's "n-th character at cell (x, y)" ($0258EE): the
 ; same answer with a pointer walk (the compiled one multiplied for each
@@ -1775,6 +1833,41 @@ td_slot:
 
 td_extract:
 	movem.l	d0-d7/a0-a6,-(a7)
+	ifd	HELDPC
+	addq.w	#1,$FF7ECA
+	endif
+	ifd	SIZE8M			; 8 MB+: the image pre-drawn in the ROM
+	move.w	d0,d1			; (tools/ow_atlas.py figs, #308)
+	andi.l	#$7FFF,d1
+	add.l	d1,d1
+	tst.w	d0
+	bpl.s	.pv
+	addq.l	#1,d1
+.pv:	moveq	#9,d0
+	lsl.l	d0,d1
+	addi.l	#FIGIMG,d1
+	move.w	sr,-(a7)
+	move.w	#$2700,sr
+	move.w	TA_B7,-(a7)
+	bsr.w	ta_t7			; a0 = the image
+	move.w	14(a7),d0		; saved d2 = slot -> VRAM address
+	bsr.w	td_slot
+	lsl.w	#5,d0
+	bsr.w	td_vwrite
+	lea	VDP_DATA,a1
+	moveq	#16-1,d1
+.pc:	rept	8
+	move.l	(a0)+,(a1)
+	endr
+	dbra	d1,.pc
+	move.w	(a7)+,d2		; slot 7 back as it was
+	bmi.s	.pb
+	move.w	d2,TA_B7
+	move.b	d2,$A130FF
+.pb:	move.w	(a7)+,sr
+	movem.l	(a7)+,d0-d7/a0-a6
+	rts
+	endif
 	bsr.w	ti_xswap		; a render in progress: save its corner
 	move.w	d0,d7
 	moveq	#5-1,d1			; clear rows 2..6, cols 16..19
@@ -1798,7 +1891,7 @@ td_extract:
 	jsr	($00E358).l
 	addq.w	#8,a7
 	move.w	10(a7),d0		; saved d2 = slot -> VRAM address
-	bsr.s	td_slot
+	bsr.w	td_slot
 	lsl.w	#5,d0
 	move.w	sr,-(a7)		; (a VBlank between address and data
 	move.w	#$2700,sr		; put the image after the sprite table)

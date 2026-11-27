@@ -10,4 +10,4 @@ OFFSET = ow_atlas.OFFSET
 
 
 def build(rom: bytes) -> bytes:
-    return ow_atlas.build(rom)
+    return ow_atlas.build_all(rom)
